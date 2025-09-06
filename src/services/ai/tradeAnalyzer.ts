@@ -1,6 +1,7 @@
 'use client'
 
 import predictionEngine, { type PlayerPrediction } from './predictionEngine'
+import tradeAnalysisEngine from './tradeAnalysisEngine'
 
 export interface TradePlayer {
   playerId: string
@@ -112,6 +113,64 @@ class TradeAnalyzerService {
     }
 
     try {
+      // Use the advanced trade analysis engine for comprehensive analysis
+      const advancedAnalysis = await tradeAnalysisEngine.analyzeTradeProposal(
+        proposal.id,
+        proposal.sendingTeamId,
+        proposal.receivingTeamId,
+        proposal.playersOffered.map(p => p.playerId),
+        proposal.playersRequested.map(p => p.playerId),
+        'default-league' // This should be passed in the proposal
+      )
+
+      // Convert advanced analysis to existing format while keeping compatibility
+      const analysis: TradeAnalysis = {
+        tradeId: proposal.id,
+        overallRating: advancedAnalysis.overallAssessment.rating,
+        fairnessScore: advancedAnalysis.overallAssessment.fairnessScore,
+        winnerTeamId: advancedAnalysis.valueAnalysis.immediateValueDelta > 0 ? 
+                      proposal.receivingTeamId : 
+                      advancedAnalysis.valueAnalysis.immediateValueDelta < 0 ? 
+                      proposal.sendingTeamId : null,
+        valueGap: advancedAnalysis.valueAnalysis.totalValueGap,
+        analysis: {
+          sendingTeam: {
+            currentValue: advancedAnalysis.teamImpact.proposingTeam.beforeValue,
+            projectedValue: advancedAnalysis.teamImpact.proposingTeam.afterValue,
+            riskLevel: this.calculateRiskLevelFromEngine(advancedAnalysis.teamImpact.proposingTeam.riskChange),
+            positionImpact: this.calculatePositionImpact(proposal.playersOffered, 'losing'),
+            strengthsGained: advancedAnalysis.teamImpact.proposingTeam.strengthsGained,
+            weaknessesCreated: advancedAnalysis.teamImpact.proposingTeam.weaknessesCreated
+          },
+          receivingTeam: {
+            currentValue: advancedAnalysis.teamImpact.receivingTeam.beforeValue,
+            projectedValue: advancedAnalysis.teamImpact.receivingTeam.afterValue,
+            riskLevel: this.calculateRiskLevelFromEngine(advancedAnalysis.teamImpact.receivingTeam.riskChange),
+            positionImpact: this.calculatePositionImpact(proposal.playersRequested, 'losing'),
+            strengthsGained: advancedAnalysis.teamImpact.receivingTeam.strengthsGained,
+            weaknessesCreated: advancedAnalysis.teamImpact.receivingTeam.weaknessesCreated
+          }
+        },
+        recommendations: {
+          shouldAccept: advancedAnalysis.overallAssessment.recommendation === 'accept_now',
+          reasons: advancedAnalysis.insights.keyFactors,
+          timing: advancedAnalysis.overallAssessment.recommendation === 'accept_now' ? 'accept_now' :
+                  advancedAnalysis.overallAssessment.recommendation === 'negotiate' ? 'wait' : 'reject',
+          counterOffers: advancedAnalysis.insights.counterOfferSuggestions
+        },
+        marketContext: {
+          similarTrades: advancedAnalysis.marketContext.similarTrades,
+          playerTrends: {},
+          injuryReports: {}
+        }
+      }
+
+      this.analysisCache.set(cacheKey, analysis)
+      return analysis
+    } catch (error) {
+      console.error('Advanced trade analysis failed, falling back to basic:', error)
+      
+      // Fallback to original analysis method
       const [offeredPlayersAnalysis, requestedPlayersAnalysis] = await Promise.all([
         this.analyzePlayerGroup(proposal.playersOffered),
         this.analyzePlayerGroup(proposal.playersRequested)
@@ -125,10 +184,13 @@ class TradeAnalyzerService {
 
       this.analysisCache.set(cacheKey, analysis)
       return analysis
-    } catch (error) {
-      console.error('Trade analysis failed:', error)
-      return this.getFallbackAnalysis(proposal)
     }
+  }
+
+  private calculateRiskLevelFromEngine(riskChange: number): 'low' | 'medium' | 'high' {
+    if (riskChange < -10) return 'low'
+    if (riskChange > 10) return 'high'
+    return 'medium'
   }
 
   private async analyzePlayerGroup(players: TradePlayer[]) {

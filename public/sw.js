@@ -1,7 +1,8 @@
-// Astral Field Service Worker
-const CACHE_NAME = 'astral-field-v1.0.0';
-const STATIC_CACHE = 'astral-field-static-v1';
-const DYNAMIC_CACHE = 'astral-field-dynamic-v1';
+// Astral Field Service Worker - Enhanced PWA Version
+const CACHE_NAME = 'astral-field-v2.0.0';
+const STATIC_CACHE = 'astral-field-static-v2';
+const DYNAMIC_CACHE = 'astral-field-dynamic-v2';
+const API_CACHE = 'astral-field-api-v2';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [

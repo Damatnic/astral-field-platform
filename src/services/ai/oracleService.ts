@@ -1,9 +1,6 @@
-// THIS FILE NEEDS REFACTORING FOR NEON DATABASE - TEMPORARILY DISABLED
 'use client'
 
-import { createClient } from '@/lib/supabase'
-
-const supabase = createClient()
+import { neonDb } from '@/lib/neon-database'
 
 export type OracleQueryType = 
   | 'lineup_advice'
@@ -197,43 +194,72 @@ class OracleService {
     try {
       // Get team roster if teamId provided
       if (query.teamId) {
-        const { data: roster } = await supabase
-          .from('roster_players')
-          .select(`
-            *,
-            players(
-              id,
-              name,
-              position,
-              nfl_team,
-              player_projections(fantasy_points, adp)
-            )
-          `)
-          .eq('team_id', query.teamId)
+        const { data: roster } = await neonDb.query(`
+          SELECT 
+            roster_players.*,
+            players.id as player_id,
+            players.name as player_name,
+            players.position as player_position,
+            players.nfl_team as player_nfl_team,
+            pp.fantasy_points,
+            pp.adp
+          FROM roster_players
+          JOIN players ON roster_players.player_id = players.id
+          LEFT JOIN player_projections pp ON players.id = pp.player_id
+          WHERE roster_players.team_id = $1
+        `, [query.teamId])
 
-        context.roster = roster
+        if (roster) {
+          // Transform to match expected structure
+          context.roster = roster?.map((row: any) => ({
+            ...row,
+            players: {
+              id: row.player_id,
+              name: row.player_name,
+              position: row.player_position,
+              nfl_team: row.player_nfl_team,
+              player_projections: {
+                fantasy_points: row.fantasy_points,
+                adp: row.adp
+              }
+            }
+          }))
+        }
       }
 
       // Get player data if players specified
       if (query.context.players?.length) {
-        const { data: players } = await supabase
-          .from('players')
-          .select(`
-            *,
-            player_projections(fantasy_points, adp)
-          `)
-          .in('id', query.context.players)
+        const placeholders = query.context.players.map((_, index) => `$${index + 1}`).join(', ')
+        const { data: players } = await neonDb.query(`
+          SELECT 
+            players.*,
+            pp.fantasy_points,
+            pp.adp
+          FROM players
+          LEFT JOIN player_projections pp ON players.id = pp.player_id
+          WHERE players.id IN (${placeholders})
+        `, query.context.players)
 
-        context.players = players
+        if (players) {
+          context.players = players.map((row: any) => ({
+            ...row,
+            player_projections: {
+              fantasy_points: row.fantasy_points,
+              adp: row.adp
+            }
+          }))
+        }
       }
 
       // Get league settings if leagueId provided
       if (query.leagueId) {
-        const { data: league } = await supabase
-          .from('leagues')
-          .select('settings, scoring_system')
-          .eq('id', query.leagueId)
-          .single()
+        const { data: league } = await neonDb.selectSingle(
+          'leagues',
+          {
+            select: 'settings, scoring_system',
+            where: { id: query.leagueId }
+          }
+        )
 
         context.leagueSettings = league
       }

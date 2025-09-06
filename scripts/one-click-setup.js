@@ -30,7 +30,7 @@
     return i !== -1
   }
 
-  const BASE = getFlag('base', process.env.BASE_URL || 'http://localhost:3000')
+  const BASE = getFlag('base', process.env.BASE_URL || 'https://astral-field-platform.vercel.app')
   const ADMIN_KEY = getFlag('admin-key', process.env.ADMIN_SETUP_KEY || 'astral2025')
   const ENABLE_LIVE = getBool('enable-live')
   const MINUTES = parseInt(getFlag('minutes', '240'), 10) || 240
@@ -147,6 +147,9 @@
 
     log('All done! Next steps:')
     log(`- Visit ${BASE}/dashboard and log in as Nicholas`) 
+    if (leagueId) {
+      log(`- Go directly to the new league: ${BASE}/league/${leagueId}`)
+    }
     log('- Open Admin → Setup for SportsData checks and live controls')
   } catch (err) {
     console.error('[setup] Error:', err?.message || err)

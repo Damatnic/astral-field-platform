@@ -101,6 +101,9 @@ export default function AdminSetupPage() {
 
       setResults({ type: 'oneclick', success: true, reset: resetData })
       appendLog('All done! You can head to the dashboard.')
+      if (resetData?.leagueId) {
+        appendLog(`Go directly to the new league: /league/${resetData.leagueId}`)
+      }
     } catch (error: any) {
       setResults({ type: 'oneclick', success: false, error: error?.message || 'Failed to complete setup' })
       appendLog(`Error: ${error?.message || 'Unknown error'}`)
@@ -200,6 +203,23 @@ export default function AdminSetupPage() {
               <div className="text-red-400">
                 <p className="font-medium">❌ Error:</p>
                 <p>{results.error}</p>
+              </div>
+            ) : results.type === 'oneclick' && results.reset?.leagueId ? (
+              <div className="space-y-4">
+                <div className="text-green-400">
+                  <p className="font-medium">✅ Demo league setup complete!</p>
+                  <div className="mt-4 space-y-2">
+                    <a 
+                      href={`/league/${results.reset.leagueId}`}
+                      className="inline-block bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                    >
+                      🏆 Go to New League
+                    </a>
+                    <div className="text-sm text-gray-400">
+                      League ID: {results.reset.leagueId}
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">

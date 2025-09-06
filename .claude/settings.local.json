@@ -34,7 +34,8 @@
       "Bash(npm test:*)",
       "Bash(pkill:*)",
       "Bash(taskkill:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "WebFetch(domain:astral-field-platform.vercel.app)"
     ],
     "deny": [],
     "ask": []
