@@ -52,6 +52,18 @@ interface Comment {
   reactions: Record<string, string[]>
 }
 
+interface AnnouncementFormData {
+  title: string
+  content: string
+  type: 'general' | 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration'
+  priority: 'low' | 'normal' | 'high' | 'urgent'
+  expiresAt?: string
+  pinned: boolean
+  tags: string[]
+  targetAudience: 'all' | 'commissioners' | 'specific'
+  targetUserIds?: string[]
+}
+
 interface AnnouncementSystemProps {
   leagueId: string
   isCommissioner?: boolean
@@ -428,7 +440,7 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
       {showCreateModal && isCommissioner && (
         <CreateAnnouncementModal
           onClose={() => setShowCreateModal(false)}
-          onSubmit={(announcementData) => {
+          onSubmit={(announcementData: AnnouncementFormData) => {
             const newAnnouncement: Announcement = {
               ...announcementData,
               id: Date.now().toString(),
