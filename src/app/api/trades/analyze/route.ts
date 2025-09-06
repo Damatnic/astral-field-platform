@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { neonDb } from '@/lib/neon-database'
+import { verifyAuth } from '@/lib/auth'
+import { database } from '@/lib/database'
 import tradeAnalysisEngine from '@/services/ai/tradeAnalysisEngine'
 import { logger } from '@/lib/logger'
 import aiAnalyticsService from '@/services/ai/aiAnalyticsService'
@@ -8,8 +8,8 @@ import aiAnalyticsService from '@/services/ai/aiAnalyticsService'
 export async function POST(request: NextRequest) {
   try {
     // Authenticate user
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

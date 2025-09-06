@@ -3,6 +3,8 @@
 // Test script for Neon database connectivity and migration system
 // Run with: node scripts/test-database.js
 
+// Load environment variables from .env.local
+require('dotenv').config({ path: '.env.local' });
 const { Pool } = require('pg');
 
 async function testDatabaseConnection() {

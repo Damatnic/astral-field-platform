@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { neonDb } from '@/lib/neon-database'
+import { verifyAuth } from '@/lib/auth'
+import { database } from '@/lib/database'
 import tradeAnalysisEngine from '@/services/ai/tradeAnalysisEngine'
 import { logger } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -66,8 +66,8 @@ export async function GET(request: NextRequest) {
 // Update player valuations (admin or scheduled job)
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -136,8 +136,8 @@ export async function POST(request: NextRequest) {
 // Get trade market activity for players
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

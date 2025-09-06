@@ -35,7 +35,8 @@
       "Bash(pkill:*)",
       "Bash(taskkill:*)",
       "Bash(dir:*)",
-      "WebFetch(domain:astral-field-platform.vercel.app)"
+      "WebFetch(domain:astral-field-platform.vercel.app)",
+      "Read(//c/Users/**)"
     ],
     "deny": [],
     "ask": []

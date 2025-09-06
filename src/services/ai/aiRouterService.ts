@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { Anthropic } from '@anthropic-ai/sdk'
+import { Anthropic } from '@/lib/anthropic-mock'
 
 export interface AIProvider {
   name: string

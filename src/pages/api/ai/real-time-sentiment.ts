@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { RealTimeSentimentAnalyzer } from '../../../services/sentiment/realTimeSentimentAnalyzer';
 import { authenticateUser } from '../../../lib/auth-utils';
 import { rateLimitMiddleware } from '../../../lib/rate-limit';
-import { db } from '../../../db/database';
+import { database as db } from '../../../lib/database';
 
 const analyzer = new RealTimeSentimentAnalyzer();
 
