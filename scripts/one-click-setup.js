@@ -41,8 +41,14 @@
   const jsonHeaders = { 'Content-Type': 'application/json', ...authHeaders }
 
   const log = (...m) => console.log(`[setup]`, ...m)
-  const fetchJson = async (path, init = {}) => {
-    const res = await fetch(`${BASE}${path}`, init)
+  const fetchJson = async (path, init = {}, timeoutMs = 60000) => {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    const res = await fetch(`${BASE}${path}`, { ...init, signal: controller.signal }).catch((e) => {
+      clearTimeout(timer)
+      throw e
+    })
+    clearTimeout(timer)
     let body = null
     try { body = await res.json() } catch {}
     if (!res.ok) {
@@ -69,11 +75,15 @@
       log('Player pool is small; syncing a few NFL teams...')
       for (const t of SEED_TEAMS) {
         log(`Sync team ${t}...`)
-        await fetchJson(`/api/sync-sportsdata`, {
-          method: 'POST',
-          headers: jsonHeaders,
-          body: JSON.stringify({ action: 'sync-team-players', team: t })
-        })
+        try {
+          await fetchJson(`/api/sync-sportsdata`, {
+            method: 'POST',
+            headers: jsonHeaders,
+            body: JSON.stringify({ action: 'sync-team-players', team: t })
+          }, 45000)
+        } catch (e) {
+          log(`Warning: team ${t} sync failed or timed out: ${e.message}. Continuing...`)
+        }
       }
     } else {
       log('Player pool sufficient; skipping seeding')
@@ -124,4 +134,3 @@
     process.exitCode = 1
   }
 })()
-
