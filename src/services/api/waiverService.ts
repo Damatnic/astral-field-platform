@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database'
 
@@ -45,13 +45,13 @@ class WaiverService {
   async getWaiverPlayers(leagueId: string): Promise<{ players: WaiverPlayer[]; error?: string }> {
     try {
       // Get available players (simplified query)
-      const playersResult = await neonServerless.select('players', {})
+      const playersResult = await database.select('players', {})
       if (playersResult.error) throw new Error(playersResult.error)
       const players = playersResult.data
 
       // Get claim counts for each player
       const playerIds = (players || []).map((p: any) => p.id)
-      const claimsResult = await neonServerless.select('waiver_claims', {
+      const claimsResult = await database.select('waiver_claims', {
         where: { status: 'pending' }
       })
       const claimCounts = claimsResult.data || []
@@ -89,7 +89,7 @@ class WaiverService {
   async getTeamWaiverClaims(teamId: string): Promise<{ claims: WaiverClaim[]; error?: string }> {
     try {
       // Get waiver claims (simplified)
-      const claimsResult = await neonServerless.select('waiver_claims', {
+      const claimsResult = await database.select('waiver_claims', {
         where: { eq: { team_id: teamId } },
         order: { column: 'priority', ascending: true }
       })
@@ -126,14 +126,14 @@ class WaiverService {
   async submitWaiverClaim(teamId: string, data: CreateWaiverClaimData): Promise<{ success: boolean; error?: string }> {
     try {
       // Get team's current waiver priority
-      const teamResult = await neonServerless.select('teams', {
+      const teamResult = await database.select('teams', {
         where: { eq: { id: teamId } }
       })
       if (teamResult.error || !teamResult.data) throw new Error(teamResult.error || 'Team not found')
       const team = teamResult.data[0]
 
       // Check if player is available
-      const rosterResult = await neonServerless.select('rosters', {
+      const rosterResult = await database.select('rosters', {
         where: { eq: { player_id: data.playerId } }
       })
       if (rosterResult.error) throw new Error(rosterResult.error)
@@ -145,7 +145,7 @@ class WaiverService {
 
       // Check for existing claim on this player by this team
       // Check for existing claim - use raw SQL for complex conditions
-      const existingClaimResult = await neonServerless.query(
+      const existingClaimResult = await database.query(
         'SELECT * FROM waiver_claims WHERE team_id = $1 AND player_id = $2 AND status = $3',
         [teamId, data.playerId, 'pending']
       )
@@ -158,7 +158,7 @@ class WaiverService {
 
       // Validate drop player if specified
       if (data.dropPlayerId) {
-        const ownedResult = await neonServerless.query(
+        const ownedResult = await database.query(
           'SELECT * FROM rosters WHERE team_id = $1 AND player_id = $2',
           [teamId, data.dropPlayerId]
         )
@@ -171,7 +171,7 @@ class WaiverService {
       }
 
       // Create waiver claim
-      const insertResult = await neonServerless.insert('waiver_claims', {
+      const insertResult = await database.insert('waiver_claims', {
         team_id: teamId,
         player_id: data.playerId,
         drop_player_id: data.dropPlayerId || null,
@@ -193,7 +193,7 @@ class WaiverService {
 
   async cancelWaiverClaim(claimId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const deleteResult = await neonServerless.query(
+      const deleteResult = await database.query(
         'DELETE FROM waiver_claims WHERE id = $1 AND status = $2',
         [claimId, 'pending']
       )
@@ -344,7 +344,7 @@ class WaiverService {
       const totalBudget = 100
 
       // Calculate spent amount from successful waiver claims
-      const claimsResult = await neonServerless.query(
+      const claimsResult = await database.query(
         'SELECT * FROM waiver_claims WHERE team_id = $1 AND status = $2',
         [teamId, 'successful']
       )

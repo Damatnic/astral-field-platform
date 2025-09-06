@@ -1,6 +1,6 @@
 'use client'
 
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import socketService, { type GameUpdate, type LiveScore } from '../websocket/socketService'
 
 export interface LiveGame {
@@ -134,7 +134,7 @@ class LiveScoreService {
   async getTeamLiveScores(leagueId: string, week: number): Promise<TeamLiveScore[]> {
     try {
       // Get all teams in the league (simplified)
-      const teamsResult = await neonServerless.select('teams', {
+      const teamsResult = await database.select('teams', {
         where: { league_id: leagueId }
       })
       if (teamsResult.error) return []
@@ -146,7 +146,7 @@ class LiveScoreService {
 
       for (const team of teams) {
         // Get lineup entries for this team (simplified)
-        const lineupResult = await neonServerless.select('lineup_entries', {
+        const lineupResult = await database.select('lineup_entries', {
           where: { team_id: team.id, week: week }
         })
         
@@ -200,7 +200,7 @@ class LiveScoreService {
   async getPlayerLiveStats(playerId: string): Promise<PlayerLiveStats> {
     try {
       // Get player info
-      const playerResult = await neonServerless.select('players', {
+      const playerResult = await database.select('players', {
         where: { id: playerId }
       })
       if (playerResult.error || !playerResult.data || !playerResult.data.length) throw new Error('Player not found')

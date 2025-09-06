@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert } from '@/types/database'
 // import { createClient } from '@/lib/supabase'
 
@@ -26,7 +26,7 @@ export class AuthService {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       // Get user by email
-      const result = await neonServerless.selectSingle('users', {
+      const result = await database.selectSingle('users', {
         eq: { email: credentials.email }
       })
 
@@ -50,7 +50,7 @@ export class AuthService {
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
       // Check if user already exists
-      const existingResult = await neonServerless.selectSingle('users', {
+      const existingResult = await database.selectSingle('users', {
         eq: { email: data.email }
       })
 
@@ -65,7 +65,7 @@ export class AuthService {
         password_hash: data.password, // In production, hash with bcrypt
       }
 
-      const result = await neonServerless.insert('users', userInsert)
+      const result = await database.insert('users', userInsert)
       
       if (result.error) throw result.error
 
@@ -99,7 +99,7 @@ export class AuthService {
 
   async updateProfile(userId: string, updates: Partial<User>): Promise<AuthResponse> {
     try {
-      const result = await neonServerless.update('users', updates, { id: userId })
+      const result = await database.update('users', updates, { id: userId })
       
       if (result.error) throw result.error
 

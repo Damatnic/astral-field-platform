@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import playerService from '@/services/api/playerService';
-import { neonServerless } from '@/lib/neon-serverless';
+import { database } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     let rosteredSet: Set<string> | null = null;
     if (leagueId) {
       try {
-        const res = await neonServerless.query(
+        const res = await database.query(
           `SELECT r.player_id FROM rosters r JOIN teams t ON r.team_id = t.id WHERE t.league_id = $1`,
           [leagueId]
         ) as any;

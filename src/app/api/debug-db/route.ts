@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 export async function GET() {
   try {
     console.log('🔍 Debug DB: Starting database debug...')
 
     // Get all users
-    const usersResult = await neonServerless.select('users', {})
+    const usersResult = await database.select('users', {})
     console.log('👥 Users in database:', usersResult.data?.length || 0)
     
     // Get all leagues
-    const leaguesResult = await neonServerless.select('leagues', {})
+    const leaguesResult = await database.select('leagues', {})
     console.log('🏈 Leagues in database:', leaguesResult.data?.length || 0)
     
     // Get all teams
-    const teamsResult = await neonServerless.select('teams', {})
+    const teamsResult = await database.select('teams', {})
     console.log('👨‍💼 Teams in database:', teamsResult.data?.length || 0)
 
     // Show user-team relationships

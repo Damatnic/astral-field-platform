@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 export async function POST() {
   try {
@@ -23,13 +23,13 @@ export async function POST() {
     for (const user of demoUsers) {
       try {
         // Check if user exists
-        const existingResult = await neonServerless.selectSingle('users', {
+        const existingResult = await database.selectSingle('users', {
           eq: { email: user.email }
         })
 
         if (existingResult.data) {
           // Update existing user
-          const updateResult = await neonServerless.update('users', {
+          const updateResult = await database.update('users', {
             username: user.username,
             password_hash: user.password, // Simple storage for demo
             updated_at: new Date().toISOString()
@@ -43,7 +43,7 @@ export async function POST() {
           }
         } else {
           // Create new user
-          const insertResult = await neonServerless.insert('users', {
+          const insertResult = await database.insert('users', {
             email: user.email,
             username: user.username,
             password_hash: user.password, // Simple storage for demo
@@ -101,7 +101,7 @@ export async function POST() {
 export async function GET() {
   try {
     // List all current users
-    const result = await neonServerless.select('users', {
+    const result = await database.select('users', {
       order: { column: 'created_at', ascending: false }
     })
 

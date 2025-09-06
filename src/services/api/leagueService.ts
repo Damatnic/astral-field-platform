@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database'
 
 export type League = Tables<'leagues'>
@@ -94,7 +94,7 @@ export class LeagueService {
         season_year: data.seasonYear || new Date().getFullYear(),
       }
 
-      const result = await neonServerless.insert('leagues', leagueInsert)
+      const result = await database.insert('leagues', leagueInsert)
       
       if (result.error) throw result.error
 
@@ -107,7 +107,7 @@ export class LeagueService {
 
   async getLeague(leagueId: string): Promise<LeagueResponse> {
     try {
-      const result = await neonServerless.selectSingle('leagues', {
+      const result = await database.selectSingle('leagues', {
         eq: { id: leagueId }
       })
 
@@ -122,7 +122,7 @@ export class LeagueService {
 
   async getLeagueWithTeams(leagueId: string): Promise<{ league: LeagueWithTeams | null; error: string | null }> {
     try {
-      const result = await neonServerless.selectWithJoins('leagues', `
+      const result = await database.selectWithJoins('leagues', `
         *,
         teams!inner (
           *,
@@ -147,7 +147,7 @@ export class LeagueService {
   async getUserLeagues(userId: string): Promise<LeaguesResponse> {
     try {
       // Get leagues where user is commissioner
-      const commissionerResult = await neonServerless.select('leagues', {
+      const commissionerResult = await database.select('leagues', {
         where: { commissioner_id: userId }
       })
 
@@ -156,7 +156,7 @@ export class LeagueService {
       }
 
       // Get teams for this user to find associated leagues
-      const teamsResult = await neonServerless.select('teams', {
+      const teamsResult = await database.select('teams', {
         where: { user_id: userId }
       })
 
@@ -174,7 +174,7 @@ export class LeagueService {
         if (leagueIds.length > 0) {
           // For each league ID, get the league details
           const leaguePromises = leagueIds.map(async (leagueId: string) => {
-            const leagueResult = await neonServerless.selectSingle('leagues', {
+            const leagueResult = await database.selectSingle('leagues', {
               where: { id: leagueId }
             })
             return leagueResult.data
@@ -200,7 +200,7 @@ export class LeagueService {
 
   async updateLeague(leagueId: string, updates: LeagueUpdate): Promise<LeagueResponse> {
     try {
-      const result = await neonServerless.update('leagues', updates, { id: leagueId })
+      const result = await database.update('leagues', updates, { id: leagueId })
       
       if (result.error) throw result.error
 
@@ -214,7 +214,7 @@ export class LeagueService {
   async deleteLeague(leagueId: string, userId: string): Promise<{ error: string | null }> {
     try {
       // Verify user is commissioner
-      const leagueResult = await neonServerless.selectSingle('leagues', {
+      const leagueResult = await database.selectSingle('leagues', {
         eq: { id: leagueId }
       })
 
@@ -224,7 +224,7 @@ export class LeagueService {
         throw new Error('Only the commissioner can delete the league')
       }
 
-      const result = await neonServerless.delete('leagues', { id: leagueId })
+      const result = await database.delete('leagues', { id: leagueId })
       
       if (result.error) throw result.error
 
@@ -238,7 +238,7 @@ export class LeagueService {
   async joinLeague(leagueId: string, userId: string, teamName: string): Promise<{ error: string | null }> {
     try {
       // Check if league exists and has space
-      const leagueResult = await neonServerless.selectSingle('leagues', {
+      const leagueResult = await database.selectSingle('leagues', {
         eq: { id: leagueId }
       })
 
@@ -249,7 +249,7 @@ export class LeagueService {
       const settings = league.settings as unknown as LeagueSettings
 
       // Get current teams
-      const teamsResult = await neonServerless.select('teams', {
+      const teamsResult = await database.select('teams', {
         eq: { league_id: leagueId }
       })
 
@@ -268,7 +268,7 @@ export class LeagueService {
       }
 
       // Create team
-      const teamResult = await neonServerless.insert('teams', {
+      const teamResult = await database.insert('teams', {
         league_id: leagueId,
         user_id: userId,
         team_name: teamName,
@@ -287,7 +287,7 @@ export class LeagueService {
   async leaveLeague(leagueId: string, userId: string): Promise<{ error: string | null }> {
     try {
       // Find user's team in the league
-      const teamResult = await neonServerless.selectSingle('teams', {
+      const teamResult = await database.selectSingle('teams', {
         eq: { league_id: leagueId, user_id: userId }
       })
 
@@ -295,7 +295,7 @@ export class LeagueService {
       if (!teamResult.data) throw new Error('Team not found')
 
       // Delete the team (this should cascade to delete roster entries, etc.)
-      const deleteResult = await neonServerless.delete('teams', {
+      const deleteResult = await database.delete('teams', {
         id: teamResult.data.id
       })
 
@@ -310,7 +310,7 @@ export class LeagueService {
 
   async getLeagueTeams(leagueId: string): Promise<TeamsResponse> {
     try {
-      const result = await neonServerless.selectWithJoins('teams', `
+      const result = await database.selectWithJoins('teams', `
         *,
         users!inner(username, email, avatar_url)
       `, {
@@ -329,7 +329,7 @@ export class LeagueService {
 
   async updateTeam(teamId: string, updates: { team_name?: string; draft_position?: number }): Promise<TeamResponse> {
     try {
-      const result = await neonServerless.update('teams', updates, { id: teamId })
+      const result = await database.update('teams', updates, { id: teamId })
       
       if (result.error) throw result.error
 
@@ -342,7 +342,7 @@ export class LeagueService {
 
   async searchPublicLeagues(query?: string, limit = 20): Promise<LeaguesResponse> {
     try {
-      const result = await neonServerless.select('leagues', {
+      const result = await database.select('leagues', {
         limit,
         order: { column: 'created_at', ascending: false }
       })

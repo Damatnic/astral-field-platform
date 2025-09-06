@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 type Suggestion = {
   title: string
@@ -15,14 +15,14 @@ export async function GET(request: NextRequest) {
     if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 })
 
     // Find user's team(s)
-    const teamsRes = await neonServerless.select('teams', leagueIdParam ? { where: { user_id: userId, league_id: leagueIdParam } } : { where: { user_id: userId } })
+    const teamsRes = await database.select('teams', leagueIdParam ? { where: { user_id: userId, league_id: leagueIdParam } } : { where: { user_id: userId } })
     const teams = teamsRes.data || []
     if (!teams.length) return NextResponse.json({ insights: [], suggestions: [], leagueId: null })
     const leagueId = (teams[0] as any).league_id as string
     const teamId = (teams[0] as any).id as string
 
     // Get roster with players and projections
-    const rosterRes = await neonServerless.query(
+    const rosterRes = await database.query(
       `SELECT p.*, r.position as slot
        FROM rosters r
        JOIN players p ON p.id = r.player_id
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     const bench = roster.filter((r: any) => !starters.includes(r))
 
     // Available players in league by position with decent projections
-    const availableRes = await neonServerless.query(
+    const availableRes = await database.query(
       `SELECT p.*
          FROM players p
          WHERE p.active = true

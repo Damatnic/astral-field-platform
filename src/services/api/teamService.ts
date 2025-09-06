@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate, Database } from '@/types/database'
 
 type Team = Database['public']['Tables']['teams']['Row']
@@ -43,7 +43,7 @@ class TeamService {
 
   async getUserTeam(userId: string, leagueId: string): Promise<TeamResponse> {
     try {
-      const result = await neonServerless.selectSingle('teams', {
+      const result = await database.selectSingle('teams', {
         eq: { user_id: userId, league_id: leagueId }
       })
 
@@ -59,7 +59,7 @@ class TeamService {
   async getTeamLineup(teamId: string, week: number): Promise<LineupResponse> {
     try {
       // Get lineup entries
-      const lineupResult = await neonServerless.select('lineup_entries', {
+      const lineupResult = await database.select('lineup_entries', {
         where: { team_id: teamId, week: week },
         order: { column: 'position_slot', ascending: true }
       })
@@ -78,7 +78,7 @@ class TeamService {
   async setLineup(teamId: string, week: number, lineup: RosterPlayer[]): Promise<{ error: string | null }> {
     try {
       // First, delete existing lineup entries for this week
-      const deleteResult = await neonServerless.delete('lineup_entries', {
+      const deleteResult = await database.delete('lineup_entries', {
         team_id: teamId,
         week: week
       })
@@ -94,7 +94,7 @@ class TeamService {
         points_scored: null,
       }))
 
-      const insertResult = await neonServerless.insert('lineup_entries', lineupEntries)
+      const insertResult = await database.insert('lineup_entries', lineupEntries)
 
       if (insertResult.error) throw new Error(insertResult.error)
 
@@ -113,7 +113,7 @@ class TeamService {
   ): Promise<{ error: string | null }> {
     try {
       // Check if position slot is already filled
-      const existingResult = await neonServerless.selectSingle('lineup_entries', {
+      const existingResult = await database.selectSingle('lineup_entries', {
         eq: {
           team_id: teamId,
           week: week,
@@ -128,7 +128,7 @@ class TeamService {
 
       if (existingResult.data) {
         // Update existing entry
-        const updateResult = await neonServerless.update(
+        const updateResult = await database.update(
           'lineup_entries',
           { player_id: playerId },
           { id: existingResult.data.id }
@@ -137,7 +137,7 @@ class TeamService {
         if (updateResult.error) throw new Error(updateResult.error)
       } else {
         // Insert new entry
-        const insertResult = await neonServerless.insert('lineup_entries', {
+        const insertResult = await database.insert('lineup_entries', {
           team_id: teamId,
           week: week,
           player_id: playerId,
@@ -160,7 +160,7 @@ class TeamService {
     positionSlot: string
   ): Promise<{ error: string | null }> {
     try {
-      const deleteResult = await neonServerless.delete('lineup_entries', {
+      const deleteResult = await database.delete('lineup_entries', {
         team_id: teamId,
         week: week,
         position_slot: positionSlot
@@ -188,7 +188,7 @@ class TeamService {
 
   async calculateTeamPoints(teamId: string, week: number): Promise<{ points: number; error: string | null }> {
     try {
-      const lineupResult = await neonServerless.select('lineup_entries', {
+      const lineupResult = await database.select('lineup_entries', {
         where: {
           team_id: teamId,
           week: week
@@ -210,7 +210,7 @@ class TeamService {
 
   async updateTeamSettings(teamId: string, updates: Partial<Team>): Promise<TeamResponse> {
     try {
-      const updateResult = await neonServerless.update(
+      const updateResult = await database.update(
         'teams',
         updates,
         { id: teamId }
@@ -219,7 +219,7 @@ class TeamService {
       if (updateResult.error) throw new Error(updateResult.error)
 
       // Get the updated team data
-      const teamResult = await neonServerless.selectSingle('teams', {
+      const teamResult = await database.selectSingle('teams', {
         eq: { id: teamId }
       })
 

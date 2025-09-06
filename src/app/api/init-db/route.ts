@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 export async function POST() {
   try {
@@ -8,7 +8,7 @@ export async function POST() {
     // CRITICAL FIX: Force drop and recreate rosters table to ensure it exists in current database
     console.log('🗑️ Dropping existing rosters table if it exists...')
     const dropRostersTable = `DROP TABLE IF EXISTS rosters CASCADE;`
-    const dropResult = await neonServerless.query(dropRostersTable)
+    const dropResult = await database.query(dropRostersTable)
     if (dropResult.error) {
       console.warn('Drop table warning:', dropResult.error)
     }
@@ -29,7 +29,7 @@ export async function POST() {
       );
     `
 
-    const result = await neonServerless.query(createRostersTable)
+    const result = await database.query(createRostersTable)
     if (result.error) {
       throw new Error(result.error)
     }
@@ -40,7 +40,7 @@ export async function POST() {
       CREATE INDEX IF NOT EXISTS idx_rosters_player_id ON rosters(player_id);
     `
 
-    const indexResult = await neonServerless.query(createIndex)
+    const indexResult = await database.query(createIndex)
     if (indexResult.error) {
       console.warn('Index creation warning:', indexResult.error)
     }
@@ -75,7 +75,7 @@ export async function GET() {
       ORDER BY table_name;
     `
     
-    const tablesResult = await neonServerless.query(tablesQuery)
+    const tablesResult = await database.query(tablesQuery)
 
     // Check rosters table specifically
     const rostersQuery = `
@@ -85,14 +85,14 @@ export async function GET() {
       ORDER BY ordinal_position;
     `
     
-    const rostersResult = await neonServerless.query(rostersQuery)
+    const rostersResult = await database.query(rostersQuery)
     
     // Check if rosters table exists by trying to select from it
     let rostersExists = false
     let rostersTestError = null
     
     try {
-      const testResult = await neonServerless.query('SELECT COUNT(*) FROM rosters LIMIT 1')
+      const testResult = await database.query('SELECT COUNT(*) FROM rosters LIMIT 1')
       rostersExists = !testResult.error
       if (testResult.error) {
         rostersTestError = testResult.error
@@ -102,9 +102,9 @@ export async function GET() {
     }
 
     // Check counts
-    const usersResult = await neonServerless.query('SELECT COUNT(*) as count FROM users')
-    const teamsResult = await neonServerless.query('SELECT COUNT(*) as count FROM teams')
-    const playersResult = await neonServerless.query('SELECT COUNT(*) as count FROM players')
+    const usersResult = await database.query('SELECT COUNT(*) as count FROM users')
+    const teamsResult = await database.query('SELECT COUNT(*) as count FROM teams')
+    const playersResult = await database.query('SELECT COUNT(*) as count FROM players')
 
     return NextResponse.json({
       success: true,

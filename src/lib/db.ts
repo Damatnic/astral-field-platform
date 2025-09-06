@@ -35,4 +35,7 @@ export async function executeQuery(sql: string, params?: any[]): Promise<any> {
   return await db.query(sql, params);
 }
 
+// Legacy compatibility exports
+export const neonDb = getDatabase;
+
 export default getDatabase;

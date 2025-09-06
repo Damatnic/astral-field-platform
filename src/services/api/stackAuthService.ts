@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert } from '@/types/database'
 import bcrypt from 'bcryptjs'
 
@@ -52,7 +52,7 @@ export class StackAuthService {
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
       // Check if user already exists
-      const existingUser = await neonServerless.selectSingle('users', {
+      const existingUser = await database.selectSingle('users', {
         where: { email: data.email }
       })
 
@@ -61,7 +61,7 @@ export class StackAuthService {
       }
 
       // Check if username is taken
-      const existingUsername = await neonServerless.selectSingle('users', {
+      const existingUsername = await database.selectSingle('users', {
         where: { username: data.username }
       })
 
@@ -80,7 +80,7 @@ export class StackAuthService {
         stack_user_id: null, // Will be set when Stack Auth is fully integrated
       }
 
-      const result = await neonServerless.insert('users', userInsert)
+      const result = await database.insert('users', userInsert)
       
       if (result.error || !result.data) {
         throw result.error || new Error('Failed to create user')
@@ -119,7 +119,7 @@ export class StackAuthService {
 
   async updateProfile(userId: string, updates: Partial<User>): Promise<AuthResponse> {
     try {
-      const result = await neonServerless.update('users', updates, { id: userId })
+      const result = await database.update('users', updates, { id: userId })
       
       if (result.error) throw result.error
 
@@ -157,12 +157,12 @@ export class StackAuthService {
 
     for (const user of testUsers) {
       try {
-        const existing = await neonServerless.selectSingle('users', {
+        const existing = await database.selectSingle('users', {
           where: { email: user.email }
         })
 
         if (!existing.data) {
-          await neonServerless.insert('users', {
+          await database.insert('users', {
             email: user.email,
             username: user.username,
             stack_user_id: null

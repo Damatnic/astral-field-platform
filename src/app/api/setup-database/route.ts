@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 export async function POST() {
   try {
@@ -68,23 +68,23 @@ export async function POST() {
     `
 
     // Enable UUID extension
-    await neonServerless.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
+    await database.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     
     // Create tables
-    await neonServerless.query(createUsersTable)
-    await neonServerless.query(createPlayersTable)
-    await neonServerless.query(createLeaguesTable)
-    await neonServerless.query(createTeamsTable)
+    await database.query(createUsersTable)
+    await database.query(createPlayersTable)
+    await database.query(createLeaguesTable)
+    await database.query(createTeamsTable)
 
     // Add password_hash column if it doesn't exist
     try {
-      await neonServerless.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT')
+      await database.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT')
     } catch (error) {
       console.log('password_hash column may already exist:', error)
     }
 
     // Get table count to verify
-    const tablesResult = await neonServerless.query(`
+    const tablesResult = await database.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public'
@@ -109,15 +109,15 @@ export async function POST() {
 export async function GET() {
   try {
     // Check database status
-    const tablesResult = await neonServerless.query(`
+    const tablesResult = await database.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public'
       ORDER BY table_name
     `)
 
-    const usersCount = await neonServerless.query('SELECT COUNT(*) FROM users')
-    const playersCount = await neonServerless.query('SELECT COUNT(*) FROM players')
+    const usersCount = await database.query('SELECT COUNT(*) FROM users')
+    const playersCount = await database.query('SELECT COUNT(*) FROM players')
 
     return NextResponse.json({
       success: true,

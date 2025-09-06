@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
 import { AIRouterService } from './aiRouterService'
 import { PredictionEngine } from './predictionEngine'

@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
 // Debug endpoint to test login functionality
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     console.log('Debug login attempt for:', email)
 
     // Get user from database
-    const result = await neonServerless.selectSingle('users', {
+    const result = await database.selectSingle('users', {
       where: { email }
     })
 

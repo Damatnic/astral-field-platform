@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database'
 
 export type Team = Tables<'teams'>
@@ -61,7 +61,7 @@ export class RosterService {
   async getTeamRoster(teamId: string, week?: number): Promise<RosterResponse> {
     try {
       // Get team info
-      const teamResult = await neonServerless.selectSingle('teams', {
+      const teamResult = await database.selectSingle('teams', {
         eq: { id: teamId }
       })
 
@@ -71,7 +71,7 @@ export class RosterService {
       const team = teamResult.data
 
       // Get roster entries with player details
-      const rosterResult = await neonServerless.selectWithJoins('rosters', `
+      const rosterResult = await database.selectWithJoins('rosters', `
         *,
         players!inner (
           *,
@@ -129,7 +129,7 @@ export class RosterService {
   async addPlayerToRoster(teamId: string, playerId: string, positionSlot = 'BENCH'): Promise<{ error: string | null }> {
     try {
       // Check if player is already on roster
-      const existingResult = await neonServerless.selectSingle('rosters', {
+      const existingResult = await database.selectSingle('rosters', {
         eq: { team_id: teamId, player_id: playerId }
       })
 
@@ -138,7 +138,7 @@ export class RosterService {
       }
 
       // Add to roster
-      const result = await neonServerless.insert('rosters', {
+      const result = await database.insert('rosters', {
         team_id: teamId,
         player_id: playerId,
         position_slot: positionSlot,
@@ -156,7 +156,7 @@ export class RosterService {
 
   async removePlayerFromRoster(teamId: string, playerId: string): Promise<{ error: string | null }> {
     try {
-      const result = await neonServerless.delete('rosters', {
+      const result = await database.delete('rosters', {
         team_id: teamId,
         player_id: playerId
       })
@@ -181,7 +181,7 @@ export class RosterService {
       const roster = rosterResult.roster
 
       // Get current lineup for this week
-      const lineupResult = await neonServerless.select('lineup_entries', {
+      const lineupResult = await database.select('lineup_entries', {
         eq: { team_id: teamId, week }
       })
 
@@ -247,7 +247,7 @@ export class RosterService {
   async setLineup(teamId: string, week: number, lineup: Record<string, string | null>): Promise<{ error: string | null }> {
     try {
       // Clear existing lineup for this week
-      await neonServerless.delete('lineup_entries', {
+      await database.delete('lineup_entries', {
         team_id: teamId,
         week
       })
@@ -267,7 +267,7 @@ export class RosterService {
 
       // Insert all entries
       for (const entry of entries) {
-        const result = await neonServerless.insert('lineup_entries', entry)
+        const result = await database.insert('lineup_entries', entry)
         if (result.error) throw result.error
       }
 

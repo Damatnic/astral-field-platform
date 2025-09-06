@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 async function ensureColumns() {
-  await neonServerless.query(
+  await database.query(
     `ALTER TABLE leagues
        ADD COLUMN IF NOT EXISTS live_polling_enabled BOOLEAN DEFAULT false,
        ADD COLUMN IF NOT EXISTS live_polling_until TIMESTAMPTZ NULL,
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     if (!leagueId) return NextResponse.json({ error: 'leagueId required' }, { status: 400 })
 
     await ensureColumns()
-    const res = await neonServerless.selectSingle('leagues', { where: { id: leagueId } })
+    const res = await database.selectSingle('leagues', { where: { id: leagueId } })
     if (res.error || !res.data) return NextResponse.json({ error: 'League not found' }, { status: 404 })
 
     const enabled = !!(res.data as any).live_polling_enabled
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
 
-    const update = await neonServerless.update('leagues', updatePayload, { id: leagueId })
+    const update = await database.update('leagues', updatePayload, { id: leagueId })
 
     if (update.error) return NextResponse.json({ error: update.error }, { status: 500 })
     return NextResponse.json({ leagueId, ...updatePayload })

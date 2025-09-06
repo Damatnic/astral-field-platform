@@ -247,7 +247,7 @@ export class NeonServerless {
 }
 
 // Export singleton instance
-export const neonServerless = new NeonServerless()
+export const database = new NeonServerless()
 
 // Export for direct SQL usage (recommended for simple queries)
 export { sql as neonSql }

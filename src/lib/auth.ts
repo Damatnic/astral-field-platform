@@ -56,8 +56,12 @@ export async function validateApiKey(apiKey: string): Promise<boolean> {
   return apiKey === process.env.API_SECRET_KEY;
 }
 
+// Legacy compatibility export
+export const verifyAuth = getCurrentUser;
+
 export default {
   getCurrentUser,
   requireAuth,
-  validateApiKey
+  validateApiKey,
+  verifyAuth
 };

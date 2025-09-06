@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database'
 import type { Database } from '@/types/database'
 
@@ -58,7 +58,7 @@ class DraftService {
   async createDraft(leagueId: string, settings: DraftSettings): Promise<{ draftId: string | null; error: string | null }> {
     try {
       // Get teams in the league to create draft order
-      const teamsResult = await neonServerless.select('teams', {
+      const teamsResult = await database.select('teams', {
         eq: { league_id: leagueId },
         order: { column: 'draft_position', ascending: true }
       })
@@ -150,7 +150,7 @@ class DraftService {
       }
 
       // Check if player is already drafted
-      const existingPickResult = await neonServerless.selectSingle('draft_picks', {
+      const existingPickResult = await database.selectSingle('draft_picks', {
         eq: { league_id: leagueId, player_id: playerId }
       })
 
@@ -171,7 +171,7 @@ class DraftService {
         overall_pick: overallPick,
       }
 
-      const insertResult = await neonServerless.insert('draft_picks', draftPickInsert)
+      const insertResult = await database.insert('draft_picks', draftPickInsert)
 
       if (insertResult.error || !insertResult.data) {
         throw new Error(insertResult.error || 'Failed to create draft pick')
@@ -257,7 +257,7 @@ class DraftService {
   async getDraftPicks(leagueId: string): Promise<{ picks: DraftPickWithDetails[]; error: string | null }> {
     try {
       // Get basic draft picks
-      const picksResult = await neonServerless.select('draft_picks', {
+      const picksResult = await database.select('draft_picks', {
         eq: { league_id: leagueId },
         order: { column: 'overall_pick', ascending: true }
       })
@@ -279,14 +279,14 @@ class DraftService {
   async getAvailablePlayers(leagueId: string): Promise<{ players: DraftBoardPlayer[]; error: string | null }> {
     try {
       // Get all players
-      const playersResult = await neonServerless.select('players', {
+      const playersResult = await database.select('players', {
         order: { column: 'name', ascending: true }
       })
 
       if (playersResult.error) throw new Error(playersResult.error)
 
       // Get drafted players
-      const draftedResult = await neonServerless.select('draft_picks', {
+      const draftedResult = await database.select('draft_picks', {
         eq: { league_id: leagueId }
       })
 

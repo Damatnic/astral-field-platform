@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate, Database } from '@/types/database'
 
 type Trade = Database['public']['Tables']['trades']['Row']
@@ -65,7 +65,7 @@ class TradeService {
   async createTrade(leagueId: string, data: CreateTradeData): Promise<{ success: boolean; tradeId?: string; error?: string }> {
     try {
       // Validate teams are in the same league
-      const teamsResult = await neonServerless.select('teams', {
+      const teamsResult = await database.select('teams', {
         where: { in: { id: [data.initiatorTeamId, data.receiverTeamId] } }
       })
       if (teamsResult.error) throw new Error(teamsResult.error)
@@ -76,7 +76,7 @@ class TradeService {
       }
 
       // Validate player ownership
-      const ownershipResult = await neonServerless.select('rosters', {
+      const ownershipResult = await database.select('rosters', {
         where: { in: { player_id: [...data.offeredPlayers, ...data.requestedPlayers] } }
       })
       if (ownershipResult.error) throw new Error(ownershipResult.error)
@@ -107,7 +107,7 @@ class TradeService {
         expires_at: expiresAt.toISOString(),
       }
 
-      const tradeResult = await neonServerless.insert('trades', tradeInsert)
+      const tradeResult = await database.insert('trades', tradeInsert)
       if (tradeResult.error || !tradeResult.data) throw new Error(tradeResult.error || 'Failed to create trade')
       const trade = tradeResult.data
 
@@ -127,7 +127,7 @@ class TradeService {
         }))
       ]
 
-      const itemsResult = await neonServerless.insert('trade_items', tradeItems)
+      const itemsResult = await database.insert('trade_items', tradeItems)
       if (itemsResult.error) throw new Error(itemsResult.error)
 
       return { success: true, tradeId: trade.id }
@@ -143,7 +143,7 @@ class TradeService {
   async getTeamTrades(teamId: string): Promise<{ trades: TradeProposal[]; error?: string }> {
     try {
       // Simplified query - get basic trade data first
-      const tradesResult = await neonServerless.select('trades', {
+      const tradesResult = await database.select('trades', {
         where: { 
           or: [
             { eq: { proposing_team_id: teamId } },
@@ -210,7 +210,7 @@ class TradeService {
       }
 
       // Update trade status
-      const updateResult = await neonServerless.update('trades', 
+      const updateResult = await database.update('trades', 
         { 
           status: response,
           processed_at: new Date().toISOString(),
@@ -232,7 +232,7 @@ class TradeService {
   private async executeTrade(tradeId: string): Promise<boolean> {
     try {
       // Get trade items
-      const itemsResult = await neonServerless.select('trade_items', {
+      const itemsResult = await database.select('trade_items', {
         where: { eq: { trade_id: tradeId } }
       })
       if (itemsResult.error || !itemsResult.data) return false
@@ -240,7 +240,7 @@ class TradeService {
 
       // Update roster_players for each trade item
       for (const item of tradeItems) {
-        const updateResult = await neonServerless.update('rosters',
+        const updateResult = await database.update('rosters',
           { team_id: item.to_team_id },
           { player_id: item.player_id, team_id: item.from_team_id }
         )
@@ -263,7 +263,7 @@ class TradeService {
   ): Promise<{ analysis: TradeAnalysis; error?: string }> {
     try {
       // Get player data (simplified - no joins for now)
-      const playersResult = await neonServerless.select('players', {
+      const playersResult = await database.select('players', {
         where: { in: { id: [...offeredPlayers, ...requestedPlayers] } }
       })
       if (playersResult.error) throw new Error(playersResult.error)
@@ -363,7 +363,7 @@ class TradeService {
 
   async cancelTrade(tradeId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const updateResult = await neonServerless.update('trades',
+      const updateResult = await database.update('trades',
         { status: 'cancelled' },
         { eq: { id: tradeId } }
       )

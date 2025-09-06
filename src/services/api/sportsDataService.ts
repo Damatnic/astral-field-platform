@@ -285,7 +285,7 @@ class SportsDataService {
 
       for (const p of projections) {
         try {
-          const playerIdRes = await (await import('@/lib/neon-serverless')).neonServerless.selectSingle('players', {
+          const playerIdRes = await (await import('@/lib/database')).database.selectSingle('players', {
             where: { external_id: String(p.PlayerID) }
           })
           if (!playerIdRes.data) { failed++; continue }
@@ -331,7 +331,7 @@ class SportsDataService {
 
       for (const s of stats) {
         try {
-          const playerIdRes = await (await import('@/lib/neon-serverless')).neonServerless.selectSingle('players', {
+          const playerIdRes = await (await import('@/lib/database')).database.selectSingle('players', {
             where: { external_id: String(s.PlayerID) }
           })
           if (!playerIdRes.data) { failed++; continue }

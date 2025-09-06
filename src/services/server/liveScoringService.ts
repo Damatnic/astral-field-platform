@@ -1,4 +1,4 @@
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import sportsDataService from '@/services/api/sportsDataService'
 import playerService from '@/services/api/playerService'
 
@@ -166,14 +166,14 @@ class LiveScoringServerService {
 
   async getLeagueLiveScoring(leagueId: string, week: number): Promise<LeagueLiveScoring> {
     // Fetch teams and lineups from Neon
-    const teamsRes = await neonServerless.select('teams', { where: { league_id: leagueId } })
+    const teamsRes = await database.select('teams', { where: { league_id: leagueId } })
     const teams = teamsRes.data || []
 
     const gameStatus = this.getGameStatus()
     const leagueTeams: TeamLiveScore[] = []
 
     for (const team of teams) {
-      const lineupRes = await neonServerless.select('lineup_entries', { where: { team_id: team.id, week } })
+      const lineupRes = await database.select('lineup_entries', { where: { team_id: team.id, week } })
       const starters: PlayerLiveStats[] = []
       const bench: PlayerLiveStats[] = []
       let totalPoints = 0
@@ -181,7 +181,7 @@ class LiveScoringServerService {
 
       if (Array.isArray(lineupRes.data)) {
         for (const entry of lineupRes.data) {
-          const playerRes = await neonServerless.selectSingle('players', { where: { id: entry.player_id } })
+          const playerRes = await database.selectSingle('players', { where: { id: entry.player_id } })
           const p = playerRes.data
           if (!p) continue
 
@@ -294,20 +294,20 @@ class LiveScoringServerService {
     // Resolve league PPR if not provided
     let leaguePpr = typeof ppr === 'number' ? ppr : 0.5
     try {
-      const league = await neonServerless.selectSingle('leagues', { where: { id: leagueId } })
+      const league = await database.selectSingle('leagues', { where: { id: leagueId } })
       if (league.data && league.data.scoring_ppr != null) {
         leaguePpr = Number(league.data.scoring_ppr)
       }
     } catch {}
 
     // Fetch lineup players with external IDs
-    const lineups = await neonServerless.select('lineup_entries', { where: { week } })
+    const lineups = await database.select('lineup_entries', { where: { week } })
     const teamIds = new Set<string>()
     for (const le of (lineups.data || [])) teamIds.add(le.team_id)
     if (!teamIds.size) return { updated: 0, skipped: 0, ppr: leaguePpr }
 
     // Limit to teams in this league
-    const teamsRes = await neonServerless.select('teams', { where: { league_id: leagueId } })
+    const teamsRes = await database.select('teams', { where: { league_id: leagueId } })
     const leagueTeamIds = new Set((teamsRes.data || []).map((t: any) => t.id))
     const lineupPlayerIds = new Set((lineups.data || [])
       .filter((le: any) => leagueTeamIds.has(le.team_id))
@@ -316,7 +316,7 @@ class LiveScoringServerService {
     if (!lineupPlayerIds.size) return { updated: 0, skipped: 0, ppr: leaguePpr }
 
     // Map player_id -> external_id
-    const playersRes = await neonServerless.select('players')
+    const playersRes = await database.select('players')
     const pMap = new Map<string, { id: string; external_id: string | null; position: string }>()
     for (const p of (playersRes.data || [])) {
       if (lineupPlayerIds.has(p.id)) pMap.set(p.id, { id: p.id, external_id: p.external_id, position: p.position })

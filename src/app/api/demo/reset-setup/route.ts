@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
 const DEMO_USERS = [
@@ -43,40 +43,40 @@ export async function POST(request: NextRequest) {
     // 1) Hard reset demo league data
     const demoEmails = DEMO_USERS.map(u => u.email)
     // Get demo user IDs if exist
-    const usersRes = await neonServerless.query(`SELECT id FROM users WHERE email = ANY($1)`, [demoEmails]) as any
+    const usersRes = await database.query(`SELECT id FROM users WHERE email = ANY($1)`, [demoEmails]) as any
     const userIds: string[] = (Array.isArray(usersRes?.data) ? usersRes.data : usersRes).map((r: any) => r.id)
 
     // Find teams for those users
-    const teamsRes = await neonServerless.query(`SELECT id, league_id FROM teams WHERE user_id = ANY($1)`, [userIds]) as any
+    const teamsRes = await database.query(`SELECT id, league_id FROM teams WHERE user_id = ANY($1)`, [userIds]) as any
     const teamRows = Array.isArray(teamsRes?.data) ? teamsRes.data : teamsRes
     const leagueIds = Array.from(new Set(teamRows.map((t: any) => t.league_id)))
 
     // Also include any demo league by name
-    const leagueByName = await neonServerless.query(`SELECT id FROM leagues WHERE name = 'Astral Field Championship League'`) as any
+    const leagueByName = await database.query(`SELECT id FROM leagues WHERE name = 'Astral Field Championship League'`) as any
     for (const row of (Array.isArray(leagueByName?.data) ? leagueByName.data : leagueByName)) {
       if (!leagueIds.includes(row.id)) leagueIds.push(row.id)
     }
 
     // Delete dependent records
     for (const lid of leagueIds) {
-      await neonServerless.query(`DELETE FROM rosters USING teams WHERE rosters.team_id = teams.id AND teams.league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM lineup_entries USING teams WHERE lineup_entries.team_id = teams.id AND teams.league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM draft_picks WHERE league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM waiver_claims USING teams WHERE waiver_claims.team_id = teams.id AND teams.league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM trades USING teams t1 WHERE trades.proposing_team_id = t1.id AND t1.league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM trades USING teams t2 WHERE trades.receiving_team_id = t2.id AND t2.league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM teams WHERE league_id = $1`, [lid])
-      await neonServerless.query(`DELETE FROM leagues WHERE id = $1`, [lid])
+      await database.query(`DELETE FROM rosters USING teams WHERE rosters.team_id = teams.id AND teams.league_id = $1`, [lid])
+      await database.query(`DELETE FROM lineup_entries USING teams WHERE lineup_entries.team_id = teams.id AND teams.league_id = $1`, [lid])
+      await database.query(`DELETE FROM draft_picks WHERE league_id = $1`, [lid])
+      await database.query(`DELETE FROM waiver_claims USING teams WHERE waiver_claims.team_id = teams.id AND teams.league_id = $1`, [lid])
+      await database.query(`DELETE FROM trades USING teams t1 WHERE trades.proposing_team_id = t1.id AND t1.league_id = $1`, [lid])
+      await database.query(`DELETE FROM trades USING teams t2 WHERE trades.receiving_team_id = t2.id AND t2.league_id = $1`, [lid])
+      await database.query(`DELETE FROM teams WHERE league_id = $1`, [lid])
+      await database.query(`DELETE FROM leagues WHERE id = $1`, [lid])
     }
 
     // Remove demo users to recreate cleanly
-    await neonServerless.query(`DELETE FROM users WHERE email = ANY($1)`, [demoEmails])
+    await database.query(`DELETE FROM users WHERE email = ANY($1)`, [demoEmails])
 
     // 2) Recreate demo users with secure password hashes
     const createdUsers: Array<{ id: string; email: string; username: string }> = []
     for (const u of DEMO_USERS) {
       const hash = await bcrypt.hash('astral2025', 10)
-      const res = await neonServerless.insert('users', {
+      const res = await database.insert('users', {
         email: u.email,
         username: u.username,
         password_hash: hash,
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     // 3) Create league and 10 teams
     const commissionerId = createdUsers.find(u => u.email === 'nicholas.damato@astralfield.com')?.id || createdUsers[0].id
-    const leagueRes = await neonServerless.insert('leagues', {
+    const leagueRes = await database.insert('leagues', {
       name: 'Astral Field Championship League',
       commissioner_id: commissionerId,
       draft_date: new Date().toISOString(),
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     const teams: any[] = []
     for (let i = 0; i < DEMO_USERS.length; i++) {
       const user = createdUsers.find(u => u.email === DEMO_USERS[i].email)!
-      const team = await neonServerless.insert('teams', {
+      const team = await database.insert('teams', {
         league_id: leagueId,
         user_id: user.id,
         team_name: DEMO_USERS[i].teamName,
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4) Auto-draft: assemble believable but strong roster for Nicholas, distribute others
-    const playersRes = await neonServerless.select('players', { order: { column: 'name' } })
+    const playersRes = await database.select('players', { order: { column: 'name' } })
     let players = playersRes.data || []
 
     // Fallback: seed minimal players if pool is too small
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
         const existing = players.filter(p => (p.position || '').toUpperCase() === pos)
         const toCreate = Math.max(0, count - existing.length)
         for (let i = 1; i <= toCreate; i++) {
-          const mock = await neonServerless.insert('players', {
+          const mock = await database.insert('players', {
             name: `${pos} Mock ${i}`,
             position: pos,
             nfl_team: ['KC','BUF','SF','DAL','PHI','MIA','CIN','LAC'][i % 8],
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
         }
       }
       if (created.length) {
-        const refreshed = await neonServerless.select('players', { order: { column: 'name' } })
+        const refreshed = await database.select('players', { order: { column: 'name' } })
         players = refreshed.data || players
       }
     }
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
 
     const pickedIds = new Set(nicholasPicks.map(p => p.id))
     for (const p of nicholasPicks) {
-      await neonServerless.query('INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)', [nicholasTeam.id, p.id, 'STARTER'])
+      await database.query('INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)', [nicholasTeam.id, p.id, 'STARTER'])
     }
 
     // Fill other teams with next best available by position mix
@@ -204,7 +204,7 @@ export async function POST(request: NextRequest) {
         }
         if (pick) {
           pickedIds.add(pick.id)
-          await neonServerless.query('INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)', [team.id, pick.id, slot])
+          await database.query('INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)', [team.id, pick.id, slot])
         }
       }
     }

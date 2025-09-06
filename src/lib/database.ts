@@ -248,4 +248,8 @@ export async function getDatabaseHealth(): Promise<{ status: 'healthy' | 'unheal
 export const database = DatabaseManager.getInstance();
 export const migrationManager = new MigrationManager();
 
+// Legacy compatibility exports
+export const neonServerless = database;
+export const neonDb = database;
+
 export default database;

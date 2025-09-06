@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import sportsDataService from '@/services/api/sportsDataService'
 import liveScoringServerService from '@/services/server/liveScoringService'
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Find leagues with live window active
     const nowIso = new Date().toISOString()
-    const res = await neonServerless.query(
+    const res = await database.query(
       `SELECT id, scoring_ppr FROM leagues WHERE live_polling_enabled = true AND (live_polling_until IS NULL OR live_polling_until > $1)`,
       [nowIso]
     ) as any

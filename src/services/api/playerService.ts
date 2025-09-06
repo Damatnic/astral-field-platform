@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database'
 
 export type Player = Tables<'players'>
@@ -57,7 +57,7 @@ export interface PlayerWithProjections {
 export class PlayerService {
   async getPlayer(playerId: string): Promise<PlayerResponse> {
     try {
-      const result = await neonServerless.selectSingle('players', {
+      const result = await database.selectSingle('players', {
         eq: { id: playerId }
       })
 
@@ -72,7 +72,7 @@ export class PlayerService {
 
   async getPlayerWithDetails(playerId: string): Promise<{ player: PlayerWithProjections | null; error: string | null }> {
     try {
-      const result = await neonServerless.selectWithJoins('players', `
+      const result = await database.selectWithJoins('players', `
         *,
         player_projections (*),
         player_stats (*)
@@ -116,7 +116,7 @@ export class PlayerService {
       // Add ordering by name
       queryOptions.order = { column: 'name', ascending: true }
 
-      const result = await neonServerless.select('players', queryOptions)
+      const result = await database.select('players', queryOptions)
 
       if (result.error) throw result.error
 
@@ -141,7 +141,7 @@ export class PlayerService {
 
   async createPlayer(playerData: PlayerInsert): Promise<PlayerResponse> {
     try {
-      const result = await neonServerless.insert('players', playerData)
+      const result = await database.insert('players', playerData)
       
       if (result.error) throw result.error
 
@@ -154,7 +154,7 @@ export class PlayerService {
 
   async updatePlayer(playerId: string, updates: PlayerUpdate): Promise<PlayerResponse> {
     try {
-      const result = await neonServerless.update('players', updates, { id: playerId })
+      const result = await database.update('players', updates, { id: playerId })
       
       if (result.error) throw result.error
 
@@ -168,7 +168,7 @@ export class PlayerService {
   async updatePlayerStats(playerId: string, stats: PlayerStats): Promise<PlayerResponse> {
     try {
       // First insert the stats
-      const statsResult = await neonServerless.insert('player_stats', {
+      const statsResult = await database.insert('player_stats', {
         player_id: playerId,
         season_year: stats.season,
         week: stats.week,
@@ -179,7 +179,7 @@ export class PlayerService {
       if (statsResult.error) throw statsResult.error
 
       // Then update the player's stats JSON field
-      const playerResult = await neonServerless.update('players', {
+      const playerResult = await database.update('players', {
         stats: stats as any,
         updated_at: new Date().toISOString(),
       }, { id: playerId })
@@ -196,7 +196,7 @@ export class PlayerService {
   async updatePlayerProjections(playerId: string, projections: PlayerProjections): Promise<PlayerResponse> {
     try {
       // First insert/update the projections
-      const projectionsResult = await neonServerless.insert('player_projections', {
+      const projectionsResult = await database.insert('player_projections', {
         player_id: playerId,
         season_year: projections.season,
         week: projections.week || null,
@@ -209,7 +209,7 @@ export class PlayerService {
       if (projectionsResult.error) throw projectionsResult.error
 
       // Then update the player's projections JSON field
-      const playerResult = await neonServerless.update('players', {
+      const playerResult = await database.update('players', {
         projections: projections as any,
         updated_at: new Date().toISOString(),
       }, { id: playerId })
@@ -233,7 +233,7 @@ export class PlayerService {
 
   async getTopPlayers(limit = 100): Promise<PlayersResponse> {
     try {
-      const result = await neonServerless.selectWithJoins('players', `
+      const result = await database.selectWithJoins('players', `
         *,
         player_projections!inner(fantasy_points)
       `, {
@@ -275,13 +275,13 @@ export class PlayerService {
           }
 
           // Check if player exists (must match unique constraint: name, nfl_team, position)
-          const existingResult = await neonServerless.selectSingle('players', {
+          const existingResult = await database.selectSingle('players', {
             eq: { name: playerData.name, nfl_team: playerData.nfl_team, position: playerData.position }
           })
 
           if (existingResult.data) {
             // Update existing player
-            await neonServerless.update('players', {
+            await database.update('players', {
               nfl_team: playerData.nfl_team,
               bye_week: playerData.bye_week || 0,
               injury_status: playerData.injury_status || null,

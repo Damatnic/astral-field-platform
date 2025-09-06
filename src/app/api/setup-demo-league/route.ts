@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 const SPORTSDATA_API_KEY = process.env.NEXT_PUBLIC_SPORTSDATA_API_KEY
 
@@ -21,7 +21,7 @@ export async function POST() {
     console.log('🏈 Setting up demo fantasy league...')
 
     // Step 1: Get all users from database
-    const usersResult = await neonServerless.select('users', {})
+    const usersResult = await database.select('users', {})
     if (usersResult.error || !usersResult.data) {
       throw new Error('Failed to fetch users from database')
     }
@@ -68,7 +68,7 @@ export async function POST() {
       }
     }
 
-    const leagueResult = await neonServerless.insert('leagues', leagueData)
+    const leagueResult = await database.insert('leagues', leagueData)
     if (leagueResult.error || !leagueResult.data) {
       throw new Error('Failed to create league: ' + leagueResult.error)
     }
@@ -95,7 +95,7 @@ export async function POST() {
         waiver_priority: i + 1
       }
 
-      const teamResult = await neonServerless.insert('teams', teamData)
+      const teamResult = await database.insert('teams', teamData)
       if (teamResult.error || !teamResult.data) {
         console.error(`❌ Failed to create team for ${user.username}:`, teamResult.error)
         continue
@@ -111,7 +111,7 @@ export async function POST() {
     let players = []
     
     // Get all existing players first
-    const existingPlayersResult = await neonServerless.select('players', {})
+    const existingPlayersResult = await database.select('players', {})
     
     if (existingPlayersResult.data && existingPlayersResult.data.length > 0) {
       players = existingPlayersResult.data
@@ -144,7 +144,7 @@ export async function POST() {
           projections: {}
         }
 
-        const playerResult = await neonServerless.insert('players', playerData)
+        const playerResult = await database.insert('players', playerData)
         if (playerResult.data) {
           players.push(playerResult.data)
         }
@@ -174,7 +174,7 @@ export async function POST() {
 
     for (const player of nicholasRoster) {
       if (!nicholasTeam || !player) continue;
-      const rosterResult = await neonServerless.query(
+      const rosterResult = await database.query(
         'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
         [nicholasTeam.id, player.id, 'STARTER']
       )
@@ -194,7 +194,7 @@ export async function POST() {
 
       for (const player of teamRoster) {
         if (player) {
-          const rosterResult = await neonServerless.query(
+          const rosterResult = await database.query(
             'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
             [team.id, player.id, 'STARTER']
           )

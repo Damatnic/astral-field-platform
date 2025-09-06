@@ -1,4 +1,4 @@
-import { neonDb } from '@/lib/neon-database'
+import { neonDb } from '@/lib/database'
 import { logger } from '@/lib/logger'
 import aiRouter from '../ai/aiRouterService'
 import liveMonitor from './liveGameMonitor'

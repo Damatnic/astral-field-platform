@@ -1,6 +1,6 @@
 'use client'
 
-import { neonDb } from '@/lib/neon-database'
+import { neonDb } from '@/lib/database'
 
 export type OracleQueryType = 
   | 'lineup_advice'

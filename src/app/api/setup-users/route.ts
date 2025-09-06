@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
 // API endpoint to set up demo users with password hashes
@@ -46,13 +46,13 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(user.password, 10)
         
         // Check if user already exists
-        const existingUser = await neonServerless.selectSingle('users', {
+        const existingUser = await database.selectSingle('users', {
           where: { email: user.email }
         })
         
         if (existingUser.data) {
           // Update existing user with password hash
-          const updateResult = await neonServerless.update('users', 
+          const updateResult = await database.update('users', 
             { password_hash: passwordHash }, 
             { email: user.email }
           )
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
           updatedCount++
         } else {
           // Create new user
-          const createResult = await neonServerless.insert('users', {
+          const createResult = await database.insert('users', {
             email: user.email,
             username: user.username,
             password_hash: passwordHash,
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Final verification - count total users
-    const allUsersResult = await neonServerless.select('users', {})
+    const allUsersResult = await database.select('users', {})
     const totalUsers = allUsersResult.data?.length || 0
 
     console.log(`✅ Setup complete: Created ${createdCount}, Updated ${updatedCount}, Total: ${totalUsers}`)

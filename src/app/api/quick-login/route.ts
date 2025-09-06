@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { neonServerless } from '@/lib/neon-serverless'
+import { database } from '@/lib/database'
 
 const demoUsers = [
   { name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', id: 1 },
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     // Try to find the user in database
-    const result = await neonServerless.selectSingle('users', {
+    const result = await database.selectSingle('users', {
       eq: { email: demoUser.email }
     })
 

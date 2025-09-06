@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger'
-import { neonDb } from '@/lib/neon-database'
+import { neonDb } from '@/lib/database'
 import { AIRequest, AIResponse } from './aiRouterService'
 
 export interface AILogEntry {
