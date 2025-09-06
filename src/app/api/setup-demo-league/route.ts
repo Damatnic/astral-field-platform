@@ -174,11 +174,13 @@ export async function POST() {
 
     for (const player of nicholasRoster) {
       if (!nicholasTeam || !player) continue;
-      await neonServerless.insert('rosters', {
-        team_id: nicholasTeam.id,
-        player_id: player.id,
-        position_slot: 'STARTER'
-      })
+      const rosterResult = await neonServerless.query(
+        'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
+        [nicholasTeam.id, player.id, 'STARTER']
+      )
+      if (rosterResult.error) {
+        console.error(`❌ Failed to add player ${player.name} to Nicholas team:`, rosterResult.error)
+      }
     }
 
     // Distribute remaining players randomly to other teams
@@ -192,11 +194,13 @@ export async function POST() {
 
       for (const player of teamRoster) {
         if (player) {
-          await neonServerless.insert('rosters', {
-            team_id: team.id,
-            player_id: player.id,
-            position_slot: 'STARTER'
-          })
+          const rosterResult = await neonServerless.query(
+            'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
+            [team.id, player.id, 'STARTER']
+          )
+          if (rosterResult.error) {
+            console.error(`❌ Failed to add player ${player.name} to ${team.team_name}:`, rosterResult.error)
+          }
         }
       }
     }

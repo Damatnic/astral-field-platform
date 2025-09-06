@@ -1,48 +1,16 @@
-[20:11:28.559] Running build in Washington, D.C., USA (East) – iad1
-[20:11:28.559] Build machine configuration: 4 cores, 8 GB
-[20:11:28.576] Cloning github.com/Damatnic/astral-field-platform (Branch: main, Commit: 539fa85)
-[20:11:28.702] Previous build caches not available
-[20:11:28.864] Cloning completed: 288.000ms
-[20:11:28.927] Found .vercelignore
-[20:11:28.935] Removed 18 ignored files defined in .vercelignore
-[20:11:28.935]   /__tests__/agents/draft-specialist/draft-logic.test.ts
-[20:11:28.935]   /__tests__/agents/league-systems/league-service.test.ts
-[20:11:28.935]   /__tests__/fixtures/mock-data.ts
-[20:11:28.935]   /__tests__/services/authService.test.ts
-[20:11:28.935]   /__tests__/utils/test-utils.ts
-[20:11:28.935]   /scripts/auto-draft-league.js
-[20:11:28.935]   /scripts/create-users-table.js
-[20:11:28.935]   /scripts/deploy.sh
-[20:11:28.935]   /scripts/production-build.js
-[20:11:28.936]   /scripts/progress-tracker.js
-[20:11:29.238] Running "vercel build"
-[20:11:29.679] Vercel CLI 47.0.5
-[20:11:30.172] Running "install" command: `npm ci --prefer-offline --no-audit`...
-[20:11:31.455] npm error code ERESOLVE
-[20:11:31.455] npm error ERESOLVE could not resolve
-[20:11:31.456] npm error
-[20:11:31.456] npm error While resolving: openai@5.19.1
-[20:11:31.456] npm error Found: zod@4.1.5
-[20:11:31.456] npm error node_modules/zod
-[20:11:31.456] npm error   zod@"^4.1.5" from the root project
-[20:11:31.456] npm error
-[20:11:31.456] npm error Could not resolve dependency:
-[20:11:31.456] npm error peerOptional zod@"^3.23.8" from openai@5.19.1
-[20:11:31.456] npm error node_modules/openai
-[20:11:31.457] npm error   openai@"^5.19.1" from the root project
-[20:11:31.457] npm error
-[20:11:31.457] npm error Conflicting peer dependency: zod@3.25.76
-[20:11:31.457] npm error node_modules/zod
-[20:11:31.457] npm error   peerOptional zod@"^3.23.8" from openai@5.19.1
-[20:11:31.457] npm error   node_modules/openai
-[20:11:31.457] npm error     openai@"^5.19.1" from the root project
-[20:11:31.457] npm error
-[20:11:31.457] npm error Fix the upstream dependency conflict, or retry
-[20:11:31.457] npm error this command with --force or --legacy-peer-deps
-[20:11:31.457] npm error to accept an incorrect (and potentially broken) dependency resolution.
-[20:11:31.457] npm error
-[20:11:31.457] npm error
-[20:11:31.457] npm error For a full report see:
-[20:11:31.457] npm error /vercel/.npm/_logs/2025-09-06T01_11_30_398Z-eresolve-report.txt
-[20:11:31.458] npm error A complete log of this run can be found in: /vercel/.npm/_logs/2025-09-06T01_11_30_398Z-debug-0.log
-[20:11:31.497] Error: Command "npm ci --prefer-offline --no-audit" exited with 1
+sw.js:331 🏈 Astral Field Service Worker loaded successfully!
+sw.js:31 🚀 Astral Field SW: Installing...
+sw.js:36 📦 SW: Caching static assets
+sw.js:40 Failed to cache /icon-512.png: TypeError: Failed to execute 'add' on 'Cache': Request failed
+(anonymous) @ sw.js:40
+sw.js:40 Failed to cache /icon-192.png: TypeError: Failed to execute 'add' on 'Cache': Request failed
+(anonymous) @ sw.js:40
+sw.js:40 Failed to cache /_next/static/css/app/layout.css: TypeError: Failed to execute 'add' on 'Cache': Request failed
+(anonymous) @ sw.js:40
+sw.js:40 Failed to cache /_next/static/chunks/main-app.js: TypeError: Failed to execute 'add' on 'Cache': Request failed
+(anonymous) @ sw.js:40
+sw.js:40 Failed to cache /_next/static/chunks/webpack.js: TypeError: Failed to execute 'add' on 'Cache': Request failed
+(anonymous) @ sw.js:40
+sw.js:45 ✅ SW: Installation complete
+sw.js:57 🔄 Astral Field SW: Activating...
+sw.js:76 ✅ SW: Activation complete
