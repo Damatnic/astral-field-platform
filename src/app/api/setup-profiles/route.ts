@@ -28,31 +28,36 @@ export async function POST() {
     for (const user of testUsers) {
       try {
         // Check if user already exists
-        const existingUser = await database.selectSingle('users', {
-          where: { email: user.email }
-        })
+        const existingUserResult = await database.query(
+          'SELECT * FROM users WHERE email = $1 LIMIT 1',
+          [user.email]
+        )
 
-        if (existingUser.data) {
+        if (existingUserResult.rows && existingUserResult.rows.length > 0) {
           console.log(`⚠️ User already exists: ${user.username}`)
           results.existing++
           results.users.push({ ...user, status: 'existing' })
         } else {
           // Create new user
-          const newUser = await database.insert('users', {
-            email: user.email,
-            username: user.username,
-            stack_user_id: null,
-            avatar_url: null
-          })
+          try {
+            const newUserResult = await database.query(
+              'INSERT INTO users (email, username, stack_user_id, avatar_url, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *',
+              [user.email, user.username, null, null]
+            )
 
-          if (newUser.data) {
-            console.log(`✅ Created user: ${user.username}`)
-            results.created++
-            results.users.push({ ...user, status: 'created', id: newUser.data.id })
-          } else {
-            console.error(`❌ Failed to create user: ${user.username}`)
+            if (newUserResult.rows && newUserResult.rows.length > 0) {
+              console.log(`✅ Created user: ${user.username}`)
+              results.created++
+              results.users.push({ ...user, status: 'created', id: newUserResult.rows[0].id })
+            } else {
+              console.error(`❌ Failed to create user: ${user.username}`)
+              results.errors++
+              results.users.push({ ...user, status: 'error', error: 'No user returned from insert' })
+            }
+          } catch (insertError) {
+            console.error(`❌ Failed to create user: ${user.username}`, insertError)
             results.errors++
-            results.users.push({ ...user, status: 'error', error: newUser.error })
+            results.users.push({ ...user, status: 'error', error: insertError instanceof Error ? insertError.message : 'Insert failed' })
           }
         }
       } catch (error) {
@@ -82,14 +87,10 @@ export async function GET() {
     // Get all users from database
     const result = await database.query('SELECT id, email, username, stack_user_id, created_at FROM users ORDER BY created_at DESC')
 
-    if (result.error) {
-      throw new Error(result.error.message)
-    }
-
     return NextResponse.json({
       success: true,
-      count: result.data?.length || 0,
-      users: result.data
+      count: result.rows?.length || 0,
+      users: result.rows
     })
 
   } catch (error) {

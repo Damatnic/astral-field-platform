@@ -1,6 +1,6 @@
 import { Claude35SonnetProvider } from '../ai/providers/claude35SonnetProvider';
 import { GPT4oProvider } from '../ai/providers/gpt4oProvider';
-import { db } from '../../db/database';
+import { database } from '@/lib/database';
 
 interface SentimentSource {
   type: 'twitter' | 'reddit' | 'news' | 'podcast' | 'beat_reporter';
@@ -571,7 +571,7 @@ Format as JSON:
     for (const alert of alerts) {
       try {
         // Store alert in database
-        await db.query(`
+        await database.query(`
           INSERT INTO sentiment_alerts (
             alert_type, severity, player_name, team_name, summary,
             supporting_evidence, confidence_score, time_window,
@@ -602,7 +602,7 @@ Format as JSON:
   private async storeSentimentData(data: SentimentData[]): Promise<void> {
     for (const item of data) {
       try {
-        await db.query(`
+        await database.query(`
           INSERT INTO real_time_sentiment (
             external_id, source, source_type, content, author,
             author_verified, author_followers, published_at,
@@ -655,10 +655,10 @@ Format as JSON:
       LIMIT 20
     `;
 
-    const trendingResult = await db.query(trendingQuery);
+    const trendingResult = await database.query(trendingQuery);
     
     for (const row of trendingResult.rows) {
-      await db.query(`
+      await database.query(`
         INSERT INTO trending_sentiment_topics (
           topic, mention_count, avg_sentiment, avg_influence,
           timeframe, last_updated
@@ -832,14 +832,14 @@ Format as JSON:
     alerts: SentimentAlert[];
     recentActivity: number;
   }> {
-    const trendingQuery = await db.query(`
+    const trendingQuery = await database.query(`
       SELECT * FROM trending_sentiment_topics
       WHERE timeframe = '4h'
       ORDER BY mention_count DESC
       LIMIT 10
     `);
 
-    const alertsQuery = await db.query(`
+    const alertsQuery = await database.query(`
       SELECT * FROM sentiment_alerts
       WHERE expires_at > NOW()
         AND created_at > NOW() - INTERVAL '2 hours'
@@ -847,7 +847,7 @@ Format as JSON:
       LIMIT 20
     `);
 
-    const activityQuery = await db.query(`
+    const activityQuery = await database.query(`
       SELECT COUNT(*) as recent_count
       FROM real_time_sentiment
       WHERE created_at > NOW() - INTERVAL '1 hour'
@@ -890,7 +890,7 @@ Format as JSON:
     keyTopics: string[];
     alerts: SentimentAlert[];
   }> {
-    const summaryQuery = await db.query(`
+    const summaryQuery = await database.query(`
       SELECT 
         COUNT(*) as mention_count,
         AVG(sentiment_score) as avg_sentiment,
@@ -901,7 +901,7 @@ Format as JSON:
         AND created_at > NOW() - INTERVAL '${hours} hours'
     `, [playerName]);
 
-    const alertsQuery = await db.query(`
+    const alertsQuery = await database.query(`
       SELECT * FROM sentiment_alerts
       WHERE player_name = $1
         AND expires_at > NOW()

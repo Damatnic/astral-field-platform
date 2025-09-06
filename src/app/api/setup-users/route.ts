@@ -46,37 +46,30 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(user.password, 10)
         
         // Check if user already exists
-        const existingUser = await database.selectSingle('users', {
-          where: { email: user.email }
-        })
+        const existingUserResult = await database.query(
+          'SELECT * FROM users WHERE email = $1 LIMIT 1',
+          [user.email]
+        )
         
-        if (existingUser.data) {
+        if (existingUserResult.rows && existingUserResult.rows.length > 0) {
           // Update existing user with password hash
-          const updateResult = await database.update('users', 
-            { password_hash: passwordHash }, 
-            { email: user.email }
+          const existingUser = existingUserResult.rows[0]
+          await database.query(
+            'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE email = $2',
+            [passwordHash, user.email]
           )
           
-          if (updateResult.error) {
-            throw updateResult.error
-          }
-          
-          results.push({ email: user.email, status: 'updated', id: existingUser.data.id })
+          results.push({ email: user.email, status: 'updated', id: existingUser.id })
           updatedCount++
         } else {
           // Create new user
-          const createResult = await database.insert('users', {
-            email: user.email,
-            username: user.username,
-            password_hash: passwordHash,
-            stack_user_id: null
-          })
+          const createResult = await database.query(
+            'INSERT INTO users (email, username, password_hash, stack_user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id',
+            [user.email, user.username, passwordHash, null]
+          )
           
-          if (createResult.error) {
-            throw createResult.error
-          }
-          
-          results.push({ email: user.email, status: 'created', id: createResult.data?.id })
+          const newUserId = createResult.rows[0]?.id
+          results.push({ email: user.email, status: 'created', id: newUserId })
           createdCount++
         }
         
@@ -87,8 +80,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Final verification - count total users
-    const allUsersResult = await database.select('users', {})
-    const totalUsers = allUsersResult.data?.length || 0
+    const allUsersResult = await database.query('SELECT COUNT(*) as count FROM users')
+    const totalUsers = parseInt(allUsersResult.rows[0]?.count) || 0
 
     console.log(`✅ Setup complete: Created ${createdCount}, Updated ${updatedCount}, Total: ${totalUsers}`)
 

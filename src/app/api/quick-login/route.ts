@@ -33,32 +33,28 @@ export async function POST(request: Request) {
     }
 
     // Try to find the user in database
-    const result = await database.selectSingle('users', {
-      eq: { email: demoUser.email }
-    })
+    const result = await database.query(
+      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      [demoUser.email]
+    )
 
-    if (result.error) {
-      return NextResponse.json({
-        error: 'Database error. Please create demo users first.',
-        hint: 'Visit /api/create-demo-users first'
-      }, { status: 500 })
-    }
-
-    if (!result.data) {
+    if (!result.rows || result.rows.length === 0) {
       return NextResponse.json({
         error: 'Demo users not found in database. Please create them first.',
         hint: 'Visit /api/create-demo-users first'
       }, { status: 404 })
     }
 
+    const user = result.rows[0]
+
     // Successful login - return user data
     return NextResponse.json({
       success: true,
       message: `Welcome ${demoUser.name}!`,
       user: {
-        id: result.data.id,
-        email: result.data.email,
-        username: result.data.username
+        id: user.id,
+        email: user.email,
+        username: user.username
       },
       loginTime: new Date().toISOString()
     })

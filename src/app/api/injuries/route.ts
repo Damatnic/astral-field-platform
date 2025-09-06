@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { liveInjuryTracker } from '@/services/realtime/liveInjuryTracker';
 import { database } from '@/lib/database';
-import { verifyAuth } from '@/lib/auth';
+import { getCurrentUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,7 +60,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await verifyAuth(request);
+    const authResult = await getCurrentUser(request);
+    const userId = authResult.userId;
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },

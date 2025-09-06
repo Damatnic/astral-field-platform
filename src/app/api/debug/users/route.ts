@@ -14,18 +14,10 @@ export async function GET() {
 
     console.log('Debug: Checking database connection...')
     
-    // Test database connection by counting users
-    const result = await database.select('users', {})
+    // Test database connection by getting all users
+    const result = await database.query('SELECT * FROM users')
     
-    if (result.error) {
-      console.error('Database query error:', result.error)
-      return NextResponse.json({ 
-        error: 'Database query failed', 
-        details: result.error.message 
-      }, { status: 500 })
-    }
-
-    const users = result.data || []
+    const users = result.rows || []
     
     // Return sanitized user info (no password hashes)
     const sanitizedUsers = users.map(user => ({

@@ -22,23 +22,23 @@ export async function POST(request: NextRequest) {
     console.log('Debug login attempt for:', email)
 
     // Get user from database
-    const result = await database.selectSingle('users', {
-      where: { email }
-    })
+    const result = await database.query(
+      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      [email]
+    )
 
-    if (result.error || !result.data) {
+    if (!result.rows || result.rows.length === 0) {
       console.log('Debug: User not found in database')
       return NextResponse.json({ 
         success: false, 
         error: 'User not found',
         debug: {
-          userFound: false,
-          dbError: result.error?.message
+          userFound: false
         }
       })
     }
 
-    const user = result.data
+    const user = result.rows[0]
     console.log('Debug: User found:', user.email, 'has password hash:', !!user.password_hash)
 
     if (!user.password_hash) {

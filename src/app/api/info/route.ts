@@ -11,10 +11,17 @@ export async function GET() {
     // Get current user count from database with caching
     const userCountResult = await cachedQuery(
       'user-count',
-      () => database.query('SELECT COUNT(*) as count FROM users'),
+      async () => {
+        try {
+          const result = await database.query('SELECT COUNT(*) as count FROM users');
+          return { success: true, rows: result.rows };
+        } catch (error) {
+          return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        }
+      },
       CacheDurations.MEDIUM // Cache for 5 minutes
     )
-    const userCount = userCountResult.data?.[0]?.count || 0
+    const userCount = userCountResult.success ? userCountResult.rows?.[0]?.count || 0 : 0
     
     // Get demo user info
     const demoInfo = getDemoUserInfo()

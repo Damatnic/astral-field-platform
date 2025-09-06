@@ -16,15 +16,16 @@ export const POST = handleApiError(async (request: NextRequest) => {
   const { email, password } = body
 
   // Check if user exists in our database
-  const result = await database.selectSingle('users', {
-    where: { email }
-  })
+  const result = await database.query(
+    'SELECT * FROM users WHERE email = $1 LIMIT 1',
+    [email]
+  )
 
-  if (result.error || !result.data) {
+  if (!result.rows || result.rows.length === 0) {
     throw CommonErrors.Unauthorized('Invalid email or password')
   }
 
-  const user = result.data
+  const user = result.rows[0]
 
   // Check if user has a password set
   if (!user.password_hash) {
@@ -41,7 +42,6 @@ export const POST = handleApiError(async (request: NextRequest) => {
   // Return user without password hash for security
   const { password_hash, ...userWithoutPassword } = user
   return NextResponse.json({
-    user: { ...userWithoutPassword, password_hash: null },
-    error: null
+    user: { ...userWithoutPassword, password_hash: null }
   })
 })

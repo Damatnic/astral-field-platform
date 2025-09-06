@@ -17,12 +17,13 @@ export async function GET(request: NextRequest) {
     if (!leagueId) return NextResponse.json({ error: 'leagueId required' }, { status: 400 })
 
     await ensureColumns()
-    const res = await database.selectSingle('leagues', { where: { id: leagueId } })
-    if (res.error || !res.data) return NextResponse.json({ error: 'League not found' }, { status: 404 })
+    const res = await database.query('SELECT * FROM leagues WHERE id = $1 LIMIT 1', [leagueId])
+    if (!res.rows || res.rows.length === 0) return NextResponse.json({ error: 'League not found' }, { status: 404 })
 
-    const enabled = !!(res.data as any).live_polling_enabled
-    const until = (res.data as any).live_polling_until || null
-    const ppr = (res.data as any).scoring_ppr ?? 0.5
+    const leagueData = res.rows[0]
+    const enabled = !!leagueData.live_polling_enabled
+    const until = leagueData.live_polling_until || null
+    const ppr = leagueData.scoring_ppr ?? 0.5
     return NextResponse.json({ leagueId, live_polling_enabled: enabled, live_polling_until: until, scoring_ppr: Number(ppr) })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to get settings' }, { status: 500 })
@@ -65,9 +66,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
 
-    const update = await database.update('leagues', updatePayload, { id: leagueId })
-
-    if (update.error) return NextResponse.json({ error: update.error }, { status: 500 })
+    const setParts = Object.keys(updatePayload).map((key, index) => `${key} = $${index + 2}`)
+    const values = [leagueId, ...Object.values(updatePayload)]
+    
+    await database.query(
+      `UPDATE leagues SET ${setParts.join(', ')} WHERE id = $1`,
+      values
+    )
     return NextResponse.json({ leagueId, ...updatePayload })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to update settings' }, { status: 500 })

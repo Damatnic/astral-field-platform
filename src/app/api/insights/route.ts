@@ -15,8 +15,13 @@ export async function GET(request: NextRequest) {
     if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 })
 
     // Find user's team(s)
-    const teamsRes = await database.select('teams', leagueIdParam ? { where: { user_id: userId, league_id: leagueIdParam } } : { where: { user_id: userId } })
-    const teams = teamsRes.data || []
+    const query = leagueIdParam 
+      ? 'SELECT * FROM teams WHERE user_id = $1 AND league_id = $2'
+      : 'SELECT * FROM teams WHERE user_id = $1'
+    const params = leagueIdParam ? [userId, leagueIdParam] : [userId]
+    
+    const teamsRes = await database.query(query, params)
+    const teams = teamsRes.rows || []
     if (!teams.length) return NextResponse.json({ insights: [], suggestions: [], leagueId: null })
     const leagueId = (teams[0] as any).league_id as string
     const teamId = (teams[0] as any).id as string

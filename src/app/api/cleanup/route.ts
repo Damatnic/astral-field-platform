@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     // Get current user count before cleanup
     const beforeResult = await database.query('SELECT COUNT(*) as count FROM users')
-    const beforeCount = beforeResult.data?.[0]?.count || 0
+    const beforeCount = beforeResult.rows?.[0]?.count || 0
 
     // Clean up old users (keep only the @astralfield.com demo users)
     const cleanupResult = await database.query(`
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Get count after cleanup
     const afterResult = await database.query('SELECT COUNT(*) as count FROM users')
-    const afterCount = afterResult.data?.[0]?.count || 0
+    const afterCount = afterResult.rows?.[0]?.count || 0
 
     // Clear any cached connections or stale data
     await database.query('VACUUM ANALYZE users')

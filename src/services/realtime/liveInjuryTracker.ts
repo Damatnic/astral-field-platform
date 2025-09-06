@@ -1,7 +1,7 @@
 import { aiRouterService } from '../ai/aiRouterService';
 import { aiAnalyticsService } from '../ai/aiAnalyticsService';
 import { injuryImpactPredictor } from '../ml/injuryImpactPredictor';
-import { neonDb } from '@/lib/db';
+import { database } from '@/lib/database';
 import { WebSocketManager } from '@/lib/websocket';
 
 export interface InjuryReport {
@@ -405,7 +405,7 @@ class LiveInjuryTracker {
     const alerts: InjuryAlert[] = [];
 
     // Get users with this player on roster
-    const affectedUsers = await neonDb.query(`
+    const affectedUsers = await database.query(`
       SELECT DISTINCT ur.user_id, u.name
       FROM user_rosters ur
       JOIN users u ON ur.user_id = u.id
@@ -460,7 +460,7 @@ class LiveInjuryTracker {
     this.wsManager.broadcast('injury_update', updateData);
 
     // Send targeted updates to affected users
-    const affectedUsers = await neonDb.query(`
+    const affectedUsers = await database.query(`
       SELECT DISTINCT user_id 
       FROM user_rosters 
       WHERE player_id = $1
@@ -482,7 +482,7 @@ class LiveInjuryTracker {
   }
 
   private async storeInjuryReport(injury: InjuryReport): Promise<void> {
-    await neonDb.query(`
+    await database.query(`
       INSERT INTO injury_reports (
         id, player_id, player_name, team, position, injury_type,
         severity, body_part, reported_at, game_week, is_game_time,
@@ -503,7 +503,7 @@ class LiveInjuryTracker {
   }
 
   private async checkExistingInjury(playerId: string, injuryType: string): Promise<InjuryReport | null> {
-    const result = await neonDb.query(`
+    const result = await database.query(`
       SELECT * FROM injury_reports 
       WHERE player_id = $1 AND injury_type = $2 
       ORDER BY reported_at DESC 
@@ -539,7 +539,7 @@ class LiveInjuryTracker {
   }
 
   async updateExistingInjuries(): Promise<void> {
-    const activeInjuries = await neonDb.query(`
+    const activeInjuries = await database.query(`
       SELECT * FROM injury_reports 
       WHERE severity IN ('questionable', 'doubtful', 'out')
       AND reported_at > NOW() - INTERVAL '7 days'
@@ -563,7 +563,7 @@ class LiveInjuryTracker {
   }
 
   async getPlayerInjuryHistory(playerId: string, days: number = 30): Promise<InjuryReport[]> {
-    const result = await neonDb.query(`
+    const result = await database.query(`
       SELECT * FROM injury_reports 
       WHERE player_id = $1 
       AND reported_at > NOW() - INTERVAL '${days} days'

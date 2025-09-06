@@ -1,4 +1,4 @@
-import { db } from '../../lib/db';
+import { database } from '@/lib/database';
 import { AIRouter } from '../ai/aiRouter';
 import { MLPipelineService } from '../ai/mlPipeline';
 import { OracleService } from '../ai/oracle';
@@ -677,7 +677,7 @@ export class AIAccuracyValidator {
   private async storeValidationResults(testSuite: ComprehensiveTestSuite, results: ValidationResult[]): Promise<void> {
     try {
       // Store test suite summary
-      await db.query(`
+      await database.query(`
         INSERT INTO ai_validation_suites (
           suite_id, suite_name, description, total_tests, passed_tests, 
           overall_accuracy, execution_time, results_summary, recommendations, created_at
@@ -697,7 +697,7 @@ export class AIAccuracyValidator {
 
       // Store individual test results
       for (const result of results) {
-        await db.query(`
+        await database.query(`
           INSERT INTO ai_validation_results (
             test_id, suite_id, service_name, test_type, passed, accuracy,
             expected_output, actual_output, execution_time_ms, errors, warnings, created_at
@@ -720,7 +720,7 @@ export class AIAccuracyValidator {
 
       // Store service-level metrics
       for (const [service, metrics] of Object.entries(testSuite.serviceResults)) {
-        await db.query(`
+        await database.query(`
           INSERT INTO ai_service_accuracy_metrics (
             service_name, suite_id, total_tests, passed_tests, accuracy,
             avg_execution_time, confidence_interval, created_at
@@ -744,7 +744,7 @@ export class AIAccuracyValidator {
 
   async getValidationHistory(days: number = 30): Promise<ComprehensiveTestSuite[]> {
     try {
-      const results = await db.query(`
+      const results = await database.query(`
         SELECT 
           suite_id, suite_name, description, total_tests, passed_tests,
           overall_accuracy, execution_time, results_summary, recommendations, created_at
@@ -773,7 +773,7 @@ export class AIAccuracyValidator {
 
   async getCurrentAccuracyMetrics(): Promise<Record<string, AccuracyMetrics>> {
     try {
-      const results = await db.query(`
+      const results = await database.query(`
         SELECT DISTINCT ON (service_name)
           service_name, total_tests, passed_tests, accuracy,
           avg_execution_time, confidence_interval, created_at

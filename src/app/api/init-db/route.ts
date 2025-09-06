@@ -8,9 +8,11 @@ export async function POST() {
     // CRITICAL FIX: Force drop and recreate rosters table to ensure it exists in current database
     console.log('🗑️ Dropping existing rosters table if it exists...')
     const dropRostersTable = `DROP TABLE IF EXISTS rosters CASCADE;`
-    const dropResult = await database.query(dropRostersTable)
-    if (dropResult.error) {
-      console.warn('Drop table warning:', dropResult.error)
+    try {
+      const dropResult = await database.query(dropRostersTable)
+      console.log('Drop table completed successfully')
+    } catch (error) {
+      console.warn('Drop table warning:', error instanceof Error ? error.message : 'Unknown error')
     }
 
     console.log('📋 Creating fresh rosters table...')
@@ -30,9 +32,7 @@ export async function POST() {
     `
 
     const result = await database.query(createRostersTable)
-    if (result.error) {
-      throw new Error(result.error)
-    }
+    console.log('Rosters table created successfully')
 
     // Create index if it doesn't exist
     const createIndex = `
@@ -40,9 +40,11 @@ export async function POST() {
       CREATE INDEX IF NOT EXISTS idx_rosters_player_id ON rosters(player_id);
     `
 
-    const indexResult = await database.query(createIndex)
-    if (indexResult.error) {
-      console.warn('Index creation warning:', indexResult.error)
+    try {
+      const indexResult = await database.query(createIndex)
+      console.log('Indexes created successfully')
+    } catch (error) {
+      console.warn('Index creation warning:', error instanceof Error ? error.message : 'Unknown error')
     }
 
     console.log('✅ Database schema initialized successfully')
@@ -93,11 +95,9 @@ export async function GET() {
     
     try {
       const testResult = await database.query('SELECT COUNT(*) FROM rosters LIMIT 1')
-      rostersExists = !testResult.error
-      if (testResult.error) {
-        rostersTestError = testResult.error
-      }
+      rostersExists = true
     } catch (error) {
+      rostersExists = false
       rostersTestError = error instanceof Error ? error.message : 'Unknown error'
     }
 
@@ -109,21 +109,16 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       diagnosis: {
-        tables: tablesResult.data || [],
-        tablesError: tablesResult.error,
+        tables: tablesResult.rows || [],
         rosters: {
           exists: rostersExists,
           testError: rostersTestError,
-          columns: rostersResult.data || [],
-          columnError: rostersResult.error
+          columns: rostersResult.rows || []
         },
         counts: {
-          users: usersResult.data?.[0]?.count || 0,
-          teams: teamsResult.data?.[0]?.count || 0,
-          players: playersResult.data?.[0]?.count || 0,
-          usersError: usersResult.error,
-          teamsError: teamsResult.error,
-          playersError: playersResult.error
+          users: usersResult.rows?.[0]?.count || 0,
+          teams: teamsResult.rows?.[0]?.count || 0,
+          players: playersResult.rows?.[0]?.count || 0
         }
       },
       info: 'POST to initialize missing database tables and indexes'

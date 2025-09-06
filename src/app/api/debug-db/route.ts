@@ -6,21 +6,21 @@ export async function GET() {
     console.log('🔍 Debug DB: Starting database debug...')
 
     // Get all users
-    const usersResult = await database.select('users', {})
-    console.log('👥 Users in database:', usersResult.data?.length || 0)
+    const usersResult = await database.query('SELECT * FROM users')
+    console.log('👥 Users in database:', usersResult.rows?.length || 0)
     
     // Get all leagues
-    const leaguesResult = await database.select('leagues', {})
-    console.log('🏈 Leagues in database:', leaguesResult.data?.length || 0)
+    const leaguesResult = await database.query('SELECT * FROM leagues')
+    console.log('🏈 Leagues in database:', leaguesResult.rows?.length || 0)
     
     // Get all teams
-    const teamsResult = await database.select('teams', {})
-    console.log('👨‍💼 Teams in database:', teamsResult.data?.length || 0)
+    const teamsResult = await database.query('SELECT * FROM teams')
+    console.log('👨‍💼 Teams in database:', teamsResult.rows?.length || 0)
 
     // Show user-team relationships
-    const users = usersResult.data || []
-    const teams = teamsResult.data || []
-    const leagues = leaguesResult.data || []
+    const users = usersResult.rows || []
+    const teams = teamsResult.rows || []
+    const leagues = leaguesResult.rows || []
 
     const userTeamMap: Record<string, any[]> = {}
     for (const team of teams) {

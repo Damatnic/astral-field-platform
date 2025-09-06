@@ -166,23 +166,23 @@ class LiveScoringServerService {
 
   async getLeagueLiveScoring(leagueId: string, week: number): Promise<LeagueLiveScoring> {
     // Fetch teams and lineups from Neon
-    const teamsRes = await database.select('teams', { where: { league_id: leagueId } })
-    const teams = teamsRes.data || []
+    const teamsRes = await database.query('SELECT * FROM teams WHERE league_id = $1', [leagueId])
+    const teams = teamsRes.rows || []
 
     const gameStatus = this.getGameStatus()
     const leagueTeams: TeamLiveScore[] = []
 
     for (const team of teams) {
-      const lineupRes = await database.select('lineup_entries', { where: { team_id: team.id, week } })
+      const lineupRes = await database.query('SELECT * FROM lineup_entries WHERE team_id = $1 AND week = $2', [team.id, week])
       const starters: PlayerLiveStats[] = []
       const bench: PlayerLiveStats[] = []
       let totalPoints = 0
       let totalProjected = 0
 
-      if (Array.isArray(lineupRes.data)) {
-        for (const entry of lineupRes.data) {
-          const playerRes = await database.selectSingle('players', { where: { id: entry.player_id } })
-          const p = playerRes.data
+      if (Array.isArray(lineupRes.rows)) {
+        for (const entry of lineupRes.rows) {
+          const playerRes = await database.query('SELECT * FROM players WHERE id = $1 LIMIT 1', [entry.player_id])
+          const p = playerRes.rows[0]
           if (!p) continue
 
           const latestStats = typeof p.stats === 'object' && p.stats && 'fantasyPoints' in p.stats ? (p.stats as any) : null
@@ -294,31 +294,31 @@ class LiveScoringServerService {
     // Resolve league PPR if not provided
     let leaguePpr = typeof ppr === 'number' ? ppr : 0.5
     try {
-      const league = await database.selectSingle('leagues', { where: { id: leagueId } })
-      if (league.data && league.data.scoring_ppr != null) {
-        leaguePpr = Number(league.data.scoring_ppr)
+      const league = await database.query('SELECT * FROM leagues WHERE id = $1 LIMIT 1', [leagueId])
+      if (league.rows[0] && league.rows[0].scoring_ppr != null) {
+        leaguePpr = Number(league.rows[0].scoring_ppr)
       }
     } catch {}
 
     // Fetch lineup players with external IDs
-    const lineups = await database.select('lineup_entries', { where: { week } })
+    const lineups = await database.query('SELECT * FROM lineup_entries WHERE week = $1', [week])
     const teamIds = new Set<string>()
-    for (const le of (lineups.data || [])) teamIds.add(le.team_id)
+    for (const le of (lineups.rows || [])) teamIds.add(le.team_id)
     if (!teamIds.size) return { updated: 0, skipped: 0, ppr: leaguePpr }
 
     // Limit to teams in this league
-    const teamsRes = await database.select('teams', { where: { league_id: leagueId } })
-    const leagueTeamIds = new Set((teamsRes.data || []).map((t: any) => t.id))
-    const lineupPlayerIds = new Set((lineups.data || [])
+    const teamsRes = await database.query('SELECT * FROM teams WHERE league_id = $1', [leagueId])
+    const leagueTeamIds = new Set((teamsRes.rows || []).map((t: any) => t.id))
+    const lineupPlayerIds = new Set((lineups.rows || [])
       .filter((le: any) => leagueTeamIds.has(le.team_id))
       .map((le: any) => le.player_id))
 
     if (!lineupPlayerIds.size) return { updated: 0, skipped: 0, ppr: leaguePpr }
 
     // Map player_id -> external_id
-    const playersRes = await database.select('players')
+    const playersRes = await database.query('SELECT * FROM players')
     const pMap = new Map<string, { id: string; external_id: string | null; position: string }>()
-    for (const p of (playersRes.data || [])) {
+    for (const p of (playersRes.rows || [])) {
       if (lineupPlayerIds.has(p.id)) pMap.set(p.id, { id: p.id, external_id: p.external_id, position: p.position })
     }
 

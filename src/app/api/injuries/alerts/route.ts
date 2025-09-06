@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { neonDb } from '@/lib/db';
-import { verifyAuth } from '@/lib/auth';
+import { database } from '@/lib/database';
+import { getCurrentUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await verifyAuth(request);
+    const authResult = await getCurrentUser(request);
+    const userId = authResult.userId;
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     query += ` ORDER BY ia.sent_at DESC LIMIT $2`;
 
-    const result = await neonDb.query(query, [userId, limit]);
+    const result = await database.query(query, [userId, limit]);
 
     return NextResponse.json({
       success: true,
@@ -48,7 +49,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await verifyAuth(request);
+    const authResult = await getCurrentUser(request);
+    const userId = authResult.userId;
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -61,13 +63,13 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'mark_read':
         if (alertId) {
-          await neonDb.query(`
+          await database.query(`
             UPDATE injury_alerts 
             SET read_at = NOW() 
             WHERE id = $1 AND user_id = $2
           `, [alertId, userId]);
         } else if (alertIds && alertIds.length > 0) {
-          await neonDb.query(`
+          await database.query(`
             UPDATE injury_alerts 
             SET read_at = NOW() 
             WHERE id = ANY($1) AND user_id = $2
@@ -76,7 +78,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case 'mark_all_read':
-        await neonDb.query(`
+        await database.query(`
           UPDATE injury_alerts 
           SET read_at = NOW() 
           WHERE user_id = $1 AND read_at IS NULL
@@ -85,7 +87,7 @@ export async function POST(request: NextRequest) {
 
       case 'dismiss':
         if (alertId) {
-          await neonDb.query(`
+          await database.query(`
             UPDATE injury_alerts 
             SET dismissed_at = NOW() 
             WHERE id = $1 AND user_id = $2

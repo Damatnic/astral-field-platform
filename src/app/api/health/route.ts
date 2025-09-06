@@ -13,10 +13,17 @@ export async function GET() {
     // Check database connectivity with caching
     const dbCheck = await cachedQuery(
       'health-db-check',
-      () => database.query('SELECT 1 as health_check'),
+      async () => {
+        try {
+          const result = await database.query('SELECT 1 as health_check');
+          return { success: true, rows: result.rows };
+        } catch (error) {
+          return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        }
+      },
       30 // Cache for 30 seconds
     )
-    const dbHealthy = !dbCheck.error && dbCheck.data?.length === 1
+    const dbHealthy = dbCheck.success && dbCheck.rows?.length === 1
     
     // Check environment variables
     const envCheck = {

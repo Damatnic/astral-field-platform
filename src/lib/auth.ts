@@ -12,6 +12,7 @@ export interface User {
 
 export interface AuthResult {
   user: User | null;
+  userId?: string;
   error?: string;
 }
 
@@ -35,7 +36,7 @@ export async function getCurrentUser(request: NextRequest): Promise<AuthResult> 
       role: 'user'
     };
 
-    return { user: mockUser };
+    return { user: mockUser, userId: mockUser.id };
   } catch (error) {
     return { user: null, error: 'Invalid authentication token' };
   }

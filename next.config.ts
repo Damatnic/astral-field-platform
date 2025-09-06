@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
 
   // Turbopack configuration (moved from experimental)
   turbopack: {
+    root: process.cwd(),
     rules: {
       // SVG handling for Turbopack
       '*.svg': {

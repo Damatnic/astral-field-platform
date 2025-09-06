@@ -1,29 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { Pool } from 'pg';
+import { database } from '@/lib/database';
 import { LeagueHealthMonitoringService } from '@/services/league/leagueHealthMonitor';
 import { WebSocketManager } from '@/services/websocket/manager';
 import { AIRouterService } from '@/services/ai/router';
 import { UserBehaviorAnalysisService } from '@/services/ai/userBehaviorAnalysis';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
 // Initialize services
 const wsManager = new WebSocketManager();
 const aiRouter = new AIRouterService();
-const behaviorAnalysis = new UserBehaviorAnalysisService(pool, aiRouter);
+const behaviorAnalysis = new UserBehaviorAnalysisService(database, aiRouter);
 const healthMonitor = new LeagueHealthMonitoringService(
-  pool,
+  database,
   wsManager,
   aiRouter,
   behaviorAnalysis
@@ -45,18 +32,17 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user has access to league
-    const { data: userTeam } = await supabase
-      .from('teams')
-      .select('id, user_id, league_id')
-      .eq('league_id', leagueId)
-      .eq('user_id', userId)
-      .single();
+    const userTeamResult = await database.query(
+      'SELECT id, user_id, league_id FROM teams WHERE league_id = $1 AND user_id = $2 LIMIT 1',
+      [leagueId, userId]
+    );
+    const userTeam = userTeamResult.rows[0] || null;
 
-    const { data: league } = await supabase
-      .from('leagues')
-      .select('commissioner_id')
-      .eq('id', leagueId)
-      .single();
+    const leagueResult = await database.query(
+      'SELECT commissioner_id FROM leagues WHERE id = $1 LIMIT 1',
+      [leagueId]
+    );
+    const league = leagueResult.rows[0] || null;
 
     const isCommissioner = league?.commissioner_id === userId;
     const hasAccess = userTeam || isCommissioner;
@@ -86,16 +72,11 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ engagement });
 
       case 'trends':
-        const client = await pool.connect();
-        try {
-          const { rows: trends } = await client.query(
-            'SELECT * FROM calculate_health_trend($1, $2)',
-            [leagueId, days]
-          );
-          return NextResponse.json({ trends });
-        } finally {
-          client.release();
-        }
+        const trendsResult = await database.query(
+          'SELECT * FROM calculate_health_trend($1, $2)',
+          [leagueId, days]
+        );
+        return NextResponse.json({ trends: trendsResult.rows });
 
       case 'at-risk':
         if (!isCommissioner) {
@@ -105,27 +86,20 @@ export async function GET(request: NextRequest) {
           );
         }
 
-        const client2 = await pool.connect();
-        try {
-          const { rows: atRiskUsers } = await client2.query(
-            'SELECT * FROM identify_at_risk_users($1)',
-            [leagueId]
-          );
-          return NextResponse.json({ atRiskUsers });
-        } finally {
-          client2.release();
-        }
+        const atRiskResult = await database.query(
+          'SELECT * FROM identify_at_risk_users($1)',
+          [leagueId]
+        );
+        return NextResponse.json({ atRiskUsers: atRiskResult.rows });
 
       case 'balance':
-        const client3 = await pool.connect();
-        try {
-          const { rows: balanceScore } = await client3.query(
-            'SELECT calculate_competitive_balance_score($1) as balance_score',
-            [leagueId]
-          );
-          
-          // Get detailed balance metrics
-          const { rows: balanceDetails } = await client3.query(`
+        const balanceScoreResult = await database.query(
+          'SELECT calculate_competitive_balance_score($1) as balance_score',
+          [leagueId]
+        );
+        
+        // Get detailed balance metrics
+        const balanceDetailsResult = await database.query(`
             WITH win_distribution AS (
               SELECT 
                 team_name,
@@ -167,13 +141,10 @@ export async function GET(request: NextRequest) {
             ORDER BY wd.win_pct DESC
           `, [leagueId]);
 
-          return NextResponse.json({
-            balanceScore: balanceScore[0]?.balance_score || 0,
-            teamDetails: balanceDetails
-          });
-        } finally {
-          client3.release();
-        }
+        return NextResponse.json({
+          balanceScore: balanceScoreResult.rows[0]?.balance_score || 0,
+          teamDetails: balanceDetailsResult.rows
+        });
 
       case 'config':
         if (!isCommissioner) {
@@ -183,16 +154,11 @@ export async function GET(request: NextRequest) {
           );
         }
 
-        const client4 = await pool.connect();
-        try {
-          const { rows: config } = await client4.query(
-            'SELECT * FROM league_health_config WHERE league_id = $1',
-            [leagueId]
-          );
-          return NextResponse.json({ config: config[0] || {} });
-        } finally {
-          client4.release();
-        }
+        const configResult = await database.query(
+          'SELECT * FROM league_health_config WHERE league_id = $1',
+          [leagueId]
+        );
+        return NextResponse.json({ config: configResult.rows[0] || {} });
 
       default:
         return NextResponse.json(
@@ -223,11 +189,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify commissioner access for most actions
-    const { data: league } = await supabase
-      .from('leagues')
-      .select('commissioner_id')
-      .eq('id', leagueId)
-      .single();
+    const leagueResult = await database.query(
+      'SELECT commissioner_id FROM leagues WHERE id = $1 LIMIT 1',
+      [leagueId]
+    );
+    const league = leagueResult.rows[0] || null;
 
     const isCommissioner = league?.commissioner_id === userId;
 
@@ -290,21 +256,16 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const client = await pool.connect();
-        try {
-          await client.query(`
-            UPDATE league_health_alerts 
-            SET resolved = true, resolved_by = $1, resolved_at = NOW()
-            WHERE id = $2 AND league_id = $3
-          `, [userId, alertId, leagueId]);
+        await database.query(`
+          UPDATE league_health_alerts 
+          SET resolved = true, resolved_by = $1, resolved_at = NOW()
+          WHERE id = $2 AND league_id = $3
+        `, [userId, alertId, leagueId]);
 
-          return NextResponse.json({ 
-            success: true, 
-            message: 'Alert resolved' 
-          });
-        } finally {
-          client.release();
-        }
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Alert resolved' 
+        });
 
       case 'update-config':
         if (!isCommissioner) {
@@ -322,37 +283,32 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const client2 = await pool.connect();
-        try {
-          await client2.query(`
-            INSERT INTO league_health_config (
-              league_id, monitoring_enabled, alert_thresholds, 
-              automated_responses, notification_settings, assessment_frequency
-            ) VALUES ($1, $2, $3, $4, $5, $6)
-            ON CONFLICT (league_id) 
-            DO UPDATE SET
-              monitoring_enabled = EXCLUDED.monitoring_enabled,
-              alert_thresholds = EXCLUDED.alert_thresholds,
-              automated_responses = EXCLUDED.automated_responses,
-              notification_settings = EXCLUDED.notification_settings,
-              assessment_frequency = EXCLUDED.assessment_frequency,
-              updated_at = NOW()
-          `, [
-            leagueId,
-            config.monitoring_enabled || true,
-            JSON.stringify(config.alert_thresholds || {}),
-            JSON.stringify(config.automated_responses || {}),
-            JSON.stringify(config.notification_settings || {}),
-            config.assessment_frequency || 'daily'
-          ]);
+        await database.query(`
+          INSERT INTO league_health_config (
+            league_id, monitoring_enabled, alert_thresholds, 
+            automated_responses, notification_settings, assessment_frequency
+          ) VALUES ($1, $2, $3, $4, $5, $6)
+          ON CONFLICT (league_id) 
+          DO UPDATE SET
+            monitoring_enabled = EXCLUDED.monitoring_enabled,
+            alert_thresholds = EXCLUDED.alert_thresholds,
+            automated_responses = EXCLUDED.automated_responses,
+            notification_settings = EXCLUDED.notification_settings,
+            assessment_frequency = EXCLUDED.assessment_frequency,
+            updated_at = NOW()
+        `, [
+          leagueId,
+          config.monitoring_enabled || true,
+          JSON.stringify(config.alert_thresholds || {}),
+          JSON.stringify(config.automated_responses || {}),
+          JSON.stringify(config.notification_settings || {}),
+          config.assessment_frequency || 'daily'
+        ]);
 
-          return NextResponse.json({ 
-            success: true, 
-            message: 'Configuration updated' 
-          });
-        } finally {
-          client2.release();
-        }
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Configuration updated' 
+        });
 
       case 'manual-health-check':
         if (!isCommissioner) {
@@ -380,38 +336,33 @@ export async function POST(request: NextRequest) {
         const { targetUsers, messageType } = data;
         
         // This would trigger engagement boost messages
-        const client3 = await pool.connect();
-        try {
-          // Log the engagement initiative
-          const { rows: initiative } = await client3.query(`
-            INSERT INTO league_initiatives (
-              league_id, type, title, description, config
-            ) VALUES ($1, $2, $3, $4, $5)
-            RETURNING id
-          `, [
-            leagueId,
-            'engagement_boost',
-            'Manual Engagement Initiative',
-            `Commissioner initiated engagement boost: ${messageType}`,
-            JSON.stringify({ targetUsers, messageType, triggeredBy: userId })
-          ]);
+        // Log the engagement initiative
+        const initiativeResult = await database.query(`
+          INSERT INTO league_initiatives (
+            league_id, type, title, description, config
+          ) VALUES ($1, $2, $3, $4, $5)
+          RETURNING id
+        `, [
+          leagueId,
+          'engagement_boost',
+          'Manual Engagement Initiative',
+          `Commissioner initiated engagement boost: ${messageType}`,
+          JSON.stringify({ targetUsers, messageType, triggeredBy: userId })
+        ]);
 
-          // Send engagement messages (this would integrate with notification system)
-          for (const targetUserId of targetUsers || []) {
-            await wsManager.sendToUser(targetUserId, {
-              type: 'engagement_boost',
-              message: `Your league commissioner has sent an engagement boost! Check your league for updates.`,
-              initiative_id: initiative[0].id
-            });
-          }
-
-          return NextResponse.json({ 
-            success: true, 
-            message: `Engagement boost sent to ${targetUsers?.length || 0} users` 
+        // Send engagement messages (this would integrate with notification system)
+        for (const targetUserId of targetUsers || []) {
+          await wsManager.sendToUser(targetUserId, {
+            type: 'engagement_boost',
+            message: `Your league commissioner has sent an engagement boost! Check your league for updates.`,
+            initiative_id: initiativeResult.rows[0].id
           });
-        } finally {
-          client3.release();
         }
+
+        return NextResponse.json({ 
+          success: true, 
+          message: `Engagement boost sent to ${targetUsers?.length || 0} users` 
+        });
 
       case 'create-challenge':
         if (!isCommissioner) {
@@ -423,28 +374,23 @@ export async function POST(request: NextRequest) {
 
         const { title, description, challengeType, duration } = data;
         
-        const client4 = await pool.connect();
-        try {
-          await client4.query(`
-            INSERT INTO league_initiatives (
-              league_id, type, title, description, config, end_date
-            ) VALUES ($1, $2, $3, $4, $5, $6)
-          `, [
-            leagueId,
-            challengeType || 'custom_challenge',
-            title,
-            description,
-            JSON.stringify({ duration, createdBy: userId }),
-            duration ? new Date(Date.now() + duration * 24 * 60 * 60 * 1000) : null
-          ]);
+        await database.query(`
+          INSERT INTO league_initiatives (
+            league_id, type, title, description, config, end_date
+          ) VALUES ($1, $2, $3, $4, $5, $6)
+        `, [
+          leagueId,
+          challengeType || 'custom_challenge',
+          title,
+          description,
+          JSON.stringify({ duration, createdBy: userId }),
+          duration ? new Date(Date.now() + duration * 24 * 60 * 60 * 1000) : null
+        ]);
 
-          return NextResponse.json({ 
-            success: true, 
-            message: 'Challenge created successfully' 
-          });
-        } finally {
-          client4.release();
-        }
+        return NextResponse.json({ 
+          success: true, 
+          message: 'Challenge created successfully' 
+        });
 
       default:
         return NextResponse.json(
@@ -475,11 +421,11 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verify commissioner access
-    const { data: league } = await supabase
-      .from('leagues')
-      .select('commissioner_id')
-      .eq('id', leagueId)
-      .single();
+    const leagueResult = await database.query(
+      'SELECT commissioner_id FROM leagues WHERE id = $1 LIMIT 1',
+      [leagueId]
+    );
+    const league = leagueResult.rows[0] || null;
 
     if (league?.commissioner_id !== userId) {
       return NextResponse.json(
@@ -488,38 +434,33 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
-    try {
-      await client.query(`
-        UPDATE league_health_alerts 
-        SET 
-          resolved = true, 
-          resolved_by = $1, 
-          resolved_at = NOW(),
-          updated_at = NOW()
-        WHERE id = $2 AND league_id = $3
-      `, [userId, alertId, leagueId]);
+    await database.query(`
+      UPDATE league_health_alerts 
+      SET 
+        resolved = true, 
+        resolved_by = $1, 
+        resolved_at = NOW(),
+        updated_at = NOW()
+      WHERE id = $2 AND league_id = $3
+    `, [userId, alertId, leagueId]);
 
-      // Optionally log the resolution
-      if (resolution) {
-        await client.query(`
-          INSERT INTO user_activity_log (
-            user_id, league_id, action_type, details
-          ) VALUES ($1, $2, 'alert_resolution', $3)
-        `, [
-          userId,
-          leagueId,
-          JSON.stringify({ alertId, resolution })
-        ]);
-      }
-
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Alert resolved successfully' 
-      });
-    } finally {
-      client.release();
+    // Optionally log the resolution
+    if (resolution) {
+      await database.query(`
+        INSERT INTO user_activity_log (
+          user_id, league_id, action_type, details
+        ) VALUES ($1, $2, 'alert_resolution', $3)
+      `, [
+        userId,
+        leagueId,
+        JSON.stringify({ alertId, resolution })
+      ]);
     }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Alert resolved successfully' 
+    });
 
   } catch (error) {
     console.error('Error resolving alert:', error);
@@ -545,11 +486,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Verify commissioner access
-    const { data: league } = await supabase
-      .from('leagues')
-      .select('commissioner_id')
-      .eq('id', leagueId)
-      .single();
+    const leagueResult = await database.query(
+      'SELECT commissioner_id FROM leagues WHERE id = $1 LIMIT 1',
+      [leagueId]
+    );
+    const league = leagueResult.rows[0] || null;
 
     if (league?.commissioner_id !== userId) {
       return NextResponse.json(
@@ -558,21 +499,16 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
-    try {
-      await client.query(`
-        UPDATE league_initiatives 
-        SET active = false, end_date = NOW()
-        WHERE id = $1 AND league_id = $2
-      `, [initiativeId, leagueId]);
+    await database.query(`
+      UPDATE league_initiatives 
+      SET active = false, end_date = NOW()
+      WHERE id = $1 AND league_id = $2
+    `, [initiativeId, leagueId]);
 
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Initiative deactivated successfully' 
-      });
-    } finally {
-      client.release();
-    }
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Initiative deactivated successfully' 
+    });
 
   } catch (error) {
     console.error('Error deactivating initiative:', error);

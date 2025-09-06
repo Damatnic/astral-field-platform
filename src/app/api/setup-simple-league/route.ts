@@ -19,12 +19,12 @@ export async function POST() {
     console.log('🏈 Setting up simple demo league...')
 
     // Step 1: Get all users
-    const usersResult = await database.select('users', {})
-    if (usersResult.error || !usersResult.data) {
-      throw new Error('Failed to fetch users')
+    const usersResult = await database.query('SELECT * FROM users ORDER BY created_at')
+    if (!usersResult.rows || usersResult.rows.length === 0) {
+      throw new Error('Failed to fetch users or no users found')
     }
 
-    const users = usersResult.data
+    const users = usersResult.rows
     console.log(`✅ Found ${users.length} users`)
 
     // Step 2: Create league
@@ -47,12 +47,23 @@ export async function POST() {
       }
     }
 
-    const leagueResult = await database.insert('leagues', leagueData)
-    if (leagueResult.error || !leagueResult.data) {
-      throw new Error('Failed to create league: ' + leagueResult.error)
+    const leagueResult = await database.query(
+      `INSERT INTO leagues (name, commissioner_id, draft_date, season_year, settings, scoring_system) 
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [
+        leagueData.name,
+        leagueData.commissioner_id,
+        leagueData.draft_date,
+        leagueData.season_year,
+        JSON.stringify(leagueData.settings),
+        JSON.stringify(leagueData.scoring_system)
+      ]
+    )
+    if (!leagueResult.rows || leagueResult.rows.length === 0) {
+      throw new Error('Failed to create league')
     }
 
-    const league = leagueResult.data
+    const league = leagueResult.rows[0]
     console.log(`✅ Created league: ${league.name}`)
 
     // Step 3: Create teams
@@ -69,10 +80,14 @@ export async function POST() {
         waiver_priority: i + 1
       }
 
-      const teamResult = await database.insert('teams', teamData)
-      if (teamResult.data) {
-        teams.push(teamResult.data)
-        console.log(`✅ Created team: ${teamResult.data.team_name}`)
+      const teamResult = await database.query(
+        `INSERT INTO teams (league_id, user_id, team_name, draft_position, waiver_priority) 
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [teamData.league_id, teamData.user_id, teamData.team_name, teamData.draft_position, teamData.waiver_priority]
+      )
+      if (teamResult.rows && teamResult.rows.length > 0) {
+        teams.push(teamResult.rows[0])
+        console.log(`✅ Created team: ${teamResult.rows[0].team_name}`)
       }
     }
 
@@ -112,9 +127,21 @@ export async function POST() {
         projections: {}
       }
 
-      const playerResult = await database.insert('players', playerData)
-      if (playerResult.data) {
-        players.push(playerResult.data)
+      const playerResult = await database.query(
+        `INSERT INTO players (name, position, nfl_team, bye_week, injury_status, stats, projections) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [
+          playerData.name,
+          playerData.position,
+          playerData.nfl_team,
+          playerData.bye_week,
+          playerData.injury_status,
+          JSON.stringify(playerData.stats),
+          JSON.stringify(playerData.projections)
+        ]
+      )
+      if (playerResult.rows && playerResult.rows.length > 0) {
+        players.push(playerResult.rows[0])
       }
     }
 
@@ -125,11 +152,10 @@ export async function POST() {
     const bestPlayers = players.slice(0, 8) // Top 8 players
 
     for (const player of bestPlayers) {
-      await database.insert('rosters', {
-        team_id: nicholasTeam.id,
-        player_id: player.id,
-        position_slot: 'STARTER'
-      })
+      await database.query(
+        'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)',
+        [nicholasTeam.id, player.id, 'STARTER']
+      )
     }
 
     console.log(`✅ Gave Nicholas the elite roster!`)
@@ -145,11 +171,10 @@ export async function POST() {
 
       for (const player of teamPlayers) {
         if (player) {
-          await database.insert('rosters', {
-            team_id: team.id,
-            player_id: player.id,
-            position_slot: 'STARTER'
-          })
+          await database.query(
+            'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3)',
+            [team.id, player.id, 'STARTER']
+          )
         }
       }
     }

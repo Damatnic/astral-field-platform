@@ -23,39 +23,34 @@ export async function POST() {
     for (const user of demoUsers) {
       try {
         // Check if user exists
-        const existingResult = await database.selectSingle('users', {
-          eq: { email: user.email }
-        })
+        const existingResult = await database.query(
+          'SELECT * FROM users WHERE email = $1 LIMIT 1',
+          [user.email]
+        )
 
-        if (existingResult.data) {
+        if (existingResult.rows && existingResult.rows.length > 0) {
           // Update existing user
-          const updateResult = await database.update('users', {
-            username: user.username,
-            password_hash: user.password, // Simple storage for demo
-            updated_at: new Date().toISOString()
-          }, { email: user.email })
-
-          if (updateResult.error) {
-            results.push({ email: user.email, status: 'update_error', error: updateResult.error })
-          } else {
+          try {
+            await database.query(
+              'UPDATE users SET username = $1, password_hash = $2, updated_at = NOW() WHERE email = $3',
+              [user.username, user.password, user.email]
+            )
             results.push({ email: user.email, status: 'updated' })
             updated++
+          } catch (updateError) {
+            results.push({ email: user.email, status: 'update_error', error: updateError instanceof Error ? updateError.message : 'Update failed' })
           }
         } else {
           // Create new user
-          const insertResult = await database.insert('users', {
-            email: user.email,
-            username: user.username,
-            password_hash: user.password, // Simple storage for demo
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
-
-          if (insertResult.error) {
-            results.push({ email: user.email, status: 'create_error', error: insertResult.error })
-          } else {
+          try {
+            await database.query(
+              'INSERT INTO users (email, username, password_hash, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW())',
+              [user.email, user.username, user.password]
+            )
             results.push({ email: user.email, status: 'created' })
             created++
+          } catch (insertError) {
+            results.push({ email: user.email, status: 'create_error', error: insertError instanceof Error ? insertError.message : 'Insert failed' })
           }
         }
       } catch (error) {
@@ -101,14 +96,14 @@ export async function POST() {
 export async function GET() {
   try {
     // List all current users
-    const result = await database.select('users', {
-      order: { column: 'created_at', ascending: false }
-    })
+    const result = await database.query(
+      'SELECT id, email, username, created_at, updated_at FROM users ORDER BY created_at DESC'
+    )
 
     return NextResponse.json({
       success: true,
-      users: result.data || [],
-      count: result.data?.length || 0
+      users: result.rows || [],
+      count: result.rows?.length || 0
     })
   } catch (error) {
     console.error('❌ Failed to get users:', error)
