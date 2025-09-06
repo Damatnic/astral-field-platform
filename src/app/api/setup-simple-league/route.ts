@@ -102,12 +102,14 @@ export async function POST() {
       const playerData = {
         name: mock.name,
         position: mock.position,
-        team: mock.team,
+        nfl_team: mock.team,
         bye_week: Math.floor(Math.random() * 14) + 1,
         injury_status: 'Healthy',
-        fantasy_points: mock.points,
-        adp: mock.adp,
-        external_id: null
+        stats: {
+          fantasy_points: mock.points,
+          adp: mock.adp
+        },
+        projections: {}
       }
 
       const playerResult = await neonServerless.insert('players', playerData)

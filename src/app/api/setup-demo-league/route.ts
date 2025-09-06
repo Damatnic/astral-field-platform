@@ -76,16 +76,21 @@ export async function POST() {
     const league = leagueResult.data
     console.log(`✅ Created league: ${league.name} (ID: ${league.id})`)
 
-    // Step 3: Create teams for all users
+    // Step 3: Create teams for demo users only (filter by email)
     const teams = []
-    for (let i = 0; i < users.length && i < demoUsers.length; i++) {
-      const user = users[i]
-      const demoUser = demoUsers.find(d => d.email === user.email)
+    for (let i = 0; i < demoUsers.length; i++) {
+      const demoUser = demoUsers[i]
+      const user = users.find(u => u.email === demoUser.email)
+      
+      if (!user) {
+        console.error(`❌ Demo user not found in database: ${demoUser.email}`)
+        continue
+      }
       
       const teamData = {
         league_id: league.id,
         user_id: user.id,
-        team_name: demoUser?.teamName || `${user.username}'s Team`,
+        team_name: demoUser.teamName,
         draft_position: i + 1,
         waiver_priority: i + 1
       }
@@ -97,7 +102,7 @@ export async function POST() {
       }
 
       teams.push(teamResult.data)
-      console.log(`✅ Created team: ${teamResult.data.team_name} for ${user.username}`)
+      console.log(`✅ Created team: ${teamResult.data.team_name} for ${user.username} (${user.email})`)
     }
 
     // Step 4: Import NFL players from SportsData API
@@ -127,11 +132,12 @@ export async function POST() {
           nfl_team: nflPlayer.Team || 'FA',
           bye_week: nflPlayer.ByeWeek || null,
           injury_status: nflPlayer.InjuryStatus || 'Healthy',
-          fantasy_points: Math.floor(Math.random() * 200), // Random fantasy points
-          adp: Math.floor(Math.random() * 300) + 1, // Average draft position
-          external_id: nflPlayer.PlayerID.toString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          stats: {
+            fantasy_points: Math.floor(Math.random() * 200),
+            adp: Math.floor(Math.random() * 300) + 1,
+            external_id: nflPlayer.PlayerID.toString()
+          },
+          projections: {}
         }
 
         const playerResult = await neonServerless.insert('players', playerData)
@@ -195,11 +201,11 @@ export async function POST() {
           nfl_team: mock.team,
           bye_week: Math.floor(Math.random() * 14) + 1,
           injury_status: 'Healthy',
-          fantasy_points: mock.points,
-          adp: i + 1,
-          external_id: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          stats: {
+            fantasy_points: mock.points,
+            adp: i + 1
+          },
+          projections: {}
         }
 
         const playerResult = await neonServerless.insert('players', playerData)
