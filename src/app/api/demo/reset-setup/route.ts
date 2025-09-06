@@ -113,7 +113,34 @@ export async function POST(request: NextRequest) {
 
     // 4) Auto-draft: assemble believable but strong roster for Nicholas, distribute others
     const playersRes = await neonServerless.select('players', { order: { column: 'name' } })
-    const players = playersRes.data || []
+    let players = playersRes.data || []
+
+    // Fallback: seed minimal players if pool is too small
+    if (players.length < 120) {
+      const neededByPos: Record<string, number> = { QB: 12, RB: 30, WR: 36, TE: 12, K: 12, DST: 12 }
+      const created: any[] = []
+      for (const [pos, count] of Object.entries(neededByPos)) {
+        const existing = players.filter(p => (p.position || '').toUpperCase() === pos)
+        const toCreate = Math.max(0, count - existing.length)
+        for (let i = 1; i <= toCreate; i++) {
+          const mock = await neonServerless.insert('players', {
+            name: `${pos} Mock ${i}`,
+            position: pos,
+            nfl_team: ['KC','BUF','SF','DAL','PHI','MIA','CIN','LAC'][i % 8],
+            bye_week: (i % 14) + 1,
+            injury_status: 'Healthy',
+            stats: null,
+            projections: { fantasyPoints: pos === 'QB' ? 20 - (i % 5) : pos === 'RB' ? 13 - (i % 4) : pos === 'WR' ? 12 - (i % 4) : pos === 'TE' ? 9 - (i % 3) : 7 - (i % 3) } as any,
+            active: true
+          })
+          if (mock.data) created.push(mock.data)
+        }
+      }
+      if (created.length) {
+        const refreshed = await neonServerless.select('players', { order: { column: 'name' } })
+        players = refreshed.data || players
+      }
+    }
     const byPos: Record<string, any[]> = {}
     for (const p of players) {
       const pos = (p.position || '').toUpperCase()
@@ -196,4 +223,3 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   return NextResponse.json({ info: 'POST with admin Authorization to reset old demo data and set up a fresh 10-team league with auto-drafted rosters.' })
 }
-

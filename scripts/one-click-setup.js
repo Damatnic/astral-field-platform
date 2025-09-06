@@ -61,6 +61,16 @@
   try {
     log(`Target: ${BASE}`)
 
+    // Health check first
+    try {
+      await fetchJson(`/api/health`, {}, 8000)
+      log('Health check OK')
+    } catch (e) {
+      log(`Health check failed: ${e.message}`)
+      log('Make sure your app is running at the base URL (e.g., npm run dev) or pass --base to a deployed URL.')
+      process.exit(1)
+    }
+
     // Check player pool
     log('Checking player pool size...')
     let playerCount = 0
@@ -70,8 +80,17 @@
     } catch { playerCount = 0 }
     log(`Players detected: ${playerCount}`)
 
-    // Seed a few teams if pool looks small
-    if (playerCount < 150) {
+    // Check SportsData integration status
+    let canSeed = true
+    try {
+      await fetchJson(`/api/sync-sportsdata`, {}, 8000)
+    } catch (e) {
+      canSeed = false
+      log(`SportsData status check failed (${e.message}). Will skip team seeding.`)
+    }
+
+    // Seed a few teams if pool looks small and SportsData is available
+    if (playerCount < 150 && canSeed) {
       log('Player pool is small; syncing a few NFL teams...')
       for (const t of SEED_TEAMS) {
         log(`Sync team ${t}...`)
@@ -85,7 +104,7 @@
           log(`Warning: team ${t} sync failed or timed out: ${e.message}. Continuing...`)
         }
       }
-    } else {
+    } else if (playerCount >= 150) {
       log('Player pool sufficient; skipping seeding')
     }
 
