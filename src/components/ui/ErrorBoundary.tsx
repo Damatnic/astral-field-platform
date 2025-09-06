@@ -1,7 +1,9 @@
 'use client'
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { AlertTriangle, RefreshCw, Home, Bug, ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Props {
   children: ReactNode
