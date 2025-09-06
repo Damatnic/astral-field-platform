@@ -6,6 +6,10 @@ import SportsDataSync from '@/components/admin/SportsDataSync'
 export default function AdminSetupPage() {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<any>(null)
+  const [adminKey, setAdminKey] = useState('astral2025')
+  const [log, setLog] = useState<string[]>([])
+
+  const appendLog = (line: string) => setLog(prev => [...prev, `${new Date().toLocaleTimeString()} — ${line}`])
 
   const setupDatabase = async () => {
     setLoading(true)
@@ -56,6 +60,55 @@ export default function AdminSetupPage() {
     }
   }
 
+  const oneClickResetAndSetup = async () => {
+    setLoading(true)
+    setLog([])
+    try {
+      appendLog('Checking player pool size...')
+      const playersRes = await fetch('/api/players/search?limit=5')
+      const playersData = await playersRes.json().catch(() => ({ count: 0 }))
+      const playerCount = Number(playersData?.count || 0)
+      if (playerCount < 150) {
+        appendLog('Player pool small; syncing a few NFL teams for demo...')
+        const teams = ['KC','BUF','SF','DAL','PHI','MIA']
+        for (const t of teams) {
+          appendLog(`Syncing team ${t}...`)
+          await fetch('/api/sync-sportsdata', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminKey}` },
+            body: JSON.stringify({ action: 'sync-team-players', team: t })
+          })
+        }
+      } else {
+        appendLog('Player pool sufficient; skipping team sync')
+      }
+
+      appendLog('Resetting and setting up demo league...')
+      const resetRes = await fetch('/api/demo/reset-setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminKey}` }
+      })
+      const resetData = await resetRes.json()
+      if (!resetRes.ok) throw new Error(resetData.error || 'Reset/setup failed')
+      appendLog('Demo league created, teams added, rosters drafted')
+
+      appendLog('Syncing weekly projections (optional)...')
+      await fetch('/api/sync-week', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminKey}` },
+        body: JSON.stringify({ action: 'sync-projections' })
+      })
+
+      setResults({ type: 'oneclick', success: true, reset: resetData })
+      appendLog('All done! You can head to the dashboard.')
+    } catch (error: any) {
+      setResults({ type: 'oneclick', success: false, error: error?.message || 'Failed to complete setup' })
+      appendLog(`Error: ${error?.message || 'Unknown error'}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -63,6 +116,17 @@ export default function AdminSetupPage() {
           🏈 Astral Field - Netlify Database Setup
         </h1>
         
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
+          <label className="block text-sm text-gray-400 mb-2">Admin Setup Key</label>
+          <input
+            value={adminKey}
+            onChange={(e) => setAdminKey(e.target.value)}
+            className="w-full bg-gray-900 text-white border border-gray-700 rounded px-3 py-2"
+            placeholder="Enter your ADMIN_SETUP_KEY"
+          />
+          <p className="text-xs text-gray-500 mt-2">Used to authorize setup API calls (defaults to 'astral2025' if not changed in env).</p>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-3 mb-8">
           <button
             onClick={setupDatabase}
@@ -86,6 +150,42 @@ export default function AdminSetupPage() {
             className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 px-6 py-4 rounded-lg font-medium transition-colors"
           >
             {loading ? '⏳ Working...' : '📊 Check Status'}
+          </button>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <button
+            onClick={oneClickResetAndSetup}
+            disabled={loading}
+            className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 px-6 py-4 rounded-lg font-semibold transition-colors"
+          >
+            {loading ? 'Setting up...' : 'One‑Click: Reset & Setup Demo League'}
+          </button>
+          <button
+            onClick={async () => {
+              setLoading(true)
+              setLog([])
+              try {
+                appendLog('Cleaning up old demo data...')
+                const res = await fetch(`/api/cleanup`, {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${adminKey}` }
+                })
+                const data = await res.json()
+                if (!res.ok) throw new Error(data.error || 'Cleanup failed')
+                setResults({ type: 'cleanup', success: true, data })
+                appendLog('Cleanup complete. Now run One‑Click Setup.')
+              } catch (e: any) {
+                setResults({ type: 'cleanup', success: false, error: e?.message })
+                appendLog(`Error: ${e?.message}`)
+              } finally {
+                setLoading(false)
+              }
+            }}
+            disabled={loading}
+            className="bg-rose-600 hover:bg-rose-700 disabled:bg-gray-600 px-6 py-4 rounded-lg font-semibold transition-colors"
+          >
+            {loading ? 'Cleaning...' : 'Cleanup Only'}
           </button>
         </div>
 
@@ -146,11 +246,16 @@ export default function AdminSetupPage() {
             
             <details className="mt-4">
               <summary className="cursor-pointer text-sm text-gray-400 hover:text-white">
-                Show Raw Response
+                Show Raw Response / Activity Log
               </summary>
-              <pre className="mt-2 text-xs bg-gray-900 p-3 rounded overflow-auto">
-                {JSON.stringify(results, null, 2)}
-              </pre>
+              <div className="mt-2 grid md:grid-cols-2 gap-4">
+                <pre className="text-xs bg-gray-900 p-3 rounded overflow-auto">
+                  {JSON.stringify(results, null, 2)}
+                </pre>
+                <div className="text-xs bg-gray-900 p-3 rounded overflow-auto border border-gray-700">
+                  {log.map((l, i) => (<div key={i}>{l}</div>))}
+                </div>
+              </div>
             </details>
           </div>
         )}
