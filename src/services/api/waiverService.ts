@@ -50,7 +50,7 @@ class WaiverService {
       const players = playersResult.data
 
       // Get claim counts for each player
-      const playerIds = players.map((p: any) => p.id)
+      const playerIds = (players || []).map((p: any) => p.id)
       const claimsResult = await neonServerless.select('waiver_claims', {
         where: { status: 'pending' }
       })
@@ -61,7 +61,7 @@ class WaiverService {
         return acc
       }, {} as Record<string, number>)
 
-      const waiverPlayers: WaiverPlayer[] = players.map((player: any) => ({
+      const waiverPlayers: WaiverPlayer[] = (players || []).map((player: any) => ({
         id: player.id,
         name: player.name,
         position: player.position,
@@ -96,7 +96,7 @@ class WaiverService {
       if (claimsResult.error) throw new Error(claimsResult.error)
       const claims = claimsResult.data
 
-      const formattedClaims: WaiverClaim[] = claims.map((claim: any) => ({
+      const formattedClaims: WaiverClaim[] = (claims || []).map((claim: any) => ({
         id: claim.id,
         teamId: claim.team_id,
         teamName: 'Team Name', // Simplified - would need team lookup
@@ -129,7 +129,7 @@ class WaiverService {
       const teamResult = await neonServerless.select('teams', {
         where: { eq: { id: teamId } }
       })
-      if (teamResult.error) throw new Error(teamResult.error)
+      if (teamResult.error || !teamResult.data) throw new Error(teamResult.error || 'Team not found')
       const team = teamResult.data[0]
 
       // Check if player is available
@@ -139,7 +139,7 @@ class WaiverService {
       if (rosterResult.error) throw new Error(rosterResult.error)
       const existingRoster = rosterResult.data
 
-      if (existingRoster.length > 0) {
+      if (existingRoster && existingRoster.length > 0) {
         return { success: false, error: 'Player is already on a roster' }
       }
 
@@ -156,7 +156,7 @@ class WaiverService {
       if (existingClaimResult.error) throw new Error(existingClaimResult.error)
       const existingClaim = existingClaimResult.data
 
-      if (existingClaim.length > 0) {
+      if (existingClaim && existingClaim.length > 0) {
         return { success: false, error: 'You already have a pending claim on this player' }
       }
 
@@ -173,7 +173,7 @@ class WaiverService {
         if (ownedResult.error) throw new Error(ownedResult.error)
         const ownedPlayer = ownedResult.data
 
-        if (ownedPlayer.length === 0) {
+        if (!ownedPlayer || ownedPlayer.length === 0) {
           return { success: false, error: 'You can only drop players you own' }
         }
       }
@@ -365,7 +365,7 @@ class WaiverService {
       if (claimsResult.error) throw new Error(claimsResult.error)
       const claims = claimsResult.data
 
-      const spent = claims.reduce((total: number, claim: any) => total + (claim.bid_amount || 0), 0)
+      const spent = (claims || []).reduce((total: number, claim: any) => total + (claim.bid_amount || 0), 0)
       const remaining = totalBudget - spent
 
       return {

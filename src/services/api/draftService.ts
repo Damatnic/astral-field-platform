@@ -177,7 +177,7 @@ class DraftService {
         throw new Error(insertResult.error || 'Failed to create draft pick')
       }
       
-      const draftPick = insertResult.data
+      const draftPick = insertResult.data as DraftPick
 
       // Advance to next pick
       await this.advanceToNextPick(leagueId, draft)
@@ -287,16 +287,17 @@ class DraftService {
 
       // Get drafted players
       const draftedResult = await neonServerless.select('draft_picks', {
-        eq: { league_id: leagueId },
-        columns: ['player_id']
+        eq: { league_id: leagueId }
       })
 
       if (draftedResult.error) throw new Error(draftedResult.error)
 
-      const draftedPlayerIds = new Set(draftedResult.data?.map((pick) => pick.player_id) || [])
+      const draftPicks = (draftedResult.data || []) as DraftPick[]
+      const draftedPlayerIds = new Set(draftPicks.map((pick) => pick.player_id) || [])
 
       // Transform to draft board players
-      const availablePlayers: DraftBoardPlayer[] = (playersResult.data || []).map((player, index: number) => ({
+      const players = (playersResult.data || []) as Player[]
+      const availablePlayers: DraftBoardPlayer[] = players.map((player, index: number) => ({
         ...player,
         isAvailable: !draftedPlayerIds.has(player.id),
         adp: index + 1, // Simple ADP based on order

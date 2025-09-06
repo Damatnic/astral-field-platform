@@ -83,13 +83,13 @@ class TradeService {
       const playerOwnerships = ownershipResult.data
 
       // Verify offered players belong to initiator
-      const offeredOwnership = playerOwnerships.filter((p: any) => data.offeredPlayers.includes(p.player_id))
+      const offeredOwnership = (playerOwnerships || []).filter((p: any) => data.offeredPlayers.includes(p.player_id))
       if (!offeredOwnership || !offeredOwnership.every((p: any) => p.team_id === data.initiatorTeamId)) {
         return { success: false, error: 'You can only trade players you own' }
       }
 
       // Verify requested players belong to receiver
-      const requestedOwnership = playerOwnerships.filter((p: any) => data.requestedPlayers.includes(p.player_id))
+      const requestedOwnership = (playerOwnerships || []).filter((p: any) => data.requestedPlayers.includes(p.player_id))
       if (!requestedOwnership || !requestedOwnership.every((p: any) => p.team_id === data.receiverTeamId)) {
         return { success: false, error: 'Requested players must belong to the other team' }
       }
@@ -108,8 +108,8 @@ class TradeService {
       }
 
       const tradeResult = await neonServerless.insert('trades', tradeInsert)
-      if (tradeResult.error) throw new Error(tradeResult.error)
-      const trade = tradeResult.data[0]
+      if (tradeResult.error || !tradeResult.data) throw new Error(tradeResult.error || 'Failed to create trade')
+      const trade = tradeResult.data
 
       // Add trade items
       const tradeItems = [
@@ -150,7 +150,7 @@ class TradeService {
             { eq: { receiving_team_id: teamId } }
           ]
         },
-        orderBy: { created_at: 'desc' }
+        order: { column: 'created_at', ascending: false }
       })
       if (tradesResult.error) throw new Error(tradesResult.error)
       const trades = tradesResult.data
@@ -274,8 +274,8 @@ class TradeService {
       if (playersResult.error) throw new Error(playersResult.error)
       const players = playersResult.data
 
-      const offeredData = players.filter((p: any) => offeredPlayers.includes(p.id))
-      const requestedData = players.filter((p: any) => requestedPlayers.includes(p.id))
+      const offeredData = (players || []).filter((p: any) => offeredPlayers.includes(p.id))
+      const requestedData = (players || []).filter((p: any) => requestedPlayers.includes(p.id))
 
       // Calculate values (simplified - using default values)
       const offeredValue = offeredData.reduce((sum: number, player: any) => {

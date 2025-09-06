@@ -38,8 +38,7 @@
     "security:scan": "npm audit --audit-level=high",
     "optimize:images": "node scripts/optimize-images.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
-    "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false",
-    "postinstall": "patch-package"
+    "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -68,7 +67,7 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "ws": "^8.18.3",
-    "zod": "^4.1.5",
+    "zod": "^3.23.8",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

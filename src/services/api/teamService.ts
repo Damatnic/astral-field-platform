@@ -49,7 +49,7 @@ class TeamService {
 
       if (result.error) throw new Error(result.error)
 
-      return { team: result.data, error: null }
+      return { team: result.data as Team | null, error: null }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Failed to fetch team'
       return { team: null, error: message }
@@ -58,24 +58,17 @@ class TeamService {
 
   async getTeamLineup(teamId: string, week: number): Promise<LineupResponse> {
     try {
-      const { data: lineup, error } = await this.supabase
-        .from('lineup_entries')
-        .select(`
-          *,
-          players!inner(
-            name,
-            position,
-            nfl_team,
-            injury_status
-          )
-        `)
-        .eq('team_id', teamId)
-        .eq('week', week)
-        .order('position_slot')
+      // Get lineup entries
+      const lineupResult = await neonServerless.select('lineup_entries', {
+        where: { team_id: teamId, week: week },
+        order: { column: 'position_slot', ascending: true }
+      })
 
-      if (error) throw error
+      if (lineupResult.error) throw new Error(lineupResult.error)
 
-      return { lineup: lineup || [], error: null }
+      const lineup = (lineupResult.data || []) as any[]
+
+      return { lineup, error: null }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Failed to fetch lineup'
       return { lineup: [], error: message }
@@ -85,13 +78,12 @@ class TeamService {
   async setLineup(teamId: string, week: number, lineup: RosterPlayer[]): Promise<{ error: string | null }> {
     try {
       // First, delete existing lineup entries for this week
-      const { error: deleteError } = await this.supabase
-        .from('lineup_entries')
-        .delete()
-        .eq('team_id', teamId)
-        .eq('week', week)
+      const deleteResult = await neonServerless.delete('lineup_entries', {
+        team_id: teamId,
+        week: week
+      })
 
-      if (deleteError) throw deleteError
+      if (deleteResult.error) throw new Error(deleteResult.error)
 
       // Insert new lineup entries
       const lineupEntries = lineup.map(player => ({
@@ -102,11 +94,9 @@ class TeamService {
         points_scored: null,
       }))
 
-      const { error: insertError } = await this.supabase
-        .from('lineup_entries')
-        .insert(lineupEntries)
+      const insertResult = await neonServerless.insert('lineup_entries', lineupEntries)
 
-      if (insertError) throw insertError
+      if (insertResult.error) throw new Error(insertResult.error)
 
       return { error: null }
     } catch (error: unknown) {
@@ -123,38 +113,38 @@ class TeamService {
   ): Promise<{ error: string | null }> {
     try {
       // Check if position slot is already filled
-      const { data: existing, error: checkError } = await this.supabase
-        .from('lineup_entries')
-        .select('id')
-        .eq('team_id', teamId)
-        .eq('week', week)
-        .eq('position_slot', positionSlot)
-        .single()
+      const existingResult = await neonServerless.selectSingle('lineup_entries', {
+        eq: {
+          team_id: teamId,
+          week: week,
+          position_slot: positionSlot
+        }
+      })
 
-      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
-        throw checkError
+      // If there's an error other than "no rows found", throw it
+      if (existingResult.error && !existingResult.error.includes('no rows')) {
+        throw new Error(existingResult.error)
       }
 
-      if (existing) {
+      if (existingResult.data) {
         // Update existing entry
-        const { error: updateError } = await this.supabase
-          .from('lineup_entries')
-          .update({ player_id: playerId })
-          .eq('id', existing.id)
+        const updateResult = await neonServerless.update(
+          'lineup_entries',
+          { player_id: playerId },
+          { id: existingResult.data.id }
+        )
 
-        if (updateError) throw updateError
+        if (updateResult.error) throw new Error(updateResult.error)
       } else {
         // Insert new entry
-        const { error: insertError } = await this.supabase
-          .from('lineup_entries')
-          .insert({
-            team_id: teamId,
-            week: week,
-            player_id: playerId,
-            position_slot: positionSlot,
-          })
+        const insertResult = await neonServerless.insert('lineup_entries', {
+          team_id: teamId,
+          week: week,
+          player_id: playerId,
+          position_slot: positionSlot,
+        })
 
-        if (insertError) throw insertError
+        if (insertResult.error) throw new Error(insertResult.error)
       }
 
       return { error: null }
@@ -170,14 +160,13 @@ class TeamService {
     positionSlot: string
   ): Promise<{ error: string | null }> {
     try {
-      const { error } = await this.supabase
-        .from('lineup_entries')
-        .delete()
-        .eq('team_id', teamId)
-        .eq('week', week)
-        .eq('position_slot', positionSlot)
+      const deleteResult = await neonServerless.delete('lineup_entries', {
+        team_id: teamId,
+        week: week,
+        position_slot: positionSlot
+      })
 
-      if (error) throw error
+      if (deleteResult.error) throw new Error(deleteResult.error)
 
       return { error: null }
     } catch (error: unknown) {
@@ -199,17 +188,18 @@ class TeamService {
 
   async calculateTeamPoints(teamId: string, week: number): Promise<{ points: number; error: string | null }> {
     try {
-      const { data: lineup, error } = await this.supabase
-        .from('lineup_entries')
-        .select('points_scored')
-        .eq('team_id', teamId)
-        .eq('week', week)
+      const lineupResult = await neonServerless.select('lineup_entries', {
+        where: {
+          team_id: teamId,
+          week: week
+        }
+      })
 
-      if (error) throw error
+      if (lineupResult.error) throw new Error(lineupResult.error)
 
-      const totalPoints = lineup?.reduce((sum: number, entry: any) => {
+      const totalPoints = (lineupResult.data || []).reduce((sum: number, entry: any) => {
         return sum + (entry.points_scored || 0)
-      }, 0) || 0
+      }, 0)
 
       return { points: totalPoints, error: null }
     } catch (error: unknown) {
@@ -220,16 +210,22 @@ class TeamService {
 
   async updateTeamSettings(teamId: string, updates: Partial<Team>): Promise<TeamResponse> {
     try {
-      const { data: team, error } = await this.supabase
-        .from('teams')
-        .update(updates)
-        .eq('id', teamId)
-        .select()
-        .single()
+      const updateResult = await neonServerless.update(
+        'teams',
+        updates,
+        { id: teamId }
+      )
 
-      if (error) throw error
+      if (updateResult.error) throw new Error(updateResult.error)
 
-      return { team, error: null }
+      // Get the updated team data
+      const teamResult = await neonServerless.selectSingle('teams', {
+        eq: { id: teamId }
+      })
+
+      if (teamResult.error) throw new Error(teamResult.error)
+
+      return { team: teamResult.data as Team, error: null }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Failed to update team'
       return { team: null, error: message }

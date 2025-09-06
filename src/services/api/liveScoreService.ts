@@ -135,13 +135,12 @@ class LiveScoreService {
     try {
       // Get all teams in the league (simplified)
       const teamsResult = await neonServerless.select('teams', {
-        columns: ['id', 'team_name'],
-        where: { eq: { league_id: leagueId } }
+        where: { league_id: leagueId }
       })
       if (teamsResult.error) return []
       const teams = teamsResult.data
 
-      if (!teams.length) return []
+      if (!teams || !teams.length) return []
 
       const teamScores: TeamLiveScore[] = []
 
@@ -207,10 +206,9 @@ class LiveScoreService {
     try {
       // Get player info
       const playerResult = await neonServerless.select('players', {
-        columns: ['id', 'name', 'position', 'nfl_team'],
-        where: { eq: { id: playerId } }
+        where: { id: playerId }
       })
-      if (playerResult.error || !playerResult.data.length) throw new Error('Player not found')
+      if (playerResult.error || !playerResult.data || !playerResult.data.length) throw new Error('Player not found')
       const player = playerResult.data[0]
 
       // Simulate live stats (in production, this would come from real NFL data)
