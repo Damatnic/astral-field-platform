@@ -360,4 +360,7 @@ export class AIRouterService {
   }
 }
 
+// Export types for compatibility
+export type { AIRequest, AIResponse, AIProvider };
+
 export default AIRouterService;

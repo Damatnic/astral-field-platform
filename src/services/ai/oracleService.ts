@@ -604,4 +604,8 @@ class OracleService {
 }
 
 const oracleService = new OracleService()
+export { OracleService }
+export { OracleInsight }
+// Note: OracleAnalysis doesn't exist as a separate type - using OracleResponse instead
+export { OracleResponse as OracleAnalysis }
 export default oracleService

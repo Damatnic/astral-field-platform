@@ -494,4 +494,6 @@ class AIRouterService {
 }
 
 const aiRouter = new AIRouterService()
+export { aiRouter as aiRouterService }
+export { AIRouterService }
 export default aiRouter

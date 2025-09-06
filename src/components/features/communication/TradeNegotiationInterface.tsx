@@ -16,7 +16,8 @@ import {
   Users,
   Send,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  ChevronDown
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useLeagueStore } from '@/stores/leagueStore'
@@ -242,7 +243,7 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
       fromTeamId: teamId,
       fromTeamName: 'Your Team',
       toTeamId: newTradeData.toTeamId,
-      toTeamName: teams.find(t => t.id === newTradeData.toTeamId)?.name || 'Unknown Team',
+      toTeamName: teams.find(t => t.id === newTradeData.toTeamId)?.team_name || 'Unknown Team',
       offeredPlayers: newTradeData.offeredPlayers,
       requestedPlayers: newTradeData.requestedPlayers,
       status: 'pending',
@@ -462,6 +463,16 @@ interface TradeOfferCardProps {
 }
 
 function TradeOfferCard({ offer, onAccept, onReject, onCounter, onViewDetails, isIncoming }: TradeOfferCardProps) {
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'accepted': return 'text-green-400 bg-green-900/30'
+      case 'rejected': return 'text-red-400 bg-red-900/30'
+      case 'countered': return 'text-yellow-400 bg-yellow-900/30'
+      case 'expired': return 'text-gray-400 bg-gray-900/30'
+      default: return 'text-blue-400 bg-blue-900/30'
+    }
+  }
+
   const getTimeRemaining = () => {
     const now = new Date().getTime()
     const expires = new Date(offer.expiresAt).getTime()
@@ -680,7 +691,7 @@ function TradeBuilder({
         >
           <option value="">Select team...</option>
           {teams.map((team) => (
-            <option key={team.id} value={team.id}>{team.name}</option>
+            <option key={team.id} value={team.id}>{team.team_name}</option>
           ))}
         </select>
       </div>

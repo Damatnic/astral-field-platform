@@ -583,4 +583,6 @@ class AIAnalyticsService {
 }
 
 const aiAnalytics = new AIAnalyticsService()
+export { AIAnalyticsService }
+export { aiAnalytics as aiAnalyticsService }
 export default aiAnalytics

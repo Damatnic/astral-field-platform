@@ -895,3 +895,4 @@ class AdaptiveLearningEngine {
 }
 
 export const adaptiveLearningEngine = new AdaptiveLearningEngine();
+export { AdaptiveLearningEngine };

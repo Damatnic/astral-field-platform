@@ -1,617 +1,617 @@
-[16:04:20.557] Running build in Washington, D.C., USA (East) – iad1
-[16:04:20.558] Build machine configuration: 4 cores, 8 GB
-[16:04:20.579] Cloning github.com/Damatnic/astral-field-platform (Branch: main, Commit: 8dda059)
-[16:04:22.285] Cloning completed: 1.706s
-[16:04:22.380] Found .vercelignore
-[16:04:22.390] Removed 23 ignored files defined in .vercelignore
-[16:04:22.390]   /__tests__/agents/draft-specialist/draft-logic.test.ts
-[16:04:22.390]   /__tests__/agents/league-systems/league-service.test.ts
-[16:04:22.390]   /__tests__/fixtures/mock-data.ts
-[16:04:22.390]   /__tests__/services/authService.test.ts
-[16:04:22.390]   /__tests__/utils/test-utils.ts
-[16:04:22.390]   /scripts/auto-draft-league.js
-[16:04:22.390]   /scripts/create-users-table.js
-[16:04:22.390]   /scripts/deploy-production.js
-[16:04:22.390]   /scripts/deploy.sh
-[16:04:22.390]   /scripts/one-click-setup.js
-[16:04:24.449] Restored build cache from previous deployment (RJwm5EweMecaiKZBSgho23bVYUsn)
-[16:04:25.255] Running "vercel build"
-[16:04:25.673] Vercel CLI 47.0.5
-[16:04:26.071] Running "install" command: `npm ci --prefer-offline --no-audit`...
-[16:04:30.868] npm warn deprecated @supabase/auth-helpers-shared@0.7.0: This package is now deprecated - please use the @supabase/ssr package instead.
-[16:04:31.197] npm warn deprecated @supabase/auth-helpers-nextjs@0.10.0: This package is now deprecated - please use the @supabase/ssr package instead.
-[16:04:32.695] npm warn deprecated react-beautiful-dnd@13.1.1: react-beautiful-dnd is now deprecated. Context and options: https://github.com/atlassian/react-beautiful-dnd/issues/2672
-[16:04:40.260] 
-[16:04:40.260] added 194 packages in 14s
-[16:04:40.260] 
-[16:04:40.261] 17 packages are looking for funding
-[16:04:40.261]   run `npm fund` for details
-[16:04:40.351] Detected Next.js version: 15.5.2
-[16:04:40.352] Running "npm run build"
-[16:04:40.699] 
-[16:04:40.699] > astral-field@0.1.0 build
-[16:04:40.699] > next build
-[16:04:40.699] 
-[16:04:41.675]  ⚠ Installing TypeScript as it was not found while loading "next.config.ts".
-[16:04:41.728] 
-[16:04:41.729] Installing devDependencies (npm):
-[16:04:41.729] - typescript
-[16:04:41.729] 
-[16:04:45.646] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-[16:04:46.120] npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
-[16:04:47.449] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-[16:04:51.685] 
-[16:04:51.685] added 702 packages, and audited 897 packages in 10s
-[16:04:51.686] 
-[16:04:51.686] 197 packages are looking for funding
-[16:04:51.686]   run `npm fund` for details
-[16:04:51.687] 
-[16:04:51.687] found 0 vulnerabilities
-[16:04:51.707] 
-[16:04:52.066]    ▲ Next.js 15.5.2
-[16:04:52.066]    - Experiments (use with caution):
-[16:04:52.066]      · optimizePackageImports
-[16:04:52.066]      ✓ memoryBasedWorkersCount
-[16:04:52.066] 
-[16:04:52.110]    Creating an optimized production build ...
-[16:05:19.362]  ⚠ Compiled with warnings in 27.1s
-[16:05:19.363] 
-[16:05:19.363] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.363] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.363] 
-[16:05:19.363] Import trace for requested module:
-[16:05:19.363] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.363] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.363] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.363] 
-[16:05:19.363] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.364] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.364] 
-[16:05:19.364] Import trace for requested module:
-[16:05:19.364] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.364] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.365] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.365] 
-[16:05:19.365] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.365] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.365] 
-[16:05:19.365] Import trace for requested module:
-[16:05:19.365] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.365] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.365] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.365] 
-[16:05:19.365] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.365] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.365] 
-[16:05:19.365] Import trace for requested module:
-[16:05:19.366] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.366] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.366] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.366] 
-[16:05:19.366] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.366] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.366] 
-[16:05:19.366] Import trace for requested module:
-[16:05:19.366] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.366] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.366] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.366] 
-[16:05:19.366] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.366] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
-[16:05:19.366] 
-[16:05:19.366] Import trace for requested module:
-[16:05:19.366] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.366] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.366] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.366] 
-[16:05:19.367] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.367] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.367] 
-[16:05:19.367] Import trace for requested module:
-[16:05:19.367] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.367] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.367] ./src/app/api/trades/analyze/route.ts
-[16:05:19.367] 
-[16:05:19.367] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.367] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.367] 
-[16:05:19.367] Import trace for requested module:
-[16:05:19.367] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.367] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.367] ./src/app/api/trades/analyze/route.ts
-[16:05:19.367] 
-[16:05:19.367] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.367] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
-[16:05:19.367] 
-[16:05:19.368] Import trace for requested module:
-[16:05:19.368] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.368] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.368] ./src/app/api/trades/analyze/route.ts
-[16:05:19.368] 
-[16:05:19.368] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.368] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.368] 
-[16:05:19.368] Import trace for requested module:
-[16:05:19.368] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.368] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.368] ./src/app/api/trades/analyze/route.ts
-[16:05:19.368] 
-[16:05:19.368] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.368] Attempted import error: 'AIRouterService' is not exported from './aiRouterService' (imported as 'AIRouterService').
-[16:05:19.368] 
-[16:05:19.369] Import trace for requested module:
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.369] 
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] Attempted import error: 'AIAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'AIAnalyticsService').
-[16:05:19.369] 
-[16:05:19.369] Import trace for requested module:
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.369] 
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] Attempted import error: 'UserBehaviorAnalyzer' is not exported from './userBehaviorAnalyzer' (imported as 'UserBehaviorAnalyzer').
-[16:05:19.369] 
-[16:05:19.369] Import trace for requested module:
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.369] 
-[16:05:19.369] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.369] Attempted import error: 'AdaptiveLearningEngine' is not exported from './adaptiveLearningEngine' (imported as 'AdaptiveLearningEngine').
-[16:05:19.370] 
-[16:05:19.370] Import trace for requested module:
-[16:05:19.370] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.370] ./src/app/api/waivers/intelligent/recommendations/route.ts
-[16:05:19.370] 
-[16:05:19.370] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.370] Attempted import error: './adaptiveRiskModeling' does not contain a default export (imported as 'adaptiveRiskModeling').
-[16:05:19.370] 
-[16:05:19.370] Import trace for requested module:
-[16:05:19.370] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.370] ./src/app/api/trades/analyze/route.ts
-[16:05:19.370] 
-[16:05:19.370] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.370] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.370] 
-[16:05:19.370] Import trace for requested module:
-[16:05:19.370] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.370] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.370] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.370] ./src/pages/api/integration/system-health.ts
-[16:05:19.370] 
-[16:05:19.370] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.370] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.370] 
-[16:05:19.370] Import trace for requested module:
-[16:05:19.370] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.371] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.371] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.371] ./src/pages/api/integration/system-health.ts
-[16:05:19.371] 
-[16:05:19.371] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.371] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.371] 
-[16:05:19.371] Import trace for requested module:
-[16:05:19.371] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.371] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.371] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.371] ./src/pages/api/integration/system-health.ts
-[16:05:19.371] 
-[16:05:19.373] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.373] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.373] 
-[16:05:19.373] Import trace for requested module:
-[16:05:19.373] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.373] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.373] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.374] ./src/pages/api/integration/system-health.ts
-[16:05:19.374] 
-[16:05:19.374] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.374] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.374] 
-[16:05:19.374] Import trace for requested module:
-[16:05:19.374] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.374] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.374] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.374] ./src/pages/api/integration/system-health.ts
-[16:05:19.374] 
-[16:05:19.374] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.374] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
-[16:05:19.374] 
-[16:05:19.374] Import trace for requested module:
-[16:05:19.374] ./src/services/ai/adaptiveLearningEngine.ts
-[16:05:19.375] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.375] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.375] ./src/pages/api/integration/system-health.ts
-[16:05:19.375] 
-[16:05:19.375] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.375] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.375] 
-[16:05:19.375] Import trace for requested module:
-[16:05:19.375] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.375] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.375] ./src/services/ai/tradeAnalyzer.ts
-[16:05:19.375] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.375] ./src/pages/api/integration/system-health.ts
-[16:05:19.375] 
-[16:05:19.375] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.375] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.375] 
-[16:05:19.375] Import trace for requested module:
-[16:05:19.375] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.375] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.376] ./src/services/ai/tradeAnalyzer.ts
-[16:05:19.376] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.376] ./src/pages/api/integration/system-health.ts
-[16:05:19.376] 
-[16:05:19.376] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.376] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
-[16:05:19.376] 
-[16:05:19.376] Import trace for requested module:
-[16:05:19.376] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.376] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.376] ./src/services/ai/tradeAnalyzer.ts
-[16:05:19.376] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.376] ./src/pages/api/integration/system-health.ts
-[16:05:19.376] 
-[16:05:19.376] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.376] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
-[16:05:19.376] 
-[16:05:19.376] Import trace for requested module:
-[16:05:19.376] ./src/services/ai/adaptiveRiskModeling.ts
-[16:05:19.376] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.377] ./src/services/ai/tradeAnalyzer.ts
-[16:05:19.377] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.377] ./src/pages/api/integration/system-health.ts
-[16:05:19.377] 
-[16:05:19.377] ./src/services/ai/aiRouter.ts
-[16:05:19.377] export 'AIRequest' (reexported as 'AIRequest') was not found in './router' (possible exports: AIRouterService, default)
-[16:05:19.377] 
-[16:05:19.377] Import trace for requested module:
-[16:05:19.377] ./src/services/ai/aiRouter.ts
-[16:05:19.377] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.377] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.377] 
-[16:05:19.377] ./src/services/ai/aiRouter.ts
-[16:05:19.377] export 'AIResponse' (reexported as 'AIResponse') was not found in './router' (possible exports: AIRouterService, default)
-[16:05:19.377] 
-[16:05:19.378] Import trace for requested module:
-[16:05:19.378] ./src/services/ai/aiRouter.ts
-[16:05:19.378] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.378] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.378] 
-[16:05:19.378] ./src/services/ai/aiRouter.ts
-[16:05:19.378] export 'AIProvider' (reexported as 'AIProvider') was not found in './router' (possible exports: AIRouterService, default)
-[16:05:19.378] 
-[16:05:19.378] Import trace for requested module:
-[16:05:19.378] ./src/services/ai/aiRouter.ts
-[16:05:19.378] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.378] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.378] 
-[16:05:19.378] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.378] Attempted import error: 'AIRouterService' is not exported from './aiRouterService' (imported as 'AIRouterService').
-[16:05:19.378] 
-[16:05:19.379] Import trace for requested module:
-[16:05:19.379] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.379] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.379] ./src/pages/api/integration/system-health.ts
-[16:05:19.379] 
-[16:05:19.379] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.379] Attempted import error: 'AIAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'AIAnalyticsService').
-[16:05:19.379] 
-[16:05:19.379] Import trace for requested module:
-[16:05:19.379] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.379] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.379] ./src/pages/api/integration/system-health.ts
-[16:05:19.379] 
-[16:05:19.379] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.379] Attempted import error: 'UserBehaviorAnalyzer' is not exported from './userBehaviorAnalyzer' (imported as 'UserBehaviorAnalyzer').
-[16:05:19.379] 
-[16:05:19.380] Import trace for requested module:
-[16:05:19.380] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.380] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.380] ./src/pages/api/integration/system-health.ts
-[16:05:19.380] 
-[16:05:19.380] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.380] Attempted import error: 'AdaptiveLearningEngine' is not exported from './adaptiveLearningEngine' (imported as 'AdaptiveLearningEngine').
-[16:05:19.380] 
-[16:05:19.380] Import trace for requested module:
-[16:05:19.380] ./src/services/ai/intelligentWaiverProcessor.ts
-[16:05:19.380] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.380] ./src/pages/api/integration/system-health.ts
-[16:05:19.380] 
-[16:05:19.380] ./src/services/ai/oracle.ts
-[16:05:19.380] export 'OracleService' (reexported as 'OracleService') was not found in './oracleService' (possible exports: default)
-[16:05:19.380] 
-[16:05:19.380] Import trace for requested module:
-[16:05:19.381] ./src/services/ai/oracle.ts
-[16:05:19.381] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.381] ./src/pages/api/integration/system-health.ts
-[16:05:19.381] 
-[16:05:19.381] ./src/services/ai/oracle.ts
-[16:05:19.381] export 'OracleAnalysis' (reexported as 'OracleAnalysis') was not found in './oracleService' (possible exports: default)
-[16:05:19.381] 
-[16:05:19.381] Import trace for requested module:
-[16:05:19.381] ./src/services/ai/oracle.ts
-[16:05:19.381] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.381] ./src/pages/api/integration/system-health.ts
-[16:05:19.381] 
-[16:05:19.381] ./src/services/ai/oracle.ts
-[16:05:19.383] export 'OracleInsight' (reexported as 'OracleInsight') was not found in './oracleService' (possible exports: default)
-[16:05:19.383] 
-[16:05:19.383] Import trace for requested module:
-[16:05:19.383] ./src/services/ai/oracle.ts
-[16:05:19.383] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.383] ./src/pages/api/integration/system-health.ts
-[16:05:19.383] 
-[16:05:19.383] ./src/services/ai/oracle.ts
-[16:05:19.383] export 'OracleService' (reexported as 'default') was not found in './oracleService' (possible exports: default)
-[16:05:19.383] 
-[16:05:19.383] Import trace for requested module:
-[16:05:19.383] ./src/services/ai/oracle.ts
-[16:05:19.383] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.383] ./src/pages/api/integration/system-health.ts
-[16:05:19.383] 
-[16:05:19.383] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.383] Attempted import error: './adaptiveRiskModeling' does not contain a default export (imported as 'adaptiveRiskModeling').
-[16:05:19.383] 
-[16:05:19.383] Import trace for requested module:
-[16:05:19.384] ./src/services/ai/tradeAnalysisEngine.ts
-[16:05:19.384] ./src/services/ai/tradeAnalyzer.ts
-[16:05:19.384] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.384] ./src/pages/api/integration/system-health.ts
-[16:05:19.384] 
-[16:05:19.384] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.384] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
-[16:05:19.384] 
-[16:05:19.384] Import trace for requested module:
-[16:05:19.384] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.384] ./src/pages/api/analytics/comparative-analysis.ts
-[16:05:19.384] 
-[16:05:19.384] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.384] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.384] 
-[16:05:19.384] Import trace for requested module:
-[16:05:19.384] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.384] ./src/pages/api/analytics/comparative-analysis.ts
-[16:05:19.384] 
-[16:05:19.384] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.384] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.384] 
-[16:05:19.384] Import trace for requested module:
-[16:05:19.385] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.385] ./src/pages/api/analytics/comparative-analysis.ts
-[16:05:19.385] 
-[16:05:19.385] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.385] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.385] 
-[16:05:19.385] Import trace for requested module:
-[16:05:19.385] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.385] ./src/pages/api/analytics/comparative-analysis.ts
-[16:05:19.385] 
-[16:05:19.385] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.385] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.385] 
-[16:05:19.385] Import trace for requested module:
-[16:05:19.385] ./src/services/analytics/comparativeAnalysis.ts
-[16:05:19.385] ./src/pages/api/analytics/comparative-analysis.ts
-[16:05:19.385] 
-[16:05:19.385] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.385] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
-[16:05:19.385] 
-[16:05:19.385] Import trace for requested module:
-[16:05:19.385] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.385] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.386] 
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.386] 
-[16:05:19.386] Import trace for requested module:
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.386] 
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.386] 
-[16:05:19.386] Import trace for requested module:
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.386] 
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.386] 
-[16:05:19.386] Import trace for requested module:
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.386] 
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.386] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.386] 
-[16:05:19.386] Import trace for requested module:
-[16:05:19.386] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.387] 
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.387] 
-[16:05:19.387] Import trace for requested module:
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.387] 
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.387] 
-[16:05:19.387] Import trace for requested module:
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.387] 
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.387] 
-[16:05:19.387] Import trace for requested module:
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.387] 
-[16:05:19.387] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.387] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.387] 
-[16:05:19.387] Import trace for requested module:
-[16:05:19.388] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.388] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.388] 
-[16:05:19.388] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.388] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.388] 
-[16:05:19.388] Import trace for requested module:
-[16:05:19.388] ./src/services/analytics/performanceAttribution.ts
-[16:05:19.388] ./src/pages/api/analytics/performance-attribution.ts
-[16:05:19.388] 
-[16:05:19.388] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.388] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
-[16:05:19.388] 
-[16:05:19.388] Import trace for requested module:
-[16:05:19.388] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.388] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.388] 
-[16:05:19.388] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.388] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.388] 
-[16:05:19.388] Import trace for requested module:
-[16:05:19.388] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.388] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.389] 
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.390] 
-[16:05:19.390] Import trace for requested module:
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.390] 
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.390] 
-[16:05:19.390] Import trace for requested module:
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.390] 
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.390] 
-[16:05:19.390] Import trace for requested module:
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.390] 
-[16:05:19.390] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.390] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.390] 
-[16:05:19.390] Import trace for requested module:
-[16:05:19.391] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.391] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.391] 
-[16:05:19.391] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.391] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.391] 
-[16:05:19.391] Import trace for requested module:
-[16:05:19.391] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.391] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.391] 
-[16:05:19.391] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.391] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.391] 
-[16:05:19.391] Import trace for requested module:
-[16:05:19.391] ./src/services/analytics/seasonStrategy.ts
-[16:05:19.391] ./src/pages/api/analytics/season-strategy.ts
-[16:05:19.391] 
-[16:05:19.391] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.391] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.391] 
-[16:05:19.391] Import trace for requested module:
-[16:05:19.391] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.391] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.391] ./src/pages/api/performance/load-testing.ts
-[16:05:19.391] 
-[16:05:19.391] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.391] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.392] 
-[16:05:19.392] Import trace for requested module:
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.392] ./src/pages/api/performance/load-testing.ts
-[16:05:19.392] 
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.392] 
-[16:05:19.392] Import trace for requested module:
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.392] ./src/pages/api/performance/load-testing.ts
-[16:05:19.392] 
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.392] 
-[16:05:19.392] Import trace for requested module:
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.392] ./src/pages/api/performance/load-testing.ts
-[16:05:19.392] 
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.392] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.392] 
-[16:05:19.392] Import trace for requested module:
-[16:05:19.392] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.393] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.393] ./src/pages/api/performance/load-testing.ts
-[16:05:19.393] 
-[16:05:19.393] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.393] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.393] 
-[16:05:19.393] Import trace for requested module:
-[16:05:19.393] ./src/services/fallback/aiFallbackManager.ts
-[16:05:19.393] ./src/services/optimization/performanceOptimizer.ts
-[16:05:19.393] ./src/pages/api/performance/load-testing.ts
-[16:05:19.393] 
-[16:05:19.393] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.393] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
-[16:05:19.393] 
-[16:05:19.393] Import trace for requested module:
-[16:05:19.393] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.393] ./src/pages/api/integration/system-health.ts
-[16:05:19.393] 
-[16:05:19.393] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.393] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.394] 
-[16:05:19.394] Import trace for requested module:
-[16:05:19.394] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.394] ./src/pages/api/integration/system-health.ts
-[16:05:19.394] 
-[16:05:19.394] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.394] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
-[16:05:19.394] 
-[16:05:19.394] Import trace for requested module:
-[16:05:19.394] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.394] ./src/pages/api/integration/system-health.ts
-[16:05:19.394] 
-[16:05:19.394] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.394] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
-[16:05:19.394] 
-[16:05:19.394] Import trace for requested module:
-[16:05:19.394] ./src/services/integration/aiSystemsIntegrator.ts
-[16:05:19.394] ./src/pages/api/integration/system-health.ts
-[16:05:19.394] 
-[16:05:19.399]    Skipping linting
-[16:05:19.399]    Checking validity of types ...
-[16:05:43.170] Failed to compile.
-[16:05:43.170] 
-[16:05:43.170] ./src/components/features/communication/AnnouncementSystem.tsx:431:22
-[16:05:43.170] Type error: Parameter 'announcementData' implicitly has an 'any' type.
-[16:05:43.170] 
-[16:05:43.170] [0m [90m 429 |[39m         [33m<[39m[33mCreateAnnouncementModal[39m
-[16:05:43.171]  [90m 430 |[39m           onClose[33m=[39m{() [33m=>[39m setShowCreateModal([36mfalse[39m)}
-[16:05:43.171] [31m[1m>[22m[39m[90m 431 |[39m           onSubmit[33m=[39m{(announcementData) [33m=>[39m {
-[16:05:43.171]  [90m     |[39m                      [31m[1m^[22m[39m
-[16:05:43.171]  [90m 432 |[39m             [36mconst[39m newAnnouncement[33m:[39m [33mAnnouncement[39m [33m=[39m {
-[16:05:43.171]  [90m 433 |[39m               [33m...[39mannouncementData[33m,[39m
-[16:05:43.171]  [90m 434 |[39m               id[33m:[39m [33mDate[39m[33m.[39mnow()[33m.[39mtoString()[33m,[39m[0m
-[16:05:43.236] Next.js build worker exited with code: 1 and signal: null
-[16:05:43.328] Error: Command "npm run build" exited with 1
+[16:18:46.478] Running build in Washington, D.C., USA (East) – iad1
+[16:18:46.478] Build machine configuration: 4 cores, 8 GB
+[16:18:46.495] Cloning github.com/Damatnic/astral-field-platform (Branch: main, Commit: 0258d27)
+[16:18:47.003] Cloning completed: 508.000ms
+[16:18:47.108] Found .vercelignore
+[16:18:47.118] Removed 23 ignored files defined in .vercelignore
+[16:18:47.118]   /__tests__/agents/draft-specialist/draft-logic.test.ts
+[16:18:47.118]   /__tests__/agents/league-systems/league-service.test.ts
+[16:18:47.118]   /__tests__/fixtures/mock-data.ts
+[16:18:47.118]   /__tests__/services/authService.test.ts
+[16:18:47.118]   /__tests__/utils/test-utils.ts
+[16:18:47.118]   /scripts/auto-draft-league.js
+[16:18:47.118]   /scripts/create-users-table.js
+[16:18:47.119]   /scripts/deploy-production.js
+[16:18:47.119]   /scripts/deploy.sh
+[16:18:47.119]   /scripts/one-click-setup.js
+[16:18:50.082] Restored build cache from previous deployment (RJwm5EweMecaiKZBSgho23bVYUsn)
+[16:18:50.873] Running "vercel build"
+[16:18:51.307] Vercel CLI 47.0.5
+[16:18:51.716] Running "install" command: `npm ci --prefer-offline --no-audit`...
+[16:18:55.981] npm warn deprecated @supabase/auth-helpers-shared@0.7.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[16:18:56.196] npm warn deprecated @supabase/auth-helpers-nextjs@0.10.0: This package is now deprecated - please use the @supabase/ssr package instead.
+[16:18:57.495] npm warn deprecated react-beautiful-dnd@13.1.1: react-beautiful-dnd is now deprecated. Context and options: https://github.com/atlassian/react-beautiful-dnd/issues/2672
+[16:19:04.332] 
+[16:19:04.333] added 194 packages in 12s
+[16:19:04.333] 
+[16:19:04.333] 17 packages are looking for funding
+[16:19:04.333]   run `npm fund` for details
+[16:19:04.388] Detected Next.js version: 15.5.2
+[16:19:04.389] Running "npm run build"
+[16:19:04.509] 
+[16:19:04.509] > astral-field@0.1.0 build
+[16:19:04.509] > next build
+[16:19:04.509] 
+[16:19:05.116]  ⚠ Installing TypeScript as it was not found while loading "next.config.ts".
+[16:19:05.122] 
+[16:19:05.122] Installing devDependencies (npm):
+[16:19:05.122] - typescript
+[16:19:05.123] 
+[16:19:08.670] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+[16:19:09.157] npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+[16:19:10.281] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+[16:19:13.957] 
+[16:19:13.958] added 702 packages, and audited 897 packages in 9s
+[16:19:13.958] 
+[16:19:13.958] 197 packages are looking for funding
+[16:19:13.958]   run `npm fund` for details
+[16:19:13.959] 
+[16:19:13.959] found 0 vulnerabilities
+[16:19:13.976] 
+[16:19:14.301]    ▲ Next.js 15.5.2
+[16:19:14.302]    - Experiments (use with caution):
+[16:19:14.302]      · optimizePackageImports
+[16:19:14.302]      ✓ memoryBasedWorkersCount
+[16:19:14.302] 
+[16:19:14.343]    Creating an optimized production build ...
+[16:19:39.530]  ⚠ Compiled with warnings in 25.0s
+[16:19:39.531] 
+[16:19:39.531] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.531] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.531] 
+[16:19:39.531] Import trace for requested module:
+[16:19:39.531] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.531] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.532] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.532] 
+[16:19:39.533] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.533] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.533] 
+[16:19:39.533] Import trace for requested module:
+[16:19:39.533] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.533] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.533] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.533] 
+[16:19:39.533] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.533] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.533] 
+[16:19:39.533] Import trace for requested module:
+[16:19:39.533] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.533] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.533] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.533] 
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.534] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.534] 
+[16:19:39.534] Import trace for requested module:
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.534] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.534] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.534] 
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.534] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.534] 
+[16:19:39.534] Import trace for requested module:
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.534] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.534] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.534] 
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.534] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
+[16:19:39.534] 
+[16:19:39.534] Import trace for requested module:
+[16:19:39.534] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.535] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.535] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.535] 
+[16:19:39.535] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.535] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.535] 
+[16:19:39.535] Import trace for requested module:
+[16:19:39.535] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.535] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.535] ./src/app/api/trades/analyze/route.ts
+[16:19:39.535] 
+[16:19:39.535] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.535] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.538] 
+[16:19:39.538] Import trace for requested module:
+[16:19:39.538] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.538] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.538] ./src/app/api/trades/analyze/route.ts
+[16:19:39.538] 
+[16:19:39.538] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.538] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
+[16:19:39.538] 
+[16:19:39.538] Import trace for requested module:
+[16:19:39.538] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.538] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.538] ./src/app/api/trades/analyze/route.ts
+[16:19:39.538] 
+[16:19:39.538] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.538] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.538] 
+[16:19:39.538] Import trace for requested module:
+[16:19:39.538] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.538] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.538] ./src/app/api/trades/analyze/route.ts
+[16:19:39.539] 
+[16:19:39.539] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.539] Attempted import error: 'AIRouterService' is not exported from './aiRouterService' (imported as 'AIRouterService').
+[16:19:39.539] 
+[16:19:39.539] Import trace for requested module:
+[16:19:39.539] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.539] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.539] 
+[16:19:39.539] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.539] Attempted import error: 'AIAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'AIAnalyticsService').
+[16:19:39.539] 
+[16:19:39.539] Import trace for requested module:
+[16:19:39.539] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.540] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.540] 
+[16:19:39.540] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.540] Attempted import error: 'UserBehaviorAnalyzer' is not exported from './userBehaviorAnalyzer' (imported as 'UserBehaviorAnalyzer').
+[16:19:39.540] 
+[16:19:39.540] Import trace for requested module:
+[16:19:39.540] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.540] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.540] 
+[16:19:39.540] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.540] Attempted import error: 'AdaptiveLearningEngine' is not exported from './adaptiveLearningEngine' (imported as 'AdaptiveLearningEngine').
+[16:19:39.540] 
+[16:19:39.540] Import trace for requested module:
+[16:19:39.540] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.540] ./src/app/api/waivers/intelligent/process/route.ts
+[16:19:39.540] 
+[16:19:39.540] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.540] Attempted import error: './adaptiveRiskModeling' does not contain a default export (imported as 'adaptiveRiskModeling').
+[16:19:39.541] 
+[16:19:39.541] Import trace for requested module:
+[16:19:39.541] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.541] ./src/app/api/trades/analyze/route.ts
+[16:19:39.541] 
+[16:19:39.541] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.542] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.542] 
+[16:19:39.542] Import trace for requested module:
+[16:19:39.542] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.542] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.542] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.542] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.542] 
+[16:19:39.542] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.542] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.542] 
+[16:19:39.542] Import trace for requested module:
+[16:19:39.542] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.543] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.543] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.543] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.543] 
+[16:19:39.543] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.543] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.543] 
+[16:19:39.543] Import trace for requested module:
+[16:19:39.543] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.543] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.543] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.543] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.543] 
+[16:19:39.543] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.543] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.543] 
+[16:19:39.543] Import trace for requested module:
+[16:19:39.543] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.543] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.543] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.543] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.543] 
+[16:19:39.544] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.544] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.544] 
+[16:19:39.544] Import trace for requested module:
+[16:19:39.544] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.544] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.544] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.544] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.544] 
+[16:19:39.544] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.544] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
+[16:19:39.544] 
+[16:19:39.544] Import trace for requested module:
+[16:19:39.544] ./src/services/ai/adaptiveLearningEngine.ts
+[16:19:39.544] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.544] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.544] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.544] 
+[16:19:39.544] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.544] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.544] 
+[16:19:39.544] Import trace for requested module:
+[16:19:39.544] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.544] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.544] ./src/services/ai/tradeAnalyzer.ts
+[16:19:39.545] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.545] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.545] 
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.545] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.545] 
+[16:19:39.545] Import trace for requested module:
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.545] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.545] ./src/services/ai/tradeAnalyzer.ts
+[16:19:39.545] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.545] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.545] 
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.545] Attempted import error: 'aiRouterService' is not exported from './aiRouterService' (imported as 'aiRouterService').
+[16:19:39.545] 
+[16:19:39.545] Import trace for requested module:
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.545] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.545] ./src/services/ai/tradeAnalyzer.ts
+[16:19:39.545] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.545] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.545] 
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.545] Attempted import error: 'aiAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'aiAnalyticsService').
+[16:19:39.545] 
+[16:19:39.545] Import trace for requested module:
+[16:19:39.545] ./src/services/ai/adaptiveRiskModeling.ts
+[16:19:39.546] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.546] ./src/services/ai/tradeAnalyzer.ts
+[16:19:39.546] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.546] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.546] 
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] export 'AIRequest' (reexported as 'AIRequest') was not found in './router' (possible exports: AIRouterService, default)
+[16:19:39.546] 
+[16:19:39.546] Import trace for requested module:
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.546] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.546] 
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] export 'AIResponse' (reexported as 'AIResponse') was not found in './router' (possible exports: AIRouterService, default)
+[16:19:39.546] 
+[16:19:39.546] Import trace for requested module:
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.546] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.546] 
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] export 'AIProvider' (reexported as 'AIProvider') was not found in './router' (possible exports: AIRouterService, default)
+[16:19:39.546] 
+[16:19:39.546] Import trace for requested module:
+[16:19:39.546] ./src/services/ai/aiRouter.ts
+[16:19:39.546] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.546] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.546] 
+[16:19:39.546] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.547] Attempted import error: 'AIRouterService' is not exported from './aiRouterService' (imported as 'AIRouterService').
+[16:19:39.547] 
+[16:19:39.547] Import trace for requested module:
+[16:19:39.547] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.547] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.547] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.547] 
+[16:19:39.547] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.547] Attempted import error: 'AIAnalyticsService' is not exported from './aiAnalyticsService' (imported as 'AIAnalyticsService').
+[16:19:39.547] 
+[16:19:39.547] Import trace for requested module:
+[16:19:39.547] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.547] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.547] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.547] 
+[16:19:39.547] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.547] Attempted import error: 'UserBehaviorAnalyzer' is not exported from './userBehaviorAnalyzer' (imported as 'UserBehaviorAnalyzer').
+[16:19:39.547] 
+[16:19:39.547] Import trace for requested module:
+[16:19:39.548] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.548] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.549] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.549] 
+[16:19:39.549] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.549] Attempted import error: 'AdaptiveLearningEngine' is not exported from './adaptiveLearningEngine' (imported as 'AdaptiveLearningEngine').
+[16:19:39.549] 
+[16:19:39.549] Import trace for requested module:
+[16:19:39.549] ./src/services/ai/intelligentWaiverProcessor.ts
+[16:19:39.549] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.549] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.549] 
+[16:19:39.549] ./src/services/ai/oracle.ts
+[16:19:39.549] export 'OracleService' (reexported as 'OracleService') was not found in './oracleService' (possible exports: default)
+[16:19:39.549] 
+[16:19:39.549] Import trace for requested module:
+[16:19:39.549] ./src/services/ai/oracle.ts
+[16:19:39.549] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.549] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.549] 
+[16:19:39.549] ./src/services/ai/oracle.ts
+[16:19:39.550] export 'OracleAnalysis' (reexported as 'OracleAnalysis') was not found in './oracleService' (possible exports: default)
+[16:19:39.550] 
+[16:19:39.550] Import trace for requested module:
+[16:19:39.550] ./src/services/ai/oracle.ts
+[16:19:39.550] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.550] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.550] 
+[16:19:39.550] ./src/services/ai/oracle.ts
+[16:19:39.550] export 'OracleInsight' (reexported as 'OracleInsight') was not found in './oracleService' (possible exports: default)
+[16:19:39.550] 
+[16:19:39.550] Import trace for requested module:
+[16:19:39.550] ./src/services/ai/oracle.ts
+[16:19:39.550] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.550] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.550] 
+[16:19:39.550] ./src/services/ai/oracle.ts
+[16:19:39.550] export 'OracleService' (reexported as 'default') was not found in './oracleService' (possible exports: default)
+[16:19:39.550] 
+[16:19:39.550] Import trace for requested module:
+[16:19:39.550] ./src/services/ai/oracle.ts
+[16:19:39.550] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.550] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.551] 
+[16:19:39.551] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.551] Attempted import error: './adaptiveRiskModeling' does not contain a default export (imported as 'adaptiveRiskModeling').
+[16:19:39.551] 
+[16:19:39.551] Import trace for requested module:
+[16:19:39.551] ./src/services/ai/tradeAnalysisEngine.ts
+[16:19:39.551] ./src/services/ai/tradeAnalyzer.ts
+[16:19:39.551] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.551] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.551] 
+[16:19:39.551] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.551] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
+[16:19:39.551] 
+[16:19:39.551] Import trace for requested module:
+[16:19:39.551] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.551] ./src/pages/api/analytics/comparative-analysis.ts
+[16:19:39.551] 
+[16:19:39.551] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.551] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.551] 
+[16:19:39.551] Import trace for requested module:
+[16:19:39.551] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] ./src/pages/api/analytics/comparative-analysis.ts
+[16:19:39.552] 
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.552] 
+[16:19:39.552] Import trace for requested module:
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] ./src/pages/api/analytics/comparative-analysis.ts
+[16:19:39.552] 
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.552] 
+[16:19:39.552] Import trace for requested module:
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] ./src/pages/api/analytics/comparative-analysis.ts
+[16:19:39.552] 
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.552] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.552] 
+[16:19:39.552] Import trace for requested module:
+[16:19:39.552] ./src/services/analytics/comparativeAnalysis.ts
+[16:19:39.553] ./src/pages/api/analytics/comparative-analysis.ts
+[16:19:39.553] 
+[16:19:39.553] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.553] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
+[16:19:39.553] 
+[16:19:39.553] Import trace for requested module:
+[16:19:39.553] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.553] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.553] 
+[16:19:39.553] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.553] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.553] 
+[16:19:39.553] Import trace for requested module:
+[16:19:39.553] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.553] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.553] 
+[16:19:39.553] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.553] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.553] 
+[16:19:39.553] Import trace for requested module:
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.554] 
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.554] 
+[16:19:39.554] Import trace for requested module:
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.554] 
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.554] 
+[16:19:39.554] Import trace for requested module:
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.554] 
+[16:19:39.554] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.554] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.554] 
+[16:19:39.554] Import trace for requested module:
+[16:19:39.555] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.555] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.555] 
+[16:19:39.555] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.555] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.555] 
+[16:19:39.555] Import trace for requested module:
+[16:19:39.555] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.555] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.555] 
+[16:19:39.555] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.555] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.555] 
+[16:19:39.556] Import trace for requested module:
+[16:19:39.556] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.556] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.556] 
+[16:19:39.556] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.556] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.556] 
+[16:19:39.556] Import trace for requested module:
+[16:19:39.556] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.556] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.556] 
+[16:19:39.556] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.557] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.557] 
+[16:19:39.557] Import trace for requested module:
+[16:19:39.557] ./src/services/analytics/performanceAttribution.ts
+[16:19:39.557] ./src/pages/api/analytics/performance-attribution.ts
+[16:19:39.557] 
+[16:19:39.557] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.557] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
+[16:19:39.557] 
+[16:19:39.557] Import trace for requested module:
+[16:19:39.557] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.557] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.557] 
+[16:19:39.557] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.557] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.557] 
+[16:19:39.557] Import trace for requested module:
+[16:19:39.557] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.557] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.557] 
+[16:19:39.557] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.557] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.558] 
+[16:19:39.558] Import trace for requested module:
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.558] 
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.558] 
+[16:19:39.558] Import trace for requested module:
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.558] 
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.558] 
+[16:19:39.558] Import trace for requested module:
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.558] 
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.558] 
+[16:19:39.558] Import trace for requested module:
+[16:19:39.558] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.558] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.558] 
+[16:19:39.559] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.559] 
+[16:19:39.559] Import trace for requested module:
+[16:19:39.559] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.559] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.559] 
+[16:19:39.559] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.559] 
+[16:19:39.559] Import trace for requested module:
+[16:19:39.559] ./src/services/analytics/seasonStrategy.ts
+[16:19:39.559] ./src/pages/api/analytics/season-strategy.ts
+[16:19:39.559] 
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.559] 
+[16:19:39.559] Import trace for requested module:
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.559] ./src/pages/api/performance/load-testing.ts
+[16:19:39.559] 
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.559] 
+[16:19:39.559] Import trace for requested module:
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.559] ./src/pages/api/performance/load-testing.ts
+[16:19:39.559] 
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.559] 
+[16:19:39.559] Import trace for requested module:
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.559] ./src/pages/api/performance/load-testing.ts
+[16:19:39.559] 
+[16:19:39.559] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.559] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.560] 
+[16:19:39.560] Import trace for requested module:
+[16:19:39.560] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.560] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.560] ./src/pages/api/performance/load-testing.ts
+[16:19:39.560] 
+[16:19:39.560] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.560] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.560] 
+[16:19:39.560] Import trace for requested module:
+[16:19:39.560] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.560] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.560] ./src/pages/api/performance/load-testing.ts
+[16:19:39.560] 
+[16:19:39.560] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.560] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.560] 
+[16:19:39.560] Import trace for requested module:
+[16:19:39.560] ./src/services/fallback/aiFallbackManager.ts
+[16:19:39.560] ./src/services/optimization/performanceOptimizer.ts
+[16:19:39.560] ./src/pages/api/performance/load-testing.ts
+[16:19:39.560] 
+[16:19:39.560] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.560] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
+[16:19:39.560] 
+[16:19:39.560] Import trace for requested module:
+[16:19:39.560] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.560] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.560] 
+[16:19:39.560] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.560] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.560] 
+[16:19:39.561] Import trace for requested module:
+[16:19:39.561] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.561] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.561] 
+[16:19:39.561] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.561] Attempted import error: 'db' is not exported from '../../lib/db' (imported as 'db').
+[16:19:39.561] 
+[16:19:39.561] Import trace for requested module:
+[16:19:39.561] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.561] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.562] 
+[16:19:39.562] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.562] Attempted import error: 'AIRouter' is not exported from '../ai/aiRouter' (imported as 'AIRouter').
+[16:19:39.562] 
+[16:19:39.562] Import trace for requested module:
+[16:19:39.562] ./src/services/integration/aiSystemsIntegrator.ts
+[16:19:39.562] ./src/pages/api/integration/ai-workflow.ts
+[16:19:39.562] 
+[16:19:39.566]    Skipping linting
+[16:19:39.566]    Checking validity of types ...
+[16:20:01.663] Failed to compile.
+[16:20:01.663] 
+[16:20:01.663] ./src/components/features/communication/TradeNegotiationInterface.tsx:245:68
+[16:20:01.663] Type error: Property 'name' does not exist on type '{ id: string; league_id: string; user_id: string; team_name: string; draft_position: number | null; waiver_priority: number; created_at: string; updated_at: string; }'.
+[16:20:01.663] 
+[16:20:01.663] [0m [90m 243 |[39m       fromTeamName[33m:[39m [32m'Your Team'[39m[33m,[39m
+[16:20:01.663]  [90m 244 |[39m       toTeamId[33m:[39m newTradeData[33m.[39mtoTeamId[33m,[39m
+[16:20:01.663] [31m[1m>[22m[39m[90m 245 |[39m       toTeamName[33m:[39m teams[33m.[39mfind(t [33m=>[39m t[33m.[39mid [33m===[39m newTradeData[33m.[39mtoTeamId)[33m?[39m[33m.[39mname [33m||[39m [32m'Unknown Team'[39m[33m,[39m
+[16:20:01.663]  [90m     |[39m                                                                    [31m[1m^[22m[39m
+[16:20:01.663]  [90m 246 |[39m       offeredPlayers[33m:[39m newTradeData[33m.[39mofferedPlayers[33m,[39m
+[16:20:01.663]  [90m 247 |[39m       requestedPlayers[33m:[39m newTradeData[33m.[39mrequestedPlayers[33m,[39m
+[16:20:01.663]  [90m 248 |[39m       status[33m:[39m [32m'pending'[39m[33m,[39m[0m
+[16:20:01.719] Next.js build worker exited with code: 1 and signal: null
+[16:20:01.800] Error: Command "npm run build" exited with 1

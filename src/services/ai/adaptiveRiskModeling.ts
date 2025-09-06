@@ -800,4 +800,7 @@ class AdaptiveRiskModeling {
   }
 }
 
-export const adaptiveRiskModeling = new AdaptiveRiskModeling();
+const adaptiveRiskModeling = new AdaptiveRiskModeling();
+export { adaptiveRiskModeling };
+export { AdaptiveRiskModeling };
+export default adaptiveRiskModeling;

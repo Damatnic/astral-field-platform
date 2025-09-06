@@ -903,3 +903,4 @@ class UserBehaviorAnalyzer {
 }
 
 export const userBehaviorAnalyzer = new UserBehaviorAnalyzer();
+export { UserBehaviorAnalyzer };

@@ -38,4 +38,15 @@ export async function executeQuery(sql: string, params?: any[]): Promise<any> {
 // Legacy compatibility exports
 export const neonDb = getDatabase;
 
+// Export db instance for compatibility with existing imports
+export const db = {
+  query: async (sql: string, params?: any[]) => {
+    return await executeQuery(sql, params);
+  },
+  close: async () => {
+    const database = await getDatabase();
+    return await database.close();
+  }
+};
+
 export default getDatabase;
