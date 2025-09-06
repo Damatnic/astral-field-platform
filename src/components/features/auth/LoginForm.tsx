@@ -182,7 +182,7 @@ export default function LoginForm() {
                 <p className="text-blue-300 mb-2">
                   <strong>Logging in as:</strong> {pendingUser.name}
                 </p>
-                <p className="text-blue-400 text-sm">{pendingUser.email}</p>
+                <p className="text-blue-400 text-sm">Code: {pendingUser.password}</p>
               </div>
             )}
           </div>
@@ -319,7 +319,7 @@ export default function LoginForm() {
                   <strong>Quick Login:</strong> One-click access to your fantasy team
                 </p>
                 <p className="text-xs text-blue-400">
-                  Each user has a unique 4-digit code for easy testing. All your teams, leagues, and data are saved permanently.
+                  Each user has a unique 4-digit code. All teams, leagues, and data are saved permanently.
                 </p>
               </div>
             </div>
