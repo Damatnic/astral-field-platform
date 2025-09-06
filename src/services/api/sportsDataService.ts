@@ -69,9 +69,40 @@ export interface SportsDataGame {
   GlobalGameID: number
 }
 
+// Minimal projections/stats shapes for weekly syncs
+export interface SportsDataWeeklyProjection {
+  PlayerID: number
+  Season: number
+  SeasonType?: number
+  Week: number
+  Name?: string
+  Team?: string
+  Position?: string
+  FantasyPoints?: number
+  PassingYards?: number
+  PassingTouchdowns?: number
+  PassingInterceptions?: number
+  RushingYards?: number
+  RushingTouchdowns?: number
+  ReceivingYards?: number
+  Receptions?: number
+  ReceivingTouchdowns?: number
+}
+
+export interface SportsDataWeeklyStat extends SportsDataWeeklyProjection {
+  Updated?: string
+}
+
 class SportsDataService {
   private readonly baseUrl = 'https://api.sportsdata.io/v3/nfl'
-  private readonly apiKey = 'bab44477ed904140b43630a7520517e7'
+  // Prefer server-side secret; fall back to public if needed (non-sensitive endpoints only)
+  private get apiKey(): string {
+    const key = process.env.SPORTSDATA_SECRET_KEY || process.env.NEXT_PUBLIC_SPORTSDATA_API_KEY || ''
+    if (!key) {
+      throw new Error('SportsData API key missing. Set SPORTSDATA_SECRET_KEY or NEXT_PUBLIC_SPORTSDATA_API_KEY')
+    }
+    return key
+  }
 
   private async makeRequest<T>(endpoint: string): Promise<T> {
     try {
@@ -92,11 +123,11 @@ class SportsDataService {
 
   // Team Data
   async getAllTeams(): Promise<SportsDataTeam[]> {
-    return this.makeRequest<SportsDataTeam[]>('/scores/json/Teams')
+    return this.makeRequestWithCache<SportsDataTeam[]>('/scores/json/Teams')
   }
 
   async getTeamsBasic(): Promise<SportsDataTeam[]> {
-    return this.makeRequest<SportsDataTeam[]>('/scores/json/TeamsBasic')
+    return this.makeRequestWithCache<SportsDataTeam[]>('/scores/json/TeamsBasic')
   }
 
   // Player Data
@@ -118,11 +149,11 @@ class SportsDataService {
 
   // Season Data
   async getCurrentSeason(): Promise<number> {
-    return this.makeRequest<number>('/scores/json/CurrentSeason')
+    return this.makeRequestWithCache<number>('/scores/json/CurrentSeason')
   }
 
   async getCurrentWeek(): Promise<number> {
-    return this.makeRequest<number>('/scores/json/CurrentWeek')
+    return this.makeRequestWithCache<number>('/scores/json/CurrentWeek')
   }
 
   async getLastCompletedSeason(): Promise<number> {
@@ -135,12 +166,12 @@ class SportsDataService {
 
   // Standings
   async getStandings(season: string): Promise<SportsDataStanding[]> {
-    return this.makeRequest<SportsDataStanding[]>(`/scores/json/Standings/${season}`)
+    return this.makeRequestWithCache<SportsDataStanding[]>(`/scores/json/Standings/${season}`)
   }
 
   // Live Game Data
   async areGamesInProgress(): Promise<boolean> {
-    return this.makeRequest<boolean>('/scores/json/AreAnyGamesInProgress')
+    return this.makeRequestWithCache<boolean>('/scores/json/AreAnyGamesInProgress')
   }
 
   async getByeWeeks(season: string): Promise<any[]> {
@@ -149,11 +180,28 @@ class SportsDataService {
 
   // Utility Methods
   async getStadiums(): Promise<any[]> {
-    return this.makeRequest<any[]>('/scores/json/Stadiums')
+    return this.makeRequestWithCache<any[]>('/scores/json/Stadiums')
   }
 
   async getReferees(): Promise<any[]> {
-    return this.makeRequest<any[]>('/scores/json/Referees')
+    return this.makeRequestWithCache<any[]>('/scores/json/Referees')
+  }
+
+  // Weekly projections and stats (endpoints approximate to SportsData.io paths)
+  async getPlayerGameProjectionsByWeek(season: number, week: number): Promise<SportsDataWeeklyProjection[]> {
+    const endpoint = `/projections/json/PlayerGameProjectionStatsByWeek/${season}/${week}`
+    return this.makeRequest<SportsDataWeeklyProjection[]>(endpoint)
+  }
+
+  async getPlayerGameStatsByWeek(season: number, week: number): Promise<SportsDataWeeklyStat[]> {
+    const endpoint = `/stats/json/PlayerGameStatsByWeek/${season}/${week}`
+    return this.makeRequest<SportsDataWeeklyStat[]>(endpoint)
+  }
+
+  async getScoresByWeek(season: number, week: number): Promise<Pick<SportsDataGame,
+    'Season'|'Week'|'AwayTeam'|'HomeTeam'|'AwayScore'|'HomeScore'|'Quarter'|'TimeRemaining'|'Status'|'DateTime'>[]> {
+    const endpoint = `/scores/json/ScoresByWeek/${season}/${week}`
+    return this.makeRequest(endpoint)
   }
 
   // Data transformation helpers
@@ -220,6 +268,98 @@ class SportsDataService {
       return await playerService.syncPlayersFromExternal(transformedPlayers)
     } catch (error: any) {
       console.error(`Failed to sync players for team ${team}:`, error)
+      return { success: 0, failed: 0, error: error.message }
+    }
+  }
+
+  async syncWeeklyProjectionsToDatabase(week?: number): Promise<{ success: number; failed: number; error: string | null; season?: number; week?: number }> {
+    try {
+      const season = await this.getCurrentSeason()
+      const targetWeek = week || await this.getCurrentWeek()
+      const projections = await this.getPlayerGameProjectionsByWeek(season, targetWeek)
+
+      const { default: playerService } = await import('./playerService')
+
+      let success = 0
+      let failed = 0
+
+      for (const p of projections) {
+        try {
+          const playerIdRes = await (await import('@/lib/neon-serverless')).neonServerless.selectSingle('players', {
+            where: { external_id: String(p.PlayerID) }
+          })
+          if (!playerIdRes.data) { failed++; continue }
+          const playerId = playerIdRes.data.id
+
+          const projectedStats: Record<string, number> = {}
+          ;['PassingYards','PassingTouchdowns','PassingInterceptions','RushingYards','RushingTouchdowns','ReceivingYards','Receptions','ReceivingTouchdowns']
+            .forEach(k => {
+              const v = (p as any)[k]
+              if (typeof v === 'number') projectedStats[k] = v
+            })
+
+          const resp = await playerService.updatePlayerProjections(playerId, {
+            season,
+            week: targetWeek,
+            fantasyPoints: p.FantasyPoints || 0,
+            adp: undefined,
+            confidence: 0.8,
+            projectedStats
+          } as any)
+          if (resp.error) { failed++ } else { success++ }
+        } catch (e) {
+          failed++
+        }
+      }
+
+      return { success, failed, error: null, season, week: targetWeek }
+    } catch (error: any) {
+      return { success: 0, failed: 0, error: error.message }
+    }
+  }
+
+  async syncWeeklyStatsToDatabase(week?: number): Promise<{ success: number; failed: number; error: string | null; season?: number; week?: number }> {
+    try {
+      const season = await this.getCurrentSeason()
+      const targetWeek = week || await this.getCurrentWeek()
+      const stats = await this.getPlayerGameStatsByWeek(season, targetWeek)
+
+      const { default: playerService } = await import('./playerService')
+
+      let success = 0
+      let failed = 0
+
+      for (const s of stats) {
+        try {
+          const playerIdRes = await (await import('@/lib/neon-serverless')).neonServerless.selectSingle('players', {
+            where: { external_id: String(s.PlayerID) }
+          })
+          if (!playerIdRes.data) { failed++; continue }
+          const playerId = playerIdRes.data.id
+
+          const statObj: any = {
+            season: s.Season,
+            week: s.Week,
+            passingYards: s.PassingYards || 0,
+            passingTDs: s.PassingTouchdowns || 0,
+            passingINTs: s.PassingInterceptions || 0,
+            rushingYards: s.RushingYards || 0,
+            rushingTDs: s.RushingTouchdowns || 0,
+            receivingYards: s.ReceivingYards || 0,
+            receivingTDs: s.ReceivingTouchdowns || 0,
+            receptions: (s as any).Receptions || 0,
+            fantasyPoints: s.FantasyPoints || 0
+          }
+
+          const resp = await playerService.updatePlayerStats(playerId, statObj)
+          if (resp.error) { failed++ } else { success++ }
+        } catch (e) {
+          failed++
+        }
+      }
+
+      return { success, failed, error: null, season, week: targetWeek }
+    } catch (error: any) {
       return { success: 0, failed: 0, error: error.message }
     }
   }

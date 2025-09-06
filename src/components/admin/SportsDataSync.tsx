@@ -18,6 +18,8 @@ export default function SportsDataSync() {
   
   const [selectedTeam, setSelectedTeam] = useState('')
   const [apiStatus, setApiStatus] = useState<any>(null)
+  const [week, setWeek] = useState<string>('')
+  const [leagueId, setLeagueId] = useState<string>('')
 
   const nflTeams = [
     'ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 
@@ -70,6 +72,28 @@ export default function SportsDataSync() {
       setApiStatus(result)
     } catch (error) {
       console.error('Failed to check API status:', error)
+    }
+  }
+
+  const handleWeeklySync = async (action: 'sync-projections' | 'sync-stats') => {
+    setSyncStatus({ isLoading: true, message: 'Starting weekly sync...' })
+    try {
+      const body: any = { action }
+      if (week) body.week = parseInt(week, 10)
+
+      const res = await fetch('/api/sync-week', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer astral2025'
+        },
+        body: JSON.stringify(body)
+      })
+      const result = await res.json()
+      if (!res.ok) throw new Error(result.error || 'Weekly sync failed')
+      setSyncStatus({ isLoading: false, message: result.message || 'Weekly sync completed', success: result.success, failed: result.failed })
+    } catch (error: any) {
+      setSyncStatus({ isLoading: false, message: 'Weekly sync failed', error: error.message })
     }
   }
 
@@ -159,6 +183,165 @@ export default function SportsDataSync() {
             }`}
           >
             {syncStatus.isLoading ? 'Syncing...' : 'Sync Team'}
+          </button>
+        </div>
+      </div>
+
+      {/* Weekly Sync */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-white mb-3">Weekly Sync</h3>
+        <p className="text-gray-400 text-sm mb-4">Sync projections or stats for a specific week (optional). If no week is provided, current week is used.</p>
+        <div className="flex gap-4 items-end">
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">Week (1–18)</label>
+            <input value={week} onChange={(e) => setWeek(e.target.value)} placeholder="e.g., 3" className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 w-24" />
+          </div>
+          <button onClick={() => handleWeeklySync('sync-projections')} disabled={syncStatus.isLoading} className={`px-6 py-3 rounded font-semibold ${syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700'}`}>Sync Projections</button>
+          <button onClick={() => handleWeeklySync('sync-stats')} disabled={syncStatus.isLoading} className={`px-6 py-3 rounded font-semibold ${syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}>Sync Stats</button>
+        </div>
+      </div>
+
+      {/* Live Window (Auto-Refresh) */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-white mb-3">Live Window</h3>
+        <p className="text-gray-400 text-sm mb-4">Enable/disable the league's "live window" to allow client auto-refresh (default 4 hours).</p>
+        <div className="flex gap-4 items-end">
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">League ID</label>
+            <input value={leagueId} onChange={(e) => setLeagueId(e.target.value)} placeholder="league UUID" className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 min-w-[280px]" />
+          </div>
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">Duration (minutes)</label>
+            <input id="live-mins" defaultValue={240} className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 w-28" />
+          </div>
+          <button
+            onClick={async () => {
+              if (!leagueId) return
+              try {
+                const res = await fetch(`/api/league/settings?leagueId=${encodeURIComponent(leagueId)}`)
+                const result = await res.json()
+                setApiStatus({ ...(apiStatus || {}), leagueSettings: result })
+              } catch {}
+            }}
+            className="px-6 py-3 rounded font-semibold bg-sky-700 text-white hover:bg-sky-800"
+          >
+            Get Settings
+          </button>
+          <button
+            onClick={async () => {
+              if (!leagueId) return
+              setSyncStatus({ isLoading: true, message: 'Enabling live window...' })
+              try {
+                const minutes = parseInt((document.getElementById('live-mins') as HTMLInputElement)?.value || '240', 10)
+                const res = await fetch('/api/league/settings', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer astral2025' },
+                  body: JSON.stringify({ leagueId, enable: true, minutes })
+                })
+                const result = await res.json()
+                if (!res.ok) throw new Error(result.error || 'Failed to enable live window')
+                setSyncStatus({ isLoading: false, message: 'Live window enabled' })
+              } catch (err: any) {
+                setSyncStatus({ isLoading: false, message: 'Enable live window failed', error: err.message })
+              }
+            }}
+            className={`px-6 py-3 rounded font-semibold ${syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+          >
+            Enable Live Window
+          </button>
+          <button
+            onClick={async () => {
+              if (!leagueId) return
+              setSyncStatus({ isLoading: true, message: 'Disabling live window...' })
+              try {
+                const res = await fetch('/api/league/settings', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer astral2025' },
+                  body: JSON.stringify({ leagueId, enable: false })
+                })
+                const result = await res.json()
+                if (!res.ok) throw new Error(result.error || 'Failed to disable live window')
+                setSyncStatus({ isLoading: false, message: 'Live window disabled' })
+              } catch (err: any) {
+                setSyncStatus({ isLoading: false, message: 'Disable live window failed', error: err.message })
+              }
+            }}
+            className={`px-6 py-3 rounded font-semibold ${syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-rose-600 text-white hover:bg-rose-700'}`}
+          >
+            Disable Live Window
+          </button>
+        </div>
+        {/* Scoring PPR */}
+        <div className="flex gap-4 items-end mt-4">
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">Scoring PPR</label>
+            <input id="league-ppr" defaultValue={apiStatus?.leagueSettings?.scoring_ppr ?? 0.5} className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 w-28" />
+          </div>
+          <button
+            onClick={async () => {
+              if (!leagueId) return
+              setSyncStatus({ isLoading: true, message: 'Updating scoring...' })
+              try {
+                const pprVal = parseFloat((document.getElementById('league-ppr') as HTMLInputElement)?.value || '0.5')
+                const res = await fetch('/api/league/settings', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer astral2025' },
+                  body: JSON.stringify({ leagueId, scoring_ppr: pprVal })
+                })
+                const result = await res.json()
+                if (!res.ok) throw new Error(result.error || 'Failed to update scoring')
+                setSyncStatus({ isLoading: false, message: 'Scoring updated' })
+              } catch (err: any) {
+                setSyncStatus({ isLoading: false, message: 'Update scoring failed', error: err.message })
+              }
+            }}
+            className={`px-6 py-3 rounded font-semibold ${syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-amber-600 text-white hover:bg-amber-700'}`}
+          >
+            Update Scoring
+          </button>
+        </div>
+      </div>
+
+      {/* Live Scoring Controls */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-white mb-3">Live Scoring Controls</h3>
+        <p className="text-gray-400 text-sm mb-4">Manually trigger a live stats update and get the latest league scoring snapshot (admin only).</p>
+        <div className="flex gap-4 items-end">
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">League ID</label>
+            <input value={leagueId} onChange={(e) => setLeagueId(e.target.value)} placeholder="league UUID" className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 min-w-[280px]" />
+          </div>
+          <div>
+            <label className="block text-gray-400 text-sm mb-2">Week (optional)</label>
+            <input value={week} onChange={(e) => setWeek(e.target.value)} placeholder="e.g., 3" className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 w-24" />
+          </div>
+          <button
+            onClick={async () => {
+              setSyncStatus({ isLoading: true, message: 'Running live tick...' })
+              try {
+                const body: any = {}
+                if (leagueId) body.leagueId = leagueId
+                if (week) body.week = parseInt(week, 10)
+                const res = await fetch('/api/live/tick', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer astral2025'
+                  },
+                  body: JSON.stringify(body)
+                })
+                const result = await res.json()
+                if (!res.ok) throw new Error(result.error || 'Live tick failed')
+                setSyncStatus({ isLoading: false, message: 'Live tick completed', success: result.sync?.success ?? 0, failed: result.sync?.failed ?? 0 })
+              } catch (err: any) {
+                setSyncStatus({ isLoading: false, message: 'Live tick failed', error: err.message })
+              }
+            }}
+            className={`px-6 py-3 rounded font-semibold ${
+              syncStatus.isLoading ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-teal-600 text-white hover:bg-teal-700'
+            }`}
+          >
+            {syncStatus.isLoading ? 'Processing...' : 'Run Live Tick'}
           </button>
         </div>
       </div>

@@ -118,6 +118,18 @@
     {
       "path": "/api/health",
       "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/sync-sportsdata",
+      "schedule": "15 12 * * 2,5"
+    },
+    {
+      "path": "/api/sync-week",
+      "schedule": "30 12 * * 5"
+    },
+    {
+      "path": "/api/cron/live",
+      "schedule": "*/2 * * * *"
     }
   ]
 }

@@ -76,16 +76,40 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  // Return basic info without making any external API calls that might trigger syncing
-  return NextResponse.json({
-    status: 'SportsData API integration available',
-    message: 'Use POST with appropriate action to perform data syncing',
-    availableActions: [
-      'sync-all-players',
-      'sync-team-players',
-      'get-current-week',
-      'get-current-season',
-      'check-games-in-progress'
-    ]
-  })
+  try {
+    // Provide quick status snapshot for UI without heavy sync
+    const [currentSeason, currentWeek, gamesInProgress] = await Promise.all([
+      sportsDataService.getCurrentSeason().catch(() => null),
+      sportsDataService.getCurrentWeek().catch(() => null),
+      sportsDataService.areGamesInProgress().catch(() => false)
+    ])
+
+    return NextResponse.json({
+      status: 'SportsData API integration available',
+      message: 'Use POST with appropriate action to perform data syncing',
+      currentSeason,
+      currentWeek,
+      gamesInProgress,
+      availableActions: [
+        'sync-all-players',
+        'sync-team-players',
+        'get-current-week',
+        'get-current-season',
+        'check-games-in-progress'
+      ]
+    })
+  } catch (error: any) {
+    return NextResponse.json({
+      status: 'SportsData API integration available',
+      message: 'Status check failed',
+      error: error?.message || 'Unknown error',
+      availableActions: [
+        'sync-all-players',
+        'sync-team-players',
+        'get-current-week',
+        'get-current-season',
+        'check-games-in-progress'
+      ]
+    }, { status: 500 })
+  }
 }

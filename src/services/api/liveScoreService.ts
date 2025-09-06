@@ -206,10 +206,13 @@ class LiveScoreService {
       if (playerResult.error || !playerResult.data || !playerResult.data.length) throw new Error('Player not found')
       const player = playerResult.data[0]
 
-      // Simulate live stats (in production, this would come from real NFL data)
+      // Prefer stored weekly stats/projections if available; fallback to simulation
       const gameStatus = this.getGameStatus(player.nfl_team)
-      const fantasyPoints = this.calculateLiveFantasyPoints(player.position, gameStatus)
-      const projectedPoints = player.position === 'QB' ? 18 : player.position === 'RB' ? 12 : 10
+      const latestStats = typeof player.stats === 'object' && player.stats && 'fantasyPoints' in player.stats ? (player.stats as any) : null
+      const fantasyPoints = latestStats?.fantasyPoints ?? this.calculateLiveFantasyPoints(player.position, gameStatus)
+      const projectedPoints = typeof player.projections === 'object' && player.projections && 'fantasyPoints' in player.projections
+        ? (player.projections as any).fantasyPoints
+        : (player.position === 'QB' ? 18 : player.position === 'RB' ? 12 : 10)
 
       return {
         playerId: player.id,
@@ -219,7 +222,7 @@ class LiveScoreService {
         nflTeam: player.nfl_team,
         fantasyPoints,
         projectedPoints,
-        stats: this.generateLiveStats(player.position, gameStatus),
+        stats: latestStats || this.generateLiveStats(player.position, gameStatus),
         gameStatus,
         lastUpdate: new Date().toISOString()
       }

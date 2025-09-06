@@ -16,12 +16,15 @@ import {
   Settings,
   LogOut
 } from 'lucide-react'
+import { useState } from 'react'
 
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, logout, checkAuth } = useAuthStore()
   const { leagues, fetchUserLeagues } = useLeagueStore()
+  const [insights, setInsights] = useState<any[]>([])
+  const [insightsLoaded, setInsightsLoaded] = useState(false)
 
   useEffect(() => {
     checkAuth()
@@ -35,6 +38,18 @@ export default function DashboardPage() {
     
     // Load user's leagues
     fetchUserLeagues(user.id)
+    // Load insights for the first league/team
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/insights?userId=${encodeURIComponent(user.id)}`)
+        if (res.ok) {
+          const data = await res.json()
+          setInsights(data?.insights || [])
+        }
+      } catch {}
+      setInsightsLoaded(true)
+    }
+    load()
   }, [user, router, fetchUserLeagues])
 
   const handleLogout = async () => {
@@ -164,6 +179,33 @@ export default function DashboardPage() {
             </div>
           </motion.div>
         </div>
+
+        {/* Smart Insights */}
+        <section className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-white">Smart Insights</h2>
+          </div>
+          <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 sm:p-6">
+            {!insightsLoaded ? (
+              <div className="text-gray-400">Calculating personalized recommendations…</div>
+            ) : insights.length === 0 ? (
+              <div className="text-gray-400">No high-impact suggestions right now. Check back closer to game time.</div>
+            ) : (
+              <ul className="space-y-3">
+                {insights.map((ins, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <TrendingUp className="h-5 w-5 text-emerald-400 mt-0.5" />
+                    <div>
+                      <p className="text-white font-medium">{ins.title}</p>
+                      <p className="text-gray-400 text-sm">{ins.description}</p>
+                    </div>
+                    <span className="ml-auto text-emerald-400 text-sm font-semibold">+{ins.impact}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
 
         {/* My Leagues Section */}
         <section className="mb-8">

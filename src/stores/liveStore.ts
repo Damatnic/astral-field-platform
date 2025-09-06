@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import liveScoreService, { type LeagueLiveScoring } from '@/services/api/liveScoreService'
+import type { LeagueLiveScoring } from '@/services/server/liveScoringService'
 import socketService from '@/services/websocket/socketService'
 import notificationService, { type Notification, type PushNotificationConfig } from '@/services/notification/notificationService'
 
@@ -23,11 +23,14 @@ interface LiveState {
   // Loading States
   isLoading: boolean
   error: string | null
+  pollIntervalId?: any | null
   
   // Actions - Live Scoring
   startLiveScoring: (leagueId: string, week?: number) => Promise<void>
   stopLiveScoring: (leagueId: string) => Promise<void>
   refreshLiveScoring: (leagueId: string, week: number) => Promise<void>
+  enableAutoRefresh: (leagueId: string, week: number, intervalMs?: number) => void
+  disableAutoRefresh: () => void
   
   // Actions - Socket Connection
   connect: () => Promise<void>
@@ -58,26 +61,29 @@ export const useLiveStore = create<LiveState>((set, get) => ({
   notificationPreferences: null,
   isLoading: false,
   error: null,
+  pollIntervalId: null,
 
   // Live Scoring Actions
   startLiveScoring: async (leagueId: string, week?: number) => {
     set({ isLoading: true, error: null })
     
     try {
-      await liveScoreService.startLiveScoring(leagueId, week)
-      
-      // Subscribe to live updates
-      socketService.on('player_scores', (event) => {
-        if (event.leagueId === leagueId) {
-          set({ 
-            liveScoring: event.data,
-            lastUpdate: event.timestamp 
-          })
+      // Check league settings to decide if auto-refresh should be enabled
+      let allowAuto = false
+      try {
+        const settingsRes = await fetch(`/api/league/settings?leagueId=${encodeURIComponent(leagueId)}`)
+        if (settingsRes.ok) {
+          const s = await settingsRes.json()
+          if (s.live_polling_enabled) {
+            allowAuto = true
+          }
         }
-      })
-      
-      // Get initial data
-      const liveScoring = await liveScoreService.getLeagueLiveScoring(leagueId, week || 1)
+      } catch {}
+
+      // Initial fetch
+      const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week || 1))}`
+      const res = await fetch(api)
+      const liveScoring: LeagueLiveScoring = await res.json()
       
       set({ 
         liveScoring,
@@ -85,6 +91,28 @@ export const useLiveStore = create<LiveState>((set, get) => ({
         lastUpdate: new Date().toISOString(),
         isLoading: false 
       })
+
+      // Optional: also subscribe to sockets if available (no-op if server doesn't broadcast)
+      socketService.on('player_scores', (event) => {
+        if (event.leagueId === leagueId) {
+          set({ liveScoring: event.data, lastUpdate: event.timestamp })
+        }
+      })
+
+      // Start auto-refresh every 30s by default, only if allowed
+      if (allowAuto) {
+        const poll = setInterval(async () => {
+          try {
+            const api2 = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week || 1))}`
+            const r2 = await fetch(api2)
+            if (r2.ok) {
+              const data2: LeagueLiveScoring = await r2.json()
+              set({ liveScoring: data2, lastUpdate: new Date().toISOString() })
+            }
+          } catch {}
+        }, 30000)
+        set({ pollIntervalId: poll })
+      }
     } catch (error) {
       set({ 
         error: error instanceof Error ? error.message : 'Failed to start live scoring',
@@ -93,16 +121,19 @@ export const useLiveStore = create<LiveState>((set, get) => ({
     }
   },
 
-  stopLiveScoring: async (leagueId: string) => {
+  stopLiveScoring: async (_leagueId: string) => {
     try {
-      await liveScoreService.stopLiveScoring(leagueId)
-      
       // Remove socket handlers
       socketService.off('player_scores', () => {})
+      const currId = get().pollIntervalId
+      if (currId) {
+        clearInterval(currId)
+      }
       
       set({ 
         isLiveScoringActive: false,
-        liveScoring: null 
+        liveScoring: null,
+        pollIntervalId: null
       })
     } catch (error) {
       set({ 
@@ -115,7 +146,10 @@ export const useLiveStore = create<LiveState>((set, get) => ({
     set({ isLoading: true, error: null })
     
     try {
-      const liveScoring = await liveScoreService.getLeagueLiveScoring(leagueId, week)
+      const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week))}`
+      const res = await fetch(api)
+      if (!res.ok) throw new Error('Live scoring API error')
+      const liveScoring: LeagueLiveScoring = await res.json()
       
       set({ 
         liveScoring,
@@ -128,6 +162,28 @@ export const useLiveStore = create<LiveState>((set, get) => ({
         isLoading: false 
       })
     }
+  },
+
+  enableAutoRefresh: (leagueId: string, week: number, intervalMs = 30000) => {
+    const curr = get().pollIntervalId
+    if (curr) clearInterval(curr)
+    const poll = setInterval(async () => {
+      try {
+        const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week))}`
+        const res = await fetch(api)
+        if (res.ok) {
+          const data: LeagueLiveScoring = await res.json()
+          set({ liveScoring: data, lastUpdate: new Date().toISOString() })
+        }
+      } catch {}
+    }, intervalMs)
+    set({ pollIntervalId: poll })
+  },
+
+  disableAutoRefresh: () => {
+    const curr = get().pollIntervalId
+    if (curr) clearInterval(curr)
+    set({ pollIntervalId: null })
   },
 
   // Socket Connection Actions

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import playerService from '@/services/api/playerService';
+import { neonServerless } from '@/lib/neon-serverless';
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,6 +10,7 @@ export async function GET(request: NextRequest) {
     const team = searchParams.get('team');
     const limit = searchParams.get('limit');
     const availability = searchParams.get('availability');
+    const leagueId = searchParams.get('leagueId');
 
     // Validate query length
     if (query && query.length < 2) {
@@ -59,12 +61,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // If leagueId is provided, determine rostered players in that league
+    let rosteredSet: Set<string> | null = null;
+    if (leagueId) {
+      try {
+        const res = await neonServerless.query(
+          `SELECT r.player_id FROM rosters r JOIN teams t ON r.team_id = t.id WHERE t.league_id = $1`,
+          [leagueId]
+        ) as any;
+        const rows = Array.isArray(res?.data) ? res.data : res;
+        const ids = Array.isArray(rows) ? rows.map((r: any) => r.player_id) : [];
+        rosteredSet = new Set(ids);
+      } catch (e) {
+        // ignore if fails; treat as unknown
+      }
+    }
+
     // Filter by availability if specified
     let filteredPlayers = players;
     if (availability === 'available') {
-      // This would filter by players not currently rostered
-      // For now, we'll return all players
-      filteredPlayers = players;
+      if (rosteredSet) {
+        filteredPlayers = players.filter(p => !rosteredSet!.has(p.id));
+      }
     } else if (availability === 'injured') {
       filteredPlayers = players.filter(player => 
         player.injury_status && player.injury_status !== 'Healthy'
@@ -78,6 +96,7 @@ export async function GET(request: NextRequest) {
     // Add additional metadata
     const enrichedPlayers = filteredPlayers.map(player => ({
       ...player,
+      is_rostered: rosteredSet ? rosteredSet.has(player.id) : undefined,
       // Add projected points if available
       projected_points: typeof player.projections === 'object' && player.projections && 'fantasyPoints' in player.projections ? (player.projections as any).fantasyPoints : 0,
       // Add team info
