@@ -1,10 +1,10 @@
 import { AIRouter } from '../ai/aiRouter';
 import { OracleService } from '../ai/oracle';
-import { MLPipelineService } from '../ai/mlPipeline';
-import { RealTimeGameMonitor } from '../realtime/gameMonitor';
+import mlPipeline from '../ml/predictionPipeline';
+import liveMonitor from '../realtime/liveGameMonitor';
 import { UserBehaviorAnalysisService } from '../ai/userBehaviorAnalysis';
-import { TradeAnalysisService } from '../trades/tradeAnalysis';
-import { IntelligentWaiverService } from '../waiver/intelligentWaiverService';
+import tradeAnalyzer from '../ai/tradeAnalyzer';
+import { IntelligentWaiverProcessor } from '../ai/intelligentWaiverProcessor';
 import { IntelligentAutoDraftService } from '../draft/intelligentAutoDraft';
 import { PredictiveAnalyticsDashboardService } from '../analytics/predictiveAnalyticsDashboard';
 import { ComparativeAnalysisService } from '../analytics/comparativeAnalysis';
@@ -66,11 +66,11 @@ export class AISystemsIntegrator {
     // Initialize all AI services
     this.services.set('aiRouter', new AIRouter());
     this.services.set('oracle', new OracleService());
-    this.services.set('mlPipeline', new MLPipelineService());
-    this.services.set('gameMonitor', new RealTimeGameMonitor());
+    this.services.set('mlPipeline', mlPipeline);
+    this.services.set('gameMonitor', liveMonitor);
     this.services.set('userBehavior', new UserBehaviorAnalysisService());
-    this.services.set('tradeAnalysis', new TradeAnalysisService());
-    this.services.set('intelligentWaiver', new IntelligentWaiverService());
+    this.services.set('tradeAnalysis', tradeAnalyzer);
+    this.services.set('intelligentWaiver', new IntelligentWaiverProcessor());
     this.services.set('autoDraft', new IntelligentAutoDraftService());
     this.services.set('predictiveAnalytics', new PredictiveAnalyticsDashboardService());
     this.services.set('comparativeAnalysis', new ComparativeAnalysisService());
@@ -188,16 +188,16 @@ export class AISystemsIntegrator {
 
           case 'mlPipeline':
             // Test ML pipeline
-            const mlTest = await service.generateQuickPrediction('player_123');
-            isHealthy = mlTest !== null;
-            details = 'ML models loaded and responding';
+            const mlTest = await service.predictPlayerPerformance('test-player-123', 1);
+            isHealthy = mlTest !== null && mlTest.predictedPoints !== undefined;
+            details = 'ML prediction pipeline responding normally';
             break;
 
           case 'gameMonitor':
             // Test real-time monitoring
-            const monitorTest = await service.getActiveGames();
-            isHealthy = Array.isArray(monitorTest);
-            details = `Monitoring ${monitorTest.length} games`;
+            const monitorTest = await service.startLiveMonitoring(1);
+            isHealthy = monitorTest && monitorTest.monitoringActive !== undefined;
+            details = `Live game monitor responding (${monitorTest.gamesMonitored || 0} games tracked)`;
             break;
 
           default:
@@ -554,11 +554,11 @@ export class AISystemsIntegrator {
     const serviceClasses = {
       aiRouter: AIRouter,
       oracle: OracleService,
-      mlPipeline: MLPipelineService,
-      gameMonitor: RealTimeGameMonitor,
+      mlPipeline: null, // Singleton service - cannot restart
+      gameMonitor: null, // Singleton service - cannot restart
       userBehavior: UserBehaviorAnalysisService,
-      tradeAnalysis: TradeAnalysisService,
-      intelligentWaiver: IntelligentWaiverService,
+      tradeAnalysis: null, // Singleton service - cannot restart
+      intelligentWaiver: IntelligentWaiverProcessor,
       autoDraft: IntelligentAutoDraftService,
       predictiveAnalytics: PredictiveAnalyticsDashboardService,
       comparativeAnalysis: ComparativeAnalysisService,
