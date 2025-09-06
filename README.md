@@ -272,7 +272,7 @@ Sophisticated trade evaluation system:
 
 Deploy your own instance of Astral Field to Vercel with a single click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fastral-field&env=DATABASE_URL,NEXT_PUBLIC_STACK_PROJECT_ID,NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,STACK_SECRET_SERVER_KEY,NEXT_PUBLIC_SPORTSDATA_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,ADMIN_SETUP_KEY&envDescription=Required%20environment%20variables%20for%20Astral%20Field&envLink=https%3A%2F%2Fgithub.com%2Fyour-username%2Fastral-field%2Fblob%2Fmain%2F.env.example&project-name=astral-field&repository-name=astral-field)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDamatnic%2Fastral-field-platform&env=DATABASE_URL,NEXT_PUBLIC_STACK_PROJECT_ID,NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,STACK_SECRET_SERVER_KEY,NEXT_PUBLIC_SPORTSDATA_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,ADMIN_SETUP_KEY&envDescription=Required%20environment%20variables%20for%20Astral%20Field&envLink=https%3A%2F%2Fgithub.com%2FDamatnic%2Fastral-field-platform%2Fblob%2Fmain%2F.env.example&project-name=astral-field-platform&repository-name=astral-field-platform)
 
 **Prerequisites:**
 - [Neon Database](https://neon.tech) account (free)

@@ -2,12 +2,12 @@
 
 ## Option 1: Direct Deploy (Replace with your GitHub username)
 ```markdown
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/astral-field)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Damatnic/astral-field-platform)
 ```
 
 ## Option 2: With Environment Variables Pre-configured
 ```markdown
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/astral-field&env=DATABASE_URL,NEXT_PUBLIC_STACK_PROJECT_ID,NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,STACK_SECRET_SERVER_KEY,NEXT_PUBLIC_SPORTSDATA_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,ADMIN_SETUP_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Damatnic/astral-field-platform&env=DATABASE_URL,NEXT_PUBLIC_STACK_PROJECT_ID,NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,STACK_SECRET_SERVER_KEY,NEXT_PUBLIC_SPORTSDATA_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,ADMIN_SETUP_KEY)
 ```
 
 ## 📝 Steps to Use:
@@ -19,7 +19,7 @@
    git push origin main
    ```
 
-2. **Replace YOUR_USERNAME** with your actual GitHub username in the deploy button
+2. **The deploy button is ready to use** - Uses https://github.com/Damatnic/astral-field-platform
 
 3. **Use the deploy button** - Copy one of the buttons above into your README.md
 
@@ -29,7 +29,7 @@ If the one-click button doesn't work, you can deploy manually:
 
 1. **Go to [Vercel Dashboard](https://vercel.com/dashboard)**
 2. **Click "New Project"**
-3. **Import from GitHub** - Select your astral-field repository
+3. **Import from GitHub** - Select your astral-field-platform repository
 4. **Add Environment Variables:**
    ```
    DATABASE_URL=your_neon_database_url_here
