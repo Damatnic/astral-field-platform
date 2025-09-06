@@ -1,8 +1,8 @@
 import { database } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
-import { AIRouterService } from './aiRouterService'
-import { PredictionEngine } from './predictionEngine'
-import { AdaptiveLearningEngine } from './adaptiveLearningEngine'
+import aiRouterService from './aiRouterService'
+import predictionEngine from './predictionEngine'
+import { adaptiveLearningEngine } from './adaptiveLearningEngine'
 
 export interface PlayerMetrics {
   playerId: string

@@ -435,7 +435,7 @@ const CustomDashboardBuilder: React.FC<{ dashboardId?: string }> = ({ dashboardI
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={(e) => {
+                                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                           e.stopPropagation();
                                           removeWidget(widget.id);
                                         }}

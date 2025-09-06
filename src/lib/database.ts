@@ -154,6 +154,13 @@ class DatabaseManager {
     }
   }
 
+  public getPool(): Pool {
+    if (!this.pool) {
+      throw new Error('Database pool not initialized');
+    }
+    return this.pool;
+  }
+
   public getPoolStats(): {
     totalCount: number;
     idleCount: number;

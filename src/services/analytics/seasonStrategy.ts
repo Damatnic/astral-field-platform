@@ -713,3 +713,6 @@ Return as JSON array with format:
     };
   }
 }
+
+const seasonStrategyService = new SeasonStrategyService();
+export default seasonStrategyService;

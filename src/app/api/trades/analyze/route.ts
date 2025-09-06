@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Log the analysis request
     logger.info('Trade analysis requested', {
-      userId: session.user.id,
+      userId: user.id,
       leagueId,
       tradeId,
       playersOffered: playersOffered.length,
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         capabilities: ['fantasy_analysis', 'data_analysis', 'complex_reasoning'],
         complexity: 'expert',
         priority: 'high',
-        userId: session.user.id
+        userId: user.id
       },
       {
         content: JSON.stringify(analysis),
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Add user-specific insights
-    const userTeamId = await getUserTeamId(session.user.id, leagueId)
+    const userTeamId = await getUserTeamId(user.id, leagueId)
     const perspective = getAnalysisPerspective(
       analysis,
       userTeamId,
@@ -130,8 +130,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -156,11 +156,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch existing trade analysis
-    const result = await neonDb.selectSingle('trade_evaluations', {
-      where: { trade_id: tradeId }
-    })
+    const result = await database.query(
+      'SELECT * FROM trade_evaluations WHERE trade_id = $1 LIMIT 1',
+      [tradeId]
+    )
 
-    if (!result.data) {
+    if (!result.rows || result.rows.length === 0) {
       return NextResponse.json(
         { error: 'Trade analysis not found' },
         { status: 404 }
@@ -168,21 +169,22 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user perspective
-    const userTeamId = await getUserTeamId(session.user.id, leagueId)
-    const tradeResult = await neonDb.selectSingle('trades', {
-      where: { id: tradeId }
-    })
+    const userTeamId = await getUserTeamId(user.id, leagueId)
+    const tradeResult = await database.query(
+      'SELECT * FROM trades WHERE id = $1 LIMIT 1',
+      [tradeId]
+    )
 
-    const perspective = tradeResult.data ? getAnalysisPerspective(
-      result.data as any,
+    const perspective = (tradeResult.rows && tradeResult.rows.length > 0) ? getAnalysisPerspective(
+      result.rows[0] as any,
       userTeamId,
-      tradeResult.data.proposing_team_id,
-      tradeResult.data.receiving_team_id
+      tradeResult.rows[0].proposing_team_id,
+      tradeResult.rows[0].receiving_team_id
     ) : null
 
     return NextResponse.json({
       success: true,
-      analysis: result.data,
+      analysis: result.rows[0],
       userPerspective: perspective
     })
 
@@ -198,8 +200,8 @@ export async function GET(request: NextRequest) {
 // Batch analysis for multiple trades
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session?.user) {
+    const { user } = await verifyAuth(request)
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -214,7 +216,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -264,17 +266,19 @@ export async function PUT(request: NextRequest) {
 
 // Helper functions
 async function verifyLeagueAccess(userId: string, leagueId: string): Promise<boolean> {
-  const result = await neonDb.selectSingle('teams', {
-    where: { user_id: userId, league_id: leagueId }
-  })
-  return !!result.data
+  const result = await database.query(
+    'SELECT id FROM teams WHERE user_id = $1 AND league_id = $2 LIMIT 1',
+    [userId, leagueId]
+  )
+  return result.rows && result.rows.length > 0
 }
 
 async function getUserTeamId(userId: string, leagueId: string): Promise<string | null> {
-  const result = await neonDb.selectSingle('teams', {
-    where: { user_id: userId, league_id: leagueId }
-  })
-  return result.data?.id || null
+  const result = await database.query(
+    'SELECT id FROM teams WHERE user_id = $1 AND league_id = $2 LIMIT 1',
+    [userId, leagueId]
+  )
+  return result.rows && result.rows.length > 0 ? result.rows[0].id : null
 }
 
 function generateTradeId(): string {
@@ -291,55 +295,72 @@ function calculateAnalysisCost(playerCount: number): number {
 async function saveTradeAnalysis(tradeId: string, analysis: any, leagueId: string): Promise<void> {
   try {
     // Save main evaluation
-    await neonDb.insert('trade_evaluations', {
-      trade_id: tradeId,
-      league_id: leagueId,
-      fairness_score: analysis.overallAssessment.fairnessScore,
-      overall_rating: analysis.overallAssessment.rating,
-      confidence_level: analysis.overallAssessment.confidence,
-      value_gap: analysis.valueAnalysis.totalValueGap,
-      immediate_value_delta: analysis.valueAnalysis.immediateValueDelta,
-      rest_of_season_value_delta: analysis.valueAnalysis.restOfSeasonValueDelta,
-      dynasty_value_delta: analysis.valueAnalysis.dynastyValueDelta,
-      proposing_team_impact: analysis.teamImpact.proposingTeam,
-      receiving_team_impact: analysis.teamImpact.receivingTeam,
-      proposing_team_playoff_prob_change: analysis.playoffImpact.proposingTeam.playoffProbabilityChange,
-      receiving_team_playoff_prob_change: analysis.playoffImpact.receivingTeam.playoffProbabilityChange,
-      proposing_team_championship_prob_change: analysis.playoffImpact.proposingTeam.championshipProbabilityChange,
-      receiving_team_championship_prob_change: analysis.playoffImpact.receivingTeam.championshipProbabilityChange,
-      analysis_dimensions: analysis.insights,
-      recommendation: analysis.overallAssessment.recommendation,
-      counter_offer_suggestions: analysis.insights.counterOfferSuggestions,
-      key_insights: analysis.insights.keyFactors,
-      similar_trades: analysis.marketContext.similarTrades,
-      market_timing_assessment: analysis.marketContext.marketTiming
-    })
+    await database.query(`
+      INSERT INTO trade_evaluations (
+        trade_id, league_id, fairness_score, overall_rating, confidence_level,
+        value_gap, immediate_value_delta, rest_of_season_value_delta, dynasty_value_delta,
+        proposing_team_impact, receiving_team_impact, proposing_team_playoff_prob_change,
+        receiving_team_playoff_prob_change, proposing_team_championship_prob_change,
+        receiving_team_championship_prob_change, analysis_dimensions, recommendation,
+        counter_offer_suggestions, key_insights, similar_trades, market_timing_assessment
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+    `, [
+      tradeId,
+      leagueId,
+      analysis.overallAssessment.fairnessScore,
+      analysis.overallAssessment.rating,
+      analysis.overallAssessment.confidence,
+      analysis.valueAnalysis.totalValueGap,
+      analysis.valueAnalysis.immediateValueDelta,
+      analysis.valueAnalysis.restOfSeasonValueDelta,
+      analysis.valueAnalysis.dynastyValueDelta,
+      JSON.stringify(analysis.teamImpact.proposingTeam),
+      JSON.stringify(analysis.teamImpact.receivingTeam),
+      analysis.playoffImpact.proposingTeam.playoffProbabilityChange,
+      analysis.playoffImpact.receivingTeam.playoffProbabilityChange,
+      analysis.playoffImpact.proposingTeam.championshipProbabilityChange,
+      analysis.playoffImpact.receivingTeam.championshipProbabilityChange,
+      JSON.stringify(analysis.insights),
+      analysis.overallAssessment.recommendation,
+      JSON.stringify(analysis.insights.counterOfferSuggestions),
+      JSON.stringify(analysis.insights.keyFactors),
+      JSON.stringify(analysis.marketContext.similarTrades),
+      JSON.stringify(analysis.marketContext.marketTiming)
+    ])
 
     // Save fairness breakdown
-    const evaluationResult = await neonDb.selectSingle('trade_evaluations', {
-      where: { trade_id: tradeId }
-    })
+    const evaluationResult = await database.query(
+      'SELECT id FROM trade_evaluations WHERE trade_id = $1 LIMIT 1',
+      [tradeId]
+    )
 
-    if (evaluationResult.data) {
-      await neonDb.insert('trade_fairness_scores', {
-        trade_evaluation_id: evaluationResult.data.id,
-        overall_fairness: analysis.fairnessBreakdown.overall,
-        value_balance: analysis.fairnessBreakdown.valueBalance,
-        need_fulfillment_balance: analysis.fairnessBreakdown.needsFulfillmentBalance,
-        risk_balance: analysis.fairnessBreakdown.riskBalance,
-        position_value_balance: analysis.fairnessBreakdown.positionalBalance,
-        immediate_impact_balance: analysis.fairnessBreakdown.timingBalance,
-        long_term_balance: analysis.valueAnalysis.dynastyValueDelta || 50,
-        playoff_impact_balance: (analysis.playoffImpact.proposingTeam.playoffProbabilityChange + 
-                                analysis.playoffImpact.receivingTeam.playoffProbabilityChange) / 2,
-        league_context_adjustment: analysis.fairnessBreakdown.contextAdjustments,
-        component_scores: analysis.fairnessBreakdown,
-        fairness_breakdown: analysis.insights.keyFactors,
-        imbalance_factors: analysis.insights.risks
-      })
+    if (evaluationResult.rows && evaluationResult.rows.length > 0) {
+      await database.query(`
+        INSERT INTO trade_fairness_scores (
+          trade_evaluation_id, overall_fairness, value_balance, need_fulfillment_balance,
+          risk_balance, position_value_balance, immediate_impact_balance, long_term_balance,
+          playoff_impact_balance, league_context_adjustment, component_scores,
+          fairness_breakdown, imbalance_factors
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `, [
+        evaluationResult.rows[0].id,
+        analysis.fairnessBreakdown.overall,
+        analysis.fairnessBreakdown.valueBalance,
+        analysis.fairnessBreakdown.needsFulfillmentBalance,
+        analysis.fairnessBreakdown.riskBalance,
+        analysis.fairnessBreakdown.positionalBalance,
+        analysis.fairnessBreakdown.timingBalance,
+        analysis.valueAnalysis.dynastyValueDelta || 50,
+        (analysis.playoffImpact.proposingTeam.playoffProbabilityChange + 
+         analysis.playoffImpact.receivingTeam.playoffProbabilityChange) / 2,
+        analysis.fairnessBreakdown.contextAdjustments,
+        JSON.stringify(analysis.fairnessBreakdown),
+        JSON.stringify(analysis.insights.keyFactors),
+        JSON.stringify(analysis.insights.risks)
+      ])
     }
-  } catch (error) {
-    logger.error('Failed to save trade analysis:', error)
+  } catch (error: unknown) {
+    logger.error('Failed to save trade analysis:', error instanceof Error ? error : new Error(String(error)))
   }
 }
 

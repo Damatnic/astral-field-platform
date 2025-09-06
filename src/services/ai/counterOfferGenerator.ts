@@ -1,6 +1,6 @@
-import { aiRouterService } from './aiRouterService';
-import { aiAnalyticsService } from './aiAnalyticsService';
-import { tradeAnalysisEngine } from './tradeAnalysisEngine';
+import aiRouterService from './aiRouterService';
+import aiAnalyticsService from './aiAnalyticsService';
+import tradeAnalysisEngine from './tradeAnalysisEngine';
 import { userBehaviorAnalyzer } from './userBehaviorAnalyzer';
 import { neonDb } from '@/lib/db';
 

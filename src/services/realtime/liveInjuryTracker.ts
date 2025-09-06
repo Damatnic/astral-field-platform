@@ -1,8 +1,8 @@
-import { aiRouterService } from '../ai/aiRouterService';
-import { aiAnalyticsService } from '../ai/aiAnalyticsService';
-import { injuryImpactPredictor } from '../ml/injuryImpactPredictor';
+import aiRouterService from '../ai/aiRouterService';
+import aiAnalyticsService from '../ai/aiAnalyticsService';
+import injuryImpactPredictor, { InjuryReport as MLInjuryReport } from '../ml/injuryImpactPredictor';
 import { database } from '@/lib/database';
-import { WebSocketManager } from '@/lib/websocket';
+import { getWebSocket, sendToUser, broadcastToLeague } from '@/lib/websocket';
 
 export interface InjuryReport {
   id: string;
@@ -79,7 +79,6 @@ export interface InjuryAlert {
 }
 
 class LiveInjuryTracker {
-  private wsManager: WebSocketManager;
   private monitoringInterval: NodeJS.Timeout | null = null;
   private trackedSources = [
     'https://api.sportsdata.io/v3/nfl/scores/json/Injuries',
@@ -89,7 +88,7 @@ class LiveInjuryTracker {
   ];
 
   constructor() {
-    this.wsManager = WebSocketManager.getInstance();
+    // Initialize injury tracker
   }
 
   async startInjuryMonitoring(): Promise<void> {
@@ -101,13 +100,11 @@ class LiveInjuryTracker {
         await this.updateExistingInjuries();
       } catch (error) {
         console.error('Error in injury monitoring:', error);
-        await aiAnalyticsService.logError('injury_monitoring_error', error as Error, {
-          source: 'liveInjuryTracker'
-        });
+        console.error('Injury monitoring error:', error, { source: 'liveInjuryTracker' });
       }
     }, 120000); // Check every 2 minutes
 
-    await aiAnalyticsService.logEvent('injury_monitoring_started', {
+    console.log('Injury monitoring started', {
       sources: this.trackedSources.length,
       interval: '2min'
     });
@@ -241,11 +238,13 @@ class LiveInjuryTracker {
         Respond in JSON format.
       `;
 
-      const response = await aiRouterService.processRequest({
-        type: 'analysis',
-        complexity: 'medium',
-        content: aiPrompt,
-        userId: 'system',
+      const response = await aiRouterService.query({
+        messages: [{
+          role: 'user',
+          content: aiPrompt
+        }],
+        capabilities: ['data_analysis'],
+        complexity: 'moderate',
         priority: 'high'
       });
 
@@ -280,7 +279,7 @@ class LiveInjuryTracker {
       // Send push notifications
       await this.sendInjuryNotifications(alerts);
 
-      await aiAnalyticsService.logEvent('injury_processed', {
+      console.log('injury_processed', {
         playerId: injury.playerId,
         severity: injury.severity,
         impactScore: impact.immediateImpact.projectionChange,
@@ -289,7 +288,7 @@ class LiveInjuryTracker {
 
     } catch (error) {
       console.error('Error handling injury report:', error);
-      await aiAnalyticsService.logError('injury_handling_error', error as Error, {
+      console.error('injury_handling_error', error as Error, {
         injuryId: injury.id,
         playerId: injury.playerId
       });
@@ -298,12 +297,30 @@ class LiveInjuryTracker {
 
   async analyzeInjuryImpact(injury: InjuryReport): Promise<InjuryImpact> {
     try {
+      // Convert injury report to ML format
+      const mlInjuryReport: MLInjuryReport = {
+        id: injury.id,
+        playerId: injury.playerId,
+        playerName: injury.playerName,
+        position: injury.position,
+        team: injury.team,
+        injuryType: injury.injuryType,
+        bodyPart: injury.bodyPart,
+        severity: injury.severity === 'questionable' ? 'minor' : 
+                 injury.severity === 'doubtful' ? 'moderate' :
+                 injury.severity === 'out' ? 'major' : 'major',
+        status: injury.severity,
+        reportedDate: injury.reportedAt.toISOString(),
+        expectedReturn: injury.expectedReturn?.toISOString(),
+        description: `${injury.injuryType} - ${injury.bodyPart}`,
+        source: injury.source,
+        reliability: injury.confidence
+      }
+      
       // Use the existing injury impact predictor
       const prediction = await injuryImpactPredictor.analyzeInjuryImpact(
         injury.playerId,
-        injury.injuryType,
-        injury.severity,
-        injury.bodyPart
+        mlInjuryReport
       );
 
       // Get team impact analysis
@@ -318,10 +335,10 @@ class LiveInjuryTracker {
       return {
         playerId: injury.playerId,
         immediateImpact: {
-          fantasyProjection: prediction.projectedPerformance.fantasyPoints,
-          projectionChange: prediction.projectedPerformance.fantasyPoints - prediction.baselinePerformance.fantasyPoints,
-          percentageChange: ((prediction.projectedPerformance.fantasyPoints - prediction.baselinePerformance.fantasyPoints) / prediction.baselinePerformance.fantasyPoints) * 100,
-          confidenceLevel: prediction.confidence
+          fantasyProjection: prediction.performanceProjections?.weeklyDecline?.[0] || 0,
+          projectionChange: prediction.riskAssessment?.performanceImpact || 0,
+          percentageChange: (prediction.riskAssessment?.performanceImpact || 0) * 100,
+          confidenceLevel: prediction.recoveryTimeline?.confidenceLevel || 0.5
         },
         teamImpact,
         waiver: waiverAnalysis,
@@ -351,11 +368,13 @@ class LiveInjuryTracker {
       Respond in JSON format with specific player impacts.
     `;
 
-    const response = await aiRouterService.processRequest({
-      type: 'analysis',
-      complexity: 'high',
-      content: aiPrompt,
-      userId: 'system',
+    const response = await aiRouterService.query({
+      messages: [{
+        role: 'user',
+        content: aiPrompt
+      }],
+      capabilities: ['data_analysis'],
+      complexity: 'moderate',
       priority: 'high'
     });
 
@@ -380,11 +399,13 @@ class LiveInjuryTracker {
       Focus on actionable recommendations with specific value projections.
     `;
 
-    const response = await aiRouterService.processRequest({
-      type: 'strategy',
-      complexity: 'high',
-      content: aiPrompt,
-      userId: 'system',
+    const response = await aiRouterService.query({
+      messages: [{
+        role: 'user',
+        content: aiPrompt
+      }],
+      capabilities: ['fantasy_analysis'],
+      complexity: 'moderate',
       priority: 'high'
     });
 
@@ -456,9 +477,6 @@ class LiveInjuryTracker {
       timestamp: new Date().toISOString()
     };
 
-    // Broadcast to all active users
-    this.wsManager.broadcast('injury_update', updateData);
-
     // Send targeted updates to affected users
     const affectedUsers = await database.query(`
       SELECT DISTINCT user_id 
@@ -467,7 +485,7 @@ class LiveInjuryTracker {
     `, [injury.playerId]);
 
     for (const user of affectedUsers.rows) {
-      this.wsManager.sendToUser(user.user_id, 'player_injury', {
+      await sendToUser(user.user_id, {
         ...updateData,
         personalized: true
       });

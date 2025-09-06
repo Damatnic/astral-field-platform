@@ -83,6 +83,7 @@ class LiveGameMonitor {
   private projectionAdjustments: Map<string, LiveProjectionUpdate> = new Map()
   private monitoringInterval: NodeJS.Timeout | null = null
   private websocketConnections: Set<any> = new Set()
+  private database = neonDb
 
   constructor() {
     this.startGameMonitoring()
@@ -99,11 +100,12 @@ class LiveGameMonitor {
 
     try {
       // Get active games for the week
-      const { data: games } = await neonDb.query(`
+      const gamesResult = await neonDb.query(`
         SELECT * FROM nfl_schedule 
         WHERE week = $1 AND game_status IN ('active', 'scheduled')
         ORDER BY game_time ASC
       `, [week])
+      const games = gamesResult.rows
 
       if (!games || games.length === 0) {
         logger.info('No active games found for monitoring', { week })
@@ -116,11 +118,12 @@ class LiveGameMonitor {
         await this.initializeGameMonitoring(game)
         
         // Count players in this game
-        const { data: gamePlayers } = await neonDb.query(`
+        const gamePlayersResult = await neonDb.query(`
           SELECT COUNT(DISTINCT p.id) as player_count
           FROM players p 
           WHERE p.nfl_team IN ($1, $2) AND p.active = true
         `, [game.home_team, game.away_team])
+        const gamePlayers = gamePlayersResult.rows
         
         playersTracked += gamePlayers?.[0]?.player_count || 0
       }
@@ -272,13 +275,14 @@ class LiveGameMonitor {
         totalAdjustments++
         
         if (Math.abs(adjustment.adjustment) >= 2.0) { // Significant change threshold
-          const { data: player } = await neonDb.selectSingle('players', {
-            where: { id: playerId }
-          })
+          const player = await this.database.query(`
+            SELECT * FROM players WHERE id = $1 LIMIT 1
+          `, [playerId])
+          const playerData = player.rows[0]
 
           significantChanges.push({
             playerId,
-            playerName: player?.name || 'Unknown',
+            playerName: playerData?.name || 'Unknown',
             originalProjection: adjustment.originalProjection,
             adjustedProjection: adjustment.liveProjection,
             change: adjustment.adjustment,
@@ -469,14 +473,15 @@ class LiveGameMonitor {
       const existingProjection = this.projectionAdjustments.get(playerId)
 
       // Get player info
-      const { data: player } = await neonDb.selectSingle('players', {
-        where: { id: playerId }
-      })
+      const player = await this.database.query(`
+        SELECT * FROM players WHERE id = $1 LIMIT 1
+      `, [playerId])
+      const playerData = player.rows[0]
 
-      if (!player) return
+      if (!playerData) return
 
       // Calculate projection adjustment based on current game state
-      const adjustment = await this.calculateProjectionAdjustment(player, gameData, gameScript, currentUpdate)
+      const adjustment = await this.calculateProjectionAdjustment(playerData, gameData, gameScript, currentUpdate)
 
       if (Math.abs(adjustment.adjustment) >= 0.5) { // Threshold for updates
         this.projectionAdjustments.set(playerId, adjustment)
@@ -485,7 +490,7 @@ class LiveGameMonitor {
         if (Math.abs(adjustment.adjustment) >= 2.0) {
           this.broadcastLiveUpdate('projection_change', {
             playerId,
-            playerName: player.name,
+            playerName: playerData.name,
             adjustment: adjustment.adjustment,
             newProjection: adjustment.liveProjection,
             reasons: adjustment.adjustmentReasons.map(r => r.factor)
@@ -591,14 +596,15 @@ class LiveGameMonitor {
       const projection = this.projectionAdjustments.get(playerId)
       
       if (playerUpdate) {
-        const { data: player } = await neonDb.selectSingle('players', {
-          where: { id: playerId }
-        })
+        const player = await this.database.query(`
+          SELECT * FROM players WHERE id = $1 LIMIT 1
+        `, [playerId])
+        const playerData = player.rows[0]
 
         keyPlayers.push({
           playerId,
-          playerName: player?.name || 'Unknown',
-          position: player?.position || 'UNKNOWN',
+          playerName: playerData?.name || 'Unknown',
+          position: playerData?.position || 'UNKNOWN',
           currentPoints: playerUpdate.fantasyPoints,
           projectedFinal: projection?.liveProjection || playerUpdate.projectedFinalPoints,
           trend: this.calculateTrend(projection?.adjustment || 0)
@@ -613,12 +619,12 @@ class LiveGameMonitor {
     const gameData = this.activeGames.get(gameId)
     if (!gameData) return []
 
-    const { data: players } = await neonDb.query(`
+    const players = await this.database.query(`
       SELECT id FROM players 
       WHERE nfl_team IN ($1, $2) AND active = true
     `, [gameData.homeTeam, gameData.awayTeam])
 
-    return players?.map((p: any) => p.id) || []
+    return players.rows?.map((p: any) => p.id) || []
   }
 
   private calculateTrend(adjustment: number): 'up' | 'down' | 'stable' {

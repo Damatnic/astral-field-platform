@@ -41,6 +41,13 @@ const buttonVariants = cva(
           'active:bg-gray-700',
           'focus-visible:ring-gray-400'
         ],
+        outline: [
+          'bg-transparent text-gray-300 border border-gray-600',
+          'hover:bg-gray-800 hover:text-gray-100 hover:border-gray-500',
+          'active:bg-gray-700',
+          'focus-visible:ring-gray-400',
+          'disabled:border-gray-800 disabled:text-gray-600'
+        ],
         destructive: [
           'bg-red-500 text-white shadow-sm',
           'hover:bg-red-400 hover:shadow-md',

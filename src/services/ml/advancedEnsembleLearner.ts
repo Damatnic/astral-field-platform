@@ -1,4 +1,4 @@
-import { db } from '../../db/database';
+import { db } from '../../lib/database';
 
 // Enhanced ML model interfaces
 interface ModelConfig {
@@ -543,7 +543,7 @@ export class AdvancedEnsembleLearner {
   private getModelAccuracy(modelType: string): number {
     // This would fetch from historical accuracy data
     // For now, return default values based on model type
-    const defaultAccuracies = {
+    const defaultAccuracies: Record<string, number> = {
       'deep_neural_network': 0.90,
       'gradient_boosting_machine': 0.87,
       'random_forest_ensemble': 0.85,
@@ -567,8 +567,8 @@ export class AdvancedEnsembleLearner {
   }> {
     const results = {
       modelsUpdated: 0,
-      accuracyImprovements: {},
-      trainingMetrics: {}
+      accuracyImprovements: {} as Record<string, number>,
+      trainingMetrics: {} as Record<string, any>
     };
 
     console.log(`Training ensemble with ${trainingData.length} samples`);
@@ -599,7 +599,7 @@ export class AdvancedEnsembleLearner {
         
       } catch (error) {
         console.error(`Training failed for ${modelType}:`, error);
-        results.trainingMetrics[modelType] = { error: error.message };
+        results.trainingMetrics[modelType] = { error: error instanceof Error ? error.message : String(error) };
       }
     }
 

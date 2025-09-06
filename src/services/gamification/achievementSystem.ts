@@ -1,6 +1,6 @@
 import { Player, Team, League, User } from '@/types/fantasy';
 
-interface Achievement {
+export interface Achievement {
   id: string;
   name: string;
   description: string;

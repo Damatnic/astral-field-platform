@@ -1,9 +1,9 @@
 import { database } from '@/lib/database';
-import { AIRouter } from '../ai/aiRouter';
-import { MLPipelineService } from '../ai/mlPipeline';
-import { OracleService } from '../ai/oracle';
-import { TradeAnalysisService } from '../trades/tradeAnalysis';
-import { SeasonStrategyService } from '../analytics/seasonStrategy';
+import aiRouter from '../ai/aiRouter';
+import mlPipelineService from '../ml/predictionPipeline';
+import oracleService from '../ai/oracle';
+import tradeAnalysisEngine from '../ai/tradeAnalysisEngine';
+import seasonStrategyService from '../analytics/seasonStrategy';
 
 export interface TestCase {
   testId: string;
@@ -65,19 +65,9 @@ export interface ComprehensiveTestSuite {
 }
 
 export class AIAccuracyValidator {
-  private aiRouter: AIRouter;
-  private mlPipeline: MLPipelineService;
-  private oracle: OracleService;
-  private tradeAnalysis: TradeAnalysisService;
-  private seasonStrategy: SeasonStrategyService;
   private testResults: Map<string, TestCase[]>;
 
   constructor() {
-    this.aiRouter = new AIRouter();
-    this.mlPipeline = new MLPipelineService();
-    this.oracle = new OracleService();
-    this.tradeAnalysis = new TradeAnalysisService();
-    this.seasonStrategy = new SeasonStrategyService();
     this.testResults = new Map();
   }
 
@@ -461,7 +451,7 @@ export class AIAccuracyValidator {
     
     if (input.playerId) {
       // Execute player prediction
-      return await this.mlPipeline.generateQuickPrediction(input.playerId);
+      return await mlPipelineService.predictPlayerPerformance(input.playerId, input.week || 1);
     } else if (input.injuryType) {
       // Execute injury prediction
       return {
@@ -483,7 +473,10 @@ export class AIAccuracyValidator {
 
   private async executeRecommendationTest(testCase: TestCase): Promise<any> {
     const input = testCase.inputData;
-    const recommendations = await this.oracle.generateQuickInsight(input.userId, input.leagueId);
+    const recommendations = await oracleService.generateRecommendations(input.userId, {
+      leagueId: input.leagueId,
+      context: input.context || 'weekly_lineup'
+    });
     
     return {
       recommendationCount: recommendations.insights.length,
@@ -496,7 +489,10 @@ export class AIAccuracyValidator {
     const input = testCase.inputData;
     
     if (input.analysisType === 'team_strengths') {
-      const insights = await this.oracle.generateQuickInsight(input.userId, input.leagueId);
+      const insights = await oracleService.generateRecommendations(input.userId, {
+        leagueId: input.leagueId,
+        context: input.analysisType || 'team_strengths'
+      });
       return {
         insightCount: insights.insights.length,
         actionableItems: Math.floor(insights.insights.length * 0.7),
@@ -516,14 +512,13 @@ export class AIAccuracyValidator {
 
   private async executeStrategyTest(testCase: TestCase): Promise<any> {
     const input = testCase.inputData;
-    const strategy = await this.seasonStrategy.generateQuickWeeklyStrategy(
-      input.leagueId, 
-      input.userId, 
-      input.currentWeek || 1
-    );
+    const strategy = await seasonStrategyService.generateQuickWeeklyStrategy(input.userId, {
+      leagueId: input.leagueId,
+      week: input.currentWeek || 1
+    });
     
     return {
-      playoffProbability: strategy.winProbability,
+      playoffProbability: strategy.playoffOdds || 0.5,
       projectedWins: Math.random() * 5 + 6,
       championshipOdds: Math.random() * 0.3
     };

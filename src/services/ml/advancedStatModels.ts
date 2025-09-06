@@ -235,7 +235,7 @@ class AdvancedStatisticalModels {
     logger.info('Validating model accuracy', { week })
 
     try {
-      const { data: predictions } = await neonDb.query(`
+      const { rows: predictions } = await neonDb.query(`
         SELECT 
           predicted_points,
           actual_points,

@@ -1,4 +1,4 @@
-import { db } from '../../lib/db';
+import { database } from '../../lib/database';
 import { AIFallbackManager } from '../fallback/aiFallbackManager';
 
 export interface PerformanceMetrics {
@@ -592,7 +592,7 @@ export class PerformanceOptimizer {
   ): Promise<void> {
     try {
       // Store overall test results
-      await db.query(`
+      await database.query(`
         INSERT INTO performance_load_tests (
           test_id, total_endpoints, average_response_time, total_requests, 
           overall_error_rate, system_throughput, created_at
@@ -609,7 +609,7 @@ export class PerformanceOptimizer {
 
       // Store individual endpoint results
       for (const result of endpointResults) {
-        await db.query(`
+        await database.query(`
           INSERT INTO performance_endpoint_results (
             test_id, endpoint, concurrent_users, total_requests, successful_requests,
             failed_requests, average_response_time, min_response_time, max_response_time,
@@ -635,7 +635,7 @@ export class PerformanceOptimizer {
 
       // Store bottlenecks
       for (const bottleneck of bottlenecks) {
-        await db.query(`
+        await database.query(`
           INSERT INTO performance_bottlenecks (
             test_id, component, bottleneck_type, severity, description,
             metrics, recommendations, estimated_impact, created_at
@@ -655,7 +655,7 @@ export class PerformanceOptimizer {
 
       // Store optimization suggestions
       for (const suggestion of suggestions) {
-        await db.query(`
+        await database.query(`
           INSERT INTO performance_optimization_suggestions (
             test_id, suggestion_type, priority, title, description,
             expected_impact, implementation, estimated_effort, potential_savings, created_at
@@ -681,7 +681,7 @@ export class PerformanceOptimizer {
 
   async getPerformanceHistory(days: number = 30): Promise<PerformanceMetrics[]> {
     try {
-      const result = await db.query(`
+      const result = await database.query(`
         SELECT 
           plt.test_id,
           plt.average_response_time,
@@ -717,7 +717,7 @@ export class PerformanceOptimizer {
 
   async getCurrentBottlenecks(): Promise<SystemBottleneck[]> {
     try {
-      const result = await db.query(`
+      const result = await database.query(`
         SELECT 
           component, bottleneck_type, severity, description,
           metrics, recommendations, estimated_impact, created_at
@@ -752,7 +752,7 @@ export class PerformanceOptimizer {
 
   async getOptimizationRecommendations(): Promise<OptimizationSuggestion[]> {
     try {
-      const result = await db.query(`
+      const result = await database.query(`
         SELECT 
           suggestion_type, priority, title, description, expected_impact,
           implementation, estimated_effort, potential_savings, created_at

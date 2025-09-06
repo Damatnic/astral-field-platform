@@ -1,4 +1,4 @@
-import { db } from '../../db/database';
+import { db } from '../../lib/database';
 
 interface UserFeedbackData {
   userId: string;

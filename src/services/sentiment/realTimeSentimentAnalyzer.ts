@@ -741,7 +741,7 @@ Format as JSON:
   }
 
   private getSourceFollowers(sourceName: string): number {
-    const sourceFollowers = {
+    const sourceFollowers: Record<string, number> = {
       'ESPN': 50000000,
       'NFL.com': 30000000,
       'The Athletic': 5000000,
@@ -753,7 +753,7 @@ Format as JSON:
   }
 
   private getSourceInfluence(sourceName: string): number {
-    const sourceInfluence = {
+    const sourceInfluence: Record<string, number> = {
       'ESPN': 0.95,
       'NFL.com': 0.90,
       'The Athletic': 0.85,
@@ -854,18 +854,18 @@ Format as JSON:
     `);
 
     return {
-      trending: trendingQuery.rows.map(row => ({
+      trending: trendingQuery.rows.map((row: any) => ({
         topic: row.topic,
-        category: 'general', // Would be determined by analysis
+        category: 'general' as const, // Would be determined by analysis
         mentionCount: row.mention_count,
-        sentimentTrend: 'stable', // Would be calculated
+        sentimentTrend: 'stable' as const, // Would be calculated
         averageSentiment: parseFloat(row.avg_sentiment),
         influenceScore: parseFloat(row.avg_influence),
-        timeframe: '4h',
+        timeframe: '4h' as const,
         keyMessages: [],
         topInfluencers: []
       })),
-      alerts: alertsQuery.rows.map(row => ({
+      alerts: alertsQuery.rows.map((row: any) => ({
         alertType: row.alert_type,
         severity: row.severity,
         player: row.player_name,
@@ -916,8 +916,8 @@ Format as JSON:
       sentimentTrend: 'stable', // Would calculate trend
       mentionCount: parseInt(summary?.mention_count || '0'),
       topSources: summary?.sources || [],
-      keyTopics: summary?.all_topics ? summary.all_topics.split(',').filter(t => t) : [],
-      alerts: alertsQuery.rows.map(row => ({
+      keyTopics: summary?.all_topics ? summary.all_topics.split(',').filter((t: string) => t) : [],
+      alerts: alertsQuery.rows.map((row: any) => ({
         alertType: row.alert_type,
         severity: row.severity,
         player: row.player_name,

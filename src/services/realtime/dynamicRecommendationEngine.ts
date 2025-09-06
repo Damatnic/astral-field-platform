@@ -1,4 +1,4 @@
-import { neonDb } from '@/lib/database'
+import { database } from '@/lib/database'
 import { logger } from '@/lib/logger'
 import aiRouter from '../ai/aiRouterService'
 import liveMonitor from './liveGameMonitor'
@@ -348,7 +348,7 @@ class DynamicRecommendationEngine {
 
   private async createUserContext(userId: string): Promise<RecommendationContext> {
     // Get user's current lineup
-    const { data: lineup } = await neonDb.query(`
+    const lineup = await database.query(`
       SELECT 
         sl.position,
         sl.player_id,
@@ -362,7 +362,7 @@ class DynamicRecommendationEngine {
     `, [userId])
 
     // Get bench players
-    const { data: bench } = await neonDb.query(`
+    const bench = await database.query(`
       SELECT 
         rp.player_id,
         p.name as player_name,
@@ -375,20 +375,21 @@ class DynamicRecommendationEngine {
     `, [userId])
 
     // Get user preferences
-    const { data: prefs } = await neonDb.selectSingle('user_preferences', {
-      where: { user_id: userId }
-    })
+    const prefs = await database.query(`
+      SELECT * FROM user_preferences WHERE user_id = $1 LIMIT 1
+    `, [userId])
+    const prefsData = prefs.rows[0]
 
     return {
       userId,
-      currentLineup: lineup?.map((row: any) => ({
+      currentLineup: lineup.rows?.map((row: any) => ({
         position: row.position,
         playerId: row.player_id,
         playerName: row.player_name,
         projected: row.projected_points,
         actual: row.actual_points
       })) || [],
-      benchPlayers: bench?.map((row: any) => ({
+      benchPlayers: bench.rows?.map((row: any) => ({
         playerId: row.player_id,
         playerName: row.player_name,
         position: row.position,
@@ -396,9 +397,9 @@ class DynamicRecommendationEngine {
       })) || [],
       gameStates: new Map(),
       userPreferences: {
-        riskTolerance: prefs?.risk_tolerance || 'moderate',
-        autoApplyRecommendations: prefs?.auto_apply_recommendations || false,
-        notificationThreshold: prefs?.notification_threshold || 0.7
+        riskTolerance: prefsData?.risk_tolerance || 'moderate',
+        autoApplyRecommendations: prefsData?.auto_apply_recommendations || false,
+        notificationThreshold: prefsData?.notification_threshold || 0.7
       }
     }
   }
@@ -422,7 +423,7 @@ class DynamicRecommendationEngine {
   }
 
   private async generateLineupRecommendations(userId: string, context: RecommendationContext): Promise<LiveRecommendation[]> {
-    const recommendations = []
+    const recommendations: LiveRecommendation[] = []
 
     // Check for underperforming starters with better bench options
     for (const starter of context.currentLineup) {
@@ -437,7 +438,7 @@ class DynamicRecommendationEngine {
           recommendations.push({
             id: crypto.randomUUID(),
             userId,
-            type: 'lineup_change',
+            type: 'lineup_change' as const,
             priority: expectedImpact > 5 ? 'high' : 'medium',
             confidence: 0.8,
             urgency: this.calculateUrgency('lineup_change'),
@@ -474,10 +475,10 @@ class DynamicRecommendationEngine {
   }
 
   private async generateAcquisitionRecommendations(userId: string, context: RecommendationContext): Promise<LiveRecommendation[]> {
-    const recommendations = []
+    const recommendations: LiveRecommendation[] = []
 
     // Get available waiver targets
-    const { data: waiverTargets } = await neonDb.query(`
+    const waiverTargets = await database.query(`
       SELECT p.id, p.name, p.position, pp.projected_points
       FROM players p
       LEFT JOIN player_projections pp ON p.id = pp.player_id
@@ -490,7 +491,7 @@ class DynamicRecommendationEngine {
     `)
 
     // Find acquisition opportunities based on injuries or game scripts
-    for (const target of waiverTargets || []) {
+    for (const target of waiverTargets.rows || []) {
       const weakestBench = context.benchPlayers
         .filter(b => b.position === target.position)
         .sort((a, b) => a.projected - b.projected)[0]
@@ -499,7 +500,7 @@ class DynamicRecommendationEngine {
         recommendations.push({
           id: crypto.randomUUID(),
           userId,
-          type: 'waiver_pickup',
+          type: 'waiver_pickup' as const,
           priority: target.projected_points > 15 ? 'high' : 'medium',
           confidence: 0.7,
           urgency: 0.6,
@@ -535,7 +536,7 @@ class DynamicRecommendationEngine {
   }
 
   private async generateStartSitRecommendations(userId: string, context: RecommendationContext): Promise<LiveRecommendation[]> {
-    const recommendations = []
+    const recommendations: LiveRecommendation[] = []
 
     // Use AI to generate start/sit recommendations
     try {

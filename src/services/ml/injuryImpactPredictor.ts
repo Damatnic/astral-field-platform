@@ -440,7 +440,7 @@ class InjuryImpactPredictor {
   }>> {
     try {
       // Query for similar injuries in the database
-      const { data: similarInjuries } = await neonDb.query(`
+      const { rows: similarInjuries } = await neonDb.query(`
         SELECT 
           p.name as player_name,
           i.injury_type,

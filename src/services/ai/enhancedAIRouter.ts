@@ -327,7 +327,7 @@ export class EnhancedAIRouter extends AIServiceRouter {
     let keywordMatches = 0;
     
     capabilities.strengths.forEach(strength => {
-      const strengthKeywords = {
+      const strengthKeywords: Record<string, string[]> = {
         'advanced_reasoning': ['analyze', 'reason', 'logic', 'complex'],
         'mathematical_analysis': ['calculate', 'math', 'statistical', 'probability'],
         'detailed_analysis': ['detailed', 'comprehensive', 'thorough', 'in-depth'],

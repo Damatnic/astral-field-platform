@@ -1,4 +1,4 @@
-import { neonDb } from '@/lib/database'
+import { database } from '@/lib/database'
 import { logger } from '@/lib/logger'
 import aiRouter from '../ai/aiRouterService'
 
@@ -350,7 +350,7 @@ class GameScriptAnalyzer {
 
     try {
       // Get all active games for the week
-      const { data: activeGames } = await neonDb.query(`
+      const activeGames = await database.query(`
         SELECT * FROM nfl_schedule 
         WHERE week = $1 AND game_status = 'active'
       `, [week])
@@ -359,7 +359,7 @@ class GameScriptAnalyzer {
       const opportunityAlerts = []
       let gamesMonitored = 0
 
-      for (const game of activeGames || []) {
+      for (const game of activeGames.rows || []) {
         gamesMonitored++
         
         try {
@@ -565,14 +565,14 @@ class GameScriptAnalyzer {
     const impacts = []
     
     // Get players in this game
-    const { data: gamePlayers } = await neonDb.query(`
+    const gamePlayers = await database.query(`
       SELECT p.id, p.name, p.position, p.nfl_team
       FROM players p 
       WHERE p.nfl_team IN ($1, $2) AND p.active = true
       ORDER BY p.position
     `, [gameData.homeTeam, gameData.awayTeam])
 
-    for (const player of gamePlayers || []) {
+    for (const player of gamePlayers.rows || []) {
       const impact = this.calculateIndividualPlayerImpact(player, gameData, script)
       if (Math.abs(impact.projectedChange) > 0.5) {
         impacts.push(impact)
@@ -664,8 +664,19 @@ class GameScriptAnalyzer {
   }
 
   private async generateScriptBasedRecommendations(gameData: GameScriptData, playerImpacts: GameScriptAnalysis['playerImpacts']): Promise<GameScriptAnalysis['recommendations']> {
-    const startDecisions = []
-    const lineupAdjustments = []
+    const startDecisions: Array<{
+      playerId: string
+      recommendation: 'start' | 'sit' | 'monitor'
+      confidence: number
+      reasoning: string
+    }> = []
+    const lineupAdjustments: Array<{
+      position: string
+      currentPlayer: string
+      suggestedPlayer: string
+      expectedGain: number
+      reasoning: string
+    }> = []
 
     // Generate start/sit recommendations based on impacts
     for (const impact of playerImpacts.slice(0, 15)) { // Top 15 impacted players
@@ -829,14 +840,14 @@ class GameScriptAnalyzer {
     playerName: string
     position: string
   }>> {
-    const { data: players } = await neonDb.query(`
+    const players = await database.query(`
       SELECT rp.player_id, p.name, p.position
       FROM roster_players rp
       JOIN players p ON rp.player_id = p.id
       WHERE rp.user_id = $1 AND p.active = true
     `, [userId])
 
-    return players?.map((p: any) => ({
+    return players.rows?.map((p: any) => ({
       playerId: p.player_id,
       playerName: p.name,
       position: p.position

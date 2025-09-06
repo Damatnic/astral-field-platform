@@ -230,7 +230,7 @@ class MLPredictionPipeline {
   }> {
     try {
       // Get predictions and actual results
-      const { data: predictions } = await neonDb.query(`
+      const { rows: predictions } = await neonDb.query(`
         SELECT * FROM ml_predictions 
         WHERE week = $1 AND actual_points IS NOT NULL
       `, [week])
@@ -345,11 +345,10 @@ class MLPredictionPipeline {
   ): Promise<PlayerPerformanceFeatures> {
     // Implementation would gather comprehensive player data
     // This is a simplified structure
-    const { data: player } = await neonDb.selectSingle('players', {
-      where: { id: playerId }
-    })
+    const playerResult = await neonDb.query('SELECT * FROM players WHERE id = $1 LIMIT 1', [playerId]);
+    const player = playerResult.rows[0];
 
-    const { data: recentGames } = await neonDb.query(`
+    const { rows: recentGames } = await neonDb.query(`
       SELECT * FROM player_game_stats 
       WHERE player_id = $1 AND week >= $2 AND week < $3
       ORDER BY week DESC LIMIT 5

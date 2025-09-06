@@ -925,13 +925,14 @@ export class LeagueHealthMonitoringService {
 
   private async sendReengagementMessages(leagueId: string, userIds: string[]): Promise<void> {
     for (const userId of userIds) {
-      const message = await this.aiRouter.generateResponse({
-        model: 'claude-3-haiku',
+      const message = await this.aiRouter.query({
         messages: [{
           role: 'user',
           content: `Generate a friendly, personalized re-engagement message for a fantasy football manager who has been inactive. Keep it encouraging and mention specific ways they can get back involved.`
         }],
-        context: { leagueId, userId, action: 'reengagement' }
+        capabilities: ['text_generation'],
+        complexity: 'low',
+        priority: 'low'
       });
 
       // Send via WebSocket or notification system
@@ -1056,7 +1057,7 @@ export class LeagueHealthMonitoringService {
 
   private async broadcastHealthUpdate(leagueId: string, metrics: HealthMetrics): Promise<void> {
     // Broadcast to commissioners
-    await this.wsManager.broadcastToLeagueCommissioners(leagueId, {
+    await this.wsManager.sendToLeague(leagueId, {
       type: 'health_update',
       data: metrics,
       timestamp: new Date().toISOString()
@@ -1066,7 +1067,7 @@ export class LeagueHealthMonitoringService {
   private async notifyCommissioners(leagueId: string, alerts: LeagueHealthAlert[]): Promise<void> {
     if (alerts.length === 0) return;
 
-    await this.wsManager.broadcastToLeagueCommissioners(leagueId, {
+    await this.wsManager.sendToLeague(leagueId, {
       type: 'health_alerts',
       data: alerts,
       timestamp: new Date().toISOString()

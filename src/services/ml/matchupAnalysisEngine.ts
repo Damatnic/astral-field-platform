@@ -283,7 +283,7 @@ class MatchupAnalysisEngine {
 
     try {
       // Get all relevant players
-      const { data: players } = await neonDb.query(`
+      const { rows: players } = await neonDb.query(`
         SELECT DISTINCT p.id, p.name, p.position 
         FROM players p
         JOIN roster_players rp ON p.id = rp.player_id
@@ -320,18 +320,18 @@ class MatchupAnalysisEngine {
   // Private helper methods
 
   private async gatherMatchupContext(playerId: string, week: number): Promise<MatchupContext> {
-    const { data: player } = await neonDb.selectSingle('players', {
-      where: { id: playerId }
-    })
+    const playerResult = await neonDb.query('SELECT * FROM players WHERE id = $1 LIMIT 1', [playerId]);
+    const player = playerResult.rows[0];
 
-    const { data: schedule } = await neonDb.query(`
+    const { rows: schedule } = await neonDb.query(`
       SELECT * FROM nfl_schedule 
       WHERE week = $1 AND (home_team = $2 OR away_team = $2)
     `, [week, player?.nfl_team])
 
-    const opponent = schedule?.home_team === player?.nfl_team ? 
-      schedule.away_team : schedule.home_team
-    const isHome = schedule?.home_team === player?.nfl_team
+    const scheduleData = schedule[0];
+    const opponent = scheduleData?.home_team === player?.nfl_team ? 
+      scheduleData.away_team : scheduleData.home_team
+    const isHome = scheduleData?.home_team === player?.nfl_team
 
     // Get defensive rankings
     const defenseRanks = await this.getDefenseRankings(opponent, player?.position)
@@ -543,7 +543,7 @@ class MatchupAnalysisEngine {
     insights: string[]
   }> {
     // Get historical performance vs this opponent
-    const { data: historicalGames } = await neonDb.query(`
+    const { rows: historicalGames } = await neonDb.query(`
       SELECT fantasy_points, week, season 
       FROM player_game_stats 
       WHERE player_id = $1 AND opponent = $2

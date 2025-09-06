@@ -798,8 +798,7 @@ export class AutomatedRuleEnforcementService {
     violation: RuleViolation, 
     rule: LeagueRule
   ): Promise<string> {
-    const response = await this.aiRouter.generateResponse({
-      model: 'claude-3-haiku',
+    const response = await this.aiRouter.query({
       messages: [{
         role: 'user',
         content: `Analyze this fantasy football rule violation and suggest appropriate enforcement action:
@@ -818,11 +817,9 @@ Consider:
 
 Provide a brief, specific enforcement recommendation.`
       }],
-      context: { 
-        leagueId: violation.leagueId, 
-        action: 'rule_enforcement',
-        violationType: violation.violationType
-      }
+      capabilities: ['text_generation'],
+      complexity: 'medium',
+      priority: 'medium'
     });
 
     return response.content;
@@ -1087,7 +1084,7 @@ Provide a brief, specific enforcement recommendation.`
     action: RuleEnforcementAction
   ): Promise<void> {
     // Notify team owner
-    await this.wsManager.sendToTeam(violation.teamId, {
+    await this.wsManager.sendToUser(violation.teamId, {
       type: 'rule_violation',
       violation,
       action,
@@ -1096,7 +1093,7 @@ Provide a brief, specific enforcement recommendation.`
 
     // Notify commissioners if review required
     if (action.requiresReview) {
-      await this.wsManager.broadcastToLeagueCommissioners(violation.leagueId, {
+      await this.wsManager.sendToLeague(violation.leagueId, {
         type: 'rule_violation_review',
         violation,
         action,

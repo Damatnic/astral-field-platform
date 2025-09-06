@@ -94,7 +94,7 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       message: 'Database tables created successfully!',
-      tables: tablesResult.data?.map(row => row.table_name) || []
+      tables: tablesResult.rows?.map(row => row.table_name) || []
     })
 
   } catch (error) {
@@ -121,10 +121,10 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      tables: tablesResult.data?.map(row => row.table_name) || [],
+      tables: tablesResult.rows?.map(row => row.table_name) || [],
       counts: {
-        users: parseInt(usersCount.data?.[0]?.count || '0'),
-        players: parseInt(playersCount.data?.[0]?.count || '0')
+        users: parseInt(usersCount.rows?.[0]?.count || '0'),
+        players: parseInt(playersCount.rows?.[0]?.count || '0')
       }
     })
 

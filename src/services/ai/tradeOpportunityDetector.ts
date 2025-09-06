@@ -1,6 +1,6 @@
-import { aiRouterService } from './aiRouterService';
-import { aiAnalyticsService } from './aiAnalyticsService';
-import { tradeAnalysisEngine } from './tradeAnalysisEngine';
+import aiRouterService from './aiRouterService';
+import aiAnalyticsService from './aiAnalyticsService';
+import tradeAnalysisEngine from './tradeAnalysisEngine';
 import { neonDb } from '@/lib/db';
 
 export interface TradeOpportunity {

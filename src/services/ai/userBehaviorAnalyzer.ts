@@ -1,5 +1,5 @@
-import { aiRouterService } from './aiRouterService';
-import { aiAnalyticsService } from './aiAnalyticsService';
+import aiRouterService from './aiRouterService';
+import aiAnalyticsService from './aiAnalyticsService';
 import { neonDb } from '@/lib/db';
 
 export interface UserBehavior {

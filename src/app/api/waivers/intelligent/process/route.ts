@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import IntelligentWaiverProcessor from '@/services/ai/intelligentWaiverProcessor'
 import WaiverValueAssessment from '@/services/ai/waiverValueAssessment'
-import { AIAnalyticsService } from '@/services/ai/aiAnalyticsService'
+import AIAnalyticsService from '@/services/ai/aiAnalyticsService'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize processor
     const processor = new IntelligentWaiverProcessor()
-    const analytics = new AIAnalyticsService()
+    const analytics = AIAnalyticsService
 
     // Track processing start
     const { data: batch, error: batchError } = await supabase
@@ -84,21 +84,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Track analytics
-    await analytics.trackAIUsage({
-      userId: 'system',
-      action: 'waiver_processing',
+    const aiRequest = {
+      messages: [{ role: 'system' as const, content: 'Waiver processing system' }],
+      capabilities: ['fantasy_analysis' as const, 'data_analysis' as const],
+      complexity: 'moderate' as const,
+      priority: 'high' as const,
+      userId: 'system'
+    }
+    
+    const response = {
+      content: JSON.stringify(result),
       provider: 'intelligent_processor',
       tokensUsed: 0,
-      cost: 0,
+      actualCost: 0,
       latency: Date.now() - new Date(batch?.started_at || Date.now()).getTime(),
-      success: true,
-      metadata: {
-        leagueId,
-        processed: result.processed,
-        successful: result.successful.length,
-        failed: result.failed.length
-      }
-    })
+      cached: false,
+      confidence: 0.9,
+      timestamp: new Date().toISOString()
+    }
+    
+    await analytics.logAIInteraction(aiRequest, response, true)
 
     // Send notifications to affected teams
     await sendWaiverNotifications(result.successful, result.failed)

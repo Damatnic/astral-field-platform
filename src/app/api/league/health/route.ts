@@ -8,9 +8,9 @@ import { UserBehaviorAnalysisService } from '@/services/ai/userBehaviorAnalysis'
 // Initialize services
 const wsManager = new WebSocketManager();
 const aiRouter = new AIRouterService();
-const behaviorAnalysis = new UserBehaviorAnalysisService(database, aiRouter);
+const behaviorAnalysis = new UserBehaviorAnalysisService(database.getPool(), aiRouter);
 const healthMonitor = new LeagueHealthMonitoringService(
-  database,
+  database.getPool(),
   wsManager,
   aiRouter,
   behaviorAnalysis
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(dashboard);
 
       case 'engagement':
-        const engagement = await healthMonitor.getEngagementInsights(leagueId, userId);
+        const engagement = await healthMonitor.getEngagementInsights(leagueId, userId || undefined);
         return NextResponse.json({ engagement });
 
       case 'trends':

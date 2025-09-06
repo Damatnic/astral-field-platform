@@ -21,12 +21,12 @@ export async function POST() {
     console.log('🏈 Setting up demo fantasy league...')
 
     // Step 1: Get all users from database
-    const usersResult = await database.select('users', {})
-    if (usersResult.error || !usersResult.data) {
+    const usersResult = await database.query('SELECT * FROM users ORDER BY created_at ASC')
+    if (!usersResult.rows || usersResult.rows.length === 0) {
       throw new Error('Failed to fetch users from database')
     }
 
-    const users = usersResult.data
+    const users = usersResult.rows
     console.log(`✅ Found ${users.length} users in database`)
 
     // Step 2: Create the demo league
@@ -68,12 +68,23 @@ export async function POST() {
       }
     }
 
-    const leagueResult = await database.insert('leagues', leagueData)
-    if (leagueResult.error || !leagueResult.data) {
-      throw new Error('Failed to create league: ' + leagueResult.error)
+    const leagueResult = await database.query(`
+      INSERT INTO leagues (name, commissioner_id, draft_date, season_year, settings, scoring_system, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+      RETURNING *
+    `, [
+      leagueData.name,
+      leagueData.commissioner_id,
+      leagueData.draft_date,
+      leagueData.season_year,
+      JSON.stringify(leagueData.settings),
+      JSON.stringify(leagueData.scoring_system)
+    ])
+    if (!leagueResult.rows || leagueResult.rows.length === 0) {
+      throw new Error('Failed to create league')
     }
 
-    const league = leagueResult.data
+    const league = leagueResult.rows[0]
     console.log(`✅ Created league: ${league.name} (ID: ${league.id})`)
 
     // Step 3: Create teams for demo users only (filter by email)
@@ -95,14 +106,24 @@ export async function POST() {
         waiver_priority: i + 1
       }
 
-      const teamResult = await database.insert('teams', teamData)
-      if (teamResult.error || !teamResult.data) {
-        console.error(`❌ Failed to create team for ${user.username}:`, teamResult.error)
+      const teamResult = await database.query(`
+        INSERT INTO teams (league_id, user_id, team_name, draft_position, waiver_priority, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+        RETURNING *
+      `, [
+        teamData.league_id,
+        teamData.user_id,
+        teamData.team_name,
+        teamData.draft_position,
+        teamData.waiver_priority
+      ])
+      if (!teamResult.rows || teamResult.rows.length === 0) {
+        console.error(`❌ Failed to create team for ${user.username}`)
         continue
       }
 
-      teams.push(teamResult.data)
-      console.log(`✅ Created team: ${teamResult.data.team_name} for ${user.username} (${user.email})`)
+      teams.push(teamResult.rows[0])
+      console.log(`✅ Created team: ${teamResult.rows[0].team_name} for ${user.username} (${user.email})`)
     }
 
     // Step 4: Get existing players only - NO IMPORTS TO AVOID DUPLICATES
@@ -111,10 +132,10 @@ export async function POST() {
     let players = []
     
     // Get all existing players first
-    const existingPlayersResult = await database.select('players', {})
+    const existingPlayersResult = await database.query('SELECT * FROM players ORDER BY created_at ASC')
     
-    if (existingPlayersResult.data && existingPlayersResult.data.length > 0) {
-      players = existingPlayersResult.data
+    if (existingPlayersResult.rows && existingPlayersResult.rows.length > 0) {
+      players = existingPlayersResult.rows
       console.log(`✅ Using ${players.length} existing players from database`)
     } else {
       // Only if no players exist, create minimal mock set
@@ -144,9 +165,21 @@ export async function POST() {
           projections: {}
         }
 
-        const playerResult = await database.insert('players', playerData)
-        if (playerResult.data) {
-          players.push(playerResult.data)
+        const playerResult = await database.query(`
+          INSERT INTO players (name, position, nfl_team, bye_week, injury_status, stats, projections, created_at, updated_at)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+          RETURNING *
+        `, [
+          playerData.name,
+          playerData.position,
+          playerData.nfl_team,
+          playerData.bye_week,
+          playerData.injury_status,
+          JSON.stringify(playerData.stats),
+          JSON.stringify(playerData.projections)
+        ])
+        if (playerResult.rows && playerResult.rows.length > 0) {
+          players.push(playerResult.rows[0])
         }
       }
       
@@ -158,7 +191,7 @@ export async function POST() {
     
     // Nicholas gets the best team (winning team)
     const nicholasTeam = teams.find(t => t.team_name === 'Astral Crushers')
-    const elitePlayers = players.filter(p => p.adp <= 50).sort((a, b) => a.adp - b.adp)
+    const elitePlayers = players.filter(p => p.stats?.adp <= 50).sort((a, b) => (a.stats?.adp || 999) - (b.stats?.adp || 999))
     
     // Give Nicholas the top picks
     const nicholasRoster = [
@@ -178,8 +211,8 @@ export async function POST() {
         'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
         [nicholasTeam.id, player.id, 'STARTER']
       )
-      if (rosterResult.error) {
-        console.error(`❌ Failed to add player ${player.name} to Nicholas team:`, rosterResult.error)
+      if (!rosterResult.rows || rosterResult.rows.length === 0) {
+        console.error(`❌ Failed to add player ${player.name} to Nicholas team`)
       }
     }
 
@@ -198,8 +231,8 @@ export async function POST() {
             'INSERT INTO rosters (team_id, player_id, position_slot) VALUES ($1, $2, $3) RETURNING *',
             [team.id, player.id, 'STARTER']
           )
-          if (rosterResult.error) {
-            console.error(`❌ Failed to add player ${player.name} to ${team.team_name}:`, rosterResult.error)
+          if (!rosterResult.rows || rosterResult.rows.length === 0) {
+            console.error(`❌ Failed to add player ${player.name} to ${team.team_name}`)
           }
         }
       }

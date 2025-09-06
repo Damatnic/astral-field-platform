@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -152,7 +152,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(session.user.id, leagueId)
+    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
         { error: 'No access to this league' },
@@ -186,20 +186,22 @@ export async function PUT(request: NextRequest) {
 
 // Helper functions
 async function verifyLeagueAccess(userId: string, leagueId: string): Promise<boolean> {
-  const result = await neonDb.selectSingle('teams', {
-    where: { user_id: userId, league_id: leagueId }
-  })
-  return !!result.data
+  const result = await database.query(
+    'SELECT id FROM teams WHERE user_id = $1 AND league_id = $2 LIMIT 1',
+    [userId, leagueId]
+  )
+  return result.rows && result.rows.length > 0
 }
 
 async function getPlayerValuation(playerId: string, leagueId: string): Promise<any> {
   // First check database for recent valuation
-  const result = await neonDb.selectSingle('player_valuations', {
-    where: { player_id: playerId, league_id: leagueId }
-  })
+  const result = await database.query(
+    'SELECT * FROM player_valuations WHERE player_id = $1 AND league_id = $2 LIMIT 1',
+    [playerId, leagueId]
+  )
 
-  if (result.data && isValuationRecent(result.data.last_calculated)) {
-    return formatValuation(result.data)
+  if (result.rows && result.rows.length > 0 && isValuationRecent(result.rows[0].last_calculated)) {
+    return formatValuation(result.rows[0])
   }
 
   // Calculate fresh valuation
@@ -247,11 +249,11 @@ async function getTopPlayerValuations(leagueId: string, position: string | null,
   query += ` ORDER BY pv.current_value DESC LIMIT $${params.length + 1}`
   params.push(limit)
 
-  const result = await neonDb.query(query, params)
+  const result = await database.query(query, params)
   
-  if (!result.data) return []
+  if (!result.rows || result.rows.length === 0) return []
 
-  return result.data.map(row => ({
+  return result.rows.map((row: any) => ({
     playerId: row.player_id,
     name: row.name,
     position: row.position,
@@ -280,8 +282,8 @@ async function checkRecentValuations(playerIds: string[], leagueId: string): Pro
       AND last_calculated > $3
   `
   
-  const result = await neonDb.query(query, [leagueId, playerIds, oneHourAgo])
-  return result.data?.map(row => row.player_id) || []
+  const result = await database.query(query, [leagueId, playerIds, oneHourAgo])
+  return result.rows?.map((row: any) => row.player_id) || []
 }
 
 async function updatePlayerValuations(playerIds: string[], leagueId: string): Promise<any[]> {
@@ -296,8 +298,8 @@ async function updatePlayerValuations(playerIds: string[], leagueId: string): Pr
         projectedValue: valuation.projectedValue,
         confidence: valuation.confidence
       })
-    } catch (error) {
-      logger.error(`Failed to update valuation for player ${playerId}:`, error)
+    } catch (error: unknown) {
+      logger.error(`Failed to update valuation for player ${playerId}:`, error instanceof Error ? error : new Error(String(error)))
     }
   }
   
@@ -306,12 +308,13 @@ async function updatePlayerValuations(playerIds: string[], leagueId: string): Pr
 
 async function getPlayerMarketActivity(playerId: string, leagueId: string): Promise<any> {
   // Check if player exists in trade market table
-  const marketResult = await neonDb.selectSingle('player_trade_market', {
-    where: { player_id: playerId, league_id: leagueId }
-  })
+  const marketResult = await database.query(
+    'SELECT * FROM player_trade_market WHERE player_id = $1 AND league_id = $2 LIMIT 1',
+    [playerId, leagueId]
+  )
 
-  if (marketResult.data) {
-    return marketResult.data
+  if (marketResult.rows && marketResult.rows.length > 0) {
+    return marketResult.rows[0]
   }
 
   // Calculate market activity from trades
@@ -324,7 +327,7 @@ async function getPlayerMarketActivity(playerId: string, leagueId: string): Prom
       AND status IN ('completed', 'accepted')
   `
   
-  const tradeResult = await neonDb.query(tradeQuery, [JSON.stringify([playerId])])
+  const tradeResult = await database.query(tradeQuery, [JSON.stringify([playerId])])
   
   const offerQuery = `
     SELECT COUNT(*) as offer_count
@@ -333,7 +336,7 @@ async function getPlayerMarketActivity(playerId: string, leagueId: string): Prom
       AND status != 'cancelled'
   `
   
-  const offerResult = await neonDb.query(offerQuery, [JSON.stringify([playerId])])
+  const offerResult = await database.query(offerQuery, [JSON.stringify([playerId])])
   
   const requestQuery = `
     SELECT COUNT(*) as request_count
@@ -342,11 +345,11 @@ async function getPlayerMarketActivity(playerId: string, leagueId: string): Prom
       AND status != 'cancelled'
   `
   
-  const requestResult = await neonDb.query(requestQuery, [JSON.stringify([playerId])])
+  const requestResult = await database.query(requestQuery, [JSON.stringify([playerId])])
 
-  const tradeCount = tradeResult.data?.[0]?.trade_count || 0
-  const offerCount = offerResult.data?.[0]?.offer_count || 0
-  const requestCount = requestResult.data?.[0]?.request_count || 0
+  const tradeCount = tradeResult.rows?.[0]?.trade_count || 0
+  const offerCount = offerResult.rows?.[0]?.offer_count || 0
+  const requestCount = requestResult.rows?.[0]?.request_count || 0
 
   // Calculate interest level
   let interestLevel = 'none'
@@ -357,16 +360,29 @@ async function getPlayerMarketActivity(playerId: string, leagueId: string): Prom
   else if (totalActivity >= 1) interestLevel = 'low'
 
   // Store in database for future use
-  await neonDb.insert('player_trade_market', {
-    player_id: playerId,
-    league_id: leagueId,
-    trade_interest_level: interestLevel,
-    times_traded: tradeCount,
-    times_offered: offerCount,
-    times_requested: requestCount,
-    sentiment_score: calculateSentiment(offerCount, requestCount),
-    buy_sell_ratio: requestCount > 0 ? offerCount / requestCount : 0
-  })
+  await database.query(`
+    INSERT INTO player_trade_market (
+      player_id, league_id, trade_interest_level, times_traded,
+      times_offered, times_requested, sentiment_score, buy_sell_ratio
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    ON CONFLICT (player_id, league_id) DO UPDATE SET
+      trade_interest_level = EXCLUDED.trade_interest_level,
+      times_traded = EXCLUDED.times_traded,
+      times_offered = EXCLUDED.times_offered,
+      times_requested = EXCLUDED.times_requested,
+      sentiment_score = EXCLUDED.sentiment_score,
+      buy_sell_ratio = EXCLUDED.buy_sell_ratio,
+      updated_at = NOW()
+  `, [
+    playerId,
+    leagueId,
+    interestLevel,
+    tradeCount,
+    offerCount,
+    requestCount,
+    calculateSentiment(offerCount, requestCount),
+    requestCount > 0 ? offerCount / requestCount : 0
+  ])
 
   return {
     playerId,
@@ -375,7 +391,7 @@ async function getPlayerMarketActivity(playerId: string, leagueId: string): Prom
     timesOffered: offerCount,
     timesRequested: requestCount,
     sentiment: calculateSentiment(offerCount, requestCount),
-    lastTradeDate: tradeResult.data?.[0]?.last_trade_date
+    lastTradeDate: tradeResult.rows?.[0]?.last_trade_date
   }
 }
 
@@ -391,8 +407,8 @@ async function getLeagueTradeVolume(leagueId: string): Promise<number> {
     AND created_at > $2
   `
   
-  const result = await neonDb.query(query, [leagueId, thirtyDaysAgo])
-  return result.data?.[0]?.volume || 0
+  const result = await database.query(query, [leagueId, thirtyDaysAgo])
+  return result.rows?.[0]?.volume || 0
 }
 
 async function getHotPlayers(leagueId: string): Promise<any[]> {
@@ -419,8 +435,8 @@ async function getHotPlayers(leagueId: string): Promise<any[]> {
     LIMIT 10
   `
   
-  const result = await neonDb.query(query, [sevenDaysAgo, leagueId])
-  return result.data || []
+  const result = await database.query(query, [sevenDaysAgo, leagueId])
+  return result.rows || []
 }
 
 function isValuationRecent(lastCalculated: string): boolean {

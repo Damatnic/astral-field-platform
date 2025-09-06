@@ -271,7 +271,7 @@ async function checkLeaguePermission(userId: string, leagueId: string): Promise<
 }
 
 async function getMarketInsights(leagueId: string, limit: number) {
-  const result = await neonDb.query(`
+  const result = await database.query(`
     SELECT * FROM market_insights
     WHERE league_id = $1 
     AND acted_upon = FALSE 
@@ -280,7 +280,7 @@ async function getMarketInsights(leagueId: string, limit: number) {
     LIMIT $2
   `, [leagueId, limit]);
 
-  return result.rows.map(row => ({
+  return result.rows.map((row: any) => ({
     id: row.id,
     type: row.insight_type,
     playerId: row.player_id,
@@ -296,7 +296,7 @@ async function getMarketInsights(leagueId: string, limit: number) {
 }
 
 async function getOpportunityDashboard(leagueId: string) {
-  const result = await neonDb.query(`
+  const result = await database.query(`
     SELECT * FROM opportunity_dashboard WHERE league_id = $1
   `, [leagueId]);
 
@@ -389,7 +389,7 @@ async function updateUserTradeProfile(userId: string, leagueId: string, preferen
 
 async function markOpportunityViewed(opportunityId: string, userId: string) {
   // Determine which user viewed it (from_user or to_user)
-  const opportunity = await neonDb.query(`
+  const opportunity = await database.query(`
     SELECT from_user_id, to_user_id FROM trade_opportunities WHERE id = $1
   `, [opportunityId]);
 

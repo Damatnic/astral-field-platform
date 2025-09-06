@@ -1,4 +1,4 @@
-import { db } from '../../db/database';
+import { database } from '../../lib/database';
 
 interface SystemMetrics {
   responseTime: number;
@@ -164,7 +164,7 @@ export class ProductionMonitor {
 
   private async collectSystemMetrics(): Promise<SystemMetrics> {
     // Get response time metrics
-    const responseTimeQuery = await db.query(`
+    const responseTimeQuery = await database.query(`
       SELECT AVG(response_time) as avg_response_time,
              COUNT(*) as total_requests,
              COUNT(CASE WHEN status_code >= 400 THEN 1 END) as error_count
@@ -182,7 +182,7 @@ export class ProductionMonitor {
     const throughput = totalRequests / (5 * 60);
 
     // Get active users count
-    const activeUsersQuery = await db.query(`
+    const activeUsersQuery = await database.query(`
       SELECT COUNT(DISTINCT user_id) as active_users
       FROM user_activity_logs
       WHERE created_at > NOW() - INTERVAL '5 minutes'
@@ -190,7 +190,7 @@ export class ProductionMonitor {
     const activeUsers = parseInt(activeUsersQuery.rows[0]?.active_users || '0');
 
     // Get AI accuracy scores
-    const aiAccuracyQuery = await db.query(`
+    const aiAccuracyQuery = await database.query(`
       SELECT service_name,
              AVG(accuracy_score) as avg_accuracy
       FROM ai_accuracy_metrics
@@ -223,7 +223,7 @@ export class ProductionMonitor {
 
   private async collectUserEngagementMetrics(): Promise<UserEngagementMetrics> {
     // Get total active users
-    const activeUsersQuery = await db.query(`
+    const activeUsersQuery = await database.query(`
       SELECT COUNT(DISTINCT user_id) as total_active_users
       FROM user_activity_logs
       WHERE created_at > NOW() - INTERVAL '1 hour'
@@ -231,7 +231,7 @@ export class ProductionMonitor {
     const totalActiveUsers = parseInt(activeUsersQuery.rows[0]?.total_active_users || '0');
 
     // Get AI feature usage
-    const aiFeatureUsageQuery = await db.query(`
+    const aiFeatureUsageQuery = await database.query(`
       SELECT feature_name,
              COUNT(*) as usage_count
       FROM ai_feature_usage_logs
@@ -245,7 +245,7 @@ export class ProductionMonitor {
     }
 
     // Get user satisfaction ratings
-    const satisfactionQuery = await db.query(`
+    const satisfactionQuery = await database.query(`
       SELECT feature_name,
              AVG(rating) as avg_rating
       FROM user_feedback_ratings
@@ -259,7 +259,7 @@ export class ProductionMonitor {
     }
 
     // Get feature adoption rates
-    const adoptionQuery = await db.query(`
+    const adoptionQuery = await database.query(`
       SELECT feature_name,
              COUNT(DISTINCT user_id)::float / NULLIF((SELECT COUNT(*) FROM users WHERE is_active = true), 0) as adoption_rate
       FROM ai_feature_usage_logs
@@ -273,7 +273,7 @@ export class ProductionMonitor {
     }
 
     // Get session durations
-    const sessionDurationQuery = await db.query(`
+    const sessionDurationQuery = await database.query(`
       SELECT session_duration
       FROM user_sessions
       WHERE created_at > NOW() - INTERVAL '1 hour'
@@ -303,7 +303,7 @@ export class ProductionMonitor {
     const metrics: AIPerformanceMetrics[] = [];
 
     for (const serviceName of aiServices) {
-      const performanceQuery = await db.query(`
+      const performanceQuery = await database.query(`
         SELECT COUNT(*) as total_requests,
                COUNT(CASE WHEN success = true THEN 1 END) as successful_requests,
                AVG(response_time_ms) as avg_response_time,
@@ -314,7 +314,7 @@ export class ProductionMonitor {
           AND created_at > NOW() - INTERVAL '15 minutes'
       `, [serviceName]);
 
-      const errorTypesQuery = await db.query(`
+      const errorTypesQuery = await database.query(`
         SELECT error_type,
                COUNT(*) as error_count
         FROM ai_service_logs
@@ -352,7 +352,7 @@ export class ProductionMonitor {
   }
 
   private async storeSystemMetrics(metrics: SystemMetrics) {
-    await db.query(`
+    await database.query(`
       INSERT INTO production_system_metrics (
         response_time, throughput, error_rate, active_users,
         ai_accuracy_scores, cpu_usage, memory_usage, database_usage,
@@ -372,7 +372,7 @@ export class ProductionMonitor {
   }
 
   private async storeUserEngagementMetrics(metrics: UserEngagementMetrics) {
-    await db.query(`
+    await database.query(`
       INSERT INTO production_user_engagement_metrics (
         total_active_users, ai_feature_usage, user_satisfaction_ratings,
         feature_adoption_rates, average_session_duration, bounce_rate,
@@ -391,7 +391,7 @@ export class ProductionMonitor {
 
   private async storeAIPerformanceMetrics(metrics: AIPerformanceMetrics[]) {
     for (const metric of metrics) {
-      await db.query(`
+      await database.query(`
         INSERT INTO production_ai_performance_metrics (
           service_name, total_requests, successful_requests,
           average_response_time, accuracy_score, cost_per_request,
@@ -478,7 +478,7 @@ export class ProductionMonitor {
     };
 
     // Store alert in database
-    await db.query(`
+    await database.query(`
       INSERT INTO production_alerts (
         rule_id, rule_name, metric, current_value, threshold,
         severity, notification_channels, created_at
@@ -542,7 +542,7 @@ export class ProductionMonitor {
     activeAlerts: number;
   }> {
     // Get latest metrics
-    const metricsQuery = await db.query(`
+    const metricsQuery = await database.query(`
       SELECT * FROM production_system_metrics
       ORDER BY created_at DESC
       LIMIT 1
@@ -551,7 +551,7 @@ export class ProductionMonitor {
     const metrics = metricsQuery.rows[0];
     
     // Get active alerts count
-    const alertsQuery = await db.query(`
+    const alertsQuery = await database.query(`
       SELECT COUNT(*) as active_alerts
       FROM production_alerts
       WHERE created_at > NOW() - INTERVAL '1 hour'
@@ -596,7 +596,7 @@ export class ProductionMonitor {
     engagementTrend: 'up' | 'down' | 'stable';
     topFeatures: Array<{ feature: string; usage: number }>;
   }> {
-    const summaryQuery = await db.query(`
+    const summaryQuery = await database.query(`
       WITH recent_metrics AS (
         SELECT *,
                ROW_NUMBER() OVER (ORDER BY created_at DESC) as rn
