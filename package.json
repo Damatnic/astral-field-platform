@@ -38,7 +38,8 @@
     "security:scan": "npm audit --audit-level=high",
     "optimize:images": "node scripts/optimize-images.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
-    "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false"
+    "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false",
+    "demo:setup": "node scripts/one-click-setup.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
