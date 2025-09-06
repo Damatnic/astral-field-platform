@@ -32,8 +32,8 @@ describe('AuthService', () => {
       mockDb.seed('users', [testUser])
 
       // Mock the auth client response
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signInWithPassword as any).mockResolvedValue({
         data: { user: { id: testUser.id } },
         error: null
       })
@@ -50,8 +50,8 @@ describe('AuthService', () => {
         password: 'wrongpassword'
       }
 
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signInWithPassword as any).mockResolvedValue({
         data: { user: null },
         error: { message: 'Invalid login credentials' }
       })
@@ -71,8 +71,8 @@ describe('AuthService', () => {
         username: 'newuser'
       }
 
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signUp.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signUp as any).mockResolvedValue({
         data: { user: { id: 'new-user-id' } },
         error: null
       })
@@ -93,8 +93,8 @@ describe('AuthService', () => {
         username: 'existing'
       }
 
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signUp.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signUp as any).mockResolvedValue({
         data: { user: null },
         error: { message: 'User already exists' }
       })
@@ -111,8 +111,8 @@ describe('AuthService', () => {
       const testUser = createTestUser()
       mockDb.seed('users', [testUser])
 
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.getUser.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.getUser as any).mockResolvedValue({
         data: { user: { id: testUser.id } },
         error: null
       })
@@ -123,8 +123,8 @@ describe('AuthService', () => {
     })
 
     it('should return null when not authenticated', async () => {
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.getUser.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.getUser as any).mockResolvedValue({
         data: { user: null },
         error: { message: 'Not authenticated' }
       })
@@ -155,8 +155,8 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should successfully log out', async () => {
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signOut.mockResolvedValue({ error: null })
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signOut as any).mockResolvedValue({ error: null })
 
       const result = await authService.logout()
 
@@ -164,8 +164,8 @@ describe('AuthService', () => {
     })
 
     it('should handle logout errors', async () => {
-      const mockSupabase = mockSupabaseClient()
-      mockSupabase.auth.signOut.mockResolvedValue({
+      const mockSupabase = mockSupabaseClient() as any
+      ;(mockSupabase.auth.signOut as any).mockResolvedValue({
         error: { message: 'Failed to sign out' }
       })
 

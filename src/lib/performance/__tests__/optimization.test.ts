@@ -33,7 +33,7 @@ describe('Performance Optimization Utils', () => {
     it('should monitor sync function performance', () => {
       mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1050); // 50ms execution
       
-      const testFn = jest.fn(() => 'result');
+      const testFn = jest.fn((..._args: any[]) => 'result');
       const monitoredFn = withPerformanceMonitoring(testFn, 'test-function');
       
       const result = monitoredFn('arg1', 'arg2');

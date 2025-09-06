@@ -239,21 +239,21 @@ export const setupTestDatabase = () => {
 export const mockSupabaseClient = () => {
   return {
     auth: {
-      signInWithPassword: vi.fn().mockResolvedValue({
+      signInWithPassword: (vi.fn() as any).mockResolvedValue({
         data: { user: { id: 'test-user-1' } },
         error: null
       }),
-      signUp: vi.fn().mockResolvedValue({
+      signUp: (vi.fn() as any).mockResolvedValue({
         data: { user: { id: 'test-user-1' } },
         error: null
       }),
-      signOut: vi.fn().mockResolvedValue({ error: null }),
-      getUser: vi.fn().mockResolvedValue({
+      signOut: (vi.fn() as any).mockResolvedValue({ error: null }),
+      getUser: (vi.fn() as any).mockResolvedValue({
         data: { user: { id: 'test-user-1' } },
         error: null
       }),
       onAuthStateChange: vi.fn(),
-      resetPasswordForEmail: vi.fn().mockResolvedValue({ error: null })
+      resetPasswordForEmail: (vi.fn() as any).mockResolvedValue({ error: null })
     },
     from: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),
@@ -263,7 +263,7 @@ export const mockSupabaseClient = () => {
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
-    single: vi.fn().mockResolvedValue({
+    single: (vi.fn() as any).mockResolvedValue({
       data: createTestUser(),
       error: null
     })
