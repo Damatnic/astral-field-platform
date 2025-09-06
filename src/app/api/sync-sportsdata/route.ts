@@ -76,30 +76,16 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  try {
-    // Get basic info about available operations
-    const currentSeason = await sportsDataService.getCurrentSeason()
-    const currentWeek = await sportsDataService.getCurrentWeek()
-    const gamesInProgress = await sportsDataService.areGamesInProgress()
-
-    return NextResponse.json({
-      status: 'SportsData API integration active',
-      currentSeason,
-      currentWeek,
-      gamesInProgress,
-      availableActions: [
-        'sync-all-players',
-        'sync-team-players',
-        'get-current-week',
-        'get-current-season',
-        'check-games-in-progress'
-      ]
-    })
-  } catch (error: any) {
-    console.error('SportsData status check error:', error)
-    return NextResponse.json(
-      { error: 'Failed to connect to SportsData API' },
-      { status: 500 }
-    )
-  }
+  // Return basic info without making any external API calls that might trigger syncing
+  return NextResponse.json({
+    status: 'SportsData API integration available',
+    message: 'Use POST with appropriate action to perform data syncing',
+    availableActions: [
+      'sync-all-players',
+      'sync-team-players',
+      'get-current-week',
+      'get-current-season',
+      'check-games-in-progress'
+    ]
+  })
 }

@@ -105,96 +105,32 @@ export async function POST() {
       console.log(`✅ Created team: ${teamResult.data.team_name} for ${user.username} (${user.email})`)
     }
 
-    // Step 4: Import NFL players from SportsData API
-    console.log('🏈 Fetching NFL players from SportsData API...')
+    // Step 4: Get existing players only - NO IMPORTS TO AVOID DUPLICATES
+    console.log('🏈 Using existing players from database...')
     
     let players = []
-    try {
-      const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Players?key=${SPORTSDATA_API_KEY}`)
-      if (!response.ok) {
-        throw new Error(`SportsData API error: ${response.status}`)
-      }
+    
+    // Get all existing players first
+    const existingPlayersResult = await neonServerless.select('players', {})
+    
+    if (existingPlayersResult.data && existingPlayersResult.data.length > 0) {
+      players = existingPlayersResult.data
+      console.log(`✅ Using ${players.length} existing players from database`)
+    } else {
+      // Only if no players exist, create minimal mock set
+      console.log('📊 No players found, creating minimal starter set...')
       
-      const nflPlayers = await response.json()
-      console.log(`📊 Fetched ${nflPlayers.length} NFL players from API`)
-
-      // Filter for relevant fantasy positions and active players
-      const fantasyPlayers = nflPlayers.filter((player: any) => 
-        ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].includes(player.Position) &&
-        player.Status === 'Active'
-      ).slice(0, 300) // Limit to top 300 players
-
-      // Insert players into database
-      for (const nflPlayer of fantasyPlayers) {
-        const playerData = {
-          name: `${nflPlayer.FirstName} ${nflPlayer.LastName}`,
-          position: nflPlayer.Position,
-          nfl_team: nflPlayer.Team || 'FA',
-          bye_week: nflPlayer.ByeWeek || null,
-          injury_status: nflPlayer.InjuryStatus || 'Healthy',
-          stats: {
-            fantasy_points: Math.floor(Math.random() * 200),
-            adp: Math.floor(Math.random() * 300) + 1,
-            external_id: nflPlayer.PlayerID.toString()
-          },
-          projections: {}
-        }
-
-        const playerResult = await neonServerless.insert('players', playerData)
-        if (playerResult.data) {
-          players.push(playerResult.data)
-        }
-      }
-
-      console.log(`✅ Imported ${players.length} players to database`)
-
-    } catch (apiError) {
-      console.warn('⚠️ SportsData API failed, creating mock players:', apiError)
-      
-      // Fallback: Create mock players
-      const mockPlayers = [
-        // Elite QBs
+      const starterPlayers = [
         { name: 'Josh Allen', position: 'QB', team: 'BUF', points: 380 },
-        { name: 'Patrick Mahomes', position: 'QB', team: 'KC', points: 365 },
-        { name: 'Lamar Jackson', position: 'QB', team: 'BAL', points: 350 },
-        { name: 'Joe Burrow', position: 'QB', team: 'CIN', points: 340 },
-        { name: 'Dak Prescott', position: 'QB', team: 'DAL', points: 320 },
-        
-        // Elite RBs
         { name: 'Christian McCaffrey', position: 'RB', team: 'SF', points: 320 },
-        { name: 'Austin Ekeler', position: 'RB', team: 'LAC', points: 310 },
-        { name: 'Derrick Henry', position: 'RB', team: 'TEN', points: 300 },
-        { name: 'Alvin Kamara', position: 'RB', team: 'NO', points: 290 },
-        { name: 'Nick Chubb', position: 'RB', team: 'CLE', points: 285 },
-        { name: 'Saquon Barkley', position: 'RB', team: 'NYG', points: 275 },
-        { name: 'Jonathan Taylor', position: 'RB', team: 'IND', points: 270 },
-        
-        // Elite WRs
         { name: 'Cooper Kupp', position: 'WR', team: 'LAR', points: 290 },
-        { name: 'Davante Adams', position: 'WR', team: 'LV', points: 285 },
-        { name: 'Stefon Diggs', position: 'WR', team: 'BUF', points: 280 },
-        { name: 'Tyreek Hill', position: 'WR', team: 'MIA', points: 275 },
-        { name: 'DeAndre Hopkins', position: 'WR', team: 'ARI', points: 260 },
-        { name: 'Mike Evans', position: 'WR', team: 'TB', points: 255 },
-        { name: 'Keenan Allen', position: 'WR', team: 'LAC', points: 250 },
-        
-        // Elite TEs
         { name: 'Travis Kelce', position: 'TE', team: 'KC', points: 250 },
-        { name: 'Mark Andrews', position: 'TE', team: 'BAL', points: 220 },
-        { name: 'Kyle Pitts', position: 'TE', team: 'ATL', points: 200 },
-        { name: 'George Kittle', position: 'TE', team: 'SF', points: 190 },
-        
-        // Kickers
         { name: 'Justin Tucker', position: 'K', team: 'BAL', points: 150 },
-        { name: 'Harrison Butker', position: 'K', team: 'KC', points: 145 },
-        
-        // Defenses
-        { name: 'Buffalo Bills', position: 'DST', team: 'BUF', points: 180 },
-        { name: 'San Francisco 49ers', position: 'DST', team: 'SF', points: 175 }
+        { name: 'Buffalo Bills', position: 'DST', team: 'BUF', points: 180 }
       ]
 
-      for (let i = 0; i < mockPlayers.length; i++) {
-        const mock = mockPlayers[i]
+      for (let i = 0; i < starterPlayers.length; i++) {
+        const mock = starterPlayers[i]
         const playerData = {
           name: mock.name,
           position: mock.position,
@@ -213,6 +149,8 @@ export async function POST() {
           players.push(playerResult.data)
         }
       }
+      
+      console.log(`✅ Created ${players.length} starter players`)
     }
 
     // Step 5: Auto-draft teams (strategic distribution)
@@ -236,12 +174,10 @@ export async function POST() {
 
     for (const player of nicholasRoster) {
       if (!nicholasTeam || !player) continue;
-      await neonServerless.insert('roster_players', {
+      await neonServerless.insert('rosters', {
         team_id: nicholasTeam.id,
         player_id: player.id,
-        position_type: 'starter',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        position_slot: 'STARTER'
       })
     }
 
@@ -256,12 +192,10 @@ export async function POST() {
 
       for (const player of teamRoster) {
         if (player) {
-          await neonServerless.insert('roster_players', {
+          await neonServerless.insert('rosters', {
             team_id: team.id,
             player_id: player.id,
-            position_type: 'starter',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            position_slot: 'STARTER'
           })
         }
       }

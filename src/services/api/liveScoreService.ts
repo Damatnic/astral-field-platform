@@ -147,12 +147,7 @@ class LiveScoreService {
       for (const team of teams) {
         // Get lineup entries for this team (simplified)
         const lineupResult = await neonServerless.select('lineup_entries', {
-          where: {
-            and: [
-              { eq: { team_id: team.id } },
-              { eq: { week: week } }
-            ]
-          }
+          where: { team_id: team.id, week: week }
         })
         
         const starters: PlayerLiveStats[] = []

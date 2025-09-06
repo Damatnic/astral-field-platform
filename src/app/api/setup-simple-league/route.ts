@@ -125,10 +125,10 @@ export async function POST() {
     const bestPlayers = players.slice(0, 8) // Top 8 players
 
     for (const player of bestPlayers) {
-      await neonServerless.insert('roster_players', {
+      await neonServerless.insert('rosters', {
         team_id: nicholasTeam.id,
         player_id: player.id,
-        position_type: 'starter'
+        position_slot: 'STARTER'
       })
     }
 
@@ -145,10 +145,10 @@ export async function POST() {
 
       for (const player of teamPlayers) {
         if (player) {
-          await neonServerless.insert('roster_players', {
+          await neonServerless.insert('rosters', {
             team_id: team.id,
             player_id: player.id,
-            position_type: 'starter'
+            position_slot: 'STARTER'
           })
         }
       }

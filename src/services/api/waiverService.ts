@@ -133,7 +133,7 @@ class WaiverService {
       const team = teamResult.data[0]
 
       // Check if player is available
-      const rosterResult = await neonServerless.select('roster_players', {
+      const rosterResult = await neonServerless.select('rosters', {
         where: { eq: { player_id: data.playerId } }
       })
       if (rosterResult.error) throw new Error(rosterResult.error)
@@ -144,15 +144,11 @@ class WaiverService {
       }
 
       // Check for existing claim on this player by this team
-      const existingClaimResult = await neonServerless.select('waiver_claims', {
-        where: {
-          and: [
-            { eq: { team_id: teamId } },
-            { eq: { player_id: data.playerId } },
-            { eq: { status: 'pending' } }
-          ]
-        }
-      })
+      // Check for existing claim - use raw SQL for complex conditions
+      const existingClaimResult = await neonServerless.query(
+        'SELECT * FROM waiver_claims WHERE team_id = $1 AND player_id = $2 AND status = $3',
+        [teamId, data.playerId, 'pending']
+      )
       if (existingClaimResult.error) throw new Error(existingClaimResult.error)
       const existingClaim = existingClaimResult.data
 
@@ -162,14 +158,10 @@ class WaiverService {
 
       // Validate drop player if specified
       if (data.dropPlayerId) {
-        const ownedResult = await neonServerless.select('roster_players', {
-            where: {
-            and: [
-              { eq: { team_id: teamId } },
-              { eq: { player_id: data.dropPlayerId } }
-            ]
-          }
-        })
+        const ownedResult = await neonServerless.query(
+          'SELECT * FROM rosters WHERE team_id = $1 AND player_id = $2',
+          [teamId, data.dropPlayerId]
+        )
         if (ownedResult.error) throw new Error(ownedResult.error)
         const ownedPlayer = ownedResult.data
 
@@ -201,12 +193,10 @@ class WaiverService {
 
   async cancelWaiverClaim(claimId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const deleteResult = await neonServerless.delete('waiver_claims', {
-        and: [
-          { eq: { id: claimId } },
-          { eq: { status: 'pending' } }
-        ]
-      })
+      const deleteResult = await neonServerless.query(
+        'DELETE FROM waiver_claims WHERE id = $1 AND status = $2',
+        [claimId, 'pending']
+      )
       if (deleteResult.error) throw new Error(deleteResult.error)
 
       return { success: true }
@@ -354,14 +344,10 @@ class WaiverService {
       const totalBudget = 100
 
       // Calculate spent amount from successful waiver claims
-      const claimsResult = await neonServerless.select('waiver_claims', {
-        where: {
-          and: [
-            { eq: { team_id: teamId } },
-            { eq: { status: 'successful' } }
-          ]
-        }
-      })
+      const claimsResult = await neonServerless.query(
+        'SELECT * FROM waiver_claims WHERE team_id = $1 AND status = $2',
+        [teamId, 'successful']
+      )
       if (claimsResult.error) throw new Error(claimsResult.error)
       const claims = claimsResult.data
 

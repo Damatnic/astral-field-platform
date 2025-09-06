@@ -274,9 +274,9 @@ export class PlayerService {
             active: playerData.active !== undefined ? playerData.active : true,
           }
 
-          // Check if player exists
+          // Check if player exists (must match unique constraint: name, nfl_team, position)
           const existingResult = await neonServerless.selectSingle('players', {
-            eq: { name: playerData.name, nfl_team: playerData.nfl_team }
+            eq: { name: playerData.name, nfl_team: playerData.nfl_team, position: playerData.position }
           })
 
           if (existingResult.data) {

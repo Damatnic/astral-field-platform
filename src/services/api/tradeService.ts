@@ -76,7 +76,7 @@ class TradeService {
       }
 
       // Validate player ownership
-      const ownershipResult = await neonServerless.select('roster_players', {
+      const ownershipResult = await neonServerless.select('rosters', {
         where: { in: { player_id: [...data.offeredPlayers, ...data.requestedPlayers] } }
       })
       if (ownershipResult.error) throw new Error(ownershipResult.error)
@@ -240,14 +240,9 @@ class TradeService {
 
       // Update roster_players for each trade item
       for (const item of tradeItems) {
-        const updateResult = await neonServerless.update('roster_players',
+        const updateResult = await neonServerless.update('rosters',
           { team_id: item.to_team_id },
-          { 
-            and: [
-              { eq: { player_id: item.player_id } },
-              { eq: { team_id: item.from_team_id } }
-            ]
-          }
+          { player_id: item.player_id, team_id: item.from_team_id }
         )
         if (updateResult.error) {
           console.error('Error updating roster player:', updateResult.error)
