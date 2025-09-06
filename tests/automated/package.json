@@ -1,0 +1,15 @@
+{
+  "name": "astral-field-testing",
+  "version": "1.0.0",
+  "description": "Automated testing suite for Astral Field fantasy football app",
+  "main": "website-tester.js",
+  "scripts": {
+    "test": "node website-tester.js",
+    "test:headless": "HEADLESS=true node website-tester.js",
+    "install-deps": "npm install playwright && npx playwright install"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "devDependencies": {}
+}

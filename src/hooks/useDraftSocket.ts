@@ -1,0 +1,268 @@
+'use client';
+
+import { useEffect, useState, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
+import { DraftRoom, DraftPick, DraftParticipant } from '@/lib/socket-server';
+import { showError, showSuccess, showInfo } from '@/components/ui/Notifications';
+
+interface UseDraftSocketProps {
+  draftId: string;
+  userId: string;
+  teamId: string;
+  onDraftStateUpdate?: (draftRoom: DraftRoom) => void;
+  onPickMade?: (pick: DraftPick) => void;
+  onParticipantUpdate?: (participant: DraftParticipant) => void;
+}
+
+interface DraftSocketReturn {
+  socket: Socket | null;
+  connected: boolean;
+  draftRoom: DraftRoom | null;
+  loading: boolean;
+  error: string | null;
+  
+  // Draft actions
+  makePick: (playerId: string, playerName: string, position: string) => void;
+  toggleAutopick: (enabled: boolean) => void;
+  sendChatMessage: (message: string) => void;
+  pauseDraft: () => void;
+  resumeDraft: () => void;
+  
+  // Connection management
+  connect: () => void;
+  disconnect: () => void;
+}
+
+export function useDraftSocket({
+  draftId,
+  userId,
+  teamId,
+  onDraftStateUpdate,
+  onPickMade,
+  onParticipantUpdate
+}: UseDraftSocketProps): DraftSocketReturn {
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [connected, setConnected] = useState(false);
+  const [draftRoom, setDraftRoom] = useState<DraftRoom | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const socketRef = useRef<Socket | null>(null);
+  const reconnectAttempts = useRef(0);
+  const maxReconnectAttempts = 5;
+
+  const connect = () => {
+    if (socketRef.current?.connected) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const newSocket = io({
+        path: '/api/draft-socket',
+        transports: ['websocket', 'polling'],
+        timeout: 10000,
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionAttempts: maxReconnectAttempts
+      });
+
+      // Connection events
+      newSocket.on('connect', () => {
+        console.log('🔗 Draft socket connected');
+        setConnected(true);
+        setLoading(false);
+        setError(null);
+        reconnectAttempts.current = 0;
+
+        // Join the draft room
+        newSocket.emit('join-draft', { draftId, userId, teamId });
+        showSuccess('Connected to draft room');
+      });
+
+      newSocket.on('disconnect', (reason) => {
+        console.log('🔗 Draft socket disconnected:', reason);
+        setConnected(false);
+        
+        if (reason === 'io server disconnect') {
+          showError('Disconnected from draft server');
+        } else {
+          showInfo('Reconnecting to draft...');
+        }
+      });
+
+      newSocket.on('connect_error', (error) => {
+        console.error('❌ Draft socket connection error:', error);
+        setConnected(false);
+        setLoading(false);
+        
+        reconnectAttempts.current++;
+        if (reconnectAttempts.current >= maxReconnectAttempts) {
+          setError('Failed to connect to draft server. Please refresh the page.');
+          showError('Connection failed. Please refresh the page.');
+        }
+      });
+
+      // Draft-specific events
+      newSocket.on('draft-state', (draftState: DraftRoom) => {
+        console.log('📊 Draft state updated:', draftState);
+        setDraftRoom(draftState);
+        onDraftStateUpdate?.(draftState);
+      });
+
+      newSocket.on('pick-made', (pick: DraftPick) => {
+        console.log('🏈 Pick made:', pick);
+        showSuccess(`${pick.playerName} drafted by ${pick.teamId}`);
+        onPickMade?.(pick);
+      });
+
+      newSocket.on('participant-joined', (data: { teamId: string; isOnline: boolean; timestamp: Date }) => {
+        console.log('👤 Participant joined:', data);
+        showInfo(`Team ${data.teamId} joined the draft`);
+      });
+
+      newSocket.on('participant-left', (data: { teamId: string; isOnline: boolean; timestamp: Date }) => {
+        console.log('👤 Participant left:', data);
+        showInfo(`Team ${data.teamId} left the draft`);
+      });
+
+      newSocket.on('autopick-toggled', (data: { teamId: string; enabled: boolean }) => {
+        const message = data.enabled ? 'enabled' : 'disabled';
+        showInfo(`Team ${data.teamId} ${message} autopick`);
+      });
+
+      newSocket.on('chat-message', (message: any) => {
+        console.log('💬 Chat message:', message);
+        // Handle chat message display
+      });
+
+      newSocket.on('timer-started', (data: { timeRemaining: number; endTime: Date }) => {
+        console.log('⏰ Timer started:', data);
+      });
+
+      newSocket.on('timer-update', (data: { timeRemaining: number }) => {
+        // Handle timer updates
+      });
+
+      newSocket.on('draft-started', (data: { draftRoom: DraftRoom; message: string; timestamp: Date }) => {
+        console.log('🚀 Draft started:', data);
+        showSuccess(data.message);
+        setDraftRoom(data.draftRoom);
+        onDraftStateUpdate?.(data.draftRoom);
+      });
+
+      newSocket.on('draft-paused', (data: { reason: string; timestamp: Date }) => {
+        console.log('⏸️ Draft paused:', data);
+        showInfo(`Draft paused: ${data.reason}`);
+      });
+
+      newSocket.on('draft-resumed', (data: { timestamp: Date }) => {
+        console.log('▶️ Draft resumed:', data);
+        showSuccess('Draft resumed');
+      });
+
+      newSocket.on('draft-completed', (data: { draftRoom: DraftRoom; message: string; timestamp: Date }) => {
+        console.log('🏆 Draft completed:', data);
+        showSuccess(data.message);
+        setDraftRoom(data.draftRoom);
+        onDraftStateUpdate?.(data.draftRoom);
+      });
+
+      newSocket.on('round-complete', (data: { round: number; nextRound: number }) => {
+        console.log('🔄 Round complete:', data);
+        showInfo(`Round ${data.round} completed. Starting round ${data.nextRound}`);
+      });
+
+      newSocket.on('error', (error: { message: string }) => {
+        console.error('❌ Draft error:', error);
+        showError(error.message);
+      });
+
+      socketRef.current = newSocket;
+      setSocket(newSocket);
+
+    } catch (err) {
+      console.error('❌ Socket initialization error:', err);
+      setError('Failed to initialize draft connection');
+      setLoading(false);
+    }
+  };
+
+  const disconnect = () => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
+      setSocket(null);
+      setConnected(false);
+    }
+  };
+
+  // Draft action functions
+  const makePick = (playerId: string, playerName: string, position: string) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('make-pick', { playerId, playerName, position });
+    } else {
+      showError('Not connected to draft server');
+    }
+  };
+
+  const toggleAutopick = (enabled: boolean) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('toggle-autopick', { enabled });
+    } else {
+      showError('Not connected to draft server');
+    }
+  };
+
+  const sendChatMessage = (message: string) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('draft-chat', { message });
+    } else {
+      showError('Not connected to draft server');
+    }
+  };
+
+  const pauseDraft = () => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('pause-draft');
+    } else {
+      showError('Not connected to draft server');
+    }
+  };
+
+  const resumeDraft = () => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('resume-draft');
+    } else {
+      showError('Not connected to draft server');
+    }
+  };
+
+  // Auto-connect on mount
+  useEffect(() => {
+    if (draftId && userId && teamId) {
+      connect();
+    }
+
+    return () => {
+      disconnect();
+    };
+  }, [draftId, userId, teamId]);
+
+  return {
+    socket,
+    connected,
+    draftRoom,
+    loading,
+    error,
+    makePick,
+    toggleAutopick,
+    sendChatMessage,
+    pauseDraft,
+    resumeDraft,
+    connect,
+    disconnect
+  };
+}

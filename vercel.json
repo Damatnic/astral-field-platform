@@ -1,0 +1,123 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "installCommand": "npm ci --prefer-offline --no-audit",
+  "devCommand": "npm run dev",
+  "regions": ["iad1", "sfo1", "lhr1"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30,
+      "memory": 512
+    },
+    "app/api/setup-users/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/cleanup/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/setup-demo-league/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/health/route.ts": {
+      "maxDuration": 15,
+      "memory": 256
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/health",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/api-status",
+      "destination": "/api/info"
+    },
+    {
+      "source": "/demo",
+      "destination": "/auth/login"
+    },
+    {
+      "source": "/uptime",
+      "destination": "/status"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/login",
+      "destination": "/auth/login",
+      "permanent": true
+    },
+    {
+      "source": "/register",
+      "destination": "/auth/register",
+      "permanent": true
+    },
+    {
+      "source": "/setup",
+      "destination": "/api/info",
+      "permanent": false
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "SKIP_ENV_VALIDATION": "true"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}
