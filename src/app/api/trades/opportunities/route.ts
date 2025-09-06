@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { tradeOpportunityDetector } from '@/services/ai/tradeOpportunityDetector';
 import { verifyAuth } from '@/lib/auth';
-import { neonDb } from '@/lib/db';
+import { database } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -258,7 +258,7 @@ export async function PUT(request: NextRequest) {
 // Helper functions
 async function checkLeaguePermission(userId: string, leagueId: string): Promise<boolean> {
   try {
-    const result = await neonDb.query(`
+    const result = await database.query(`
       SELECT 1 FROM league_memberships 
       WHERE user_id = $1 AND league_id = $2 AND is_active = TRUE
     `, [userId, leagueId]);
@@ -341,7 +341,7 @@ async function recordOpportunityInteraction(
   interactionType: string, 
   interactionData: any
 ) {
-  await neonDb.query(`
+  await database.query(`
     INSERT INTO opportunity_interactions (
       opportunity_id, user_id, interaction_type, interaction_data
     ) VALUES ($1, $2, $3, $4)
@@ -354,7 +354,7 @@ async function submitOpportunityFeedback(
   feedbackType: string, 
   feedbackValue: any
 ) {
-  await neonDb.query(`
+  await database.query(`
     INSERT INTO opportunity_feedback (
       opportunity_id, user_id, feedback_type, feedback_value
     ) VALUES ($1, $2, $3, $4)
@@ -362,7 +362,7 @@ async function submitOpportunityFeedback(
 }
 
 async function updateUserTradeProfile(userId: string, leagueId: string, preferences: any) {
-  await neonDb.query(`
+  await database.query(`
     INSERT INTO user_trade_profiles (
       user_id, league_id, trading_activity, preferred_trade_types, 
       risk_tolerance, response_time, team_needs, trading_patterns
@@ -400,13 +400,13 @@ async function markOpportunityViewed(opportunityId: string, userId: string) {
   const { from_user_id, to_user_id } = opportunity.rows[0];
   
   if (userId === from_user_id) {
-    await neonDb.query(`
+    await database.query(`
       UPDATE trade_opportunities 
       SET viewed_by_from_user = TRUE 
       WHERE id = $1
     `, [opportunityId]);
   } else if (userId === to_user_id) {
-    await neonDb.query(`
+    await database.query(`
       UPDATE trade_opportunities 
       SET viewed_by_to_user = TRUE 
       WHERE id = $1
@@ -418,7 +418,7 @@ async function markOpportunityViewed(opportunityId: string, userId: string) {
 }
 
 async function updateOpportunityStatus(opportunityId: string, status: string, userId: string) {
-  await neonDb.query(`
+  await database.query(`
     UPDATE trade_opportunities 
     SET status = $1 
     WHERE id = $2 AND (from_user_id = $3 OR to_user_id = $3)

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { liveInjuryTracker } from '@/services/realtime/liveInjuryTracker';
-import { neonDb } from '@/lib/db';
+import { database } from '@/lib/database';
 import { verifyAuth } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     query += ' ORDER BY ir.reported_at DESC LIMIT 100';
 
-    const result = await neonDb.query(query, params);
+    const result = await database.query(query, params);
 
     return NextResponse.json({
       success: true,
