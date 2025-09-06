@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   TrendingUp,
@@ -82,7 +82,7 @@ interface RestOfSeasonOutlook {
   upcomingMatchups: string[]
 }
 
-export default function EnhancedPlayerCard({ 
+const EnhancedPlayerCard = memo(function EnhancedPlayerCard({ 
   player, 
   leagueId, 
   showDetailedView = false,
@@ -543,4 +543,6 @@ export default function EnhancedPlayerCard({
       </AnimatePresence>
     </motion.div>
   )
-}
+})
+
+export default EnhancedPlayerCard

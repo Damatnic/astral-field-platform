@@ -6,7 +6,7 @@ import SportsDataSync from '@/components/admin/SportsDataSync'
 export default function AdminSetupPage() {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<any>(null)
-  const [adminKey, setAdminKey] = useState('astral2025')
+  const [adminKey, setAdminKey] = useState('')
   const [log, setLog] = useState<string[]>([])
 
   const appendLog = (line: string) => setLog(prev => [...prev, `${new Date().toLocaleTimeString()} — ${line}`])
@@ -61,6 +61,11 @@ export default function AdminSetupPage() {
   }
 
   const oneClickResetAndSetup = async () => {
+    if (!adminKey.trim()) {
+      setResults({ type: 'oneclick', success: false, error: 'Admin key is required. Please enter your ADMIN_SETUP_KEY.' })
+      return
+    }
+    
     setLoading(true)
     setLog([])
     try {
@@ -127,7 +132,7 @@ export default function AdminSetupPage() {
             className="w-full bg-gray-900 text-white border border-gray-700 rounded px-3 py-2"
             placeholder="Enter your ADMIN_SETUP_KEY"
           />
-          <p className="text-xs text-gray-500 mt-2">Used to authorize setup API calls (defaults to 'astral2025' if not changed in env).</p>
+          <p className="text-xs text-gray-500 mt-2">Used to authorize setup API calls. This key must be configured in your environment variables.</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3 mb-8">
@@ -166,6 +171,11 @@ export default function AdminSetupPage() {
           </button>
           <button
             onClick={async () => {
+              if (!adminKey.trim()) {
+                setResults({ type: 'cleanup', success: false, error: 'Admin key is required. Please enter your ADMIN_SETUP_KEY.' })
+                return
+              }
+              
               setLoading(true)
               setLog([])
               try {

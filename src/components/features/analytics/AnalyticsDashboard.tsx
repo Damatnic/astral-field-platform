@@ -69,6 +69,8 @@ export default function AnalyticsDashboard({ leagueId, teamId }: AnalyticsDashbo
     { key: 'overview', label: 'Overview', icon: Activity },
     { key: 'team', label: 'Team Analytics', icon: Users, disabled: !teamId },
     { key: 'league', label: 'League Stats', icon: Trophy },
+    { key: 'matchups', label: 'Matchup Analysis', icon: Target },
+    { key: 'season', label: 'Season Trends', icon: Calendar },
     { key: 'predictions', label: 'AI Predictions', icon: Brain },
     { key: 'market', label: 'Market Trends', icon: TrendingUp },
     { key: 'charts', label: 'Advanced Charts', icon: BarChart }
@@ -266,6 +268,30 @@ export default function AnalyticsDashboard({ leagueId, teamId }: AnalyticsDashbo
         {activeTab === 'market' && marketTrends && (
           <div className="space-y-8">
             <MarketTrendsView trends={marketTrends} />
+          </div>
+        )}
+
+        {/* Matchup Analysis Tab */}
+        {activeTab === 'league' && (
+          <div className="space-y-8">
+            <MatchupAnalysisView 
+              leagueId={leagueId}
+              teamId={teamId}
+              leagueAnalytics={leagueAnalytics}
+              teamAnalytics={teamAnalytics}
+            />
+          </div>
+        )}
+
+        {/* Season Trends Tab */}
+        {activeTab === 'charts' && (
+          <div className="space-y-8">
+            <SeasonTrendsView 
+              leagueId={leagueId}
+              teamId={teamId}
+              leagueAnalytics={leagueAnalytics}
+              teamAnalytics={teamAnalytics}
+            />
           </div>
         )}
 
@@ -836,4 +862,426 @@ function MarketTrendsView({ trends }: { trends: MarketTrends }) {
       </div>
     </div>
   )
+}
+
+// Enhanced Matchup Analysis View
+function MatchupAnalysisView({ 
+  leagueId, 
+  teamId, 
+  leagueAnalytics, 
+  teamAnalytics 
+}: {
+  leagueId: string;
+  teamId?: string;
+  leagueAnalytics: LeagueAnalytics | null;
+  teamAnalytics: TeamAnalytics | null;
+}) {
+  const [selectedWeek, setSelectedWeek] = useState(13);
+  const [selectedMatchup, setSelectedMatchup] = useState<string | null>(null);
+
+  const currentWeekMatchups = leagueAnalytics?.standings.slice(0, 8).map((team, index) => {
+    const opponent = leagueAnalytics.standings[index + 1] || leagueAnalytics.standings[0];
+    return {
+      id: `${team.teamId}-vs-${opponent.teamId}`,
+      team1: {
+        id: team.teamId,
+        name: team.teamName,
+        record: `${team.wins}-${team.losses}`,
+        pointsFor: team.pointsFor,
+        projectedScore: team.pointsFor / (team.wins + team.losses || 1) + (Math.random() - 0.5) * 10
+      },
+      team2: {
+        id: opponent.teamId,
+        name: opponent.teamName,
+        record: `${opponent.wins}-${opponent.losses}`,
+        pointsFor: opponent.pointsFor,
+        projectedScore: opponent.pointsFor / (opponent.wins + opponent.losses || 1) + (Math.random() - 0.5) * 10
+      },
+      winProbability: 50 + (Math.random() - 0.5) * 40,
+      factors: ['Injury Report', 'Bye Weeks', 'Weather', 'Matchup History']
+    };
+  }).slice(0, 4) || [];
+
+  return (
+    <div className="space-y-8">
+      {/* Week Selector */}
+      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white">Matchup Analysis</h2>
+          <div className="flex items-center space-x-4">
+            <span className="text-gray-400">Week:</span>
+            <select 
+              value={selectedWeek}
+              onChange={(e) => setSelectedWeek(Number(e.target.value))}
+              className="bg-gray-700 text-white rounded px-3 py-1 border border-gray-600"
+            >
+              {Array.from({length: 17}, (_, i) => i + 1).map(week => (
+                <option key={week} value={week}>Week {week}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Current Week Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-blue-400">{currentWeekMatchups.length}</p>
+            <p className="text-gray-400">Active Matchups</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-400">{Math.round(currentWeekMatchups.reduce((sum, m) => sum + Math.abs(m.team1.projectedScore - m.team2.projectedScore), 0) / currentWeekMatchups.length)}</p>
+            <p className="text-gray-400">Avg Point Spread</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-yellow-400">{currentWeekMatchups.filter(m => Math.abs(m.team1.projectedScore - m.team2.projectedScore) < 10).length}</p>
+            <p className="text-gray-400">Close Matchups</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Matchup Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {currentWeekMatchups.map((matchup) => (
+          <div key={matchup.id} className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-center flex-1">
+                <h3 className="font-bold text-white">{matchup.team1.name}</h3>
+                <p className="text-sm text-gray-400">{matchup.team1.record}</p>
+                <p className="text-lg font-semibold text-blue-400">{matchup.team1.projectedScore.toFixed(1)}</p>
+              </div>
+              <div className="px-6">
+                <div className="text-center">
+                  <span className="text-gray-400 text-sm">vs</span>
+                  <div className="mt-2">
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      Math.abs(matchup.team1.projectedScore - matchup.team2.projectedScore) < 5 
+                        ? 'bg-red-900/30 text-red-400' 
+                        : 'bg-green-900/30 text-green-400'
+                    }`}>
+                      {Math.abs(matchup.team1.projectedScore - matchup.team2.projectedScore) < 5 ? 'Toss-up' : 'Likely'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center flex-1">
+                <h3 className="font-bold text-white">{matchup.team2.name}</h3>
+                <p className="text-sm text-gray-400">{matchup.team2.record}</p>
+                <p className="text-lg font-semibold text-blue-400">{matchup.team2.projectedScore.toFixed(1)}</p>
+              </div>
+            </div>
+            
+            {/* Win Probability Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-gray-400 mb-1">
+                <span>Win Probability</span>
+                <span>{matchup.winProbability.toFixed(0)}% - {(100-matchup.winProbability).toFixed(0)}%</span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full" 
+                  style={{ width: `${matchup.winProbability}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Key Factors */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-300">Key Factors:</p>
+              <div className="flex flex-wrap gap-2">
+                {matchup.factors.map((factor, index) => (
+                  <span key={index} className="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">
+                    {factor}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Season Trends Analysis View
+function SeasonTrendsView({ 
+  leagueId, 
+  teamId, 
+  leagueAnalytics, 
+  teamAnalytics 
+}: {
+  leagueId: string;
+  teamId?: string;
+  leagueAnalytics: LeagueAnalytics | null;
+  teamAnalytics: TeamAnalytics | null;
+}) {
+  const [selectedTrend, setSelectedTrend] = useState<'scoring' | 'parity' | 'trades' | 'waivers'>('scoring');
+  
+  // Generate mock season data
+  const seasonData = {
+    scoring: {
+      weeklyAverages: Array.from({length: 13}, (_, i) => ({
+        week: i + 1,
+        average: 95 + Math.sin(i * 0.5) * 15 + Math.random() * 10,
+        high: 140 + Math.random() * 20,
+        low: 60 + Math.random() * 15
+      })),
+      topScorers: leagueAnalytics?.standings.slice(0, 5).map(team => ({
+        team: team.teamName,
+        average: team.pointsFor / (team.wins + team.losses || 1),
+        total: team.pointsFor,
+        consistency: 75 + Math.random() * 20
+      })) || []
+    },
+    parity: {
+      recordDistribution: [
+        { record: '10-3', teams: 1, color: 'bg-green-500' },
+        { record: '9-4', teams: 2, color: 'bg-green-400' },
+        { record: '8-5', teams: 3, color: 'bg-yellow-500' },
+        { record: '7-6', teams: 2, color: 'bg-yellow-400' },
+        { record: '6-7', teams: 1, color: 'bg-orange-500' },
+        { record: '5-8', teams: 1, color: 'bg-red-500' }
+      ],
+      standingsChanges: Array.from({length: 13}, (_, i) => ({
+        week: i + 1,
+        changes: Math.floor(Math.random() * 6) + 1
+      }))
+    },
+    trades: {
+      weeklyTrades: Array.from({length: 13}, (_, i) => ({
+        week: i + 1,
+        count: Math.floor(Math.random() * 5)
+      })),
+      totalTrades: 23,
+      topTraders: ['Team Alpha', 'Team Beta', 'Team Gamma']
+    },
+    waivers: {
+      weeklyPickups: Array.from({length: 13}, (_, i) => ({
+        week: i + 1,
+        pickups: 8 + Math.floor(Math.random() * 12)
+      })),
+      topPickups: ['Player A', 'Player B', 'Player C'],
+      faabSpent: 847
+    }
+  };
+
+  const trendOptions = [
+    { key: 'scoring', label: 'Scoring Trends', icon: TrendingUp },
+    { key: 'parity', label: 'League Parity', icon: Users },
+    { key: 'trades', label: 'Trade Activity', icon: ArrowRightLeft },
+    { key: 'waivers', label: 'Waiver Wire', icon: Target }
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* Trend Selector */}
+      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <h2 className="text-2xl font-bold text-white mb-6">Season Trends Analysis</h2>
+        <div className="flex space-x-2 bg-gray-700 rounded-lg p-1">
+          {trendOptions.map(option => {
+            const Icon = option.icon;
+            return (
+              <button
+                key={option.key}
+                onClick={() => setSelectedTrend(option.key as any)}
+                className={`flex items-center px-4 py-2 rounded text-sm transition-colors ${
+                  selectedTrend === option.key
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-600'
+                }`}
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Trend Content */}
+      <div className="space-y-6">
+        {selectedTrend === 'scoring' && (
+          <>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Weekly Scoring Averages</h3>
+              <div className="h-64">
+                <MockTrendChart data={seasonData.scoring.weeklyAverages} type="scoring" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                <h4 className="font-medium text-white mb-4">Top Scoring Teams</h4>
+                <div className="space-y-3">
+                  {seasonData.scoring.topScorers.map((team, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-gray-300">{team.team}</span>
+                      <div className="text-right">
+                        <span className="text-white font-medium">{team.average.toFixed(1)}</span>
+                        <span className="text-gray-400 text-sm ml-2">avg</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+                <h4 className="font-medium text-white mb-4">Scoring Statistics</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">League Average:</span>
+                    <span className="text-white">98.7 PPG</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Highest Score:</span>
+                    <span className="text-green-400">164.3</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Lowest Score:</span>
+                    <span className="text-red-400">42.1</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Standard Deviation:</span>
+                    <span className="text-white">18.4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {selectedTrend === 'parity' && (
+          <>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Record Distribution</h3>
+              <div className="space-y-3">
+                {seasonData.parity.recordDistribution.map((item, index) => (
+                  <div key={index} className="flex items-center">
+                    <span className="w-16 text-white font-medium">{item.record}</span>
+                    <div className="flex-1 mx-4">
+                      <div className="w-full bg-gray-700 rounded-full h-6 flex items-center">
+                        <div 
+                          className={`${item.color} h-6 rounded-full flex items-center justify-center text-white text-sm font-medium`}
+                          style={{ width: `${(item.teams / 10) * 100}%` }}
+                        >
+                          {item.teams > 0 && item.teams}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-gray-400 text-sm">{item.teams} team{item.teams !== 1 ? 's' : ''}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Standings Volatility</h3>
+              <div className="h-48">
+                <MockTrendChart data={seasonData.parity.standingsChanges} type="volatility" />
+              </div>
+            </div>
+          </>
+        )}
+
+        {selectedTrend === 'trades' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Trade Activity by Week</h3>
+              <div className="h-48">
+                <MockTrendChart data={seasonData.trades.weeklyTrades} type="trades" />
+              </div>
+            </div>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Trade Statistics</h3>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-blue-400">{seasonData.trades.totalTrades}</p>
+                  <p className="text-gray-400">Total Trades</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-300">Most Active Traders:</p>
+                  {seasonData.trades.topTraders.map((trader, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span className="text-gray-300">{trader}</span>
+                      <span className="text-white">{5 - index} trades</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {selectedTrend === 'waivers' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Weekly Pickups</h3>
+              <div className="h-48">
+                <MockTrendChart data={seasonData.waivers.weeklyPickups} type="pickups" />
+              </div>
+            </div>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Waiver Statistics</h3>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-green-400">${seasonData.waivers.faabSpent}</p>
+                  <p className="text-gray-400">FAAB Spent</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-300">Hottest Pickups:</p>
+                  {seasonData.waivers.topPickups.map((pickup, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span className="text-gray-300">{pickup}</span>
+                      <span className="text-white">{8 - index} adds</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Mock Trend Chart Component
+function MockTrendChart({ data, type }: { data: any[], type: string }) {
+  const getColor = (type: string) => {
+    switch(type) {
+      case 'scoring': return 'bg-blue-500';
+      case 'volatility': return 'bg-purple-500';
+      case 'trades': return 'bg-orange-500';
+      case 'pickups': return 'bg-green-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const maxValue = Math.max(...data.map(d => d.average || d.count || d.changes || d.pickups || 0));
+  
+  return (
+    <div className="w-full h-full flex items-end justify-center space-x-1 px-4">
+      {data.map((item, index) => {
+        const value = item.average || item.count || item.changes || item.pickups || 0;
+        const height = (value / maxValue) * 80 + 10;
+        return (
+          <div key={index} className="flex-1 flex flex-col items-center group">
+            <div className="relative">
+              <div
+                className={`w-full ${getColor(type)} rounded-t transition-all duration-300 group-hover:opacity-80`}
+                style={{ height: `${height}%` }}
+                title={`Week ${item.week}: ${value.toFixed ? value.toFixed(1) : value}`}
+              />
+              {type === 'scoring' && item.high && (
+                <div 
+                  className="absolute top-0 w-full border-t-2 border-red-400 opacity-50"
+                  style={{ transform: `translateY(-${((item.high - value) / maxValue) * 80}%)` }}
+                />
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-2">W{item.week}</span>
+            <span className="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+              {value.toFixed ? value.toFixed(1) : value}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }

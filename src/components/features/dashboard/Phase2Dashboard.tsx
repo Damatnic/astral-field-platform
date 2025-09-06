@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { motion } from 'framer-motion'
 import {
   Sparkles,
@@ -25,10 +25,10 @@ import { Card } from '@/components/ui/Card/Card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/Button/Button'
 import { Progress } from '@/components/ui/progress'
-import { EnhancedPlayerCard } from '@/components/features/player/EnhancedPlayerCard'
-import { WaiverWireIntelligence } from '@/components/features/waiver/WaiverWireIntelligence'
-import { TradeImpactAnalysis } from '@/components/features/trade/TradeImpactAnalysis'
-import { DraftBoardVisualization } from '@/components/features/draft/DraftBoardVisualization'
+import EnhancedPlayerCard from '@/components/features/player/EnhancedPlayerCard'
+import WaiverWireIntelligence from '@/components/features/waiver/WaiverWireIntelligence'
+import TradeImpactAnalysis from '@/components/features/trade/TradeImpactAnalysis'
+import DraftBoardVisualization from '@/components/features/draft/DraftBoardVisualization'
 import type { Database } from '@/types/database'
 
 type Player = Database['public']['Tables']['players']['Row']
@@ -58,7 +58,7 @@ interface Phase2DashboardProps {
   userId: string
 }
 
-export default function Phase2Dashboard({ leagueId, userId }: Phase2DashboardProps) {
+const Phase2Dashboard = memo(function Phase2Dashboard({ leagueId, userId }: Phase2DashboardProps) {
   const [activeFeature, setActiveFeature] = useState<string | null>(null)
   const [selectedView, setSelectedView] = useState<'overview' | 'players' | 'waiver' | 'trades' | 'draft'>('overview')
   
@@ -495,4 +495,6 @@ export default function Phase2Dashboard({ leagueId, userId }: Phase2DashboardPro
       </Card>
     </div>
   )
-}
+})
+
+export default Phase2Dashboard
