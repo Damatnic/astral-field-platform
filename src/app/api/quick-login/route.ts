@@ -56,6 +56,20 @@ export async function POST(req: NextRequest) {
     const token = `token_${profile.id}_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     const userId = `user_${profile.id}`;
     
+    // Get team name for this profile
+    const teamNames = [
+      'The Commanders',
+      'Purple Reign', 
+      'Minor Threat',
+      'Jarvey\'s Giants',
+      'Dynasty Builders',
+      'Trophy Hunters',
+      'Rocket Squad',
+      'Fire Starters',
+      'Diamond Dogs',
+      'Crown Royale'
+    ];
+    
     // Successful login response
     const loginResult = {
       success: true,
@@ -67,11 +81,14 @@ export async function POST(req: NextRequest) {
         role: profile.role || 'user',
         icon: profile.icon,
         profileId: profile.id,
+        teamName: teamNames[profile.id - 1],
+        leagueId: 1, // All users are in league ID 1
         avatar: null,
         createdAt: new Date().toISOString()
       },
       token: token,
       userId: userId,
+      leagueId: 1,
       expiresIn: '24h',
       message: `Welcome back, ${profile.name}!`
     };
