@@ -307,7 +307,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Admin Actions (only for admin user) */}
-        {user.id === 10 && (
+        {user.id === 9 && (
           <div className="mt-6 bg-yellow-600/10 border border-yellow-600/30 rounded-xl p-6">
             <h3 className="text-lg font-bold text-yellow-400 mb-4">Commissioner Tools</h3>
             <div className="flex gap-4">

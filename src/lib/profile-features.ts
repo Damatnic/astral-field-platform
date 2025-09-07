@@ -426,7 +426,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     abbreviation: 'DAM',
     icon: '👤',
     color: 'teal',
-    role: 'user',
+    role: 'admin',
     features: {
       roster: true,
       trades: true,
@@ -436,7 +436,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: true
     },
     stats: {
       wins: 0,
@@ -472,7 +472,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     abbreviation: 'KAI',
     icon: '👑',
     color: 'gray',
-    role: 'admin',
+    role: 'user',
     features: {
       roster: true,
       trades: true,
@@ -482,7 +482,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: true // Admin has commissioner tools
+      commissioner: false
     },
     stats: {
       wins: 0,

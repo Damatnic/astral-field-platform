@@ -10,8 +10,8 @@ const profiles = [
   { id: 6, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', pin: '1234', icon: '🎯' },
   { id: 7, name: 'Larry McCaigue', email: 'larry.mccaigue@astralfield.com', pin: '1234', icon: '🚀' },
   { id: 8, name: 'Renee McCaigue', email: 'renee.mccaigue@astralfield.com', pin: '1234', icon: '💎' },
-  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', pin: '1234', icon: '👤' },
-  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', pin: '1234', icon: '👑', role: 'admin' }
+  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', pin: '1234', icon: '👤', role: 'admin' },
+  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', pin: '1234', icon: '👑' }
 ];
 
 export async function POST(req: NextRequest) {

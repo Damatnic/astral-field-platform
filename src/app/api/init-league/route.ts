@@ -11,8 +11,8 @@ const LEAGUE_PLAYERS = [
   { id: 6, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', teamName: 'Jarvey\'s Giants', abbreviation: 'JRV' },
   { id: 7, name: 'Larry McCaigue', email: 'larry.mccaigue@astralfield.com', teamName: 'Larry\'s Legends', abbreviation: 'LAR' },
   { id: 8, name: 'Renee McCaigue', email: 'renee.mccaigue@astralfield.com', teamName: 'Renee\'s Raiders', abbreviation: 'REN' },
-  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', teamName: 'D\'Amato Dynasty', abbreviation: 'DAM' },
-  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', teamName: 'Kaity\'s Knights', abbreviation: 'KAI', isAdmin: true }
+  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', teamName: 'D\'Amato Dynasty', abbreviation: 'DAM', isAdmin: true },
+  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', teamName: 'Kaity\'s Knights', abbreviation: 'KAI' }
 ];
 
 const LEAGUE_CONFIG = {
@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
       VALUES (
         ${LEAGUE_CONFIG.name},
         ${LEAGUE_CONFIG.season},
-        10, -- Admin user as commissioner
+        9, -- Nicholas D'Amato as commissioner
         ${LEAGUE_CONFIG.maxTeams},
         ${LEAGUE_CONFIG.scoringSystem},
         ${LEAGUE_CONFIG.playoffTeams},
