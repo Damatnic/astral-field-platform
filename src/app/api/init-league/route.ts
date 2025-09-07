@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { db } from '@/lib/db';
 
 // Define the 10 players with their profile data
 const LEAGUE_PLAYERS = [
@@ -41,269 +41,166 @@ const LEAGUE_CONFIG = {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log('Initializing league with 10 players...');
+    console.log('Initializing league with new UUID-based schema...');
 
-    // Step 1: Create or verify users table
-    await sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        profile_id INTEGER UNIQUE NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        pin VARCHAR(4) DEFAULT '1234',
-        role VARCHAR(50) DEFAULT 'user',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
+    // Step 1: Create or update users (using pin-based demo accounts)
+    const userInserts = LEAGUE_PLAYERS.map(async (player, index) => {
+      const userResult = await db.query(
+        `INSERT INTO users (username, email, display_name, pin, is_demo_user) 
+         VALUES ($1, $2, $3, $4, true)
+         ON CONFLICT (email) DO UPDATE SET 
+           display_name = EXCLUDED.display_name,
+           pin = EXCLUDED.pin,
+           updated_at = CURRENT_TIMESTAMP
+         RETURNING id`,
+        [
+          player.name.toLowerCase().replace(/\s+/g, '.'),
+          player.email,
+          player.name,
+          String(1000 + index + 1) // PIN: 1001, 1002, etc.
+        ]
+      );
+      return { ...player, userId: userResult.rows[0].id };
+    });
 
-    // Step 2: Create leagues table
-    await sql`
-      CREATE TABLE IF NOT EXISTS leagues (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        season INTEGER NOT NULL,
-        commissioner_id INTEGER,
-        max_teams INTEGER DEFAULT 10,
-        scoring_system VARCHAR(50) DEFAULT 'PPR',
-        playoff_teams INTEGER DEFAULT 6,
-        regular_season_weeks INTEGER DEFAULT 14,
-        playoff_weeks INTEGER DEFAULT 3,
-        trade_deadline_week INTEGER DEFAULT 10,
-        waiver_type VARCHAR(50) DEFAULT 'FAAB',
-        waiver_budget INTEGER DEFAULT 100,
-        roster_size INTEGER DEFAULT 16,
-        status VARCHAR(50) DEFAULT 'active',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
+    const usersWithIds = await Promise.all(userInserts);
+    const commissionerUser = usersWithIds.find(u => u.isAdmin);
 
-    // Step 3: Create teams table
-    await sql`
-      CREATE TABLE IF NOT EXISTS teams (
-        id SERIAL PRIMARY KEY,
-        league_id INTEGER REFERENCES leagues(id) ON DELETE CASCADE,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        team_name VARCHAR(255) NOT NULL,
-        abbreviation VARCHAR(5) NOT NULL,
-        wins INTEGER DEFAULT 0,
-        losses INTEGER DEFAULT 0,
-        ties INTEGER DEFAULT 0,
-        points_for DECIMAL(10, 2) DEFAULT 0,
-        points_against DECIMAL(10, 2) DEFAULT 0,
-        waiver_priority INTEGER,
-        waiver_budget INTEGER DEFAULT 100,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(league_id, team_name),
-        UNIQUE(league_id, abbreviation)
-      )
-    `;
-
-    // Step 4: Create rosters table for player assignments
-    await sql`
-      CREATE TABLE IF NOT EXISTS rosters (
-        id SERIAL PRIMARY KEY,
-        team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
-        player_id VARCHAR(50) NOT NULL,
-        player_name VARCHAR(255) NOT NULL,
-        position VARCHAR(10) NOT NULL,
-        nfl_team VARCHAR(10),
-        starter BOOLEAN DEFAULT false,
-        acquisition_type VARCHAR(50) DEFAULT 'draft',
-        acquisition_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
-
-    // Step 5: Insert all 10 users
-    for (const player of LEAGUE_PLAYERS) {
-      await sql`
-        INSERT INTO users (profile_id, name, email, pin, role)
-        VALUES (${player.id}, ${player.name}, ${player.email}, '1234', ${player.isAdmin ? 'admin' : 'user'})
-        ON CONFLICT (profile_id) 
-        DO UPDATE SET 
-          name = EXCLUDED.name,
-          email = EXCLUDED.email,
-          updated_at = CURRENT_TIMESTAMP
-      `;
-    }
-
-    // Step 6: Create the main league
-    const leagueResult = await sql`
-      INSERT INTO leagues (
+    // Step 2: Create the main league
+    const leagueResult = await db.query(
+      `INSERT INTO leagues (
         name, 
-        season, 
+        season_year, 
         commissioner_id,
         max_teams,
-        scoring_system,
+        scoring_type,
         playoff_teams,
-        regular_season_weeks,
-        playoff_weeks,
         trade_deadline_week,
         waiver_type,
         waiver_budget,
-        roster_size
+        current_week,
+        roster_positions,
+        scoring_settings
       )
-      VALUES (
-        ${LEAGUE_CONFIG.name},
-        ${LEAGUE_CONFIG.season},
-        9, -- Nicholas D'Amato as commissioner
-        ${LEAGUE_CONFIG.maxTeams},
-        ${LEAGUE_CONFIG.scoringSystem},
-        ${LEAGUE_CONFIG.playoffTeams},
-        ${LEAGUE_CONFIG.regularSeasonWeeks},
-        ${LEAGUE_CONFIG.playoffWeeks},
-        ${LEAGUE_CONFIG.tradeDeadlineWeek},
-        ${LEAGUE_CONFIG.waiverType},
-        ${LEAGUE_CONFIG.waiverBudget},
-        ${LEAGUE_CONFIG.rosterSize}
-      )
-      ON CONFLICT DO NOTHING
-      RETURNING id
-    `;
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING id`,
+      [
+        LEAGUE_CONFIG.name,
+        LEAGUE_CONFIG.season,
+        commissionerUser?.userId || usersWithIds[0].userId,
+        LEAGUE_CONFIG.maxTeams,
+        'ppr',
+        LEAGUE_CONFIG.playoffTeams,
+        LEAGUE_CONFIG.tradeDeadlineWeek,
+        'faab',
+        LEAGUE_CONFIG.waiverBudget,
+        1, // current week
+        JSON.stringify({
+          "QB": 1,
+          "RB": 2,
+          "WR": 2,
+          "TE": 1,
+          "FLEX": 1,
+          "DST": 1,
+          "K": 1,
+          "BENCH": 7,
+          "IR": 2
+        }),
+        JSON.stringify({
+          "passing": { "yards": 0.04, "touchdowns": 4, "interceptions": -2 },
+          "rushing": { "yards": 0.1, "touchdowns": 6 },
+          "receiving": { "receptions": 1, "yards": 0.1, "touchdowns": 6 },
+          "kicking": { "pat": 1, "fg_0_39": 3, "fg_40_49": 4, "fg_50_plus": 5 },
+          "defense": { "sack": 1, "interception": 2, "fumble_recovery": 2, "touchdown": 6 }
+        })
+      ]
+    );
 
-    let leagueId: number;
-    
-    if (leagueResult.rows.length > 0) {
-      leagueId = leagueResult.rows[0].id;
-    } else {
-      // League already exists, get its ID
-      const existingLeague = await sql`
-        SELECT id FROM leagues 
-        WHERE name = ${LEAGUE_CONFIG.name} 
-        AND season = ${LEAGUE_CONFIG.season}
-        LIMIT 1
-      `;
-      leagueId = existingLeague.rows[0].id;
-    }
+    const leagueId = leagueResult.rows[0].id;
 
-    // Step 7: Create teams for all 10 players
-    for (let i = 0; i < LEAGUE_PLAYERS.length; i++) {
-      const player = LEAGUE_PLAYERS[i];
-      
-      await sql`
-        INSERT INTO teams (
+    // Step 3: Create teams for all players
+    const teamInserts = usersWithIds.map(async (player, index) => {
+      const teamResult = await db.query(
+        `INSERT INTO teams (
           league_id,
           user_id,
           team_name,
-          abbreviation,
+          team_abbreviation,
           waiver_priority,
-          waiver_budget
+          waiver_budget_remaining
         )
-        VALUES (
-          ${leagueId},
-          ${player.id},
-          ${player.teamName},
-          ${player.abbreviation},
-          ${i + 1}, -- Initial waiver priority based on order
-          ${LEAGUE_CONFIG.waiverBudget}
-        )
-        ON CONFLICT (league_id, team_name) 
-        DO UPDATE SET 
-          abbreviation = EXCLUDED.abbreviation,
-          updated_at = CURRENT_TIMESTAMP
-      `;
-    }
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id`,
+        [
+          leagueId,
+          player.userId,
+          player.teamName,
+          player.abbreviation,
+          index + 1, // Initial waiver priority
+          LEAGUE_CONFIG.waiverBudget
+        ]
+      );
+      return { ...player, teamId: teamResult.rows[0].id };
+    });
 
-    // Step 8: Create matchups table for scheduling
-    await sql`
-      CREATE TABLE IF NOT EXISTS matchups (
-        id SERIAL PRIMARY KEY,
-        league_id INTEGER REFERENCES leagues(id) ON DELETE CASCADE,
-        week INTEGER NOT NULL,
-        home_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
-        away_team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
-        home_score DECIMAL(10, 2) DEFAULT 0,
-        away_score DECIMAL(10, 2) DEFAULT 0,
-        is_playoff BOOLEAN DEFAULT false,
-        is_completed BOOLEAN DEFAULT false,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(league_id, week, home_team_id, away_team_id)
+    const teamsWithIds = await Promise.all(teamInserts);
+
+    // Step 4: Create basic matchup schedule for current week
+    await db.query(
+      `INSERT INTO matchups (
+        league_id, 
+        week, 
+        season_year, 
+        home_team_id, 
+        away_team_id
       )
-    `;
+      VALUES 
+        ($1, 1, $2, $3, $4),
+        ($1, 1, $2, $5, $6),
+        ($1, 1, $2, $7, $8),
+        ($1, 1, $2, $9, $10),
+        ($1, 1, $2, $11, $12)`,
+      [
+        leagueId,
+        LEAGUE_CONFIG.season,
+        teamsWithIds[0].teamId, teamsWithIds[1].teamId,
+        teamsWithIds[2].teamId, teamsWithIds[3].teamId,
+        teamsWithIds[4].teamId, teamsWithIds[5].teamId,
+        teamsWithIds[6].teamId, teamsWithIds[7].teamId,
+        teamsWithIds[8].teamId, teamsWithIds[9].teamId
+      ]
+    );
 
-    // Step 9: Generate regular season schedule (round-robin)
-    const teamIds = Array.from({ length: 10 }, (_, i) => i + 1);
-    let week = 1;
+    // Step 5: Create initial lineups for each team
+    const lineupInserts = teamsWithIds.map(async (team) => {
+      return db.query(
+        `INSERT INTO lineups (team_id, week, season_year)
+         VALUES ($1, $2, $3)
+         RETURNING id`,
+        [team.teamId, 1, LEAGUE_CONFIG.season]
+      );
+    });
 
-    // Simple round-robin scheduling
-    for (let round = 0; round < LEAGUE_CONFIG.regularSeasonWeeks; round++) {
-      const matches = generateWeekMatchups(teamIds, round);
-      
-      for (const match of matches) {
-        await sql`
-          INSERT INTO matchups (
-            league_id,
-            week,
-            home_team_id,
-            away_team_id,
-            is_playoff
-          )
-          VALUES (
-            ${leagueId},
-            ${week},
-            ${match.home},
-            ${match.away},
-            false
-          )
-          ON CONFLICT DO NOTHING
-        `;
-      }
-      week++;
-    }
+    await Promise.all(lineupInserts);
 
-    // Step 10: Create initial league settings
-    await sql`
-      CREATE TABLE IF NOT EXISTS league_settings (
-        id SERIAL PRIMARY KEY,
-        league_id INTEGER REFERENCES leagues(id) ON DELETE CASCADE,
-        setting_key VARCHAR(100) NOT NULL,
-        setting_value TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(league_id, setting_key)
-      )
-    `;
-
-    // Insert roster position limits
-    const rosterSettings = [
-      { key: 'roster_qb', value: '1' },
-      { key: 'roster_rb', value: '2' },
-      { key: 'roster_wr', value: '2' },
-      { key: 'roster_te', value: '1' },
-      { key: 'roster_flex', value: '1' },
-      { key: 'roster_dst', value: '1' },
-      { key: 'roster_k', value: '1' },
-      { key: 'roster_bench', value: '7' },
-      { key: 'current_week', value: '1' },
-      { key: 'draft_status', value: 'pending' }
-    ];
-
-    for (const setting of rosterSettings) {
-      await sql`
-        INSERT INTO league_settings (league_id, setting_key, setting_value)
-        VALUES (${leagueId}, ${setting.key}, ${setting.value})
-        ON CONFLICT (league_id, setting_key) 
-        DO UPDATE SET 
-          setting_value = EXCLUDED.setting_value
-      `;
-    }
+    console.log('League initialized successfully with UUID schema!');
 
     return NextResponse.json({
       success: true,
-      message: 'League initialized successfully!',
+      message: 'League initialized successfully with modern database schema!',
       data: {
         leagueId,
         leagueName: LEAGUE_CONFIG.name,
         season: LEAGUE_CONFIG.season,
         totalTeams: LEAGUE_PLAYERS.length,
-        players: LEAGUE_PLAYERS.map(p => ({
+        players: teamsWithIds.map(p => ({
           id: p.id,
           name: p.name,
           teamName: p.teamName,
-          abbreviation: p.abbreviation
+          abbreviation: p.abbreviation,
+          userId: p.userId,
+          teamId: p.teamId,
+          pin: String(1000 + LEAGUE_PLAYERS.findIndex(lp => lp.id === p.id) + 1)
         })),
         settings: LEAGUE_CONFIG
       }
@@ -346,17 +243,19 @@ function generateWeekMatchups(teams: number[], weekOffset: number) {
 // GET endpoint to check league status
 export async function GET() {
   try {
-    const leagues = await sql`
+    const leagues = await db.query(`
       SELECT 
         l.*,
-        COUNT(DISTINCT t.id) as team_count
+        COUNT(DISTINCT t.id) as team_count,
+        u.display_name as commissioner_name
       FROM leagues l
       LEFT JOIN teams t ON l.id = t.league_id
-      WHERE l.status = 'active'
-      GROUP BY l.id
+      LEFT JOIN users u ON l.commissioner_id = u.id
+      WHERE l.is_active = true
+      GROUP BY l.id, u.display_name
       ORDER BY l.created_at DESC
       LIMIT 1
-    `;
+    `);
 
     if (leagues.rows.length === 0) {
       return NextResponse.json({
@@ -368,16 +267,17 @@ export async function GET() {
 
     const league = leagues.rows[0];
     
-    const teams = await sql`
+    const teams = await db.query(`
       SELECT 
         t.*,
-        u.name as owner_name,
-        u.email as owner_email
+        u.display_name as owner_name,
+        u.email as owner_email,
+        u.pin as owner_pin
       FROM teams t
       JOIN users u ON t.user_id = u.id
-      WHERE t.league_id = ${league.id}
+      WHERE t.league_id = $1
       ORDER BY t.wins DESC, t.points_for DESC
-    `;
+    `, [league.id]);
 
     return NextResponse.json({
       success: true,
@@ -393,6 +293,7 @@ export async function GET() {
     return NextResponse.json(
       { 
         error: 'Failed to check league status',
+        details: error instanceof Error ? error.message : 'Unknown error',
         success: false 
       },
       { status: 500 }
