@@ -3,16 +3,16 @@ import { sql } from '@vercel/postgres';
 
 // Define the 10 players with their profile data
 const LEAGUE_PLAYERS = [
-  { id: 1, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', teamName: 'The Commanders', abbreviation: 'CMD' },
-  { id: 2, name: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', teamName: 'Purple Reign', abbreviation: 'PRG' },
-  { id: 3, name: 'Cason Minor', email: 'cason.minor@astralfield.com', teamName: 'Minor Threat', abbreviation: 'MTH' },
-  { id: 4, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', teamName: 'Jarvey\'s Giants', abbreviation: 'JGT' },
-  { id: 5, name: 'Demo User 1', email: 'demo1@astralfield.com', teamName: 'Dynasty Builders', abbreviation: 'DYN' },
-  { id: 6, name: 'Demo User 2', email: 'demo2@astralfield.com', teamName: 'Trophy Hunters', abbreviation: 'TPH' },
-  { id: 7, name: 'Demo User 3', email: 'demo3@astralfield.com', teamName: 'Rocket Squad', abbreviation: 'RSQ' },
-  { id: 8, name: 'Demo User 4', email: 'demo4@astralfield.com', teamName: 'Fire Starters', abbreviation: 'FIR' },
-  { id: 9, name: 'Demo User 5', email: 'demo5@astralfield.com', teamName: 'Diamond Dogs', abbreviation: 'DMD' },
-  { id: 10, name: 'Admin User', email: 'admin@astralfield.com', teamName: 'Crown Royale', abbreviation: 'CRN', isAdmin: true }
+  { id: 1, name: 'Jon Kornbeck', email: 'jon.kornbeck@astralfield.com', teamName: 'Kornbeck\'s Krusaders', abbreviation: 'KRN' },
+  { id: 2, name: 'Jack McCaigue', email: 'jack.mccaigue@astralfield.com', teamName: 'Jack\'s Juggernauts', abbreviation: 'JAC' },
+  { id: 3, name: 'Nick Hartley', email: 'nick.hartley@astralfield.com', teamName: 'Hartley\'s Heroes', abbreviation: 'HRT' },
+  { id: 4, name: 'Cason Minor', email: 'cason.minor@astralfield.com', teamName: 'Minor League', abbreviation: 'MIN' },
+  { id: 5, name: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', teamName: 'Bergum\'s Blitz', abbreviation: 'BRG' },
+  { id: 6, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', teamName: 'Jarvey\'s Giants', abbreviation: 'JRV' },
+  { id: 7, name: 'Larry McCaigue', email: 'larry.mccaigue@astralfield.com', teamName: 'Larry\'s Legends', abbreviation: 'LAR' },
+  { id: 8, name: 'Renee McCaigue', email: 'renee.mccaigue@astralfield.com', teamName: 'Renee\'s Raiders', abbreviation: 'REN' },
+  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', teamName: 'D\'Amato Dynasty', abbreviation: 'DAM' },
+  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', teamName: 'Kaity\'s Knights', abbreviation: 'KAI', isAdmin: true }
 ];
 
 const LEAGUE_CONFIG = {

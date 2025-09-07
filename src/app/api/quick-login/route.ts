@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Define 10 profiles with their PINs and data
 const profiles = [
-  { id: 1, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', pin: '1234', icon: '👤' },
-  { id: 2, name: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', pin: '1234', icon: '👥' },
-  { id: 3, name: 'Cason Minor', email: 'cason.minor@astralfield.com', pin: '1234', icon: '🏈' },
-  { id: 4, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', pin: '1234', icon: '⭐' },
-  { id: 5, name: 'Demo User 1', email: 'demo1@astralfield.com', pin: '1234', icon: '🏆' },
-  { id: 6, name: 'Demo User 2', email: 'demo2@astralfield.com', pin: '1234', icon: '🎯' },
-  { id: 7, name: 'Demo User 3', email: 'demo3@astralfield.com', pin: '1234', icon: '🚀' },
-  { id: 8, name: 'Demo User 4', email: 'demo4@astralfield.com', pin: '1234', icon: '🔥' },
-  { id: 9, name: 'Demo User 5', email: 'demo5@astralfield.com', pin: '1234', icon: '💎' },
-  { id: 10, name: 'Admin User', email: 'admin@astralfield.com', pin: '1234', icon: '👑', role: 'admin' }
+  { id: 1, name: 'Jon Kornbeck', email: 'jon.kornbeck@astralfield.com', pin: '1234', icon: '🏈' },
+  { id: 2, name: 'Jack McCaigue', email: 'jack.mccaigue@astralfield.com', pin: '1234', icon: '⚡' },
+  { id: 3, name: 'Nick Hartley', email: 'nick.hartley@astralfield.com', pin: '1234', icon: '🔥' },
+  { id: 4, name: 'Cason Minor', email: 'cason.minor@astralfield.com', pin: '1234', icon: '⭐' },
+  { id: 5, name: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', pin: '1234', icon: '🏆' },
+  { id: 6, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', pin: '1234', icon: '🎯' },
+  { id: 7, name: 'Larry McCaigue', email: 'larry.mccaigue@astralfield.com', pin: '1234', icon: '🚀' },
+  { id: 8, name: 'Renee McCaigue', email: 'renee.mccaigue@astralfield.com', pin: '1234', icon: '💎' },
+  { id: 9, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', pin: '1234', icon: '👤' },
+  { id: 10, name: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', pin: '1234', icon: '👑', role: 'admin' }
 ];
 
 export async function POST(req: NextRequest) {
@@ -58,16 +58,16 @@ export async function POST(req: NextRequest) {
     
     // Get team name for this profile
     const teamNames = [
-      'The Commanders',
-      'Purple Reign', 
-      'Minor Threat',
+      'Kornbeck\'s Krusaders',
+      'Jack\'s Juggernauts', 
+      'Hartley\'s Heroes',
+      'Minor League',
+      'Bergum\'s Blitz',
       'Jarvey\'s Giants',
-      'Dynasty Builders',
-      'Trophy Hunters',
-      'Rocket Squad',
-      'Fire Starters',
-      'Diamond Dogs',
-      'Crown Royale'
+      'Larry\'s Legends',
+      'Renee\'s Raiders',
+      'D\'Amato Dynasty',
+      'Kaity\'s Knights'
     ];
     
     // Successful login response

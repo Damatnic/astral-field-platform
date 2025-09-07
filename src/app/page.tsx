@@ -4,16 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const profiles = [
-  { id: 1, name: "Nicholas", color: "bg-blue-500", icon: "👤" },
-  { id: 2, name: "Brittany", color: "bg-green-500", icon: "👥" },
-  { id: 3, name: "Cason", color: "bg-purple-500", icon: "🏈" },
-  { id: 4, name: "David", color: "bg-red-500", icon: "⭐" },
-  { id: 5, name: "Demo 1", color: "bg-yellow-500", icon: "🏆" },
-  { id: 6, name: "Demo 2", color: "bg-pink-500", icon: "🎯" },
-  { id: 7, name: "Demo 3", color: "bg-indigo-500", icon: "🚀" },
-  { id: 8, name: "Demo 4", color: "bg-orange-500", icon: "🔥" },
-  { id: 9, name: "Demo 5", color: "bg-teal-500", icon: "💎" },
-  { id: 10, name: "Admin", color: "bg-gray-700", icon: "👑" },
+  { id: 1, name: "Jon Kornbeck", color: "bg-blue-500", icon: "🏈" },
+  { id: 2, name: "Jack McCaigue", color: "bg-green-500", icon: "⚡" },
+  { id: 3, name: "Nick Hartley", color: "bg-purple-500", icon: "🔥" },
+  { id: 4, name: "Cason Minor", color: "bg-red-500", icon: "⭐" },
+  { id: 5, name: "Brittany Bergum", color: "bg-yellow-500", icon: "🏆" },
+  { id: 6, name: "David Jarvey", color: "bg-pink-500", icon: "🎯" },
+  { id: 7, name: "Larry McCaigue", color: "bg-indigo-500", icon: "🚀" },
+  { id: 8, name: "Renee McCaigue", color: "bg-orange-500", icon: "💎" },
+  { id: 9, name: "Nicholas D'Amato", color: "bg-teal-500", icon: "👤" },
+  { id: 10, name: "Kaity Lorbecki", color: "bg-gray-700", icon: "👑" },
 ];
 
 export default function HomePage() {

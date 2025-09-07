@@ -108,53 +108,53 @@ export default function DashboardPage() {
   // Helper functions
   function getUserName(profileId: number): string {
     const names = [
-      'Nicholas D\'Amato',
-      'Brittany Bergum',
+      'Jon Kornbeck',
+      'Jack McCaigue',
+      'Nick Hartley',
       'Cason Minor',
+      'Brittany Bergum',
       'David Jarvey',
-      'Demo User 1',
-      'Demo User 2',
-      'Demo User 3',
-      'Demo User 4',
-      'Demo User 5',
-      'Admin User'
+      'Larry McCaigue',
+      'Renee McCaigue',
+      'Nicholas D\'Amato',
+      'Kaity Lorbecki'
     ];
     return names[profileId - 1] || 'Unknown User';
   }
 
   function getTeamName(profileId: number): string {
     const teams = [
-      'The Commanders',
-      'Purple Reign',
-      'Minor Threat',
+      'Kornbeck\'s Krusaders',
+      'Jack\'s Juggernauts',
+      'Hartley\'s Heroes',
+      'Minor League',
+      'Bergum\'s Blitz',
       'Jarvey\'s Giants',
-      'Dynasty Builders',
-      'Trophy Hunters',
-      'Rocket Squad',
-      'Fire Starters',
-      'Diamond Dogs',
-      'Crown Royale'
+      'Larry\'s Legends',
+      'Renee\'s Raiders',
+      'D\'Amato Dynasty',
+      'Kaity\'s Knights'
     ];
     return teams[profileId - 1] || 'Unknown Team';
   }
 
   function getIcon(profileId: number): string {
-    const icons = ['👤', '👥', '🏈', '⭐', '🏆', '🎯', '🚀', '🔥', '💎', '👑'];
+    const icons = ['🏈', '⚡', '🔥', '⭐', '🏆', '🎯', '🚀', '💎', '👤', '👑'];
     return icons[profileId - 1] || '👤';
   }
 
   function getMockStandings(): Team[] {
     return [
-      { id: 1, team_name: 'The Commanders', abbreviation: 'CMD', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Nicholas D\'Amato' },
-      { id: 2, team_name: 'Purple Reign', abbreviation: 'PRG', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Brittany Bergum' },
-      { id: 3, team_name: 'Minor Threat', abbreviation: 'MTH', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Cason Minor' },
-      { id: 4, team_name: 'Jarvey\'s Giants', abbreviation: 'JGT', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'David Jarvey' },
-      { id: 5, team_name: 'Dynasty Builders', abbreviation: 'DYN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Demo User 1' },
-      { id: 6, team_name: 'Trophy Hunters', abbreviation: 'TPH', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Demo User 2' },
-      { id: 7, team_name: 'Rocket Squad', abbreviation: 'RSQ', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Demo User 3' },
-      { id: 8, team_name: 'Fire Starters', abbreviation: 'FIR', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Demo User 4' },
-      { id: 9, team_name: 'Diamond Dogs', abbreviation: 'DMD', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Demo User 5' },
-      { id: 10, team_name: 'Crown Royale', abbreviation: 'CRN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Admin User' }
+      { id: 1, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Jon Kornbeck' },
+      { id: 2, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Jack McCaigue' },
+      { id: 3, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Nick Hartley' },
+      { id: 4, team_name: 'Minor League', abbreviation: 'MIN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Cason Minor' },
+      { id: 5, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Brittany Bergum' },
+      { id: 6, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'David Jarvey' },
+      { id: 7, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Larry McCaigue' },
+      { id: 8, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Renee McCaigue' },
+      { id: 9, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Nicholas D\'Amato' },
+      { id: 10, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Kaity Lorbecki' }
     ];
   }
 
