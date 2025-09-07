@@ -37,7 +37,7 @@ export interface ErrorContext {
   method?: string;
   requestId?: string;
   timestamp?: Date;
-  additionalData?: Record<stringunknown>;
+  additionalData?: Record<string, unknown>;
 }
 
 export interface ErrorDetails {
@@ -51,7 +51,7 @@ export interface ErrorDetails {
   retryable?: boolean;
   userMessage?: string;
   internalMessage?: string;
-  metadata?: Record<stringunknown>;
+  metadata?: Record<string, unknown>;
 }
 
 // =============================================================================
@@ -66,7 +66,7 @@ export class AppError: extends Error {
   public: readonly retryable: boolean;
   public: readonly userMessage: string;
   public: readonly internalMessage: string;
-  public: readonly metadata?: Record<stringunknown>;
+  public: readonly metadata?: Record<string, unknown>;
 
   constructor(details: ErrorDetails) {
     super(details.message);

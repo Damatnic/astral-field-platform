@@ -47,7 +47,8 @@
       "Bash(timeout 30 npm test)",
       "Bash(npx jest:*)",
       "Bash(npm run test:integration:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

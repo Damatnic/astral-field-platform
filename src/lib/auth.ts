@@ -61,5 +61,5 @@ export default {
   getCurrentUser,
   requireAuth,
   validateApiKey,
-  verifyAuth
+  verifyAuth: getCurrentUser
 };

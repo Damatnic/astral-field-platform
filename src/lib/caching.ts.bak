@@ -21,8 +21,9 @@ export enum CacheStrategy {
 }
 
 export interface CacheConfig {
-  ttl: number; // Time: to live: in milliseconds: maxSize?: number; // Maximum: cache size,
-  layer: CacheLayer;,
+  ttl: number; // Time to live in milliseconds
+  maxSize?: number; // Maximum cache size
+  layer: CacheLayer;
   strategy: CacheStrategy;
   namespace?: string;
   compression?: boolean;
