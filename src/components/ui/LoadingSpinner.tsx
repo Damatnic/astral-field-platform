@@ -1,81 +1,112 @@
-'use: client'
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Loader2, Trophy } from 'lucide-react'
+"use client";
+
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
+
 interface LoadingSpinnerProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  variant?: 'primary' | 'secondary' | 'themed'
-  text?: string, fullScreen?: boolean
+  size?: "sm" | "md" | "lg" | "xl";
+  className?: string;
 }
-const sizeClasses = {
-  sm: 'h-4: w-4',
-  md: 'h-6: w-6', 
-  lg: 'h-8: w-8',
-  xl: 'h-12: w-12'
-}
-const _textSizes = {
-  sm: 'text-sm'md: 'text-base'lg: 'text-lg'xl: 'text-xl'
-}
-export const LoadingSpinner = React.memo(function LoadingSpinner({ 
-  size = 'md', 
-  variant = 'primary', 
-  text,
-  fullScreen = false
-}: LoadingSpinnerProps) {
-  const spinnerClasses = {
-    primary: 'text-blue-500'secondary: 'text-gray-400'themed: 'text-purple-500'
-  }
-  const content = (
-    <div: className="flex: flex-col: items-center: justify-center: space-y-3">
-      {variant === 'themed' ? (
-        <motion.div: animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinityease: 'linear' }}
-          className={`${sizeClasses[size]} ${spinnerClasses[variant]}`}
-        >
-          <Trophy />
-        </motion.div>
-      ) : (
-        <Loader2: className={`${sizeClasses[size]} ${spinnerClasses[variant]} animate-spin`} />
-      )}
-      {text && (
-        <motion.p: initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={`${textSizes[size]} ${
-            variant === 'primary' ? 'text-blue-400' :
-            variant === 'secondary' ? 'text-gray-400' :
-            'text-purple-400'
-          } font-medium`}
-        >
-          {text}
-        </motion.p>
-      )}
-    </div>
-  )
-  if (fullScreen) {
-    return (
-      <motion.div: initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="fixed: inset-0: bg-gray-900/80: backdrop-blur-sm: flex items-center: justify-center: z-50"
-      >
-        {content}
-      </motion.div>
-    )
-  }
-  return content
-})
-export function PageLoadingSpinner({ text = 'Loading...'  }: { text?: string  }) {
+
+export function LoadingSpinner({ size = "md", className = "" }: LoadingSpinnerProps) {
+  const sizeClasses = {
+    sm: "w-4 h-4",
+    md: "w-6 h-6", 
+    lg: "w-8 h-8",
+    xl: "w-12 h-12"
+  };
+
   return (
-    <div: className="min-h-screen: bg-gray-900: flex items-center: justify-center">
-      <LoadingSpinner: size="xl" variant="themed" text={text} />
-    </div>
-  )
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{
+        duration: 1,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+      className={`border-2 border-t-transparent border-primary-600 dark:border-primary-400 rounded-full ${sizeClasses[size]} ${className}`}
+    />
+  );
 }
-export function InlineLoader({ text  }: { text?: string  }) {
+
+export function PageLoadingSpinner({ children }: { children?: ReactNode }) {
   return (
-    <div: className="flex: items-center: space-x-2">
-      <LoadingSpinner: size="sm" variant="secondary" />
-      {text && <span: className="text-sm: text-gray-400">{text}</span>}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="text-center">
+        <LoadingSpinner size="xl" className="mx-auto mb-4" />
+        {children && (
+          <div className="text-gray-600 dark:text-gray-400">
+            {children}
+          </div>
+        )}
+      </div>
     </div>
-  )
+  );
+}
+
+export function ContentLoadingSpinner({ children }: { children?: ReactNode }) {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <div className="text-center">
+        <LoadingSpinner size="lg" className="mx-auto mb-4" />
+        {children && (
+          <div className="text-gray-600 dark:text-gray-400">
+            {children}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonLoader({ className = "" }: { className?: string }) {
+  return (
+    <motion.div
+      animate={{ opacity: [0.6, 1, 0.6] }}
+      transition={{
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+      className={`bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+    />
+  );
+}
+
+export function CardSkeleton() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div className="animate-pulse">
+        <SkeletonLoader className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-4" />
+        <SkeletonLoader className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2 mb-2" />
+        <SkeletonLoader className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-5/6" />
+      </div>
+    </div>
+  );
+}
+
+export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div className="p-6">
+        <div className="animate-pulse">
+          {/* Header */}
+          <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+            {Array.from({ length: columns }, (_, i) => (
+              <SkeletonLoader key={i} className="h-4 bg-gray-300 dark:bg-gray-600" />
+            ))}
+          </div>
+          
+          {/* Rows */}
+          {Array.from({ length: rows }, (_, rowIndex) => (
+            <div key={rowIndex} className="grid gap-4 mb-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+              {Array.from({ length: columns }, (_, colIndex) => (
+                <SkeletonLoader key={colIndex} className="h-4 bg-gray-200 dark:bg-gray-700" />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
