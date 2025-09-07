@@ -17,19 +17,19 @@ export interface LoadTestResult {
 }
 
 export interface OptimizationSuggestion {
-  type: 'database' | 'api' | 'memory' | 'network' | 'architecture';
-  priority: 'high' | 'medium' | 'low';
+  type: "database" | "api" | "memory" | "network" | "architecture";
+  priority: "high" | "medium" | "low";
   title: string;
   description: string;
   expectedImpact: string;
   implementation: string;
-  estimatedEffort: 'low' | 'medium' | 'high';
+  estimatedEffort: "low" | "medium" | "high";
 }
 
 export interface SystemBottleneck {
   component: string;
-  bottleneckType: 'cpu' | 'memory' | 'database' | 'network' | 'external_api';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  bottleneckType: "cpu" | "memory" | "database" | "network" | "external_api";
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
 }
 
@@ -63,4 +63,3 @@ export class PerformanceOptimizer {
 
 const optimizer = new PerformanceOptimizer();
 export default optimizer;
-

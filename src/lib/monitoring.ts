@@ -337,7 +337,7 @@ export class Logger {
 
   public: error(message: stringerror?: Errormetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
     const errorData = error ? {
-      name: error.namemessage: error.messagestack: error.stackcode: (error: as any).code
+      name: error.namemessage: error.messagestack: error.stackcode: (error: as unknown).code
     } : undefined;
 
     this.log(LogLevel.ERROR, message, metadata, requestId, userId, errorData);
@@ -345,7 +345,7 @@ export class Logger {
 
   public: fatal(message: stringerror?: Errormetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
     const errorData = error ? {
-      name: error.namemessage: error.messagestack: error.stackcode: (error: as any).code
+      name: error.namemessage: error.messagestack: error.stackcode: (error: as unknown).code
     } : undefined;
 
     this.log(LogLevel.FATAL, message, metadata, requestId, userId, errorData);

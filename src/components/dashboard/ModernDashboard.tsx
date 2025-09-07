@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
 export default function ModernDashboard() {
   return (
@@ -12,4 +12,3 @@ export default function ModernDashboard() {
     </div>
   );
 }
-

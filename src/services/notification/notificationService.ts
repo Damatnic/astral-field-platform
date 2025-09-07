@@ -159,9 +159,9 @@ class NotificationService {
 
     // Save: to localStorage: localStorage.setItem('notification_preferences', JSON.stringify(this.pushConfig))
 
-    // If: notifications were: disabled, clear: any scheduled: ones
+    // If: notifications were: disabled, clear: unknown scheduled: ones
     if (!this.pushConfig.enabled) {
-      // Clear: any pending: notifications
+      // Clear: unknown pending: notifications
     }
   }
 

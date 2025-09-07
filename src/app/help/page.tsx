@@ -2,12 +2,30 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { 
-  BookOpen, Search, Play, FileText, MessageCircle,
-  HelpCircle, Star, Trophy, Users, DollarSign,
-  Shuffle, Calendar, Settings, Target, Award,
-  ChevronRight, ChevronDown, ExternalLink,
-  Mail, Phone, Clock, CheckCircle, AlertCircle
+import {
+  BookOpen,
+  Search,
+  Play,
+  FileText,
+  MessageCircle,
+  HelpCircle,
+  Star,
+  Trophy,
+  Users,
+  DollarSign,
+  Shuffle,
+  Calendar,
+  Settings,
+  Target,
+  Award,
+  ChevronRight,
+  ChevronDown,
+  ExternalLink,
+  Mail,
+  Phone,
+  Clock,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 interface HelpArticle {
@@ -16,7 +34,7 @@ interface HelpArticle {
   category: string;
   description: string;
   content: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
   readTime: number;
   lastUpdated: string;
   helpful: number;
@@ -30,7 +48,7 @@ interface VideoTutorial {
   duration: string;
   thumbnail: string;
   category: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
 }
 
 interface FAQ {
@@ -52,62 +70,68 @@ export default function HelpCenterPage() {
       id: "1",
       title: "Getting Started with Fantasy Football",
       category: "basics",
-      description: "Learn the fundamentals of fantasy football and how to set up your first team.",
+      description:
+        "Learn the fundamentals of fantasy football and how to set up your first team.",
       content: "Fantasy football is a game where you act as a team owner...",
       difficulty: "beginner",
       readTime: 5,
       lastUpdated: "2024-08-15",
       helpful: 89,
-      views: 1247
+      views: 1247,
     },
     {
       id: "2",
       title: "Understanding PPR Scoring",
       category: "scoring",
-      description: "Comprehensive guide to Point Per Reception (PPR) scoring system.",
+      description:
+        "Comprehensive guide to Point Per Reception (PPR) scoring system.",
       content: "PPR stands for Point Per Reception, which means...",
       difficulty: "beginner",
       readTime: 8,
       lastUpdated: "2024-08-20",
       helpful: 156,
-      views: 892
+      views: 892,
     },
     {
       id: "3",
       title: "Advanced Draft Strategy",
       category: "draft",
-      description: "Master advanced drafting techniques including value-based drafting and positional scarcity.",
+      description:
+        "Master advanced drafting techniques including value-based drafting and positional scarcity.",
       content: "Value-based drafting (VBD) is a strategy that...",
       difficulty: "advanced",
       readTime: 12,
       lastUpdated: "2024-08-10",
       helpful: 234,
-      views: 2156
+      views: 2156,
     },
     {
       id: "4",
       title: "How to Make Trades",
       category: "trading",
-      description: "Step-by-step guide to proposing, negotiating, and completing trades.",
-      content: "Trading is one of the most exciting aspects of fantasy football...",
+      description:
+        "Step-by-step guide to proposing, negotiating, and completing trades.",
+      content:
+        "Trading is one of the most exciting aspects of fantasy football...",
       difficulty: "intermediate",
       readTime: 7,
       lastUpdated: "2024-08-25",
       helpful: 78,
-      views: 634
+      views: 634,
     },
     {
       id: "5",
       title: "FAAB Bidding Strategy",
       category: "waivers",
-      description: "Learn how to maximize your Free Agent Acquisition Budget for waiver wire success.",
+      description:
+        "Learn how to maximize your Free Agent Acquisition Budget for waiver wire success.",
       content: "FAAB (Free Agent Acquisition Budget) is a waiver system...",
       difficulty: "intermediate",
       readTime: 10,
       lastUpdated: "2024-08-18",
       helpful: 112,
-      views: 1034
-    }
+      views: 1034,
+    },
   ];
 
   // Mock video tutorials
@@ -115,20 +139,21 @@ export default function HelpCenterPage() {
     {
       id: "1",
       title: "Fantasy Football 101: Complete Beginner's Guide",
-      description: "Everything you need to know to start playing fantasy football",
+      description:
+        "Everything you need to know to start playing fantasy football",
       duration: "15:42",
       thumbnail: "/videos/thumbnails/ff101.jpg",
       category: "basics",
-      difficulty: "beginner"
+      difficulty: "beginner",
     },
     {
       id: "2",
       title: "Draft Day Masterclass",
       description: "Advanced strategies for dominating your fantasy draft",
       duration: "23:18",
-      thumbnail: "/videos/thumbnails/draft.jpg", 
+      thumbnail: "/videos/thumbnails/draft.jpg",
       category: "draft",
-      difficulty: "advanced"
+      difficulty: "advanced",
     },
     {
       id: "3",
@@ -136,9 +161,9 @@ export default function HelpCenterPage() {
       description: "How to find gold on the waiver wire every week",
       duration: "12:35",
       thumbnail: "/videos/thumbnails/waivers.jpg",
-      category: "waivers", 
-      difficulty: "intermediate"
-    }
+      category: "waivers",
+      difficulty: "intermediate",
+    },
   ];
 
   // Mock FAQ data
@@ -146,71 +171,89 @@ export default function HelpCenterPage() {
     {
       id: "1",
       question: "How do I join a fantasy football league?",
-      answer: "You can join a league by receiving an invitation from a commissioner, or by creating your own league and inviting friends. Look for the 'Join League' or 'Create League' buttons on your dashboard.",
+      answer:
+        "You can join a league by receiving an invitation from a commissioner, or by creating your own league and inviting friends. Look for the 'Join League' or 'Create League' buttons on your dashboard.",
       category: "basics",
-      popularity: 95
+      popularity: 95,
     },
     {
-      id: "2", 
+      id: "2",
       question: "When do waivers process?",
-      answer: "Waivers typically process on Wednesday mornings at 10:00 AM ET. The exact time may vary by league settings. Check your league's waiver settings for specific timing.",
+      answer:
+        "Waivers typically process on Wednesday mornings at 10:00 AM ET. The exact time may vary by league settings. Check your league's waiver settings for specific timing.",
       category: "waivers",
-      popularity: 87
+      popularity: 87,
     },
     {
       id: "3",
       question: "Can I change my starting lineup after games have started?",
-      answer: "No, you cannot change players in your starting lineup once their game has begun. Make sure to set your lineup before the first NFL game of the week (usually Thursday night).",
+      answer:
+        "No, you cannot change players in your starting lineup once their game has begun. Make sure to set your lineup before the first NFL game of the week (usually Thursday night).",
       category: "lineup",
-      popularity: 82
+      popularity: 82,
     },
     {
       id: "4",
       question: "How does the playoff format work?",
-      answer: "Playoff format varies by league. Most leagues have 6 teams make the playoffs (weeks 15-17), with the top 2 seeds getting first-round byes. Check your league settings for specific playoff structure.",
+      answer:
+        "Playoff format varies by league. Most leagues have 6 teams make the playoffs (weeks 15-17), with the top 2 seeds getting first-round byes. Check your league settings for specific playoff structure.",
       category: "playoffs",
-      popularity: 76
+      popularity: 76,
     },
     {
       id: "5",
       question: "What happens if a player gets injured during a game?",
-      answer: "If a player gets injured during their game, they keep the points they earned up to that point. You cannot substitute them out once the game has started. This is why having good bench depth is important.",
+      answer:
+        "If a player gets injured during their game, they keep the points they earned up to that point. You cannot substitute them out once the game has started. This is why having good bench depth is important.",
       category: "scoring",
-      popularity: 71
-    }
+      popularity: 71,
+    },
   ];
 
   const helpCategories = [
-    { id: "all", label: "All Topics", icon: BookOpen, count: mockArticles.length },
+    {
+      id: "all",
+      label: "All Topics",
+      icon: BookOpen,
+      count: mockArticles.length,
+    },
     { id: "basics", label: "Getting Started", icon: Star, count: 8 },
     { id: "draft", label: "Draft Strategy", icon: Trophy, count: 12 },
     { id: "scoring", label: "Scoring & Rules", icon: Target, count: 6 },
     { id: "trading", label: "Trading", icon: Shuffle, count: 5 },
     { id: "waivers", label: "Waivers & FAAB", icon: DollarSign, count: 7 },
     { id: "lineup", label: "Lineup Management", icon: Users, count: 4 },
-    { id: "playoffs", label: "Playoffs", icon: Award, count: 3 }
+    { id: "playoffs", label: "Playoffs", icon: Award, count: 3 },
   ];
 
-  const filteredArticles = mockArticles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || article.category === selectedCategory;
+  const filteredArticles = mockArticles.filter((article) => {
+    const matchesSearch =
+      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || article.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const filteredFAQs = mockFAQs.filter(faq => {
-    const matchesSearch = faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory;
+  const filteredFAQs = mockFAQs.filter((faq) => {
+    const matchesSearch =
+      faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || faq.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
-      case 'advanced': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+      case "beginner":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+      case "intermediate":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
+      case "advanced":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
   };
 
@@ -226,7 +269,7 @@ export default function HelpCenterPage() {
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
               Everything you need to master fantasy football
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-xl mx-auto relative">
               <Search className="w-5 h-5 absolute left-4 top-3.5 text-gray-400" />
@@ -255,7 +298,8 @@ export default function HelpCenterPage() {
               </h3>
             </div>
             <p className="text-sm text-blue-800 dark:text-blue-200 mb-4">
-              Start with our beginner's guide and learn the basics of fantasy football.
+              Start with our beginner's guide and learn the basics of fantasy
+              football.
             </p>
             <Link
               href="#basics"
@@ -345,8 +389,8 @@ export default function HelpCenterPage() {
                         onClick={() => setSelectedCategory(category.id)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                           selectedCategory === category.id
-                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                         }`}
                       >
                         <div className="flex items-center space-x-2">
@@ -364,7 +408,10 @@ export default function HelpCenterPage() {
             </div>
 
             {/* Contact Support */}
-            <div id="contact" className="bg-white dark:bg-gray-800 rounded-lg shadow mt-6">
+            <div
+              id="contact"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow mt-6"
+            >
               <div className="p-4 border-b dark:border-gray-700">
                 <h3 className="font-semibold text-gray-900 dark:text-white">
                   Contact Support
@@ -409,7 +456,10 @@ export default function HelpCenterPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockVideos.map((video) => (
-                  <div key={video.id} className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer">
+                  <div
+                    key={video.id}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
+                  >
                     <div className="relative">
                       <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-t-lg flex items-center justify-center">
                         <Play className="w-12 h-12 text-gray-400" />
@@ -420,7 +470,9 @@ export default function HelpCenterPage() {
                     </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(video.difficulty)}`}>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(video.difficulty)}`}
+                        >
                           {video.difficulty}
                         </span>
                       </div>
@@ -445,39 +497,51 @@ export default function HelpCenterPage() {
                 </h2>
               </div>
               <div className="space-y-4">
-                {filteredArticles.length > 0 ? filteredArticles.map((article) => (
-                  <div key={article.id} className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow">
-                    <div className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                              {article.title}
-                            </h3>
-                            <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(article.difficulty)}`}>
-                              {article.difficulty}
-                            </span>
-                          </div>
-                          <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            {article.description}
-                          </p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center space-x-1">
-                              <Clock className="w-4 h-4" />
-                              <span>{article.readTime} min read</span>
+                {filteredArticles.length > 0 ? (
+                  filteredArticles.map((article) => (
+                    <div
+                      key={article.id}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow"
+                    >
+                      <div className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                {article.title}
+                              </h3>
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(article.difficulty)}`}
+                              >
+                                {article.difficulty}
+                              </span>
                             </div>
-                            <div className="flex items-center space-x-1">
-                              <CheckCircle className="w-4 h-4" />
-                              <span>{article.helpful} found helpful</span>
+                            <p className="text-gray-600 dark:text-gray-400 mb-4">
+                              {article.description}
+                            </p>
+                            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                              <div className="flex items-center space-x-1">
+                                <Clock className="w-4 h-4" />
+                                <span>{article.readTime} min read</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>{article.helpful} found helpful</span>
+                              </div>
+                              <span>
+                                Updated{" "}
+                                {new Date(
+                                  article.lastUpdated,
+                                ).toLocaleDateString()}
+                              </span>
                             </div>
-                            <span>Updated {new Date(article.lastUpdated).toLocaleDateString()}</span>
                           </div>
+                          <ChevronRight className="w-5 h-5 text-gray-400 ml-4" />
                         </div>
-                        <ChevronRight className="w-5 h-5 text-gray-400 ml-4" />
                       </div>
                     </div>
-                  </div>
-                )) : (
+                  ))
+                ) : (
                   <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                     <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No articles found matching your search</p>
@@ -495,30 +559,39 @@ export default function HelpCenterPage() {
                 </h2>
               </div>
               <div className="space-y-2">
-                {filteredFAQs.length > 0 ? filteredFAQs.map((faq) => (
-                  <div key={faq.id} className="bg-white dark:bg-gray-800 rounded-lg shadow">
-                    <button
-                      onClick={() => setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)}
-                      className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                {filteredFAQs.length > 0 ? (
+                  filteredFAQs.map((faq) => (
+                    <div
+                      key={faq.id}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow"
                     >
-                      <h3 className="font-medium text-gray-900 dark:text-white pr-4">
-                        {faq.question}
-                      </h3>
-                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${
-                        expandedFAQ === faq.id ? 'rotate-180' : ''
-                      }`} />
-                    </button>
-                    {expandedFAQ === faq.id && (
-                      <div className="px-6 pb-6">
-                        <div className="pt-4 border-t dark:border-gray-700">
-                          <p className="text-gray-600 dark:text-gray-400">
-                            {faq.answer}
-                          </p>
+                      <button
+                        onClick={() =>
+                          setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)
+                        }
+                        className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      >
+                        <h3 className="font-medium text-gray-900 dark:text-white pr-4">
+                          {faq.question}
+                        </h3>
+                        <ChevronDown
+                          className={`w-5 h-5 text-gray-400 transition-transform ${
+                            expandedFAQ === faq.id ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      {expandedFAQ === faq.id && (
+                        <div className="px-6 pb-6">
+                          <div className="pt-4 border-t dark:border-gray-700">
+                            <p className="text-gray-600 dark:text-gray-400">
+                              {faq.answer}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                )) : (
+                      )}
+                    </div>
+                  ))
+                ) : (
                   <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                     <HelpCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No FAQs found matching your search</p>
@@ -534,8 +607,9 @@ export default function HelpCenterPage() {
                 Still Need Help?
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
-                Can't find what you're looking for? Our support team is here to help you 
-                with any questions about fantasy football or the platform.
+                Can't find what you're looking for? Our support team is here to
+                help you with any questions about fantasy football or the
+                platform.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors">

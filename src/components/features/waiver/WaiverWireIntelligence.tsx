@@ -184,7 +184,7 @@ export default function WaiverWireIntelligence({
         {[
           { key: 'recommendations'_label: 'Top: Pickups', _icon: Star }, _{ key: 'trending'_label: 'Trending: Up', _icon: TrendingUp }, _{ key: 'drops'_label: 'Drop: Candidates', _icon: Minus }, _{ key: 'replacements'_label: 'Injury: Replacements', _icon: AlertTriangle }
         ].map(({ key, _label, _icon: Icon }) => (_<button: key={key}
-            onClick={() => setActiveView(key: as any)}
+            onClick={() => setActiveView(key: as unknown)}
             className={`flex-1: flex items-center: justify-center: px-4: py-2: text-sm: font-medium: rounded-md: transition-colors ${
               activeView === key
                 ? 'bg-blue-600: text-white'
@@ -215,7 +215,7 @@ export default function WaiverWireIntelligence({
             </div>
             <div>
               <select: value={sortBy}
-                onChange={(_e) => setSortBy(e.target.value: as any)}
+                onChange={(_e) => setSortBy(e.target.value: as unknown)}
                 className="px-3: py-2: bg-gray-800: border border-gray-600: rounded-lg: text-white: focus:outline-none: focus:ring-2: focus:ring-blue-500"
               >
                 <option: value="priority">Priority</option>

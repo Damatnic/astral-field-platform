@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { StackProvider, StackTheme, StackClientApp } from "@stackframe/stack";
 
@@ -14,15 +14,17 @@ const stackClientApp = new StackClientApp({
     afterSignUp: "/",
     signOut: "/handler/sign-out",
     afterSignOut: "/",
-  }
+  },
 });
 
-export default function StackAuthProvider({ children }: { children: React.ReactNode }) {
+export default function StackAuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <StackProvider app={stackClientApp}>
-      <StackTheme>
-        {children}
-      </StackTheme>
+      <StackTheme>{children}</StackTheme>
     </StackProvider>
   );
 }

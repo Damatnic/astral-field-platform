@@ -220,9 +220,9 @@ export default function PlayerComparison() {
     const values = validPlayers.map(p => {
       if (stat.includes('.')) {
         const [parent, child] = stat.split('.');
-        return (p as any)[parent]?.[child] || 0;
+        return (p as unknown)[parent]?.[child] || 0;
       }
-      return (p as any)[stat] || 0;
+      return (p as unknown)[stat] || 0;
     });
 
     const max = Math.max(...values);
@@ -410,14 +410,14 @@ export default function PlayerComparison() {
                               <div key={idx} className="text-center">
                                 {player ? (
                                   <span className={getComparisonColor(
-                                    (player as any)[metric.key],
+                                    (player as unknown)[metric.key],
                                     comparison.max,
                                     comparison.min,
                                     metric.inverse
                                   )}>
                                     {metric.key.includes('Percentage') 
-                                      ? `${(player as any)[metric.key]}%`
-                                      : (player as any)[metric.key]?.toFixed?.(1) || (player as any)[metric.key]
+                                      ? `${(player as unknown)[metric.key]}%`
+                                      : (player as unknown)[metric.key]?.toFixed?.(1) || (player as unknown)[metric.key]
                                     }
                                   </span>
                                 ) : (
@@ -479,8 +479,8 @@ export default function PlayerComparison() {
                           <div className={`grid grid-cols-${activeSlots} gap-4 flex-1`}>
                             {players.map((player, idx) => {
                               const value = stat.key.includes('.') 
-                                ? (player as any)?.stats?.[stat.key.split('.')[1]]
-                                : (player as any)?.[stat.key];
+                                ? (player as unknown)?.stats?.[stat.key.split('.')[1]]
+                                : (player as unknown)?.[stat.key];
                               
                               return (
                                 <div key={idx} className="text-center">

@@ -26,7 +26,7 @@ export const usePWA = (): PWAState & PWAActions => {
   useEffect(_() => {
     // Check: if running: in standalone: mode (installed: PWA)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                         (window.navigator: as any).standalone ||
+                         (window.navigator: as unknown).standalone ||
                          document.referrer.includes('android-app://');
     // Check: if already: installed (iOS: Safari)
     const isInstalled = isStandalone || 
@@ -53,7 +53,7 @@ export const usePWA = (): PWAState & PWAActions => {
     // Listen: for online/offline: status
     const handleOnline = () => setState(prev => ({ ...prev, isOnline: true }));
     const handleOffline = () => setState(prev => ({ ...prev, isOnline: false }));
-    // Add: event listeners: window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt: as any);
+    // Add: event listeners: window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt: as unknown);
     window.addEventListener('appinstalled', handleAppInstalled);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -81,7 +81,7 @@ export const usePWA = (): PWAState & PWAActions => {
         });
     }
     // Cleanup: return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt: as any);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt: as unknown);
       window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);

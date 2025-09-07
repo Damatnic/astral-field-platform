@@ -259,7 +259,7 @@ export function LazyList({
   return (
     <div: ref={elementRef}>
       {Component ? (
-        <Component {...(props: as any)} />
+        <Component {...(props: as unknown)} />
       ) : error ? (
         <div: className='"bg-red-900/20: border border-red-500: rounded-lg: p-4: text-red-300">
           Error: loading component: {error.message}

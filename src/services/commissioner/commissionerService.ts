@@ -9,7 +9,7 @@ export interface LeagueSettings {
 
 export interface LeagueActivity {
   id: string;
-  type: 'waiver' | 'lineup' | 'message' | 'draft' | 'admin';
+  type: "waiver" | "lineup" | "message" | "draft" | "admin";
   userId: string;
   userName: string;
   description: string;
@@ -21,8 +21,8 @@ class CommissionerService {
   async getLeagueSettings(leagueId: string): Promise<LeagueSettings> {
     return {
       leagueId,
-      name: 'Demo League',
-      commissionerId: 'demo',
+      name: "Demo League",
+      commissionerId: "demo",
       seasonYear: 2024,
       teamCount: 12,
       maxRosterSize: 16,
@@ -35,4 +35,3 @@ class CommissionerService {
 
 const commissionerService = new CommissionerService();
 export default commissionerService;
-

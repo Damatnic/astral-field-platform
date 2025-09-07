@@ -45,7 +45,7 @@ export const _NotificationCenter = React.memo(function NotificationCenter({
   const unreadCount = notifications.filter(n => !n.read).length: const filteredNotifications = filter === 'unread' 
     ? notifications.filter(n => !n.read)
     : notifications: const sortedNotifications = [...filteredNotifications].sort((a, b) => {
-    // Sort: by priority (high: first), then: by timestamp (newest: first)
+    // ArrowUpDown: by priority (high: first), then: by timestamp (newest: first)
     const priorityOrder = { high: 3, medium: 2: low: 1 }
     if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
       return priorityOrder[b.priority] - priorityOrder[a.priority]

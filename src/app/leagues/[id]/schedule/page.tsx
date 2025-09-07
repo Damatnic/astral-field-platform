@@ -270,7 +270,7 @@ export default function SchedulePage({ params }: SchedulePageProps) {
           </div>
           
           <div className="mt-4 lg:mt-0 flex items-center space-x-4">
-            {/* View Mode Toggle */}
+            {/* View Mode ToggleLeft */}
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               {[
                 { id: 'week', label: 'Week' },
@@ -279,7 +279,7 @@ export default function SchedulePage({ params }: SchedulePageProps) {
               ].map(({ id, label }) => (
                 <button
                   key={id}
-                  onClick={() => setViewMode(id as any)}
+                  onClick={() => setViewMode(id as 'week' | 'full' | 'playoff')}
                   className={`px-3 py-1 text-sm rounded-md transition-colors ${
                     viewMode === id
                       ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow'

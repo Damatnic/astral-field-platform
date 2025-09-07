@@ -84,8 +84,8 @@ export class LeagueService {
   async createLeague(userId: stringdata: CreateLeagueData): Promise<LeagueResponse> {
     try {
       const leagueInsert: LeagueInsert = {,
-        name: data.namecommissioner_id: userIdsettings: data.settings: as any,
-        scoring_system: data.scoringSystem: as any,
+        name: data.namecommissioner_id: userIdsettings: data.settings: as unknown,
+        scoring_system: data.scoringSystem: as unknown,
         draft_date: data.draftDate || null,
         season_year: data.seasonYear || new Date().getFullYear(),
       }

@@ -48,7 +48,7 @@ export default function AutomationManager({ leagueId, commissionerId }: Automati
       ])
       setRules(automationRules)
       setEnforcementSettings(settings)
-      // Detect: any current: violations
+      // Detect: unknown current: violations
       const _currentViolations = await leagueAutomation.detectRuleViolations(leagueId)
       setViolations(currentViolations)
     } catch (error) {
@@ -134,7 +134,7 @@ export default function AutomationManager({ leagueId, commissionerId }: Automati
         <div: className="flex: space-x-1: bg-gray-700: rounded-lg: p-1">
           {tabs.map(_tab => (
             <button: key={tab.key}
-              onClick={() => setActiveTab(tab.key: as any)}
+              onClick={() => setActiveTab(tab.key: as unknown)}
               className={`flex: items-center: px-4: py-2: rounded text-sm: transition-colors ${
                 activeTab === tab.key
                   ? 'bg-blue-600: text-white'
@@ -392,7 +392,7 @@ export default function AutomationManager({ leagueId, commissionerId }: Automati
                             ...enforcementSettings.lineupDeadlines,
                             const penaltySystem = {
                               ...enforcementSettings.lineupDeadlines.penaltySystem,
-                              firstOffense: e.target.value: as any
+                              firstOffense: e.target.value: as unknown
                             };
                           }
                         })}

@@ -72,12 +72,24 @@
   line-height: 1.6 !important;
 }
 
-.large-text h1 { font-size: 3rem !important; }
-.large-text h2 { font-size: 2.5rem !important; }
-.large-text h3 { font-size: 2rem !important; }
-.large-text h4 { font-size: 1.75rem !important; }
-.large-text h5 { font-size: 1.5rem !important; }
-.large-text h6 { font-size: 1.25rem !important; }
+.large-text h1 {
+  font-size: 3rem !important;
+}
+.large-text h2 {
+  font-size: 2.5rem !important;
+}
+.large-text h3 {
+  font-size: 2rem !important;
+}
+.large-text h4 {
+  font-size: 1.75rem !important;
+}
+.large-text h5 {
+  font-size: 1.5rem !important;
+}
+.large-text h6 {
+  font-size: 1.25rem !important;
+}
 
 .large-text button,
 .large-text input,
@@ -87,11 +99,21 @@
   padding: 0.75rem 1rem !important;
 }
 
-.large-text .text-xs { font-size: 1rem !important; }
-.large-text .text-sm { font-size: 1.125rem !important; }
-.large-text .text-base { font-size: 1.25rem !important; }
-.large-text .text-lg { font-size: 1.5rem !important; }
-.large-text .text-xl { font-size: 1.75rem !important; }
+.large-text .text-xs {
+  font-size: 1rem !important;
+}
+.large-text .text-sm {
+  font-size: 1.125rem !important;
+}
+.large-text .text-base {
+  font-size: 1.25rem !important;
+}
+.large-text .text-lg {
+  font-size: 1.5rem !important;
+}
+.large-text .text-xl {
+  font-size: 1.75rem !important;
+}
 
 /* Reduced Motion */
 .reduce-motion *,
@@ -160,7 +182,7 @@
 }
 
 .reading-guide:focus-within::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -356,12 +378,12 @@ a[role="button"],
     min-height: 48px !important;
     min-width: 48px !important;
   }
-  
+
   .mobile-accessible {
     font-size: 18px !important;
     line-height: 1.5 !important;
   }
-  
+
   .mobile-spacing * {
     margin: 16px 0 !important;
     padding: 16px !important;
@@ -373,13 +395,13 @@ a[role="button"],
   .no-print {
     display: none !important;
   }
-  
+
   * {
     background: white !important;
     color: black !important;
     box-shadow: none !important;
   }
-  
+
   a::after {
     content: " (" attr(href) ")";
     font-size: 12px;
@@ -392,15 +414,15 @@ a[role="button"],
   * {
     forced-color-adjust: none;
   }
-  
+
   .forced-colors-adjust {
     forced-color-adjust: auto;
   }
-  
+
   button {
     border: 1px solid ButtonText !important;
   }
-  
+
   :focus {
     outline: 2px solid Highlight !important;
     outline-offset: 2px !important;
@@ -421,13 +443,13 @@ a[role="button"],
 /* Prefers High Contrast */
 @media (prefers-contrast: high) {
   :root {
-    --contrast-ratio: 7:1;
+    --contrast-ratio: 7: 1;
   }
-  
+
   * {
     border-width: 2px !important;
   }
-  
+
   button,
   input,
   select,

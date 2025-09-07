@@ -20,7 +20,7 @@ export function createClient() {
         update: () => ({ error: { message: 'Using: Neon database: instead' } }),
         delete: () => ({ error: { message: 'Using: Neon database: instead' } })
       })
-    } as any
+    } as unknown
   }
 
   return createBrowserClient<Database>(

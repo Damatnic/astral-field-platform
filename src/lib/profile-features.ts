@@ -9,7 +9,7 @@ export interface ProfileFeatures {
   abbreviation: string;
   icon: string;
   color: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   features: {
     roster: boolean;
     trades: boolean;
@@ -52,13 +52,13 @@ export interface ProfileFeatures {
 export const PROFILE_CONFIGS: ProfileFeatures[] = [
   {
     id: 1,
-    name: 'Jon Kornbeck',
-    email: 'jon.kornbeck@astralfield.com',
-    teamName: 'Kornbeck\'s Krusaders',
-    abbreviation: 'KRN',
-    icon: '🏈',
-    color: 'blue',
-    role: 'user',
+    name: "Jon Kornbeck",
+    email: "jon.kornbeck@astralfield.com",
+    teamName: "Kornbeck's Krusaders",
+    abbreviation: "KRN",
+    icon: "🏈",
+    color: "blue",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -68,7 +68,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -76,8 +76,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 1
+      streak: "W0",
+      standing: 1,
     },
     roster: {
       maxSize: 16,
@@ -89,22 +89,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 2,
-    name: 'Jack McCaigue',
-    email: 'jack.mccaigue@astralfield.com',
-    teamName: 'Jack\'s Juggernauts',
-    abbreviation: 'JAC',
-    icon: '⚡',
-    color: 'green',
-    role: 'user',
+    name: "Jack McCaigue",
+    email: "jack.mccaigue@astralfield.com",
+    teamName: "Jack's Juggernauts",
+    abbreviation: "JAC",
+    icon: "⚡",
+    color: "green",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -114,7 +114,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -122,8 +122,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 2
+      streak: "W0",
+      standing: 2,
     },
     roster: {
       maxSize: 16,
@@ -135,22 +135,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 3,
-    name: 'Nick Hartley',
-    email: 'nick.hartley@astralfield.com',
-    teamName: 'Hartley\'s Heroes',
-    abbreviation: 'HRT',
-    icon: '🔥',
-    color: 'purple',
-    role: 'user',
+    name: "Nick Hartley",
+    email: "nick.hartley@astralfield.com",
+    teamName: "Hartley's Heroes",
+    abbreviation: "HRT",
+    icon: "🔥",
+    color: "purple",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -160,7 +160,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -168,8 +168,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 3
+      streak: "W0",
+      standing: 3,
     },
     roster: {
       maxSize: 16,
@@ -181,22 +181,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 4,
-    name: 'Cason Minor',
-    email: 'cason.minor@astralfield.com',
-    teamName: 'Minor League',
-    abbreviation: 'MIN',
-    icon: '⭐',
-    color: 'red',
-    role: 'user',
+    name: "Cason Minor",
+    email: "cason.minor@astralfield.com",
+    teamName: "Minor League",
+    abbreviation: "MIN",
+    icon: "⭐",
+    color: "red",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -206,7 +206,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -214,8 +214,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 4
+      streak: "W0",
+      standing: 4,
     },
     roster: {
       maxSize: 16,
@@ -227,22 +227,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 5,
-    name: 'Brittany Bergum',
-    email: 'brittany.bergum@astralfield.com',
-    teamName: 'Bergum\'s Blitz',
-    abbreviation: 'BRG',
-    icon: '🏆',
-    color: 'yellow',
-    role: 'user',
+    name: "Brittany Bergum",
+    email: "brittany.bergum@astralfield.com",
+    teamName: "Bergum's Blitz",
+    abbreviation: "BRG",
+    icon: "🏆",
+    color: "yellow",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -252,7 +252,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -260,8 +260,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 5
+      streak: "W0",
+      standing: 5,
     },
     roster: {
       maxSize: 16,
@@ -273,22 +273,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 6,
-    name: 'David Jarvey',
-    email: 'david.jarvey@astralfield.com',
-    teamName: 'Jarvey\'s Giants',
-    abbreviation: 'JRV',
-    icon: '🎯',
-    color: 'pink',
-    role: 'user',
+    name: "David Jarvey",
+    email: "david.jarvey@astralfield.com",
+    teamName: "Jarvey's Giants",
+    abbreviation: "JRV",
+    icon: "🎯",
+    color: "pink",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -298,7 +298,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -306,8 +306,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 6
+      streak: "W0",
+      standing: 6,
     },
     roster: {
       maxSize: 16,
@@ -319,22 +319,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 7,
-    name: 'Larry McCaigue',
-    email: 'larry.mccaigue@astralfield.com',
-    teamName: 'Larry\'s Legends',
-    abbreviation: 'LAR',
-    icon: '🚀',
-    color: 'indigo',
-    role: 'user',
+    name: "Larry McCaigue",
+    email: "larry.mccaigue@astralfield.com",
+    teamName: "Larry's Legends",
+    abbreviation: "LAR",
+    icon: "🚀",
+    color: "indigo",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -344,7 +344,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -352,8 +352,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 7
+      streak: "W0",
+      standing: 7,
     },
     roster: {
       maxSize: 16,
@@ -365,22 +365,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 8,
-    name: 'Renee McCaigue',
-    email: 'renee.mccaigue@astralfield.com',
-    teamName: 'Renee\'s Raiders',
-    abbreviation: 'REN',
-    icon: '💎',
-    color: 'orange',
-    role: 'user',
+    name: "Renee McCaigue",
+    email: "renee.mccaigue@astralfield.com",
+    teamName: "Renee's Raiders",
+    abbreviation: "REN",
+    icon: "💎",
+    color: "orange",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -390,7 +390,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -398,8 +398,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 8
+      streak: "W0",
+      standing: 8,
     },
     roster: {
       maxSize: 16,
@@ -411,22 +411,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 9,
-    name: 'Nicholas D\'Amato',
-    email: 'nicholas.damato@astralfield.com',
-    teamName: 'D\'Amato Dynasty',
-    abbreviation: 'DAM',
-    icon: '👤',
-    color: 'teal',
-    role: 'admin',
+    name: "Nicholas D'Amato",
+    email: "nicholas.damato@astralfield.com",
+    teamName: "D'Amato Dynasty",
+    abbreviation: "DAM",
+    icon: "👤",
+    color: "teal",
+    role: "admin",
     features: {
       roster: true,
       trades: true,
@@ -436,7 +436,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: true
+      commissioner: true,
     },
     stats: {
       wins: 0,
@@ -444,8 +444,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 9
+      streak: "W0",
+      standing: 9,
     },
     roster: {
       maxSize: 16,
@@ -457,22 +457,22 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
+    championships: 0,
   },
   {
     id: 10,
-    name: 'Kaity Lorbecki',
-    email: 'kaity.lorbecki@astralfield.com',
-    teamName: 'Kaity\'s Knights',
-    abbreviation: 'KAI',
-    icon: '👑',
-    color: 'gray',
-    role: 'user',
+    name: "Kaity Lorbecki",
+    email: "kaity.lorbecki@astralfield.com",
+    teamName: "Kaity's Knights",
+    abbreviation: "KAI",
+    icon: "👑",
+    color: "gray",
+    role: "user",
     features: {
       roster: true,
       trades: true,
@@ -482,7 +482,7 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       chat: true,
       predictions: true,
       achievements: true,
-      commissioner: false
+      commissioner: false,
     },
     stats: {
       wins: 0,
@@ -490,8 +490,8 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
       ties: 0,
       pointsFor: 0,
       pointsAgainst: 0,
-      streak: 'W0',
-      standing: 10
+      streak: "W0",
+      standing: 10,
     },
     roster: {
       maxSize: 16,
@@ -503,26 +503,28 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
         FLEX: 1,
         DST: 1,
         K: 1,
-        BENCH: 7
-      }
+        BENCH: 7,
+      },
     },
     waiverBudget: 100,
     tradeHistory: 0,
-    championships: 0
-  }
+    championships: 0,
+  },
 ];
 
 // Helper functions
 export function getProfileById(id: number): ProfileFeatures | undefined {
-  return PROFILE_CONFIGS.find(profile => profile.id === id);
+  return PROFILE_CONFIGS.find((profile) => profile.id === id);
 }
 
 export function getProfileByEmail(email: string): ProfileFeatures | undefined {
-  return PROFILE_CONFIGS.find(profile => profile.email === email);
+  return PROFILE_CONFIGS.find((profile) => profile.email === email);
 }
 
-export function getProfileByTeamName(teamName: string): ProfileFeatures | undefined {
-  return PROFILE_CONFIGS.find(profile => profile.teamName === teamName);
+export function getProfileByTeamName(
+  teamName: string,
+): ProfileFeatures | undefined {
+  return PROFILE_CONFIGS.find((profile) => profile.teamName === teamName);
 }
 
 export function getAllProfiles(): ProfileFeatures[] {
@@ -540,7 +542,10 @@ export function getLeagueStandings(): ProfileFeatures[] {
 }
 
 // Feature access check
-export function hasFeatureAccess(profileId: number, feature: keyof ProfileFeatures['features']): boolean {
+export function hasFeatureAccess(
+  profileId: number,
+  feature: keyof ProfileFeatures["features"],
+): boolean {
   const profile = getProfileById(profileId);
   return profile ? profile.features[feature] : false;
 }
@@ -548,20 +553,20 @@ export function hasFeatureAccess(profileId: number, feature: keyof ProfileFeatur
 // Get color class for Tailwind
 export function getProfileColorClass(profileId: number): string {
   const profile = getProfileById(profileId);
-  if (!profile) return 'bg-gray-500';
-  
+  if (!profile) return "bg-gray-500";
+
   const colorMap: Record<string, string> = {
-    blue: 'bg-blue-500',
-    green: 'bg-green-500',
-    purple: 'bg-purple-500',
-    red: 'bg-red-500',
-    yellow: 'bg-yellow-500',
-    pink: 'bg-pink-500',
-    indigo: 'bg-indigo-500',
-    orange: 'bg-orange-500',
-    teal: 'bg-teal-500',
-    gray: 'bg-gray-700'
+    blue: "bg-blue-500",
+    green: "bg-green-500",
+    purple: "bg-purple-500",
+    red: "bg-red-500",
+    yellow: "bg-yellow-500",
+    pink: "bg-pink-500",
+    indigo: "bg-indigo-500",
+    orange: "bg-orange-500",
+    teal: "bg-teal-500",
+    gray: "bg-gray-700",
   };
-  
-  return colorMap[profile.color] || 'bg-gray-500';
+
+  return colorMap[profile.color] || "bg-gray-500";
 }

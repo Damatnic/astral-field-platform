@@ -336,7 +336,7 @@ export default function ActivityFeed({
           </div>
         )}
 
-        {/* Toggle for unread only */}
+        {/* ToggleLeft for unread only */}
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"

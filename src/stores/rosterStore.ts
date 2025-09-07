@@ -1,15 +1,23 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface RosterState {
-  roster: any | null;
-  optimalLineup: any | null;
+  roster: unknown | null;
+  optimalLineup: unknown | null;
   currentWeek: number;
   isLoading: boolean;
   error: string | null;
   fetchRoster: (teamId: string, week?: number) => Promise<void>;
-  setLineup: (teamId: string, week: number, lineup: Array<{ position: string; playerId: string | null }>) => Promise<boolean>;
+  setLineup: (
+    teamId: string,
+    week: number,
+    lineup: Array<{ position: string; playerId: string | null }>,
+  ) => Promise<boolean>;
   getOptimalLineup: (teamId: string, week: number) => Promise<void>;
-  addPlayer: (teamId: string, playerId: string, acquisitionType?: 'waiver' | 'free_agent') => Promise<boolean>;
+  addPlayer: (
+    teamId: string,
+    playerId: string,
+    acquisitionType?: "waiver" | "free_agent",
+  ) => Promise<boolean>;
   dropPlayer: (teamId: string, playerId: string) => Promise<boolean>;
   setCurrentWeek: (week: number) => void;
   clearError: () => void;
@@ -30,7 +38,7 @@ export const useRosterStore = create<RosterState>((set, get) => ({
   async getOptimalLineup(_teamId, _week) {
     set({ optimalLineup: null });
   },
-  async addPlayer(_teamId, _playerId, _acquisitionType = 'free_agent') {
+  async addPlayer(_teamId, _playerId, _acquisitionType = "free_agent") {
     return true;
   },
   async dropPlayer(_teamId, _playerId) {
@@ -43,4 +51,3 @@ export const useRosterStore = create<RosterState>((set, get) => ({
     set({ error: null });
   },
 }));
-

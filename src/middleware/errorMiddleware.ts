@@ -372,7 +372,7 @@ async function validateToken(token: string): Promise<User | null> {
     const _jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
 
     // Verify: and decode: the JWT: token
-    const decoded = jwt.verify(token, jwtSecret) as any;
+    const decoded = jwt.verify(token, jwtSecret) as unknown;
 
     if (!decoded.sub || !decoded.email) {
       return null;
@@ -453,7 +453,7 @@ export function withAuth(
         }
 
         // Add: user to: context for: downstream handlers: if (user) {
-          (request: as any).user = user;
+          (request: as unknown).user = user;
         }
       }
     } catch (error) {

@@ -1,55 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import fs from 'fs';
-import path from 'path';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import fs from "fs";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
     // Check for admin authorization
-    const authHeader = req.headers.get('authorization');
-    if (authHeader !== 'Bearer astral-admin-2025') {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== "Bearer astral-admin-2025") {
       return NextResponse.json(
-        { error: 'Unauthorized. Admin access required.' },
-        { status: 401 }
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 },
       );
     }
 
-    console.log('Starting database migration...');
+    console.log("Starting database migration...");
 
     // Enable UUID extension
     await db.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-    
+
     // Drop existing tables for clean migration
     const tablesToDrop = [
-      'ai_insights',
-      'activity_feed',
-      'notifications',
-      'messages',
-      'player_stats',
-      'draft_picks',
-      'drafts',
-      'waiver_claims',
-      'trade_items',
-      'trades',
-      'transactions',
-      'matchups',
-      'lineup_slots',
-      'lineups',
-      'rosters',
-      'players',
-      'teams',
-      'leagues',
-      'users',
-      'power_rankings',
-      'achievements'
+      "ai_insights",
+      "activity_feed",
+      "notifications",
+      "messages",
+      "player_stats",
+      "draft_picks",
+      "drafts",
+      "waiver_claims",
+      "trade_items",
+      "trades",
+      "transactions",
+      "matchups",
+      "lineup_slots",
+      "lineups",
+      "rosters",
+      "players",
+      "teams",
+      "leagues",
+      "users",
+      "power_rankings",
+      "achievements",
     ];
 
     for (const table of tablesToDrop) {
-      await sql.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+      await db.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
     }
 
     // Create Users table
-    await sql`
+    await db.query(`
       CREATE TABLE users (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -68,10 +68,10 @@ export async function POST(req: NextRequest) {
         pin VARCHAR(6),
         is_demo_user BOOLEAN DEFAULT false
       )
-    `;
+    `);
 
     // Create Leagues table
-    await sql`
+    await db.query(`
       CREATE TABLE leagues (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name VARCHAR(255) NOT NULL,
@@ -100,10 +100,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Teams table
-    await sql`
+    await db.query(`
       CREATE TABLE teams (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -130,10 +130,10 @@ export async function POST(req: NextRequest) {
         UNIQUE(league_id, team_name),
         UNIQUE(league_id, team_abbreviation)
       )
-    `;
+    `);
 
     // Create Players table
-    await sql`
+    await db.query(`
       CREATE TABLE players (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         external_id VARCHAR(100) UNIQUE,
@@ -161,10 +161,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Rosters table
-    await sql`
+    await db.query(`
       CREATE TABLE rosters (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
@@ -179,10 +179,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(team_id, player_id)
       )
-    `;
+    `);
 
     // Create Lineups table
-    await sql`
+    await db.query(`
       CREATE TABLE lineups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
@@ -200,10 +200,10 @@ export async function POST(req: NextRequest) {
         locked_at TIMESTAMP,
         UNIQUE(team_id, week, season_year)
       )
-    `;
+    `);
 
     // Create Lineup Slots table
-    await sql`
+    await db.query(`
       CREATE TABLE lineup_slots (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         lineup_id UUID REFERENCES lineups(id) ON DELETE CASCADE,
@@ -217,10 +217,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(lineup_id, slot_position)
       )
-    `;
+    `);
 
     // Create Matchups table
-    await sql`
+    await db.query(`
       CREATE TABLE matchups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -243,10 +243,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(league_id, week, season_year, home_team_id, away_team_id)
       )
-    `;
+    `);
 
     // Create Transactions table
-    await sql`
+    await db.query(`
       CREATE TABLE transactions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -259,10 +259,10 @@ export async function POST(req: NextRequest) {
         notes TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Trades table
-    await sql`
+    await db.query(`
       CREATE TABLE trades (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         transaction_id UUID REFERENCES transactions(id) ON DELETE CASCADE,
@@ -283,18 +283,18 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Add foreign key for counter offers
-    await sql`
+    await db.query(`
       ALTER TABLE trades 
       ADD CONSTRAINT fk_counter_offer 
       FOREIGN KEY (counter_offer_id) 
       REFERENCES trades(id)
-    `;
+    `);
 
     // Create Trade Items table
-    await sql`
+    await db.query(`
       CREATE TABLE trade_items (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         trade_id UUID REFERENCES trades(id) ON DELETE CASCADE,
@@ -307,10 +307,10 @@ export async function POST(req: NextRequest) {
         item_type VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Waiver Claims table
-    await sql`
+    await db.query(`
       CREATE TABLE waiver_claims (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         transaction_id UUID REFERENCES transactions(id) ON DELETE CASCADE,
@@ -324,10 +324,10 @@ export async function POST(req: NextRequest) {
         failure_reason TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Drafts table
-    await sql`
+    await db.query(`
       CREATE TABLE drafts (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -346,10 +346,10 @@ export async function POST(req: NextRequest) {
         paused_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Draft Picks table
-    await sql`
+    await db.query(`
       CREATE TABLE draft_picks (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         draft_id UUID REFERENCES drafts(id) ON DELETE CASCADE,
@@ -364,10 +364,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(draft_id, pick_number)
       )
-    `;
+    `);
 
     // Create Player Stats table
-    await sql`
+    await db.query(`
       CREATE TABLE player_stats (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         player_id UUID REFERENCES players(id),
@@ -389,10 +389,10 @@ export async function POST(req: NextRequest) {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(player_id, week, season_year, is_projection)
       )
-    `;
+    `);
 
     // Create Messages table
-    await sql`
+    await db.query(`
       CREATE TABLE messages (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -410,10 +410,10 @@ export async function POST(req: NextRequest) {
         deleted_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Notifications table
-    await sql`
+    await db.query(`
       CREATE TABLE notifications (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -430,10 +430,10 @@ export async function POST(req: NextRequest) {
         is_push_sent BOOLEAN DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Activity Feed table
-    await sql`
+    await db.query(`
       CREATE TABLE activity_feed (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -447,10 +447,10 @@ export async function POST(req: NextRequest) {
         importance VARCHAR(20) DEFAULT 'normal',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create AI Insights table
-    await sql`
+    await db.query(`
       CREATE TABLE ai_insights (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id),
@@ -470,10 +470,10 @@ export async function POST(req: NextRequest) {
         expires_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create Power Rankings table
-    await sql`
+    await db.query(`
       CREATE TABLE power_rankings (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -490,10 +490,10 @@ export async function POST(req: NextRequest) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(league_id, team_id, week, season_year)
       )
-    `;
+    `);
 
     // Create Achievements table
-    await sql`
+    await db.query(`
       CREATE TABLE achievements (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         user_id UUID REFERENCES users(id),
@@ -506,55 +506,55 @@ export async function POST(req: NextRequest) {
         metadata JSONB DEFAULT '{}',
         earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `;
+    `);
 
     // Create all indexes
     const indexes = [
-      'CREATE INDEX idx_users_email ON users(email)',
-      'CREATE INDEX idx_users_username ON users(username)',
-      'CREATE INDEX idx_users_pin ON users(pin) WHERE is_demo_user = true',
-      'CREATE INDEX idx_leagues_commissioner ON leagues(commissioner_id)',
-      'CREATE INDEX idx_leagues_active ON leagues(is_active)',
-      'CREATE INDEX idx_teams_league ON teams(league_id)',
-      'CREATE INDEX idx_teams_user ON teams(user_id)',
-      'CREATE INDEX idx_teams_standings ON teams(league_id, wins DESC, points_for DESC)',
-      'CREATE INDEX idx_players_position ON players(position)',
-      'CREATE INDEX idx_players_team ON players(team)',
-      'CREATE INDEX idx_players_name ON players(name)',
-      'CREATE INDEX idx_rosters_team ON rosters(team_id)',
-      'CREATE INDEX idx_rosters_player ON rosters(player_id)',
-      'CREATE INDEX idx_lineups_team_week ON lineups(team_id, week, season_year)',
-      'CREATE INDEX idx_lineup_slots_lineup ON lineup_slots(lineup_id)',
-      'CREATE INDEX idx_matchups_league_week ON matchups(league_id, week, season_year)',
-      'CREATE INDEX idx_matchups_teams ON matchups(home_team_id, away_team_id)',
-      'CREATE INDEX idx_transactions_league ON transactions(league_id)',
-      'CREATE INDEX idx_transactions_user ON transactions(initiated_by)',
-      'CREATE INDEX idx_transactions_status ON transactions(status)',
-      'CREATE INDEX idx_trades_status ON trades(status)',
-      'CREATE INDEX idx_trades_teams ON trades(team_sender_id, team_receiver_id)',
-      'CREATE INDEX idx_waiver_claims_team ON waiver_claims(team_id)',
-      'CREATE INDEX idx_waiver_claims_status ON waiver_claims(status)',
-      'CREATE INDEX idx_draft_picks_draft ON draft_picks(draft_id)',
-      'CREATE INDEX idx_draft_picks_team ON draft_picks(team_id)',
-      'CREATE INDEX idx_player_stats_player_week ON player_stats(player_id, week, season_year)',
-      'CREATE INDEX idx_player_stats_projection ON player_stats(is_projection)',
-      'CREATE INDEX idx_messages_league ON messages(league_id)',
-      'CREATE INDEX idx_messages_user ON messages(user_id)',
-      'CREATE INDEX idx_messages_created ON messages(created_at DESC)',
-      'CREATE INDEX idx_notifications_user ON notifications(user_id, is_read)',
-      'CREATE INDEX idx_notifications_created ON notifications(created_at DESC)',
-      'CREATE INDEX idx_activity_feed_league ON activity_feed(league_id, created_at DESC)',
-      'CREATE INDEX idx_ai_insights_team ON ai_insights(team_id)',
-      'CREATE INDEX idx_ai_insights_actionable ON ai_insights(is_actionable, is_dismissed)',
-      'CREATE INDEX idx_power_rankings_league_week ON power_rankings(league_id, week, season_year)'
+      "CREATE INDEX idx_users_email ON users(email)",
+      "CREATE INDEX idx_users_username ON users(username)",
+      "CREATE INDEX idx_users_pin ON users(pin) WHERE is_demo_user = true",
+      "CREATE INDEX idx_leagues_commissioner ON leagues(commissioner_id)",
+      "CREATE INDEX idx_leagues_active ON leagues(is_active)",
+      "CREATE INDEX idx_teams_league ON teams(league_id)",
+      "CREATE INDEX idx_teams_user ON teams(user_id)",
+      "CREATE INDEX idx_teams_standings ON teams(league_id, wins DESC, points_for DESC)",
+      "CREATE INDEX idx_players_position ON players(position)",
+      "CREATE INDEX idx_players_team ON players(team)",
+      "CREATE INDEX idx_players_name ON players(name)",
+      "CREATE INDEX idx_rosters_team ON rosters(team_id)",
+      "CREATE INDEX idx_rosters_player ON rosters(player_id)",
+      "CREATE INDEX idx_lineups_team_week ON lineups(team_id, week, season_year)",
+      "CREATE INDEX idx_lineup_slots_lineup ON lineup_slots(lineup_id)",
+      "CREATE INDEX idx_matchups_league_week ON matchups(league_id, week, season_year)",
+      "CREATE INDEX idx_matchups_teams ON matchups(home_team_id, away_team_id)",
+      "CREATE INDEX idx_transactions_league ON transactions(league_id)",
+      "CREATE INDEX idx_transactions_user ON transactions(initiated_by)",
+      "CREATE INDEX idx_transactions_status ON transactions(status)",
+      "CREATE INDEX idx_trades_status ON trades(status)",
+      "CREATE INDEX idx_trades_teams ON trades(team_sender_id, team_receiver_id)",
+      "CREATE INDEX idx_waiver_claims_team ON waiver_claims(team_id)",
+      "CREATE INDEX idx_waiver_claims_status ON waiver_claims(status)",
+      "CREATE INDEX idx_draft_picks_draft ON draft_picks(draft_id)",
+      "CREATE INDEX idx_draft_picks_team ON draft_picks(team_id)",
+      "CREATE INDEX idx_player_stats_player_week ON player_stats(player_id, week, season_year)",
+      "CREATE INDEX idx_player_stats_projection ON player_stats(is_projection)",
+      "CREATE INDEX idx_messages_league ON messages(league_id)",
+      "CREATE INDEX idx_messages_user ON messages(user_id)",
+      "CREATE INDEX idx_messages_created ON messages(created_at DESC)",
+      "CREATE INDEX idx_notifications_user ON notifications(user_id, is_read)",
+      "CREATE INDEX idx_notifications_created ON notifications(created_at DESC)",
+      "CREATE INDEX idx_activity_feed_league ON activity_feed(league_id, created_at DESC)",
+      "CREATE INDEX idx_ai_insights_team ON ai_insights(team_id)",
+      "CREATE INDEX idx_ai_insights_actionable ON ai_insights(is_actionable, is_dismissed)",
+      "CREATE INDEX idx_power_rankings_league_week ON power_rankings(league_id, week, season_year)",
     ];
 
     for (const index of indexes) {
-      await sql.query(index);
+      await db.query(index);
     }
 
     // Create update timestamp trigger function
-    await sql`
+    await db.query(`
       CREATE OR REPLACE FUNCTION update_updated_at_column()
       RETURNS TRIGGER AS $$
       BEGIN
@@ -562,16 +562,21 @@ export async function POST(req: NextRequest) {
         RETURN NEW;
       END;
       $$ language 'plpgsql'
-    `;
+    `);
 
     // Add update triggers
     const triggeredTables = [
-      'users', 'leagues', 'teams', 'players', 
-      'lineups', 'trades', 'player_stats'
+      "users",
+      "leagues",
+      "teams",
+      "players",
+      "lineups",
+      "trades",
+      "player_stats",
     ];
 
     for (const table of triggeredTables) {
-      await sql.query(`
+      await db.query(`
         CREATE TRIGGER update_${table}_updated_at 
         BEFORE UPDATE ON ${table}
         FOR EACH ROW 
@@ -581,30 +586,80 @@ export async function POST(req: NextRequest) {
 
     // Insert demo users
     const demoUsers = [
-      { name: 'Jon Kornbeck', email: 'jon@astralfield.com', username: 'jkornbeck', pin: '1001' },
-      { name: 'Jack McCaigue', email: 'jack@astralfield.com', username: 'jmccaigue', pin: '1002' },
-      { name: 'Nick Hartley', email: 'nick@astralfield.com', username: 'nhartley', pin: '1003' },
-      { name: 'Cason Minor', email: 'cason@astralfield.com', username: 'cminor', pin: '1004' },
-      { name: 'Brittany Bergum', email: 'brittany@astralfield.com', username: 'bbergum', pin: '1005' },
-      { name: 'David Jarvey', email: 'david@astralfield.com', username: 'djarvey', pin: '1006' },
-      { name: 'Larry McCaigue', email: 'larry@astralfield.com', username: 'lmccaigue', pin: '1007' },
-      { name: 'Renee McCaigue', email: 'renee@astralfield.com', username: 'rmccaigue', pin: '1008' },
-      { name: 'Nicholas D\'Amato', email: 'nicholas@astralfield.com', username: 'ndamato', pin: '1009' },
-      { name: 'Kaity Lorbecki', email: 'kaity@astralfield.com', username: 'klorbecki', pin: '1010' }
+      {
+        name: "Jon Kornbeck",
+        email: "jon@astralfield.com",
+        username: "jkornbeck",
+        pin: "1001",
+      },
+      {
+        name: "Jack McCaigue",
+        email: "jack@astralfield.com",
+        username: "jmccaigue",
+        pin: "1002",
+      },
+      {
+        name: "Nick Hartley",
+        email: "nick@astralfield.com",
+        username: "nhartley",
+        pin: "1003",
+      },
+      {
+        name: "Cason Minor",
+        email: "cason@astralfield.com",
+        username: "cminor",
+        pin: "1004",
+      },
+      {
+        name: "Brittany Bergum",
+        email: "brittany@astralfield.com",
+        username: "bbergum",
+        pin: "1005",
+      },
+      {
+        name: "David Jarvey",
+        email: "david@astralfield.com",
+        username: "djarvey",
+        pin: "1006",
+      },
+      {
+        name: "Larry McCaigue",
+        email: "larry@astralfield.com",
+        username: "lmccaigue",
+        pin: "1007",
+      },
+      {
+        name: "Renee McCaigue",
+        email: "renee@astralfield.com",
+        username: "rmccaigue",
+        pin: "1008",
+      },
+      {
+        name: "Nicholas D'Amato",
+        email: "nicholas@astralfield.com",
+        username: "ndamato",
+        pin: "1009",
+      },
+      {
+        name: "Kaity Lorbecki",
+        email: "kaity@astralfield.com",
+        username: "klorbecki",
+        pin: "1010",
+      },
     ];
 
     const userIds = [];
     for (const user of demoUsers) {
-      const result = await sql`
+      const result = await db.query(`
         INSERT INTO users (email, username, display_name, pin, is_demo_user)
         VALUES (${user.email}, ${user.username}, ${user.name}, ${user.pin}, true)
         RETURNING id
-      `;
+      `);
       userIds.push(result.rows[0].id);
     }
 
     // Create demo league
-    const leagueResult = await sql`
+    const leagueResult = await db.query(`
       INSERT INTO leagues (
         name, 
         commissioner_id, 
@@ -620,19 +675,26 @@ export async function POST(req: NextRequest) {
         10
       )
       RETURNING id
-    `;
+    `);
 
     const leagueId = leagueResult.rows[0].id;
 
     // Create teams for all users
     const teamNames = [
-      'Kornbeck Crushers', 'McCaigue Mavericks', 'Hartley Heroes',
-      'Minor Threats', 'Bergum Blitz', 'Jarvey Giants',
-      'Larry Legends', 'Renee Raiders', 'Damato Dynasty', 'Kaity Knights'
+      "Kornbeck Crushers",
+      "McCaigue Mavericks",
+      "Hartley Heroes",
+      "Minor Threats",
+      "Bergum Blitz",
+      "Jarvey Giants",
+      "Larry Legends",
+      "Renee Raiders",
+      "Damato Dynasty",
+      "Kaity Knights",
     ];
 
     for (let i = 0; i < userIds.length; i++) {
-      await sql`
+      await db.query(`
         INSERT INTO teams (
           league_id,
           user_id,
@@ -649,29 +711,28 @@ export async function POST(req: NextRequest) {
           ${i + 1},
           100
         )
-      `;
+      `);
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Database migration completed successfully!',
+      message: "Database migration completed successfully!",
       data: {
         usersCreated: userIds.length,
         leagueId,
         tablesCreated: tablesToDrop.length,
-        indexesCreated: indexes.length
-      }
-    });
-
-  } catch (error) {
-    console.error('Migration error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Migration failed', 
-        details: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
+        indexesCreated: indexes.length,
       },
-      { status: 500 }
+    });
+  } catch (error) {
+    console.error("Migration error:", error);
+    return NextResponse.json(
+      {
+        error: "Migration failed",
+        details: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
+      },
+      { status: 500 },
     );
   }
 }
@@ -679,37 +740,36 @@ export async function POST(req: NextRequest) {
 // GET endpoint to check migration status
 export async function GET() {
   try {
-    const tables = await sql`
+    const tables = await db.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
       AND table_type = 'BASE TABLE'
       ORDER BY table_name
-    `;
+    `);
 
-    const users = await sql`
+    const users = await db.query(`
       SELECT COUNT(*) as count FROM users WHERE is_demo_user = true
-    `;
+    `);
 
-    const leagues = await sql`
+    const leagues = await db.query(`
       SELECT COUNT(*) as count FROM leagues WHERE is_active = true
-    `;
+    `);
 
     return NextResponse.json({
       success: true,
-      status: 'ready',
+      status: "ready",
       database: {
-        tables: tables.rows.map(r => r.table_name),
+        tables: tables.rows.map((r) => r.table_name),
         demoUsers: users.rows[0]?.count || 0,
-        activeLeagues: leagues.rows[0]?.count || 0
-      }
+        activeLeagues: leagues.rows[0]?.count || 0,
+      },
     });
-
   } catch (error) {
     return NextResponse.json({
       success: false,
-      status: 'not_migrated',
-      error: error instanceof Error ? error.message : 'Database not ready'
+      status: "not_migrated",
+      error: error instanceof Error ? error.message : "Database not ready",
     });
   }
 }

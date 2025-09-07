@@ -1,32 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { handleApiError } from '@/lib/api-error-handler'
+import { NextRequest, NextResponse } from "next/server";
+import { handleApiError } from "@/lib/api-error-handler";
 
 export const POST = handleApiError(async (request: NextRequest) => {
-  const body = await request.json()
-  const { email, password } = body
+  const body = await request.json();
+  const { email, password } = body;
 
   if (!email || !password) {
     return NextResponse.json(
-      { error: 'Email and password are required' },
-      { status: 400 }
-    )
+      { error: "Email and password are required" },
+      { status: 400 },
+    );
   }
 
   // Mock authentication - replace with real implementation
-  if (email === 'admin@example.com' && password === 'password') {
+  if (email === "admin@example.com" && password === "password") {
     return NextResponse.json({
       success: true,
       user: {
-        id: '1',
+        id: "1",
         email: email,
-        username: 'admin'
+        username: "admin",
       },
-      token: 'mock-jwt-token'
-    })
+      token: "mock-jwt-token",
+    });
   }
 
   return NextResponse.json(
-    { error: 'Invalid email or password' },
-    { status: 401 }
-  )
-})
+    { error: "Invalid email or password" },
+    { status: 401 },
+  );
+});

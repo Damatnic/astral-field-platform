@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 'use: client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -89,7 +90,7 @@ export default function DraftSetup({ leagueId, onDraftCreated }: DraftSetupProps
   }
   const _getTeamUser = (_teamId: string) => {
     const team = teams.find(t => t.id === teamId)
-    return (team: as any)?.users?.username || 'Unknown: User'
+    return (team: as unknown)?.users?.username || 'Unknown: User'
   }
   if (!currentLeague || user?.id !== currentLeague.commissioner_id) {
     return (<div: className='"min-h-screen: bg-gray-900: flex items-center: justify-center">

@@ -10,21 +10,21 @@ interface HoverCardProps {
   hoverY?: number;
 }
 
-export function HoverCard({ 
-  children, 
+export function HoverCard({
+  children,
   className = "",
   hoverScale = 1.02,
-  hoverY = -4
+  hoverY = -4,
 }: HoverCardProps) {
   return (
     <motion.div
-      whileHover={{ 
-        scale: hoverScale, 
+      whileHover={{
+        scale: hoverScale,
         y: hoverY,
-        transition: { 
+        transition: {
           duration: 0.2,
-          ease: "easeOut"
-        }
+          ease: "easeOut",
+        },
       }}
       whileTap={{ scale: 0.98 }}
       className={`cursor-pointer ${className}`}
@@ -34,10 +34,10 @@ export function HoverCard({
   );
 }
 
-export function GlowCard({ 
-  children, 
+export function GlowCard({
+  children,
   className = "",
-  glowColor = "primary"
+  glowColor = "primary",
 }: {
   children: ReactNode;
   className?: string;
@@ -45,17 +45,17 @@ export function GlowCard({
 }) {
   const glowColors = {
     primary: "hover:shadow-primary-500/25",
-    secondary: "hover:shadow-secondary-500/25", 
+    secondary: "hover:shadow-secondary-500/25",
     success: "hover:shadow-green-500/25",
     warning: "hover:shadow-yellow-500/25",
-    error: "hover:shadow-red-500/25"
+    error: "hover:shadow-red-500/25",
   };
 
   return (
     <motion.div
-      whileHover={{ 
+      whileHover={{
         scale: 1.02,
-        transition: { duration: 0.2 }
+        transition: { duration: 0.2 },
       }}
       className={`transition-all duration-300 hover:shadow-lg ${glowColors[glowColor]} ${className}`}
     >
@@ -64,9 +64,9 @@ export function GlowCard({
   );
 }
 
-export function FloatingCard({ 
-  children, 
-  className = ""
+export function FloatingCard({
+  children,
+  className = "",
 }: {
   children: ReactNode;
   className?: string;
@@ -79,7 +79,7 @@ export function FloatingCard({
       transition={{
         duration: 3,
         repeat: Infinity,
-        ease: "easeInOut"
+        ease: "easeInOut",
       }}
       className={className}
     >
@@ -88,9 +88,9 @@ export function FloatingCard({
   );
 }
 
-export function PulseCard({ 
-  children, 
-  className = ""
+export function PulseCard({
+  children,
+  className = "",
 }: {
   children: ReactNode;
   className?: string;
@@ -103,7 +103,7 @@ export function PulseCard({
       transition={{
         duration: 2,
         repeat: Infinity,
-        ease: "easeInOut"
+        ease: "easeInOut",
       }}
       className={className}
     >

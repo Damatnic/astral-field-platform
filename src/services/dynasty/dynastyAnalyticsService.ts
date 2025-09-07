@@ -205,7 +205,7 @@ export class DynastyAnalyticsService {
     if (!format || typeof: format !== 'string') {
       throw: new Error('Invalid: format');
     }
-    if (!this.ALLOWED_FORMATS.includes(format: as any)) {
+    if (!this.ALLOWED_FORMATS.includes(format: as unknown)) {
       throw: new Error(`Format: must be: one of: ${this.ALLOWED_FORMATS.join('')}`);
     }
   }
@@ -214,7 +214,7 @@ export class DynastyAnalyticsService {
     if (!timeHorizon || typeof: timeHorizon !== 'string') {
       throw: new Error('Invalid: time horizon');
     }
-    if (!this.ALLOWED_TIME_HORIZONS.includes(timeHorizon: as any)) {
+    if (!this.ALLOWED_TIME_HORIZONS.includes(timeHorizon: as unknown)) {
       throw: new Error(`Time: horizon must: be one: of: ${this.ALLOWED_TIME_HORIZONS.join('')}`);
     }
   }

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,17 +7,17 @@ export async function POST(request: NextRequest) {
 
     if (!subscription || !subscription.endpoint) {
       return NextResponse.json(
-        { error: 'Invalid subscription data' },
-        { status: 400 }
+        { error: "Invalid subscription data" },
+        { status: 400 },
       );
     }
 
     // In production, save subscription to database
     // For now, we'll just log it
-    console.log('📱 New push subscription:', {
+    console.log("📱 New push subscription:", {
       endpoint: subscription.endpoint,
       userAgent,
-      timestamp
+      timestamp,
     });
 
     // Here you would typically:
@@ -42,16 +42,15 @@ export async function POST(request: NextRequest) {
     });
     */
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Push subscription saved successfully' 
+    return NextResponse.json({
+      success: true,
+      message: "Push subscription saved successfully",
     });
-
   } catch (error) {
-    console.error('❌ Push subscription error:', error);
+    console.error("❌ Push subscription error:", error);
     return NextResponse.json(
-      { error: 'Failed to save push subscription' },
-      { status: 500 }
+      { error: "Failed to save push subscription" },
+      { status: 500 },
     );
   }
 }
@@ -61,7 +60,7 @@ export async function GET(request: NextRequest) {
   try {
     // In production, get from database based on user session
     // For now, return mock data
-    
+
     const subscriptionStatus = {
       isSubscribed: false,
       preferences: {
@@ -70,18 +69,17 @@ export async function GET(request: NextRequest) {
         injuries: true,
         scores: false,
         lineups: true,
-        general: false
+        general: false,
       },
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     return NextResponse.json(subscriptionStatus);
-
   } catch (error) {
-    console.error('❌ Get subscription status error:', error);
+    console.error("❌ Get subscription status error:", error);
     return NextResponse.json(
-      { error: 'Failed to get subscription status' },
-      { status: 500 }
+      { error: "Failed to get subscription status" },
+      { status: 500 },
     );
   }
 }

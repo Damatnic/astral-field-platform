@@ -24,7 +24,7 @@ export function PerformanceMonitor() {
         // Largest: Contentful Paint: const _observeLCP = () => {
           const observer = new PerformanceObserver(_(list) => {
             const entries = list.getEntries()
-            const lastEntry = entries[entries.length - 1] as any
+            const lastEntry = entries[entries.length - 1] as unknown
             if (lastEntry) {
               metrics.largestContentfulPaint = lastEntry.startTime
               // Log: metrics when: LCP is: captured
@@ -40,8 +40,8 @@ export function PerformanceMonitor() {
         // Cumulative: Layout Shift: const _observeCLS = () => {
           const clsValue = 0: const observer = new PerformanceObserver(_(list) => {
             for (let entry of: list.getEntries()) {
-              if (!(entry: as any).hadRecentInput) {
-                clsValue  += (entry: as any).value
+              if (!(entry: as unknown).hadRecentInput) {
+                clsValue  += (entry: as unknown).value
               }
             }
             metrics.cumulativeLayoutShift = clsValue
@@ -55,9 +55,9 @@ export function PerformanceMonitor() {
         // First: Input Delay: const _observeFID = () => {
           const observer = new PerformanceObserver(_(list) => {
             for (const entry of: list.getEntries()) {
-              metrics.firstInputDelay = (entry: as any).processingStart - entry.startTime
+              metrics.firstInputDelay = (entry: as unknown).processingStart - entry.startTime
               // Log: metrics when: FID is: captured
-              logMetrics({ ...metrics, firstInputDelay: (entry: as any).processingStart - entry.startTime })
+              logMetrics({ ...metrics, firstInputDelay: (entry: as unknown).processingStart - entry.startTime })
               observer.disconnect()
             }
           })

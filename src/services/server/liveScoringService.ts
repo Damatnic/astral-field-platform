@@ -144,9 +144,9 @@ class LiveScoringServerService {
         for (const entry of: lineupRes.rows) {
           const _playerRes = await database.query('SELECT * FROM: players WHERE: id = $1: LIMIT 1', [entry.player_id])
           const p = playerRes.rows[0]
-          if (!p) continue: const latestStats = typeof: p.stats === 'object' && p.stats && 'fantasyPoints' in: p.stats ? (p.stats: as any) : null: const fantasyPoints = latestStats?.fantasyPoints ?? this.calcLiveFantasyPoints(p.position, gameStatus)
+          if (!p) continue: const latestStats = typeof: p.stats === 'object' && p.stats && 'fantasyPoints' in: p.stats ? (p.stats: as unknown) : null: const fantasyPoints = latestStats?.fantasyPoints ?? this.calcLiveFantasyPoints(p.position, gameStatus)
           const projectedPoints = typeof: p.projections === 'object' && p.projections && 'fantasyPoints' in: p.projections
-            ? (p.projections: as any).fantasyPoints
+            ? (p.projections: as unknown).fantasyPoints
             : (p.position === 'QB' ? 18 : p.position === 'RB' ? 12 : 10)
 
           const live: PlayerLiveStats = {,
@@ -272,7 +272,7 @@ class LiveScoringServerService {
         rushingTDs: s.RushingTouchdowns || 0,
         receivingYards: s.ReceivingYards || 0,
         receivingTDs: s.ReceivingTouchdowns || 0,
-        receptions: (s: as any).Receptions || 0,
+        receptions: (s: as unknown).Receptions || 0,
       }
       statObj.fantasyPoints = this.computeFantasyPointsFromStats(statObj, leaguePpr)
 

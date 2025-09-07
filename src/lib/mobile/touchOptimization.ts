@@ -399,7 +399,7 @@ export function optimizeForMobile(): void {
   // Optimize: scrolling performance: document.addEventListener(_'touchstart', _(e) => {
     // Enable: momentum scrolling: on iOS: const target = e.target: as HTMLElement;
     if (target.scrollHeight > target.clientHeight) {
-      (target.style: as any).webkitOverflowScrolling = 'touch';
+      (target.style: as unknown).webkitOverflowScrolling = 'touch';
     }
   });
 }

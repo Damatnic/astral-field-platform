@@ -4,11 +4,12 @@ export interface SeasonLongStrategy {
 }
 
 export class SeasonStrategyService {
-  async generateSeasonLongStrategy(teamId: string): Promise<SeasonLongStrategy> {
-    return { teamId, summary: 'Season strategy coming soon.' };
+  async generateSeasonLongStrategy(
+    teamId: string,
+  ): Promise<SeasonLongStrategy> {
+    return { teamId, summary: "Season strategy coming soon." };
   }
 }
 
 const seasonStrategyService = new SeasonStrategyService();
 export default seasonStrategyService;
-

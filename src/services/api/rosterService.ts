@@ -20,11 +20,14 @@ export interface OptimalLineup {
 }
 
 export class RosterService {
-  async getTeamRoster(teamId: string, _week?: number): Promise<{ roster: TeamRoster | null; error: string | null }> {
+  async getTeamRoster(
+    teamId: string,
+    _week?: number,
+  ): Promise<{ roster: TeamRoster | null; error: string | null }> {
     return {
       roster: {
         teamId,
-        teamName: 'Demo Team',
+        teamName: "Demo Team",
         players: [],
         totalValue: 0,
         positionBreakdown: {},
@@ -32,20 +35,29 @@ export class RosterService {
       error: null,
     };
   }
-  async getOptimalLineup(_teamId: string, _week: number): Promise<{ lineup: OptimalLineup | null; error: string | null }> {
+  async getOptimalLineup(
+    _teamId: string,
+    _week: number,
+  ): Promise<{ lineup: OptimalLineup | null; error: string | null }> {
     return {
       lineup: { starters: [], bench: [], totalProjectedPoints: 0, lineup: {} },
       error: null,
     };
   }
-  async addPlayerToRoster(_teamId: string, _playerId: string, _positionSlot = 'BENCH'): Promise<{ error: string | null }> {
+  async addPlayerToRoster(
+    _teamId: string,
+    _playerId: string,
+    _positionSlot = "BENCH",
+  ): Promise<{ error: string | null }> {
     return { error: null };
   }
-  async removePlayerFromRoster(_teamId: string, _playerId: string): Promise<{ error: string | null }> {
+  async removePlayerFromRoster(
+    _teamId: string,
+    _playerId: string,
+  ): Promise<{ error: string | null }> {
     return { error: null };
   }
 }
 
 const rosterService = new RosterService();
 export default rosterService;
-

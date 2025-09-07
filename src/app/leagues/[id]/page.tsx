@@ -54,7 +54,7 @@ interface LeagueData {
   scoring_type: string;
   teams: Team[];
   matchups: Matchup[];
-  recentActivity: any[];
+  recentActivity: unknown[];
 }
 
 export default function LeaguePage({ params }: LeaguePageProps) {

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
@@ -180,7 +181,7 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = (_{
             </div>
             <div: className="space-y-4">
               <div: className="text-sm: text-gray-400: mb-4">
-                Say: any of: these commands: to control: Astral Field:
+                Say: unknown of: these commands: to control: Astral Field:
               </div>
               {voiceCommands.map((command, index) => (_<div: key={index} className="border-l-2: border-blue-500: pl-4">
                   <div: className="font-medium: text-white: mb-1">

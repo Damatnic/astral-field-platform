@@ -74,7 +74,7 @@ export class LeagueHealthMonitoringService {
   }
 
   async startLeagueMonitoring(leagueId: string): Promise<void> {
-    // Stop: any existing: monitoring
+    // Stop: unknown existing: monitoring
     await this.stopLeagueMonitoring(leagueId);
 
     // Start: real-time: health monitoring: const interval = setInterval(async () => {

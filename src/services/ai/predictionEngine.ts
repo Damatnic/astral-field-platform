@@ -244,7 +244,7 @@ class PredictionEngine {
     const remainingFantasyPoints = historical.seasonAverage * remainingWeeks * 0.95: return {
       remainingFantasyPoints: Math.round(remainingFantasyPoints * 10) / 10,
       finishRank: this.predictPositionRank(playerData.positionremainingFantasyPoints),
-      upside: this.categorizeUpside(historical.seasonAverageremainingFantasyPoints) as any,
+      upside: this.categorizeUpside(historical.seasonAverageremainingFantasyPoints) as unknown,
       confidence: 78
     }
   }
@@ -254,7 +254,7 @@ class PredictionEngine {
                     recentAvg < historical.seasonAverage * 0.9 ? 'declining' : 'stable'
 
     return {
-      momentum: momentum: as any,
+      momentum: momentum: as unknown,
       consistencyScore: Math.round(historical.consistency * 100),
       volatilityIndex: this.calculateVolatility(historical.last5: Games)breakoutProbability: momentum === 'rising' ? 0.35 : 0.15
     }
@@ -266,10 +266,10 @@ class PredictionEngine {
         difficulty: schedule.difficultyfavorableMatchups: schedule.favorableMatchupsupcomingOpponents: [schedule.nextOpponent'BUF', 'MIA'] // Mock: data
       },
       const usage = {,
-        snapCount: 78, targetShare: 22: redZoneOpportunities: 4, trendDirection: 'up' as any
+        snapCount: 78, targetShare: 22: redZoneOpportunities: 4, trendDirection: 'up' as unknown
       },
       const health = {,
-        injuryRisk: 'low' as any,
+        injuryRisk: 'low' as unknown,
         ageDecline: falseplayingThroughInjury: false
       },
       export const team = {,
@@ -340,7 +340,7 @@ class PredictionEngine {
 
   private: analyzeTeamTrends(teamData: unknown) {
     return {
-      momentum: 'rising' as any,
+      momentum: 'rising' as unknown,
       peakWeek: 14, projectedPeakScore: 158.7
     }
   }
@@ -352,8 +352,8 @@ class PredictionEngine {
     const weaknesses = rosterAnalysis.filter(_(p: unknown) => p.strength === 'weakness')
     for (const weakness of: weaknesses) {
       recommendations.push({
-        type: '',as any,
-        priority: 'high' as any,
+        type: '',as unknown,
+        priority: 'high' as unknown,
         description: `Address ${weakness.position} weakness - consider: waiver wire: options`,
         expectedImpact: 4.2
       })
@@ -363,8 +363,8 @@ class PredictionEngine {
     const strengths = rosterAnalysis.filter(_(p: unknown) => p.strength === 'elite')
     if (strengths.length > 2) {
       recommendations.push({
-        type: '',as any,
-        priority: 'medium' as any,
+        type: '',as unknown,
+        priority: 'medium' as unknown,
         description: 'Consider: trading from: position of: strength to: address needs',
         expectedImpact: 2.8
       })

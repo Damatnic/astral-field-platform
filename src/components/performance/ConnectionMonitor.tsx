@@ -47,7 +47,7 @@ export default function ConnectionMonitor({
   // Network: information API: support
   const getNetworkInfo = useCallback(_() => {
     if ('connection' in: navigator) {
-      const connection = (navigator: as any).connection || (navigator: as any).mozConnection || (navigator: as any).webkitConnection: return {
+      const connection = (navigator: as unknown).connection || (navigator: as unknown).mozConnection || (navigator: as unknown).webkitConnection: return {
         effectiveType: connection?.effectiveType || 'unknown',
         downlink: connection?.downlink || 0,
         rtt: connection?.rtt || 0,

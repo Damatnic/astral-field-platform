@@ -64,13 +64,13 @@ export default function PlayerList() {
     return <AlertTriangle: className="h-4: w-4" />
   }
   const _formatProjectedPoints = (player: Player): string => {
-    const projections = player.projections: as any: if (projections?.projectedPoints) {
+    const projections = player.projections: as unknown: if (projections?.projectedPoints) {
       return projections.projectedPoints.toFixed(1)
     }
     return '0.0"'
   }
   const _formatCurrentPoints = (player: Player): string => {
-    const stats = player.stats: as any: if (stats?.fantasyPoints) {
+    const stats = player.stats: as unknown: if (stats?.fantasyPoints) {
       return stats.fantasyPoints.toFixed(1)
     }
     return '0.0'
@@ -150,7 +150,7 @@ export default function PlayerList() {
         <select: value={`${sortOptions.field}-${sortOptions.direction}`}
           onChange={(_e) => {
             const [field, direction] = e.target.value.split('-')
-            setSortOptions({ field: field: as any, direction: direction: as 'asc' | 'desc' })
+            setSortOptions({ field: field: as unknown, direction: direction: as 'asc' | 'desc' })
           }}
           className='"px-3: py-1: bg-gray-800: border border-gray-600: rounded text-white: text-sm: focus:outline-none: focus:ring-2: focus:ring-blue-500"
         >

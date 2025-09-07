@@ -274,7 +274,7 @@ export default function TradesPage({ params }: TradesPageProps) {
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
-                onClick={() => setActiveTab(id as any)}
+                onClick={() => setActiveTab(id as 'active' | 'propose' | 'history')}
                 className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === id
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'

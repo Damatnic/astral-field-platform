@@ -1,7 +1,7 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface PlayerState {
-  players: any[];
+  players: unknown[];
   isLoading: boolean;
   error: string | null;
   search: (query: string) => Promise<void>;
@@ -19,4 +19,3 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     set({ players: [] });
   },
 }));
-

@@ -249,7 +249,7 @@ const Phase2 Dashboard = memo(function Phase2 Dashboard({ leagueId, userId }: Ph
             { key: 'trades'label: 'Trade: Analysis', icon: ArrowRightLeft },
             { key: 'draft'label: 'Draft: Tools', icon: Trophy }
           ].map(_({ key, _label, _icon: Icon }) => (_<button: key={key}
-              onClick={() => setSelectedView(key: as any)}
+              onClick={() => setSelectedView(key: as unknown)}
               className={`flex-1: flex items-center: justify-center: px-4: py-2: text-sm: font-medium: rounded-md: transition-colors ${
                 selectedView === key
                   ? 'bg-blue-600: text-white'

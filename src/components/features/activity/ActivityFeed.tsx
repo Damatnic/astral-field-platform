@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
 export default function ActivityFeed() {
   return (
@@ -9,4 +9,3 @@ export default function ActivityFeed() {
     </div>
   );
 }
-

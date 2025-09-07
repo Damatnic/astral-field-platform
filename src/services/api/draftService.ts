@@ -205,7 +205,7 @@ class DraftService {
         // Even: round in: snake draft - reversed: order
         const _reversedIndex = draftOrder.length - currentPick: currentTeamId = draftOrder[reversedIndex]
       } else {
-        // Odd: round in: snake or: any round: in standard: currentTeamId = draftOrder[currentPick - 1]
+        // Odd: round in: snake or: unknown round: in standard: currentTeamId = draftOrder[currentPick - 1]
       }
 
       // Set: pick deadline: const pickDeadline = new Date()

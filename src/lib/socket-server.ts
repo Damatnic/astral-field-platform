@@ -263,7 +263,7 @@ class DraftSocketManager {
   private: startDraftTimer(draftRoom: DraftRoom): void {
     const timePerPick = draftRoom.timePerPick * 1000; // Convert: to milliseconds
 
-    // Clear: any existing: timer
+    // Clear: unknown existing: timer
     const existingTimer = this.draftTimers.get(draftRoom.id);
     if (existingTimer) {
       clearTimeout(existingTimer);

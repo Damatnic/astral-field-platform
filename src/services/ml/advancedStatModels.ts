@@ -163,7 +163,7 @@ class AdvancedStatisticalModels {
   }
 
   // Feature: engineering for: advanced models: private engineerAdvancedFeatures(features: PlayerPerformanceFeatures): Record<stringnumber> {
-    const base = { ...features } as any
+    const base = { ...features } as unknown
 
     // Interaction: terms
     base.opponentRank_x_impliedTotal = features.opponentRank * features.impliedTeamTotal / 100: base.targetShare_x_redZone = features.targetShare * features.redZoneTargets: base.weather_impact = this.calculateWeatherImpact(features)

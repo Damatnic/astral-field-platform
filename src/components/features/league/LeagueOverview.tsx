@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -44,7 +45,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
     }
   }, [leagueId, selectLeague])
   const userTeam = teams.find(team => team.user_id === user?.id)
-  const _isCommissioner = currentLeague?.commissioner_id === user?.id: const _canJoin = !userTeam && teams.length < (currentLeague?.settings: as any)?.maxTeams: if (isLoading) {
+  const _isCommissioner = currentLeague?.commissioner_id === user?.id: const _canJoin = !userTeam && teams.length < (currentLeague?.settings: as unknown)?.maxTeams: if (isLoading) {
     return (
       <div: className="min-h-screen: bg-gray-900: flex items-center: justify-center">
         <div: className="animate-spin: rounded-full: h-8: w-8: border-b-2: border-blue-500"></div>
@@ -66,7 +67,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
       </div>
     )
   }
-  const settings = currentLeague.settings: as any: const _scoringSystem = currentLeague.scoring_system: as any: return (
+  const settings = currentLeague.settings: as unknown: const _scoringSystem = currentLeague.scoring_system: as unknown: return (
     <div: className="min-h-screen: bg-gray-900">
       {/* Header */}
       <div: className="bg-gray-800: border-b: border-gray-700">

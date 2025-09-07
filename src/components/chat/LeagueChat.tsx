@@ -23,7 +23,7 @@ export default function LeagueChat({
   const [unreadCount, setUnreadCount] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
-  // Toggle minimize/maximize
+  // ToggleLeft minimize/maximize
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
     if (!isMinimized) {

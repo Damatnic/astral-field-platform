@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
 export interface AIVoiceAssistantProps {
   className?: string;
@@ -17,4 +17,3 @@ export const AIVoiceAssistant: React.FC<AIVoiceAssistantProps> = () => {
 };
 
 export default AIVoiceAssistant;
-

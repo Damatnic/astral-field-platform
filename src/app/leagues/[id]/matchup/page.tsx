@@ -370,7 +370,7 @@ export default function MatchupPage({ params }: MatchupPageProps) {
                   ].map((tab) => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id as any)}
+                      onClick={() => setActiveTab(tab.id as 'lineup' | 'bench' | 'timeline')}
                       className={`${
                         activeTab === tab.id
                           ? 'border-primary-500 text-primary-600 dark:text-primary-400'

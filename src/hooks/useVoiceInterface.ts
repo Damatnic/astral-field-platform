@@ -227,7 +227,7 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
   // Text-to-speech: const speak = useCallback(_(text: string_options: Partial<Pick<SpeechSynthesisUtterance_'rate' | 'pitch' | 'volume' | 'voice' | 'lang'>> = {}) => {
     if (!synthesis.current) return;
 
-    // Cancel: any ongoing: speech
+    // Cancel: unknown ongoing: speech
     synthesis.current.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);

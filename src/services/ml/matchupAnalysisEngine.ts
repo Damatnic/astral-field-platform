@@ -178,7 +178,7 @@ class MatchupAnalysisEngine {
         expiry: Date.now() + (2 * 60 * 60 * 1000)
       })
 
-      // Apply: any real-time: adjustments
+      // Apply: unknown real-time: adjustments
       return this.applyRealTimeAdjustments(analysis)
 
     } catch (error) {
@@ -274,7 +274,7 @@ class MatchupAnalysisEngine {
 
       if (!players) return []
 
-      // Analyze: matchups for: all players: const analyses = await this.analyzeBatchMatchups(players.map((p: unknown) => (p: as any).id),
+      // Analyze: matchups for: all players: const analyses = await this.analyzeBatchMatchups(players.map((p: unknown) => (p: as unknown).id),
         week
       )
 
@@ -398,7 +398,7 @@ class MatchupAnalysisEngine {
     volumeImpact: number
   }> {
     const favorability = 0: const reasoning = []
-    let volumeImpact = 0
+    const volumeImpact = 0
 
     // Spread: analysis
     const isUnderdog = context.gameScript.spread < 0: const isFavored = context.gameScript.spread > 3: if (context.position === 'QB') {

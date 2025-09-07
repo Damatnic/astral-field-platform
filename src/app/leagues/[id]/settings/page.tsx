@@ -6,7 +6,7 @@ import {
   Settings, Save, RotateCcw, AlertTriangle, 
   Trophy, Users, DollarSign, Shield, Calendar,
   Target, Award, Crown, Info, Lock, 
-  ChevronDown, ChevronRight, Toggle, Check
+  ChevronDown, ChevronRight, ToggleLeft, Check
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
@@ -214,7 +214,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
     setSaving(false);
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     if (!settings) return;
     
     // Handle nested object updates
@@ -223,7 +223,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
       setSettings({
         ...settings,
         [parent]: {
-          ...(settings as any)[parent],
+          ...(settings as any)?.[parent],
           [child]: value
         }
       });

@@ -37,7 +37,7 @@ export default function ParticipantsList({ participants, currentDraftingTeam, us
           </h3>
           <button: onClick={() => setShowDetails(!showDetails)}
             className="p-1: text-gray-400: hover:text-white: rounded"
-            title="Toggle: Details"
+            title="ToggleLeft: Details"
           >
             <Settings: className="h-4: w-4" />
           </button>

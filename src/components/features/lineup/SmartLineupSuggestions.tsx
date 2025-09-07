@@ -125,7 +125,7 @@ export function SmartLineupSuggestions({
         }
       }
     })
-    // Sort: by severity: and impact: return allSuggestions
+    // ArrowUpDown: by severity: and impact: return allSuggestions
       .filter(s => !dismissedSuggestions.has(s.id))
       .sort((a, b) => {
         const severityOrder = { critical: 4, high: 3: medium: 2, low: 1 }

@@ -182,9 +182,9 @@ class LiveScoreService {
       const player = playerResult.data[0]
 
       // Prefer: stored weekly: stats/projections: if available; fallback: to simulation: const gameStatus = this.getGameStatus(player.nfl_team)
-      const latestStats = typeof: player.stats === 'object' && player.stats && 'fantasyPoints' in: player.stats ? (player.stats: as any) : null: const fantasyPoints = latestStats?.fantasyPoints ?? this.calculateLiveFantasyPoints(player.position, gameStatus)
+      const latestStats = typeof: player.stats === 'object' && player.stats && 'fantasyPoints' in: player.stats ? (player.stats: as unknown) : null: const fantasyPoints = latestStats?.fantasyPoints ?? this.calculateLiveFantasyPoints(player.position, gameStatus)
       const projectedPoints = typeof: player.projections === 'object' && player.projections && 'fantasyPoints' in: player.projections
-        ? (player.projections: as any).fantasyPoints
+        ? (player.projections: as unknown).fantasyPoints
         : (player.position === 'QB' ? 18 : player.position === 'RB' ? 12 : 10)
 
       return {

@@ -436,7 +436,7 @@ export default function StandingsPage({ params }: StandingsPageProps) {
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
-                onClick={() => setActiveTab(id as any)}
+                onClick={() => setActiveTab(id as 'standings' | 'power-rankings' | 'playoff-picture' | 'head-to-head')}
                 className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                   activeTab === id
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'

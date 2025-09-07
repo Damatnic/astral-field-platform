@@ -12,7 +12,9 @@ class LeagueAutomationService {
   async listRules(_leagueId: string): Promise<AutomationRule[]> {
     return [];
   }
-  async createAutomationRule(rule: Omit<AutomationRule, 'id' | 'createdAt'>): Promise<string> {
+  async createAutomationRule(
+    rule: Omit<AutomationRule, "id" | "createdAt">,
+  ): Promise<string> {
     const id = `rule_${Date.now()}`;
     return id;
   }
@@ -20,4 +22,3 @@ class LeagueAutomationService {
 
 const leagueAutomation = new LeagueAutomationService();
 export default leagueAutomation;
-

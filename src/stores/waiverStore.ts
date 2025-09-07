@@ -1,9 +1,9 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface WaiverState {
   isLoading: boolean;
   error: string | null;
-  recommendations: any[];
+  recommendations: unknown[];
   fetchRecommendations: (leagueId: string) => Promise<void>;
   clearError: () => void;
 }
@@ -19,4 +19,3 @@ export const useWaiverStore = create<WaiverState>((set) => ({
     set({ error: null });
   },
 }));
-

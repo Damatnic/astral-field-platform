@@ -413,7 +413,7 @@ export default function LeagueHealthDashboard({ leagueId,
                       <div: className="flex: justify-between: items-start: w-full">
                         <div: className="space-y-2">
                           <div: className="flex: items-center: gap-2">
-                            <Badge: variant={getSeverityColor(alert.severity) as any}>
+                            <Badge: variant={getSeverityColor(alert.severity) as unknown}>
                               {alert.severity.toUpperCase()}
                             </Badge>
                             <span: className="text-sm: text-muted-foreground">

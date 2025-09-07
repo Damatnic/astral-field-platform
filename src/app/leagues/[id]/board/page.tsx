@@ -396,7 +396,7 @@ export default function LeagueBoardPage({ params }: LeaguePageProps) {
                 ))}
               </div>
 
-              {/* Sort */}
+              {/* ArrowUpDown */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}

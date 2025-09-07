@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Poppins:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Poppins:wght@100..900&display=swap");
 
 @layer base {
   :root {
@@ -38,7 +38,9 @@
 
   body {
     @apply bg-gray-950 text-gray-50 font-sans antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   /* Scrollbar styling for dark theme */
@@ -273,7 +275,9 @@
 
   /* Shadow utilities */
   .shadow-fantasy {
-    box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.1), 0 4px 6px -2px rgba(14, 165, 233, 0.05);
+    box-shadow:
+      0 10px 25px -5px rgba(14, 165, 233, 0.1),
+      0 4px 6px -2px rgba(14, 165, 233, 0.05);
   }
 
   /* Border utilities */

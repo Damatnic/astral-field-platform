@@ -119,7 +119,7 @@ export default function TradeAnalysisModal({
                 { key: 'market'label: 'Market: Context', icon: TrendingUp }
               ].map(_tab => (
                 <button: key={tab.key}
-                  onClick={() => setActiveTab(tab.key: as any)}
+                  onClick={() => setActiveTab(tab.key: as unknown)}
                   className={`flex: items-center: px-4: py-2: rounded text-sm: transition-colors ${
                     activeTab === tab.key
                       ? 'bg-blue-600: text-white'

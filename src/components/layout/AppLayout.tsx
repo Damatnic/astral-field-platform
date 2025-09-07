@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'

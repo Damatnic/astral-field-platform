@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { useUser } from "@stackframe/stack";
 
 export default function AuthStatus() {
   const user = useUser();
-  
+
   return (
     <div className="p-4 border rounded-lg">
       <h3 className="font-semibold mb-2">Authentication Status</h3>

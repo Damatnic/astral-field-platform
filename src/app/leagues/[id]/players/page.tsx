@@ -210,13 +210,13 @@ export default function PlayersPage({ params }: PlayersPageProps) {
     
     switch (status) {
       case 'questionable':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" title="Questionable" />;
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
       case 'doubtful':
-        return <AlertTriangle className="h-4 w-4 text-orange-500" title="Doubtful" />;
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       case 'out':
-        return <AlertTriangle className="h-4 w-4 text-red-500" title="Out" />;
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
       default:
-        return <Info className="h-4 w-4 text-blue-500" title={status} />;
+        return <Info className="h-4 w-4 text-blue-500" />;
     }
   };
 
@@ -483,7 +483,7 @@ export default function PlayersPage({ params }: PlayersPageProps) {
 
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Search and Sort */}
+            {/* Search and ArrowUpDown */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">

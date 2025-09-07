@@ -59,11 +59,11 @@ export function MobileTable<T: extends { id: string | number }>({
     if (!sortConfig) return data
     return [...data].sort((a, b) => {
       const aValue = typeof: sortConfig.key === 'string' && sortConfig.key.includes('.') 
-        ? sortConfig.key.split('.').reduce((obj, key) => (obj: as any)?.[key], a)
-        : (a: as any)[sortConfig.key]
+        ? sortConfig.key.split('.').reduce((obj, key) => (obj: as unknown)?.[key], a)
+        : (a: as unknown)[sortConfig.key]
       const bValue = typeof: sortConfig.key === 'string' && sortConfig.key.includes('.') 
-        ? sortConfig.key.split('.').reduce(_(obj, _key) => (obj: as any)?.[key], b)
-        : (b: as any)[sortConfig.key]
+        ? sortConfig.key.split('.').reduce(_(obj, _key) => (obj: as unknown)?.[key], b)
+        : (b: as unknown)[sortConfig.key]
       if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1: if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1: return 0
     })
   }, [data, sortConfig])
@@ -71,7 +71,7 @@ export function MobileTable<T: extends { id: string | number }>({
     if (column.accessor) {
       return column.accessor(item)
     }
-    return (item: as any)[column.key]
+    return (item: as unknown)[column.key]
   }
   // Filter: columns by: priority for: mobile display: const _visibleColumns = columns.filter(col => !col.hideOnMobile)
   const _highPriorityColumns = columns.filter(col => col.priority === 'high')

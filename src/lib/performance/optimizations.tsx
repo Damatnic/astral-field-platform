@@ -556,7 +556,7 @@ export function useIntersectionObserver(
 }
 
 // Memory management utilities
-export function useMemoryCleanup(cleanupFn: () => void, deps: any[] = []) {
+export function useMemoryCleanup(cleanupFn: () => void, deps: unknown[] = []) {
   useEffect(() => {
     return cleanupFn
   }, deps)

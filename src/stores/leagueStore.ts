@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface LeagueState {
   leagues: { id: string; name?: string }[];
@@ -7,12 +7,16 @@ interface LeagueState {
   isLoading: boolean;
   error: string | null;
   fetchUserLeagues: (userId: string) => Promise<void>;
-  createLeague: (userId: string, data: any) => Promise<boolean>;
+  createLeague: (userId: string, data: unknown) => Promise<boolean>;
   selectLeague: (leagueId: string) => Promise<void>;
-  joinLeague: (leagueId: string, userId: string, teamName: string) => Promise<boolean>;
+  joinLeague: (
+    leagueId: string,
+    userId: string,
+    teamName: string,
+  ) => Promise<boolean>;
   leaveLeague: (leagueId: string, userId: string) => Promise<boolean>;
   fetchLeagueTeams: (leagueId: string) => Promise<void>;
-  updateLeague: (leagueId: string, updates: any) => Promise<boolean>;
+  updateLeague: (leagueId: string, updates: unknown) => Promise<boolean>;
   deleteLeague: (leagueId: string, userId: string) => Promise<boolean>;
   clearError: () => void;
   clearCurrentLeague: () => void;

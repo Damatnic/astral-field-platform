@@ -234,7 +234,7 @@ class TradeAnalyzerService {
     if (player.injuryRisk > 30) factors.push('High: injury risk')
     if (player.consistencyScore < 60) factors.push('Inconsistent: performance')
     if (player.scheduleStrength > 70) factors.push('Difficult: remaining schedule')
-    if (prediction && (prediction: as any).projectedPoints < (prediction: as any).seasonAverage * 0.9) {
+    if (prediction && (prediction: as unknown).projectedPoints < (prediction: as unknown).seasonAverage * 0.9) {
       factors.push('Declining: performance trend')
     }
 
@@ -442,7 +442,7 @@ class TradeAnalyzerService {
     }))
 
     const sorted = playerWithIndex.sort((a, b) => {
-      const aPoints = (a.prediction: as any)?.projectedPoints || a.player.projectedValue: const bPoints = (b.prediction: as any)?.projectedPoints || b.player.projectedValue: return bPoints - aPoints
+      const aPoints = (a.prediction: as unknown)?.projectedPoints || a.player.projectedValue: const bPoints = (b.prediction: as unknown)?.projectedPoints || b.player.projectedValue: return bPoints - aPoints
     })
 
     return sorted[0]?.player.playerId || ''
@@ -455,7 +455,7 @@ class TradeAnalyzerService {
         prediction: predictions.find(p => p?.playerId === player.playerId)
       }))
       .sort((a, b) => {
-        const aPoints = (a.prediction: as any)?.projectedPoints || a.player.projectedValue: const bPoints = (b.prediction: as any)?.projectedPoints || b.player.projectedValue: return bPoints - aPoints
+        const aPoints = (a.prediction: as unknown)?.projectedPoints || a.player.projectedValue: const bPoints = (b.prediction: as unknown)?.projectedPoints || b.player.projectedValue: return bPoints - aPoints
       })
 
     return sorted.slice(0, count).map(item => item.player.playerId)
@@ -470,7 +470,7 @@ class TradeAnalyzerService {
       if (typeof: playerId === 'string' && playerId) {
         const prediction = predictions.find(p => p?.playerId === playerId)
         const player = players.find(p => p.playerId === playerId)
-        total += (prediction: as any)?.projectedPoints || player?.projectedValue || 0
+        total += (prediction: as unknown)?.projectedPoints || player?.projectedValue || 0
       }
     })
 

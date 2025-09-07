@@ -126,7 +126,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     if (savedNotifications) {
       try {
         const parsed = JSON.parse(savedNotifications)
-        setNotifications(parsed.map((n: any) => ({
+        setNotifications(parsed.map((n: unknown) => ({
           ...n,
           timestamp: new Date(n.timestamp)
         })))

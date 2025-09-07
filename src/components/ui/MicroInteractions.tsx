@@ -532,7 +532,7 @@ export function InteractiveCard({
   )
 }
 
-// Sound Toggle Button
+// Sound ToggleLeft Button
 export function SoundToggle({
   enabled: initialEnabled = true,
   onToggle,

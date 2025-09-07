@@ -6,7 +6,7 @@ import {
   DollarSign, Clock, TrendingUp, TrendingDown, 
   Users, Calendar, AlertTriangle, Trophy,
   Plus, X, Check, ChevronRight, History,
-  Target, Zap, RefreshCw, Filter, Sort
+  Target, Zap, RefreshCw, Filter, ArrowUpDown
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
@@ -507,7 +507,7 @@ export default function WaiverPage({ params }: WaiverPageProps) {
                   ].map((tab) => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id as any)}
+                      onClick={() => setActiveTab(tab.id as 'players' | 'order' | 'history' | 'claims')}
                       className={`${
                         activeTab === tab.id
                           ? 'border-primary-500 text-primary-600 dark:text-primary-400'
@@ -545,7 +545,7 @@ export default function WaiverPage({ params }: WaiverPageProps) {
                         </select>
                         <select
                           value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value as any)}
+                          onChange={(e) => setSortBy(e.target.value as 'projection' | 'owned' | 'trending')}
                           className="text-sm px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                           <option value="projection">Projection</option>

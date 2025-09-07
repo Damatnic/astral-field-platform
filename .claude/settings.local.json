@@ -52,7 +52,12 @@
       "Bash(npm uninstall:*)",
       "Bash(npx @stackframe/init-stack@latest:*)",
       "WebFetch(domain:docs.stack-auth.com)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(npx next lint:*)",
+      "Bash(npm run fix-errors:*)",
+      "Bash(mkdir:*)",
+      "Bash(timeout 120 npm run build)",
+      "Bash(timeout 90 npm run build)"
     ],
     "deny": [],
     "ask": []

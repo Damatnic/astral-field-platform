@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface LiveState {
   isLoading: boolean;
@@ -15,4 +15,3 @@ export const useLiveStore = create<LiveState>((set) => ({
     set({ notificationsEnabled: true });
   },
 }));
-

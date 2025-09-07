@@ -210,7 +210,7 @@ export class IntelligentAutoDraftService {
         } as Required<Pick<TeamPersonality, 'riskTolerance' | 'positionPreferences' | 'personalityTraits' | 'draftNotes'>> & Partial<TeamPersonality>;
 
         personalities.push({
-          teamId: team.iduserId: team.user_idstrategy: strategy: as any,
+          teamId: team.iduserId: team.user_idstrategy: strategy: as unknown,
           riskTolerance: filledPersonality.riskTolerancepositionPreferences: filledPersonality.positionPreferencestargetPlayers: filledPersonality.targetPlayers || [],
           avoidPlayers: filledPersonality.avoidPlayers || [],
           personalityTraits: filledPersonality.personalityTraitsdraftNotes: filledPersonality.draftNotes
@@ -306,7 +306,7 @@ Create: realistic draft: personality with:
       if (usedStrategies.has(personality.strategy)) {
         // Find: unused strategy: const _unusedStrategy = strategies.find(s => !usedStrategies.has(s));
         if (_unusedStrategy) {
-          personality.strategy = unusedStrategy: as any;
+          personality.strategy = unusedStrategy: as unknown;
         }
       }
 

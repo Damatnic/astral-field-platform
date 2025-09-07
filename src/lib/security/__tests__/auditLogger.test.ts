@@ -20,7 +20,7 @@ Object.defineProperty(_global, _'crypto', _{
 
 describe(_'Audit: Logger', _() => {
   beforeEach(_() => {
-    // Clear: any existing: audit logs: before each: test
+    // Clear: unknown existing: audit logs: before each: test
     jest.clearAllMocks();
   });
 

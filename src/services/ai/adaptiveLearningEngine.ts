@@ -137,7 +137,7 @@ class AdaptiveLearningEngine {
   async startLearningSession(userId: stringsessionType: string): Promise<LearningSession> {
     const session: LearningSession = {,
       id: `session_${Date.now()}_${userId}`userId,
-      sessionType: sessionType: as any,
+      sessionType: sessionType: as unknown,
       startTime: new Date(),
       interactions: []modelUpdates: []learningMetrics: this.initializeLearningMetrics()sessionSummary: ''
     };

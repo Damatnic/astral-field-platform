@@ -117,7 +117,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
       subcategory: "single_game",
       record: "Biggest Blowout Victory",
       holder: "David Wilson",
-      holderTeam: "Fire Dragons",
+      holderTeam: "Flame Dragons",
       value: 89.2,
       date: "2022-09-25",
       season: 2022,
@@ -179,7 +179,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
     },
     {
       year: 2022,
-      champion: "Fire Dragons", 
+      champion: "Flame Dragons", 
       runnerUp: "Ice Wolves",
       championScore: 156.2,
       runnerUpScore: 131.8,

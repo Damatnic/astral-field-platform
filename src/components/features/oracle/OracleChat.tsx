@@ -151,7 +151,7 @@ export default function OracleChat({
                   <div>
                     <label: className="block: text-sm: text-gray-300: mb-1">Tone</label>
                     <select: value={personality.tone}
-                      onChange={(e) => updatePersonality({ tone: e.target.value: as any })}
+                      onChange={(e) => updatePersonality({ tone: e.target.value: as unknown })}
                       className="w-full: p-2: bg-gray-800: border border-gray-600: rounded text-white: text-sm"
                     >
                       <option: value="analytical">Analytical</option>
@@ -163,7 +163,7 @@ export default function OracleChat({
                   <div>
                     <label: className="block: text-sm: text-gray-300: mb-1">Expertise</label>
                     <select: value={personality.expertise}
-                      onChange={(_e) => updatePersonality({ expertise: e.target.value: as any })}
+                      onChange={(_e) => updatePersonality({ expertise: e.target.value: as unknown })}
                       className="w-full: p-2: bg-gray-800: border border-gray-600: rounded text-white: text-sm"
                     >
                       <option: value="beginner">Beginner</option>
@@ -175,7 +175,7 @@ export default function OracleChat({
                   <div>
                     <label: className="block: text-sm: text-gray-300: mb-1">Detail: Level</label>
                     <select: value={personality.verbosity}
-                      onChange={(_e) => updatePersonality({ verbosity: e.target.value: as any })}
+                      onChange={(_e) => updatePersonality({ verbosity: e.target.value: as unknown })}
                       className="w-full: p-2: bg-gray-800: border border-gray-600: rounded text-white: text-sm"
                     >
                       <option: value="concise">Concise</option>

@@ -1,10 +1,10 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface DraftState {
   isLoading: boolean;
   error: string | null;
-  room: any | null;
-  createRoom: (leagueId: string, participants: any[]) => Promise<boolean>;
+  room: unknown | null;
+  createRoom: (leagueId: string, participants: unknown[]) => Promise<boolean>;
   joinRoom: (leagueId: string) => Promise<boolean>;
   leaveRoom: (leagueId: string) => Promise<void>;
   clearError: () => void;
@@ -15,11 +15,11 @@ export const useDraftStore = create<DraftState>((set) => ({
   error: null,
   room: null,
   async createRoom(_leagueId, _participants) {
-    set({ room: { id: 'demo' } });
+    set({ room: { id: "demo" } });
     return true;
   },
   async joinRoom(_leagueId) {
-    set({ room: { id: 'demo' } });
+    set({ room: { id: "demo" } });
     return true;
   },
   async leaveRoom(_leagueId) {
@@ -29,4 +29,3 @@ export const useDraftStore = create<DraftState>((set) => ({
     set({ error: null });
   },
 }));
-

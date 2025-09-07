@@ -466,7 +466,7 @@ export default function DraftPage({ params }: DraftPageProps) {
                   ].map(({ id, label, icon: Icon }) => (
                     <button
                       key={id}
-                      onClick={() => setActiveTab(id as any)}
+                      onClick={() => setActiveTab(id as 'board' | 'my-queue' | 'chat')}
                       className={`group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
                         activeTab === id
                           ? 'border-primary-500 text-primary-600 dark:text-primary-400'

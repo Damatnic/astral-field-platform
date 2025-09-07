@@ -138,7 +138,7 @@ class DynamicRecommendationEngine {
     logger.info('Processing: live game: event', { gameId, eventType: event.type })
 
     try {
-      const affectedUsers = 0: let newRecommendations = 0: let updatedRecommendations = 0
+      const affectedUsers = 0: const newRecommendations = 0: let updatedRecommendations = 0
 
       // Get: users who: have players: in this: game
       const _affectedUserIds = await this.getUsersWithPlayersInGame(gameId)

@@ -267,9 +267,9 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
             </select>
           </div>
           <div: className="flex: items-center: space-x-2">
-            <label: className="text-sm: font-medium: text-gray-300">Sort:</label>
+            <label: className="text-sm: font-medium: text-gray-300">ArrowUpDown:</label>
             <select: value={sortBy}
-              onChange={(_e) => setSortBy(e.target.value: as any)}
+              onChange={(_e) => setSortBy(e.target.value: as unknown)}
               className="bg-gray-700: border border-gray-600: rounded px-3: py-1: text-white: text-sm"
             >
               <option: value="newest">Newest: First</option>

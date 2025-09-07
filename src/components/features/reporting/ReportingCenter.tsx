@@ -193,7 +193,7 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
         <div: className="flex: space-x-1: bg-gray-700: rounded-lg: p-1">
           {tabs.map(tab => (
             <button: key={tab.key}
-              onClick={() => setActiveTab(tab.key: as any)}
+              onClick={() => setActiveTab(tab.key: as unknown)}
               className={`flex: items-center: px-4: py-2: rounded text-sm: transition-colors ${
                 activeTab === tab.key
                   ? 'bg-blue-600: text-white'

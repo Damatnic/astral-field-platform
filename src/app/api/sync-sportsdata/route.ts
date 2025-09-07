@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,29 +7,29 @@ export async function POST(request: NextRequest) {
 
     if (!action) {
       return NextResponse.json(
-        { error: 'Action parameter required' },
-        { status: 400 }
+        { error: "Action parameter required" },
+        { status: 400 },
       );
     }
 
     let result;
 
     switch (action) {
-      case 'sync-all-players':
-        console.log('Starting sync of all NFL players from SportsData.io...');
+      case "sync-all-players":
+        console.log("Starting sync of all NFL players from SportsData.io...");
         result = {
           success: true,
-          message: 'All players synced successfully',
+          message: "All players synced successfully",
           playersProcessed: 2500,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
         break;
 
-      case 'sync-team-players':
+      case "sync-team-players":
         if (!team) {
           return NextResponse.json(
-            { error: 'Team parameter required for team sync' },
-            { status: 400 }
+            { error: "Team parameter required for team sync" },
+            { status: 400 },
           );
         }
         console.log(`Starting sync of ${team} players...`);
@@ -38,33 +38,36 @@ export async function POST(request: NextRequest) {
           message: `${team} players synced successfully`,
           team,
           playersProcessed: 65,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
         break;
 
-      case 'sync-weekly-stats':
-        console.log('Starting sync of weekly stats...');
+      case "sync-weekly-stats":
+        console.log("Starting sync of weekly stats...");
         result = {
           success: true,
-          message: 'Weekly stats synced successfully',
+          message: "Weekly stats synced successfully",
           statsProcessed: 1800,
           currentWeek: 14,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
         break;
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action. Use: sync-all-players, sync-team-players, or sync-weekly-stats' },
-          { status: 400 }
+          {
+            error:
+              "Invalid action. Use: sync-all-players, sync-team-players, or sync-weekly-stats",
+          },
+          { status: 400 },
         );
     }
 
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
@@ -77,14 +80,14 @@ export async function GET() {
       totalPlayers: 2500,
       totalTeams: 32,
       currentWeek: 14,
-      syncHealth: 'healthy'
+      syncHealth: "healthy",
     };
 
     return NextResponse.json(status);
   } catch {
     return NextResponse.json(
-      { error: 'Failed to get sync status' },
-      { status: 500 }
+      { error: "Failed to get sync status" },
+      { status: 500 },
     );
   }
 }

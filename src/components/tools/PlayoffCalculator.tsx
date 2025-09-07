@@ -77,7 +77,7 @@ const MOCK_TEAMS: Team[] = [
     ties: 0,
     pointsFor: 1298.3,
     pointsAgainst: 1234.1,
-    remainingSchedule: ['Titans', 'Thunder Bolts', 'Lightning', 'Fire'],
+    remainingSchedule: ['Titans', 'Thunder Bolts', 'Lightning', 'Flame'],
     playoffSeed: 2,
     isEliminated: false,
     isClinched: false
@@ -91,7 +91,7 @@ const MOCK_TEAMS: Team[] = [
     ties: 0,
     pointsFor: 1187.9,
     pointsAgainst: 1276.4,
-    remainingSchedule: ['Lightning', 'Fire', 'Thunder Bolts', 'Spartans'],
+    remainingSchedule: ['Lightning', 'Flame', 'Thunder Bolts', 'Spartans'],
     playoffSeed: 3,
     isEliminated: false,
     isClinched: false
@@ -105,7 +105,7 @@ const MOCK_TEAMS: Team[] = [
     ties: 0,
     pointsFor: 1156.2,
     pointsAgainst: 1289.5,
-    remainingSchedule: ['Fire', 'Thunder Bolts', 'Titans', 'Warriors'],
+    remainingSchedule: ['Flame', 'Thunder Bolts', 'Titans', 'Warriors'],
     playoffSeed: 4,
     isEliminated: false,
     isClinched: false
@@ -119,13 +119,13 @@ const MOCK_TEAMS: Team[] = [
     ties: 0,
     pointsFor: 1134.8,
     pointsAgainst: 1312.6,
-    remainingSchedule: ['Warriors', 'Gladiators', 'Fire', 'Titans'],
+    remainingSchedule: ['Warriors', 'Gladiators', 'Flame', 'Titans'],
     isEliminated: false,
     isClinched: false
   },
   {
     id: 'team6',
-    name: 'Fire',
+    name: 'Flame',
     ownerName: 'Lisa Garcia',
     wins: 4,
     losses: 8,

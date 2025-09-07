@@ -1,5 +1,13 @@
-export interface TeamInfo { abbreviation: string; name: string }
-export interface PlayerInfo { id: string; name: string; position: string; team: string }
+export interface TeamInfo {
+  abbreviation: string;
+  name: string;
+}
+export interface PlayerInfo {
+  id: string;
+  name: string;
+  position: string;
+  team: string;
+}
 
 class SportsDataService {
   async getTeams(): Promise<TeamInfo[]> {
@@ -15,4 +23,3 @@ class SportsDataService {
 
 const sportsDataService = new SportsDataService();
 export default sportsDataService;
-

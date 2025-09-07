@@ -1,25 +1,25 @@
-import { database } from './database'
+import { database } from "./database";
 
 export interface OptimizedQuery {
-  sql: string
-  params: any[]
-  cacheKey?: string
-  expectedRows?: number
+  sql: string;
+  params: unknown[];
+  cacheKey?: string;
+  expectedRows?: number;
 }
 
 export class DatabaseOptimizer {
-  
   // Combine multiple analytics queries into a single transaction for better performance
   async executeAnalyticsQueries(leagueId: string): Promise<{
-    latestWeek: number | null
-    leagueAvg: number
-    waiverProcessed: number
-    tradesAccepted: number
-    injuredCount: number
+    latestWeek: number | null;
+    leagueAvg: number;
+    waiverProcessed: number;
+    tradesAccepted: number;
+    injuredCount: number;
   }> {
     return database.transaction(async (client) => {
       // Single optimized query that gets all metrics at once
-      const result = await client.query(`
+      const result = await client.query(
+        `
         WITH league_metrics AS (
           -- Get latest week and league average in one query
           SELECT 
@@ -63,32 +63,38 @@ export class DatabaseOptimizer {
         CROSS JOIN waiver_metrics wm
         CROSS JOIN trade_metrics tm
         CROSS JOIN injury_metrics im
-      `, [leagueId])
+      `,
+        [leagueId],
+      );
 
-      const row = result.rows[0] || {}
+      const row = result.rows[0] || {};
       return {
         latestWeek: row.latest_week || null,
         leagueAvg: Number(row.league_avg) || 0,
         waiverProcessed: Number(row.waiver_count) || 0,
         tradesAccepted: Number(row.trade_count) || 0,
-        injuredCount: Number(row.injured_count) || 0
-      }
-    })
+        injuredCount: Number(row.injured_count) || 0,
+      };
+    });
   }
 
   // Optimized query for season strategy analytics
-  async executeSeasonStrategyQueries(leagueId: string, teamId: string): Promise<{
-    latestWeek: number | null
-    teamRecentPerformance: Array<{ week: number, points: number }>
-    leagueRecentPerformance: Array<{ week: number, avg: number }>
-    rosterComposition: Record<string, number>
-    byeWeeksUpcoming: number
+  async executeSeasonStrategyQueries(
+    leagueId: string,
+    teamId: string,
+  ): Promise<{
+    latestWeek: number | null;
+    teamRecentPerformance: Array<{ week: number; points: number }>;
+    leagueRecentPerformance: Array<{ week: number; avg: number }>;
+    rosterComposition: Record<string, number>;
+    byeWeeksUpcoming: number;
   }> {
     return database.transaction(async (client) => {
       // Get all season strategy data in optimized queries
       const [weekData, rosterData] = await Promise.all([
         // Combined query for week data and recent performance
-        client.query(`
+        client.query(
+          `
           WITH latest_week AS (
             SELECT MAX(le.week) as week
             FROM lineup_entries le
@@ -124,10 +130,13 @@ export class DatabaseOptimizer {
           FROM latest_week lw
           LEFT JOIN team_recent tr ON true
           LEFT JOIN league_recent lr ON true
-        `, [leagueId, teamId]),
+        `,
+          [leagueId, teamId],
+        ),
 
         // Roster composition query
-        client.query(`
+        client.query(
+          `
           SELECT 
             p.position,
             COUNT(*) as count
@@ -136,42 +145,48 @@ export class DatabaseOptimizer {
           JOIN players p ON r.player_id = p.id
           WHERE t.league_id = $1 AND r.team_id = $2 AND r.dropped_date IS NULL
           GROUP BY p.position
-        `, [leagueId, teamId])
-      ])
+        `,
+          [leagueId, teamId],
+        ),
+      ]);
 
-      const weekRow = weekData.rows[0] || {}
-      const rosterRows = rosterData.rows || []
-      
+      const weekRow = weekData.rows[0] || {};
+      const rosterRows = rosterData.rows || [];
+
       return {
         latestWeek: weekRow.latest_week || null,
         teamRecentPerformance: weekRow.team_recent || [],
         leagueRecentPerformance: weekRow.league_recent || [],
-        rosterComposition: rosterRows.reduce((acc, row) => {
-          acc[row.position] = Number(row.count)
-          return acc
-        }, {} as Record<string, number>),
-        byeWeeksUpcoming: 2 // Placeholder - would need NFL schedule data
-      }
-    })
+        rosterComposition: rosterRows.reduce(
+          (acc, row) => {
+            acc[row.position] = Number(row.count);
+            return acc;
+          },
+          {} as Record<string, number>,
+        ),
+        byeWeeksUpcoming: 2, // Placeholder - would need NFL schedule data
+      };
+    });
   }
 
   // Optimized query for comparative analysis
   async executeComparativeAnalysisQueries(leagueId: string): Promise<{
     leagueMetrics: {
-      averageScore: number
-      standardDeviation: number
-      totalTeams: number
-      participationRate: number
-    }
+      averageScore: number;
+      standardDeviation: number;
+      totalTeams: number;
+      participationRate: number;
+    };
     teamRankings: Array<{
-      teamName: string
-      score: number
-      rank: number
-    }>
+      teamName: string;
+      score: number;
+      rank: number;
+    }>;
   }> {
     return database.transaction(async (client) => {
       // Single query to get all comparative metrics
-      const result = await client.query(`
+      const result = await client.query(
+        `
         WITH league_stats AS (
           SELECT 
             AVG(le.points_scored) as avg_score,
@@ -207,127 +222,140 @@ export class DatabaseOptimizer {
         FROM league_stats ls
         LEFT JOIN team_rankings tr ON true
         GROUP BY ls.avg_score, ls.std_dev, ls.total_teams, ls.active_teams
-      `, [leagueId])
+      `,
+        [leagueId],
+      );
 
-      const row = result.rows[0] || {}
+      const row = result.rows[0] || {};
       return {
         leagueMetrics: {
           averageScore: Number(row.avg_score) || 0,
           standardDeviation: Number(row.std_dev) || 0,
           totalTeams: Number(row.total_teams) || 0,
-          participationRate: row.total_teams > 0 ? (Number(row.active_teams) / Number(row.total_teams)) * 100 : 0
+          participationRate:
+            row.total_teams > 0
+              ? (Number(row.active_teams) / Number(row.total_teams)) * 100
+              : 0,
         },
-        teamRankings: Array.isArray(row.rankings) ? row.rankings.map((r: any) => ({
-          teamName: r.teamName || 'Unknown',
-          score: Number(r.score) || 0,
-          rank: Number(r.rank) || 0
-        })) : []
-      }
-    })
+        teamRankings: Array.isArray(row.rankings)
+          ? row.rankings.map((r: unknown) => ({
+              teamName: r.teamName || "Unknown",
+              score: Number(r.score) || 0,
+              rank: Number(r.rank) || 0,
+            }))
+          : [],
+      };
+    });
   }
 
   // Get recommended indexes for better query performance
   static getRecommendedIndexes(): Array<{
-    table: string
-    columns: string[]
-    type: 'btree' | 'hash' | 'composite'
-    reason: string
+    table: string;
+    columns: string[];
+    type: "btree" | "hash" | "composite";
+    reason: string;
   }> {
     return [
       {
-        table: 'lineup_entries',
-        columns: ['team_id', 'week'],
-        type: 'composite',
-        reason: 'Optimize team performance queries by week'
+        table: "lineup_entries",
+        columns: ["team_id", "week"],
+        type: "composite",
+        reason: "Optimize team performance queries by week",
       },
       {
-        table: 'lineup_entries', 
-        columns: ['week', 'points_scored'],
-        type: 'composite',
-        reason: 'Optimize league average calculations by week'
+        table: "lineup_entries",
+        columns: ["week", "points_scored"],
+        type: "composite",
+        reason: "Optimize league average calculations by week",
       },
       {
-        table: 'teams',
-        columns: ['league_id'],
-        type: 'btree',
-        reason: 'Fast lookup of teams in a league'
+        table: "teams",
+        columns: ["league_id"],
+        type: "btree",
+        reason: "Fast lookup of teams in a league",
       },
       {
-        table: 'waiver_claims',
-        columns: ['team_id', 'status'],
-        type: 'composite',
-        reason: 'Optimize waiver activity queries'
+        table: "waiver_claims",
+        columns: ["team_id", "status"],
+        type: "composite",
+        reason: "Optimize waiver activity queries",
       },
       {
-        table: 'trades',
-        columns: ['proposing_team_id', 'status'],
-        type: 'composite',
-        reason: 'Optimize trade activity queries'
+        table: "trades",
+        columns: ["proposing_team_id", "status"],
+        type: "composite",
+        reason: "Optimize trade activity queries",
       },
       {
-        table: 'rosters',
-        columns: ['team_id', 'dropped_date'],
-        type: 'composite',
-        reason: 'Optimize active roster queries'
+        table: "rosters",
+        columns: ["team_id", "dropped_date"],
+        type: "composite",
+        reason: "Optimize active roster queries",
       },
       {
-        table: 'players',
-        columns: ['injury_status'],
-        type: 'btree',
-        reason: 'Fast filtering by injury status'
-      }
-    ]
+        table: "players",
+        columns: ["injury_status"],
+        type: "btree",
+        reason: "Fast filtering by injury status",
+      },
+    ];
   }
 
   // Create index creation SQL statements
   static generateIndexSQL(): string[] {
-    return this.getRecommendedIndexes().map(index => {
-      const indexName = `idx_${index.table}_${index.columns.join('_')}`
-      const columns = index.columns.join(', ')
-      return `CREATE INDEX CONCURRENTLY IF NOT EXISTS ${indexName} ON ${index.table} (${columns});`
-    })
+    return this.getRecommendedIndexes().map((index) => {
+      const indexName = `idx_${index.table}_${index.columns.join("_")}`;
+      const columns = index.columns.join(", ");
+      return `CREATE INDEX CONCURRENTLY IF NOT EXISTS ${indexName} ON ${index.table} (${columns});`;
+    });
   }
 
   // Analyze query performance
-  async analyzeQueryPerformance(sql: string, params: any[] = []): Promise<{
-    executionTime: number
-    planningTime: number
-    totalRows: number
-    estimatedCost: number
+  async analyzeQueryPerformance(
+    sql: string,
+    params: unknown[] = [],
+  ): Promise<{
+    executionTime: number;
+    planningTime: number;
+    totalRows: number;
+    estimatedCost: number;
   }> {
     try {
-      const explainResult = await database.query(`
+      const explainResult = await database.query(
+        `
         EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ${sql}
-      `, params)
+      `,
+        params,
+      );
 
-      const plan = explainResult.rows[0]['QUERY PLAN'][0]
-      
+      const plan = explainResult.rows[0]["QUERY PLAN"][0];
+
       return {
-        executionTime: plan['Execution Time'] || 0,
-        planningTime: plan['Planning Time'] || 0, 
-        totalRows: plan['Plan']?.['Actual Rows'] || 0,
-        estimatedCost: plan['Plan']?.['Total Cost'] || 0
-      }
+        executionTime: plan["Execution Time"] || 0,
+        planningTime: plan["Planning Time"] || 0,
+        totalRows: plan["Plan"]?.["Actual Rows"] || 0,
+        estimatedCost: plan["Plan"]?.["Total Cost"] || 0,
+      };
     } catch (error) {
-      console.error('Query analysis failed:', error)
+      console.error("Query analysis failed:", error);
       return {
         executionTime: 0,
         planningTime: 0,
         totalRows: 0,
-        estimatedCost: 0
-      }
+        estimatedCost: 0,
+      };
     }
   }
 }
 
 // Singleton instance
-let optimizerInstance: DatabaseOptimizer | null = null
+let optimizerInstance: DatabaseOptimizer | null = null;
 
 export function getDatabaseOptimizer(): DatabaseOptimizer {
   if (!optimizerInstance) {
-    optimizerInstance = new DatabaseOptimizer()
+    optimizerInstance = new DatabaseOptimizer();
   }
-  return optimizerInstance
+  return optimizerInstance;
 }
 
-export default getDatabaseOptimizer
+export default getDatabaseOptimizer;

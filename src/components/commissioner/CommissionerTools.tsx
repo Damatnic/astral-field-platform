@@ -160,7 +160,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as 'transactions' | 'teams' | 'settings' | 'schedule' | 'communications')}
               className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === id
                   ? 'border-red-500 text-red-600 dark:text-red-400'

@@ -410,7 +410,7 @@ export default function LineupOptimizer({
                   </label>
                   <select
                     value={settings.strategy}
-                    onChange={(e) => setSettings({...settings, strategy: e.target.value as any})}
+                    onChange={(e) => setSettings({...settings, strategy: e.target.value as 'ceiling' | 'floor' | 'balanced' | 'contrarian' | 'safe'})}
                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
                   >
                     <option value="balanced">Balanced</option>
@@ -427,7 +427,7 @@ export default function LineupOptimizer({
                   </label>
                   <select
                     value={settings.injuryRiskTolerance}
-                    onChange={(e) => setSettings({...settings, injuryRiskTolerance: e.target.value as any})}
+                    onChange={(e) => setSettings({...settings, injuryRiskTolerance: e.target.value as 'high' | 'medium' | 'low'})}
                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
                   >
                     <option value="high">High Risk/High Reward</option>

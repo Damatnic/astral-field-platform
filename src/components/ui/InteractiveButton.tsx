@@ -7,7 +7,13 @@ import { LoadingSpinner } from "./LoadingSpinner";
 interface InteractiveButtonProps {
   children: ReactNode;
   onClick?: () => void;
-  variant?: "primary" | "secondary" | "success" | "warning" | "danger" | "ghost";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "ghost";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   disabled?: boolean;
@@ -27,27 +33,34 @@ export function InteractiveButton({
   className = "",
   type = "button",
   icon,
-  iconPosition = "left"
+  iconPosition = "left",
 }: InteractiveButtonProps) {
-  const baseClasses = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
-  
+  const baseClasses =
+    "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+
   const variantClasses = {
-    primary: "bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-md hover:shadow-lg",
-    secondary: "bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500 shadow-md hover:shadow-lg",
-    success: "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500 shadow-md hover:shadow-lg",
-    warning: "bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500 shadow-md hover:shadow-lg", 
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-md hover:shadow-lg",
-    ghost: "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-gray-500"
+    primary:
+      "bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-md hover:shadow-lg",
+    secondary:
+      "bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500 shadow-md hover:shadow-lg",
+    success:
+      "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500 shadow-md hover:shadow-lg",
+    warning:
+      "bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500 shadow-md hover:shadow-lg",
+    danger:
+      "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-md hover:shadow-lg",
+    ghost:
+      "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-gray-500",
   };
-  
+
   const sizeClasses = {
     sm: "px-3 py-2 text-sm",
     md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base"
+    lg: "px-6 py-3 text-base",
   };
-  
+
   const disabledClasses = "opacity-50 cursor-not-allowed";
-  
+
   const finalClassName = `
     ${baseClasses} 
     ${variantClasses[variant]} 
@@ -82,7 +95,7 @@ export function FloatingActionButton({
   children,
   onClick,
   className = "",
-  position = "bottom-right"
+  position = "bottom-right",
 }: {
   children: ReactNode;
   onClick?: () => void;
@@ -93,7 +106,7 @@ export function FloatingActionButton({
     "bottom-right": "fixed bottom-6 right-6",
     "bottom-left": "fixed bottom-6 left-6",
     "top-right": "fixed top-6 right-6",
-    "top-left": "fixed top-6 left-6"
+    "top-left": "fixed top-6 left-6",
   };
 
   return (
@@ -119,7 +132,7 @@ export function ToggleButton({
   onClick,
   className = "",
   activeClassName = "bg-primary-600 text-white",
-  inactiveClassName = "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+  inactiveClassName = "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
 }: {
   children: ReactNode;
   active: boolean;
@@ -150,7 +163,7 @@ export function IconButton({
   variant = "ghost",
   size = "md",
   className = "",
-  tooltip
+  tooltip,
 }: {
   children: ReactNode;
   onClick?: () => void;
@@ -161,15 +174,19 @@ export function IconButton({
 }) {
   const sizeClasses = {
     sm: "w-8 h-8 text-sm",
-    md: "w-10 h-10 text-base", 
-    lg: "w-12 h-12 text-lg"
+    md: "w-10 h-10 text-base",
+    lg: "w-12 h-12 text-lg",
   };
-  
+
   const variantClasses = {
-    primary: "bg-primary-100 hover:bg-primary-200 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300",
-    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-    ghost: "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400",
-    danger: "bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+    primary:
+      "bg-primary-100 hover:bg-primary-200 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300",
+    secondary:
+      "bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+    ghost:
+      "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400",
+    danger:
+      "bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   };
 
   return (

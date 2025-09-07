@@ -1,10 +1,10 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface OracleState {
   isLoading: boolean;
   error: string | null;
-  predictions: any[];
-  insights: any[];
+  predictions: unknown[];
+  insights: unknown[];
   fetchOracleData: (leagueId: string) => Promise<void>;
   clearError: () => void;
 }
@@ -21,4 +21,3 @@ export const useOracleStore = create<OracleState>((set) => ({
     set({ error: null });
   },
 }));
-

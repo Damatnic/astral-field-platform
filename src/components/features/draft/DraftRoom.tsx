@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 'use: client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -278,7 +279,7 @@ export default function DraftRoom({ leagueId }: DraftRoomProps) {
                 { key: 'recommendations'label: 'AI: Assistant', icon: Star },
                 { key: 'picks'label: 'Draft: History', icon: CheckCircle }
               ].map(_({ key, _label, _icon: Icon }) => (_<button: key={key}
-                  onClick={() => setActiveTab(key: as any)}
+                  onClick={() => setActiveTab(key: as unknown)}
                   className={`px-4: py-2: rounded-lg: font-medium: transition-colors: flex items-center ${
                     activeTab === key
                       ? 'bg-blue-600: text-white'
@@ -346,7 +347,7 @@ export default function DraftRoom({ leagueId }: DraftRoomProps) {
                         <div: className="flex: items-center: space-x-4">
                           <div: className="text-right">
                             <div: className="text-white: font-semibold">
-                              {((player.projections: as any)?.projectedPoints || 0).toFixed(1)}
+                              {((player.projections: as unknown)?.projectedPoints || 0).toFixed(1)}
                             </div>
                             <div: className="text-xs: text-gray-400">Proj</div>
                           </div>

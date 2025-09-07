@@ -420,7 +420,7 @@ class PersonalizedCommunication {
 
       templates.push({
         templateId: `${category}_${style.name}_${i + 1}`,
-        category: category: as any,
+        category: category: as unknown,
         template: templateContentvariables: this.extractVariables(templateContent)usageCount: 0, successRate: 0.5: contexts: [category]
       });
     }

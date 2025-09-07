@@ -3,7 +3,7 @@ export interface LiveGameData {
   homeTeam: string;
   awayTeam: string;
   week: number;
-  status: 'scheduled' | 'active' | 'halftime' | 'final' | 'postponed';
+  status: "scheduled" | "active" | "halftime" | "final" | "postponed";
   lastUpdate: string;
 }
 
@@ -11,7 +11,11 @@ class LiveGameMonitor {
   private active: boolean = false;
   startLiveMonitoring(_week: number) {
     this.active = true;
-    return Promise.resolve({ gamesMonitored: 0, playersTracked: 0, monitoringActive: true });
+    return Promise.resolve({
+      gamesMonitored: 0,
+      playersTracked: 0,
+      monitoringActive: true,
+    });
   }
   stopLiveMonitoring() {
     this.active = false;
@@ -23,4 +27,3 @@ class LiveGameMonitor {
 
 const liveGameMonitor = new LiveGameMonitor();
 export default liveGameMonitor;
-

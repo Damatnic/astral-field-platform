@@ -6,7 +6,7 @@ import LeagueNavigation from "@/components/league/LeagueNavigation";
 import { 
   TrendingUp, TrendingDown, Minus, Trophy, Crown,
   MessageSquare, ChevronUp, ChevronDown, Zap,
-  Fire, Snowflake, Target, Shield, AlertTriangle,
+  Flame, Snowflake, Target, Shield, AlertTriangle,
   Star, BarChart3, Activity, Send, ThumbsUp
 } from "lucide-react";
 
@@ -345,7 +345,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
     ];
 
     // Apply sorting
-    let sortedRankings = [...mockRankings];
+    const sortedRankings = [...mockRankings];
     if (sortBy === 'record') {
       sortedRankings.sort((a, b) => {
         const [aWins] = a.record.split('-').map(Number);

@@ -1,14 +1,18 @@
-'use client'
+"use client";
 
-import { ReactNode } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { AccessibilityProvider } from '@/lib/accessibility/enhancements'
-import { NotificationProvider } from '@/components/notifications/SmartNotifications'
-import { KeyboardShortcutsProvider } from '@/components/ui/KeyboardShortcuts'
-import { ServiceWorkerManager } from '@/lib/performance/optimizations'
-import { AppInstallBanner, PWAStatusIndicator, PWALoadingSplash } from '@/components/mobile/AppInstallBanner'
-import { ScrollToTopButton } from '@/components/ui/MicroInteractions'
-import { AutoStartTours } from '@/components/onboarding/OnboardingTour'
+import { ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AccessibilityProvider } from "@/lib/accessibility/enhancements";
+import { NotificationProvider } from "@/components/notifications/SmartNotifications";
+import { KeyboardShortcutsProvider } from "@/components/ui/KeyboardShortcuts";
+import { ServiceWorkerManager } from "@/lib/performance/optimizations";
+import {
+  AppInstallBanner,
+  PWAStatusIndicator,
+  PWALoadingSplash,
+} from "@/components/mobile/AppInstallBanner";
+import { ScrollToTopButton } from "@/components/ui/MicroInteractions";
+import { AutoStartTours } from "@/components/onboarding/OnboardingTour";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -23,23 +27,23 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-})
+});
 
 interface AstralFieldProviderProps {
-  children: ReactNode
-  userId?: string
-  leagueId?: string
+  children: ReactNode;
+  userId?: string;
+  leagueId?: string;
 }
 
-export function AstralFieldProvider({ 
-  children, 
+export function AstralFieldProvider({
+  children,
   userId,
-  leagueId 
+  leagueId,
 }: AstralFieldProviderProps) {
   // Initialize service worker
-  if (typeof window !== 'undefined') {
-    const swManager = ServiceWorkerManager.getInstance()
-    swManager.register('/sw.js').catch(console.error)
+  if (typeof window !== "undefined") {
+    const swManager = ServiceWorkerManager.getInstance();
+    swManager.register("/sw.js").catch(console.error);
   }
 
   return (
@@ -50,30 +54,29 @@ export function AstralFieldProvider({
             leagueId={leagueId}
             onNewTrade={() => {
               // Handle new trade action
-              console.log('New trade triggered via keyboard shortcut')
+              console.log("New trade triggered via keyboard shortcut");
             }}
             onOptimizeLineup={() => {
               // Handle lineup optimization
-              console.log('Optimize lineup triggered via keyboard shortcut')
+              console.log("Optimize lineup triggered via keyboard shortcut");
             }}
           >
             {/* PWA Loading Splash */}
             <PWALoadingSplash />
-            
+
             {/* Main Content */}
             {children}
-            
+
             {/* Global UI Components */}
             <GlobalUIComponents userId={userId} />
-            
+
             {/* Auto-start onboarding tours */}
             {userId && <AutoStartTours userId={userId} />}
-            
           </KeyboardShortcutsProvider>
         </NotificationProvider>
       </AccessibilityProvider>
     </QueryClientProvider>
-  )
+  );
 }
 
 // Global UI components that should appear on every page
@@ -82,75 +85,81 @@ function GlobalUIComponents({ userId }: { userId?: string }) {
     <>
       {/* PWA Status Indicator */}
       <PWAStatusIndicator />
-      
+
       {/* Mobile App Install Banner */}
       <AppInstallBanner />
-      
+
       {/* Scroll to Top Button */}
       <ScrollToTopButton />
-      
+
       {/* Service Worker Update Handler */}
       <ServiceWorkerUpdateHandler />
     </>
-  )
+  );
 }
 
 // Component to handle service worker updates
 function ServiceWorkerUpdateHandler() {
-  if (typeof window === 'undefined') return null
+  if (typeof window === "undefined") return null;
 
   // Listen for service worker updates
-  window.addEventListener('sw-update-available', (event: any) => {
-    const swManager = ServiceWorkerManager.getInstance()
-    
+  window.addEventListener("sw-update-available", (event: unknown) => {
+    const swManager = ServiceWorkerManager.getInstance();
+
     // Show notification about update
     const shouldUpdate = confirm(
-      'A new version of Astral Field is available. Update now? The page will refresh.'
-    )
-    
-    if (shouldUpdate) {
-      swManager.skipWaiting()
-    }
-  })
+      "A new version of Astral Field is available. Update now? The page will refresh.",
+    );
 
-  return null
+    if (shouldUpdate) {
+      swManager.skipWaiting();
+    }
+  });
+
+  return null;
 }
 
 // Performance monitoring component
 export function PerformanceMonitor({ children }: { children: ReactNode }) {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     // Only monitor in development
-    import('@/lib/performance/optimizations').then(({ usePerformanceMonitor }) => {
-      // Initialize performance monitoring
-    })
+    import("@/lib/performance/optimizations").then(
+      ({ usePerformanceMonitor }) => {
+        // Initialize performance monitoring
+      },
+    );
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 // Error boundary component for the entire app
-export function AstralFieldErrorBoundary({ children }: { children: ReactNode }) {
-  if (typeof window === 'undefined') {
-    return <>{children}</>
+export function AstralFieldErrorBoundary({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  if (typeof window === "undefined") {
+    return <>{children}</>;
   }
 
   return (
     <ErrorBoundaryComponent fallback={<ErrorFallback />}>
       {children}
     </ErrorBoundaryComponent>
-  )
+  );
 }
 
-function ErrorBoundaryComponent({ 
-  children, 
-  fallback 
-}: { 
-  children: ReactNode
-  fallback: ReactNode 
+function ErrorBoundaryComponent({
+  children,
+  fallback,
+}: {
+  children: ReactNode;
+  fallback: ReactNode;
 }) {
   // This would be implemented with a proper error boundary class component
   // For now, just return children
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 function ErrorFallback() {
@@ -170,19 +179,19 @@ function ErrorFallback() {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 // Type definitions for the global app context
 export interface AstralFieldContextType {
-  userId?: string
-  leagueId?: string
+  userId?: string;
+  leagueId?: string;
   preferences: {
-    notifications: boolean
-    animations: boolean
-    sounds: boolean
-    theme: 'dark' | 'light' | 'auto'
-  }
+    notifications: boolean;
+    animations: boolean;
+    sounds: boolean;
+    theme: "dark" | "light" | "auto";
+  };
 }
 
 // Hook to access the Astral Field context
@@ -193,70 +202,70 @@ export function useAstralField(): AstralFieldContextType {
       notifications: true,
       animations: true,
       sounds: true,
-      theme: 'dark'
-    }
-  }
+      theme: "dark",
+    },
+  };
 }
 
 // Utility component for conditional rendering based on feature flags
-export function FeatureFlag({ 
-  flag, 
-  children, 
-  fallback = null 
-}: { 
-  flag: string
-  children: ReactNode
-  fallback?: ReactNode 
+export function FeatureFlag({
+  flag,
+  children,
+  fallback = null,
+}: {
+  flag: string;
+  children: ReactNode;
+  fallback?: ReactNode;
 }) {
   // This would check against a feature flag system
-  const isEnabled = true // Placeholder
-  
-  return isEnabled ? <>{children}</> : <>{fallback}</>
+  const isEnabled = true; // Placeholder
+
+  return isEnabled ? <>{children}</> : <>{fallback}</>;
 }
 
 // Component for development-only features
 export function DevOnly({ children }: { children: ReactNode }) {
-  if (process.env.NODE_ENV !== 'development') {
-    return null
+  if (process.env.NODE_ENV !== "development") {
+    return null;
   }
-  
-  return <>{children}</>
+
+  return <>{children}</>;
 }
 
-// Component for production-only features  
+// Component for production-only features
 export function ProdOnly({ children }: { children: ReactNode }) {
-  if (process.env.NODE_ENV === 'development') {
-    return null
+  if (process.env.NODE_ENV === "development") {
+    return null;
   }
-  
-  return <>{children}</>
+
+  return <>{children}</>;
 }
 
 // Analytics wrapper component
 export function AnalyticsProvider({ children }: { children: ReactNode }) {
   // Initialize analytics in production
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     // Initialize Google Analytics, PostHog, etc.
   }
-  
-  return <>{children}</>
+
+  return <>{children}</>;
 }
 
 // Theme provider for consistent styling
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // Handle theme switching, CSS custom properties, etc.
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 // Complete application wrapper
 export function AstralFieldApp({
   children,
   userId,
-  leagueId
+  leagueId,
 }: {
-  children: ReactNode
-  userId?: string
-  leagueId?: string
+  children: ReactNode;
+  userId?: string;
+  leagueId?: string;
 }) {
   return (
     <AstralFieldErrorBoundary>
@@ -270,5 +279,5 @@ export function AstralFieldApp({
         </AnalyticsProvider>
       </ThemeProvider>
     </AstralFieldErrorBoundary>
-  )
+  );
 }

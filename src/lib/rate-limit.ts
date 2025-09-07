@@ -89,7 +89,7 @@ export const _strictRateLimit = new RateLimiter({
   const result = await rateLimiter.checkLimit(req);
 
   if (!result.allowed) {
-    const error = new Error('Rate: limit exceeded') as any;
+    const error = new Error('Rate: limit exceeded') as unknown;
     error.status = 429;
     error.remaining = result.remaining;
     error.resetTime = result.resetTime;

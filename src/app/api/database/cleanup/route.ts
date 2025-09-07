@@ -1,19 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@vercel/postgres";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log('Starting database cleanup and reset...');
-    
+    console.log("Starting database cleanup and reset...");
+
     // Get authorization header
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get("authorization");
     const { adminPin } = await req.json().catch(() => ({ adminPin: null }));
-    
+
     // Simple auth check - only admin can run this
-    if (adminPin !== '9999' && authHeader !== 'Bearer admin-cleanup-token') {
+    if (adminPin !== "9999" && authHeader !== "Bearer admin-cleanup-token") {
       return NextResponse.json(
-        { error: 'Unauthorized. Admin PIN required.' },
-        { status: 401 }
+        { error: "Unauthorized. Admin PIN required." },
+        { status: 401 },
       );
     }
 
@@ -21,28 +21,28 @@ export async function POST(req: NextRequest) {
       dropped: [] as string[],
       created: [] as string[],
       errors: [] as string[],
-      message: ''
+      message: "",
     };
 
     // Step 1: Drop all existing tables in correct order (due to foreign key constraints)
     const tablesToDrop = [
-      'rosters',
-      'matchups',
-      'league_settings',
-      'teams',
-      'leagues',
-      'users',
-      'players',
-      'transactions',
-      'draft_picks',
-      'trade_offers',
-      'waiver_claims',
-      'league_messages',
-      'user_sessions',
-      'game_stats',
-      'player_stats',
-      'nfl_teams',
-      'scoring_settings'
+      "rosters",
+      "matchups",
+      "league_settings",
+      "teams",
+      "leagues",
+      "users",
+      "players",
+      "transactions",
+      "draft_picks",
+      "trade_offers",
+      "waiver_claims",
+      "league_messages",
+      "user_sessions",
+      "game_stats",
+      "player_stats",
+      "nfl_teams",
+      "scoring_settings",
     ];
 
     for (const table of tablesToDrop) {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 2: Create fresh tables with proper structure
-    
+
     // Users table
     await sql`
       CREATE TABLE users (
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
         is_active BOOLEAN DEFAULT true
       )
     `;
-    results.created.push('users');
+    results.created.push("users");
 
     // Leagues table
     await sql`
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
-    results.created.push('leagues');
+    results.created.push("leagues");
 
     // Teams table
     await sql`
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         UNIQUE(league_id, user_id)
       )
     `;
-    results.created.push('teams');
+    results.created.push("teams");
 
     // Players table (NFL players)
     await sql`
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
-    results.created.push('players');
+    results.created.push("players");
 
     // Rosters table
     await sql`
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
         UNIQUE(team_id, player_id)
       )
     `;
-    results.created.push('rosters');
+    results.created.push("rosters");
 
     // Matchups table
     await sql`
@@ -186,7 +186,7 @@ export async function POST(req: NextRequest) {
         UNIQUE(league_id, week, home_team_id, away_team_id)
       )
     `;
-    results.created.push('matchups');
+    results.created.push("matchups");
 
     // League settings table
     await sql`
@@ -200,7 +200,7 @@ export async function POST(req: NextRequest) {
         UNIQUE(league_id, setting_key)
       )
     `;
-    results.created.push('league_settings');
+    results.created.push("league_settings");
 
     // Transactions table (trades, adds, drops)
     await sql`
@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
         notes TEXT
       )
     `;
-    results.created.push('transactions');
+    results.created.push("transactions");
 
     // Player stats table
     await sql`
@@ -242,20 +242,70 @@ export async function POST(req: NextRequest) {
         UNIQUE(player_id, week, season)
       )
     `;
-    results.created.push('player_stats');
+    results.created.push("player_stats");
 
     // Step 3: Insert the 10 users
     const users = [
-      { id: 1, name: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', role: 'user' },
-      { id: 2, name: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', role: 'user' },
-      { id: 3, name: 'Cason Minor', email: 'cason.minor@astralfield.com', role: 'user' },
-      { id: 4, name: 'David Jarvey', email: 'david.jarvey@astralfield.com', role: 'user' },
-      { id: 5, name: 'Demo User 1', email: 'demo1@astralfield.com', role: 'user' },
-      { id: 6, name: 'Demo User 2', email: 'demo2@astralfield.com', role: 'user' },
-      { id: 7, name: 'Demo User 3', email: 'demo3@astralfield.com', role: 'user' },
-      { id: 8, name: 'Demo User 4', email: 'demo4@astralfield.com', role: 'user' },
-      { id: 9, name: 'Demo User 5', email: 'demo5@astralfield.com', role: 'user' },
-      { id: 10, name: 'Admin User', email: 'admin@astralfield.com', role: 'admin' }
+      {
+        id: 1,
+        name: "Nicholas D'Amato",
+        email: "nicholas.damato@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 2,
+        name: "Brittany Bergum",
+        email: "brittany.bergum@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 3,
+        name: "Cason Minor",
+        email: "cason.minor@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 4,
+        name: "David Jarvey",
+        email: "david.jarvey@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 5,
+        name: "Demo User 1",
+        email: "demo1@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 6,
+        name: "Demo User 2",
+        email: "demo2@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 7,
+        name: "Demo User 3",
+        email: "demo3@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 8,
+        name: "Demo User 4",
+        email: "demo4@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 9,
+        name: "Demo User 5",
+        email: "demo5@astralfield.com",
+        role: "user",
+      },
+      {
+        id: 10,
+        name: "Admin User",
+        email: "admin@astralfield.com",
+        role: "admin",
+      },
     ];
 
     for (const user of users) {
@@ -301,16 +351,16 @@ export async function POST(req: NextRequest) {
 
     // Step 5: Create teams for all users
     const teams = [
-      { userId: 1, name: 'The Commanders', abbr: 'CMD' },
-      { userId: 2, name: 'Purple Reign', abbr: 'PRG' },
-      { userId: 3, name: 'Minor Threat', abbr: 'MTH' },
-      { userId: 4, name: 'Jarvey\'s Giants', abbr: 'JGT' },
-      { userId: 5, name: 'Dynasty Builders', abbr: 'DYN' },
-      { userId: 6, name: 'Trophy Hunters', abbr: 'TPH' },
-      { userId: 7, name: 'Rocket Squad', abbr: 'RSQ' },
-      { userId: 8, name: 'Fire Starters', abbr: 'FIR' },
-      { userId: 9, name: 'Diamond Dogs', abbr: 'DMD' },
-      { userId: 10, name: 'Crown Royale', abbr: 'CRN' }
+      { userId: 1, name: "The Commanders", abbr: "CMD" },
+      { userId: 2, name: "Purple Reign", abbr: "PRG" },
+      { userId: 3, name: "Minor Threat", abbr: "MTH" },
+      { userId: 4, name: "Jarvey's Giants", abbr: "JGT" },
+      { userId: 5, name: "Dynasty Builders", abbr: "DYN" },
+      { userId: 6, name: "Trophy Hunters", abbr: "TPH" },
+      { userId: 7, name: "Rocket Squad", abbr: "RSQ" },
+      { userId: 8, name: "Fire Starters", abbr: "FIR" },
+      { userId: 9, name: "Diamond Dogs", abbr: "DMD" },
+      { userId: 10, name: "Crown Royale", abbr: "CRN" },
     ];
 
     for (let i = 0; i < teams.length; i++) {
@@ -337,16 +387,16 @@ export async function POST(req: NextRequest) {
 
     // Step 6: Add some sample NFL players
     const samplePlayers = [
-      { id: 'PM001', name: 'Patrick Mahomes', pos: 'QB', team: 'KC' },
-      { id: 'JJ001', name: 'Justin Jefferson', pos: 'WR', team: 'MIN' },
-      { id: 'CMC001', name: 'Christian McCaffrey', pos: 'RB', team: 'SF' },
-      { id: 'TK001', name: 'Travis Kelce', pos: 'TE', team: 'KC' },
-      { id: 'TH001', name: 'Tyreek Hill', pos: 'WR', team: 'MIA' },
-      { id: 'JA001', name: 'Josh Allen', pos: 'QB', team: 'BUF' },
-      { id: 'AE001', name: 'Austin Ekeler', pos: 'RB', team: 'LAC' },
-      { id: 'CD001', name: 'CeeDee Lamb', pos: 'WR', team: 'DAL' },
-      { id: 'LJ001', name: 'Lamar Jackson', pos: 'QB', team: 'BAL' },
-      { id: 'SB001', name: 'Saquon Barkley', pos: 'RB', team: 'NYG' }
+      { id: "PM001", name: "Patrick Mahomes", pos: "QB", team: "KC" },
+      { id: "JJ001", name: "Justin Jefferson", pos: "WR", team: "MIN" },
+      { id: "CMC001", name: "Christian McCaffrey", pos: "RB", team: "SF" },
+      { id: "TK001", name: "Travis Kelce", pos: "TE", team: "KC" },
+      { id: "TH001", name: "Tyreek Hill", pos: "WR", team: "MIA" },
+      { id: "JA001", name: "Josh Allen", pos: "QB", team: "BUF" },
+      { id: "AE001", name: "Austin Ekeler", pos: "RB", team: "LAC" },
+      { id: "CD001", name: "CeeDee Lamb", pos: "WR", team: "DAL" },
+      { id: "LJ001", name: "Lamar Jackson", pos: "QB", team: "BAL" },
+      { id: "SB001", name: "Saquon Barkley", pos: "RB", team: "NYG" },
     ];
 
     for (const player of samplePlayers) {
@@ -358,23 +408,23 @@ export async function POST(req: NextRequest) {
 
     // Step 7: Create league settings
     const settings = [
-      { key: 'roster_qb', value: '1' },
-      { key: 'roster_rb', value: '2' },
-      { key: 'roster_wr', value: '2' },
-      { key: 'roster_te', value: '1' },
-      { key: 'roster_flex', value: '1' },
-      { key: 'roster_dst', value: '1' },
-      { key: 'roster_k', value: '1' },
-      { key: 'roster_bench', value: '7' },
-      { key: 'current_week', value: '1' },
-      { key: 'draft_status', value: 'not_started' },
-      { key: 'scoring_passing_td', value: '4' },
-      { key: 'scoring_passing_yard', value: '0.04' },
-      { key: 'scoring_rushing_td', value: '6' },
-      { key: 'scoring_rushing_yard', value: '0.1' },
-      { key: 'scoring_receiving_td', value: '6' },
-      { key: 'scoring_receiving_yard', value: '0.1' },
-      { key: 'scoring_reception', value: '1' }
+      { key: "roster_qb", value: "1" },
+      { key: "roster_rb", value: "2" },
+      { key: "roster_wr", value: "2" },
+      { key: "roster_te", value: "1" },
+      { key: "roster_flex", value: "1" },
+      { key: "roster_dst", value: "1" },
+      { key: "roster_k", value: "1" },
+      { key: "roster_bench", value: "7" },
+      { key: "current_week", value: "1" },
+      { key: "draft_status", value: "not_started" },
+      { key: "scoring_passing_td", value: "4" },
+      { key: "scoring_passing_yard", value: "0.04" },
+      { key: "scoring_rushing_td", value: "6" },
+      { key: "scoring_rushing_yard", value: "0.1" },
+      { key: "scoring_receiving_td", value: "6" },
+      { key: "scoring_receiving_yard", value: "0.1" },
+      { key: "scoring_reception", value: "1" },
     ];
 
     for (const setting of settings) {
@@ -390,7 +440,7 @@ export async function POST(req: NextRequest) {
       { home: 3, away: 4 },
       { home: 5, away: 6 },
       { home: 7, away: 8 },
-      { home: 9, away: 10 }
+      { home: 9, away: 10 },
     ];
 
     for (const matchup of week1Matchups) {
@@ -412,7 +462,7 @@ export async function POST(req: NextRequest) {
       `;
     }
 
-    results.message = 'Database cleaned and reset successfully!';
+    results.message = "Database cleaned and reset successfully!";
 
     return NextResponse.json({
       success: true,
@@ -424,19 +474,18 @@ export async function POST(req: NextRequest) {
         leagueId: leagueId,
         teamsCreated: 10,
         playersAdded: samplePlayers.length,
-        settingsConfigured: settings.length
-      }
-    });
-
-  } catch (error) {
-    console.error('Database cleanup error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to cleanup database', 
-        details: error instanceof Error ? error.message : 'Unknown error',
-        success: false 
+        settingsConfigured: settings.length,
       },
-      { status: 500 }
+    });
+  } catch (error) {
+    console.error("Database cleanup error:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to cleanup database",
+        details: error instanceof Error ? error.message : "Unknown error",
+        success: false,
+      },
+      { status: 500 },
     );
   }
 }
@@ -466,23 +515,22 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       database: {
-        tables: tables.rows.map(r => r.table_name),
+        tables: tables.rows.map((r) => r.table_name),
         counts: {
           users: users.rows[0].count,
           leagues: leagues.rows[0].count,
-          teams: teams.rows[0].count
-        }
+          teams: teams.rows[0].count,
+        },
       },
-      message: 'Use POST with adminPin: 9999 to cleanup and reset database'
+      message: "Use POST with adminPin: 9999 to cleanup and reset database",
     });
-
   } catch (error) {
     return NextResponse.json(
-      { 
-        error: 'Failed to check database status',
-        success: false 
+      {
+        error: "Failed to check database status",
+        success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

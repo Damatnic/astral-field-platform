@@ -119,7 +119,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) {
     { id: 'lightning', name: 'Lightning', icon: '⚡' },
     { id: 'shield', name: 'Shield', icon: '🛡️' },
     { id: 'crown', name: 'Crown', icon: '👑' },
-    { id: 'fire', name: 'Fire', icon: '🔥' },
+    { id: 'fire', name: 'Flame', icon: '🔥' },
     { id: 'star', name: 'Star', icon: '⭐' },
     { id: 'sword', name: 'Sword', icon: '⚔️' },
     { id: 'rocket', name: 'Rocket', icon: '🚀' }
@@ -587,7 +587,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) {
                     >
                       <option value="">Select rival team...</option>
                       <option value="team1">Thunder Bolts</option>
-                      <option value="team2">Fire Dragons</option>
+                      <option value="team2">Flame Dragons</option>
                       <option value="team3">Ice Wolves</option>
                       <option value="team4">Storm Eagles</option>
                     </select>

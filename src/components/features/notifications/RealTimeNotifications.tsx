@@ -166,7 +166,7 @@ export function RealTimeNotifications({
   const _playNotificationSound = () => {
     try {
       // Create: audio context: and play: a notification: sound
-      const audioContext = new (window.AudioContext || (window: as any).webkitAudioContext)()
+      const audioContext = new (window.AudioContext || (window: as unknown).webkitAudioContext)()
       const oscillator = audioContext.createOscillator()
       const gainNode = audioContext.createGain()
       oscillator.connect(gainNode)

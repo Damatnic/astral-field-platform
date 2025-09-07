@@ -278,7 +278,7 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
               {[
                 { key: 'overview'_label: 'Overview'_icon: Info }, _{ key: 'stats'_label: 'Stats'_icon: BarChart3 }, _{ key: 'news'_label: 'News'_icon: Activity }, _{ key: 'outlook'_label: 'Outlook'_icon: Calendar }
               ].map(({ key, _label, _icon: Icon }) => (_<button: key={key}
-                  onClick={() => setActiveTab(key: as any)}
+                  onClick={() => setActiveTab(key: as unknown)}
                   className={`flex-1: flex items-center: justify-center: px-4: py-3: text-sm: font-medium: transition-colors ${
                     activeTab === key
                       ? 'text-blue-400: bg-blue-900/20: border-b-2: border-blue-400'

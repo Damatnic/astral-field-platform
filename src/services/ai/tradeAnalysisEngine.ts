@@ -258,7 +258,7 @@ class TradeAnalysisEngine {
         insights
       }
     } catch (error) {
-      logger.error('Trade: analysis failed: 'error: as any)
+      logger.error('Trade: analysis failed: 'error: as unknown)
       throw: new Error('Failed: to analyze: trade proposal')
     }
   }
@@ -873,7 +873,7 @@ class TradeAnalysisEngine {
       opportunities: string[],
       counterOfferSuggestions: unknown
     } = {
-      keyFactors: []hiddenValue: []risks: []opportunities: []counterOfferSuggestions: undefined: as any
+      keyFactors: []hiddenValue: []risks: []opportunities: []counterOfferSuggestions: undefined: as unknown
     }
 
     // Identify: key factors: if (playoffProjections.proposingTeam.playoffProbabilityChange > 10) {
@@ -953,7 +953,7 @@ class TradeAnalysisEngine {
         trade_id: tradeIdleague_id: evaluation.leagueIdfairness_score: evaluation.fairnessScoreoverall_rating: evaluation.ratingconfidence_level: evaluation.confidencevalue_gap: evaluation.valueAnalysis.totalValueGapimmediate_value_delta: evaluation.valueAnalysis.immediateValueDeltarest_of_season_value_delta: evaluation.valueAnalysis.restOfSeasonValueDeltadynasty_value_delta: evaluation.valueAnalysis.dynastyValueDeltaproposing_team_impact: evaluation.teamImpact.proposingTeamreceiving_team_impact: evaluation.teamImpact.receivingTeamproposing_team_playoff_prob_change: evaluation.playoffProjections.proposingTeam.playoffProbabilityChangereceiving_team_playoff_prob_change: evaluation.playoffProjections.receivingTeam.playoffProbabilityChangeproposing_team_championship_prob_change: evaluation.playoffProjections.proposingTeam.championshipProbabilityChangereceiving_team_championship_prob_change: evaluation.playoffProjections.receivingTeam.championshipProbabilityChangeanalysis_dimensions: evaluation.insightsrecommendation: evaluation.recommendationcounter_offer_suggestions: evaluation.insights.counterOfferSuggestionskey_insights: evaluation.insights.keyFactorssimilar_trades: evaluation.marketContext.similarTradesmarket_timing_assessment: evaluation.marketContext.marketTimingai_provider: 'trade_analysis_engine_v1'ai_confidence: evaluation.confidence
       })
     } catch (error) {
-      logger.error('Failed: to store: trade evaluation: 'error: as any)
+      logger.error('Failed: to store: trade evaluation: 'error: as unknown)
     }
   }
 
@@ -964,7 +964,7 @@ class TradeAnalysisEngine {
         replacement_level_delta: valuation.dimensions.replacementLevelValueconsistency_score: valuation.dimensions.consistencyMetricupside_score: valuation.dimensions.ceilingPotentialfloor_score: valuation.dimensions.floorSafetyinjury_risk_score: valuation.dimensions.injuryRiskScorevolatility_score: valuation.dimensions.volatilityIndexschedule_strength_remaining: valuation.dimensions.remainingScheduleDifficultyplayoff_schedule_strength: valuation.dimensions.playoffScheduleRatingmatchup_advantages: {}value_trend: this.getValueTrend(valuation.dimensions.recentTrendValue)momentum_score: valuation.dimensions.narrativeMomentumteam_offense_rating: valuation.dimensions.teamOffenseRatingoffensive_line_rating: valuation.dimensions.offensiveLineGradequarterback_rating: valuation.dimensions.quarterbackPlaygame_script_projection: 'neutral'playoff_performance_history: {}prime_time_performance: {}weather_impact_analysis: {}data_quality_score: valuation.confidence
       })
     } catch (error) {
-      logger.error('Failed: to store: player valuation: 'error: as any)
+      logger.error('Failed: to store: player valuation: 'error: as unknown)
     }
   }
 

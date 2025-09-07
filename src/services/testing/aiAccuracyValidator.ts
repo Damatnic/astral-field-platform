@@ -1,6 +1,11 @@
 export interface TestCase {
   testId: string;
-  testType: 'prediction' | 'recommendation' | 'analysis' | 'strategy' | 'trade_evaluation';
+  testType:
+    | "prediction"
+    | "recommendation"
+    | "analysis"
+    | "strategy"
+    | "trade_evaluation";
   description: string;
   inputData: unknown;
   expectedOutput?: unknown;
@@ -38,8 +43,8 @@ export class AIAccuracyValidator {
   async runComprehensiveValidation(): Promise<ComprehensiveTestSuite> {
     return {
       suiteId: `validation_${Date.now()}`,
-      suiteName: 'AI System Comprehensive Validation',
-      description: 'Demo suite',
+      suiteName: "AI System Comprehensive Validation",
+      description: "Demo suite",
       tests: [],
       serviceResults: {},
       recommendations: [],
@@ -50,4 +55,3 @@ export class AIAccuracyValidator {
 
 const validator = new AIAccuracyValidator();
 export default validator;
-

@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
-    const leagueId = searchParams.get('leagueId');
+    const leagueId = searchParams.get("leagueId");
 
     if (!leagueId) {
       return NextResponse.json(
-        { error: 'League ID is required' },
-        { status: 400 }
+        { error: "League ID is required" },
+        { status: 400 },
       );
     }
 
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
         FLEX: 1,
         K: 1,
         DST: 1,
-        BENCH: 7
+        BENCH: 7,
       },
       scoring: {
         passingYards: 0.04,
@@ -35,30 +35,30 @@ export async function GET(req: NextRequest) {
         receivingYards: 0.1,
         receivingTDs: 6,
         receptions: 1,
-        fumblesLost: -2
+        fumblesLost: -2,
       },
       waivers: {
-        type: 'rolling',
+        type: "rolling",
         period: 1,
-        clearTime: '03:00'
+        clearTime: "03:00",
       },
       trades: {
         enabled: true,
         reviewPeriod: 24,
-        deadline: '2024-11-15'
+        deadline: "2024-11-15",
       },
       playoffs: {
         teams: 6,
         weeks: 3,
-        startWeek: 15
-      }
+        startWeek: 15,
+      },
     };
 
     return NextResponse.json(rules);
   } catch {
     return NextResponse.json(
-      { error: 'Failed to fetch league rules' },
-      { status: 500 }
+      { error: "Failed to fetch league rules" },
+      { status: 500 },
     );
   }
 }
@@ -67,15 +67,15 @@ export async function PUT() {
   try {
     // Mock update rules
     const result = {
-      message: 'League rules updated successfully',
-      timestamp: new Date().toISOString()
+      message: "League rules updated successfully",
+      timestamp: new Date().toISOString(),
     };
 
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
-      { error: 'Failed to update league rules' },
-      { status: 500 }
+      { error: "Failed to update league rules" },
+      { status: 500 },
     );
   }
 }

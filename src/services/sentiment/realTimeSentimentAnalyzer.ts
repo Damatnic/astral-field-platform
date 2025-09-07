@@ -21,4 +21,3 @@ export class RealTimeSentimentAnalyzer {
 
 const analyzer = new RealTimeSentimentAnalyzer();
 export default analyzer;
-

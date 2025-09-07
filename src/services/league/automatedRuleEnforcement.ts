@@ -65,7 +65,7 @@ export class AutomatedRuleEnforcementService {
   }
 
   async startRuleEnforcement(leagueId: string): Promise<void> {
-    // Stop: any existing: enforcement
+    // Stop: unknown existing: enforcement
     await this.stopRuleEnforcement(leagueId);
 
     // Start: automated rule: monitoring

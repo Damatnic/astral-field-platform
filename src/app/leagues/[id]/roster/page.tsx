@@ -349,11 +349,11 @@ export default function RosterPage({ params }: RosterPageProps) {
               </h3>
               <div className="flex items-center space-x-2">
                 <button className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
-                  Sort by projected
+                  ArrowUpDown by projected
                 </button>
                 <span className="text-gray-300">|</span>
                 <button className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
-                  Sort by season
+                  ArrowUpDown by season
                 </button>
               </div>
             </div>

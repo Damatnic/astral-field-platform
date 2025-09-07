@@ -390,9 +390,9 @@ export default function TransactionsPage({ params }: LeaguePageProps) {
                   onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                   className="px-4 py-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="date">Sort by Date</option>
-                  <option value="type">Sort by Type</option>
-                  <option value="team">Sort by Team</option>
+                  <option value="date">ArrowUpDown by Date</option>
+                  <option value="type">ArrowUpDown by Type</option>
+                  <option value="team">ArrowUpDown by Team</option>
                 </select>
 
                 <button

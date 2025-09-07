@@ -40,7 +40,7 @@ interface PlayerProfile {
     highScore: number;
     lowScore: number;
     consistency: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   
   // Performance trends

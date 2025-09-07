@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -9,9 +9,9 @@ export default function RegisterPage() {
   useEffect(() => {
     // Mock auth check
     const checkAuth = () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     };
     checkAuth();

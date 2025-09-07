@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 "use client";
 
 import React, { useState } from 'react';
@@ -11,7 +12,7 @@ export default function LoginForm() {
 
   const quickLogin = (name: string) => {
     try {
-      setUser({ id: 'demo', username: name } as any);
+      setUser({ id: 'demo', username: name } as unknown);
       router.push('/dashboard');
     } catch (e) {
       setError('Login failed');

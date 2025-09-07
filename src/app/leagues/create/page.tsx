@@ -7,7 +7,8 @@ export default function CreateLeaguePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!token) {
       router.push("/auth/login");
     }
@@ -17,7 +18,9 @@ export default function CreateLeaguePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Create League</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            Create League
+          </h1>
           <div className="bg-white shadow rounded-lg p-6">
             <p className="text-gray-700">League creation coming soon.</p>
           </div>
@@ -26,4 +29,3 @@ export default function CreateLeaguePage() {
     </div>
   );
 }
-

@@ -1,17 +1,28 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-interface TradeProposal { id: string; status?: string }
-interface TradeAnalysis { summary?: string }
+interface TradeProposal {
+  id: string;
+  status?: string;
+}
+interface TradeAnalysis {
+  summary?: string;
+}
 
 interface TradeState {
   trades: TradeProposal[];
   currentAnalysis: TradeAnalysis | null;
   isLoading: boolean;
   error: string | null;
-  createTrade: (leagueId: string, data: any) => Promise<boolean>;
+  createTrade: (leagueId: string, data: unknown) => Promise<boolean>;
   fetchTeamTrades: (teamId: string) => Promise<void>;
-  respondToTrade: (tradeId: string, response: 'accepted' | 'rejected') => Promise<boolean>;
-  analyzeTrade: (offeredPlayers: string[], requestedPlayers: string[]) => Promise<void>;
+  respondToTrade: (
+    tradeId: string,
+    response: "accepted" | "rejected",
+  ) => Promise<boolean>;
+  analyzeTrade: (
+    offeredPlayers: string[],
+    requestedPlayers: string[],
+  ) => Promise<void>;
   cancelTrade: (tradeId: string) => Promise<boolean>;
   clearError: () => void;
   clearAnalysis: () => void;
@@ -32,7 +43,7 @@ export const useTradeStore = create<TradeState>((set) => ({
     return true;
   },
   async analyzeTrade(_offeredPlayers, _requestedPlayers) {
-    set({ currentAnalysis: { summary: 'mock' } });
+    set({ currentAnalysis: { summary: "mock" } });
   },
   async cancelTrade(_tradeId) {
     return true;
@@ -44,4 +55,3 @@ export const useTradeStore = create<TradeState>((set) => ({
     set({ currentAnalysis: null });
   },
 }));
-

@@ -27,7 +27,7 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
     // Check if app is already installed or running as PWA
     const checkInstallStatus = () => {
       const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
-                              (window.navigator as any)?.standalone === true ||
+                              (window.navigator as unknown)?.standalone === true ||
                               document.referrer.includes('android-app://');
       
       setIsStandalone(isStandaloneMode);
@@ -200,7 +200,7 @@ export function usePWAStatus() {
   useEffect(() => {
     const checkPWAStatus = () => {
       const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-                        (window.navigator as any)?.standalone === true ||
+                        (window.navigator as unknown)?.standalone === true ||
                         document.referrer.includes('android-app://');
       
       setIsStandalone(standalone);

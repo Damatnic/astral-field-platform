@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { 
   Activity, Trophy, TrendingUp, Target, BarChart3, PieChart,
   Users, Clock, Star, Zap, Shield, Brain, Calculator,
-  ChevronDown, ChevronUp, Info, ArrowUp, ArrowDown
+  ChevronDown, ChevronUp, Info, ArrowUp, ArrowDown, AlertTriangle
 } from "lucide-react";
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, 
@@ -593,7 +593,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               outerRadius={100}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
+              label={({ name, value }) => `${name}: ${value?.toFixed(1) ?? 0}%`}
             >
               {analytics?.playoffSimulation.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

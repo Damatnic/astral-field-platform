@@ -29,7 +29,7 @@
   ::-webkit-scrollbar {
     display: none;
   }
-  
+
   * {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -108,19 +108,19 @@
   .mobile-table {
     font-size: 14px;
   }
-  
+
   .mobile-table th,
   .mobile-table td {
     padding: 8px 4px;
   }
-  
+
   .mobile-table th {
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  
+
   /* Hide less important columns on mobile */
   .mobile-table .hide-mobile {
     display: none;
@@ -156,7 +156,7 @@
     padding: 12px 16px;
     border-radius: 8px;
   }
-  
+
   .form-select {
     height: 48px;
     font-size: 16px;
@@ -197,13 +197,20 @@
   animation: loading-bounce 1.4s ease-in-out infinite both;
 }
 
-.loading-dots > div:nth-child(1) { animation-delay: -0.32s; }
-.loading-dots > div:nth-child(2) { animation-delay: -0.16s; }
+.loading-dots > div:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.loading-dots > div:nth-child(2) {
+  animation-delay: -0.16s;
+}
 
 @keyframes loading-bounce {
-  0%, 80%, 100% { 
+  0%,
+  80%,
+  100% {
     transform: scale(0);
-  } 40% { 
+  }
+  40% {
     transform: scale(1);
   }
 }
@@ -239,7 +246,7 @@
 }
 
 .btn-touch::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -247,7 +254,9 @@
   height: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
-  transition: width 0.3s ease, height 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
   transform: translate(-50%, -50%);
 }
 
@@ -291,22 +300,22 @@
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
-  
+
   .text-responsive-base {
     font-size: 1rem;
     line-height: 1.5rem;
   }
-  
+
   .text-responsive-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
-  
+
   .text-responsive-xl {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
-  
+
   .text-responsive-2xl {
     font-size: 1.5rem;
     line-height: 2rem;
@@ -318,7 +327,7 @@
   .mobile-grid-1 {
     grid-template-columns: 1fr;
   }
-  
+
   .mobile-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -328,7 +337,7 @@
   .tablet-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .tablet-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -340,9 +349,16 @@
 }
 
 @keyframes error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 /* Success Animations */
@@ -351,10 +367,11 @@
 }
 
 @keyframes success-pulse {
-  0%, 100% { 
+  0%,
+  100% {
     background-color: rgba(34, 197, 94, 0.1);
   }
-  50% { 
+  50% {
     background-color: rgba(34, 197, 94, 0.2);
   }
 }
@@ -365,11 +382,12 @@
     background: rgba(17, 24, 39, 0.95);
     border-color: rgba(75, 85, 99, 0.3);
   }
-  
+
   .skeleton-pulse {
-    background: linear-gradient(90deg, 
-      rgba(31, 41, 55, 1) 25%, 
-      rgba(55, 65, 81, 1) 50%, 
+    background: linear-gradient(
+      90deg,
+      rgba(31, 41, 55, 1) 25%,
+      rgba(55, 65, 81, 1) 50%,
       rgba(31, 41, 55, 1) 75%
     );
     background-size: 200% 100%;
@@ -391,7 +409,7 @@
   .mobile-hide-print {
     display: none !important;
   }
-  
+
   .mobile-card {
     border: 1px solid #ccc;
     background: white;
@@ -408,7 +426,7 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .skeleton-pulse,
   .loading-dots > div {
     animation: none;

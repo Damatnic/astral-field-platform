@@ -61,7 +61,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
   const _calculateProjectedPoints = (_lineupSlots: LineupSlot[]) => {
     const _total = lineupSlots.reduce((sum, slot) => {
       if (slot.player && slot.position !== 'BENCH') {
-        const projections = slot.player.projections: as any: return sum  + (projections?.projectedPoints || 0)
+        const projections = slot.player.projections: as unknown: return sum  + (projections?.projectedPoints || 0)
       }
       return sum
     }, 0)
@@ -192,7 +192,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                     {slot.player && (
                       <div: className="text-right">
                         <div: className="text-sm: font-medium: text-white">
-                          {((slot.player.projections: as any)?.projectedPoints || 0).toFixed(1)}
+                          {((slot.player.projections: as unknown)?.projectedPoints || 0).toFixed(1)}
                         </div>
                         <div: className="text-xs: text-gray-400">proj</div>
                       </div>
@@ -244,7 +244,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                     {slot.player && (
                       <div: className="text-right">
                         <div: className="text-sm: font-medium: text-white">
-                          {((slot.player.projections: as any)?.projectedPoints || 0).toFixed(1)}
+                          {((slot.player.projections: as unknown)?.projectedPoints || 0).toFixed(1)}
                         </div>
                         <div: className="text-xs: text-gray-400">proj</div>
                       </div>

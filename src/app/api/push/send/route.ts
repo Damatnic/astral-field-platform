@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 // In production, you'd use a library like web-push
 // import webpush from 'web-push';
 
@@ -10,15 +10,15 @@ export async function POST(request: NextRequest) {
     // Validate request
     if (!notification || !notification.title || !notification.body) {
       return NextResponse.json(
-        { error: 'Invalid notification data' },
-        { status: 400 }
+        { error: "Invalid notification data" },
+        { status: 400 },
       );
     }
 
-    console.log('📤 Sending push notification:', {
+    console.log("📤 Sending push notification:", {
       userId,
       title: notification.title,
-      targetUsers: targetUsers?.length || 'all subscribers'
+      targetUsers: targetUsers?.length || "all subscribers",
     });
 
     // In production, you would:
@@ -93,18 +93,17 @@ export async function POST(request: NextRequest) {
     await Promise.allSettled(sendPromises);
     */
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Notifications sent successfully',
-      sent: targetUsers?.length || 'all',
-      timestamp: new Date().toISOString()
+    return NextResponse.json({
+      success: true,
+      message: "Notifications sent successfully",
+      sent: targetUsers?.length || "all",
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('❌ Send notification error:', error);
+    console.error("❌ Send notification error:", error);
     return NextResponse.json(
-      { error: 'Failed to send notifications' },
-      { status: 500 }
+      { error: "Failed to send notifications" },
+      { status: 500 },
     );
   }
 }
@@ -112,43 +111,45 @@ export async function POST(request: NextRequest) {
 // Test endpoint to send sample notifications
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get('type') || 'test';
+  const type = searchParams.get("type") || "test";
 
   const sampleNotifications = {
     test: {
-      title: 'Test Notification',
-      body: 'This is a test push notification from Astral Field',
-      type: 'general',
-      priority: 'normal'
+      title: "Test Notification",
+      body: "This is a test push notification from Astral Field",
+      type: "general",
+      priority: "normal",
     },
     trade: {
-      title: 'New Trade Proposal',
-      body: 'Team Spartans wants to trade Davante Adams for your Travis Kelce',
-      type: 'trade',
-      priority: 'high'
+      title: "New Trade Proposal",
+      body: "Team Spartans wants to trade Davante Adams for your Travis Kelce",
+      type: "trade",
+      priority: "high",
     },
     injury: {
-      title: 'Player Injury Alert',
-      body: 'Christian McCaffrey is listed as Questionable for Sunday',
-      type: 'injury',
-      priority: 'high'
+      title: "Player Injury Alert",
+      body: "Christian McCaffrey is listed as Questionable for Sunday",
+      type: "injury",
+      priority: "high",
     },
     waiver: {
-      title: 'Waiver Claim Successful',
-      body: 'You successfully claimed Tank Dell for $15 FAAB',
-      type: 'waiver',
-      priority: 'normal'
-    }
+      title: "Waiver Claim Successful",
+      body: "You successfully claimed Tank Dell for $15 FAAB",
+      type: "waiver",
+      priority: "normal",
+    },
   };
 
-  const notification = sampleNotifications[type as keyof typeof sampleNotifications] || sampleNotifications.test;
+  const notification =
+    sampleNotifications[type as keyof typeof sampleNotifications] ||
+    sampleNotifications.test;
 
   // In production, this would actually send the notification
-  console.log('📤 Test notification:', notification);
+  console.log("📤 Test notification:", notification);
 
   return NextResponse.json({
     success: true,
-    message: 'Test notification would be sent',
-    notification
+    message: "Test notification would be sent",
+    notification,
   });
 }

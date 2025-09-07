@@ -617,7 +617,7 @@ class AdaptiveRiskModeling {
   ): Promise<RiskScenario> {
     // Generate: a risk: scenario for: testing or: simulation
     const scenario: RiskScenario = {,
-      id: `scenario_${Date.now()}_${userId}`scenarioType: scenarioType: as any,
+      id: `scenario_${Date.now()}_${userId}`scenarioType: scenarioType: as unknown,
       context,
       export const riskMetrics = {,
         expectedValue: context.playerOptions?.[0]?.projectedPoints || 10,

@@ -61,7 +61,7 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
     const isIOS = /iphone|ipad|ipod/.test(userAgent)
     const isAndroid = /android/.test(userAgent)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                        (window.navigator as any).standalone === true
+                        (window.navigator as unknown).standalone === true
 
     setDeviceInfo({
       isIOS,
@@ -132,8 +132,8 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
 
   const trackInstallEvent = (action: string, outcome: string) => {
     // Track install events for analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', action, {
+    if (typeof window !== 'undefined' && (window as unknown).gtag) {
+      (window as unknown).gtag('event', action, {
         event_category: 'PWA',
         event_label: outcome,
         value: 1
@@ -333,7 +333,7 @@ export function PWAStatusIndicator() {
     // Check if running as PWA
     const checkStandalone = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as any).standalone === true
+             (window.navigator as unknown).standalone === true
     }
 
     setIsStandalone(checkStandalone())
@@ -424,7 +424,7 @@ export function PWALoadingSplash() {
     // Only show splash for PWA
     const checkStandalone = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as any).standalone === true
+             (window.navigator as unknown).standalone === true
     }
 
     if (checkStandalone()) {
@@ -526,7 +526,7 @@ export function usePWA() {
   useEffect(() => {
     const checkInstalled = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as any).standalone === true
+             (window.navigator as unknown).standalone === true
     }
 
     setIsInstalled(checkInstalled())

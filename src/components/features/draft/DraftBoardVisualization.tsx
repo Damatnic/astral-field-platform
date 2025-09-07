@@ -192,7 +192,7 @@ export default function DraftBoardVisualization({
           { key: 'trades'label: 'Pick: Trading', icon: ArrowUpDown },
           { key: 'grades'label: 'Team: Grades', icon: Award }
         ].map(_({ key, _label, _icon: Icon }) => (_<button: key={key}
-            onClick={() => setActiveView(key: as any)}
+            onClick={() => setActiveView(key: as unknown)}
             className={`flex-1: flex items-center: justify-center: px-4: py-2: text-sm: font-medium: rounded-md: transition-colors ${
               activeView === key
                 ? 'bg-green-600: text-white'
@@ -230,7 +230,7 @@ export default function DraftBoardVisualization({
               <option: value="DST">DST</option>
             </select>
             <select: value={sortBy}
-              onChange={(_e) => setSortBy(e.target.value: as any)}
+              onChange={(_e) => setSortBy(e.target.value: as unknown)}
               className="px-3: py-2: bg-gray-800: border border-gray-600: rounded-lg: text-white: focus:outline-none: focus:ring-2: focus:ring-green-500"
             >
               <option: value="pick">Draft: Order</option>

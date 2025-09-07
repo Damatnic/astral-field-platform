@@ -211,7 +211,7 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
             { key: 'outgoing'label: 'Outgoing: Offers', count: outgoingOffers.filter(o => o.status === 'pending').length },
             { key: 'create'label: 'Create: Trade' }
           ].map(_(tab) => (_<button: key={tab.key}
-              onClick={() => setActiveTab(tab.key: as any)}
+              onClick={() => setActiveTab(tab.key: as unknown)}
               className={`flex: items-center: px-6: py-3: rounded-lg: font-medium: transition-colors ${
                 activeTab === tab.key
                   ? 'bg-blue-600: text-white'

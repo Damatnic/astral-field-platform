@@ -1,88 +1,114 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 export default function AdminSetupPage() {
-  const [loading, setLoading] = useState(false)
-  const [results, setResults] = useState<any>(null)
-  const [adminKey, setAdminKey] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any>(null);
+  const [adminKey, setAdminKey] = useState("");
 
   const setupDatabase = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await fetch('/api/setup-database', { method: 'POST' })
-      const data = await response.json()
-      setResults({ type: 'database', ...data })
+      const response = await fetch("/api/setup-database", { method: "POST" });
+      const data = await response.json();
+      setResults({ type: "database", ...data });
     } catch (error) {
-      setResults({ type: 'database', success: false, error: 'Failed to setup database' })
+      setResults({
+        type: "database",
+        success: false,
+        error: "Failed to setup database",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const setupProfiles = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await fetch('/api/setup-profiles', { method: 'POST' })
-      const data = await response.json()
-      setResults({ type: 'profiles', ...data })
+      const response = await fetch("/api/setup-profiles", { method: "POST" });
+      const data = await response.json();
+      setResults({ type: "profiles", ...data });
     } catch (error) {
-      setResults({ type: 'profiles', success: false, error: 'Failed to setup profiles' })
+      setResults({
+        type: "profiles",
+        success: false,
+        error: "Failed to setup profiles",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const checkStatus = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const [dbResponse, profilesResponse] = await Promise.all([
-        fetch('/api/setup-database'),
-        fetch('/api/setup-profiles')
-      ])
+        fetch("/api/setup-database"),
+        fetch("/api/setup-profiles"),
+      ]);
 
-      const dbData = await dbResponse.json()
-      const profilesData = await profilesResponse.json()
+      const dbData = await dbResponse.json();
+      const profilesData = await profilesResponse.json();
 
-      setResults({ 
-        type: 'status',
+      setResults({
+        type: "status",
         database: dbData,
-        profiles: profilesData 
-      })
+        profiles: profilesData,
+      });
     } catch (error) {
-      setResults({ type: 'status', success: false, error: 'Failed to check status' })
+      setResults({
+        type: "status",
+        success: false,
+        error: "Failed to check status",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const oneClickSetup = async () => {
     if (!adminKey.trim()) {
-      setResults({ type: 'oneclick', success: false, error: 'Admin key is required. Please enter your ADMIN_SETUP_KEY.' })
-      return
+      setResults({
+        type: "oneclick",
+        success: false,
+        error: "Admin key is required. Please enter your ADMIN_SETUP_KEY.",
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
       // Setup database
-      await fetch('/api/setup-database', { method: 'POST' })
-      
-      // Setup profiles
-      await fetch('/api/setup-profiles', { method: 'POST' })
+      await fetch("/api/setup-database", { method: "POST" });
 
-      setResults({ type: 'oneclick', success: true, message: 'Complete setup finished successfully!' })
+      // Setup profiles
+      await fetch("/api/setup-profiles", { method: "POST" });
+
+      setResults({
+        type: "oneclick",
+        success: true,
+        message: "Complete setup finished successfully!",
+      });
     } catch (error) {
-      setResults({ type: 'oneclick', success: false, error: 'One-click setup failed' })
+      setResults({
+        type: "oneclick",
+        success: false,
+        error: "One-click setup failed",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="bg-white shadow rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Setup Dashboard</h1>
-        
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Admin Setup Dashboard
+        </h1>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <button
             onClick={setupDatabase}
@@ -91,7 +117,7 @@ export default function AdminSetupPage() {
           >
             Setup Database
           </button>
-          
+
           <button
             onClick={setupProfiles}
             disabled={loading}
@@ -99,7 +125,7 @@ export default function AdminSetupPage() {
           >
             Setup Profiles
           </button>
-          
+
           <button
             onClick={checkStatus}
             disabled={loading}
@@ -146,5 +172,5 @@ export default function AdminSetupPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

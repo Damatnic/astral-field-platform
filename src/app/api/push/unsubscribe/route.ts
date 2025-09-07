@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,14 +7,14 @@ export async function POST(request: NextRequest) {
 
     if (!subscription || !subscription.endpoint) {
       return NextResponse.json(
-        { error: 'Invalid subscription data' },
-        { status: 400 }
+        { error: "Invalid subscription data" },
+        { status: 400 },
       );
     }
 
     // In production, remove subscription from database
-    console.log('📱 Removing push subscription:', {
-      endpoint: subscription.endpoint
+    console.log("📱 Removing push subscription:", {
+      endpoint: subscription.endpoint,
     });
 
     /*
@@ -32,16 +32,15 @@ export async function POST(request: NextRequest) {
     });
     */
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Push subscription removed successfully' 
+    return NextResponse.json({
+      success: true,
+      message: "Push subscription removed successfully",
     });
-
   } catch (error) {
-    console.error('❌ Push unsubscribe error:', error);
+    console.error("❌ Push unsubscribe error:", error);
     return NextResponse.json(
-      { error: 'Failed to remove push subscription' },
-      { status: 500 }
+      { error: "Failed to remove push subscription" },
+      { status: 500 },
     );
   }
 }

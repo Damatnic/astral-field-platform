@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
 interface ThreadComposerProps {
   categorySlug?: string;
@@ -15,4 +15,3 @@ const ThreadComposer: React.FC<ThreadComposerProps> = () => {
 };
 
 export default ThreadComposer;
-

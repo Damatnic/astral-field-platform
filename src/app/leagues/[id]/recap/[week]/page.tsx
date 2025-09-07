@@ -7,7 +7,7 @@ import {
   Target, AlertTriangle, Clock, Award,
   ChevronLeft, ChevronRight, Shuffle, 
   DollarSign, BarChart3, Zap, Crown,
-  Eye, Heart, Frown, Smile, Fire,
+  Eye, Heart, Frown, Smile, Flame,
   ArrowUp, ArrowDown, Users, Calendar
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
@@ -95,7 +95,7 @@ export default function WeeklyRecapPage({ params }: WeeklyRecapPageProps) {
     },
     {
       id: "2",
-      homeTeam: "Fire Dragons",
+      homeTeam: "Flame Dragons",
       homeTeamAbbr: "FIR",
       homeScore: 89.4,
       homeProjected: 115.2,
@@ -153,7 +153,7 @@ export default function WeeklyRecapPage({ params }: WeeklyRecapPageProps) {
       name: "Josh Allen",
       position: "QB",
       team: "BUF",
-      fantasyTeam: "Fire Dragons",
+      fantasyTeam: "Flame Dragons",
       points: 14.8,
       projected: 22.4,
       difference: -7.6,
@@ -209,21 +209,21 @@ export default function WeeklyRecapPage({ params }: WeeklyRecapPageProps) {
 
   const mockWeeklyStats: WeeklyStats = {
     highestScore: { team: "Astral Destroyers", score: 142.6 },
-    lowestScore: { team: "Fire Dragons", score: 89.4 },
-    closestGame: { teams: "Fire Dragons vs Ice Wolves", margin: 2.4 },
+    lowestScore: { team: "Flame Dragons", score: 89.4 },
+    closestGame: { teams: "Flame Dragons vs Ice Wolves", margin: 2.4 },
     biggestBlowout: { teams: "Astral Destroyers vs Thunder Bolts", margin: 44.4 },
     totalPoints: 1247.8,
     averageScore: 124.8,
     benchPoints: [
       { team: "Thunder Bolts", points: 67.4 },
-      { team: "Fire Dragons", points: 52.8 },
+      { team: "Flame Dragons", points: 52.8 },
       { team: "Cosmic Crusaders", points: 45.2 }
     ]
   };
 
   const getPerformanceIcon = (category: string) => {
     switch (category) {
-      case 'boom': return <Fire className="w-4 h-4 text-orange-500" />;
+      case 'boom': return <Flame className="w-4 h-4 text-orange-500" />;
       case 'bust': return <Frown className="w-4 h-4 text-red-500" />;
       case 'solid': return <Smile className="w-4 h-4 text-green-500" />;
       case 'disappointing': return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
@@ -546,7 +546,7 @@ export default function WeeklyRecapPage({ params }: WeeklyRecapPageProps) {
                       </span>
                     </div>
                     <p className="text-sm text-green-700 dark:text-green-300">
-                      <strong>Ice Wolves</strong> beat Fire Dragons despite being outscored 
+                      <strong>Ice Wolves</strong> beat Flame Dragons despite being outscored 
                       by 8.2 projected points. Sometimes you just need a little luck!
                     </p>
                   </div>

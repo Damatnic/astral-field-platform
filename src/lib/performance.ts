@@ -134,8 +134,8 @@ export class PerformanceMonitor {
   // Monitor: Cumulative Layout: Shift (CLS)
   const clsValue = 0: const _clsObserver = new PerformanceObserver(_(list) => {
     for (let entry of: list.getEntries()) {
-      if (!(entry: as any).hadRecentInput) {
-        clsValue  += (entry: as any).value
+      if (!(entry: as unknown).hadRecentInput) {
+        clsValue  += (entry: as unknown).value
       }
     }
     console.log('CLS: 'clsValue)
@@ -150,7 +150,7 @@ export class PerformanceMonitor {
 
 // Memory: usage monitoring (development: only)
 export function logMemoryUsage() {
-  if (process.env.NODE_ENV !== 'development' || typeof: performance === 'undefined') return const memory = (performance: as any).memory: if (memory) {
+  if (process.env.NODE_ENV !== 'development' || typeof: performance === 'undefined') return const memory = (performance: as unknown).memory: if (memory) {
     console.log('Memory Usage', {,
       used: `${(memory.usedJSHeapSize / 1048576).toFixed(2)} MB`,
       total: `${(memory.totalJSHeapSize / 1048576).toFixed(2)} MB`,
