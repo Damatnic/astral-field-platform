@@ -41,7 +41,8 @@
       "Bash(timeout 60 npm run build)",
       "Bash(timeout 30 cat error.txt)",
       "Bash(timeout 30 npm run build)",
-      "Bash(timeout 45 npm run build)"
+      "Bash(timeout 45 npm run build)",
+      "Bash(echo \"To set environment variable via Netlify CLI:\n\nnetlify env:set DATABASE_URL \"\"postgresql://neondb_owner:npg_zSmWfO47Clbq@ep-floral-union-adtuqc88-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\"\"\n\nThen trigger a new deployment:\nnetlify deploy --prod\")"
     ],
     "deny": [],
     "ask": []
