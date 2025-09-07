@@ -25,7 +25,7 @@ export type AICapability =
   | 'mathematical'
   | 'fast_response'
 
-export type QueryComplexity = 'simple' | 'moderate' | 'complex' | 'expert'
+export type QueryComplexity = 'simple' | 'moderate' | 'medium' | 'complex' | 'high' | 'expert'
 export type QueryPriority = 'low' | 'medium' | 'high' | 'critical'
 
 export interface AIRequest {
@@ -64,6 +64,53 @@ class AIRouterService {
   constructor() {
     this.initializeProviders()
     this.initializeClients()
+  }
+
+  // Compatibility helper used by some modules expecting a simplified interface
+  async processRequest(input: {
+    type: string
+    content: string
+    userId?: string
+    priority?: 'low' | 'medium' | 'high' | 'critical' | 'normal'
+    complexity?: QueryComplexity | string
+  }): Promise<AIResponse> {
+    const mappedPriority: QueryPriority =
+      input.priority === 'low' ? 'low' :
+      input.priority === 'high' ? 'high' :
+      input.priority === 'critical' ? 'critical' : 'medium'
+
+    const mappedComplexity: QueryComplexity =
+      (['simple','moderate','medium','complex','high','expert'] as string[]).includes(String(input.complexity))
+        ? (input.complexity as QueryComplexity)
+        : 'moderate'
+
+    return this.query({
+      messages: [
+        { role: 'user', content: input.content }
+      ],
+      capabilities: ['fantasy_analysis'],
+      complexity: mappedComplexity,
+      priority: mappedPriority,
+      userId: input.userId
+    })
+  }
+
+  // Alias for compatibility with other modules
+  async routeRequest(input: any): Promise<AIResponse> {
+    return this.processRequest(input)
+  }
+
+  async generateResponse(prompt: string, options?: { maxTokens?: number; userId?: string }): Promise<AIResponse> {
+    return this.query({
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+      capabilities: ['fantasy_analysis'],
+      complexity: 'moderate',
+      priority: 'medium',
+      userId: options?.userId,
+      maxTokens: options?.maxTokens
+    })
   }
 
   private initializeProviders() {
@@ -261,8 +308,9 @@ class AIRouterService {
       expert: ['claude-sonnet', 'openai-4o']
     }
     
-    const idealForComplexity = complexityScores[request.complexity]
-    if (idealForComplexity.some(ideal => provider.name.toLowerCase().includes(ideal))) {
+    const normalizedComplexity = request.complexity === 'medium' ? 'moderate' : request.complexity === 'high' ? 'complex' : request.complexity
+    const idealForComplexity = complexityScores[normalizedComplexity as 'simple'|'moderate'|'complex'|'expert'] || []
+    if (idealForComplexity.some((ideal: string) => provider.name.toLowerCase().includes(ideal))) {
       score += 20
     }
 

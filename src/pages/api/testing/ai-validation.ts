@@ -6,18 +6,13 @@ import { rateLimitMiddleware } from '../../../lib/rate-limit';
 const validator = new AIAccuracyValidator();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 10, // Lower limit for testing endpoints as they can be resource-intensive
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `ai-validation:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
-  }
+  if (!allowed) return;
 
   try {
     const userId = await authenticateUser(req);

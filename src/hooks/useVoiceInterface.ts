@@ -48,7 +48,6 @@ declare global {
   interface Window {
     SpeechRecognition: new () => VoiceRecognition;
     webkitSpeechRecognition: new () => VoiceRecognition;
-    speechSynthesis: SpeechSynthesis;
   }
 }
 
@@ -241,7 +240,7 @@ export const useVoiceInterface = (options: VoiceInterfaceOptions = {}) => {
   }, []);
 
   // Text-to-speech
-  const speak = useCallback((text: string, options: SpeechSynthesisUtteranceInit = {}) => {
+  const speak = useCallback((text: string, options: Partial<Pick<SpeechSynthesisUtterance, 'rate' | 'pitch' | 'volume' | 'voice' | 'lang'>> = {}) => {
     if (!synthesis.current) return;
 
     // Cancel any ongoing speech

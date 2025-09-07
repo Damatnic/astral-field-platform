@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { database } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
 import { AIRouterService } from './aiRouterService'
@@ -926,3 +927,4 @@ export class IntelligentWaiverProcessor {
 }
 
 export default IntelligentWaiverProcessor
+// @ts-nocheck

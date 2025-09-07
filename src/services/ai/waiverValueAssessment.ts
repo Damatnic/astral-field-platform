@@ -1,7 +1,6 @@
 import { database } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
-import aiRouterService from './aiRouterService'
-import predictionEngine from './predictionEngine'
+import { aiRouterService, AIRouterService } from './aiRouterService'
 import { adaptiveLearningEngine } from './adaptiveLearningEngine'
 
 export interface PlayerMetrics {
@@ -51,17 +50,20 @@ export interface StreamingMetrics {
   historicalPerformance: number // vs this opponent
 }
 
+interface CacheEntry {
+  metrics: WaiverValueMetrics
+  timestamp: number
+}
+
 export class WaiverValueAssessment {
   private aiRouter: AIRouterService
-  private predictionEngine: PredictionEngine
-  private learningEngine: AdaptiveLearningEngine
-  private metricsCache: Map<string, WaiverValueMetrics> = new Map()
+  private learningEngine: typeof adaptiveLearningEngine
+  private metricsCache: Map<string, CacheEntry> = new Map()
   private readonly CACHE_DURATION = 3600000 // 1 hour
 
   constructor() {
     this.aiRouter = new AIRouterService()
-    this.predictionEngine = new PredictionEngine()
-    this.learningEngine = new AdaptiveLearningEngine()
+    this.learningEngine = adaptiveLearningEngine
   }
 
   /**
@@ -123,7 +125,7 @@ export class WaiverValueAssessment {
         injuryImpact
       }, leagueSettings, teamContext)
       
-      // Calculate confidence in assessment
+      // Calculate confidence in assessment (0-100)
       const confidence = this.calculateConfidence(playerMetrics)
       
       const metrics: WaiverValueMetrics = {
@@ -230,11 +232,11 @@ export class WaiverValueAssessment {
     }
     
     // Check if player fills injured position need
-    const positionNeed = injuries.filter(inj => inj.players?.position === player.position).length
+    const positionNeed = injuries.filter((inj: any) => inj.players?.position === player.position).length
     replacementValue += positionNeed * 10
     
     // Factor in player's team situation (starter injured?)
-    const teamInjuries = injuries.filter(inj => inj.players?.team === player.team)
+    const teamInjuries = injuries.filter((inj: any) => inj.players?.team === player.team)
     if (teamInjuries.length > 0) {
       replacementValue += 15 // Opportunity increase due to team injuries
     }
@@ -379,8 +381,8 @@ export class WaiverValueAssessment {
       .order('week', { ascending: false })
       .limit(5)
     
-    const recentPoints = recentStats?.map(s => s.fantasy_points) || []
-    const averagePoints = recentPoints.reduce((a, b) => a + b, 0) / (recentPoints.length || 1)
+    const recentPoints = (recentStats?.map((s: any) => s.fantasy_points) || []) as number[]
+    const averagePoints = recentPoints.reduce((a: number, b: number) => a + b, 0) / (recentPoints.length || 1)
     
     // Calculate consistency (lower std dev = more consistent)
     const consistency = this.calculateConsistency(recentPoints)
@@ -454,9 +456,9 @@ export class WaiverValueAssessment {
       .order('projected_points', { ascending: false })
       .limit(20)
     
-    const avgWaiverPoints = waiverPlayers
+    const avgWaiverPoints = (waiverPlayers
       ?.slice(5, 15) // Get middle tier of available players
-      .reduce((sum, p) => sum + (p.projected_points || 0), 0) / 10 || 0
+      .reduce((sum: number, p: any) => sum + (p.projected_points || 0), 0) || 0) / 10
     
     // Replacement value is points above average waiver player
     return Math.max(0, metrics.averagePoints - avgWaiverPoints)
@@ -489,8 +491,8 @@ export class WaiverValueAssessment {
       historicalComparison: 0.1
     }
     
-    return Object.entries(indicators).reduce(
-      (score, [key, value]) => score + value * weights[key as keyof typeof weights] * 100,
+    return Object.entries(indicators).reduce<number>(
+      (score: number, [key, value]: [string, number]) => score + value * weights[key as keyof typeof weights] * 100,
       0
     )
   }
@@ -559,8 +561,8 @@ export class WaiverValueAssessment {
       weights.scarcityAdjustment = 0.15
     }
     
-    return Object.entries(metrics).reduce(
-      (total, [key, value]) => total + value * (weights[key as keyof typeof weights] || 0),
+    return Object.entries(metrics).reduce<number>(
+      (total: number, [key, value]: [string, number]) => total + value * (weights[key as keyof typeof weights] || 0),
       0
     )
   }
@@ -575,8 +577,8 @@ export class WaiverValueAssessment {
   
   private determineTrend(points: number[]): 'rising' | 'falling' | 'stable' {
     if (points.length < 3) return 'stable'
-    const recent = points.slice(0, 2).reduce((a, b) => a + b, 0) / 2
-    const previous = points.slice(2, 4).reduce((a, b) => a + b, 0) / 2
+    const recent = points.slice(0, 2).reduce((a: number, b: number) => a + b, 0) / 2
+    const previous = points.slice(2, 4).reduce((a: number, b: number) => a + b, 0) / 2
     if (recent > previous * 1.2) return 'rising'
     if (recent < previous * 0.8) return 'falling'
     return 'stable'
@@ -603,17 +605,13 @@ export class WaiverValueAssessment {
   
   private getCachedValue(key: string): WaiverValueMetrics | null {
     const cached = this.metricsCache.get(key)
-    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.metrics
-    }
-    return null
+    if (!cached) return null
+    if (Date.now() - cached.timestamp >= this.CACHE_DURATION) return null
+    return cached.metrics
   }
   
   private cacheValue(key: string, metrics: WaiverValueMetrics): void {
-    this.metricsCache.set(key, {
-      metrics,
-      timestamp: Date.now()
-    })
+    this.metricsCache.set(key, { metrics, timestamp: Date.now() })
   }
   
   private async trackValueAssessment(playerId: string, metrics: WaiverValueMetrics): Promise<void> {
@@ -640,6 +638,15 @@ export class WaiverValueAssessment {
       overallValue: 0,
       confidence: 0
     }
+  }
+
+  // Confidence calculation based on data quality and stability (0-100)
+  private calculateConfidence(metrics: PlayerMetrics): number {
+    const consistencyScore = metrics.consistency // 0..1
+    const trendBoost = metrics.trend === 'rising' ? 0.1 : metrics.trend === 'falling' ? -0.1 : 0
+    const recencyFactor = Math.min(1, metrics.recentPoints.length / 5)
+    const base = 0.5 * consistencyScore + 0.3 * recencyFactor + 0.2 * (0.5 + trendBoost)
+    return Math.round(Math.max(0, Math.min(1, base)) * 100)
   }
 }
 

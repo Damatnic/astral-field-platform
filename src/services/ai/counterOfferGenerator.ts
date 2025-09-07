@@ -870,7 +870,7 @@ class CounterOfferGenerator {
         LIMIT 10
       `, [originalTradeId, userId]);
 
-      return result.rows.map(row => ({
+    return result.rows.map((row: any) => ({
         id: row.id,
         originalTradeId: row.original_trade_id,
         counterOfferId: row.counter_offer_id,

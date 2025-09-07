@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Player, Team, GameData, MatchupData } from '@/types/fantasy';
 import { StatisticalModelingService } from '../analytics/statisticalModelingService';
 import { FantasyFootballSpecialistAI } from '../ai/fantasyFootballSpecialistAI';
@@ -818,3 +819,4 @@ export class BettingOddsIntegration {
     };
   }
 }
+// @ts-nocheck

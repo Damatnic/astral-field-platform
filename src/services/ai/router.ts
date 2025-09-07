@@ -42,6 +42,35 @@ export class AIRouterService {
     this.startQueueProcessor();
   }
 
+  // Lightweight compatibility helper used by modules expecting a chat-like API.
+  // Accepts a messages array and returns a simple `{ content }` object.
+  public async generateResponse(input: {
+    model?: string;
+    messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>;
+    context?: any;
+    maxTokens?: number;
+    userId?: string;
+    temperature?: number;
+  }): Promise<{ content: string }> {
+    const text = input.messages.map(m => m.content).join('\n\n');
+    const res = await this.routeRequest({
+      text,
+      type: 'generation',
+      context: input.context,
+      userId: input.userId,
+      maxTokens: input.maxTokens,
+      temperature: input.temperature,
+      priority: 'normal'
+    });
+
+    // Map our structured response into a simple content string
+    const content = res.success
+      ? (res.data?.generatedText || res.data?.analysis || JSON.stringify(res.data))
+      : `Error: ${res.error || 'Unknown error'}`;
+
+    return { content };
+  }
+
   public async routeRequest(request: AIRequest): Promise<AIResponse> {
     try {
       // Input validation
@@ -359,8 +388,5 @@ export class AIRouterService {
     }
   }
 }
-
-// Export types for compatibility
-export type { AIRequest, AIResponse, AIProvider };
 
 export default AIRouterService;

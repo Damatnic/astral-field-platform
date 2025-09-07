@@ -15,6 +15,7 @@ interface GeneratedTeam {
   projectedWins: number;
   strengthOfSchedule: number;
   competitiveRating: number;
+  uniqueness: number;
   uniqueFactors: string[];
   storyline: string;
   rivalries: string[];
@@ -363,6 +364,7 @@ export class CompetitiveTeamGeneratorService {
         projectedWins,
         strengthOfSchedule,
         competitiveRating: construction.competitiveness,
+        uniqueness: construction.uniqueness,
         uniqueFactors,
         storyline,
         rivalries: [] // Will be populated later

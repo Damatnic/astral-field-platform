@@ -1,13 +1,16 @@
 // AI Router alias for compatibility
 // Re-exports from the main router service and aiRouterService
 
-// Export main router classes and interfaces
+// Export main router classes and interfaces  
 export { 
-  AIRouterService as AIRouter, 
-  AIRequest, 
-  AIResponse, 
-  AIProvider 
-} from './router';
+  AIRouterService as AIRouter,
+  aiRouterService
+} from './aiRouterService';
+export type {
+  AIRequest,
+  AIResponse,
+  AIProvider
+} from './aiRouterService';
 
 // Export aiRouterService types that other files expect
 export type {
@@ -16,8 +19,6 @@ export type {
   QueryPriority
 } from './aiRouterService';
 
-// Export main service instances
-export { aiRouterService } from './aiRouterService';
 
 // Default export
-export { AIRouterService as default } from './router';
+export { aiRouterService as default } from './aiRouterService';

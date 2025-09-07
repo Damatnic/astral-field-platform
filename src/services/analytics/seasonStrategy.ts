@@ -1,6 +1,5 @@
 import { db } from '../../lib/db';
 import { AIRouter } from '../ai/aiRouter';
-import { PredictiveAnalyticsDashboardService } from './predictiveAnalyticsDashboard';
 
 export interface PlayoffProjection {
   teamId: string;
@@ -89,11 +88,11 @@ export interface SeasonLongStrategy {
 
 export class SeasonStrategyService {
   private aiRouter: AIRouter;
-  private predictiveService: PredictiveAnalyticsDashboardService;
 
   constructor() {
     this.aiRouter = new AIRouter();
-    this.predictiveService = new PredictiveAnalyticsDashboardService();
+    // PredictiveAnalyticsDashboardService intentionally not constructed here to avoid
+    // unnecessary dependencies; this service does not require it directly.
   }
 
   async generateSeasonLongStrategy(
@@ -349,7 +348,7 @@ export class SeasonStrategyService {
       byeWeekProbability,
       championshipProbability,
       strengthOfSchedule: team.avg_opponent_strength / team.avg_score,
-      remainingOpponents: remainingOpponents.rows.map(r => r.username),
+      remainingOpponents: remainingOpponents.rows.map((r: any) => r.username),
       keyMatchups: [] // Would be populated with specific matchup analysis
     };
   }
@@ -536,8 +535,8 @@ Return as JSON array with format:
   "targetPlayers": ["player1", "player2"] // if applicable
 }]`;
 
-    const response = await this.aiRouter.generateResponse(prompt, 'analytical');
-    const aiRecommendations = JSON.parse(response);
+    const response = await this.aiRouter.generateResponse(prompt);
+    const aiRecommendations = JSON.parse(response.content);
 
     return aiRecommendations.map((rec: any) => ({
       type: rec.type,

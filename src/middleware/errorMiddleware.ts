@@ -14,6 +14,8 @@ import {
   AuthorizationError,
   RateLimitError
 } from '@/lib/errorHandling';
+import jwt from 'jsonwebtoken';
+import { db } from '@/lib/db';
 
 // =============================================================================
 // MIDDLEWARE TYPES
@@ -306,9 +308,17 @@ export function withErrorHandling(
       let appError: AppError;
       
       if (error instanceof AppError) {
-        appError = error;
-        // Merge context
-        appError.context = { ...appError.context, ...errorContext };
+        appError = new AppError({
+          code: error.code,
+          message: error.message,
+          category: error.category,
+          severity: error.severity,
+          context: { ...(error.context || {}), ...errorContext },
+          userMessage: error.userMessage,
+          internalMessage: error.internalMessage,
+          metadata: error.metadata,
+          retryable: error.retryable
+        });
       } else {
         // Convert unknown errors to AppError
         appError = errorHandler.handle(error as Error, errorContext);
@@ -380,6 +390,67 @@ export function withValidation(
   });
 }
 
+// =============================================================================
+// AUTHENTICATION UTILITIES
+// =============================================================================
+
+interface User {
+  id: string;
+  email: string;
+  roles: string[];
+  isActive: boolean;
+}
+
+async function validateToken(token: string): Promise<User | null> {
+  try {
+    const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+    
+    // Verify and decode the JWT token
+    const decoded = jwt.verify(token, jwtSecret) as any;
+    
+    if (!decoded.sub || !decoded.email) {
+      return null;
+    }
+    
+    // Check if user exists and is active in the database
+    const userResult = await db.query(`
+      SELECT 
+        id, 
+        email, 
+        roles, 
+        is_active,
+        last_login_at
+      FROM users 
+      WHERE id = $1 AND is_active = true
+    `, [decoded.sub]);
+    
+    if (userResult.rows.length === 0) {
+      return null;
+    }
+    
+    const user = userResult.rows[0];
+    
+    // Update last login time
+    await db.query(`
+      UPDATE users 
+      SET last_login_at = NOW() 
+      WHERE id = $1
+    `, [user.id]);
+    
+    return {
+      id: user.id,
+      email: user.email,
+      roles: user.roles || [],
+      isActive: user.is_active
+    };
+    
+  } catch (error) {
+    // Token is invalid, expired, or malformed
+    console.error('Token validation error:', error);
+    return null;
+  }
+}
+
 export function withAuth(
   handler: ApiHandler,
   options: {
@@ -408,17 +479,33 @@ export function withAuth(
       throw new AuthenticationError('Authorization token missing');
     }
     
-    // TODO: Implement actual token validation
-    // const user = await validateToken(token);
-    
-    // if (!user && required) {
-    //   throw new AuthenticationError('Invalid or expired token');
-    // }
-    
-    // Role-based authorization
-    // if (roles.length > 0 && user && !roles.some(role => user.roles.includes(role))) {
-    //   throw new AuthorizationError('resource', 'access');
-    // }
+    // Implement actual token validation
+    try {
+      if (token) {
+        const user = await validateToken(token);
+        
+        if (!user && required) {
+          throw new AuthenticationError('Invalid or expired token');
+        }
+        
+        // Role-based authorization
+        if (roles.length > 0 && user && !roles.some(role => user.roles?.includes(role))) {
+          throw new AuthorizationError('resource', 'access');
+        }
+        
+        // Add user to context for downstream handlers
+        if (user) {
+          (request as any).user = user;
+        }
+      }
+    } catch (error) {
+      if (required) {
+        throw error instanceof AuthenticationError || error instanceof AuthorizationError 
+          ? error 
+          : new AuthenticationError('Token validation failed');
+      }
+      // If not required, continue without user context
+    }
     
     return handler(request, context);
   });

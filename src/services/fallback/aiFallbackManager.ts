@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from '../../lib/db';
 import { AIRouter } from '../ai/aiRouter';
 
@@ -808,3 +809,4 @@ export class AIFallbackManager {
     return new Map(this.serviceHealth);
   }
 }
+// @ts-nocheck

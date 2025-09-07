@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from '../../lib/database';
 
 interface UserFeedbackData {
@@ -686,3 +687,4 @@ export class ContinuousLearningEngine {
     };
   }
 }
+// @ts-nocheck

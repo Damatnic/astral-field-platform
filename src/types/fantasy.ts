@@ -364,6 +364,22 @@ export interface LeagueTeam {
   lineupHistory: WeeklyLineup[];
 }
 
+// Minimal Trade and Draft types for simulation interfaces
+export interface Trade {
+  id: string;
+  fromTeamId: string;
+  toTeamId: string;
+  playersGiven: string[];
+  playersReceived: string[];
+  createdAt?: Date;
+}
+
+export interface Draft {
+  id: string;
+  leagueId: string;
+  picks: Array<{ pickNumber: number; teamId: string; playerId: string }>;
+}
+
 export interface Transaction {
   id: string;
   type: TransactionType;

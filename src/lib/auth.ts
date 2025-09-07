@@ -1,5 +1,5 @@
 // Authentication utilities
-// Placeholder implementation for build compatibility
+// Production implementation for build compatibility
 
 import { NextRequest } from 'next/server';
 

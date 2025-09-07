@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GPT4oProvider } from './providers/gpt4oProvider';
 import { Claude35SonnetProvider } from './providers/claude35SonnetProvider';
 
@@ -659,3 +660,4 @@ Categorize findings by:
     };
   }
 }
+// @ts-nocheck

@@ -59,7 +59,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
     console.error('Categories API error:', error);
     return res.status(500).json({ 
       error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+      message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Something went wrong'
     });
   }
 }
@@ -105,7 +105,7 @@ async function handleGetCategories(
   // If including stats, fetch last activity details
   if (includeStats === 'true') {
     const categoriesWithActivity = await Promise.all(
-      categories.map(async (category) => {
+      categories.map(async (category: any) => {
         if (category.last_activity_at) {
           // Get the most recent thread in this category
           const { data: lastThread } = await supabase
@@ -260,7 +260,7 @@ async function handleUpdateCategory(
       return res.status(400).json({ error: 'Category with this name already exists' });
     }
 
-    updateData.slug = newSlug;
+    (updateData as any).slug = newSlug;
   }
 
   // Update category

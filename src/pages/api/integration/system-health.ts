@@ -6,25 +6,21 @@ import { rateLimitMiddleware } from '../../../lib/rate-limit';
 const integrator = new AISystemsIntegrator();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 50,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `system-health:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
-  }
+  if (!allowed) return;
 
   try {
     // Check if user has admin privileges for system health monitoring
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     // For now, allow all authenticated users to view system health
     // In production, you might want to restrict this to admin users

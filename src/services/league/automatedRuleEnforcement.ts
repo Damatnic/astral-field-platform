@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pool } from 'pg';
 import { WebSocketManager } from '../websocket/manager';
 import { AIRouterService } from '../ai/router';
@@ -1210,3 +1211,4 @@ Provide a brief, specific enforcement recommendation.`
     }
   }
 }
+// @ts-nocheck

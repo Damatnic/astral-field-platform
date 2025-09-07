@@ -55,9 +55,9 @@ export default function ConnectionMonitor({
   const [lastFailure, setLastFailure] = useState<string | null>(null)
   
   const { announceToScreenReader } = useAccessibility()
-  const pingIntervalRef = useRef<NodeJS.Timeout>()
-  const speedTestIntervalRef = useRef<NodeJS.Timeout>()
-  const retryTimeoutRef = useRef<NodeJS.Timeout>()
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const speedTestIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isMonitoring = useRef(false)
 
   // Network information API support
@@ -165,7 +165,7 @@ export default function ConnectionMonitor({
       // Announce significant status changes
       if (status !== newStatus) {
         const message = getStatusMessage(newStatus)
-        announceToScreenReader(message, newStatus === 'offline' ? 'assertive' : 'polite')
+        announceToScreenReader(message, 'polite')
         onConnectionChange?.(newStatus)
       }
 

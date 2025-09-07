@@ -17,7 +17,7 @@ class RateLimiter {
   private storage = new Map<string, RateLimitEntry>();
   private config: RateLimitConfig;
 
-  constructor(config: RateLimitConfig) {
+  constructor(config: Partial<RateLimitConfig>) {
     this.config = {
       maxRequests: 100,
       windowMs: 60 * 1000, // 1 minute

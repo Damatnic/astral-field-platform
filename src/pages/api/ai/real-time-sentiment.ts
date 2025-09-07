@@ -7,24 +7,22 @@ import { database as db } from '../../../lib/database';
 const analyzer = new RealTimeSentimentAnalyzer();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 30,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `sentiment:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
+  if (!allowed) {
+    return; // rateLimitMiddleware already handled response
   }
 
   try {
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     if (req.method === 'POST') {
       const { action, player, timeframe, alertType, subscriptionData } = req.body;
@@ -350,8 +348,8 @@ async function getActiveAlerts(userId: string, limit: number) {
   `, [userId]);
 
   // Build filter conditions based on subscriptions
-  let alertFilters = [];
-  let queryParams = [limit];
+  let alertFilters: string[] = [];
+  let queryParams: any[] = [limit];
   let paramIndex = 2;
 
   if (subscriptionsQuery.rows.length > 0) {

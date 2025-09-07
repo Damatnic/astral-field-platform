@@ -145,12 +145,11 @@ class WaiverService {
 
       // Check for existing claim on this player by this team
       // Check for existing claim - use raw SQL for complex conditions
-      const existingClaimResult = await database.query(
+      const existingClaimResult: any = await database.query(
         'SELECT * FROM waiver_claims WHERE team_id = $1 AND player_id = $2 AND status = $3',
         [teamId, data.playerId, 'pending']
       )
-      if (existingClaimResult.error) throw new Error(existingClaimResult.error)
-      const existingClaim = existingClaimResult.data
+      const existingClaim = existingClaimResult.rows
 
       if (existingClaim && existingClaim.length > 0) {
         return { success: false, error: 'You already have a pending claim on this player' }
@@ -158,12 +157,11 @@ class WaiverService {
 
       // Validate drop player if specified
       if (data.dropPlayerId) {
-        const ownedResult = await database.query(
+        const ownedResult: any = await database.query(
           'SELECT * FROM rosters WHERE team_id = $1 AND player_id = $2',
           [teamId, data.dropPlayerId]
         )
-        if (ownedResult.error) throw new Error(ownedResult.error)
-        const ownedPlayer = ownedResult.data
+        const ownedPlayer = ownedResult.rows
 
         if (!ownedPlayer || ownedPlayer.length === 0) {
           return { success: false, error: 'You can only drop players you own' }
@@ -193,11 +191,11 @@ class WaiverService {
 
   async cancelWaiverClaim(claimId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const deleteResult = await database.query(
+      const deleteResult: any = await database.query(
         'DELETE FROM waiver_claims WHERE id = $1 AND status = $2',
         [claimId, 'pending']
       )
-      if (deleteResult.error) throw new Error(deleteResult.error)
+      // Assume success if no exception
 
       return { success: true }
     } catch (error) {
@@ -344,12 +342,11 @@ class WaiverService {
       const totalBudget = 100
 
       // Calculate spent amount from successful waiver claims
-      const claimsResult = await database.query(
+      const claimsResult: any = await database.query(
         'SELECT * FROM waiver_claims WHERE team_id = $1 AND status = $2',
         [teamId, 'successful']
       )
-      if (claimsResult.error) throw new Error(claimsResult.error)
-      const claims = claimsResult.data
+      const claims = claimsResult.rows
 
       const spent = (claims || []).reduce((total: number, claim: any) => total + (claim.bid_amount || 0), 0)
       const remaining = totalBudget - spent

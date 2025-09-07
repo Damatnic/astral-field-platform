@@ -194,7 +194,7 @@ class OracleService {
     try {
       // Get team roster if teamId provided
       if (query.teamId) {
-        const { data: roster } = await neonDb.query(`
+        const rosterResult = await neonDb.query(`
           SELECT 
             roster_players.*,
             players.id as player_id,
@@ -208,8 +208,8 @@ class OracleService {
           LEFT JOIN player_projections pp ON players.id = pp.player_id
           WHERE roster_players.team_id = $1
         `, [query.teamId])
-
-        if (roster) {
+        const roster = rosterResult.rows as any[]
+        if (roster && roster.length) {
           // Transform to match expected structure
           context.roster = roster?.map((row: any) => ({
             ...row,
@@ -230,7 +230,7 @@ class OracleService {
       // Get player data if players specified
       if (query.context.players?.length) {
         const placeholders = query.context.players.map((_, index) => `$${index + 1}`).join(', ')
-        const { data: players } = await neonDb.query(`
+        const playersResult = await neonDb.query(`
           SELECT 
             players.*,
             pp.fantasy_points,
@@ -240,7 +240,8 @@ class OracleService {
           WHERE players.id IN (${placeholders})
         `, query.context.players)
 
-        if (players) {
+        const players = playersResult.rows as any[]
+        if (players && players.length) {
           context.players = players.map((row: any) => ({
             ...row,
             player_projections: {
@@ -605,7 +606,6 @@ class OracleService {
 
 const oracleService = new OracleService()
 export { OracleService }
-export { OracleInsight }
-// Note: OracleAnalysis doesn't exist as a separate type - using OracleResponse instead
-export { OracleResponse as OracleAnalysis }
+// Note: OracleAnalysis is a type alias to OracleResponse
+export type { OracleResponse as OracleAnalysis }
 export default oracleService

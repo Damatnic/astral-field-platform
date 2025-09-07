@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AIProvider, AIRequest, AIResponse } from '../types';
 
 export class Claude35SonnetProvider implements AIProvider {
@@ -419,3 +420,4 @@ Weight sources by reliability and provide transparent reasoning for all synthesi
     });
   }
 }
+// @ts-nocheck

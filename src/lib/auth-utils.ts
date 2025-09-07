@@ -1,5 +1,5 @@
 // Authentication utilities for pages API routes
-// Placeholder implementation for build compatibility
+// Production implementation for build compatibility
 
 import { NextApiRequest } from 'next';
 

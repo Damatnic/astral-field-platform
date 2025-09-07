@@ -257,7 +257,17 @@ export class ErrorHandler {
       appError = error;
       // Merge additional context if provided
       if (context) {
-        appError.context = { ...appError.context, ...context };
+        appError = new AppError({
+          code: appError.code,
+          message: appError.message,
+          category: appError.category,
+          severity: appError.severity,
+          context: { ...(appError.context || {}), ...context },
+          userMessage: appError.userMessage,
+          internalMessage: appError.internalMessage,
+          metadata: appError.metadata,
+          retryable: appError.retryable
+        });
       }
     } else {
       // Convert generic Error to AppError
@@ -574,13 +584,6 @@ export class ErrorRecovery {
 
 // Export singleton instance
 export const errorHandler = ErrorHandler.getInstance();
-
-// Export utility functions
-export {
-  asyncErrorWrapper as withErrorHandling,
-  createErrorResponse,
-  getHttpStatusCode
-};
 
 // Export for testing
 export { ErrorHandler as ErrorHandlerClass };

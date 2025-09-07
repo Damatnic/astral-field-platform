@@ -232,17 +232,80 @@ export const useDraftStore = create<DraftStore>()(
         set({ error: null })
       },
 
-      // WebSocket placeholder functions - will implement with Socket.IO later
+      // WebSocket functions - real-time draft synchronization
       connect: (leagueId) => {
-        // TODO: Implement WebSocket connection
-        console.log(`Connecting to draft room: ${leagueId}`)
-        set({ isConnected: true, connectionError: null })
+        try {
+          // Import the socket service for real-time updates
+          import('@/services/websocket/socketService').then(({ default: socketService }) => {
+            socketService.connect().then(() => {
+              // Subscribe to league-specific draft events
+              socketService.subscribeToLeague(leagueId);
+              
+              // Set up draft-specific event handlers
+              socketService.on('draft_pick', (event) => {
+                if (event.leagueId === leagueId) {
+                  // Refresh draft data when someone makes a pick
+                  Promise.all([
+                    get().loadDraftState(leagueId),
+                    get().loadDraftPicks(leagueId),
+                    get().loadAvailablePlayers(leagueId)
+                  ]);
+                }
+              });
+              
+              socketService.on('draft_state_change', (event) => {
+                if (event.leagueId === leagueId) {
+                  get().loadDraftState(leagueId);
+                }
+              });
+              
+              set({ 
+                isConnected: true, 
+                connectionError: null 
+              });
+              
+              console.log(`Connected to draft room: ${leagueId}`);
+            }).catch((error) => {
+              console.error('Failed to connect to draft room:', error);
+              set({ 
+                isConnected: false, 
+                connectionError: error.message || 'Connection failed' 
+              });
+            });
+          });
+        } catch (error) {
+          console.error('Error connecting to draft room:', error);
+          set({ 
+            isConnected: false, 
+            connectionError: error instanceof Error ? error.message : 'Unknown error' 
+          });
+        }
       },
 
       disconnect: () => {
-        // TODO: Implement WebSocket disconnection
-        console.log('Disconnecting from draft room')
-        set({ isConnected: false, connectionError: null })
+        try {
+          import('@/services/websocket/socketService').then(({ default: socketService }) => {
+            // Remove event listeners
+            socketService.off('draft_pick', () => {});
+            socketService.off('draft_state_change', () => {});
+            
+            // Disconnect from socket service
+            socketService.disconnect();
+            
+            set({ 
+              isConnected: false, 
+              connectionError: null 
+            });
+            
+            console.log('Disconnected from draft room');
+          });
+        } catch (error) {
+          console.error('Error disconnecting from draft room:', error);
+          set({ 
+            isConnected: false, 
+            connectionError: error instanceof Error ? error.message : 'Disconnect error' 
+          });
+        }
       }
     })
   )

@@ -7,24 +7,22 @@ import { database as db } from '../../../lib/database';
 const analyzer = new MultiModalAnalyzer();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 20, // Lower limit for resource-intensive operations
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `multimodal:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
+  if (!allowed) {
+    return; // rateLimitMiddleware already sent the response
   }
 
   try {
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     if (req.method === 'POST') {
       const { action, mediaType, analysisType, mediaUrl, playerName, context } = req.body;
@@ -200,15 +198,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   result = { error: `Unknown analysis type: ${analysis.type}` };
               }
               
+              const isError = (result as any)?.error !== undefined;
               batchResults.push({
                 id: analysis.id,
                 type: analysis.type,
-                success: !result.error,
+                success: !isError,
                 data: result
               });
 
               // Store each result
-              if (!result.error) {
+              if (!isError) {
                 await storeAnalysisResult(userId, {
                   type: analysis.type,
                   result,
@@ -221,7 +220,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 id: analysis.id,
                 type: analysis.type,
                 success: false,
-                error: error.message
+                error: (error as Error).message || 'Unknown error'
               });
             }
           }

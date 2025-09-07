@@ -4,13 +4,20 @@ import IntelligentWaiverProcessor from '@/services/ai/intelligentWaiverProcessor
 import WaiverValueAssessment from '@/services/ai/waiverValueAssessment'
 import AIAnalyticsService from '@/services/ai/aiAnalyticsService'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase environment is not configured')
+  }
+  return createClient(url, key)
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { leagueId, mode = 'auto' } = await request.json()
 
     if (!leagueId) {
@@ -128,6 +135,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const leagueId = searchParams.get('leagueId')
     const batchId = searchParams.get('batchId')

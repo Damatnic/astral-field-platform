@@ -1,9 +1,6 @@
-// THIS FILE NEEDS REFACTORING FOR NEON DATABASE - TEMPORARILY DISABLED
 'use client'
 
-import { createClient } from '@/lib/supabase'
-
-const supabase = createClient()
+import { db } from '@/lib/db';
 
 export interface TeamAnalytics {
   teamId: string
@@ -140,13 +137,14 @@ class AnalyticsService {
   async getTeamAnalytics(teamId: string, season: number = new Date().getFullYear()): Promise<TeamAnalytics> {
     try {
       // Get team info
-      const { data: team } = await supabase
-        .from('teams')
-        .select('id, team_name')
-        .eq('id', teamId)
-        .single()
+      const teamResult = await db.query(`
+        SELECT id, team_name
+        FROM teams
+        WHERE id = $1
+      `, [teamId])
 
-      if (!team) throw new Error('Team not found')
+      if (teamResult.rows.length === 0) throw new Error('Team not found')
+      const team = teamResult.rows[0]
 
       // Get season matchups and scores (this would need to be implemented)
       const seasonStats = await this.calculateSeasonStats(teamId, season)
@@ -155,8 +153,8 @@ class AnalyticsService {
       const projections = await this.calculateProjections(teamId, season)
 
       return {
-        teamId: (team as any).id,
-        teamName: (team as any).team_name,
+        teamId: team.id,
+        teamName: team.team_name,
         season: seasonStats,
         trends,
         positions,
@@ -171,21 +169,24 @@ class AnalyticsService {
   async getLeagueAnalytics(leagueId: string, season: number = new Date().getFullYear()): Promise<LeagueAnalytics> {
     try {
       // Get league info
-      const { data: league } = await supabase
-        .from('leagues')
-        .select('id, name')
-        .eq('id', leagueId)
-        .single()
+      const leagueResult = await db.query(`
+        SELECT id, name
+        FROM leagues
+        WHERE id = $1
+      `, [leagueId])
 
-      if (!league) throw new Error('League not found')
+      if (leagueResult.rows.length === 0) throw new Error('League not found')
+      const league = leagueResult.rows[0]
 
       // Get all teams in league
-      const { data: teams } = await supabase
-        .from('teams')
-        .select('*')
-        .eq('league_id', leagueId)
+      const teamsResult = await db.query(`
+        SELECT *
+        FROM teams
+        WHERE league_id = $1
+      `, [leagueId])
 
-      if (!teams) throw new Error('No teams found')
+      if (teamsResult.rows.length === 0) throw new Error('No teams found')
+      const teams = teamsResult.rows
 
       const seasonStats = await this.calculateLeagueSeasonStats(leagueId, season)
       const standings = await this.calculateStandings(leagueId, season)
@@ -194,8 +195,8 @@ class AnalyticsService {
       const transactionAnalysis = await this.calculateTransactionAnalysis(leagueId, season)
 
       return {
-        leagueId: (league as any).id,
-        leagueName: (league as any).name,
+        leagueId: league.id,
+        leagueName: league.name,
         currentWeek: this.getCurrentWeek(),
         season: seasonStats,
         standings,
@@ -212,19 +213,20 @@ class AnalyticsService {
   async getPlayerAnalytics(playerId: string, season: number = new Date().getFullYear()): Promise<PlayerAnalytics> {
     try {
       // Get player info
-      const { data: player } = await supabase
-        .from('players')
-        .select(`
-          id,
-          name,
-          position,
-          nfl_team,
-          player_projections(fantasy_points)
-        `)
-        .eq('id', playerId)
-        .single()
+      const playerResult = await db.query(`
+        SELECT 
+          p.id,
+          p.name,
+          p.position,
+          p.nfl_team,
+          pp.fantasy_points
+        FROM players p
+        LEFT JOIN player_projections pp ON p.id = pp.player_id
+        WHERE p.id = $1
+      `, [playerId])
 
-      if (!player) throw new Error('Player not found')
+      if (playerResult.rows.length === 0) throw new Error('Player not found')
+      const player = playerResult.rows[0]
 
       const seasonStats = await this.calculatePlayerSeasonStats(playerId, season)
       const trends = await this.calculatePlayerTrends(playerId, season)
@@ -232,10 +234,10 @@ class AnalyticsService {
       const ownership = await this.calculatePlayerOwnership(playerId)
 
       return {
-        playerId: (player as any).id,
-        playerName: (player as any).name,
-        position: (player as any).position,
-        nflTeam: (player as any).nfl_team,
+        playerId: player.id,
+        playerName: player.name,
+        position: player.position,
+        nflTeam: player.nfl_team,
         season: seasonStats,
         trends,
         schedule,
@@ -358,12 +360,14 @@ class AnalyticsService {
   }
 
   private async calculateStandings(leagueId: string, season: number): Promise<LeagueAnalytics['standings']> {
-    const { data: teams } = await supabase
-      .from('teams')
-      .select('id, team_name')
-      .eq('league_id', leagueId)
+    const teamsResult = await db.query(`
+      SELECT id, team_name
+      FROM teams
+      WHERE league_id = $1
+      ORDER BY team_name
+    `, [leagueId])
 
-    return (teams || []).map((team: any, index: number) => ({
+    return teamsResult.rows.map((team: any, index: number) => ({
       rank: index + 1,
       teamId: team.id,
       teamName: team.team_name,
@@ -462,12 +466,13 @@ class AnalyticsService {
   }
 
   private async getLeagueTeams(leagueId: string): Promise<any[]> {
-    const { data } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('league_id', leagueId)
+    const result = await db.query(`
+      SELECT *
+      FROM teams
+      WHERE league_id = $1
+    `, [leagueId])
     
-    return data || []
+    return result.rows
   }
 
   private async calculateParityIndex(leagueId: string): Promise<number> {

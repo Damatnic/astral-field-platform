@@ -6,24 +6,20 @@ import { rateLimitMiddleware } from '../../../lib/rate-limit';
 const attributionService = new PerformanceAttributionService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 30,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `performance-attribution:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
-  }
+  if (!allowed) return;
 
   try {
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     if (req.method === 'GET') {
       const { leagueId, type, decisionId, decisionType } = req.query;

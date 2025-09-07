@@ -1,9 +1,6 @@
-// THIS FILE NEEDS REFACTORING FOR NEON DATABASE - TEMPORARILY DISABLED
 'use client'
 
-import { createClient } from '@/lib/supabase'
-
-const supabase = createClient()
+import { db } from '@/lib/db';
 
 export interface PlayerPrediction {
   playerId: string
@@ -218,16 +215,22 @@ class PredictionEngine {
 
   // Private helper methods
   private async getPlayerData(playerId: string): Promise<any> {
-    const { data } = await supabase
-      .from('players')
-      .select(`
-        *,
-        player_projections(*)
-      `)
-      .eq('id', playerId)
-      .single()
+    const result = await db.query(`
+      SELECT 
+        p.*,
+        pp.fantasy_points,
+        pp.passing_yards,
+        pp.rushing_yards,
+        pp.receiving_yards,
+        pp.passing_tds,
+        pp.rushing_tds,
+        pp.receiving_tds
+      FROM players p
+      LEFT JOIN player_projections pp ON p.id = pp.player_id
+      WHERE p.id = $1
+    `, [playerId])
 
-    return data
+    return result.rows[0] || null
   }
 
   private async getHistoricalStats(playerId: string): Promise<any> {
@@ -320,28 +323,31 @@ class PredictionEngine {
   }
 
   private async getTeamData(teamId: string): Promise<any> {
-    const { data } = await supabase
-      .from('teams')
-      .select('*')
-      .eq('id', teamId)
-      .single()
+    const result = await db.query(`
+      SELECT *
+      FROM teams
+      WHERE id = $1
+    `, [teamId])
 
-    return data
+    return result.rows[0] || null
   }
 
   private async analyzeRoster(teamId: string): Promise<any[]> {
     // Get roster players and analyze position strengths
-    const { data: roster } = await supabase
-      .from('roster_players')
-      .select(`
-        *,
-        players(*)
-      `)
-      .eq('team_id', teamId)
+    const result = await db.query(`
+      SELECT 
+        rp.*,
+        p.*
+      FROM roster_players rp
+      JOIN players p ON rp.player_id = p.id
+      WHERE rp.team_id = $1
+    `, [teamId])
+    
+    const roster = result.rows
 
     const positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K']
     return positions.map(position => {
-      const positionPlayers = roster?.filter((p: any) => p.players.position === position) || []
+      const positionPlayers = roster?.filter((p: any) => p.position === position) || []
       const avgProjection = positionPlayers.reduce((sum: number, p: any) => 
         sum + (Math.random() * 20), 0) / positionPlayers.length || 0
 
@@ -426,12 +432,14 @@ class PredictionEngine {
   }
 
   private async getAllPlayersData(): Promise<any[]> {
-    const { data } = await supabase
-      .from('players')
-      .select('*')
-      .limit(100)
+    const result = await db.query(`
+      SELECT *
+      FROM players
+      ORDER BY name
+      LIMIT 100
+    `)
     
-    return data || []
+    return result.rows
   }
 
   private async getOwnershipData(): Promise<any> {

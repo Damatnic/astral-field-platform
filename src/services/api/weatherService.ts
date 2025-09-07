@@ -274,10 +274,10 @@ class WeatherService {
 
   // Calculate fantasy impact by category
   private calculateFantasyImpact(weather: any) {
-    const impact = {
-      passing: 'neutral' as const,
-      rushing: 'neutral' as const,
-      kicking: 'neutral' as const,
+    const impact: { passing: 'positive'|'neutral'|'negative'; rushing: 'positive'|'neutral'|'negative'; kicking: 'positive'|'neutral'|'negative'; overall: number } = {
+      passing: 'neutral',
+      rushing: 'neutral',
+      kicking: 'neutral',
       overall: 0
     }
 

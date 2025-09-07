@@ -10,24 +10,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 15,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `season-strategy:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
-  }
+  if (!allowed) return;
 
   try {
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     if (req.method === 'GET') {
       const { leagueId, type = 'full', week } = req.query;

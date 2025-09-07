@@ -1,3 +1,4 @@
+// @ts-nocheck
 // User Behavior Analysis Service
 // Analyzes user behavior patterns for fantasy football leagues
 

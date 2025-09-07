@@ -375,20 +375,24 @@ class TradeOpportunityDetector {
         contextA.leagueId
       );
 
-      // Calculate mutual benefit
-      const mutualBenefit = this.calculateMutualBenefit(tradeAnalysis, contextA, contextB);
+      // Calculate mutual benefit based on team impact deltas
+      const deltaA = (tradeAnalysis.teamImpact?.proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
+      const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
+      const benefitA = Math.min(1, Math.max(0, deltaA / 50));
+      const benefitB = Math.min(1, Math.max(0, deltaB / 50));
+      const mutualBenefit = Math.min(benefitA, benefitB);
 
       // Assess compatibility with user profiles
       const compatibility = this.assessTradeCompatibility(profileA, profileB, pkg.type);
 
       return {
-        fairnessScore: tradeAnalysis.fairnessScore,
-        fromUserValue: tradeAnalysis.fromUserValue,
-        toUserValue: tradeAnalysis.toUserValue,
+        fairnessScore: (tradeAnalysis.overallAssessment?.fairnessScore || 0) / 100,
+        fromUserValue: deltaA,
+        toUserValue: deltaB,
         mutualBenefit,
         compatibility,
-        riskLevel: tradeAnalysis.riskAssessment?.level || 'medium',
-        confidence: Math.min(tradeAnalysis.confidence || 0.7, compatibility),
+        riskLevel: 'medium',
+        confidence: Math.min((tradeAnalysis.overallAssessment?.confidence || 70) / 100, compatibility),
         reasoning: pkg.reasoning,
         type: pkg.type
       };
@@ -580,11 +584,11 @@ class TradeOpportunityDetector {
   }
 
   private calculateMutualBenefit(tradeAnalysis: any, contextA: any, contextB: any): number {
-    // Calculate how much both teams benefit from the trade
-    const benefitA = tradeAnalysis.fromUserBenefit || 0;
-    const benefitB = tradeAnalysis.toUserBenefit || 0;
-    
-    return Math.min(benefitA, benefitB); // Mutual benefit is limited by the lesser benefit
+    const deltaA = (tradeAnalysis.teamImpact?.proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
+    const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
+    const benefitA = Math.min(1, Math.max(0, deltaA / 50));
+    const benefitB = Math.min(1, Math.max(0, deltaB / 50));
+    return Math.min(benefitA, benefitB);
   }
 
   private assessTradeCompatibility(profileA: UserTradeProfile, profileB: UserTradeProfile, tradeType: string): number {
@@ -627,7 +631,7 @@ class TradeOpportunityDetector {
     return 'low';
   }
 
-  private calculatePriority(analysis: any, urgency: string): number {
+  private calculatePriority(analysis: any, urgency: 'low' | 'medium' | 'high' | 'critical'): number {
     let priority = 0;
 
     // Base score from analysis quality
@@ -732,7 +736,7 @@ class TradeOpportunityDetector {
       WHERE ur.user_id = $1 AND ur.league_id = $2
     `, [userId, leagueId]);
 
-    return result.rows.map(row => ({
+    return result.rows.map((row: any) => ({
       playerId: row.player_id,
       playerName: row.player_name,
       position: row.position,
@@ -875,7 +879,7 @@ class TradeOpportunityDetector {
         LIMIT $2
       `, [userId, limit]);
 
-      return result.rows.map(row => ({
+      return result.rows.map((row: any) => ({
         id: row.id,
         fromUserId: row.from_user_id,
         toUserId: row.to_user_id,

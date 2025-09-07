@@ -19,7 +19,7 @@ interface LazyLoadProps {
 
 // Intersection Observer hook
 function useIntersectionObserver(
-  elementRef: React.RefObject<HTMLElement>,
+  elementRef: React.RefObject<Element | null>,
   options: IntersectionObserverInit = {},
   triggerOnce: boolean = true
 ) {
@@ -113,8 +113,7 @@ export function LazyLoad({
         y: 0
       },
       transition: {
-        duration: 0.5,
-        ease: 'easeOut'
+        duration: 0.5
       }
     }
   }
@@ -313,7 +312,7 @@ export function LazyComponent<T extends Record<string, any>>({
   fallback?: React.ReactNode
   delay?: number
 } & T) {
-  const [Component, setComponent] = useState<React.ComponentType<T> | null>(null)
+  const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const elementRef = useRef<HTMLDivElement>(null)
@@ -330,7 +329,7 @@ export function LazyComponent<T extends Record<string, any>>({
           }
           
           const module = await loader()
-          setComponent(() => module.default)
+          setComponent(() => module.default as React.ComponentType<any>)
         } catch (err) {
           setError(err as Error)
         } finally {
@@ -345,7 +344,7 @@ export function LazyComponent<T extends Record<string, any>>({
   return (
     <div ref={elementRef}>
       {Component ? (
-        <Component {...props} />
+        <Component {...(props as any)} />
       ) : error ? (
         <div className="bg-red-900/20 border border-red-500 rounded-lg p-4 text-red-300">
           Error loading component: {error.message}

@@ -57,6 +57,9 @@ export default function DraftRoom({ leagueId }: DraftRoomProps) {
 
   const [timeLeft, setTimeLeft] = useState<number>(0)
   const [userTeam, setUserTeam] = useState<any>(null)
+  
+  // Calculate if current user is the one who should pick
+  const isCurrentPicker = draftState?.currentTeamId === userTeam?.id
 
   useEffect(() => {
     if (leagueId) {
@@ -90,8 +93,8 @@ export default function DraftRoom({ leagueId }: DraftRoomProps) {
         setTimeLeft(remaining)
         
         if (remaining === 0) {
-          // Auto pick logic would go here
-          // TODO: Implement auto-pick functionality
+          // Auto pick logic - select the best available player
+          handleAutoPick()
         }
       }, 1000)
     }
@@ -136,6 +139,57 @@ export default function DraftRoom({ leagueId }: DraftRoomProps) {
     if (!success && error) {
       console.error('Failed to make pick:', error)
     }
+  }
+
+  const handleAutoPick = async () => {
+    if (!userTeam || !draftState || !isCurrentPicker || availablePlayers.length === 0) return
+    
+    try {
+      // Find the best available player based on ADP and position need
+      const bestPlayer = findBestAvailablePlayer()
+      
+      if (bestPlayer) {
+        await handleMakePick(bestPlayer.id)
+      }
+    } catch (error) {
+      console.error('Auto-pick failed:', error)
+    }
+  }
+
+  const findBestAvailablePlayer = () => {
+    if (availablePlayers.length === 0) return null
+    
+    // Simple strategy: pick based on ADP and position scarcity
+    const sortedPlayers = [...availablePlayers].sort((a, b) => {
+      // Primary sort by ADP (lower is better)
+      const adpA = a.adp || 999
+      const adpB = b.adp || 999
+      
+      if (Math.abs(adpA - adpB) > 10) {
+        return adpA - adpB
+      }
+      
+      // Secondary sort by position scarcity for close ADP values
+      const scarcityA = getPositionScarcity(a.position)
+      const scarcityB = getPositionScarcity(b.position)
+      
+      return scarcityB - scarcityA || adpA - adpB
+    })
+    
+    return sortedPlayers[0]
+  }
+
+  const getPositionScarcity = (position: string) => {
+    // Higher values indicate more scarcity (should draft sooner)
+    const scarcityMap: Record<string, number> = {
+      'QB': 1,
+      'K': 1,
+      'DEF': 1,
+      'TE': 3,
+      'RB': 5,
+      'WR': 4
+    }
+    return scarcityMap[position] || 2
   }
 
   const filteredPlayers = availablePlayers.filter(player => {

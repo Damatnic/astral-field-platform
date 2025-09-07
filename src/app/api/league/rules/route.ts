@@ -6,10 +6,16 @@ import { WebSocketManager } from '@/services/websocket/manager';
 import { AIRouterService } from '@/services/ai/router';
 import { UserBehaviorAnalysisService } from '@/services/ai/userBehaviorAnalysis';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = 'force-dynamic';
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error('Supabase environment is not configured');
+  }
+  return createClient(url, key);
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -31,6 +37,7 @@ const ruleEnforcement = new AutomatedRuleEnforcementService(
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const leagueId = searchParams.get('leagueId');
     const action = searchParams.get('action') || 'summary';
@@ -227,6 +234,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase();
     const body = await request.json();
     const { action, leagueId, userId, ...data } = body;
 
@@ -525,6 +533,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const leagueId = searchParams.get('leagueId');
     const ruleId = searchParams.get('ruleId');

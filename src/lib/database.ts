@@ -1,7 +1,7 @@
 // Enhanced Database Connection with Neon PostgreSQL
 // Production-ready database utilities with connection pooling
 
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 
 interface DatabaseConfig {
   connectionString: string;
@@ -77,7 +77,7 @@ class DatabaseManager {
     }
   }
 
-  public async query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+  public async query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
     if (!this.pool) {
       throw new Error('Database pool not initialized');
     }
@@ -183,6 +183,80 @@ class DatabaseManager {
       this.pool = null;
     }
   }
+
+  // --- Compatibility helpers (Supabase-like minimal wrappers) ---
+  public async select(table: string, options: any = {}): Promise<any> {
+    const columns = options.columns || '*'
+    const where = options.where || {}
+    const orderBy = options.orderBy || null
+    const limit = options.limit || null
+
+    const whereKeys = Object.keys(where)
+    const conditions = whereKeys.map((k, i) => `${k} = $${i + 1}`)
+    const params = whereKeys.map(k => where[k])
+
+    let query = `SELECT ${columns} FROM ${table}`
+    if (conditions.length) query += ` WHERE ${conditions.join(' AND ')}`
+    if (orderBy && orderBy.column) query += ` ORDER BY ${orderBy.column} ${orderBy.ascending === false ? 'DESC' : 'ASC'}`
+    if (limit) query += ` LIMIT ${Number(limit)}`
+
+    try {
+      const result = await this.query(query, params)
+      return { data: result.rows, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
+
+  public async selectSingle(table: string, options: any = {}): Promise<any> {
+    const res = await this.select(table, { ...options, limit: 1 })
+    if (res.error) return res
+    return { data: res.data && res.data[0] ? res.data[0] : null, error: null }
+  }
+
+  public async insert(table: string, values: any): Promise<any> {
+    const keys = Object.keys(values)
+    const placeholders = keys.map((_, i) => `$${i + 1}`)
+    const params = keys.map(k => values[k])
+    const query = `INSERT INTO ${table} (${keys.join(',')}) VALUES (${placeholders.join(',')}) RETURNING *`
+    try {
+      const result = await this.query(query, params)
+      return { data: result.rows[0] || null, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
+
+  public async update(table: string, values: any, where: any): Promise<any> {
+    const setKeys = Object.keys(values)
+    const setClause = setKeys.map((k, i) => `${k} = $${i + 1}`).join(', ')
+    const setParams = setKeys.map(k => values[k])
+
+    const whereKeys = Object.keys(where)
+    const whereClause = whereKeys.map((k, i) => `${k} = $${setKeys.length + i + 1}`).join(' AND ')
+    const whereParams = whereKeys.map(k => where[k])
+
+    const query = `UPDATE ${table} SET ${setClause} WHERE ${whereClause} RETURNING *`
+    try {
+      const result = await this.query(query, [...setParams, ...whereParams])
+      return { data: result.rows, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
+
+  public async delete(table: string, where: any): Promise<any> {
+    const whereKeys = Object.keys(where)
+    const whereClause = whereKeys.map((k, i) => `${k} = $${i + 1}`).join(' AND ')
+    const params = whereKeys.map(k => where[k])
+    const query = `DELETE FROM ${table} WHERE ${whereClause} RETURNING *`
+    try {
+      const result = await this.query(query, params)
+      return { data: result.rows, error: null }
+    } catch (error) {
+      return { data: null, error }
+    }
+  }
 }
 
 // Migration utilities
@@ -236,7 +310,7 @@ export class MigrationManager {
 }
 
 // Utility functions
-export async function executeQuery<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+export async function executeQuery<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
   const db = DatabaseManager.getInstance();
   return db.query<T>(text, params);
 }

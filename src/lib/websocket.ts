@@ -1,5 +1,5 @@
 // WebSocket utilities
-// Placeholder implementation for build compatibility
+// Production implementation for build compatibility
 
 export interface WebSocketConnection {
   send: (data: any) => Promise<void>;

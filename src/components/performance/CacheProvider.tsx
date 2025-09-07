@@ -45,7 +45,7 @@ class IntelligentCache {
   private cleanupTimer: NodeJS.Timeout | null = null
   private config: CacheConfig
 
-  constructor(config: CacheConfig) {
+  constructor(config: Partial<CacheConfig>) {
     this.config = {
       maxSize: 50 * 1024 * 1024, // 50MB default
       maxEntries: 1000,
@@ -382,8 +382,8 @@ export function CacheProvider({ children, config = {} }: CacheProviderProps) {
   }, [cache])
 
   // Create context value with proper generic function definitions
-  const getCacheItem = useCallback((key: string, version?: number) => {
-    return cache.get(key, version)
+  const getCacheItem = useCallback(<T,>(key: string, version?: number) => {
+    return cache.get<T>(key, version)
   }, [cache])
 
   const setCacheItem = useCallback((key: string, data: any, options?: CacheOptions) => {
@@ -426,7 +426,7 @@ export function useCachedData<T>(
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const fetcherRef = useRef(fetcher)
-  const refetchIntervalRef = useRef<NodeJS.Timeout>()
+  const refetchIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const {
     enabled = true,
@@ -503,6 +503,7 @@ export function useCachedData<T>(
     return () => {
       if (refetchIntervalRef.current) {
         clearInterval(refetchIntervalRef.current)
+        refetchIntervalRef.current = null
       }
     }
   }, [refetchInterval, enabled, fetchData])

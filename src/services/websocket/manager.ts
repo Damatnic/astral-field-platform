@@ -138,6 +138,11 @@ export class WebSocketManager {
     return sentCount;
   }
 
+  // Compatibility alias used by some services
+  public async broadcastToLeague(leagueId: string, message: any, excludeUserId?: string): Promise<number> {
+    return this.sendToLeague(leagueId, message, excludeUserId);
+  }
+
   public async broadcast(message: any): Promise<number> {
     let sentCount = 0;
     

@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase environment is not configured')
+  }
+  return createClient(url, key)
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const leagueId = searchParams.get('leagueId')
     const teamId = searchParams.get('teamId')
@@ -68,6 +75,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { leagueId, adjustments } = await request.json()
 
     if (!leagueId || !adjustments) {
@@ -105,6 +113,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function getTeamFairnessMetrics(teamId: string, leagueId: string, period: string) {
+  const supabase = getSupabase()
   const daysAgo = period === '7d' ? 7 : period === '14d' ? 14 : 30
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - daysAgo)
@@ -175,6 +184,7 @@ function calculateStandingsPosition(standings: any): number {
 }
 
 async function calculateNeedScore(teamId: string): Promise<number> {
+  const supabase = getSupabase()
   // Analyze roster composition and injuries
   const { data: roster } = await supabase
     .from('roster_players')
@@ -260,6 +270,7 @@ function detectMonopolization(metrics: any[]): any[] {
 }
 
 async function applyFairnessAdjustment(teamId: string, leagueId: string, adjustment: number) {
+  const supabase = getSupabase()
   const { data: current } = await supabase
     .from('waiver_fairness_tracking')
     .select('fairness_multiplier')
@@ -283,6 +294,7 @@ async function applyFairnessAdjustment(teamId: string, leagueId: string, adjustm
 
 async function enforceStrictFairness(leagueId: string) {
   // Reset waiver priorities based on reverse standings
+  const supabase = getSupabase()
   const { data: teams } = await supabase
     .from('teams')
     .select('id, wins, losses')

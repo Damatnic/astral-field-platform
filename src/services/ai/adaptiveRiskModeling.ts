@@ -580,7 +580,7 @@ class AdaptiveRiskModeling {
       ORDER BY timestamp DESC
     `, [userId]);
 
-    return result.rows.map(row => ({
+    return result.rows.map((row: any) => ({
       id: row.id,
       userId: row.user_id,
       scenarioId: row.scenario_id,
@@ -797,6 +797,14 @@ class AdaptiveRiskModeling {
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
     const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
     return squaredDiffs.reduce((sum, diff) => sum + diff, 0) / values.length;
+  }
+
+  // Simple player risk assessment stub for compatibility
+  public async assessPlayerRisk(playerId: string): Promise<{ riskScore: number; historyPattern: number }> {
+    return {
+      riskScore: 50,
+      historyPattern: 50
+    }
   }
 }
 

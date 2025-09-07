@@ -16,7 +16,7 @@ const createThreadSchema = z.object({
   fantasyWeek: z.number().int().min(1).max(18).optional()
 });
 
-const updateThreadSchema = createThreadSchema.partial().omit(['categoryId']);
+const updateThreadSchema = createThreadSchema.partial().omit({ categoryId: true });
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   user?: {
@@ -62,7 +62,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
     console.error('Threads API error:', error);
     return res.status(500).json({ 
       error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+      message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Something went wrong'
     });
   }
 }
@@ -173,7 +173,7 @@ async function handleGetThreads(
       .limit(parseInt(limit as string));
 
     if (searchResults && searchResults.length > 0) {
-      const threadIds = searchResults.map(r => r.content_id);
+      const threadIds = searchResults.map((r: any) => r.content_id);
       query = query.in('id', threadIds);
     } else {
       // No search results, return empty
@@ -211,7 +211,7 @@ async function handleGetThreads(
 
   // Get tags for threads
   if (threads && threads.length > 0) {
-    const threadIds = threads.map(t => t.id);
+    const threadIds = threads.map((t: any) => t.id);
     const { data: threadTags } = await supabase
       .from('forum_thread_tags')
       .select(`
@@ -226,14 +226,14 @@ async function handleGetThreads(
       .in('thread_id', threadIds);
 
     // Group tags by thread
-    const tagsByThread = threadTags?.reduce((acc, tt) => {
+    const tagsByThread = threadTags?.reduce((acc: Record<string, string[]>, tt: any) => {
       if (!acc[tt.thread_id]) acc[tt.thread_id] = [];
       acc[tt.thread_id].push(tt.tag);
       return acc;
-    }, {} as Record<string, any[]>) || {};
+    }, {} as Record<string, string[]>) || {};
 
     // Add tags to threads
-    const threadsWithTags = threads.map(thread => ({
+    const threadsWithTags = threads.map((thread: any) => ({
       ...thread,
       tags: tagsByThread[thread.id] || [],
       authorName: thread.author?.full_name || thread.author?.email || 'Unknown',
@@ -494,7 +494,7 @@ async function handleUpdateThread(
       slugCounter++;
     }
 
-    updateData.slug = slug;
+    (updateData as any).slug = slug;
   }
 
   // Update thread

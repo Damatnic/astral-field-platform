@@ -1,4 +1,4 @@
-import { database, sql as neonSql } from '@/lib/database'
+import { database } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
 // Demo users data - hardcoded for automatic initialization
@@ -21,11 +21,12 @@ let isInitialized = false
 export async function ensureInitialized(): Promise<boolean> {
   // Always check database state - don't trust cache in serverless
   try {
-    const existingUser = await database.selectSingle('users', {
-      where: { email: DEMO_USERS[0].email }
-    })
+    const existingUser = await database.query<{ id: string }>(
+      'SELECT id FROM users WHERE email = $1 LIMIT 1',
+      [DEMO_USERS[0].email]
+    )
 
-    if (existingUser.data) {
+    if (existingUser.rows && existingUser.rows.length > 0) {
       isInitialized = true
       return true
     }
@@ -48,11 +49,12 @@ async function performInitialization(): Promise<boolean> {
     console.log('🔍 Checking if demo users need initialization...')
 
     // Check if any demo users already exist
-    const existingUser = await database.selectSingle('users', {
-      where: { email: DEMO_USERS[0].email }
-    })
+    const existingUser = await database.query<{ id: string }>(
+      'SELECT id FROM users WHERE email = $1 LIMIT 1',
+      [DEMO_USERS[0].email]
+    )
 
-    if (existingUser.data) {
+    if (existingUser.rows && existingUser.rows.length > 0) {
       console.log('✅ Demo users already exist, skipping initialization')
       isInitialized = true
       return true
@@ -68,16 +70,11 @@ async function performInitialization(): Promise<boolean> {
         const passwordHash = await bcrypt.hash(userData.password, 10)
         
         // Create the user
-        const result = await database.insert('users', {
-          email: userData.email,
-          username: userData.username,
-          password_hash: passwordHash,
-          stack_user_id: null
-        })
-        
-        if (!result.error) {
-          createdCount++
-        }
+        await database.query(
+          'INSERT INTO users (email, username, password_hash, stack_user_id) VALUES ($1, $2, $3, $4)',
+          [userData.email, userData.username, passwordHash, null]
+        )
+        createdCount++
       } catch (userError) {
         console.warn(`⚠️ Could not create user ${userData.email}:`, userError)
       }

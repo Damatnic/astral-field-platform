@@ -29,6 +29,35 @@ import { Progress } from '@/components/ui/progress'
 import { Card } from '@/components/ui/Card/Card'
 import type { Database } from '@/types/database'
 
+// Shared helpers (hoisted to module scope for reuse)
+const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case 'high': return 'text-red-400 bg-red-900/30'
+    case 'medium': return 'text-yellow-400 bg-yellow-900/30'
+    case 'low': return 'text-green-400 bg-green-900/30'
+    default: return 'text-gray-400 bg-gray-900/30'
+  }
+}
+
+const getCategoryIcon = (category: string) => {
+  switch (category) {
+    case 'injury_replacement': return <AlertTriangle className="h-4 w-4 text-red-400" />
+    case 'trending_up': return <TrendingUp className="h-4 w-4 text-green-400" />
+    case 'matchup_play': return <Target className="h-4 w-4 text-blue-400" />
+    case 'stash': return <Clock className="h-4 w-4 text-purple-400" />
+    case 'breakout_candidate': return <Star className="h-4 w-4 text-yellow-400" />
+    default: return <Activity className="h-4 w-4 text-gray-400" />
+  }
+}
+
+const getTrendIcon = (direction: string) => {
+  switch (direction) {
+    case 'up': return <ArrowUp className="h-4 w-4 text-green-500" />
+    case 'down': return <ArrowDown className="h-4 w-4 text-red-500" />
+    default: return <Activity className="h-4 w-4 text-gray-500" />
+  }
+}
+
 type Player = Database['public']['Tables']['players']['Row']
 
 interface WaiverRecommendation {
@@ -202,33 +231,7 @@ export default function WaiverWireIntelligence({
     ]
   }
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-400 bg-red-900/30'
-      case 'medium': return 'text-yellow-400 bg-yellow-900/30'
-      case 'low': return 'text-green-400 bg-green-900/30'
-      default: return 'text-gray-400 bg-gray-900/30'
-    }
-  }
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'injury_replacement': return <AlertTriangle className="h-4 w-4 text-red-400" />
-      case 'trending_up': return <TrendingUp className="h-4 w-4 text-green-400" />
-      case 'matchup_play': return <Target className="h-4 w-4 text-blue-400" />
-      case 'stash': return <Clock className="h-4 w-4 text-purple-400" />
-      case 'breakout_candidate': return <Star className="h-4 w-4 text-yellow-400" />
-      default: return <Activity className="h-4 w-4 text-gray-400" />
-    }
-  }
-
-  const getTrendIcon = (direction: string) => {
-    switch (direction) {
-      case 'up': return <ArrowUp className="h-4 w-4 text-green-500" />
-      case 'down': return <ArrowDown className="h-4 w-4 text-red-500" />
-      default: return <Activity className="h-4 w-4 text-gray-500" />
-    }
-  }
+  
 
   const filteredRecommendations = mockRecommendations.filter(rec => 
     selectedCategory === 'all' || rec.category === selectedCategory

@@ -535,7 +535,7 @@ class AdaptiveLearningEngine {
   }
 
   private analyzeAdviceFollowingPatterns(feedback: RecommendationFeedback[]): LearningPattern {
-    const followRates = feedback.map(f => f.feedback.followedAdvice ? 1 : 0);
+    const followRates = feedback.map(f => f.feedback.followedAdvice ? 1 : 0) as number[];
     const avgFollowRate = followRates.reduce((sum, r) => sum + r, 0) / followRates.length;
     
     const pattern = avgFollowRate >= 0.8 ? 'high_trust' : avgFollowRate <= 0.3 ? 'low_trust' : 'selective_trust';
@@ -769,7 +769,7 @@ class AdaptiveLearningEngine {
       ORDER BY submitted_at DESC
     `, [userId]);
 
-    return result.rows.map(row => ({
+    return result.rows.map((row: any) => ({
       recommendationId: row.recommendation_id,
       userId: row.user_id,
       feedback: row.feedback,

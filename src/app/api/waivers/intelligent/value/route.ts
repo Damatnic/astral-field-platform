@@ -2,13 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import WaiverValueAssessment from '@/services/ai/waiverValueAssessment'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase environment is not configured')
+  }
+  return createClient(url, key)
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const playerId = searchParams.get('playerId')
     const leagueId = searchParams.get('leagueId')
@@ -90,6 +97,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { playerId, leagueId, leagueType } = await request.json()
 
     if (!playerId || !leagueId || !leagueType) {
@@ -134,6 +142,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function getTeamContext(teamId: string) {
+  const supabase = getSupabase()
   // Get team roster and needs
   const { data: roster } = await supabase
     .from('roster_players')
@@ -168,6 +177,7 @@ async function getTeamContext(teamId: string) {
 }
 
 async function getTopWaiverPlayers(leagueId: string, position?: string | null, limit: number = 20) {
+  const supabase = getSupabase()
   // Get rostered players to exclude
   const { data: rostered } = await supabase
     .from('roster_players')
@@ -198,6 +208,7 @@ async function getTopWaiverPlayers(leagueId: string, position?: string | null, l
 
 async function storeValueAssessment(playerId: string, value: any) {
   try {
+    const supabase = getSupabase()
     await supabase
       .from('waiver_value_assessments')
       .upsert({

@@ -280,9 +280,43 @@ class TradeAnalysisEngine {
         insights
       }
     } catch (error) {
-      logger.error('Trade analysis failed:', error)
+      logger.error('Trade analysis failed:', error as any)
       throw new Error('Failed to analyze trade proposal')
     }
+  }
+
+  // Confidence score (0-100) based on input valuation data quality
+  private calculateConfidence(
+    offered: PlayerValuation[],
+    requested: PlayerValuation[]
+  ): number {
+    const scores: number[] = []
+    const add = (vals: PlayerValuation[]) => {
+      vals.forEach(v => scores.push(this.calculateValuationConfidence(v.dimensions)))
+    }
+    add(offered)
+    add(requested)
+    if (scores.length === 0) return 50
+    const avg = scores.reduce((a, b) => a + b, 0) / scores.length
+    return Math.round(Math.max(0, Math.min(100, avg)))
+  }
+
+  // Compatibility wrapper for legacy callers
+  async analyzeTrade(
+    tradeId: string,
+    proposingTeamId: string,
+    receivingTeamId: string,
+    players: { fromUserPlayers: string[]; toUserPlayers: string[] },
+    leagueId: string
+  ): Promise<TradeEvaluation> {
+    return this.analyzeTradeProposal(
+      tradeId,
+      proposingTeamId,
+      receivingTeamId,
+      players.fromUserPlayers,
+      players.toUserPlayers,
+      leagueId
+    )
   }
 
   private async getPlayerValuations(
@@ -1005,7 +1039,13 @@ class TradeAnalysisEngine {
     playoffProjections: any,
     marketContext: any
   ): Promise<any> {
-    const insights = {
+    const insights: {
+      keyFactors: string[]
+      hiddenValue: string[]
+      risks: string[]
+      opportunities: string[]
+      counterOfferSuggestions: any
+    } = {
       keyFactors: [],
       hiddenValue: [],
       risks: [],
@@ -1120,7 +1160,7 @@ class TradeAnalysisEngine {
         ai_confidence: evaluation.confidence
       })
     } catch (error) {
-      logger.error('Failed to store trade evaluation:', error)
+      logger.error('Failed to store trade evaluation:', error as any)
     }
   }
 
@@ -1155,7 +1195,7 @@ class TradeAnalysisEngine {
         data_quality_score: valuation.confidence
       })
     } catch (error) {
-      logger.error('Failed to store player valuation:', error)
+      logger.error('Failed to store player valuation:', error as any)
     }
   }
 

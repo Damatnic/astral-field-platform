@@ -66,6 +66,37 @@ export default function AnalyticsDashboard({ leagueId, teamId }: AnalyticsDashbo
     }
   }
 
+  // Event handlers for interactive components - defined before early returns
+  const handleTrendClick = (trend: any) => {
+    console.log('Trend clicked:', trend)
+    // Navigate to detailed trend analysis or show modal with more info
+    setActiveTab('charts')
+  }
+
+  const handleCellClick = (cell: any) => {
+    console.log('Heatmap cell clicked:', cell)
+    // Show detailed breakdown for that week/position combination
+    // Could open a modal or navigate to specific analysis
+  }
+
+  const handlePlayerClick = (player: any) => {
+    console.log('Player clicked:', player)
+    // Navigate to player details page or show player analysis modal
+    // Could be integrated with player comparison tools
+  }
+
+  const handlePointClick = (point: any, index: number) => {
+    console.log('Data point clicked:', point, 'at index:', index)
+    // Show detailed information for that specific data point
+    // Could display tooltip or navigate to detailed view
+  }
+
+  const handleBarClick = (point: any, index: number) => {
+    console.log('Bar chart clicked:', point, 'at index:', index)
+    // Handle bar chart interactions
+    // Could filter data or drill down into specific categories
+  }
+
   const tabs = [
     { key: 'overview', label: 'Overview', icon: Activity },
     { key: 'team', label: 'Team Analytics', icon: Users, disabled: !teamId },
@@ -677,7 +708,9 @@ function AdvancedChartsView({
               playerName={teamAnalytics ? "Team Performance" : "No Team Data"}
               showProjections={true}
               showConfidence={true}
-              onTrendClick={(trend) => { /* TODO: Handle trend click */ }}
+              onTrendClick={(trend) => {
+                console.log('Trend clicked:', trend);
+              }}
             />
           )}
 
@@ -689,7 +722,9 @@ function AdvancedChartsView({
               yAxisLabel="Position"
               colorScheme="blue"
               showValues={true}
-              onCellClick={(cell) => { /* TODO: Handle cell click */ }}
+              onCellClick={(cell) => {
+                console.log('Heatmap cell clicked:', cell);
+              }}
             />
           )}
 
@@ -700,7 +735,9 @@ function AdvancedChartsView({
               myTeamName="My Team"
               opponentTeamName="Opponent"
               week={13}
-              onPlayerClick={(player) => { /* TODO: Handle player click */ }}
+              onPlayerClick={(player) => {
+                console.log('Player clicked:', player);
+              }}
             />
           )}
 
@@ -718,7 +755,9 @@ function AdvancedChartsView({
                 showGrid={true}
                 showTooltip={true}
                 interactive={true}
-                onPointClick={(point, index) => { /* TODO: Handle point click */ }}
+                onPointClick={(point, index) => {
+                  console.log('Data point clicked:', point, 'at index:', index);
+                }}
               />
 
               <AdvancedChart
@@ -733,7 +772,9 @@ function AdvancedChartsView({
                 showGrid={false}
                 showTooltip={true}
                 interactive={true}
-                onPointClick={(point, index) => { /* TODO: Handle bar click */ }}
+                onPointClick={(point, index) => {
+                  console.log('Bar chart clicked:', point, 'at index:', index);
+                }}
               />
 
               <AdvancedChart

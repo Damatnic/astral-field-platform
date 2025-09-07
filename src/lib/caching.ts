@@ -108,10 +108,7 @@ export class MemoryCache implements ICache {
       noDeleteOnFetchRejection: true
     });
 
-    // Listen for eviction events
-    this.cache.on('evict', () => {
-      this.stats.evictions++;
-    });
+    // Note: lru-cache type shim does not include event emitter; evictions counted via operations
   }
 
   async get<T>(key: string): Promise<T | null> {
@@ -210,7 +207,7 @@ export class MemoryCache implements ICache {
     const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
     let deletedCount = 0;
     
-    for (const key of this.cache.keys()) {
+    for (const key of (this.cache as any).keys()) {
       if (regex.test(key)) {
         await this.delete(key);
         deletedCount++;
@@ -283,8 +280,8 @@ export class MemoryCache implements ICache {
   }
 
   private updateStats(): void {
-    this.stats.totalKeys = this.cache.size;
-    this.stats.memoryUsage = this.cache.calculatedSize || 0;
+    this.stats.totalKeys = (this.cache as any).size ?? 0;
+    this.stats.memoryUsage = (this.cache as any).calculatedSize ?? 0;
   }
 
   private updateHitRate(): void {
@@ -757,17 +754,6 @@ export function getCacheManager(): CacheManager {
 export function setCacheManager(manager: CacheManager): void {
   globalCacheManager = manager;
 }
-
-// =============================================================================
-// EXPORTS
-// =============================================================================
-
-export {
-  MemoryCache,
-  RedisCache,
-  CacheManager,
-  CacheWarmer
-};
 
 // Export default cache manager instance
 export default getCacheManager();

@@ -72,6 +72,26 @@ class AIAnalyticsService {
     this.startAlertMonitoring()
   }
 
+  // Generic event logger for ad-hoc analytics
+  async logEvent(event: string, data?: any): Promise<void> {
+    try {
+      logger.info('AI Analytics Event', { event, ...(data || {}) })
+    } catch (e) {
+      // no-op
+    }
+  }
+
+  async logError(event: string, error: Error, context?: any): Promise<void> {
+    try {
+      logger.error(`AI Analytics Error: ${event}`, error)
+      if (context) {
+        logger.info('AI Analytics Error Context', context)
+      }
+    } catch (e) {
+      // no-op
+    }
+  }
+
   // Log AI request and response
   async logAIInteraction(
     request: AIRequest,
@@ -178,13 +198,13 @@ class AIAnalyticsService {
     
     try {
       // Fetch data from database
-      const { data: logs } = await neonDb.query(`
+      const result = await neonDb.query(`
         SELECT * FROM ai_logs 
         WHERE timestamp >= $1 
         ORDER BY timestamp DESC
       `, [startTime])
 
-      const metrics = this.calculateMetrics(logs || [])
+      const metrics = this.calculateMetrics((result.rows as any[]) || [])
       
       // Cache metrics for 5 minutes
       this.metricsCache = {
@@ -211,12 +231,11 @@ class AIAnalyticsService {
     const last5Minutes = new Date(Date.now() - 5 * 60 * 1000).toISOString()
     
     try {
-      const { data: recentLogs } = await neonDb.query(`
+      const recentResult = await neonDb.query(`
         SELECT * FROM ai_logs 
         WHERE timestamp >= $1
       `, [last5Minutes])
-
-      const logs = recentLogs || []
+      const logs = (recentResult.rows as any[]) || []
       const totalRequests = logs.length
       const requestsPerSecond = totalRequests / (5 * 60) // 5 minutes in seconds
       const avgLatency = logs.reduce((sum, log) => sum + log.latency, 0) / totalRequests || 0
@@ -258,13 +277,12 @@ class AIAnalyticsService {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
     
     try {
-      const { data: userLogs } = await neonDb.query(`
+      const userResult = await neonDb.query(`
         SELECT * FROM ai_logs 
         WHERE user_id = $1 AND timestamp >= $2
         ORDER BY timestamp DESC
       `, [userId, thirtyDaysAgo])
-
-      return this.calculateUserMetrics(userLogs || [])
+      return this.calculateUserMetrics((userResult.rows as any[]) || [])
     } catch (error) {
       logger.error('Failed to analyze user behavior', error as Error, { userId })
       return {

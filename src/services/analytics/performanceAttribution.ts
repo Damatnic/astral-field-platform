@@ -282,12 +282,12 @@ export class PerformanceAttributionService {
 
     // Calculate points gained/lost from the decision
     const playersBeforePoints = performanceData.rows
-      .filter(row => playersBefore.includes(row.player_name))
-      .reduce((sum, row) => sum + parseFloat(row.total_points || 0), 0);
+      .filter((row: any) => playersBefore.includes(row.player_name))
+      .reduce((sum: number, row: any) => sum + parseFloat(row.total_points || 0), 0);
 
     const playersAfterPoints = performanceData.rows
-      .filter(row => playersAfter.includes(row.player_name))
-      .reduce((sum, row) => sum + parseFloat(row.total_points || 0), 0);
+      .filter((row: any) => playersAfter.includes(row.player_name))
+      .reduce((sum: number, row: any) => sum + parseFloat(row.total_points || 0), 0);
 
     const pointsGained = Math.max(0, playersAfterPoints - playersBeforePoints);
     const pointsLost = Math.max(0, playersBeforePoints - playersAfterPoints);
@@ -403,7 +403,7 @@ export class PerformanceAttributionService {
 
       const result = await db.query(query, params);
 
-      return result.rows.map(row => ({
+      return result.rows.map((row: any) => ({
         decisionType: row.decision_type,
         totalDecisions: parseInt(row.total_decisions),
         successfulDecisions: parseInt(row.successful_decisions),
@@ -458,7 +458,7 @@ export class PerformanceAttributionService {
       const decisions = decisionData.rows;
 
       // Analyze timing patterns
-      const timingPatterns = decisions.reduce((acc, decision) => {
+      const timingPatterns = decisions.reduce((acc: Record<string, number>, decision: any) => {
         const hour = parseInt(decision.decision_hour);
         const timeSlot = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
         acc[timeSlot] = (acc[timeSlot] || 0) + 1;
@@ -466,15 +466,15 @@ export class PerformanceAttributionService {
       }, {} as Record<string, number>);
 
       // Calculate risk tolerance based on expected impact variance
-      const expectedImpacts = decisions.map(d => parseFloat(d.expected_impact) || 0);
-      const avgRisk = expectedImpacts.reduce((sum, impact) => sum + Math.abs(impact), 0) / expectedImpacts.length;
+      const expectedImpacts = decisions.map((d: any) => parseFloat(d.expected_impact) || 0);
+      const avgRisk = expectedImpacts.reduce((sum: number, impact: number) => sum + Math.abs(impact), 0) / expectedImpacts.length;
       
       let riskTolerance: 'conservative' | 'moderate' | 'aggressive' = 'moderate';
       if (avgRisk < 5) riskTolerance = 'conservative';
       else if (avgRisk > 15) riskTolerance = 'aggressive';
 
       // Analyze position biases (simplified)
-      const positionBiases = decisions.reduce((acc, decision) => {
+      const positionBiases = decisions.reduce((acc: Record<string, number>, decision: any) => {
         const playersAfter = JSON.parse(decision.players_after || '[]');
         playersAfter.forEach((player: string) => {
           // This would need actual position data
@@ -485,21 +485,21 @@ export class PerformanceAttributionService {
       }, {} as Record<string, number>);
 
       // Identify success factors and improvement areas
-      const successfulDecisions = decisions.filter(d => (parseFloat(d.net_impact) || 0) > 0);
-      const unsuccessfulDecisions = decisions.filter(d => (parseFloat(d.net_impact) || 0) < 0);
+      const successfulDecisions = decisions.filter((d: any) => (parseFloat(d.net_impact) || 0) > 0);
+      const unsuccessfulDecisions = decisions.filter((d: any) => (parseFloat(d.net_impact) || 0) < 0);
 
       const successFactors = [];
       const improvementAreas = [];
 
       if (successfulDecisions.length > 0) {
-        const aiRecommendedSuccess = successfulDecisions.filter(d => d.ai_recommended).length / successfulDecisions.length;
+        const aiRecommendedSuccess = successfulDecisions.filter((d: any) => d.ai_recommended).length / successfulDecisions.length;
         if (aiRecommendedSuccess > 0.6) {
           successFactors.push('Following AI recommendations');
         }
       }
 
       if (unsuccessfulDecisions.length > 0) {
-        const hastyDecisions = unsuccessfulDecisions.filter(d => !d.reasoning || d.reasoning.length < 50).length;
+        const hastyDecisions = unsuccessfulDecisions.filter((d: any) => !d.reasoning || d.reasoning.length < 50).length;
         if (hastyDecisions / unsuccessfulDecisions.length > 0.5) {
           improvementAreas.push('More thorough decision reasoning');
         }
@@ -542,12 +542,13 @@ export class PerformanceAttributionService {
     const insights = [];
     
     // Analyze decision frequency by week
-    const weeklyDecisions = decisions.reduce((acc, decision) => {
+    const weeklyDecisions = decisions.reduce((acc: Record<number, number>, decision: any) => {
       acc[decision.week_number] = (acc[decision.week_number] || 0) + 1;
       return acc;
     }, {} as Record<number, number>);
 
-    const avgDecisionsPerWeek = Object.values(weeklyDecisions).reduce((a, b) => a + b, 0) / Object.keys(weeklyDecisions).length;
+    const weeklyValues = Object.values(weeklyDecisions) as number[];
+    const avgDecisionsPerWeek = (weeklyValues.reduce((a: number, b: number) => a + b, 0)) / Math.max(Object.keys(weeklyDecisions).length, 1);
 
     if (avgDecisionsPerWeek > 3) {
       insights.push('High decision frequency - consider being more selective');
@@ -589,9 +590,9 @@ export class PerformanceAttributionService {
       `, [userId, leagueId]);
 
       const keySuccesses = keyDecisions.rows
-        .filter(row => parseFloat(row.impact) > 0)
+        .filter((row: any) => parseFloat(row.impact) > 0)
         .slice(0, 3)
-        .map(row => ({
+        .map((row: any) => ({
           week: row.week_number,
           decision: row.description,
           impact: parseFloat(row.impact),
@@ -599,9 +600,9 @@ export class PerformanceAttributionService {
         }));
 
       const keyMisses = keyDecisions.rows
-        .filter(row => parseFloat(row.impact) < 0)
+        .filter((row: any) => parseFloat(row.impact) < 0)
         .slice(0, 3)
-        .map(row => ({
+        .map((row: any) => ({
           week: row.week_number,
           decision: row.description,
           impact: parseFloat(row.impact),

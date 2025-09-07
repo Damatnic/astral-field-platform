@@ -6,24 +6,20 @@ import { rateLimitMiddleware } from '../../../lib/rate-limit';
 const optimizer = new PerformanceOptimizer();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const rateLimitResult = await rateLimitMiddleware(req, res, {
+  const allowed = await rateLimitMiddleware(req, res, {
     maxRequests: 5,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req) => `load-testing:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
   });
 
-  if (!rateLimitResult.success) {
-    return res.status(429).json({
-      error: 'Rate limit exceeded',
-      retryAfter: rateLimitResult.retryAfter
-    });
-  }
+  if (!allowed) return;
 
   try {
-    const userId = await authenticateUser(req);
-    if (!userId) {
+    const auth = await authenticateUser(req);
+    if (!auth.user) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const userId = auth.user.id;
 
     if (req.method === 'POST') {
       const { action, testConfig } = req.body;
@@ -44,11 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ error: 'Endpoint configuration required' });
           }
           
-          const endpointResults = await optimizer.runEndpointLoadTest(
-            testConfig.endpoint,
-            testConfig.concurrentUsers || 10,
-            testConfig.duration || 30
-          );
+          const comprehensive = await optimizer.runComprehensiveLoadTest();
+          const endpointResults = comprehensive.endpointResults.find(r => r.endpoint === testConfig.endpoint) || null;
           
           return res.status(200).json({
             success: true,
@@ -57,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         case 'identify_bottlenecks':
-          const bottleneckAnalysis = await optimizer.identifySystemBottlenecks();
+          const bottleneckAnalysis = await optimizer.getCurrentBottlenecks();
           
           return res.status(200).json({
             success: true,
@@ -66,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         case 'get_optimization_suggestions':
-          const suggestions = await optimizer.generateOptimizationSuggestions();
+          const suggestions = await optimizer.getOptimizationRecommendations();
           
           return res.status(200).json({
             success: true,
@@ -75,7 +68,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         case 'benchmark_ai_services':
-          const benchmarkResults = await optimizer.benchmarkAIServices();
+          const comp = await optimizer.runComprehensiveLoadTest();
+          const benchmarkResults = comp.endpointResults;
           
           return res.status(200).json({
             success: true,
@@ -104,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         case 'current_metrics':
-          const currentMetrics = await optimizer.getCurrentPerformanceMetrics();
+          const currentMetrics = await optimizer.getPerformanceHistory(1);
           
           return res.status(200).json({
             success: true,
@@ -113,7 +107,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         case 'system_health':
-          const systemHealth = await optimizer.getSystemHealthStatus();
+          const bottlenecks = await optimizer.getCurrentBottlenecks();
+          const systemHealth = {
+            status: bottlenecks.length > 0 ? 'degraded' : 'healthy',
+            bottlenecks
+          };
           
           return res.status(200).json({
             success: true,
@@ -131,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           });
 
         default:
-          const defaultMetrics = await optimizer.getCurrentPerformanceMetrics();
+          const defaultMetrics = await optimizer.getPerformanceHistory(1);
           return res.status(200).json({
             success: true,
             data: defaultMetrics,

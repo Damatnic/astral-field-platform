@@ -158,7 +158,7 @@ export class IntelligentAutoDraftService {
       );
 
       const currentTeamId = draftState.draftOrder[currentTeamIndex];
-      const currentPersonality = draftState.personalities.find(p => p.teamId === currentTeamId)!;
+      const currentPersonality = draftState.personalities.find((p: TeamPersonality) => p.teamId === currentTeamId)!;
 
       // AI makes the draft pick
       const pick = await this.makeAIDraftPick(
@@ -222,15 +222,26 @@ export class IntelligentAutoDraftService {
         
         // Generate AI personality using user behavior if available
         const userBehavior = team.user_id ? 
-          await this.behaviorAnalysis.getUserBehaviorProfile(team.user_id, leagueId) : null;
+          await this.behaviorAnalysis.analyzeUserBehavior(team.user_id, leagueId) : null;
 
         const personality = await this.generatePersonalityForStrategy(strategy, userBehavior);
+
+        // Ensure required fields are present by merging defaults
+        const filledPersonality = {
+          ...this.getDefaultPersonality(strategy),
+          ...personality
+        } as Required<Pick<TeamPersonality, 'riskTolerance' | 'positionPreferences' | 'personalityTraits' | 'draftNotes'>> & Partial<TeamPersonality>;
         
         personalities.push({
           teamId: team.id,
           userId: team.user_id,
           strategy: strategy as any,
-          ...personality
+          riskTolerance: filledPersonality.riskTolerance,
+          positionPreferences: filledPersonality.positionPreferences,
+          targetPlayers: filledPersonality.targetPlayers || [],
+          avoidPlayers: filledPersonality.avoidPlayers || [],
+          personalityTraits: filledPersonality.personalityTraits,
+          draftNotes: filledPersonality.draftNotes
         });
       }
 
@@ -650,7 +661,7 @@ Return JSON format with riskTolerance, positionPreferences, personalityTraits, d
     
     // Apply personality-based filtering
     const personalizedPlayers = draftState.draftBoard.personalizedRankings[personality.teamId]
-      .filter(p => availablePlayers.some(ap => ap.playerId === p.playerId));
+      .filter((p: PlayerEvaluation) => availablePlayers.some((ap: PlayerEvaluation) => ap.playerId === p.playerId));
 
     // AI makes selection based on strategy
     const selectedPlayer = await this.selectBestPlayer(
@@ -675,7 +686,7 @@ Return JSON format with riskTolerance, positionPreferences, personalityTraits, d
       aiConfidence: Math.random() * 0.3 + 0.7, // 70-100% confidence
       alternativeOptions: personalizedPlayers
         .slice(1, 4)
-        .map(p => p.playerId),
+        .map((p: PlayerEvaluation) => p.playerId),
       reasoning
     };
   }

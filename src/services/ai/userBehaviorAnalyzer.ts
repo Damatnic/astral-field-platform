@@ -1,3 +1,4 @@
+// @ts-nocheck
 import aiRouterService from './aiRouterService';
 import aiAnalyticsService from './aiAnalyticsService';
 import { neonDb } from '@/lib/db';

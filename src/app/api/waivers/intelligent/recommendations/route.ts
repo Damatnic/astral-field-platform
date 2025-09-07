@@ -3,13 +3,20 @@ import { createClient } from '@supabase/supabase-js'
 import IntelligentWaiverProcessor from '@/services/ai/intelligentWaiverProcessor'
 import WaiverValueAssessment from '@/services/ai/waiverValueAssessment'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase environment is not configured')
+  }
+  return createClient(url, key)
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const teamId = searchParams.get('teamId')
     const leagueId = searchParams.get('leagueId')
@@ -73,6 +80,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { teamId, playerId, feedback, actualBid, wasSuccessful } = await request.json()
 
     if (!teamId || !playerId) {
@@ -128,6 +136,7 @@ async function updateLearningModel(
   feedback: number,
   wasSuccessful: boolean
 ) {
+  const supabase = getSupabase()
   // Update team waiver patterns
   const { data: patterns } = await supabase
     .from('team_waiver_patterns')
