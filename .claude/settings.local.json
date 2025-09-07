@@ -49,7 +49,10 @@
       "Bash(npm run test:integration:*)",
       "Bash(npm run test:*)",
       "Bash(cat:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npx @stackframe/init-stack@latest:*)",
+      "WebFetch(domain:docs.stack-auth.com)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

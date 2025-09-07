@@ -1,0 +1,26 @@
+# VERCEL ENVIRONMENT VARIABLES
+# ============================================
+# Copy and paste these into your Vercel project settings
+# Go to: Your Project → Settings → Environment Variables
+# ============================================
+
+# DATABASE (Required)
+DATABASE_URL=postgresql://neondb_owner:npg_zSmWfO47Clbq@ep-floral-union-adtuqc88-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+NEON_DATABASE_URL=postgresql://neondb_owner:npg_zSmWfO47Clbq@ep-floral-union-adtuqc88-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+# AUTHENTICATION (Required)
+NEXT_PUBLIC_STACK_PROJECT_ID=prj_live_sk_b18a0a963e5bfb0cfe17c5b0ff962bdd74e06f19
+NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=pk_live_pk_03c9a96aa2ae6f699fc98c3c06ec03c6f0e067e1
+STACK_SECRET_SERVER_KEY=sk_live_sk_ee9e2f686a92e926ce68c86bdb98f3a0f87b8f8a
+
+# DATA API (Required)
+NEON_DATA_API_ENDPOINT=https://ep-floral-union-adtuqc88.apirest.c-2.us-east-1.aws.neon.tech/neondb/rest/v1
+
+# AI SERVICES (Required for AI features)
+OPENAI_API_KEY=[YOUR_OPENAI_API_KEY_HERE]
+ANTHROPIC_API_KEY=[YOUR_ANTHROPIC_API_KEY_HERE]
+GEMINI_API_KEY=AIzaSyAEpBsYR4n54DmT1h2vm8ZO_448x5s6uMs
+SPORTS_IO_API_KEY=bab44477ed904140b43630a7520517e7
+
+# ENVIRONMENT (Set automatically by Vercel)
+NODE_ENV=production

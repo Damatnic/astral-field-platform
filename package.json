@@ -48,6 +48,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@neondatabase/serverless": "^1.0.1",
+    "@stackframe/stack": "^2.8.36",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
@@ -79,6 +80,7 @@
     "react-hot-toast": "^2.6.0",
     "react-is": "^19.1.1",
     "recharts": "^3.1.2",
+    "server-only": "^0.0.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.1.13",

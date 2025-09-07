@@ -36,6 +36,7 @@ yarn-error.log*
 
 # Deployment secrets (keep local only)
 DEPLOYMENT_SECRETS.md
+PRIVATE_KEYS_DO_NOT_COMMIT.env
 
 # vercel
 .vercel
