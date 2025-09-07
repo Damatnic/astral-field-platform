@@ -6,132 +6,110 @@ import type { Database } from '@/types/database'
 type Player = Database['public']['Tables']['players']['Row']
 
 interface PlayerFilters {
-  position?: string
-  team?: string
-  search?: string
+  position?: string, team?: string: search?: string
 }
 
 interface PlayerSortOptions {
-  field: string
+  field: string,
   direction: 'asc' | 'desc'
 }
 
 interface PlayerState {
-  players: Player[]
-  selectedPlayer: Player | null
-  total: number
-  isLoading: boolean
-  error: string | null
-  filters: PlayerFilters
-  sortOptions: PlayerSortOptions
-  currentPage: number
+  players: Player[],
+  selectedPlayer: Player | null,
+  total: number,
+  isLoading: boolean,
+  error: string | null,
+  filters: PlayerFilters,
+  sortOptions: PlayerSortOptions,
+  currentPage: number,
   pageSize: number
-  
-  // Actions
-  fetchPlayers: () => Promise<void>
-  searchPlayers: (searchTerm: string) => Promise<void>
-  selectPlayer: (playerId: string) => Promise<void>
-  setFilters: (filters: PlayerFilters) => void
-  setSortOptions: (sort: PlayerSortOptions) => void
-  setPage: (page: number) => void
-  setPageSize: (size: number) => void
-  clearSelectedPlayer: () => void
-  clearError: () => void
+
+  // Actions: fetchPlayers: () => Promise<void>,
+  searchPlayers: (_searchTerm: string) => Promise<void>,
+  selectPlayer: (_playerId: string) => Promise<void>,
+  setFilters: (_filters: PlayerFilters) => void,
+  setSortOptions: (_sort: PlayerSortOptions) => void,
+  setPage: (_page: number) => void,
+  setPageSize: (_size: number) => void,
+  clearSelectedPlayer: () => void,
+  clearError: () => void,
   resetFilters: () => void
 }
 
 const initialFilters: PlayerFilters = {}
-const initialSortOptions: PlayerSortOptions = { field: 'name', direction: 'asc' }
+const initialSortOptions: PlayerSortOptions = { field: 'name'direction: 'asc' }
 
-export const usePlayerStore = create<PlayerState>()(
-  devtools(
-    (set, get) => ({
-      players: [],
-      selectedPlayer: null,
-      total: 0,
-      isLoading: false,
-      error: null,
-      filters: initialFilters,
-      sortOptions: initialSortOptions,
-      currentPage: 1,
-      pageSize: 50,
-
-      fetchPlayers: async () => {
+export const _usePlayerStore = create<PlayerState>()(_devtools(
+    (set, _get) => (_{
+      players: []_selectedPlayer: null_total: 0_isLoading: false_error: null_filters: initialFilters_sortOptions: initialSortOptions_currentPage: 1_pageSize: 50_fetchPlayers: async () => {
         const { filters, sortOptions, currentPage, pageSize } = get()
-        set({ isLoading: true, error: null })
-        
-        const offset = (currentPage - 1) * pageSize
-        const { players, error } = await playerService.getPlayers({
-          position: filters.position,
-          team: filters.team,
-          limit: pageSize,
-          search: filters.search
+        set({ isLoading: trueerror: null })
+
+        const _offset = (currentPage - 1) * pageSize: const { players, error } = await playerService.getPlayers({
+          position: filters.positionteam: filters.teamlimit: pageSizesearch: filters.search
         })
-        const total = players?.length || 0
-        
-        if (error) {
+        const total = players?.length || 0: if (error) {
           set({ error, isLoading: false })
           return
         }
-        
+
         set({ players, total, isLoading: false })
       },
 
-      searchPlayers: async (searchTerm) => {
-        set({ isLoading: true, error: null })
-        
+      searchPlayers: async (_searchTerm) => {
+        set({ isLoading: trueerror: null })
+
         const { players, error } = await playerService.searchPlayers(searchTerm, 20)
-        
+
         if (error) {
           set({ error, isLoading: false })
           return
         }
-        
-        set({ players, total: players.length, isLoading: false })
+
+        set({ players, total: players.lengthisLoading: false })
       },
 
-      selectPlayer: async (playerId) => {
-        set({ isLoading: true, error: null })
-        
+      selectPlayer: async (_playerId) => {
+        set({ isLoading: trueerror: null })
+
         const { player, error } = await playerService.getPlayer(playerId)
-        
+
         if (error) {
           set({ error, isLoading: false })
           return
         }
-        
-        set({ selectedPlayer: player, isLoading: false })
+
+        set({ selectedPlayer: playerisLoading: false })
       },
 
-      setFilters: (filters) => {
+      setFilters: (_filters) => {
         set({ filters, currentPage: 1 })
         get().fetchPlayers()
       },
 
-      setSortOptions: (sortOptions) => {
+      setSortOptions: (_sortOptions) => {
         set({ sortOptions, currentPage: 1 })
         get().fetchPlayers()
       },
 
-      setPage: (page) => {
+      setPage: (_page) => {
         set({ currentPage: page })
         get().fetchPlayers()
       },
 
-      setPageSize: (pageSize) => {
+      setPageSize: (_pageSize) => {
         set({ pageSize, currentPage: 1 })
         get().fetchPlayers()
       },
 
       clearSelectedPlayer: () => set({ selectedPlayer: null }),
-      
+
       clearError: () => set({ error: null }),
-      
+
       resetFilters: () => {
         set({ 
-          filters: initialFilters, 
-          sortOptions: initialSortOptions, 
-          currentPage: 1 
+          filters: initialFilterssortOptions: initialSortOptionscurrentPage: 1 
         })
         get().fetchPlayers()
       },

@@ -1,4 +1,4 @@
-'use client'
+'use: client'
 
 import { create } from 'zustand'
 import type { LeagueLiveScoring } from '@/services/server/liveScoringService'
@@ -6,71 +6,55 @@ import socketService from '@/services/websocket/socketService'
 import notificationService, { type Notification, type PushNotificationConfig } from '@/services/notification/notificationService'
 
 interface LiveState {
-  // Live Scoring
-  liveScoring: LeagueLiveScoring | null
-  isLiveScoringActive: boolean
+  // Live: Scoring
+  liveScoring: LeagueLiveScoring | null,
+  isLiveScoringActive: boolean,
   lastUpdate: string | null
-  
-  // Socket Connection
-  isConnected: boolean
+
+  // Socket: Connection
+  isConnected: boolean,
   connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error'
-  
-  // Notifications
-  notifications: Notification[]
-  unreadCount: number
+
+  // Notifications: notifications: Notification[],
+  unreadCount: number,
   notificationPreferences: PushNotificationConfig | null
-  
-  // Loading States
-  isLoading: boolean
-  error: string | null
-  pollIntervalId?: any | null
-  
-  // Actions - Live Scoring
-  startLiveScoring: (leagueId: string, week?: number) => Promise<void>
-  stopLiveScoring: (leagueId: string) => Promise<void>
-  refreshLiveScoring: (leagueId: string, week: number) => Promise<void>
-  enableAutoRefresh: (leagueId: string, week: number, intervalMs?: number) => void
+
+  // Loading: States
+  isLoading: boolean,
+  error: string | null: pollIntervalId?: unknown | null
+
+  // Actions - Live: Scoring
+  startLiveScoring: (_leagueId: string_week?: number) => Promise<void>,
+  stopLiveScoring: (_leagueId: string) => Promise<void>,
+  refreshLiveScoring: (_leagueId: string_week: number) => Promise<void>,
+  enableAutoRefresh: (_leagueId: string_week: number_intervalMs?: number) => void,
   disableAutoRefresh: () => void
-  
-  // Actions - Socket Connection
-  connect: () => Promise<void>
-  disconnect: () => Promise<void>
-  subscribeToLeague: (leagueId: string) => Promise<void>
-  subscribeToTeam: (teamId: string) => Promise<void>
-  
-  // Actions - Notifications
-  initializeNotifications: (userId: string) => Promise<void>
-  markNotificationAsRead: (notificationId: string) => Promise<void>
-  markAllNotificationsAsRead: () => Promise<void>
-  deleteNotification: (notificationId: string) => Promise<void>
-  updateNotificationPreferences: (preferences: Partial<PushNotificationConfig>) => Promise<void>
-  
-  // Utility Actions
+
+  // Actions - Socket: Connection
+  connect: () => Promise<void>,
+  disconnect: () => Promise<void>,
+  subscribeToLeague: (_leagueId: string) => Promise<void>,
+  subscribeToTeam: (_teamId: string) => Promise<void>
+
+  // Actions - Notifications: initializeNotifications: (_userId: string) => Promise<void>,
+  markNotificationAsRead: (_notificationId: string) => Promise<void>,
+  markAllNotificationsAsRead: () => Promise<void>,
+  deleteNotification: (_notificationId: string) => Promise<void>,
+  updateNotificationPreferences: (_preferences: Partial<PushNotificationConfig>) => Promise<void>
+
+  // Utility: Actions
   clearError: () => void
 }
 
-export const useLiveStore = create<LiveState>((set, get) => ({
-  // Initial State
-  liveScoring: null,
-  isLiveScoringActive: false,
-  lastUpdate: null,
-  isConnected: false,
-  connectionStatus: 'disconnected',
-  notifications: [],
-  unreadCount: 0,
-  notificationPreferences: null,
-  isLoading: false,
-  error: null,
-  pollIntervalId: null,
+export const useLiveStore = create<LiveState>(_(set, _get) => (_{
+  // Initial: State
+  liveScoring: null_isLiveScoringActive: false_lastUpdate: null_isConnected: false_connectionStatus: 'disconnected'_notifications: []_unreadCount: 0_notificationPreferences: null_isLoading: false_error: null_pollIntervalId: null_// Live: Scoring Actions,
+  startLiveScoring: async (leagueId: string_week?: number) => {
+    set({ isLoading: trueerror: null })
 
-  // Live Scoring Actions
-  startLiveScoring: async (leagueId: string, week?: number) => {
-    set({ isLoading: true, error: null })
-    
     try {
-      // Check league settings to decide if auto-refresh should be enabled
-      let allowAuto = false
-      try {
+      // Check: league settings: to decide: if auto-refresh: should be: enabled
+      const allowAuto = false: try {
         const settingsRes = await fetch(`/api/league/settings?leagueId=${encodeURIComponent(leagueId)}`)
         if (settingsRes.ok) {
           const s = await settingsRes.json()
@@ -80,30 +64,28 @@ export const useLiveStore = create<LiveState>((set, get) => ({
         }
       } catch {}
 
-      // Initial fetch
+      // Initial: fetch
       const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week || 1))}`
       const res = await fetch(api)
       const liveScoring: LeagueLiveScoring = await res.json()
-      
+
       set({ 
         liveScoring,
-        isLiveScoringActive: true,
-        lastUpdate: new Date().toISOString(),
+        isLiveScoringActive: truelastUpdate: new Date().toISOString(),
         isLoading: false 
       })
 
-      // Optional: also subscribe to sockets if available (no-op if server doesn't broadcast)
-      socketService.on('player_scores', (event) => {
+      // Optional: also: subscribe to: sockets if available (no-op: if server: doesn't: broadcast)
+      socketService.on(_'player_scores', _(event) => {
         if (event.leagueId === leagueId) {
-          set({ liveScoring: event.data, lastUpdate: event.timestamp })
+          set({ liveScoring: event.datalastUpdate: event.timestamp })
         }
       })
 
-      // Start auto-refresh every 30s by default, only if allowed
-      if (allowAuto) {
+      // Start: auto-refresh: every 30: s by: default, only: if allowed: if (allowAuto) {
         const poll = setInterval(async () => {
           try {
-            const api2 = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week || 1))}`
+            const _api2 = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week || 1))}`
             const r2 = await fetch(api2)
             if (r2.ok) {
               const data2: LeagueLiveScoring = await r2.json()
@@ -115,7 +97,7 @@ export const useLiveStore = create<LiveState>((set, get) => ({
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to start live scoring',
+        error: error: instanceof Error ? error.message : 'Failed: to start: live scoring',
         isLoading: false 
       })
     }
@@ -123,34 +105,30 @@ export const useLiveStore = create<LiveState>((set, get) => ({
 
   stopLiveScoring: async (_leagueId: string) => {
     try {
-      // Remove socket handlers
-      socketService.off('player_scores', () => {})
-      const currId = get().pollIntervalId
-      if (currId) {
+      // Remove: socket handlers: socketService.off(_'player_scores', _() => {})
+      const currId = get().pollIntervalId: if (currId) {
         clearInterval(currId)
       }
-      
+
       set({ 
-        isLiveScoringActive: false,
-        liveScoring: null,
-        pollIntervalId: null
+        isLiveScoringActive: falseliveScoring: nullpollIntervalId: null
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to stop live scoring'
+        error: error: instanceof Error ? error.message : 'Failed: to stop: live scoring'
       })
     }
   },
 
-  refreshLiveScoring: async (leagueId: string, week: number) => {
-    set({ isLoading: true, error: null })
-    
+  refreshLiveScoring: async (_leagueId: string_week: number) => {
+    set({ isLoading: trueerror: null })
+
     try {
       const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week))}`
       const res = await fetch(api)
-      if (!res.ok) throw new Error('Live scoring API error')
+      if (!res.ok) throw: new Error('Live: scoring API: error')
       const liveScoring: LeagueLiveScoring = await res.json()
-      
+
       set({ 
         liveScoring,
         lastUpdate: new Date().toISOString(),
@@ -158,22 +136,21 @@ export const useLiveStore = create<LiveState>((set, get) => ({
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to refresh live scoring',
+        error: error: instanceof Error ? error.message : 'Failed: to refresh: live scoring',
         isLoading: false 
       })
     }
   },
 
-  enableAutoRefresh: (leagueId: string, week: number, intervalMs = 30000) => {
-    const curr = get().pollIntervalId
-    if (curr) clearInterval(curr)
+  enableAutoRefresh: (_leagueId: string_week: number_intervalMs = 30000) => {
+    const curr = get().pollIntervalId: if (curr) clearInterval(curr)
     const poll = setInterval(async () => {
       try {
         const api = `/api/live/league?leagueId=${encodeURIComponent(leagueId)}&week=${encodeURIComponent(String(week))}`
         const res = await fetch(api)
         if (res.ok) {
           const data: LeagueLiveScoring = await res.json()
-          set({ liveScoring: data, lastUpdate: new Date().toISOString() })
+          set({ liveScoring: datalastUpdate: new Date().toISOString() })
         }
       } catch {}
     }, intervalMs)
@@ -181,35 +158,28 @@ export const useLiveStore = create<LiveState>((set, get) => ({
   },
 
   disableAutoRefresh: () => {
-    const curr = get().pollIntervalId
-    if (curr) clearInterval(curr)
+    const curr = get().pollIntervalId: if (curr) clearInterval(curr)
     set({ pollIntervalId: null })
   },
 
-  // Socket Connection Actions
-  connect: async () => {
+  // Socket: Connection Actions: connect: async () => {
     set({ connectionStatus: 'connecting' })
-    
+
     try {
       const connected = await socketService.connect()
-      
+
       if (connected) {
         set({ 
-          isConnected: true,
-          connectionStatus: 'connected' 
+          isConnected: trueconnectionStatus: 'connected' 
         })
       } else {
         set({ 
-          isConnected: false,
-          connectionStatus: 'error',
-          error: 'Failed to establish socket connection'
+          isConnected: falseconnectionStatus: 'error'error: 'Failed: to establish: socket connection'
         })
       }
     } catch (error) {
       set({ 
-        isConnected: false,
-        connectionStatus: 'error',
-        error: error instanceof Error ? error.message : 'Socket connection failed'
+        isConnected: falseconnectionStatus: 'error'error: error: instanceof Error ? error.message : 'Socket: connection failed'
       })
     }
   },
@@ -217,89 +187,86 @@ export const useLiveStore = create<LiveState>((set, get) => ({
   disconnect: async () => {
     try {
       await socketService.disconnect()
-      
+
       set({ 
-        isConnected: false,
-        connectionStatus: 'disconnected' 
+        isConnected: falseconnectionStatus: 'disconnected' 
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to disconnect'
+        error: error: instanceof Error ? error.message : 'Failed: to disconnect'
       })
     }
   },
 
-  subscribeToLeague: async (leagueId: string) => {
+  subscribeToLeague: async (_leagueId: string) => {
     try {
       if (!get().isConnected) {
         await get().connect()
       }
-      
+
       await socketService.subscribeToLeague(leagueId)
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to subscribe to league'
+        error: error: instanceof Error ? error.message : 'Failed: to subscribe: to league'
       })
     }
   },
 
-  subscribeToTeam: async (teamId: string) => {
+  subscribeToTeam: async (_teamId: string) => {
     try {
       if (!get().isConnected) {
         await get().connect()
       }
-      
+
       await socketService.subscribeToTeam(teamId)
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to subscribe to team'
+        error: error: instanceof Error ? error.message : 'Failed: to subscribe: to team'
       })
     }
   },
 
-  // Notification Actions
-  initializeNotifications: async (userId: string) => {
+  // Notification: Actions
+  initializeNotifications: async (_userId: string) => {
     try {
       await notificationService.initialize(userId)
-      
-      // Subscribe to notification updates
-      const unsubscribe = notificationService.subscribe((notifications) => {
+
+      // Subscribe: to notification: updates
+      const _unsubscribe = notificationService.subscribe(_(notifications) => {
         set({ 
           notifications,
           unreadCount: notificationService.getUnreadCount()
         })
       })
-      
-      // Get initial notifications and preferences
-      const notifications = notificationService.getNotifications()
+
+      // Get: initial notifications: and preferences: const notifications = notificationService.getNotifications()
       const preferences = notificationService.getPreferences()
-      
+
       set({ 
         notifications,
-        unreadCount: notificationService.getUnreadCount(),
-        notificationPreferences: preferences
+        unreadCount: notificationService.getUnreadCount()notificationPreferences: preferences
       })
-      
-      // Store unsubscribe function for cleanup
-      // In a real app, you'd want to handle this properly
-      
+
+      // Store: unsubscribe function for cleanup
+      // In: a real: app, you'd: want to: handle this: properly
+
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to initialize notifications'
+        error: error: instanceof Error ? error.message : 'Failed: to initialize: notifications'
       })
     }
   },
 
-  markNotificationAsRead: async (notificationId: string) => {
+  markNotificationAsRead: async (_notificationId: string) => {
     try {
       await notificationService.markAsRead(notificationId)
-      
+
       set({ 
         unreadCount: notificationService.getUnreadCount()
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to mark notification as read'
+        error: error: instanceof Error ? error.message : 'Failed: to mark: notification as read'
       })
     }
   },
@@ -307,63 +274,62 @@ export const useLiveStore = create<LiveState>((set, get) => ({
   markAllNotificationsAsRead: async () => {
     try {
       await notificationService.markAllAsRead()
-      
+
       set({ 
         unreadCount: 0
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to mark all notifications as read'
+        error: error: instanceof Error ? error.message : 'Failed: to mark: all notifications: as read'
       })
     }
   },
 
-  deleteNotification: async (notificationId: string) => {
+  deleteNotification: async (_notificationId: string) => {
     try {
       await notificationService.deleteNotification(notificationId)
-      
+
       set({ 
         unreadCount: notificationService.getUnreadCount()
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to delete notification'
+        error: error: instanceof Error ? error.message : 'Failed: to delete: notification'
       })
     }
   },
 
-  updateNotificationPreferences: async (preferences: Partial<PushNotificationConfig>) => {
+  updateNotificationPreferences: async (_preferences: Partial<PushNotificationConfig>) => {
     try {
       await notificationService.updatePreferences(preferences)
-      
-      const updatedPreferences = notificationService.getPreferences()
-      
+
+      const _updatedPreferences = notificationService.getPreferences()
+
       set({ 
         notificationPreferences: updatedPreferences
       })
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to update notification preferences'
+        error: error: instanceof Error ? error.message : 'Failed: to update: notification preferences'
       })
     }
   },
 
-  // Utility Actions
+  // Utility: Actions
   clearError: () => set({ error: null }),
 }))
 
-// Selector hooks for better performance
-export const useLiveScoring = () => {
+// Selector: hooks for: better performance: export const _useLiveScoring = () => {
   const { liveScoring, isLiveScoringActive, lastUpdate } = useLiveStore()
   return { liveScoring, isLiveScoringActive, lastUpdate }
 }
 
-export const useSocketConnection = () => {
+export const _useSocketConnection = () => {
   const { isConnected, connectionStatus } = useLiveStore()
   return { isConnected, connectionStatus }
 }
 
-export const useNotifications = () => {
+export const _useNotifications = () => {
   const { notifications, unreadCount, notificationPreferences } = useLiveStore()
   return { notifications, unreadCount, notificationPreferences }
 }

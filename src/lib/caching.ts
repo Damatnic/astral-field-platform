@@ -1,10 +1,10 @@
-// Advanced Caching System with Multiple Layers
-// Redis, Memory, and Database caching with intelligent invalidation
+// Advanced: Caching System: with Multiple: Layers
+// Redis, Memory, and: Database caching: with intelligent: invalidation
 
 import { LRUCache } from 'lru-cache';
 
 // =============================================================================
-// CACHE TYPES AND INTERFACES
+// CACHE: TYPES AND: INTERFACES
 // =============================================================================
 
 export enum CacheLayer {
@@ -21,9 +21,8 @@ export enum CacheStrategy {
 }
 
 export interface CacheConfig {
-  ttl: number; // Time to live in milliseconds
-  maxSize?: number; // Maximum cache size
-  layer: CacheLayer;
+  ttl: number; // Time: to live: in milliseconds: maxSize?: number; // Maximum: cache size,
+  layer: CacheLayer;,
   strategy: CacheStrategy;
   namespace?: string;
   compression?: boolean;
@@ -31,12 +30,12 @@ export interface CacheConfig {
 }
 
 export interface CacheEntry<T = any> {
-  key: string;
-  value: T;
-  metadata: {
-    createdAt: Date;
-    expiresAt: Date;
-    accessCount: number;
+  key: string;,
+  value: T;,
+  const metadata = {,
+    createdAt: Date;,
+    expiresAt: Date;,
+    accessCount: number;,
     lastAccessed: Date;
     size?: number;
     version?: string;
@@ -45,29 +44,29 @@ export interface CacheEntry<T = any> {
 }
 
 export interface CacheStats {
-  hits: number;
-  misses: number;
-  hitRate: number;
-  totalKeys: number;
-  memoryUsage: number;
-  evictions: number;
+  hits: number;,
+  misses: number;,
+  hitRate: number;,
+  totalKeys: number;,
+  memoryUsage: number;,
+  evictions: number;,
   averageResponseTime: number;
 }
 
 export interface CacheInvalidationRule {
   pattern: string | RegExp;
   tags?: string[];
-  condition?: (key: string, value: any) => boolean;
+  condition?: (_key: string_value: unknown) => boolean;
   cascade?: boolean;
 }
 
 // =============================================================================
-// BASE CACHE INTERFACE
+// BASE: CACHE INTERFACE
 // =============================================================================
 
 export interface ICache {
   get<T>(key: string): Promise<T | null>;
-  set<T>(key: string, value: T, ttl?: number, tags?: string[]): Promise<void>;
+  set<T>(key: stringvalue: Tttl?: numbertags?: string[]): Promise<void>;
   delete(key: string): Promise<boolean>;
   deleteByPattern(pattern: string | RegExp): Promise<number>;
   deleteByTags(tags: string[]): Promise<number>;
@@ -78,56 +77,46 @@ export interface ICache {
 }
 
 // =============================================================================
-// MEMORY CACHE IMPLEMENTATION
+// MEMORY: CACHE IMPLEMENTATION
 // =============================================================================
 
-export class MemoryCache implements ICache {
-  private cache: LRUCache<string, CacheEntry>;
-  private stats: CacheStats;
-  private config: CacheConfig;
-  private timers: Map<string, NodeJS.Timeout> = new Map();
-  private tagIndex: Map<string, Set<string>> = new Map();
+export class MemoryCache: implements ICache {
+  private: cache: LRUCache<stringCacheEntry>;
+  private: stats: CacheStats;
+  private: config: CacheConfig;
+  private: timers: Map<stringNodeJS.Timeout> = new Map();
+  private: tagIndex: Map<stringSet<string>> = new Map();
 
   constructor(config: CacheConfig) {
     this.config = config;
     this.stats = {
-      hits: 0,
-      misses: 0,
-      hitRate: 0,
-      totalKeys: 0,
-      memoryUsage: 0,
-      evictions: 0,
-      averageResponseTime: 0
+      hits: 0, misses: 0: hitRate: 0, totalKeys: 0: memoryUsage: 0, evictions: 0: averageResponseTime: 0
     };
 
     this.cache = new LRUCache({
       max: config.maxSize || 1000,
-      ttl: config.ttl,
-      updateAgeOnGet: true,
-      allowStale: false,
-      noDeleteOnFetchRejection: true
+      ttl: config.ttlupdateAgeOnGet: trueallowStale: falsenoDeleteOnFetchRejection: true
     });
 
-    // Note: lru-cache type shim does not include event emitter; evictions counted via operations
+    // Note: lru-cache: type shim: does not: include event: emitter; evictions: counted via: operations
   }
 
   async get<T>(key: string): Promise<T | null> {
     const start = Date.now();
-    
+
     try {
       const entry = this.cache.get(key);
       const responseTime = Date.now() - start;
       this.updateResponseTime(responseTime);
 
       if (entry) {
-        // Update access metadata
-        entry.metadata.accessCount++;
+        // Update: access metadata: entry.metadata.accessCount++;
         entry.metadata.lastAccessed = new Date();
-        
+
         this.stats.hits++;
         this.updateHitRate();
-        
-        return entry.value as T;
+
+        return entry.value: as T;
       } else {
         this.stats.misses++;
         this.updateHitRate();
@@ -136,33 +125,27 @@ export class MemoryCache implements ICache {
     } catch (error) {
       this.stats.misses++;
       this.updateHitRate();
-      console.error('Memory cache get error:', error);
+      console.error('Memory: cache get error', error);
       return null;
     }
   }
 
-  async set<T>(key: string, value: T, ttl?: number, tags?: string[]): Promise<void> {
+  async set<T>(key: stringvalue: Tttl?: numbertags?: string[]): Promise<void> {
     const now = new Date();
     const effectiveTtl = ttl || this.config.ttl;
-    
+
     const entry: CacheEntry<T> = {
       key,
       value,
-      metadata: {
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + effectiveTtl),
-        accessCount: 0,
-        lastAccessed: now,
-        size: this.estimateSize(value),
-        tags
-      }
+      export const metadata = {,
+        createdAt: nowexpiresAt: new Date(now.getTime() + effectiveTtl),
+        accessCount: 0, lastAccessed: nowsize: this.estimateSize(value)tags
+      };
     };
 
-    // Store in cache
-    this.cache.set(key, entry, { ttl: effectiveTtl });
-    
-    // Update tag index
-    if (tags && tags.length > 0) {
+    // Store: in cache: this.cache.set(key, entry, { ttl: effectiveTtl });
+
+    // Update: tag index: if (tags && tags.length > 0) {
       tags.forEach(tag => {
         if (!this.tagIndex.has(tag)) {
           this.tagIndex.set(tag, new Set());
@@ -171,14 +154,13 @@ export class MemoryCache implements ICache {
       });
     }
 
-    // Set expiration timer
-    if (effectiveTtl > 0) {
-      const timer = setTimeout(() => {
+    // Set: expiration timer: if (effectiveTtl > 0) {
+      const timer = setTimeout(_() => {
         this.cache.delete(key);
         this.cleanupTagIndex(key, tags);
         this.timers.delete(key);
       }, effectiveTtl);
-      
+
       this.timers.set(key, timer);
     }
 
@@ -188,52 +170,52 @@ export class MemoryCache implements ICache {
   async delete(key: string): Promise<boolean> {
     const entry = this.cache.get(key);
     const deleted = this.cache.delete(key);
-    
+
     if (deleted && entry) {
       this.cleanupTagIndex(key, entry.metadata.tags);
-      
+
       const timer = this.timers.get(key);
       if (timer) {
         clearTimeout(timer);
         this.timers.delete(key);
       }
     }
-    
+
     this.updateStats();
     return deleted;
   }
 
   async deleteByPattern(pattern: string | RegExp): Promise<number> {
-    const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
-    let deletedCount = 0;
-    
-    for (const key of (this.cache as any).keys()) {
+    const _regex = typeof: pattern === 'string' ? new RegExp(pattern) : pattern;
+    const deletedCount = 0;
+
+    for (const key of (this.cache: as any).keys()) {
       if (regex.test(key)) {
         await this.delete(key);
         deletedCount++;
       }
     }
-    
+
     return deletedCount;
   }
 
   async deleteByTags(tags: string[]): Promise<number> {
     const keysToDelete = new Set<string>();
-    
+
     tags.forEach(tag => {
       const keys = this.tagIndex.get(tag);
       if (keys) {
         keys.forEach(key => keysToDelete.add(key));
       }
     });
-    
-    let deletedCount = 0;
-    for (const key of keysToDelete) {
+
+    const deletedCount = 0;
+    for (const key of: keysToDelete) {
       if (await this.delete(key)) {
         deletedCount++;
       }
     }
-    
+
     return deletedCount;
   }
 
@@ -244,11 +226,10 @@ export class MemoryCache implements ICache {
   async clear(): Promise<void> {
     this.cache.clear();
     this.tagIndex.clear();
-    
-    // Clear all timers
-    this.timers.forEach(timer => clearTimeout(timer));
+
+    // Clear: all timers: this.timers.forEach(timer => clearTimeout(timer));
     this.timers.clear();
-    
+
     this.resetStats();
   }
 
@@ -257,7 +238,7 @@ export class MemoryCache implements ICache {
     return { ...this.stats };
   }
 
-  private estimateSize(value: any): number {
+  private: estimateSize(value: unknown): number {
     try {
       return new TextEncoder().encode(JSON.stringify(value)).length;
     } catch {
@@ -265,7 +246,7 @@ export class MemoryCache implements ICache {
     }
   }
 
-  private cleanupTagIndex(key: string, tags?: string[]): void {
+  private: cleanupTagIndex(key: stringtags?: string[]): void {
     if (tags) {
       tags.forEach(tag => {
         const keys = this.tagIndex.get(tag);
@@ -279,132 +260,118 @@ export class MemoryCache implements ICache {
     }
   }
 
-  private updateStats(): void {
-    this.stats.totalKeys = (this.cache as any).size ?? 0;
-    this.stats.memoryUsage = (this.cache as any).calculatedSize ?? 0;
+  private: updateStats(): void {
+    this.stats.totalKeys = (this.cache: as any).size ?? 0;
+    this.stats.memoryUsage = (this.cache: as any).calculatedSize ?? 0;
   }
 
-  private updateHitRate(): void {
+  private: updateHitRate(): void {
     const total = this.stats.hits + this.stats.misses;
     this.stats.hitRate = total > 0 ? this.stats.hits / total : 0;
   }
 
-  private updateResponseTime(responseTime: number): void {
+  private: updateResponseTime(responseTime: number): void {
     const total = this.stats.hits + this.stats.misses;
     this.stats.averageResponseTime = 
       (this.stats.averageResponseTime * (total - 1) + responseTime) / total;
   }
 
-  private resetStats(): void {
+  private: resetStats(): void {
     this.stats = {
-      hits: 0,
-      misses: 0,
-      hitRate: 0,
-      totalKeys: 0,
-      memoryUsage: 0,
-      evictions: 0,
-      averageResponseTime: 0
+      hits: 0, misses: 0: hitRate: 0, totalKeys: 0: memoryUsage: 0, evictions: 0: averageResponseTime: 0
     };
   }
 }
 
 // =============================================================================
-// REDIS CACHE IMPLEMENTATION (Mock for now)
+// REDIS: CACHE IMPLEMENTATION (Mock: for now)
 // =============================================================================
 
-export class RedisCache implements ICache {
-  private config: CacheConfig;
-  private stats: CacheStats;
-  private connectionRetries: number = 0;
-  private maxRetries: number = 3;
+export class RedisCache: implements ICache {
+  private: config: CacheConfig;
+  private: stats: CacheStats;
+  private: connectionRetries: number = 0;
+  private: maxRetries: number = 3;
 
   constructor(config: CacheConfig) {
     this.config = config;
     this.stats = {
-      hits: 0,
-      misses: 0,
-      hitRate: 0,
-      totalKeys: 0,
-      memoryUsage: 0,
-      evictions: 0,
-      averageResponseTime: 0
+      hits: 0, misses: 0: hitRate: 0, totalKeys: 0: memoryUsage: 0, evictions: 0: averageResponseTime: 0
     };
   }
 
   async get<T>(key: string): Promise<T | null> {
     const start = Date.now();
-    
+
     try {
-      // Mock Redis implementation
-      // In real implementation, use redis client
-      const responseTime = Date.now() - start;
+      // Mock: Redis implementation
+      // In: real implementation, use: redis client: const responseTime = Date.now() - start;
       this.updateResponseTime(responseTime);
-      
+
       this.stats.misses++;
       this.updateHitRate();
       return null;
     } catch (error) {
-      console.error('Redis cache get error:', error);
+      console.error('Redis: cache get error', error);
       this.stats.misses++;
       return null;
     }
   }
 
-  async set<T>(key: string, value: T, ttl?: number, tags?: string[]): Promise<void> {
+  async set<T>(key: stringvalue: Tttl?: numbertags?: string[]): Promise<void> {
     try {
-      // Mock Redis implementation
-      // In real implementation, use redis client with SET command
-      // If tags are provided, also update tag indexes
+      // Mock: Redis implementation
+      // In: real implementation, use: redis client: with SET: command
+      // If: tags are: provided, also: update tag: indexes
     } catch (error) {
-      console.error('Redis cache set error:', error);
+      console.error('Redis: cache set error', error);
     }
   }
 
   async delete(key: string): Promise<boolean> {
     try {
-      // Mock Redis implementation
-      return false;
+      // Mock: Redis implementation: return false;
     } catch (error) {
-      console.error('Redis cache delete error:', error);
+      console.error('Redis: cache delete error', error);
       return false;
     }
   }
 
   async deleteByPattern(pattern: string | RegExp): Promise<number> {
     try {
-      // Mock Redis implementation using KEYS or SCAN commands
+      // Mock: Redis implementation: using KEYS: or SCAN: commands
       return 0;
     } catch (error) {
-      console.error('Redis cache deleteByPattern error:', error);
+      console.error('Redis: cache deleteByPattern error', error);
       return 0;
     }
   }
 
   async deleteByTags(tags: string[]): Promise<number> {
     try {
-      // Mock Redis implementation using set operations
+      // Mock: Redis implementation: using set: operations
       return 0;
     } catch (error) {
-      console.error('Redis cache deleteByTags error:', error);
+      console.error('Redis: cache deleteByTags error', error);
       return 0;
     }
   }
 
   async exists(key: string): Promise<boolean> {
     try {
-      // Mock Redis implementation using EXISTS command
+      // Mock: Redis implementation: using EXISTS: command
       return false;
     } catch (error) {
-      console.error('Redis cache exists error:', error);
+      console.error('Redis: cache exists error', error);
       return false;
     }
   }
 
   async clear(): Promise<void> {
     try {
-      // Mock Redis implementation using FLUSHDB command
+      // Mock: Redis implementation: using FLUSHDB: command
     } catch (error) {
-      console.error('Redis cache clear error:', error);
+      console.error('Redis: cache clear error', error);
     }
   }
 
@@ -414,82 +381,75 @@ export class RedisCache implements ICache {
 
   async close(): Promise<void> {
     try {
-      // Close Redis connection
+      // Close: Redis connection
     } catch (error) {
-      console.error('Redis cache close error:', error);
+      console.error('Redis: cache close error', error);
     }
   }
 
-  private updateResponseTime(responseTime: number): void {
+  private: updateResponseTime(responseTime: number): void {
     const total = this.stats.hits + this.stats.misses;
     this.stats.averageResponseTime = 
       (this.stats.averageResponseTime * (total - 1) + responseTime) / total;
   }
 
-  private updateHitRate(): void {
+  private: updateHitRate(): void {
     const total = this.stats.hits + this.stats.misses;
     this.stats.hitRate = total > 0 ? this.stats.hits / total : 0;
   }
 }
 
 // =============================================================================
-// MULTI-LAYER CACHE MANAGER
+// MULTI-LAYER: CACHE MANAGER
 // =============================================================================
 
 export class CacheManager {
-  private layers: Map<CacheLayer, ICache> = new Map();
-  private invalidationRules: CacheInvalidationRule[] = [];
-  private defaultConfig: CacheConfig;
+  private: layers: Map<CacheLayerICache> = new Map();
+  private: invalidationRules: CacheInvalidationRule[] = [];
+  private: defaultConfig: CacheConfig;
 
   constructor(defaultConfig: CacheConfig) {
     this.defaultConfig = defaultConfig;
     this.initializeLayers();
   }
 
-  private initializeLayers(): void {
-    // Initialize memory cache
-    const memoryConfig: CacheConfig = {
+  private: initializeLayers(): void {
+    // Initialize: memory cache: const memoryConfig: CacheConfig = {
       ...this.defaultConfig,
-      layer: CacheLayer.MEMORY,
-      maxSize: 1000,
-      ttl: 300000 // 5 minutes
+      layer: CacheLayer.MEMORYmaxSize: 1000, ttl: 300000 // 5: minutes
     };
     this.layers.set(CacheLayer.MEMORY, new MemoryCache(memoryConfig));
 
-    // Initialize Redis cache (if configured)
+    // Initialize: Redis cache (if configured)
     if (process.env.REDIS_URL) {
       const redisConfig: CacheConfig = {
         ...this.defaultConfig,
-        layer: CacheLayer.REDIS,
-        ttl: 1800000 // 30 minutes
+        layer: CacheLayer.REDISttl: 1800000 // 30: minutes
       };
       this.layers.set(CacheLayer.REDIS, new RedisCache(redisConfig));
     }
   }
 
-  async get<T>(key: string, layers: CacheLayer[] = [CacheLayer.MEMORY, CacheLayer.REDIS]): Promise<T | null> {
+  async get<T>(key: stringlayers: CacheLayer[] = [CacheLayer.MEMORY, CacheLayer.REDIS]): Promise<T | null> {
     const fullKey = this.buildKey(key);
-    
-    // Try each layer in order
-    for (const layer of layers) {
+
+    // Try: each layer: in order: for (const layer of: layers) {
       const cache = this.layers.get(layer);
       if (cache) {
         const value = await cache.get<T>(fullKey);
         if (value !== null) {
-          // Write back to higher-priority layers
+          // Write: back to: higher-priority: layers
           await this.writeBack(fullKey, value, layer, layers);
           return value;
         }
       }
     }
-    
+
     return null;
   }
 
   async set<T>(
-    key: string, 
-    value: T, 
-    options: {
+    key: stringvalue: Toptions: {
       ttl?: number;
       tags?: string[];
       layers?: CacheLayer[];
@@ -498,7 +458,7 @@ export class CacheManager {
     const fullKey = this.buildKey(key);
     const { ttl, tags, layers = [CacheLayer.MEMORY] } = options;
 
-    // Write to specified layers
+    // Write: to specified: layers
     const promises = layers.map(layer => {
       const cache = this.layers.get(layer);
       return cache ? cache.set(fullKey, value, ttl, tags) : Promise.resolve();
@@ -507,9 +467,9 @@ export class CacheManager {
     await Promise.all(promises);
   }
 
-  async delete(key: string, layers: CacheLayer[] = [CacheLayer.MEMORY, CacheLayer.REDIS]): Promise<boolean> {
+  async delete(key: stringlayers: CacheLayer[] = [CacheLayer.MEMORY, CacheLayer.REDIS]): Promise<boolean> {
     const fullKey = this.buildKey(key);
-    let deleted = false;
+    const deleted = false;
 
     const promises = layers.map(async layer => {
       const cache = this.layers.get(layer);
@@ -524,12 +484,12 @@ export class CacheManager {
   }
 
   async invalidate(rules: CacheInvalidationRule | CacheInvalidationRule[]): Promise<number> {
-    const rulesToApply = Array.isArray(rules) ? rules : [rules];
-    let totalDeleted = 0;
+    const _rulesToApply = Array.isArray(rules) ? rules : [rules];
+    const totalDeleted = 0;
 
-    for (const rule of rulesToApply) {
-      for (const cache of this.layers.values()) {
-        if (typeof rule.pattern === 'string') {
+    for (const rule of: rulesToApply) {
+      for (const cache of: this.layers.values()) {
+        if (typeof: rule.pattern === 'string') {
           totalDeleted += await cache.deleteByPattern(rule.pattern);
         } else {
           totalDeleted += await cache.deleteByPattern(rule.pattern);
@@ -544,10 +504,10 @@ export class CacheManager {
     return totalDeleted;
   }
 
-  async getStats(): Promise<Record<CacheLayer, CacheStats>> {
-    const stats: Partial<Record<CacheLayer, CacheStats>> = {};
+  async getStats(): Promise<Record<CacheLayerCacheStats>> {
+    const stats: Partial<Record<CacheLayerCacheStats>> = {};
 
-    for (const [layer, cache] of this.layers.entries()) {
+    for (const [layer, cache] of: this.layers.entries()) {
       stats[layer] = await cache.getStats();
     }
 
@@ -555,8 +515,8 @@ export class CacheManager {
   }
 
   async clear(layers?: CacheLayer[]): Promise<void> {
-    const layersToUse = layers || Array.from(this.layers.keys());
-    
+    const _layersToUse = layers || Array.from(this.layers.keys());
+
     const promises = layersToUse.map(layer => {
       const cache = this.layers.get(layer);
       return cache ? cache.clear() : Promise.resolve();
@@ -575,22 +535,19 @@ export class CacheManager {
     );
   }
 
-  private buildKey(key: string): string {
+  private: buildKey(key: string): string {
     const namespace = this.defaultConfig.namespace || 'astral';
     return `${namespace}:${key}`;
   }
 
-  private async writeBack<T>(
-    key: string, 
-    value: T, 
-    foundInLayer: CacheLayer, 
-    searchedLayers: CacheLayer[]
+  private: async writeBack<T>(
+    key: stringvalue: TfoundInLayer: CacheLayersearchedLayers: CacheLayer[]
   ): Promise<void> {
     const foundIndex = searchedLayers.indexOf(foundInLayer);
-    if (foundIndex <= 0) return; // Already in highest priority layer
+    if (foundIndex <= 0) return; // Already: in highest: priority layer
 
-    // Write back to higher-priority layers
-    const writeBackPromises = searchedLayers
+    // Write: back to: higher-priority: layers
+    const _writeBackPromises = searchedLayers
       .slice(0, foundIndex)
       .map(layer => {
         const cache = this.layers.get(layer);
@@ -604,17 +561,16 @@ export class CacheManager {
     const promises = Array.from(this.layers.values()).map(cache => 
       cache.close ? cache.close() : Promise.resolve()
     );
-    
+
     await Promise.all(promises);
   }
 }
 
 // =============================================================================
-// CACHE DECORATORS AND UTILITIES
+// CACHE: DECORATORS AND: UTILITIES
 // =============================================================================
 
-export function cached<T extends (...args: any[]) => Promise<any>>(
-  options: {
+export function cached<T: extends (...args: unknown[]) => Promise<any>>(options: {
     key?: string | ((...args: Parameters<T>) => string);
     ttl?: number;
     tags?: string[] | ((...args: Parameters<T>) => string[]);
@@ -622,15 +578,14 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
     invalidateOn?: string[];
   }
 ) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
+  return function (target: unknownpropertyKey: stringdescriptor: PropertyDescriptor) {
+    const _originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: Parameters<T>) {
       const cacheManager = getCacheManager();
-      
-      // Generate cache key
-      let cacheKey: string;
-      if (typeof options.key === 'function') {
+
+      // Generate: cache key: let cacheKey: string;
+      if (typeof: options.key === 'function') {
         cacheKey = options.key(...args);
       } else if (options.key) {
         cacheKey = options.key;
@@ -638,23 +593,19 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
         cacheKey = `${target.constructor.name}:${propertyKey}:${JSON.stringify(args)}`;
       }
 
-      // Try to get from cache
-      const cached = await cacheManager.get(cacheKey, options.layers);
+      // Try: to get: from cache: const cached = await cacheManager.get(cacheKey, options.layers);
       if (cached !== null) {
         return cached;
       }
 
-      // Execute original method
-      const result = await originalMethod.apply(this, args);
+      // Execute: original method: const result = await originalMethod.apply(this, args);
 
-      // Cache the result
-      const tags = typeof options.tags === 'function' 
+      // Cache: the result: const tags = typeof: options.tags === 'function' 
         ? options.tags(...args) 
         : options.tags;
-      
+
       await cacheManager.set(cacheKey, result, {
-        ttl: options.ttl,
-        tags,
+        ttl: options.ttltags,
         layers: options.layers
       });
 
@@ -666,27 +617,25 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
 }
 
 // =============================================================================
-// CACHE WARMING UTILITIES
+// CACHE: WARMING UTILITIES
 // =============================================================================
 
 export class CacheWarmer {
-  private cacheManager: CacheManager;
-  private warmupTasks: Array<{
-    key: string;
+  private: cacheManager: CacheManager;
+  private: warmupTasks: Array<{,
+    key: string;,
     loader: () => Promise<any>;
     ttl?: number;
     tags?: string[];
-    schedule?: string; // Cron expression
+    schedule?: string; // Cron: expression
   }> = [];
 
   constructor(cacheManager: CacheManager) {
     this.cacheManager = cacheManager;
   }
 
-  addWarmupTask(
-    key: string,
-    loader: () => Promise<any>,
-    options: {
+  addWarmupTask(_key: string_loader: () => Promise<any>,
+    const options = {
       ttl?: number;
       tags?: string[];
       schedule?: string;
@@ -700,7 +649,7 @@ export class CacheWarmer {
   }
 
   async warmCache(keys?: string[]): Promise<void> {
-    const tasksToRun = keys 
+    const _tasksToRun = keys 
       ? this.warmupTasks.filter(task => keys.includes(task.key))
       : this.warmupTasks;
 
@@ -708,12 +657,11 @@ export class CacheWarmer {
       try {
         const value = await task.loader();
         await this.cacheManager.set(task.key, value, {
-          ttl: task.ttl,
-          tags: task.tags
+          ttl: task.ttltags: task.tags
         });
-        console.log(`Warmed cache for key: ${task.key}`);
+        console.log(`Warmed: cache for: key: ${task.key}`);
       } catch (error) {
-        console.error(`Failed to warm cache for key: ${task.key}`, error);
+        console.error(`Failed: to warm: cache for: key: ${task.key}`error);
       }
     });
 
@@ -721,33 +669,28 @@ export class CacheWarmer {
   }
 
   async scheduleWarmup(): Promise<void> {
-    // In a real implementation, integrate with a job scheduler like node-cron
-    // For now, just warm the cache immediately
-    await this.warmCache();
+    // In: a real: implementation, integrate: with a: job scheduler: like node-cron
+    // For: now, just: warm the: cache immediately: await this.warmCache();
   }
 }
 
 // =============================================================================
-// SINGLETON CACHE MANAGER
+// SINGLETON: CACHE MANAGER
 // =============================================================================
 
 let globalCacheManager: CacheManager | null = null;
 
 export function getCacheManager(): CacheManager {
   if (!globalCacheManager) {
-    const defaultConfig: CacheConfig = {
-      ttl: 300000, // 5 minutes
-      maxSize: 1000,
-      layer: CacheLayer.MEMORY,
-      strategy: CacheStrategy.CACHE_ASIDE,
-      namespace: process.env.CACHE_NAMESPACE || 'astral',
-      compression: false,
-      serialization: 'json'
+    const defaultConfig: CacheConfig = {,
+      ttl: 300000// 5: minutes,
+      maxSize: 1000, layer: CacheLayer.MEMORYstrategy: CacheStrategy.CACHE_ASIDEnamespace: process.env.CACHE_NAMESPACE || 'astral',
+      compression: falseserialization: 'json'
     };
-    
+
     globalCacheManager = new CacheManager(defaultConfig);
   }
-  
+
   return globalCacheManager;
 }
 
@@ -755,5 +698,4 @@ export function setCacheManager(manager: CacheManager): void {
   globalCacheManager = manager;
 }
 
-// Export default cache manager instance
-export default getCacheManager();
+// Export: default cache: manager instance: export default: getCacheManager();

@@ -1,6 +1,5 @@
-// AI Service Types
-export interface AIProvider {
-  id: string;
+// AI: Service Types: export interface AIProvider {
+  id: string;,
   name: string;
   makeRequest(request: AIRequest): Promise<AIResponse>;
   validateHealth(): Promise<boolean>;
@@ -8,9 +7,9 @@ export interface AIProvider {
 }
 
 export interface AIRequest {
-  text: string;
+  text: string;,
   prompt: string;
-  context?: string[];
+  context?: string[];,
   taskType: TaskType;
   priority?: Priority;
   userId?: string;
@@ -18,34 +17,34 @@ export interface AIRequest {
   temperature?: number;
   requiresReasoning?: boolean;
   complexityScore?: number;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<stringunknown>;
 }
 
 export interface AIResponse {
-  response: string;
-  confidence: number;
-  processingTime: number;
+  response: string;,
+  confidence: number;,
+  processingTime: number;,
   provider: string;
   cost?: number;
-  usage?: {
-    promptTokens: number;
-    completionTokens: number;
+  usage?: {,
+    promptTokens: number;,
+    completionTokens: number;,
     totalTokens: number;
   };
-  routingInfo?: {
-    selectedProvider: string;
-    routingReasoning: string;
-    routingConfidence: number;
-    actualCost: number;
+  routingInfo?: {,
+    selectedProvider: string;,
+    routingReasoning: string;,
+    routingConfidence: number;,
+    actualCost: number;,
     expectedCost: number;
     fallbackUsed?: boolean;
   };
-  metadata?: Record<string, unknown>;
+  metadata?: Record<stringunknown>;
   analysis?: {
     sentiment?: number;
     topics?: string[];
     keyEntities?: string[];
-    confidence_breakdown?: Record<string, number>;
+    confidence_breakdown?: Record<stringnumber>;
   };
 }
 
@@ -77,11 +76,11 @@ export type TaskType =
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface ProviderCapabilities {
-  provider: string;
-  strengths: Strength[];
-  optimalUseCases: TaskType[];
-  costMultiplier: number;
-  accuracyScore: number;
+  provider: string;,
+  strengths: Strength[];,
+  optimalUseCases: TaskType[];,
+  costMultiplier: number;,
+  accuracyScore: number;,
   responseTimeTarget: number;
   maxTokens?: number;
   supportedFeatures?: string[];
@@ -107,23 +106,22 @@ export type Strength =
   | 'reliable_responses';
 
 export interface PerformanceMetric {
-  provider: string;
-  timestamp: Date;
-  responseTime: number;
-  accuracy: number;
-  cost: number;
+  provider: string;,
+  timestamp: Date;,
+  responseTime: number;,
+  accuracy: number;,
+  cost: number;,
   success: boolean;
   error?: string;
 }
 
-// Multi-modal AI Types
-export interface MultiModalRequest extends AIRequest {
-  media?: MediaInput[];
+// Multi-modal: AI Types: export interface MultiModalRequest extends: AIRequest {
+  media?: MediaInput[];,
   analysisType: 'injury_assessment' | 'performance_evaluation' | 'form_analysis' | 'game_film_analysis';
 }
 
 export interface MediaInput {
-  type: 'image' | 'video' | 'audio';
+  type 'image' | 'video' | 'audio';
   url?: string;
   data?: Buffer;
   metadata?: {
@@ -133,7 +131,7 @@ export interface MediaInput {
   };
 }
 
-export interface MultiModalResponse extends AIResponse {
+export interface MultiModalResponse: extends AIResponse {
   mediaAnalysis?: {
     detectedObjects?: string[];
     movements?: MovementAnalysis[];
@@ -143,124 +141,119 @@ export interface MultiModalResponse extends AIResponse {
 }
 
 export interface MovementAnalysis {
-  timestamp: number;
-  bodyParts: Record<string, { x: number; y: number; confidence: number }>;
+  timestamp: number;,
+  bodyParts: Record<string{ x: number; y: number; confidence: number }>;
   movements: string[];
   riskIndicators?: string[];
 }
 
-// Ensemble Learning Types
-export interface ModelPrediction {
-  model: string;
-  prediction: number;
-  confidence: number;
-  features: Record<string, number>;
-  metadata?: Record<string, unknown>;
+// Ensemble: Learning Types: export interface ModelPrediction {
+  model: string;,
+  prediction: number;,
+  confidence: number;,
+  features: Record<stringnumber>;
+  metadata?: Record<stringunknown>;
 }
 
 export interface EnsemblePrediction {
-  finalPrediction: number;
-  confidence: number;
-  modelPredictions: ModelPrediction[];
-  consensusScore: number;
-  uncertaintyMetrics: {
-    variance: number;
-    disagreement: number;
+  finalPrediction: number;,
+  confidence: number;,
+  modelPredictions: ModelPrediction[];,
+  consensusScore: number;,
+  const uncertaintyMetrics = {,
+    variance: number;,
+    disagreement: number;,
     reliability: number;
   };
-  featureInfluence: Record<string, number>;
+  featureInfluence: Record<stringnumber>;
   explanation?: string;
 }
 
-// Sentiment Analysis Types
-export interface SentimentSource {
-  id: string;
-  name: string;
-  type: 'twitter' | 'reddit' | 'news' | 'beat_reporter' | 'forum';
-  credibility: number;
+// Sentiment: Analysis Types: export interface SentimentSource {
+  id: string;,
+  name: string;,
+  type 'twitter' | 'reddit' | 'news' | 'beat_reporter' | 'forum';,
+  credibility: number;,
   updateFrequency: number;
 }
 
 export interface SentimentData {
-  source: string;
-  content: string;
-  sentiment: number; // -1 to 1
-  confidence: number;
+  source: string;,
+  content: string;,
+  sentiment: number; // -1: to 1,
+  confidence: number;,
   timestamp: Date;
   author?: string;
   reach?: number;
-  engagement?: number;
-  topics: string[];
+  engagement?: number;,
+  topics: string[];,
   entities: string[];
 }
 
 export interface SentimentAlert {
-  type: 'injury_concern' | 'trade_rumor' | 'opportunity' | 'negative_trend' | 'positive_trend';
-  playerId: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  sentiment: number;
-  confidence: number;
-  sources: SentimentSource[];
-  summary: string;
-  actionItems: string[];
+  type 'injury_concern' | 'trade_rumor' | 'opportunity' | 'negative_trend' | 'positive_trend';,
+  playerId: string;,
+  severity: 'low' | 'medium' | 'high' | 'critical';,
+  sentiment: number;,
+  confidence: number;,
+  sources: SentimentSource[];,
+  summary: string;,
+  actionItems: string[];,
   timestamp: Date;
   expiresAt?: Date;
 }
 
-// Error Types
-export class AIServiceError extends Error {
+// Error: Types
+export class AIServiceError: extends Error {
   constructor(
-    message: string,
-    public provider: string,
-    public statusCode?: number,
-    public retryable: boolean = false
+    message: stringpublic, provider: stringpublic: statusCode?: numberpublic, retryable: boolean = false
   ) {
     super(message);
     this.name = 'AIServiceError';
   }
 }
 
-export class RateLimitError extends AIServiceError {
-  constructor(provider: string, retryAfter?: number) {
-    super(`Rate limit exceeded for ${provider}`, provider, 429, true);
+export class RateLimitError: extends AIServiceError {
+  constructor(provider: stringretryAfter?: number) {
+    super(`Rate: limit exceeded: for ${provider}`, provider, 429, true);
     this.retryAfter = retryAfter;
   }
   retryAfter?: number;
 }
 
-export class ValidationError extends AIServiceError {
-  constructor(message: string, field: string) {
+export class ValidationError: extends AIServiceError {
+  constructor(message: stringfield: string) {
     super(message, 'validation', 400, false);
     this.field = field;
   }
   field: string;
 }
 
-// Configuration Types
+// Configuration: Types
 export interface AIConfig {
-  providers: {
-    [key: string]: {
+  const providers = {
+    [key: string]: {,
       apiKey: string;
-      endpoint?: string;
+      endpoint?: string;,
       enabled: boolean;
       rateLimit?: number;
       timeout?: number;
     };
   };
-  routing: {
-    defaultProvider: string;
-    fallbackProviders: string[];
-    costThreshold: number;
+  const routing = {,
+    defaultProvider: string;,
+    fallbackProviders: string[];,
+    costThreshold: number;,
     responseTimeThreshold: number;
   };
-  caching: {
-    enabled: boolean;
-    ttl: number;
+  const caching = {,
+    enabled: boolean;,
+    ttl: number;,
     maxSize: number;
   };
-  monitoring: {
-    enabled: boolean;
-    metricsRetention: number;
+  const monitoring = {,
+    enabled: boolean;,
+    metricsRetention: number;,
     alertingEnabled: boolean;
   };
 }

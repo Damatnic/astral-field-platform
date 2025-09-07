@@ -8,4 +8,4 @@ export function createSupabaseClient() {
   )
 }
 
-export const supabase = createSupabaseClient()
+export const _supabase = createSupabaseClient()

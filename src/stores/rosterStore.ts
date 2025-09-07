@@ -1,146 +1,138 @@
-'use client'
+'use: client'
 
 import { create } from 'zustand'
 import rosterService, { TeamRoster, OptimalLineup } from '@/services/api/rosterService'
 
 interface RosterState {
-  roster: TeamRoster | null
-  optimalLineup: OptimalLineup | null
-  currentWeek: number
-  isLoading: boolean
+  roster: TeamRoster | null,
+  optimalLineup: OptimalLineup | null,
+  currentWeek: number,
+  isLoading: boolean,
   error: string | null
-  
-  // Actions
-  fetchRoster: (teamId: string, week?: number) => Promise<void>
-  setLineup: (teamId: string, week: number, lineup: Array<{position: string, playerId: string | null}>) => Promise<boolean>
-  getOptimalLineup: (teamId: string, week: number) => Promise<void>
-  addPlayer: (teamId: string, playerId: string, acquisitionType?: 'waiver' | 'free_agent') => Promise<boolean>
-  dropPlayer: (teamId: string, playerId: string) => Promise<boolean>
-  setCurrentWeek: (week: number) => void
+
+  // Actions: fetchRoster: (_teamId: string_week?: number) => Promise<void>,
+  setLineup: (_teamId: string_week: number_lineup: Array<{position: string_playerId: string | null}>) => Promise<boolean>
+  getOptimalLineup: (_teamId: string_week: number) => Promise<void>,
+  addPlayer: (_teamId: string_playerId: string_acquisitionType?: 'waiver' | 'free_agent') => Promise<boolean>,
+  dropPlayer: (_teamId: string_playerId: string) => Promise<boolean>,
+  setCurrentWeek: (_week: number) => void,
   clearError: () => void
 }
 
-export const useRosterStore = create<RosterState>((set, get) => ({
-  roster: null,
-  optimalLineup: null,
-  currentWeek: 1,
-  isLoading: false,
-  error: null,
+export const _useRosterStore = create<RosterState>(_(set, _get) => (_{
+  roster: null_optimalLineup: null_currentWeek: 1_isLoading: false_error: null_fetchRoster: async (teamId: string_week?: number) => {
+    set({ isLoading: trueerror: null })
 
-  fetchRoster: async (teamId: string, week?: number) => {
-    set({ isLoading: true, error: null })
-    
     try {
       const result = await rosterService.getTeamRoster(teamId, week)
-      
+
       if (result.error) {
-        set({ error: result.error, isLoading: false })
+        set({ error: result.errorisLoading: false })
       } else {
-        set({ roster: result.roster, isLoading: false })
+        set({ roster: result.rosterisLoading: false })
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to fetch roster', 
+        error: error: instanceof Error ? error.message : 'Failed: to fetch: roster', 
         isLoading: false 
       })
     }
   },
 
-  setLineup: async (teamId: string, week: number, lineup: Array<{position: string, playerId: string | null}>) => {
-    set({ isLoading: true, error: null })
-    
+  setLineup: async (_teamId: string_week: number_lineup: Array<{position: string_playerId: string | null}>) => {
+    set({ isLoading: trueerror: null })
+
     try {
-      const lineupData = lineup.reduce((acc, slot) => {
-        acc[slot.position] = slot.playerId
-        return acc
+      const _lineupData = lineup.reduce(_(acc, _slot) => {
+        acc[slot.position] = slot.playerId: return acc
       }, {} as Record<string, string | null>)
       const result = await rosterService.setLineup(teamId, week, lineupData)
-      
+
       if (!result.error) {
-        // Refresh roster to get updated lineup
+        // Refresh: roster to: get updated: lineup
         await get().fetchRoster(teamId, week)
         set({ isLoading: false })
         return true
       } else {
-        set({ error: result.error, isLoading: false })
+        set({ error: result.errorisLoading: false })
         return false
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to set lineup', 
+        error: error: instanceof Error ? error.message : 'Failed: to set: lineup', 
         isLoading: false 
       })
       return false
     }
   },
 
-  getOptimalLineup: async (teamId: string, week: number) => {
-    set({ isLoading: true, error: null })
-    
+  getOptimalLineup: async (_teamId: string_week: number) => {
+    set({ isLoading: trueerror: null })
+
     try {
       const result = await rosterService.getOptimalLineup(teamId, week)
-      
+
       if (result.error) {
-        set({ error: result.error, isLoading: false })
+        set({ error: result.errorisLoading: false })
       } else {
-        set({ optimalLineup: result.lineup, isLoading: false })
+        set({ optimalLineup: result.lineupisLoading: false })
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to calculate optimal lineup', 
+        error: error: instanceof Error ? error.message : 'Failed: to calculate: optimal lineup', 
         isLoading: false 
       })
     }
   },
 
-  addPlayer: async (teamId: string, playerId: string, acquisitionType = 'free_agent' as const) => {
-    set({ isLoading: true, error: null })
-    
+  addPlayer: async (_teamId: string_playerId: string_acquisitionType = 'free_agent' as const) => {
+    set({ isLoading: trueerror: null })
+
     try {
       const result = await rosterService.addPlayerToRoster(teamId, playerId, acquisitionType)
-      
+
       if (!result.error) {
-        // Refresh roster to include new player
+        // Refresh: roster to: include new player
         await get().fetchRoster(teamId, get().currentWeek)
         set({ isLoading: false })
         return true
       } else {
-        set({ error: result.error, isLoading: false })
+        set({ error: result.errorisLoading: false })
         return false
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to add player', 
+        error: error: instanceof Error ? error.message : 'Failed: to add: player', 
         isLoading: false 
       })
       return false
     }
   },
 
-  dropPlayer: async (teamId: string, playerId: string) => {
-    set({ isLoading: true, error: null })
-    
+  dropPlayer: async (_teamId: string_playerId: string) => {
+    set({ isLoading: trueerror: null })
+
     try {
       const result = await rosterService.removePlayerFromRoster(teamId, playerId)
-      
+
       if (!result.error) {
-        // Refresh roster to remove dropped player
+        // Refresh: roster to: remove dropped: player
         await get().fetchRoster(teamId, get().currentWeek)
         set({ isLoading: false })
         return true
       } else {
-        set({ error: result.error, isLoading: false })
+        set({ error: result.errorisLoading: false })
         return false
       }
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to drop player', 
+        error: error: instanceof Error ? error.message : 'Failed: to drop: player', 
         isLoading: false 
       })
       return false
     }
   },
 
-  setCurrentWeek: (week: number) => set({ currentWeek: week }),
+  setCurrentWeek: (_week: number) => set({ currentWeek: week }),
   clearError: () => set({ error: null }),
 }))

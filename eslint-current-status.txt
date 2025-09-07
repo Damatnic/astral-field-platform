@@ -1,0 +1,1395 @@
+
+c:\Users\damat\_REPOS\astral-field\__tests__\agents\draft-specialist\draft-logic.test.ts
+   61:23  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   63:29  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   63:52  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   64:11  warning  'numTeams' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   75:32  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   75:69  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   97:47  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  120:11  warning  'totalRounds' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  128:20  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  139:39  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  299:43  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\agents\league-systems\league-service.test.ts
+   41:7   warning  'mockUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   50:34  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+   73:43  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  131:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  154:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  186:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  216:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  238:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  255:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  277:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  292:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  305:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  324:37  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  338:42  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\services\authService.test.ts
+   35:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   36:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   53:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   54:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   75:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   97:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  127:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  159:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  167:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  168:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\utils\test-utils.ts
+    7:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   11:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   25:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   29:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   64:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   66:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   77:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   95:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  242:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  246:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  250:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  251:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  256:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  266:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\next.config.js
+  45:23  warning  'buildId' is defined but never used         @typescript-eslint/no-unused-vars
+  45:32  warning  'dev' is defined but never used             @typescript-eslint/no-unused-vars
+  45:47  warning  'defaultLoaders' is defined but never used  @typescript-eslint/no-unused-vars
+  45:63  warning  'webpack' is defined but never used         @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\public\sw.js
+    5:7   warning  'API_CACHE' is assigned a value but never used   @typescript-eslint/no-unused-vars
+   24:7   warning  'API_ROUTES' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  109:9   warning  'url' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  122:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+  163:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+  183:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\auto-draft-league.js
+   1:26  error    A `require()` style import is forbidden                @typescript-eslint/no-require-imports
+   6:7   warning  'supabase' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  14:7   warning  'pprScoringSystem' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  30:7   warning  'leagueSettings' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\comprehensive-eslint-fix.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\create-users-table.js
+  1:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\deploy-production.js
+  3:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\eslint-mass-fix.js
+   8:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+   9:7   warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   9:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  10:22  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  73:10  warning  'error' is defined but never used          @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\final-eslint-fix.js
+  3:7  warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-all-eslint.js
+   41:9   warning  'unusedVarRegex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  107:10  warning  'error' is defined but never used                    @typescript-eslint/no-unused-vars
+  122:10  warning  'error' is defined but never used                    @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-parameter-prefixing.js
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\production-build.js
+  3:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\progress-tracker.js
+  66:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\setup-database.js
+  1:26  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  2:7   warning  'fs' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  2:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  3:7   warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  3:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\setup-vercel.js
+  8:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  9:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\test-database.js
+  7:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\test-health-endpoint.js
+  6:7   warning  'http' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  6:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\validate-env.js
+  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\validate-environment.js
+  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\verify-deployment.js
+   8:15  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+   9:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  43:21  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\admin\setup\page.tsx
+   8:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  33:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  56:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\ai\chat\route.ts
+  103:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\analytics\route.ts
+   96:76  warning  'timeframe' is defined but never used  @typescript-eslint/no-unused-vars
+  255:77  warning  'timeframe' is defined but never used  @typescript-eslint/no-unused-vars
+  300:78  warning  'timeframe' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\auth\login\route.ts
+  43:11  warning  'password_hash' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\cleanup\route.ts
+  30:11  warning  'cleanupResult' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\config\status\route.ts
+  4:27  warning  'request' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\cron\live\route.ts
+  26:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\demo\reset-setup\route.ts
+  47:96  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\draft-socket\route.ts
+  2:20  warning  'HTTPServer' is defined but never used  @typescript-eslint/no-unused-vars
+  5:27  warning  'request' is defined but never used     @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\health\database\route.ts
+   4:27  warning  'request' is defined but never used                     @typescript-eslint/no-unused-vars
+  14:13  warning  'appliedMigrations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  16:14  warning  'error' is defined but never used                       @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\health\route.ts
+  14:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\info\route.ts
+  12:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\init-db\route.ts
+  12:13  warning  'dropResult' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  34:11  warning  'result' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  44:13  warning  'indexResult' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  97:13  warning  'testResult' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\insights\route.ts
+  40:38  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\league\rules\route.ts
+  390:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  391:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  392:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\players\search\route.ts
+  73:54  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-demo-league\route.ts
+  4:7  warning  'SPORTSDATA_API_KEY' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\analyze\route.ts
+  249:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\opportunities\route.ts
+  283:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\route.ts
+  407:103  warning  'teamId' is defined but never used           @typescript-eslint/no-unused-vars
+  533:76   warning  'teamId' is defined but never used           @typescript-eslint/no-unused-vars
+  605:32   warning  'userId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  626:28   warning  'supabase' is defined but never used         @typescript-eslint/no-unused-vars
+  626:47   warning  'tradeId' is defined but never used          @typescript-eslint/no-unused-vars
+  626:64   warning  'userId' is defined but never used           @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\valuations\route.ts
+  256:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\fairness\route.ts
+  334:40  warning  '_b' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\process\route.ts
+  207:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\recommendations\route.ts
+  4:8  warning  'WaiverValueAssessment' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\value\route.ts
+  58:11  warning  'players' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\auth\login\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\auth\register\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\dashboard\page.tsx
+  29:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\error.tsx
+  6:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\analytics\page.tsx
+  32:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\draft\page.tsx
+  24:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\live\page.tsx
+  18:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\oracle\page.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\page.tsx
+  14:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\roster\page.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\trades\page.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\waiver\page.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\create\page.tsx
+  12:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\not-found.tsx
+  12:25  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  12:46  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+c:\Users\damat\_REPOS\astral-field\src\app\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\players\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\settings\page.tsx
+  22:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\status\page.tsx
+  78:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\GlobalErrorHandler.tsx
+  6:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\PWAInstallPrompt.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\PerformanceMonitor.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\AccessibilityPanel.tsx
+  18:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\AccessibilityProvider.tsx
+  85:77  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\EnhancedAccessibilityPanel.tsx
+  38:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\PerformanceDashboard.tsx
+  73:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\SportsDataSync.tsx
+   20:46  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   31:29  warning  '_action' is defined but never used                              @typescript-eslint/no-unused-vars
+   31:46  warning  '_team' is defined but never used                                @typescript-eslint/no-unused-vars
+   78:35  warning  '_action' is defined but never used                              @typescript-eslint/no-unused-vars
+  167:26  warning  '_e' is defined but never used                                   @typescript-eslint/no-unused-vars
+  197:44  warning  '_e' is defined but never used                                   @typescript-eslint/no-unused-vars
+  207:76  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  207:79  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  207:91  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  211:48  warning  '_e' is defined but never used                                   @typescript-eslint/no-unused-vars
+  312:48  warning  '_e' is defined but never used                                   @typescript-eslint/no-unused-vars
+  316:44  warning  '_e' is defined but never used                                   @typescript-eslint/no-unused-vars
+  382:21  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  382:38  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  383:21  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  383:39  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\SystemHealthDashboard.tsx
+  140:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ai\AIVoiceAssistant.tsx
+  19:67  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\ComparativeBenchmarkDashboard.tsx
+  136:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\CustomDashboardBuilder.tsx
+  108:69  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\PerformanceAttributionDashboard.tsx
+  159:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\SeasonStrategyDashboard.tsx
+  153:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\ForumList.tsx
+  59:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\ThreadComposer.tsx
+  33:63  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\TournamentCard.tsx
+  126:63  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\creator\ContentCreatorDashboard.tsx
+  82:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\dashboard\ModernDashboard.tsx
+  134:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\error\ErrorBoundary.tsx
+  133:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\activity\ActivityFeed.tsx
+  68:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\analytics\AnalyticsDashboard.tsx
+  43:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\LoginForm.tsx
+  209:26  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\MFASettings.tsx
+  34:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\RegisterForm.tsx
+  17:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\automation\AutomationManager.tsx
+  43:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\commissioner\CommissionerDashboard.tsx
+  44:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\AnnouncementSystem.tsx
+  84:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\MessagingSystem.tsx
+  77:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\TradeNegotiationInterface.tsx
+  82:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\dashboard\Phase2Dashboard.tsx
+  224:12  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftBoard.tsx
+  15:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftBoardVisualization.tsx
+  264:46  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftChat.tsx
+  39:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftRoom.tsx
+  64:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftSetup.tsx
+  66:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftTimer.tsx
+  17:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\ParticipantsList.tsx
+  64:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\PlayerSelection.tsx
+  37:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\league\CreateLeagueForm.tsx
+  108:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\league\LeagueOverview.tsx
+  48:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\LineupBuilder.tsx
+  39:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\LineupOptimizer.tsx
+  32:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\SmartLineupSuggestions.tsx
+  78:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\live\LiveDashboard.tsx
+  55:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\notifications\NotificationCenter.tsx
+  112:12  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\notifications\RealTimeNotifications.tsx
+  109:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\oracle\AIChat.tsx
+  31:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\oracle\OracleChat.tsx
+  67:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\player\EnhancedPlayerCard.tsx
+  309:16  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\player\PlayerList.tsx
+  41:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\players\EnhancedPlayerSearch.tsx
+  71:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\playoffs\PlayoffPredictor.tsx
+  33:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\reporting\ReportingCenter.tsx
+  46:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\roster\RosterManager.tsx
+  59:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\stats\StatsWidget.tsx
+   54:27  warning  '_index' is defined but never used       @typescript-eslint/no-unused-vars
+  115:12  warning  '_playerData' is defined but never used  @typescript-eslint/no-unused-vars
+  150:10  warning  '_teamData' is defined but never used    @typescript-eslint/no-unused-vars
+  179:12  warning  '_leagueData' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeAnalysisModal.tsx
+  40:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeCenter.tsx
+  75:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeImpactAnalysis.tsx
+  230:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\waiver\WaiverWire.tsx
+  56:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\waiver\WaiverWireIntelligence.tsx
+  263:75  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\AppLayout.tsx
+  103:38  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\MobileLayout.tsx
+  25:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\MobileNavigation.tsx
+  46:42  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\ResponsiveLayout.tsx
+  30:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\league\LeagueHealthDashboard.tsx
+  104:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\CacheProvider.tsx
+  68:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\ConnectionMonitor.tsx
+  64:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\LazyLoad.tsx
+  29:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\OptimisticUIProvider.tsx
+  62:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\social\StrategyCard.tsx
+  103:59  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\social\TradingSignals.tsx
+  101:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\testing\AIValidationDashboard.tsx
+  169:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Button\Button.tsx
+  124:13  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Card\Card.tsx
+  81:131  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\ErrorBoundary.tsx
+   4:10  warning  'motion' is defined but never used       @typescript-eslint/no-unused-vars
+   5:42  warning  'Bug' is defined but never used          @typescript-eslint/no-unused-vars
+   5:47  warning  'ChevronDown' is defined but never used  @typescript-eslint/no-unused-vars
+   6:10  warning  'cn' is defined but never used           @typescript-eslint/no-unused-vars
+  42:32  warning  '_error' is defined but never used       @typescript-eslint/no-unused-vars
+  42:47  warning  '_errorInfo' is defined but never used   @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Input\Input.tsx
+  71:13  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\MobileTable.tsx
+  79:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Modal.tsx
+  37:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Notifications.tsx
+   5:29  warning  '_message' is defined but never used  @typescript-eslint/no-unused-vars
+  15:27  warning  '_message' is defined but never used  @typescript-eslint/no-unused-vars
+  25:26  warning  '_message' is defined but never used  @typescript-eslint/no-unused-vars
+  35:29  warning  '_message' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\SkeletonLoader.tsx
+  109:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Toast.tsx
+  55:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\VoiceInterface\VoiceInterface.tsx
+  7:25  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\alert.tsx
+  9:45  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\badge.tsx
+  9:45  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\AdvancedChart.tsx
+  50:56  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\MatchupComparison.tsx
+  47:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\PerformanceHeatmap.tsx
+  35:78  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\TrendAnalysisChart.tsx
+  36:83  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\progress.tsx
+  9:51  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\table.tsx
+  7:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\tabs.tsx
+  18:43  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\tooltip.tsx
+  24:58  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\waivers\IntelligentWaiverDashboard.tsx
+  77:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useCache.ts
+  142:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useDebounce.ts
+  6:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useDraftSocket.ts
+  73:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useMobile.ts
+  48:66  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\usePWA.tsx
+  37:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useVoiceInterface.ts
+  104:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\anthropic-mock.ts
+  24:15  warning  'options' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\lib\api-error-handler.ts
+  60:41  error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type  @typescript-eslint/no-unsafe-function-type
+  72:21  warning  '_message' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  72:39  warning  '_details' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  75:14  warning  '_resource' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
+  78:18  warning  '_message' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+  81:15  warning  '_message' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+  84:19  warning  '_message' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+  87:17  warning  '_message' is assigned a value but never used                                                                            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth-utils.ts
+  27:11  warning  'token' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+  39:12  warning  'error' is defined but never used                               @typescript-eslint/no-unused-vars
+  62:1   warning  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth.ts
+  28:11  warning  'token' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+  40:12  warning  'error' is defined but never used                               @typescript-eslint/no-unused-vars
+  63:1   warning  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth\__tests__\mfa.test.ts
+  22:11  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth\mfa.ts
+    2:10  warning  'QRCodeSVG' is defined but never used                           @typescript-eslint/no-unused-vars
+   21:38  warning  Unexpected any. Specify a different type                        @typescript-eslint/no-explicit-any
+   49:53  warning  'userId' is defined but never used                              @typescript-eslint/no-unused-vars
+   54:9   warning  'service' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  215:28  warning  'userMFA' is defined but never used                             @typescript-eslint/no-unused-vars
+  299:1   warning  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auto-init.ts
+  19:5  warning  'isInitialized' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\lib\cache.ts
+  190:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\caching.ts
+  176:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\database.ts
+  58:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\db.ts
+    8:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   22:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:24  warning  '_callback' is defined but never used     @typescript-eslint/no-unused-vars
+   75:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:26  warning  '_callback' is defined but never used     @typescript-eslint/no-unused-vars
+  144:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\lib\env-validation.ts
+  66:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\lib\env.ts
+  35:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\errorHandling.ts
+  415:24  error  Parsing error: Expression expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\logger.ts
+  207:14  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\mobile\__tests__\touchOptimization.test.ts
+  68:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\mobile\touchOptimization.ts
+  142:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\monitoring.ts
+  216:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\neon-database.ts
+  45:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\neon-serverless.ts
+  238:13  warning  'result' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance.ts
+  72:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance\__tests__\optimization.test.ts
+  25:10  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance\optimization.ts
+  29:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\pwa.ts
+  33:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\rate-limit.ts
+  30:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\__tests__\auditLogger.test.ts
+  15:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\auditLogger.ts
+  109:3  warning  'details' is defined but never used                             @typescript-eslint/no-unused-vars
+  110:3  warning  'userId' is defined but never used                              @typescript-eslint/no-unused-vars
+  530:1  warning  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\rateLimiter.ts
+  17:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\server-init.ts
+  1:10  warning  'draftSocketManager' is defined but never used  @typescript-eslint/no-unused-vars
+  2:10  warning  'createServer' is defined but never used        @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\lib\socket-server.ts
+  94:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\supabase.ts
+  17:20  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\middleware\errorMiddleware.ts
+  88:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\ai\multimodal-analysis.ts
+  10:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\ai\real-time-sentiment.ts
+  10:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\comparative-analysis.ts
+  13:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\performance-attribution.ts
+  9:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\season-strategy.ts
+  13:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\community\categories.ts
+  262:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\community\threads.ts
+  176:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\integration\ai-workflow.ts
+  9:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\integration\system-health.ts
+  9:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\performance\load-testing.ts
+  9:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\testing\ai-validation.ts
+  9:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\adaptiveLearningEngine.ts
+  597:61  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\adaptiveRiskModeling.ts
+  582:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiAnalyticsService.ts
+   79:14  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+   90:14  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+  504:28  warning  'logs' is defined but never used          @typescript-eslint/no-unused-vars
+  545:43  warning  'distribution' is defined but never used  @typescript-eslint/no-unused-vars
+  552:12  error    A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+  588:12  error    A `require()` style import is forbidden   @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiCacheService.ts
+  384:37  warning  'semanticKey' is defined but never used  @typescript-eslint/no-unused-vars
+  384:58  warning  'cacheKey' is defined but never used     @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiRouterService.ts
+  351:11  warning  'idealForComplexity' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  481:71  warning  'request' is defined but never used                      @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\counterOfferGenerator.ts
+  268:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\enhancedAIRouter.ts
+  250:24  error  Parsing error: Expression expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\fantasyFootballSpecialistAI.ts
+  550:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\intelligentWaiverProcessor.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+    2:10  warning  'database' is defined but never used                           @typescript-eslint/no-unused-vars
+    8:15  warning  'AICapability' is defined but never used                       @typescript-eslint/no-unused-vars
+    8:29  warning  'QueryComplexity' is defined but never used                    @typescript-eslint/no-unused-vars
+    8:46  warning  'QueryPriority' is defined but never used                      @typescript-eslint/no-unused-vars
+  584:11  warning  'historicalBids' is assigned a value but never used            @typescript-eslint/no-unused-vars
+  770:42  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  770:58  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  785:42  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  785:58  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  790:40  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  795:38  warning  'playerId' is defined but never used                           @typescript-eslint/no-unused-vars
+  795:65  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  800:39  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  800:56  warning  'stats' is defined but never used                              @typescript-eslint/no-unused-vars
+  805:36  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  805:53  warning  'stats' is defined but never used                              @typescript-eslint/no-unused-vars
+  810:46  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  810:63  warning  'stats' is defined but never used                              @typescript-eslint/no-unused-vars
+  815:49  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  815:66  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  820:41  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  825:39  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  830:43  warning  'position' is defined but never used                           @typescript-eslint/no-unused-vars
+  830:61  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  835:39  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  854:41  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  854:57  warning  'playerValue' is defined but never used                        @typescript-eslint/no-unused-vars
+  859:34  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  859:59  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  871:37  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  876:38  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  881:34  warning  'content' is defined but never used                            @typescript-eslint/no-unused-vars
+  886:40  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  886:56  warning  'position' is defined but never used                           @typescript-eslint/no-unused-vars
+  891:33  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  891:50  warning  'teamNeeds' is defined but never used                          @typescript-eslint/no-unused-vars
+  896:40  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  896:57  warning  'available' is defined but never used                          @typescript-eslint/no-unused-vars
+  896:79  warning  'needs' is defined but never used                              @typescript-eslint/no-unused-vars
+  901:38  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  901:54  warning  'recommendations' is defined but never used                    @typescript-eslint/no-unused-vars
+  905:35  warning  'position' is defined but never used                           @typescript-eslint/no-unused-vars
+  905:53  warning  'projectedPoints' is defined but never used                    @typescript-eslint/no-unused-vars
+  910:38  warning  'player' is defined but never used                             @typescript-eslint/no-unused-vars
+  910:55  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  915:44  warning  'playerId' is defined but never used                           @typescript-eslint/no-unused-vars
+  915:62  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  920:28  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+  920:44  warning  'amount' is defined but never used                             @typescript-eslint/no-unused-vars
+  924:44  warning  'teamId' is defined but never used                             @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\multiModalAnalyzer.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  562:33  warning  'content' is defined but never used                            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\openaiService.ts
+  67:52  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\oracleService.ts
+  214:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\personalizedCommunication.ts
+  511:31   warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  813:14   warning  'error' is defined but never used             @typescript-eslint/no-unused-vars
+  819:41   warning  'feedback' is defined but never used          @typescript-eslint/no-unused-vars
+  819:69   warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  823:41   warning  'profile' is defined but never used           @typescript-eslint/no-unused-vars
+  823:72   warning  'stylePreferences' is defined but never used  @typescript-eslint/no-unused-vars
+  823:99   warning  'context' is defined but never used           @typescript-eslint/no-unused-vars
+  823:125  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  827:39   warning  'userId' is defined but never used            @typescript-eslint/no-unused-vars
+  827:55   warning  'days' is defined but never used              @typescript-eslint/no-unused-vars
+  831:44   warning  'interactions' is defined but never used      @typescript-eslint/no-unused-vars
+  831:78   warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  835:51   warning  'profile' is defined but never used           @typescript-eslint/no-unused-vars
+  835:82   warning  'patterns' is defined but never used          @typescript-eslint/no-unused-vars
+  839:66   warning  'opportunity' is defined but never used       @typescript-eslint/no-unused-vars
+  843:76   warning  'patterns' is defined but never used          @typescript-eslint/no-unused-vars
+  848:63   warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\playoffPredictor.ts
+  164:36  warning  'leagueId' is defined but never used  @typescript-eslint/no-unused-vars
+  178:38  warning  'teamId' is defined but never used    @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\predictionEngine.ts
+  377:52  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\claude35SonnetProvider.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+   46:79  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  181:50  warning  'taskType' is defined but never used                           @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\deepSeekProvider.ts
+  2:18  warning  'request' is defined but never used       @typescript-eslint/no-unused-vars
+  2:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\geminiProvider.ts
+  2:18  warning  'request' is defined but never used       @typescript-eslint/no-unused-vars
+  2:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\gpt4oProvider.ts
+   1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  46:76  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\router.ts
+  241:55  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeAnalysisEngine.ts
+  687:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeAnalyzer.ts
+  394:53  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeOpportunityDetector.ts
+  258:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\userBehaviorAnalysis.ts
+    1:1    error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  123:97   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  156:92   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  179:101  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  207:38   warning  'client' is defined but never used                             @typescript-eslint/no-unused-vars
+  207:55   warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  207:71   warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  207:98   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  279:101  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  313:101  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\userBehaviorAnalyzer.ts
+  299:24  error  Parsing error: Expression expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\waiverValueAssessment.ts
+  235:46  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\analyticsService.ts
+  189:13  warning  'teams' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  260:13  warning  'teams' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  287:38  warning  'teamId' is defined but never used          @typescript-eslint/no-unused-vars
+  287:54  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  303:33  warning  'teamId' is defined but never used          @typescript-eslint/no-unused-vars
+  303:49  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  319:44  warning  'teamId' is defined but never used          @typescript-eslint/no-unused-vars
+  319:60  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  342:38  warning  'teamId' is defined but never used          @typescript-eslint/no-unused-vars
+  342:54  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  351:44  warning  'leagueId' is defined but never used        @typescript-eslint/no-unused-vars
+  351:62  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  362:54  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  411:46  warning  'leagueId' is defined but never used        @typescript-eslint/no-unused-vars
+  411:64  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  423:44  warning  'playerId' is defined but never used        @typescript-eslint/no-unused-vars
+  423:62  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  435:39  warning  'playerId' is defined but never used        @typescript-eslint/no-unused-vars
+  435:57  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  444:41  warning  'playerId' is defined but never used        @typescript-eslint/no-unused-vars
+  444:59  warning  'season' is defined but never used          @typescript-eslint/no-unused-vars
+  460:42  warning  'playerId' is defined but never used        @typescript-eslint/no-unused-vars
+  478:38  warning  'leagueId' is defined but never used        @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\comparativeAnalysis.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+   68:54  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  496:50  warning  'metric' is defined but never used                             @typescript-eslint/no-unused-vars
+  611:5   warning  'metrics' is defined but never used                            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\performanceAttribution.ts
+  285:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\performanceAttributionService.ts
+  213:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\predictiveAnalyticsDashboard.ts
+  190:13  warning  'userRank' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  242:11  warning  'previousValue' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  245:69  warning  '_' is defined but never used                       @typescript-eslint/no-unused-vars
+  245:72  warning  '_i' is defined but never used                      @typescript-eslint/no-unused-vars
+  258:58  warning  '_r' is defined but never used                      @typescript-eslint/no-unused-vars
+  285:38  warning  '_i' is defined but never used                      @typescript-eslint/no-unused-vars
+  297:57  warning  '_i' is defined but never used                      @typescript-eslint/no-unused-vars
+  398:11  warning  'lastScore' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  424:69  warning  '_' is defined but never used                       @typescript-eslint/no-unused-vars
+  424:72  warning  '_i' is defined but never used                      @typescript-eslint/no-unused-vars
+  441:67  warning  '_' is defined but never used                       @typescript-eslint/no-unused-vars
+  441:70  warning  '_i' is defined but never used                      @typescript-eslint/no-unused-vars
+  726:11  warning  'playoffSpots' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  736:64  warning  'userId' is defined but never used                  @typescript-eslint/no-unused-vars
+  754:41  warning  'leagueId' is defined but never used                @typescript-eslint/no-unused-vars
+  769:47  warning  'leagueId' is defined but never used                @typescript-eslint/no-unused-vars
+  783:53  warning  'leagueId' is defined but never used                @typescript-eslint/no-unused-vars
+  838:39  warning  'teamId' is defined but never used                  @typescript-eslint/no-unused-vars
+  877:69  warning  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\predictiveMarketSimulation.ts
+  212:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\seasonStrategy.ts
+  351:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\statisticalModelingService.ts
+  249:55  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\authService.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors     @typescript-eslint/ban-ts-comment
+  125:21  warning  '_callback' is defined but never used                             @typescript-eslint/no-unused-vars
+  133:1   warning  Assign instance to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\draftService.ts
+  74:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\leagueService.ts
+  172:53  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\liveScoreService.ts
+  189:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\playerService.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors     @typescript-eslint/ban-ts-comment
+  175:30  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  183:25  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  205:56  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  213:37  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  348:1   warning  Assign instance to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\rosterService.ts
+  89:71  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\sportsDataService.ts
+  297:31  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  308:16  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  310:18  warning  'e' is defined but never used                                     @typescript-eslint/no-unused-vars
+  350:31  warning  Unexpected any. Specify a different type                          @typescript-eslint/no-explicit-any
+  356:18  warning  'e' is defined but never used                                     @typescript-eslint/no-unused-vars
+  407:1   warning  Assign instance to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\stackAuthService.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors     @typescript-eslint/ban-ts-comment
+   90:15  warning  'password_hash' is assigned a value but never used                @typescript-eslint/no-unused-vars
+  133:23  warning  'email' is defined but never used                                 @typescript-eslint/no-unused-vars
+  181:1   warning  Assign instance to a variable before exporting as module default  import/no-anonymous-default-export
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\teamService.ts
+    2:15  warning  'Tables' is defined but never used            @typescript-eslint/no-unused-vars
+    2:23  warning  'TablesInsert' is defined but never used      @typescript-eslint/no-unused-vars
+    2:37  warning  'TablesUpdate' is defined but never used      @typescript-eslint/no-unused-vars
+  178:23  warning  'teamId' is defined but never used            @typescript-eslint/no-unused-vars
+  277:20  warning  'availablePlayers' is defined but never used  @typescript-eslint/no-unused-vars
+  277:49  warning  'settings' is defined but never used          @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\tradeService.ts
+  74:12  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\waiverService.ts
+  53:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\weatherService.ts
+  369:74  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\automation\leagueAutomation.ts
+  206:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\betting\bettingOddsIntegration.ts
+  573:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\commissioner\commissionerService.ts
+  224:52  warning  'commissionerId' is defined but never used   @typescript-eslint/no-unused-vars
+  377:10  warning  Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+  504:35  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  527:39  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  527:57  warning  'limit' is defined but never used            @typescript-eslint/no-unused-vars
+  532:33  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  568:59  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  600:38  warning  'activityId' is defined but never used       @typescript-eslint/no-unused-vars
+  600:58  warning  'status' is defined but never used           @typescript-eslint/no-unused-vars
+  600:74  warning  'commissionerId' is defined but never used   @typescript-eslint/no-unused-vars
+  601:29  warning  'activityId' is defined but never used       @typescript-eslint/no-unused-vars
+  602:39  warning  'activity' is defined but never used         @typescript-eslint/no-unused-vars
+  603:31  warning  'issue' is defined but never used            @typescript-eslint/no-unused-vars
+  604:36  warning  'type' is defined but never used             @typescript-eslint/no-unused-vars
+  604:50  warning  'issue' is defined but never used            @typescript-eslint/no-unused-vars
+  605:35  warning  'issueId' is defined but never used          @typescript-eslint/no-unused-vars
+  605:52  warning  'status' is defined but never used           @typescript-eslint/no-unused-vars
+  605:68  warning  'commissionerId' is defined but never used   @typescript-eslint/no-unused-vars
+  605:92  warning  'resolution' is defined but never used       @typescript-eslint/no-unused-vars
+  606:26  warning  'issueId' is defined but never used          @typescript-eslint/no-unused-vars
+  607:37  warning  'issue' is defined but never used            @typescript-eslint/no-unused-vars
+  607:57  warning  'status' is defined but never used           @typescript-eslint/no-unused-vars
+  607:73  warning  'resolution' is defined but never used       @typescript-eslint/no-unused-vars
+  608:34  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  609:39  warning  'userId' is defined but never used           @typescript-eslint/no-unused-vars
+  609:55  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  610:35  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  611:28  warning  'standings' is defined but never used        @typescript-eslint/no-unused-vars
+  611:50  warning  'payoutStructure' is defined but never used  @typescript-eslint/no-unused-vars
+  612:32  warning  'payout' is defined but never used           @typescript-eslint/no-unused-vars
+  613:33  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  613:51  warning  'commissionerId' is defined but never used   @typescript-eslint/no-unused-vars
+  613:75  warning  'payout' is defined but never used           @typescript-eslint/no-unused-vars
+  614:35  warning  'tradeId' is defined but never used          @typescript-eslint/no-unused-vars
+  614:52  warning  'status' is defined but never used           @typescript-eslint/no-unused-vars
+  614:68  warning  'commissionerId' is defined but never used   @typescript-eslint/no-unused-vars
+  615:41  warning  'tradeId' is defined but never used          @typescript-eslint/no-unused-vars
+  615:58  warning  'status' is defined but never used           @typescript-eslint/no-unused-vars
+  615:74  warning  'reason' is defined but never used           @typescript-eslint/no-unused-vars
+  616:40  warning  'leagueId' is defined but never used         @typescript-eslint/no-unused-vars
+  616:58  warning  'week' is defined but never used             @typescript-eslint/no-unused-vars
+  617:38  warning  'claims' is defined but never used           @typescript-eslint/no-unused-vars
+  618:35  warning  'claim' is defined but never used            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\dfs\dailyFantasyOptimizer.ts
+  244:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\competitiveTeamGenerator.ts
+  390:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\draftingStrategies.ts
+  595:24  error  Parsing error: Expression expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\intelligentAutoDraft.ts
+  161:66  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\rosterConstructionSimulator.ts
+  118:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\dynasty\dynastyAnalyticsService.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+    2:18  warning  'Team' is defined but never used                               @typescript-eslint/no-unused-vars
+    2:24  warning  'League' is defined but never used                             @typescript-eslint/no-unused-vars
+    2:32  warning  'Draft' is defined but never used                              @typescript-eslint/no-unused-vars
+  208:50  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  217:61  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  345:39  warning  'config' is defined but never used                             @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\economy\virtualCurrencySystem.ts
+     1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+     2:10  warning  'User' is defined but never used                               @typescript-eslint/no-unused-vars
+     2:16  warning  'League' is defined but never used                             @typescript-eslint/no-unused-vars
+     3:10  warning  'Achievement' is defined but never used                        @typescript-eslint/no-unused-vars
+  1004:70  warning  'quantity' is defined but never used                           @typescript-eslint/no-unused-vars
+  1078:16  error    'wallet' is never reassigned. Use 'const' instead              prefer-const
+  1093:16  error    'wallet' is never reassigned. Use 'const' instead              prefer-const
+  1229:44  warning  'timeframe' is defined but never used                          @typescript-eslint/no-unused-vars
+  1230:40  warning  'timeframe' is defined but never used                          @typescript-eslint/no-unused-vars
+  1231:37  warning  'timeframe' is defined but never used                          @typescript-eslint/no-unused-vars
+  1231:65  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  1232:47  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  1233:56  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  1234:31  warning  'event' is defined but never used                              @typescript-eslint/no-unused-vars
+  1235:30  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1236:37  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1237:37  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1237:53  warning  'itemId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1238:36  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1238:52  warning  'reward' is defined but never used                             @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\enterprise\whiteLabelPlatform.ts
+     1:10   warning  'User' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+     1:16   warning  'League' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+     1:24   warning  'Team' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+     2:10   warning  'VirtualCurrencySystem' is defined but never used                                                        @typescript-eslint/no-unused-vars
+     3:10   warning  'AchievementSystem' is defined but never used                                                            @typescript-eslint/no-unused-vars
+     4:10   warning  'InteractiveTutorialSystem' is defined but never used                                                    @typescript-eslint/no-unused-vars
+   559:5    error    Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+   922:37   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   922:63   warning  'config' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   936:46   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   936:64   warning  'features' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   941:66   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   951:28   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   951:54   warning  'feature' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+   960:36   warning  'module' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   960:67   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   969:46   warning  'module' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   969:68   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   969:103  warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   981:40   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   981:66   warning  'environment' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+   981:96   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   990:43   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   990:61   warning  'deploymentId' is defined but never used                                                                 @typescript-eslint/no-unused-vars
+   990:83   warning  'environment' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+   991:35   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   991:53   warning  'deploymentId' is defined but never used                                                                 @typescript-eslint/no-unused-vars
+   991:75   warning  'environment' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+   991:96   warning  'version' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+   992:35   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   992:61   warning  'environment' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+   993:39   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   993:57   warning  'period' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   993:83   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   994:45   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   994:63   warning  'period' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   994:89   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   995:41   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   995:59   warning  'period' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   995:85   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   996:38   warning  'clientId' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+   996:56   warning  'period' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   996:82   warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   997:36   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   997:62   warning  'reportType' is defined but never used                                                                   @typescript-eslint/no-unused-vars
+   997:82   warning  'period' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   997:108  warning  Unexpected any. Specify a different type                                                                 @typescript-eslint/no-explicit-any
+   998:47   warning  'client' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   998:73   warning  'data' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+  1000:34   warning  'ticket' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+  1001:30   warning  'ticket' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+  1001:53   warning  'config' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\fallback\aiFallbackManager.ts
+    1:1    error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+    3:10   warning  'AIRouter' is defined but never used                           @typescript-eslint/no-unused-vars
+  263:13   warning  'executionTime' is assigned a value but never used             @typescript-eslint/no-unused-vars
+  333:95   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  355:100  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  407:105  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  425:98   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  460:14   warning  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+  481:66   warning  'config' is defined but never used                             @typescript-eslint/no-unused-vars
+  481:92   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  482:13   warning  'userId' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  482:21   warning  'leagueId' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  508:73   warning  'config' is defined but never used                             @typescript-eslint/no-unused-vars
+  508:99   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  548:14   warning  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+  553:72   warning  'requestContext' is defined but never used                     @typescript-eslint/no-unused-vars
+  553:106  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  564:105  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  573:18   warning  'error' is defined but never used                              @typescript-eslint/no-unused-vars
+  582:40   warning  'serviceId' is defined but never used                          @typescript-eslint/no-unused-vars
+  582:59   warning  'requestContext' is defined but never used                     @typescript-eslint/no-unused-vars
+  582:93   warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\gamification\achievementSystem.ts
+     1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+     2:10  warning  'Player' is defined but never used                             @typescript-eslint/no-unused-vars
+     2:18  warning  'Team' is defined but never used                               @typescript-eslint/no-unused-vars
+     2:24  warning  'League' is defined but never used                             @typescript-eslint/no-unused-vars
+     2:32  warning  'User' is defined but never used                               @typescript-eslint/no-unused-vars
+   315:11  warning  'userProgress' is assigned a value but never used              @typescript-eslint/no-unused-vars
+   845:5   warning  'achievement' is defined but never used                        @typescript-eslint/no-unused-vars
+   846:5   warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+   847:5   warning  'context' is defined but never used                            @typescript-eslint/no-unused-vars
+   864:79  warning  'tier' is defined but never used                               @typescript-eslint/no-unused-vars
+   915:57  warning  'progress' is defined but never used                           @typescript-eslint/no-unused-vars
+   942:11  warning  'remainingProgress' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  1009:42  warning  'userId' is defined but never used                             @typescript-eslint/no-unused-vars
+  1009:58  warning  'context' is defined but never used                            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\integration\aiSystemsIntegrator.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  277:37  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  402:14  warning  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\automatedLineupOptimizer.ts
+  167:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\automatedRuleEnforcement.ts
+     1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+   759:11  warning  'aiSuggestion' is assigned a value but never used              @typescript-eslint/no-unused-vars
+   868:61  warning  'rule' is defined but never used                               @typescript-eslint/no-unused-vars
+  1068:37  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  1073:39  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+  1078:41  warning  'leagueId' is defined but never used                           @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\leagueHealthMonitor.ts
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  556:68  warning  '_weight' is defined but never used                            @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\learning\continuousLearningEngine.ts
+  592:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\advancedEnsembleLearner.ts
+  360:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\advancedStatModels.ts
+  265:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\injuryImpactPredictor.ts
+  464:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\matchupAnalysisEngine.ts
+  652:69  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\predictionPipeline.ts
+  204:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\monitoring\productionMonitor.ts
+  416:5  warning  'aiMetrics' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\notification\notificationService.ts
+  196:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\onboarding\interactiveTutorialSystem.ts
+  675:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\optimization\performanceOptimizer.ts
+  201:36  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\dynamicRecommendationEngine.ts
+  385:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\gameScriptAnalyzer.ts
+  850:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\liveGameMonitor.ts
+  627:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\liveInjuryTracker.ts
+    2:8   warning  'aiAnalyticsService' is defined but never used  @typescript-eslint/no-unused-vars
+    5:10  warning  'getWebSocket' is defined but never used        @typescript-eslint/no-unused-vars
+    5:36  warning  'broadcastToLeague' is defined but never used   @typescript-eslint/no-unused-vars
+  354:66  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  384:74  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  415:73  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  578:35  warning  'injury' is defined but never used              @typescript-eslint/no-unused-vars
+  594:59  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\src\services\reporting\leagueReporting.ts
+  732:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\sentiment\realTimeSentimentAnalyzer.ts
+  271:35  warning  'source' is defined but never used  @typescript-eslint/no-unused-vars
+  338:42  warning  'source' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\services\server\liveScoringService.ts
+  70:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\testing\aiAccuracyValidator.ts
+  622:56  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\websocket\manager.ts
+  219:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\websocket\socketService.ts
+  64:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\authStore.ts
+  25:23  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\draftStore.ts
+  46:21  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\leagueStore.ts
+  30:21  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\liveStore.ts
+  52:59  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\oracleStore.ts
+  71:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\playerStore.ts
+  47:21  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\rosterStore.ts
+  23:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\tradeStore.ts
+  22:61  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\waiverStore.ts
+  27:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\types\jest-dom.d.ts
+  5:34  warning  'T' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\tests\automated\website-tester.js
+  6:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 784 problems (274 errors, 510 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+

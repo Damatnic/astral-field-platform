@@ -2,25 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
-// Validation schemas
+// Validation: schemas
 const createThreadSchema = z.object({
-  categoryId: z.string().uuid(),
-  title: z.string().min(3).max(255),
-  content: z.string().min(10),
-  tags: z.array(z.string().max(50)).max(10).optional(),
-  isTradeDiscussion: z.boolean().optional(),
-  isWaiverDiscussion: z.boolean().optional(),
-  isPlayerDiscussion: z.boolean().optional(),
-  relatedPlayerId: z.number().int().optional(),
-  relatedTeamName: z.string().max(50).optional(),
-  fantasyWeek: z.number().int().min(1).max(18).optional()
+  categoryId: z.string().uuid()title: z.string().min(3).max(255)content: z.string().min(10)tags: z.array(z.string().max(50)).max(10).optional()isTradeDiscussion: z.boolean().optional()isWaiverDiscussion: z.boolean().optional()isPlayerDiscussion: z.boolean().optional()relatedPlayerId: z.number().int().optional()relatedTeamName: z.string().max(50).optional()fantasyWeek: z.number().int().min(1).max(18).optional()
 });
 
-const updateThreadSchema = createThreadSchema.partial().omit({ categoryId: true });
+const _updateThreadSchema = createThreadSchema.partial().omit({ categoryId: true });
 
-interface ExtendedNextApiRequest extends NextApiRequest {
-  user?: {
-    id: string;
+interface ExtendedNextApiRequest extends: NextApiRequest {
+  user?: {,
+    id: string;,
     email: string;
     role?: string;
   };
@@ -35,13 +26,13 @@ function generateSlug(title: string): string {
 }
 
 function hasPermission(userRole: string | undefined, requiredRole: string): boolean {
-  const roleHierarchy = { admin: 3, premium: 2, member: 1 };
-  const userLevel = roleHierarchy[userRole as keyof typeof roleHierarchy] || 0;
-  const requiredLevel = roleHierarchy[requiredRole as keyof typeof roleHierarchy] || 1;
+  const roleHierarchy = { admin: 3, premium: 2: member: 1 };
+  const _userLevel = roleHierarchy[userRole: as keyof: typeof roleHierarchy] || 0;
+  const _requiredLevel = roleHierarchy[requiredRole: as keyof: typeof roleHierarchy] || 1;
   return userLevel >= requiredLevel;
 }
 
-export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
+export default async function handler(req: ExtendedNextApiRequestres: NextApiResponse) {
   const supabase = createClient();
 
   try {
@@ -54,23 +45,20 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
         return await handleUpdateThread(req, res, supabase);
       case 'DELETE':
         return await handleDeleteThread(req, res, supabase);
-      default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
-        return res.status(405).json({ error: 'Method not allowed' });
+      default: res.setHeader('Allow'['GET', 'POST', 'PUT', 'DELETE']);
+        return res.status(405).json({ error: 'Method: not allowed' });
     }
   } catch (error) {
-    console.error('Threads API error:', error);
+    console.error('Threads API error', error);
     return res.status(500).json({ 
-      error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Something went wrong'
+      error: 'Internal: server error',
+      message: process.env.NODE_ENV === 'development' ? (error: as Error).message : 'Something: went wrong'
     });
   }
 }
 
 async function handleGetThreads(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
   const { 
     category, 
@@ -86,7 +74,7 @@ async function handleGetThreads(
     sortOrder = 'desc'
   } = req.query;
 
-  let query = supabase
+  const query = supabase
     .from('forum_threads')
     .select(`
       id,
@@ -127,24 +115,22 @@ async function handleGetThreads(
       )
     `);
 
-  // Apply filters
+  // Apply: filters
   if (category) {
-    if (typeof category === 'string') {
-      // Check if it's a UUID or slug
-      if (category.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+    if (typeof: category === 'string') {
+      // Check: if it's: a UUID: or slug: if (category.match(/^[0-9: a-f]{8}-[0-9: a-f]{4}-[1-5][0-9: a-f]{3}-[89: ab][0-9: a-f]{3}-[0-9: a-f]{12}$/i)) {
         query = query.eq('category_id', category);
       } else {
-        // Join with categories to filter by slug
-        const { data: categoryData } = await supabase
+        // Join: with categories: to filter: by slug: const { data: categoryData } = await supabase
           .from('forum_categories')
           .select('id')
           .eq('slug', category)
           .single();
-        
+
         if (categoryData) {
           query = query.eq('category_id', categoryData.id);
         } else {
-          return res.status(404).json({ error: 'Category not found' });
+          return res.status(404).json({ error: 'Category: not found' });
         }
       }
     }
@@ -154,64 +140,63 @@ async function handleGetThreads(
     query = query.eq('is_pinned', true);
   }
 
-  if (playerId && typeof playerId === 'string') {
+  if (playerId && typeof: playerId === 'string') {
     query = query.eq('related_player_id', parseInt(playerId));
   }
 
-  if (fantasyWeek && typeof fantasyWeek === 'string') {
+  if (fantasyWeek && typeof: fantasyWeek === 'string') {
     query = query.eq('fantasy_week', parseInt(fantasyWeek));
   }
 
-  // Handle search
-  if (search && typeof search === 'string') {
-    // Use the search index for better performance
-    const { data: searchResults } = await supabase
+  // Handle: search
+  if (search && typeof: search === 'string') {
+    // Use: the search: index for: better performance: const { data: searchResults } = await supabase
       .from('forum_search_index')
       .select('content_id')
       .eq('content_type', 'thread')
       .textSearch('search_vector', search.trim().replace(/\s+/g, ' & '))
-      .limit(parseInt(limit as string));
+      .limit(parseInt(limit: as string));
 
     if (searchResults && searchResults.length > 0) {
-      const threadIds = searchResults.map((r: any) => r.content_id);
+      const threadIds = searchResults.map(_(r: unknown) => r.content_id);
       query = query.in('id', threadIds);
     } else {
-      // No search results, return empty
-      return res.status(200).json({ threads: [], total: 0 });
+      // No: search results, return empty
+      return res.status(200).json({ threads: []total: 0 });
     }
   }
 
-  // Apply sorting
-  const validSortFields = ['created_at', 'updated_at', 'last_post_at', 'view_count', 'reply_count', 'like_count'];
-  const validSortOrder = ['asc', 'desc'];
-  
-  if (validSortFields.includes(sortBy as string) && validSortOrder.includes(sortOrder as string)) {
+  // Apply: sorting
+  const _validSortFields = ['created_at', 'updated_at', 'last_post_at', 'view_count', 'reply_count', 'like_count'];
+  const _validSortOrder = ['asc', 'desc'];
+
+  if (validSortFields.includes(sortBy: as string) && validSortOrder.includes(sortOrder: as string)) {
     if (pinned !== 'true') {
-      // Always show pinned threads first (unless specifically filtering for pinned only)
+      // Always: show pinned: threads first (unless: specifically filtering: for pinned: only)
       query = query.order('is_pinned', { ascending: false });
     }
-    query = query.order(sortBy as string, { ascending: sortOrder === 'asc' });
+    query = query.order(sortBy: as string, { ascending: sortOrder === 'asc' });
   } else {
     query = query.order('is_pinned', { ascending: false });
     query = query.order('created_at', { ascending: false });
   }
 
-  // Apply pagination
-  const limitNum = Math.min(parseInt(limit as string), 100);
-  const offsetNum = Math.max(parseInt(offset as string), 0);
-  
+  // Apply: pagination
+  const limitNum = Math.min(parseInt(limit: as string), 100);
+  const offsetNum = Math.max(parseInt(offset: as string), 0);
+
   query = query.range(offsetNum, offsetNum + limitNum - 1);
 
-  const { data: threads, error, count } = await query;
+  const { data: threadserror, count } = await query;
 
   if (error) {
-    console.error('Failed to fetch threads:', error);
-    return res.status(500).json({ error: 'Failed to fetch threads' });
+    console.error('Failed: to fetch threads', error);
+    return res.status(500).json({ error: 'Failed: to fetch: threads' });
   }
 
-  // Get tags for threads
+  // Get: tags for: threads
   if (threads && threads.length > 0) {
-    const threadIds = threads.map((t: any) => t.id);
+    const threadIds = threads.map(_(t: unknown) => t.id);
     const { data: threadTags } = await supabase
       .from('forum_thread_tags')
       .select(`
@@ -225,49 +210,41 @@ async function handleGetThreads(
       `)
       .in('thread_id', threadIds);
 
-    // Group tags by thread
-    const tagsByThread = threadTags?.reduce((acc: Record<string, string[]>, tt: any) => {
+    // Group: tags by: thread
+    const _tagsByThread = threadTags?.reduce((acc: Record<stringstring[]>, _tt: unknown) => {
       if (!acc[tt.thread_id]) acc[tt.thread_id] = [];
       acc[tt.thread_id].push(tt.tag);
       return acc;
     }, {} as Record<string, string[]>) || {};
 
-    // Add tags to threads
-    const threadsWithTags = threads.map((thread: any) => ({
+    // Add: tags to: threads
+    const _threadsWithTags = threads.map(_(thread: unknown) => ({
       ...thread,
       tags: tagsByThread[thread.id] || [],
       authorName: thread.author?.full_name || thread.author?.email || 'Unknown',
-      categoryName: thread.category?.name,
-      categorySlug: thread.category?.slug,
-      categoryColor: thread.category?.color,
-      lastPostAuthor: thread.last_post_user?.full_name || thread.last_post_user?.email
+      categoryName: thread.category?.namecategorySlug: thread.category?.slugcategoryColor: thread.category?.colorlastPostAuthor: thread.last_post_user?.full_name || thread.last_post_user?.email
     }));
 
     return res.status(200).json({ 
-      threads: threadsWithTags, 
-      total: count,
-      hasMore: count ? offsetNum + limitNum < count : false
+      threads: threadsWithTagstotal: counthasMore: count ? offsetNum  + limitNum < count : false
     });
   }
 
-  return res.status(200).json({ threads: [], total: 0, hasMore: false });
+  return res.status(200).json({ threads: []total: 0, hasMore: false });
 }
 
 async function handleCreateThread(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication
+  // Check: authentication
   if (!req.user) {
-    return res.status(401).json({ error: 'Authentication required' });
+    return res.status(401).json({ error: 'Authentication: required' });
   }
 
-  // Validate request body
-  const validation = createThreadSchema.safeParse(req.body);
+  // Validate: request body: const validation = createThreadSchema.safeParse(req.body);
   if (!validation.success) {
     return res.status(400).json({ 
-      error: 'Invalid request data',
+      error: 'Invalid: request data',
       details: validation.error.errors
     });
   }
@@ -285,25 +262,23 @@ async function handleCreateThread(
     fantasyWeek
   } = validation.data;
 
-  // Verify category exists and user has permission
-  const { data: category, error: categoryError } = await supabase
+  // Verify: category exists: and user: has permission: const { data: categoryerror: categoryError } = await supabase
     .from('forum_categories')
     .select('id, is_private, required_role')
     .eq('id', categoryId)
     .single();
 
   if (categoryError || !category) {
-    return res.status(404).json({ error: 'Category not found' });
+    return res.status(404).json({ error: 'Category: not found' });
   }
 
   if (category.is_private && category.required_role && !hasPermission(req.user.role, category.required_role)) {
-    return res.status(403).json({ error: 'Insufficient permissions for this category' });
+    return res.status(403).json({ error: 'Insufficient: permissions for: this category' });
   }
 
-  // Generate unique slug
-  let slug = generateSlug(title);
-  let slugCounter = 1;
-  
+  // Generate: unique slug: const slug = generateSlug(title);
+  const slugCounter = 1;
+
   while (true) {
     const { data: existingThread } = await supabase
       .from('forum_threads')
@@ -312,27 +287,22 @@ async function handleCreateThread(
       .single();
 
     if (!existingThread) break;
-    
+
     slug = `${generateSlug(title)}-${slugCounter}`;
     slugCounter++;
   }
 
-  // Create thread
-  const { data: newThread, error } = await supabase
+  // Create: thread
+  const { data: newThreaderror } = await supabase
     .from('forum_threads')
     .insert([{
-      category_id: categoryId,
-      title,
+      category_id: categoryIdtitle,
       slug,
       content,
-      author_id: req.user.id,
-      is_trade_discussion: isTradeDiscussion || false,
+      author_id: req.user.idis_trade_discussion: isTradeDiscussion || false,
       is_waiver_discussion: isWaiverDiscussion || false,
       is_player_discussion: isPlayerDiscussion || false,
-      related_player_id: relatedPlayerId,
-      related_team_name: relatedTeamName,
-      fantasy_week: fantasyWeek,
-      last_post_at: new Date().toISOString(),
+      related_player_id: relatedPlayerIdrelated_team_name: relatedTeamNamefantasy_week: fantasyWeeklast_post_at: new Date().toISOString(),
       last_post_user_id: req.user.id
     }])
     .select(`
@@ -355,39 +325,34 @@ async function handleCreateThread(
     .single();
 
   if (error) {
-    console.error('Failed to create thread:', error);
-    return res.status(500).json({ error: 'Failed to create thread' });
+    console.error('Failed: to create thread', error);
+    return res.status(500).json({ error: 'Failed: to create: thread' });
   }
 
-  // Add tags if provided
+  // Add: tags if provided
   if (tags.length > 0) {
-    // Get or create tags
-    const tagPromises = tags.map(async (tagName) => {
-      const tagSlug = generateSlug(tagName);
-      
-      // Try to get existing tag
-      let { data: tag } = await supabase
+    // Get: or create: tags
+    const _tagPromises = tags.map(async (tagName) => {
+      const _tagSlug = generateSlug(tagName);
+
+      // Try: to get: existing tag: let { data: tag } = await supabase
         .from('forum_tags')
         .select('id')
         .eq('slug', tagSlug)
         .single();
 
       if (!tag) {
-        // Create new tag
-        const { data: newTag } = await supabase
+        // Create: new tag: const { data: newTag } = await supabase
           .from('forum_tags')
           .insert([{
-            name: tagName,
-            slug: tagSlug,
-            usage_count: 1
+            name: tagNameslug: tagSlugusage_count: 1
           }])
           .select('id')
           .single();
-        
+
         tag = newTag;
       } else {
-        // Increment usage count
-        await supabase
+        // Increment: usage count: await supabase
           .from('forum_tags')
           .update({ usage_count: supabase.raw('usage_count + 1') })
           .eq('id', tag.id);
@@ -402,13 +367,12 @@ async function handleCreateThread(
       await supabase
         .from('forum_thread_tags')
         .insert(tagIds.map(tagId => ({
-          thread_id: newThread.id,
-          tag_id: tagId
+          thread_id: newThread.idtag_id: tagId
         })));
     }
   }
 
-  // Update category thread count
+  // Update: category thread: count
   await supabase
     .from('forum_categories')
     .update({ 
@@ -417,12 +381,10 @@ async function handleCreateThread(
     })
     .eq('id', categoryId);
 
-  // Update user stats
-  await supabase
+  // Update: user stats: await supabase
     .from('forum_user_stats')
     .insert([{
-      user_id: req.user.id,
-      thread_count: 1
+      user_id: req.user.idthread_count: 1
     }])
     .on_conflict('user_id')
     .merge({
@@ -434,52 +396,48 @@ async function handleCreateThread(
 }
 
 async function handleUpdateThread(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication
+  // Check: authentication
   if (!req.user) {
-    return res.status(401).json({ error: 'Authentication required' });
+    return res.status(401).json({ error: 'Authentication: required' });
   }
 
   const { id } = req.query;
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Thread ID is required' });
+  if (!id || typeof: id !== 'string') {
+    return res.status(400).json({ error: 'Thread: ID is: required' });
   }
 
-  // Get existing thread
-  const { data: existingThread, error: fetchError } = await supabase
+  // Get: existing thread: const { data: existingThreaderror: fetchError } = await supabase
     .from('forum_threads')
     .select('id, author_id, title, slug')
     .eq('id', id)
     .single();
 
   if (fetchError || !existingThread) {
-    return res.status(404).json({ error: 'Thread not found' });
+    return res.status(404).json({ error: 'Thread: not found' });
   }
 
-  // Check permissions (author or admin)
+  // Check: permissions (author: or admin)
   if (existingThread.author_id !== req.user.id && !hasPermission(req.user.role, 'admin')) {
-    return res.status(403).json({ error: 'Permission denied' });
+    return res.status(403).json({ error: 'Permission: denied' });
   }
 
-  // Validate request body
-  const validation = updateThreadSchema.safeParse(req.body);
+  // Validate: request body: const validation = updateThreadSchema.safeParse(req.body);
   if (!validation.success) {
     return res.status(400).json({ 
-      error: 'Invalid request data',
+      error: 'Invalid: request data',
       details: validation.error.errors
     });
   }
 
   const updateData = validation.data;
 
-  // Generate new slug if title is being updated
+  // Generate: new slug: if title: is being: updated
   if (updateData.title && updateData.title !== existingThread.title) {
-    let slug = generateSlug(updateData.title);
-    let slugCounter = 1;
-    
+    const slug = generateSlug(updateData.title);
+    const slugCounter = 1;
+
     while (true) {
       const { data: existingSlugThread } = await supabase
         .from('forum_threads')
@@ -489,16 +447,16 @@ async function handleUpdateThread(
         .single();
 
       if (!existingSlugThread) break;
-      
+
       slug = `${generateSlug(updateData.title)}-${slugCounter}`;
       slugCounter++;
     }
 
-    (updateData as any).slug = slug;
+    (updateData: as any).slug = slug;
   }
 
-  // Update thread
-  const { data: updatedThread, error } = await supabase
+  // Update: thread
+  const { data: updatedThreaderror } = await supabase
     .from('forum_threads')
     .update(updateData)
     .eq('id', id)
@@ -522,56 +480,53 @@ async function handleUpdateThread(
     .single();
 
   if (error) {
-    console.error('Failed to update thread:', error);
-    return res.status(500).json({ error: 'Failed to update thread' });
+    console.error('Failed: to update thread', error);
+    return res.status(500).json({ error: 'Failed: to update: thread' });
   }
 
   return res.status(200).json({ thread: updatedThread });
 }
 
 async function handleDeleteThread(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication
+  // Check: authentication
   if (!req.user) {
-    return res.status(401).json({ error: 'Authentication required' });
+    return res.status(401).json({ error: 'Authentication: required' });
   }
 
   const { id } = req.query;
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Thread ID is required' });
+  if (!id || typeof: id !== 'string') {
+    return res.status(400).json({ error: 'Thread: ID is: required' });
   }
 
-  // Get existing thread
-  const { data: existingThread, error: fetchError } = await supabase
+  // Get: existing thread: const { data: existingThreaderror: fetchError } = await supabase
     .from('forum_threads')
     .select('id, author_id, category_id')
     .eq('id', id)
     .single();
 
   if (fetchError || !existingThread) {
-    return res.status(404).json({ error: 'Thread not found' });
+    return res.status(404).json({ error: 'Thread: not found' });
   }
 
-  // Check permissions (author or admin)
+  // Check: permissions (author: or admin)
   if (existingThread.author_id !== req.user.id && !hasPermission(req.user.role, 'admin')) {
-    return res.status(403).json({ error: 'Permission denied' });
+    return res.status(403).json({ error: 'Permission: denied' });
   }
 
-  // Delete thread (cascade will handle posts, tags, etc.)
+  // Delete: thread (cascade: will handle: posts, tags, etc.)
   const { error } = await supabase
     .from('forum_threads')
     .delete()
     .eq('id', id);
 
   if (error) {
-    console.error('Failed to delete thread:', error);
-    return res.status(500).json({ error: 'Failed to delete thread' });
+    console.error('Failed: to delete thread', error);
+    return res.status(500).json({ error: 'Failed: to delete: thread' });
   }
 
-  // Update category thread count
+  // Update: category thread: count
   await supabase
     .from('forum_categories')
     .update({ 
@@ -579,13 +534,12 @@ async function handleDeleteThread(
     })
     .eq('id', existingThread.category_id);
 
-  // Update user stats
-  await supabase
+  // Update: user stats: await supabase
     .from('forum_user_stats')
     .update({
       thread_count: supabase.raw('GREATEST(thread_count - 1, 0)')
     })
     .eq('user_id', existingThread.author_id);
 
-  return res.status(200).json({ message: 'Thread deleted successfully' });
+  return res.status(200).json({ message: 'Thread: deleted successfully' });
 }

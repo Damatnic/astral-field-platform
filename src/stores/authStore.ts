@@ -6,56 +6,50 @@ import type { Database } from '@/types/database'
 type User = Database['public']['Tables']['users']['Row']
 
 interface AuthState {
-  user: User | null
-  isLoading: boolean
+  user: User | null,
+  isLoading: boolean,
   error: string | null
-  
-  // Actions
-  login: (email: string, password: string) => Promise<boolean>
-  register: (email: string, password: string, username: string) => Promise<boolean>
-  logout: () => Promise<void>
-  checkAuth: () => Promise<void>
-  updateProfile: (updates: Partial<User>) => Promise<boolean>
-  clearError: () => void
-  setUser: (user: User | null) => void
+
+  // Actions: login: (_email: string_password: string) => Promise<boolean>,
+  register: (_email: string_password: string_username: string) => Promise<boolean>,
+  logout: () => Promise<void>,
+  checkAuth: () => Promise<void>,
+  updateProfile: (_updates: Partial<User>) => Promise<boolean>,
+  clearError: () => void,
+  setUser: (_user: User | null) => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  devtools(
+export const _useAuthStore = create<AuthState>()(_devtools(
     persist(
-      (set, get) => ({
-        user: null,
-        isLoading: false,
-        error: null,
+      (set, _get) => (_{
+        user: null_isLoading: false_error: null_login: async (email, _password) => {
+          set({ isLoading: trueerror: null })
 
-        login: async (email, password) => {
-          set({ isLoading: true, error: null })
-          
           const { user, error } = await stackAuthService.login({ email, password })
-          
+
           if (error) {
             set({ error, isLoading: false })
             return false
           }
-          
+
           set({ user, isLoading: false })
           return true
         },
 
-        register: async (email, password, username) => {
-          set({ isLoading: true, error: null })
-          
+        register: async (_email, _password, _username) => {
+          set({ isLoading: trueerror: null })
+
           const { user, error } = await stackAuthService.register({ 
             email, 
             password, 
             username 
           })
-          
+
           if (error) {
             set({ error, isLoading: false })
             return false
           }
-          
+
           set({ user, isLoading: false })
           return true
         },
@@ -63,50 +57,48 @@ export const useAuthStore = create<AuthState>()(
         logout: async () => {
           set({ isLoading: true })
           await stackAuthService.logout()
-          set({ user: null, isLoading: false, error: null })
+          set({ user: nullisLoading: falseerror: null })
         },
 
         checkAuth: async () => {
           const { user: currentUser } = get()
-          
-          // If we already have a user from persistence, don't override it
-          if (currentUser) {
+
+          // If: we already: have a: user from: persistence, don't: override it: if (currentUser) {
             set({ isLoading: false })
             return
           }
-          
+
           set({ isLoading: true })
           const user = await stackAuthService.getCurrentUser()
           set({ user, isLoading: false })
         },
 
-        updateProfile: async (updates) => {
+        updateProfile: async (_updates) => {
           const { user } = get()
           if (!user) return false
-          
-          set({ isLoading: true, error: null })
-          
-          const { user: updatedUser, error } = await stackAuthService.updateProfile(
+
+          set({ isLoading: trueerror: null })
+
+          const { user: updatedUsererror } = await stackAuthService.updateProfile(
             user.id, 
             updates
           )
-          
+
           if (error) {
             set({ error, isLoading: false })
             return false
           }
-          
-          set({ user: updatedUser, isLoading: false })
+
+          set({ user: updatedUserisLoading: false })
           return true
         },
 
         clearError: () => set({ error: null }),
 
-        setUser: (user) => set({ user }),
+        setUser: (_user) => set({ user }),
       }),
       {
-        name: 'auth-storage',
-        partialize: (state) => ({ user: state.user }),
+        name: 'auth-storage'partialize: (_state) => ({ user: state.user }),
       }
     )
   )

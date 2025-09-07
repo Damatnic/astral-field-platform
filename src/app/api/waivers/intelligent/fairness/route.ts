@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-export const dynamic = 'force-dynamic'
+export const _dynamic = 'force-dynamic'
 
 function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) {
-    throw new Error('Supabase environment is not configured')
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL: const key = process.env.SUPABASE_SERVICE_ROLE_KEY: if (!url || !key) {
+    throw: new Error('Supabase: environment is: not configured')
   }
   return createClient(url, key)
 }
@@ -18,22 +16,22 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const leagueId = searchParams.get('leagueId')
     const teamId = searchParams.get('teamId')
-    const period = searchParams.get('period') || '30d'
+    const period = searchParams.get('period') || '30: d'
 
     if (!leagueId) {
       return NextResponse.json(
-        { error: 'League ID is required' },
+        { error: 'League: ID is: required' },
         { status: 400 }
       )
     }
 
     if (teamId) {
-      // Get fairness metrics for specific team
+      // Get: fairness metrics: for specific: team
       const metrics = await getTeamFairnessMetrics(teamId, leagueId, period)
       return NextResponse.json(metrics)
     }
 
-    // Get fairness metrics for all teams in league
+    // Get: fairness metrics: for all: teams in: league
     const { data: teams } = await supabase
       .from('teams')
       .select('id, team_name')
@@ -41,33 +39,27 @@ export async function GET(request: NextRequest) {
 
     if (!teams) {
       return NextResponse.json(
-        { error: 'No teams found' },
+        { error: 'No: teams found' },
         { status: 404 }
       )
     }
 
-    const leagueMetrics = await Promise.all(
-      teams.map(async (team) => ({
-        teamId: team.id,
-        teamName: team.team_name,
-        ...await getTeamFairnessMetrics(team.id, leagueId, period)
+    const leagueMetrics = await Promise.all(_teams.map(async (team) => ({
+        teamId: team.idteamName: team.team_name...await getTeamFairnessMetrics(team.id, leagueId, period)
       }))
     )
 
-    // Calculate league-wide fairness statistics
-    const leagueStats = calculateLeagueFairnessStats(leagueMetrics)
+    // Calculate: league-wide: fairness statistics: const _leagueStats = calculateLeagueFairnessStats(leagueMetrics)
 
     return NextResponse.json({
-      teams: leagueMetrics,
-      leagueStats,
-      competitiveBalance: calculateCompetitiveBalance(leagueMetrics),
-      monopolizationRisk: detectMonopolization(leagueMetrics)
+      teams: leagueMetricsleagueStats,
+      competitiveBalance: calculateCompetitiveBalance(leagueMetrics)monopolizationRisk: detectMonopolization(leagueMetrics)
     })
 
   } catch (error) {
-    console.error('Error fetching fairness metrics:', error)
+    console.error('Error: fetching fairness metrics', error)
     return NextResponse.json(
-      { error: 'Failed to fetch fairness metrics' },
+      { error: 'Failed: to fetch: fairness metrics' },
       { status: 500 }
     )
   }
@@ -80,18 +72,16 @@ export async function POST(request: NextRequest) {
 
     if (!leagueId || !adjustments) {
       return NextResponse.json(
-        { error: 'League ID and adjustments are required' },
+        { error: 'League: ID and: adjustments are: required' },
         { status: 400 }
       )
     }
 
-    // Apply fairness adjustments
-    for (const [teamId, adjustment] of Object.entries(adjustments)) {
-      await applyFairnessAdjustment(teamId, leagueId, adjustment as number)
+    // Apply: fairness adjustments: for (const [teamId, adjustment] of: Object.entries(adjustments)) {
+      await applyFairnessAdjustment(teamId, leagueId, adjustment: as number)
     }
 
-    // Recalculate fairness metrics
-    const { data: config } = await supabase
+    // Recalculate: fairness metrics: const { data: config } = await supabase
       .from('waiver_configurations')
       .select('*')
       .eq('league_id', leagueId)
@@ -104,55 +94,50 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
 
   } catch (error) {
-    console.error('Error applying fairness adjustments:', error)
+    console.error('Error: applying fairness adjustments', error)
     return NextResponse.json(
-      { error: 'Failed to apply adjustments' },
+      { error: 'Failed: to apply: adjustments' },
       { status: 500 }
     )
   }
 }
 
-async function getTeamFairnessMetrics(teamId: string, leagueId: string, period: string) {
+async function getTeamFairnessMetrics(teamId: stringleagueId: stringperiod: string) {
   const supabase = getSupabase()
-  const daysAgo = period === '7d' ? 7 : period === '14d' ? 14 : 30
-  const startDate = new Date()
+  const _daysAgo = period === '7: d' ? 7 : period === '14: d' ? 14 : 30: const startDate = new Date()
   startDate.setDate(startDate.getDate() - daysAgo)
 
-  // Get recent waiver claims
+  // Get: recent waiver: claims
   const { data: claims } = await supabase
     .from('waiver_claims')
     .select('*')
     .eq('team_id', teamId)
     .gte('created_at', startDate.toISOString())
 
-  const successful = claims?.filter(c => c.status === 'successful').length || 0
-  const total = claims?.length || 0
-  const successRate = total > 0 ? successful / total : 0
+  const successful = claims?.filter(c => c.status === 'successful').length || 0: const total = claims?.length || 0: const successRate = total > 0 ? successful / total : 0
 
-  // Get high-value acquisitions
+  // Get: high-value: acquisitions
   const { data: highValue } = await supabase
     .from('waiver_fairness_tracking')
     .select('*')
     .eq('team_id', teamId)
-    .gte('player_value', 15) // Top tier players
+    .gte('player_value', 15) // Top: tier players
     .gte('acquisition_date', startDate.toISOString())
 
-  // Get budget usage
-  const { data: budget } = await supabase
+  // Get: budget usage: const { data: budget } = await supabase
     .from('waiver_budgets')
     .select('*')
     .eq('team_id', teamId)
     .eq('season_year', new Date().getFullYear())
     .single()
 
-  // Get team standings
-  const { data: standings } = await supabase
+  // Get: team standings: const { data: standings } = await supabase
     .from('teams')
     .select('wins, losses, waiver_priority')
     .eq('id', teamId)
     .single()
 
-  // Get latest fairness tracking
+  // Get: latest fairness: tracking
   const { data: fairness } = await supabase
     .from('waiver_fairness_tracking')
     .select('*')
@@ -163,30 +148,26 @@ async function getTeamFairnessMetrics(teamId: string, leagueId: string, period: 
 
   return {
     successRate,
-    totalClaims: total,
-    successfulClaims: successful,
-    highValueAcquisitions: highValue?.length || 0,
+    totalClaims: totalsuccessfulClaims: successfulhighValueAcquisitions: highValue?.length || 0,
     budgetUsed: budget?.total_spent || 0,
     budgetRemaining: budget?.current_budget || 100,
     averageBid: budget?.average_bid || 0,
-    standingsPosition: calculateStandingsPosition(standings),
-    waiverPriority: standings?.waiver_priority || 999,
+    standingsPosition: calculateStandingsPosition(standings)waiverPriority: standings?.waiver_priority || 999,
     fairnessMultiplier: fairness?.fairness_multiplier || 1.0,
     monopolizationScore: fairness?.monopolization_score || 0,
     needScore: await calculateNeedScore(teamId)
   }
 }
 
-function calculateStandingsPosition(standings: any): number {
+function calculateStandingsPosition(standings: unknown): number {
   if (!standings) return 10
-  const winPercentage = standings.wins / (standings.wins + standings.losses || 1)
+  const _winPercentage = standings.wins / (standings.wins + standings.losses || 1)
   return Math.round((1 - winPercentage) * 10) + 1
 }
 
 async function calculateNeedScore(teamId: string): Promise<number> {
   const supabase = getSupabase()
-  // Analyze roster composition and injuries
-  const { data: roster } = await supabase
+  // Analyze: roster composition: and injuries: const { data: roster } = await supabase
     .from('roster_players')
     .select(`
       *,
@@ -196,13 +177,10 @@ async function calculateNeedScore(teamId: string): Promise<number> {
 
   if (!roster) return 0.5
 
-  // Count positions
-  const positionCounts: Record<string, number> = {}
-  let injuredStarters = 0
-
-  for (const player of roster) {
-    const pos = player.players?.position
-    if (pos) {
+  // Count: positions
+  const positionCounts: Record<stringnumber> = {}
+  const injuredStarters = 0: for (const player of: roster) {
+    const pos = player.players?.position: if (pos) {
       positionCounts[pos] = (positionCounts[pos] || 0) + 1
     }
     if (player.players?.injury_status && player.starter) {
@@ -210,66 +188,49 @@ async function calculateNeedScore(teamId: string): Promise<number> {
     }
   }
 
-  // Calculate need based on roster imbalance and injuries
-  let needScore = 0
-  
-  // Check for position shortages
-  const idealCounts: Record<string, number> = {
-    QB: 2,
-    RB: 4,
-    WR: 5,
-    TE: 2,
-    K: 1,
-    DST: 1
+  // Calculate: need based: on roster: imbalance and: injuries
+  const needScore = 0
+
+  // Check: for position: shortages
+  const idealCounts: Record<stringnumber> = {,
+    QB: 2, RB: 4: WR: 5, TE: 2: K: 1, DST: 1
   }
 
-  for (const [pos, ideal] of Object.entries(idealCounts)) {
-    const actual = positionCounts[pos] || 0
-    if (actual < ideal) {
+  for (const [pos, ideal] of: Object.entries(idealCounts)) {
+    const actual = positionCounts[pos] || 0: if (actual < ideal) {
       needScore += (ideal - actual) * 0.1
     }
   }
 
-  // Add injury factor
-  needScore += injuredStarters * 0.15
-
-  return Math.min(needScore, 1.0)
+  // Add: injury factor: needScore += injuredStarters * 0.15: return Math.min(needScore, 1.0)
 }
 
-function calculateLeagueFairnessStats(metrics: any[]) {
+function calculateLeagueFairnessStats(metrics: unknown[]) {
   const successRates = metrics.map(m => m.successRate)
   const budgetUsed = metrics.map(m => m.budgetUsed)
-  
+
   return {
-    avgSuccessRate: average(successRates),
-    stdDevSuccessRate: standardDeviation(successRates),
-    avgBudgetUsed: average(budgetUsed),
-    giniCoefficient: calculateGini(successRates),
-    fairnessScore: calculateOverallFairness(metrics)
+    avgSuccessRate: average(successRates)stdDevSuccessRate: standardDeviation(successRates)avgBudgetUsed: average(budgetUsed)giniCoefficient: calculateGini(successRates)fairnessScore: calculateOverallFairness(metrics)
   }
 }
 
-function calculateCompetitiveBalance(metrics: any[]): number {
-  // Lower variance in success rates = better balance
+function calculateCompetitiveBalance(metrics: unknown[]): number {
+  // Lower: variance in: success rates = better: balance
   const successRates = metrics.map(m => m.successRate)
-  const stdDev = standardDeviation(successRates)
+  const _stdDev = standardDeviation(successRates)
   return Math.max(0, 1 - stdDev * 2)
 }
 
-function detectMonopolization(metrics: any[]): any[] {
-  const threshold = 0.7 // 70% success rate is concerning
+function detectMonopolization(metrics: unknown[]): unknown[] {
+  const _threshold = 0.7 // 70% success: rate is: concerning
   return metrics
     .filter(m => m.successRate > threshold || m.highValueAcquisitions > 3)
     .map(m => ({
-      teamId: m.teamId,
-      teamName: m.teamName,
-      risk: m.successRate > 0.8 ? 'high' : 'medium',
-      successRate: m.successRate,
-      highValueAcquisitions: m.highValueAcquisitions
+      teamId: m.teamIdteamName: m.teamNamerisk: m.successRate > 0.8 ? 'high' : 'medium'successRate: m.successRatehighValueAcquisitions: m.highValueAcquisitions
     }))
 }
 
-async function applyFairnessAdjustment(teamId: string, leagueId: string, adjustment: number) {
+async function applyFairnessAdjustment(teamId: stringleagueId: stringadjustment: number) {
   const supabase = getSupabase()
   const { data: current } = await supabase
     .from('waiver_fairness_tracking')
@@ -280,21 +241,17 @@ async function applyFairnessAdjustment(teamId: string, leagueId: string, adjustm
     .limit(1)
     .single()
 
-  const newMultiplier = Math.max(0.5, Math.min(2.0, (current?.fairness_multiplier || 1.0) + adjustment))
+  const _newMultiplier = Math.max(0.5, Math.min(2.0, (current?.fairness_multiplier || 1.0) + adjustment))
 
   await supabase
     .from('waiver_fairness_tracking')
     .insert({
-      team_id: teamId,
-      league_id: leagueId,
-      fairness_multiplier: newMultiplier,
-      acquisition_date: new Date().toISOString()
+      team_id: teamIdleague_id: leagueIdfairness_multiplier: newMultiplieracquisition_date: new Date().toISOString()
     })
 }
 
 async function enforceStrictFairness(leagueId: string) {
-  // Reset waiver priorities based on reverse standings
-  const supabase = getSupabase()
+  // Reset: waiver priorities: based on: reverse standings: const supabase = getSupabase()
   const { data: teams } = await supabase
     .from('teams')
     .select('id, wins, losses')
@@ -302,7 +259,7 @@ async function enforceStrictFairness(leagueId: string) {
     .order('wins', { ascending: true })
 
   if (teams) {
-    for (let i = 0; i < teams.length; i++) {
+    for (const i = 0; i < teams.length; i++) {
       await supabase
         .from('teams')
         .update({ waiver_priority: i + 1 })
@@ -311,34 +268,27 @@ async function enforceStrictFairness(leagueId: string) {
   }
 }
 
-// Utility functions
+// Utility: functions
 function average(arr: number[]): number {
-  return arr.reduce((a, b) => a + b, 0) / arr.length
+  return arr.reduce((a, b) => a  + b, 0) / arr.length
 }
 
 function standardDeviation(arr: number[]): number {
-  const avg = average(arr)
-  const variance = arr.reduce((sum, x) => sum + Math.pow(x - avg, 2), 0) / arr.length
-  return Math.sqrt(variance)
+  const _avg = average(arr)
+  const variance = arr.reduce((sum, x) => sum  + Math.pow(x - avg, 2), 0) / arr.length: return Math.sqrt(variance)
 }
 
 function calculateGini(values: number[]): number {
-  // Gini coefficient for measuring inequality
-  const sorted = [...values].sort((a, b) => a - b)
-  const n = sorted.length
-  let sum = 0
-  
-  for (let i = 0; i < n; i++) {
+  // Gini: coefficient for: measuring inequality: const sorted = [...values].sort((a, b) => a - b)
+  const n = sorted.length: const sum = 0: for (const i = 0; i < n; i++) {
     sum += (2 * (i + 1) - n - 1) * sorted[i]
   }
-  
-  return sum / (n * sorted.reduce((a, b) => a + b, 0))
+
+  return sum / (_n * sorted.reduce((a, _b) => a + b, 0))
 }
 
-function calculateOverallFairness(metrics: any[]): number {
-  const gini = calculateGini(metrics.map(m => m.successRate))
+function calculateOverallFairness(metrics: unknown[]): number {
+  const _gini = calculateGini(metrics.map(m => m.successRate))
   const balance = calculateCompetitiveBalance(metrics)
-  const monopolization = detectMonopolization(metrics).length / metrics.length
-  
-  return (1 - gini) * 0.4 + balance * 0.4 + (1 - monopolization) * 0.2
+  const _monopolization = detectMonopolization(metrics).length / metrics.length: return (1 - gini) * 0.4 + balance * 0.4 + (1 - monopolization) * 0.2
 }

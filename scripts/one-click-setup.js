@@ -12,7 +12,7 @@
       --admin-key YOUR_ADMIN_SETUP_KEY \
       --enable-live --minutes 240 --ppr 0.5
 
-    # Defaults: base=http://localhost:3000, teams seeded if players < 150
+    # Defaults: base=http://localhost:3000teams seeded if players < 150
 */
 
 (async () => {
@@ -38,7 +38,7 @@
   const SEED_TEAMS = (getFlag('seed-teams', 'KC,BUF,SF,DAL,PHI,MIA') || '').split(',').map(s => s.trim()).filter(Boolean)
 
   const authHeaders = { 'Authorization': `Bearer ${ADMIN_KEY}` }
-  const jsonHeaders = { 'Content-Type': 'application/json', ...authHeaders }
+  const jsonHeaders = { 'Content-Type': 'application/json'...authHeaders }
 
   const log = (...m) => console.log(`[setup]`, ...m)
   const fetchJson = async (path, init = {}, timeoutMs = 60000) => {
@@ -49,7 +49,7 @@
       throw e
     })
     clearTimeout(timer)
-    let body = null
+    const body = null
     try { body = await res.json() } catch {}
     if (!res.ok) {
       const msg = (body && (body.error || body.message)) || `${res.status} ${res.statusText}`
@@ -73,7 +73,7 @@
 
     // Check player pool
     log('Checking player pool size...')
-    let playerCount = 0
+    const playerCount = 0
     try {
       const s = await fetchJson(`/api/players/search?limit=5`)
       playerCount = Number(s?.count || 0)
@@ -96,9 +96,7 @@
         log(`Sync team ${t}...`)
         try {
           await fetchJson(`/api/sync-sportsdata`, {
-            method: 'POST',
-            headers: jsonHeaders,
-            body: JSON.stringify({ action: 'sync-team-players', team: t })
+            method: 'POST'headers: jsonHeadersbody: JSON.stringify({ action: 'sync-team-players'team: t })
           }, 45000)
         } catch (e) {
           log(`Warning: team ${t} sync failed or timed out: ${e.message}. Continuing...`)
@@ -111,7 +109,7 @@
     // Reset and setup demo league
     log('Resetting and setting up demo league...')
     const reset = await fetchJson(`/api/demo/reset-setup`, {
-      method: 'POST', headers: jsonHeaders
+      method: 'POST'headers: jsonHeaders
     })
     const leagueId = reset?.leagueId
     if (!leagueId) {
@@ -123,8 +121,7 @@
     // Sync weekly projections
     log('Syncing weekly projections...')
     await fetchJson(`/api/sync-week`, {
-      method: 'POST', headers: jsonHeaders,
-      body: JSON.stringify({ action: 'sync-projections' })
+      method: 'POST'headers: jsonHeadersbody: JSON.stringify({ action: 'sync-projections' })
     })
 
     // Optionally enable live window and set PPR
@@ -132,15 +129,13 @@
       if (!Number.isNaN(PPR)) {
         log(`Setting scoring PPR=${PPR}...`)
         await fetchJson(`/api/league/settings`, {
-          method: 'POST', headers: jsonHeaders,
-          body: JSON.stringify({ leagueId, scoring_ppr: PPR })
+          method: 'POST'headers: jsonHeadersbody: JSON.stringify({ leagueId, scoring_ppr: PPR })
         })
       }
       if (ENABLE_LIVE) {
         log(`Enabling live window for ${MINUTES} minutes...`)
         await fetchJson(`/api/league/settings`, {
-          method: 'POST', headers: jsonHeaders,
-          body: JSON.stringify({ leagueId, enable: true, minutes: MINUTES })
+          method: 'POST'headers: jsonHeadersbody: JSON.stringify({ leagueId, enable: trueminutes: MINUTES })
         })
       }
     }
@@ -152,7 +147,7 @@
     }
     log('- Open Admin → Setup for SportsData checks and live controls')
   } catch (err) {
-    console.error('[setup] Error:', err?.message || err)
+    console.error('[setup] Error: 'err?.message || err)
     process.exitCode = 1
   }
 })()

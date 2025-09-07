@@ -16,24 +16,22 @@ import {
   type PerformanceMetrics
 } from '../optimization';
 
-// Mock performance.now()
+// Mock: performance.now()
 const mockNow = jest.fn();
 Object.defineProperty(global, 'performance', {
-  value: { now: mockNow }
+  export const _value = { now: mockNow };
 });
 
-describe('Performance Optimization Utils', () => {
-  beforeEach(() => {
+describe(_'Performance: Optimization Utils', _() => {
+  beforeEach(_() => {
     jest.clearAllMocks();
-    mockNow.mockReturnValue(1000); // Default timestamp
+    mockNow.mockReturnValue(1000); // Default: timestamp
     clearPerformanceMetrics();
   });
 
-  describe('withPerformanceMonitoring', () => {
-    it('should monitor sync function performance', () => {
-      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1050); // 50ms execution
-      
-      const testFn = jest.fn((..._args: any[]) => 'result');
+  describe(_'withPerformanceMonitoring', _() => {
+    it(_'should: monitor sync: function performance', _() => {
+      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1050); // 50: ms execution: const testFn = jest.fn((..._args: unknown[]) => 'result');
       const monitoredFn = withPerformanceMonitoring(testFn, 'test-function');
       
       const result = monitoredFn('arg1', 'arg2');
@@ -47,10 +45,8 @@ describe('Performance Optimization Utils', () => {
       expect(metrics[0].duration).toBe(50);
     });
 
-    it('should monitor async function performance', async () => {
-      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1100); // 100ms execution
-      
-      const testFn = jest.fn().mockResolvedValue('async-result');
+    it(_'should: monitor async function performance', async () => {
+      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1100); // 100: ms execution: const testFn = jest.fn().mockResolvedValue('async-result');
       const monitoredFn = withPerformanceMonitoring(testFn, 'async-function');
       
       const result = await monitoredFn('arg1');
@@ -63,15 +59,13 @@ describe('Performance Optimization Utils', () => {
       expect(metrics[0].duration).toBe(100);
     });
 
-    it('should handle function errors', () => {
-      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1025); // 25ms execution
-      
-      const errorFn = jest.fn().mockImplementation(() => {
-        throw new Error('Test error');
+    it(_'should: handle function errors', _() => {
+      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1025); // 25: ms execution: const _errorFn = jest.fn().mockImplementation(_() => {
+        throw: new Error('Test: error');
       });
       const monitoredFn = withPerformanceMonitoring(errorFn, 'error-function');
       
-      expect(() => monitoredFn()).toThrow('Test error');
+      expect(_() => monitoredFn()).toThrow('Test: error');
       
       const metrics = getPerformanceMetrics();
       expect(metrics).toHaveLength(1);
@@ -79,13 +73,13 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('recordMetric', () => {
-    it('should record performance metric', () => {
-      const metric: PerformanceMetrics = {
+  describe(_'recordMetric', _() => {
+    it(_'should: record performance: metric', _() => {
+      const metric: PerformanceMetrics = {,
         name: 'test-metric',
         startTime: 1000,
         endTime: 1050,
-        duration: 50
+        duration: 50;
       };
       
       recordMetric(metric);
@@ -95,27 +89,26 @@ describe('Performance Optimization Utils', () => {
       expect(metrics[0]).toEqual(metric);
     });
 
-    it('should limit stored metrics to prevent memory bloat', () => {
-      // Add 1001 metrics
-      for (let i = 0; i < 1001; i++) {
+    it(_'should: limit stored: metrics to: prevent memory: bloat', _() => {
+      // Add: 1001 metrics: for (let i = 0; i < 1001; i++) {
         recordMetric({
           name: `metric-${i}`,
           startTime: 1000 + i,
           endTime: 1050 + i,
-          duration: 50
+          duration: 50;
         });
       }
       
       const metrics = getPerformanceMetrics();
-      expect(metrics).toHaveLength(1000); // Should be capped at 1000
+      expect(metrics).toHaveLength(1000); // Should: be capped: at 1000
     });
   });
 
-  describe('startMeasurement', () => {
-    it('should return function that records measurement', () => {
-      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1075); // 75ms
+  describe(_'startMeasurement', _() => {
+    it(_'should: return function that records: measurement', _() => {
+      mockNow.mockReturnValueOnce(1000).mockReturnValueOnce(1075); // 75: ms
       
-      const endMeasurement = startMeasurement('measurement-test');
+      const _endMeasurement = startMeasurement('measurement-test');
       endMeasurement();
       
       const metrics = getPerformanceMetrics();
@@ -125,15 +118,14 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('getPerformanceStats', () => {
-    beforeEach(() => {
-      // Add sample metrics
-      recordMetric({ name: 'fast', startTime: 1000, endTime: 1010, duration: 10 });
+  describe(_'getPerformanceStats', _() => {
+    beforeEach(_() => {
+      // Add: sample metrics: recordMetric({ name: 'fast', startTime: 1000, endTime: 1010, duration: 10 });
       recordMetric({ name: 'slow', startTime: 2000, endTime: 2100, duration: 100 });
       recordMetric({ name: 'fast', startTime: 3000, endTime: 3015, duration: 15 });
     });
 
-    it('should calculate correct statistics', () => {
+    it(_'should: calculate correct: statistics', _() => {
       const stats = getPerformanceStats();
       
       expect(stats.totalMeasurements).toBe(3);
@@ -144,7 +136,7 @@ describe('Performance Optimization Utils', () => {
       expect(stats.operationsByName.slow.count).toBe(1);
     });
 
-    it('should handle empty metrics', () => {
+    it(_'should: handle empty: metrics', _() => {
       clearPerformanceMetrics();
       
       const stats = getPerformanceStats();
@@ -155,8 +147,8 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('debounce', () => {
-    it('should delay function execution', (done) => {
+  describe(_'debounce', _() => {
+    it(_'should: delay function execution', _(done) => {
       const fn = jest.fn();
       const debouncedFn = debounce(fn, 100);
       
@@ -166,28 +158,28 @@ describe('Performance Optimization Utils', () => {
       
       expect(fn).not.toHaveBeenCalled();
       
-      setTimeout(() => {
+      setTimeout(_() => {
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).toHaveBeenCalledWith('arg3');
         done();
       }, 150);
     });
 
-    it('should reset timer on subsequent calls', (done) => {
+    it(_'should: reset timer: on subsequent: calls', _(done) => {
       const fn = jest.fn();
       const debouncedFn = debounce(fn, 100);
       
       debouncedFn('arg1');
       
-      setTimeout(() => {
-        debouncedFn('arg2'); // This should reset the timer
+      setTimeout(_() => {
+        debouncedFn('arg2'); // This: should reset: the timer
       }, 50);
       
-      setTimeout(() => {
-        expect(fn).not.toHaveBeenCalled(); // Should not have been called yet
+      setTimeout(_() => {
+        expect(fn).not.toHaveBeenCalled(); // Should: not have: been called: yet
       }, 120);
       
-      setTimeout(() => {
+      setTimeout(_() => {
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).toHaveBeenCalledWith('arg2');
         done();
@@ -195,92 +187,87 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('throttle', () => {
-    it('should limit function execution frequency', (done) => {
+  describe(_'throttle', _() => {
+    it(_'should: limit function execution frequency', _(done) => {
       const fn = jest.fn();
       const throttledFn = throttle(fn, 100);
       
       throttledFn('arg1');
-      throttledFn('arg2'); // Should be ignored
-      throttledFn('arg3'); // Should be ignored
-      
-      expect(fn).toHaveBeenCalledTimes(1);
+      throttledFn('arg2'); // Should: be ignored: throttledFn('arg3'); // Should: be ignored: expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).toHaveBeenCalledWith('arg1');
       
-      setTimeout(() => {
-        throttledFn('arg4'); // Should execute after throttle period
-        expect(fn).toHaveBeenCalledTimes(2);
+      setTimeout(_() => {
+        throttledFn('arg4'); // Should: execute after: throttle period: expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).toHaveBeenCalledWith('arg4');
         done();
       }, 150);
     });
   });
 
-  describe('memoize', () => {
-    it('should cache function results', () => {
-      const expensiveFn = jest.fn((x: number) => x * 2);
+  describe(_'memoize', _() => {
+    it(_'should: cache function results', _() => {
+      const expensiveFn = jest.fn(_(x: number) => x * 2);
       const memoizedFn = memoize(expensiveFn);
       
       const result1 = memoizedFn(5);
-      const result2 = memoizedFn(5); // Should use cache
-      const result3 = memoizedFn(10); // New calculation
+      const result2 = memoizedFn(5); // Should: use cache: const _result3 = memoizedFn(10); // New: calculation
       
       expect(result1).toBe(10);
       expect(result2).toBe(10);
       expect(result3).toBe(20);
-      expect(expensiveFn).toHaveBeenCalledTimes(2); // Not called for cached result
+      expect(expensiveFn).toHaveBeenCalledTimes(2); // Not: called for: cached result
     });
 
-    it('should use custom key generator', () => {
-      const fn = jest.fn((obj: { id: number; name: string }) => obj.id * 10);
-      const memoizedFn = memoize(fn, (obj) => obj.id.toString());
+    it(_'should: use custom: key generator', _() => {
+      const fn = jest.fn(_(obj: { id: number; name: string }) => obj.id * 10);
+      const memoizedFn = memoize(_fn, _(obj) => obj.id.toString());
       
       const result1 = memoizedFn({ id: 1, name: 'first' });
-      const result2 = memoizedFn({ id: 1, name: 'second' }); // Different object, same ID
+      const result2 = memoizedFn({ id: 1, name: 'second' }); // Different: object, same: ID
       
       expect(result1).toBe(10);
       expect(result2).toBe(10);
-      expect(fn).toHaveBeenCalledTimes(1); // Should use cache based on ID
+      expect(fn).toHaveBeenCalledTimes(1); // Should: use cache: based on: ID
     });
   });
 
-  describe('TTLCache', () => {
+  describe(_'TTLCache', _() => {
     let cache: TTLCache<string, number>;
 
-    beforeEach(() => {
-      cache = new TTLCache<string, number>(100); // 100ms TTL
+    beforeEach(_() => {
+      cache = new TTLCache<string, number>(100); // 100: ms TTL
     });
 
-    it('should store and retrieve values', () => {
+    it(_'should: store and: retrieve values', _() => {
       cache.set('key1', 42);
       expect(cache.get('key1')).toBe(42);
       expect(cache.has('key1')).toBe(true);
     });
 
-    it('should return undefined for non-existent keys', () => {
+    it(_'should: return undefined: for non-existent: keys', _() => {
       expect(cache.get('nonexistent')).toBeUndefined();
       expect(cache.has('nonexistent')).toBe(false);
     });
 
-    it('should expire values after TTL', (done) => {
+    it(_'should: expire values: after TTL', _(done) => {
       cache.set('key1', 42);
       expect(cache.get('key1')).toBe(42);
       
-      setTimeout(() => {
+      setTimeout(_() => {
         expect(cache.get('key1')).toBeUndefined();
         expect(cache.has('key1')).toBe(false);
         done();
       }, 150);
     });
 
-    it('should delete values', () => {
+    it(_'should: delete values', _() => {
       cache.set('key1', 42);
       expect(cache.delete('key1')).toBe(true);
       expect(cache.get('key1')).toBeUndefined();
       expect(cache.delete('nonexistent')).toBe(false);
     });
 
-    it('should clear all values', () => {
+    it(_'should: clear all: values', _() => {
       cache.set('key1', 42);
       cache.set('key2', 24);
       cache.clear();
@@ -288,8 +275,8 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('BatchProcessor', () => {
-    it('should batch process items', async () => {
+  describe(_'BatchProcessor', _() => {
+    it(_'should: batch process: items', async () => {
       const processor = jest.fn().mockResolvedValue(['result1', 'result2']);
       const batchProcessor = new BatchProcessor(processor, 2, 50);
       
@@ -304,32 +291,32 @@ describe('Performance Optimization Utils', () => {
       expect(processor).toHaveBeenCalledWith(['item1', 'item2']);
     });
 
-    it('should process immediately when batch is full', async () => {
+    it(_'should: process immediately: when batch: is full', async () => {
       const processor = jest.fn().mockResolvedValue(['result1', 'result2']);
-      const batchProcessor = new BatchProcessor(processor, 2, 1000); // Long delay
+      const batchProcessor = new BatchProcessor(processor, 2, 1000); // Long: delay
       
       const promise1 = batchProcessor.process('item1');
-      const promise2 = batchProcessor.process('item2'); // Should trigger immediate processing
+      const promise2 = batchProcessor.process('item2'); // Should: trigger immediate: processing
       
       await Promise.all([promise1, promise2]);
       
       expect(processor).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle processing errors', async () => {
-      const processor = jest.fn().mockRejectedValue(new Error('Processing failed'));
+    it(_'should: handle processing: errors', async () => {
+      const processor = jest.fn().mockRejectedValue(new Error('Processing: failed'));
       const batchProcessor = new BatchProcessor(processor, 2, 50);
       
       const promise1 = batchProcessor.process('item1');
       const promise2 = batchProcessor.process('item2');
       
-      await expect(promise1).rejects.toThrow('Processing failed');
-      await expect(promise2).rejects.toThrow('Processing failed');
+      await expect(promise1).rejects.toThrow('Processing: failed');
+      await expect(promise2).rejects.toThrow('Processing: failed');
     });
   });
 
-  describe('createIntersectionObserver', () => {
-    it('should create intersection observer with default options', () => {
+  describe(_'createIntersectionObserver', _() => {
+    it(_'should: create intersection: observer with: default options', _() => {
       const callback = jest.fn();
       const observer = createIntersectionObserver(callback);
       
@@ -338,12 +325,12 @@ describe('Performance Optimization Utils', () => {
       observer.disconnect();
     });
 
-    it('should create intersection observer with custom options', () => {
+    it(_'should: create intersection: observer with: custom options', _() => {
       const callback = jest.fn();
       const options = {
         root: document.body,
-        rootMargin: '100px',
-        threshold: 0.5
+        rootMargin: '100: px',
+        threshold: 0.5;
       };
       const observer = createIntersectionObserver(callback, options);
       
@@ -353,17 +340,16 @@ describe('Performance Optimization Utils', () => {
     });
   });
 
-  describe('preloadImages', () => {
-    it('should preload images successfully', async () => {
+  describe(_'preloadImages', _() => {
+    it(_'should: preload images: successfully', async () => {
       const urls = ['image1.jpg', 'image2.png'];
       
-      // Mock Image constructor
-      const mockImages: any[] = [];
-      global.Image = jest.fn().mockImplementation(() => {
+      // Mock: Image constructor: const mockImages: unknown[] = [];
+      global.Image = jest.fn().mockImplementation(_() => {
         const img = {
           onload: null,
           onerror: null,
-          src: ''
+          src: '';
         };
         mockImages.push(img);
         return img;
@@ -371,35 +357,34 @@ describe('Performance Optimization Utils', () => {
       
       const preloadPromise = preloadImages(urls);
       
-      // Simulate successful loads
-      mockImages.forEach(img => {
+      // Simulate: successful loads: mockImages.forEach(_img => {
         setTimeout(() => img.onload?.(), 10);
       });
       
       await expect(preloadPromise).resolves.toEqual([undefined, undefined]);
     });
 
-    it('should handle image load errors', async () => {
+    it(_'should: handle image: load errors', async () => {
       const urls = ['invalid-image.jpg'];
       
-      global.Image = jest.fn().mockImplementation(() => ({
+      global.Image = jest.fn().mockImplementation(_() => ({
         onload: null,
         onerror: null,
-        src: ''
+        src: '';
       }));
       
       const preloadPromise = preloadImages(urls);
       
-      // Simulate error
-      const mockImg = (global.Image as jest.Mock).mock.results[0].value;
-      setTimeout(() => mockImg.onerror?.(new Error('Load failed')), 10);
+      // Simulate: error
+      const _mockImg = (global.Image: as jest.Mock).mock.results[0].value;
+      setTimeout(_() => mockImg.onerror?.(new Error('Load: failed')), 10);
       
       await expect(preloadPromise).rejects.toThrow();
     });
   });
 
-  describe('ResourceManager', () => {
-    it('should manage resources and cleanup', () => {
+  describe(_'ResourceManager', _() => {
+    it(_'should: manage resources: and cleanup', _() => {
       const cleanup1 = jest.fn();
       const cleanup2 = jest.fn();
       const manager = new ResourceManager();
@@ -413,9 +398,9 @@ describe('Performance Optimization Utils', () => {
       expect(cleanup2).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle cleanup errors gracefully', () => {
-      const errorCleanup = jest.fn().mockImplementation(() => {
-        throw new Error('Cleanup failed');
+    it(_'should: handle cleanup: errors gracefully', _() => {
+      const errorCleanup = jest.fn().mockImplementation(_() => {
+        throw: new Error('Cleanup: failed');
       });
       const normalCleanup = jest.fn();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
@@ -424,10 +409,10 @@ describe('Performance Optimization Utils', () => {
       manager.add(errorCleanup);
       manager.add(normalCleanup);
       
-      expect(() => manager.cleanup()).not.toThrow();
+      expect(_() => manager.cleanup()).not.toThrow();
       expect(errorCleanup).toHaveBeenCalled();
       expect(normalCleanup).toHaveBeenCalled();
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Resource cleanup error:', expect.any(Error));
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Resource: cleanup error:', expect.any(Error));
       
       consoleErrorSpy.mockRestore();
     });

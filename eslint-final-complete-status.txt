@@ -1,0 +1,1085 @@
+
+c:\Users\damat\_REPOS\astral-field\__tests__\agents\draft-specialist\draft-logic.test.ts
+   61:23  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   63:29  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   63:52  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   64:11  warning  'numTeams' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   75:32  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   75:69  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   97:47  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  120:11  warning  'totalRounds' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  128:20  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  139:39  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  299:43  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\agents\league-systems\league-service.test.ts
+   41:7   warning  'mockUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   50:34  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+   73:43  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  131:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  154:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  186:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  216:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  238:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  255:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  277:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  292:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  305:12  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  324:37  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+  338:42  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\fixtures\mock-data.ts
+  4:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\__tests__\services\authService.test.ts
+   35:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   36:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   53:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   54:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   75:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   97:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  126:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  127:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  159:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  167:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  168:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+c:\Users\damat\_REPOS\astral-field\__tests__\utils\test-utils.ts
+  19:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\next.config.js
+  39:23  warning  'buildId' is defined but never used         @typescript-eslint/no-unused-vars
+  39:32  warning  'dev' is defined but never used             @typescript-eslint/no-unused-vars
+  39:47  warning  'defaultLoaders' is defined but never used  @typescript-eslint/no-unused-vars
+  39:63  warning  'webpack' is defined but never used         @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\public\sw.js
+    5:7   warning  'API_CACHE' is assigned a value but never used   @typescript-eslint/no-unused-vars
+   24:7   warning  'API_ROUTES' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  109:9   warning  'url' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  122:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+  163:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+  183:12  warning  'error' is defined but never used                @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\auto-draft-league.js
+  6:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\comprehensive-eslint-fix.js
+  19:80  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\comprehensive-parsing-fix.js
+  14:69  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\create-users-table.js
+  4:146  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\deploy-production.js
+  25:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\eslint-mass-fix.js
+   6:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+   7:7   warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   7:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+   8:22  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  61:10  warning  'error' is defined but never used          @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\scripts\final-cleanup-fix.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\final-eslint-fix.js
+  11:73  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-all-eslint.js
+  46:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-broken-entities.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-parameter-prefixing.js
+  99:52  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\fix-parsing-errors.js
+  69:64  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\one-click-setup.js
+  41:58  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\production-build.js
+  53:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\progress-tracker.js
+  23:51  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\setup-database.js
+  8:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\setup-vercel.js
+  9:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\test-database.js
+  20:89  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\test-health-endpoint.js
+  33:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\validate-env.js
+  8:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\validate-environment.js
+  79:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\scripts\verify-deployment.js
+  9:18  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\admin\setup\page.tsx
+  19:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\admin\audit-logs\route.ts
+  64:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\ai\chat\route.ts
+  62:25  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\analytics\component-performance\route.ts
+  20:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\analytics\performance\route.ts
+  32:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\analytics\route.ts
+  39:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\auth\login\route.ts
+  43:11  warning  'password_hash' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\auth\mfa\route.ts
+  38:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\cleanup\route.ts
+  65:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\config\status\route.ts
+  9:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\create-demo-users\route.ts
+  7:48  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\cron\live\route.ts
+  26:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\debug-db\route.ts
+  10:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\debug\login\route.ts
+  22:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\debug\users\route.ts
+  24:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\demo\reset-setup\route.ts
+  6:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\draft-socket\route.ts
+  11:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\health\database\route.ts
+  24:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\health\route.ts
+  14:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\info\route.ts
+  12:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\init-db\route.ts
+  15:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\injuries\alerts\route.ts
+  36:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\injuries\preferences\route.ts
+  34:25  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\injuries\route.ts
+  47:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\insights\route.ts
+  25:62  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\league\health\route.ts
+  171:55  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\league\rules\route.ts
+  21:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\league\settings\route.ts
+  27:88  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\live\league\route.ts
+  15:30  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\live\tick\route.ts
+  40:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\nfl\teams\route.ts
+  10:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\players\search\route.ts
+  19:21  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\quick-login\route.ts
+  5:71  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-database\route.ts
+  83:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-demo-league\route.ts
+  7:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-profiles\route.ts
+  5:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-simple-league\route.ts
+  5:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\setup-users\route.ts
+  27:48  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\sync-sportsdata\route.ts
+  58:36  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\sync-week\route.ts
+  45:90  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\analyze\route.ts
+  48:59  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\opportunities\route.ts
+  25:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\route.ts
+  35:38  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\trades\valuations\route.ts
+  48:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\fairness\route.ts
+  50:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\process\route.ts
+  31:29  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\recommendations\route.ts
+  55:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\api\waivers\intelligent\value\route.ts
+  84:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\auth\login\page.tsx
+  10:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\auth\register\page.tsx
+  10:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\dashboard\page.tsx
+  27:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\error.tsx
+  4:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\layout.tsx
+  11:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\analytics\page.tsx
+  19:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\draft\page.tsx
+  20:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\live\page.tsx
+  15:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\oracle\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\page.tsx
+  11:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\roster\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\trades\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\[id]\waiver\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\leagues\create\page.tsx
+  9:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\not-found.tsx
+  11:25  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  11:46  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+c:\Users\damat\_REPOS\astral-field\src\app\page.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\players\page.tsx
+  10:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\settings\page.tsx
+  13:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\app\status\page.tsx
+  58:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\GlobalErrorHandler.tsx
+  4:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\PWAInstallPrompt.tsx
+  12:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\PerformanceMonitor.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\AccessibilityPanel.tsx
+  16:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\AccessibilityProvider.tsx
+  35:53  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\accessibility\EnhancedAccessibilityPanel.tsx
+  36:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\PerformanceDashboard.tsx
+  66:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\SportsDataSync.tsx
+  12:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\admin\SystemHealthDashboard.tsx
+  85:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ai\AIVoiceAssistant.tsx
+  16:67  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\ComparativeBenchmarkDashboard.tsx
+  122:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\CustomDashboardBuilder.tsx
+  48:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\PerformanceAttributionDashboard.tsx
+  117:55  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\analytics\SeasonStrategyDashboard.tsx
+  138:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\ForumList.tsx
+  55:7  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\ThreadComposer.tsx
+  29:63  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\community\TournamentCard.tsx
+  48:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\creator\ContentCreatorDashboard.tsx
+  41:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\dashboard\ModernDashboard.tsx
+  34:11  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\error\ErrorBoundary.tsx
+  15:36  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\activity\ActivityFeed.tsx
+  53:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\analytics\AnalyticsDashboard.tsx
+  39:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\LoginForm.tsx
+  8:71  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\MFASettings.tsx
+  29:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\auth\RegisterForm.tsx
+  11:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\automation\AutomationManager.tsx
+  39:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\commissioner\CommissionerDashboard.tsx
+  40:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\AnnouncementSystem.tsx
+  76:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\MessagingSystem.tsx
+  69:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\communication\TradeNegotiationInterface.tsx
+  69:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\dashboard\Phase2Dashboard.tsx
+  60:33  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftBoard.tsx
+  12:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftBoardVisualization.tsx
+  71:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftChat.tsx
+  33:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftRoom.tsx
+  58:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftSetup.tsx
+  23:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\DraftTimer.tsx
+  13:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\ParticipantsList.tsx
+  54:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\draft\PlayerSelection.tsx
+  31:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\league\CreateLeagueForm.tsx
+  21:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\league\LeagueOverview.tsx
+  42:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\LineupBuilder.tsx
+  33:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\LineupOptimizer.tsx
+  28:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\lineup\SmartLineupSuggestions.tsx
+  58:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\live\LiveDashboard.tsx
+  49:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\notifications\NotificationCenter.tsx
+  32:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\notifications\RealTimeNotifications.tsx
+  70:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\oracle\AIChat.tsx
+  26:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\oracle\OracleChat.tsx
+  61:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\player\EnhancedPlayerCard.tsx
+  90:13  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\player\PlayerList.tsx
+  36:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\players\EnhancedPlayerSearch.tsx
+  44:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\playoffs\PlayoffPredictor.tsx
+  29:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\reporting\ReportingCenter.tsx
+  42:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\roster\RosterManager.tsx
+  40:54  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\stats\StatsWidget.tsx
+  37:27  error  Parsing error: Numeric separators are not allowed here
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeAnalysisModal.tsx
+  36:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeCenter.tsx
+  67:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\trade\TradeImpactAnalysis.tsx
+  118:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\waiver\WaiverWire.tsx
+  50:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\features\waiver\WaiverWireIntelligence.tsx
+  99:46  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\AppLayout.tsx
+  25:21  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\MobileLayout.tsx
+  20:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\MobileNavigation.tsx
+  39:42  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\layout\ResponsiveLayout.tsx
+  7:9  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\components\league\LeagueHealthDashboard.tsx
+  95:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\CacheProvider.tsx
+  38:39  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\ConnectionMonitor.tsx
+  41:11  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\LazyLoad.tsx
+  25:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\performance\OptimisticUIProvider.tsx
+  54:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\social\StrategyCard.tsx
+  48:15  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\social\TradingSignals.tsx
+  45:13  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\testing\AIValidationDashboard.tsx
+  75:53  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Button\Button.tsx
+  9:82  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Card\Card.tsx
+  31:17  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\ErrorBoundary.tsx
+  22:48  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Input\Input.tsx
+  8:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\LoadingSpinner.tsx
+  18:15  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\MobileTable.tsx
+  71:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Modal.tsx
+  16:16  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Notifications.tsx
+  6:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\SkeletonLoader.tsx
+  42:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\Toast.tsx
+  22:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\VoiceInterface\VoiceInterface.tsx
+  6:25  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\alert.tsx
+  7:45  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\badge.tsx
+  7:45  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\AdvancedChart.tsx
+  23:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\MatchupComparison.tsx
+  42:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\PerformanceHeatmap.tsx
+  30:78  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\charts\TrendAnalysisChart.tsx
+  31:83  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\progress.tsx
+  7:51  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\table.tsx
+  6:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\tabs.tsx
+  14:43  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\ui\tooltip.tsx
+  19:58  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\components\waivers\IntelligentWaiverDashboard.tsx
+  69:53  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useCache.ts
+  34:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useDebounce.ts
+  3:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useDraftSocket.ts
+  25:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useMobile.ts
+  48:66  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\usePWA.tsx
+  25:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\hooks\useVoiceInterface.ts
+  13:33  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\anthropic-mock.ts
+  42:25  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\api-error-handler.ts
+  15:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth-utils.ts
+  32:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth.ts
+  33:20  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth\__tests__\mfa.test.ts
+  22:11  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auth\mfa.ts
+  7:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\auto-init.ts
+  6:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\cache.ts
+  9:2  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\caching.ts
+  60:33  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\database.ts
+  50:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\db.ts
+  8:62  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\env-config.ts
+  41:65  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\env-validation.ts
+  72:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\env.ts
+  22:48  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\errorHandling.ts
+  117:25  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\logger.ts
+  38:46  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\metadata.ts
+  32:88  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\mobile\__tests__\touchOptimization.test.ts
+  68:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\mobile\touchOptimization.ts
+  26:19  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\lib\monitoring.ts
+  106:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\neon-database.ts
+  35:6  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\neon-serverless.ts
+  10:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance.ts
+  18:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance\__tests__\optimization.test.ts
+  25:10  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\performance\optimization.ts
+  18:11  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\pwa.ts
+  33:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\rate-limit.ts
+  22:22  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\__tests__\auditLogger.test.ts
+  15:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\auditLogger.ts
+  81:19  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\lib\security\rateLimiter.ts
+  17:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\server-init.ts
+  17:61  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\socket-server.ts
+  80:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\supabase.ts
+  17:20  error  Parsing error: ')' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\supabase\server.ts
+  16:29  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\utils.ts
+  11:21  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\lib\websocket.ts
+  13:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\middleware\errorMiddleware.ts
+  24:56  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\ai\multimodal-analysis.ts
+  9:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\ai\real-time-sentiment.ts
+  9:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\comparative-analysis.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\performance-attribution.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\analytics\season-strategy.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\community\categories.ts
+  7:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\community\threads.ts
+  7:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\integration\ai-workflow.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\integration\system-health.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\performance\load-testing.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\pages\api\testing\ai-validation.ts
+  8:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\adaptiveLearningEngine.ts
+  130:14  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\adaptiveRiskModeling.ts
+  150:50  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiAnalyticsService.ts
+  66:87  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiCacheService.ts
+  56:58  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\aiRouterService.ts
+  90:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\counterOfferGenerator.ts
+  117:33  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\enhancedAIRouter.ts
+  54:61  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\fantasyFootballSpecialistAI.ts
+  176:25  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\intelligentWaiverProcessor.ts
+  164:48  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\multiModalAnalyzer.ts
+  172:38  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\openaiService.ts
+  17:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\oracleService.ts
+  86:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\personalizedCommunication.ts
+  83:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\playoffPredictor.ts
+  108:56  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\predictionEngine.ts
+  138:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\claude35SonnetProvider.ts
+  26:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\deepSeekProvider.ts
+  3:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\geminiProvider.ts
+  3:59  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\providers\gpt4oProvider.ts
+  26:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\router.ts
+  58:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeAnalysisEngine.ts
+  175:28  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeAnalyzer.ts
+  70:31  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\tradeOpportunityDetector.ts
+  109:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\userBehaviorAnalysis.ts
+  44:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\userBehaviorAnalyzer.ts
+  144:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ai\waiverValueAssessment.ts
+  73:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\analyticsService.ts
+  137:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\comparativeAnalysis.ts
+  68:57  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\performanceAttribution.ts
+  107:53  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\performanceAttributionService.ts
+  190:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\predictiveAnalyticsDashboard.ts
+  101:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\predictiveMarketSimulation.ts
+  210:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\seasonStrategy.ts
+  99:26  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\analytics\statisticalModelingService.ts
+  70:29  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\authService.ts
+  45:35  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\draftService.ts
+  58:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\leagueService.ts
+  86:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\liveScoreService.ts
+  75:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\playerService.ts
+  66:39  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\rosterService.ts
+  61:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\sportsDataService.ts
+  119:53  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\stackAuthService.ts
+  32:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\teamService.ts
+  44:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\tradeService.ts
+  65:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\waiverService.ts
+  53:47  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\api\weatherService.ts
+  41:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\automation\leagueAutomation.ts
+  118:54  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\betting\bettingOddsIntegration.ts
+  228:30  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\commissioner\commissionerService.ts
+  190:54  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\dfs\dailyFantasyOptimizer.ts
+  203:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\competitiveTeamGenerator.ts
+  49:22  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\draftingStrategies.ts
+  42:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\intelligentAutoDraft.ts
+  87:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\draft\rosterConstructionSimulator.ts
+  63:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\dynasty\dynastyAnalyticsService.ts
+  272:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\economy\virtualCurrencySystem.ts
+  228:39  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\enterprise\whiteLabelPlatform.ts
+  299:43  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\external\sportsDataService.ts
+  98:54  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\fallback\aiFallbackManager.ts
+  66:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\gamification\achievementSystem.ts
+  162:27  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\integration\aiSystemsIntegrator.ts
+  85:27  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\automatedLineupOptimizer.ts
+  90:4  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\automatedRuleEnforcement.ts
+  59:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\league\leagueHealthMonitor.ts
+  68:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\learning\continuousLearningEngine.ts
+  82:49  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\advancedEnsembleLearner.ts
+  58:40  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\advancedStatModels.ts
+  43:28  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\injuryImpactPredictor.ts
+  104:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\matchupAnalysisEngine.ts
+  129:35  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\ml\predictionPipeline.ts
+  124:24  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\monitoring\productionMonitor.ts
+  61:32  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\notification\notificationService.ts
+  57:23  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\onboarding\interactiveTutorialSystem.ts
+  277:31  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\optimization\performanceOptimizer.ts
+  109:59  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\dynamicRecommendationEngine.ts
+  142:34  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\gameScriptAnalyzer.ts
+  171:59  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\liveGameMonitor.ts
+  112:34  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\services\realtime\liveInjuryTracker.ts
+  84:60  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\reporting\leagueReporting.ts
+  413:52  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\sentiment\realTimeSentimentAnalyzer.ts
+  78:33  error  Parsing error: An identifier or keyword cannot immediately follow a numeric literal
+
+c:\Users\damat\_REPOS\astral-field\src\services\server\liveScoringService.ts
+  70:43  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\testing\aiAccuracyValidator.ts
+  90:63  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\websocket\manager.ts
+  32:41  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\services\websocket\socketService.ts
+  64:45  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\authStore.ts
+  14:33  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\draftStore.ts
+  25:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\leagueStore.ts
+  18:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\liveStore.ts
+  29:44  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\oracleStore.ts
+  46:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\playerStore.ts
+  44:61  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\rosterStore.ts
+  14:37  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\tradeStore.ts
+  13:38  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\stores\waiverStore.ts
+  21:42  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\styles\design-system\theme.ts
+  94:6  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\styles\design-system\tokens.ts
+  8:19  error  Parsing error: ',' expected
+
+c:\Users\damat\_REPOS\astral-field\src\types\ai.ts
+  147:26  error  Parsing error: '>' expected
+
+c:\Users\damat\_REPOS\astral-field\src\types\jest-dom.d.ts
+  5:34  warning  'T' is defined but never used  @typescript-eslint/no-unused-vars
+
+c:\Users\damat\_REPOS\astral-field\tests\automated\website-tester.js
+  6:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 396 problems (341 errors, 55 warnings)
+

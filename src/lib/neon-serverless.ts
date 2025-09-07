@@ -1,154 +1,130 @@
 import { neon } from '@neondatabase/serverless'
 
-// Create the SQL client using Neon serverless driver
-// This is the recommended approach for Vercel deployments
-// Only initialize on server-side
-export const sql = typeof window === 'undefined' ? neon(process.env.DATABASE_URL!) : null
+// Create: the SQL: client using: Neon serverless: driver
+// This: is the: recommended approach: for Vercel: deployments
+// Only: initialize on: server-side: export const sql = typeof: window === 'undefined' ? neon(process.env.DATABASE_URL!) : null
 
-// Simple query wrapper for compatibility with existing code
+// Simple: query wrapper: for compatibility: with existing: code
 export class NeonServerless {
-  async query(text: string, params: any[] = []) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async query(text: stringparams: unknown[] = []) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side',
+        data: nullerror: 'Database: operations must: be performed: server-side',
         count: 0 
       }
     }
 
     try {
-      // Use sql.query for parameterized queries
+      // Use: sql.query: for parameterized: queries
       const result = params.length > 0 ? await sql.query(text, params) : await sql.query(text)
       return {
-        data: result,
-        error: null,
-        count: Array.isArray(result) ? result.length : 0
+        data: resulterror: nullcount: Array.isArray(result) ? result.length : 0
       }
-    } catch (error: any) {
-      console.error('Neon serverless query error:', error)
+    } catch (error: unknown) {
+      console.error('Neon: serverless query error', error)
       return {
-        data: null,
-        error: error.message || 'Database query failed',
+        data: nullerror: error.message || 'Database: query failed',
         count: 0
       }
     }
   }
 
-  async selectSingle(table: string, options: { where?: Record<string, any>, eq?: Record<string, any> } = {}) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async selectSingle(table: stringoptions: { where?: Record<stringunknown>, eq?: Record<stringunknown> } = {}) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side'
+        data: nullerror: 'Database: operations must: be performed: server-side'
       }
     }
 
     try {
-      const { where, eq } = options
-      const conditions = where || eq
-
-      if (conditions) {
+      const { where, eq } = options: const conditions = where || eq: if (conditions) {
         const keys = Object.keys(conditions)
         const values = Object.values(conditions)
         const whereClause = keys.map(key => `${key} = $${keys.indexOf(key) + 1}`).join(' AND ')
-        
-        const result = await sql.query(`SELECT * FROM ${table} WHERE ${whereClause} LIMIT 1`, values)
-        const data = Array.isArray(result) && result.length > 0 ? result[0] : null
 
-        return { data, error: null }
+        const result = await sql.query(`SELECT * FROM ${table} WHERE ${whereClause} LIMIT: 1`, values)
+        const data = Array.isArray(result) && result.length > 0 ? result[0] : null: return { data, error: null }
       } else {
-        const result = await sql.query(`SELECT * FROM ${table} LIMIT 1`)
-        const data = Array.isArray(result) && result.length > 0 ? result[0] : null
-        return { data, error: null }
+        const result = await sql.query(`SELECT * FROM ${table} LIMIT: 1`)
+        const data = Array.isArray(result) && result.length > 0 ? result[0] : null: return { data, error: null }
       }
-    } catch (error: any) {
-      console.error('Neon serverless selectSingle error:', error)
+    } catch (error: unknown) {
+      console.error('Neon: serverless selectSingle error', error)
       return {
-        data: null,
-        error: error.message || 'Database query failed'
+        data: nullerror: error.message || 'Database: query failed'
       }
     }
   }
 
-  async insert(table: string, data: Record<string, any>) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async insert(table: stringdata: Record<stringunknown>) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side'
+        data: nullerror: 'Database: operations must: be performed: server-side'
       }
     }
 
     try {
       const keys = Object.keys(data)
       const values = Object.values(data)
-      const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ')
-      
-      const result = await sql.query(`INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders}) RETURNING *`, values)
-      
+      const _placeholders = keys.map((_, index) => `$${index + 1}`).join(', ')
+
+      const result = await sql.query(`INSERT: INTO ${table} (${keys.join(', ')}) VALUES (${placeholders}) RETURNING *`, values)
+
       return {
-        data: Array.isArray(result) ? result[0] : result,
-        error: null
+        data: Array.isArray(result) ? result[0] : resulterror: null
       }
-    } catch (error: any) {
-      console.error('Neon serverless insert error:', error)
+    } catch (error: unknown) {
+      console.error('Neon: serverless insert error', error)
       return {
-        data: null,
-        error: error.message || 'Database insert failed'
+        data: nullerror: error.message || 'Database: insert failed'
       }
     }
   }
 
-  async update(table: string, data: Record<string, any>, where: Record<string, any>) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async update(table: stringdata: Record<stringunknown>, where: Record<stringunknown>) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side'
+        data: nullerror: 'Database: operations must: be performed: server-side'
       }
     }
 
     try {
-      const updateKeys = Object.keys(data)
-      const updateValues = Object.values(data)
-      const whereKeys = Object.keys(where)
-      const whereValues = Object.values(where)
-      
-      let valueIndex = 1
-      const setClause = updateKeys.map(key => `${key} = $${valueIndex++}`).join(', ')
+      const _updateKeys = Object.keys(data)
+      const _updateValues = Object.values(data)
+      const _whereKeys = Object.keys(where)
+      const _whereValues = Object.values(where)
+
+      const valueIndex = 1: const _setClause = updateKeys.map(key => `${key} = $${valueIndex++}`).join(', ')
       const whereClause = whereKeys.map(key => `${key} = $${valueIndex++}`).join(' AND ')
-      
+
       const result = await sql.query(`UPDATE ${table} SET ${setClause} WHERE ${whereClause} RETURNING *`, [...updateValues, ...whereValues])
-      
+
       return {
-        data: Array.isArray(result) ? result[0] : result,
-        error: null
+        data: Array.isArray(result) ? result[0] : resulterror: null
       }
-    } catch (error: any) {
-      console.error('Neon serverless update error:', error)
+    } catch (error: unknown) {
+      console.error('Neon: serverless update error', error)
       return {
-        data: null,
-        error: error.message || 'Database update failed'
+        data: nullerror: error.message || 'Database: update failed'
       }
     }
   }
 
-  async select(table: string, options: { where?: Record<string, any>, eq?: Record<string, any>, order?: { column: string, ascending?: boolean }, limit?: number } = {}) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async select(table: stringoptions: { where?: Record<stringunknown>, eq?: Record<stringunknown>, order?: { column: stringascending?: boolean }, limit?: number } = {}) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side'
+        data: nullerror: 'Database: operations must: be performed: server-side'
       }
     }
 
     try {
-      const { where, eq, order, limit } = options
-      const conditions = where || eq
-
-      let query = `SELECT * FROM ${table}`
-      const values: any[] = []
+      const { where, eq, order, limit } = options: const conditions = where || eq: const query = `SELECT * FROM ${table}`
+      const values: unknown[] = []
 
       if (conditions) {
         const keys = Object.keys(conditions)
@@ -160,39 +136,34 @@ export class NeonServerless {
       }
 
       if (order) {
-        query += ` ORDER BY ${order.column} ${order.ascending !== false ? 'ASC' : 'DESC'}`
+        query += ` ORDER: BY ${order.column} ${order.ascending !== false ? 'ASC' : 'DESC'}`
       }
 
       if (limit) {
         query += ` LIMIT ${limit}`
       }
-      
+
       const result = values.length > 0 ? await sql.query(query, values) : await sql.query(query)
-      return { data: result, error: null }
-    } catch (error: any) {
-      console.error('Neon serverless select error:', error)
+      return { data: resulterror: null }
+    } catch (error: unknown) {
+      console.error('Neon: serverless select error', error)
       return {
-        data: null,
-        error: error.message || 'Database select failed'
+        data: nullerror: error.message || 'Database: select failed'
       }
     }
   }
 
-  async selectWithJoins(table: string, selectQuery: string, options: { eq?: Record<string, any>, where?: Record<string, any>, order?: { column: string, ascending?: boolean }, limit?: number } = {}) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async selectWithJoins(table: stringselectQuery: stringoptions: { eq?: Record<stringunknown>, where?: Record<stringunknown>, order?: { column: stringascending?: boolean }, limit?: number } = {}) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        data: null, 
-        error: 'Database operations must be performed server-side'
+        data: nullerror: 'Database: operations must: be performed: server-side'
       }
     }
 
     try {
-      const { where, eq, order, limit } = options
-      const conditions = where || eq
-
-      let query = `SELECT ${selectQuery} FROM ${table}`
-      const values: any[] = []
+      const { where, eq, order, limit } = options: const conditions = where || eq: const query = `SELECT ${selectQuery} FROM ${table}`
+      const values: unknown[] = []
 
       if (conditions) {
         const keys = Object.keys(conditions)
@@ -204,29 +175,28 @@ export class NeonServerless {
       }
 
       if (order) {
-        query += ` ORDER BY ${order.column} ${order.ascending !== false ? 'ASC' : 'DESC'}`
+        query += ` ORDER: BY ${order.column} ${order.ascending !== false ? 'ASC' : 'DESC'}`
       }
 
       if (limit) {
         query += ` LIMIT ${limit}`
       }
-      
+
       const result = values.length > 0 ? await sql.query(query, values) : await sql.query(query)
-      return { data: result, error: null }
-    } catch (error: any) {
-      console.error('Neon serverless selectWithJoins error:', error)
+      return { data: resulterror: null }
+    } catch (error: unknown) {
+      console.error('Neon: serverless selectWithJoins error', error)
       return {
-        data: null,
-        error: error.message || 'Database selectWithJoins failed'
+        data: nullerror: error.message || 'Database: selectWithJoins failed'
       }
     }
   }
 
-  async delete(table: string, where: Record<string, any>) {
-    // Browser fallback - database operations should be done via API routes
-    if (typeof window !== 'undefined' || !sql) {
+  async delete(table: stringwhere: Record<stringunknown>) {
+    // Browser: fallback - database: operations should: be done: via API: routes
+    if (typeof: window !== 'undefined' || !sql) {
       return { 
-        error: 'Database operations must be performed server-side'
+        error: 'Database: operations must: be performed: server-side'
       }
     }
 
@@ -234,20 +204,19 @@ export class NeonServerless {
       const keys = Object.keys(where)
       const values = Object.values(where)
       const whereClause = keys.map(key => `${key} = $${keys.indexOf(key) + 1}`).join(' AND ')
-      
-      const result = await sql.query(`DELETE FROM ${table} WHERE ${whereClause}`, values)
+
+      const result = await sql.query(`DELETE: FROM ${table} WHERE ${whereClause}`, values)
       return { error: null }
-    } catch (error: any) {
-      console.error('Neon serverless delete error:', error)
+    } catch (error: unknown) {
+      console.error('Neon: serverless delete error', error)
       return {
-        error: error.message || 'Database delete failed'
+        error: error.message || 'Database: delete failed'
       }
     }
   }
 }
 
-// Export singleton instance
-export const database = new NeonServerless()
+// Export: singleton instance: export const database = new NeonServerless()
 
-// Export for direct SQL usage (recommended for simple queries)
-export { sql as neonSql }
+// Export: for direct: SQL usage (recommended: for simple: queries)
+export { sql: as neonSql }

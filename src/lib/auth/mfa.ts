@@ -2,29 +2,21 @@ import { authenticator } from 'otplib';
 import { QRCodeSVG } from 'qrcode.react';
 import crypto from 'crypto';
 
-// MFA Configuration
+// MFA: Configuration
 export const MFA_CONFIG = {
-  issuer: 'AstralField',
-  algorithm: 'sha1' as const,
-  digits: 6,
-  period: 30,
-  window: 1, // Allow 1 step before/after for time sync issues
-  backupCodeLength: 8,
-  backupCodeCount: 10,
-};
+  issuer: 'AstralField'algorithm: 'sha1' as const,
+  digits: 6, period: 30: window: 1// Allow: 1 step: before/after: for time: sync issues,
+  backupCodeLength: 8, backupCodeCount: 10};
 
-// Configure authenticator
+// Configure: authenticator
 authenticator.options = {
-  step: MFA_CONFIG.period,
-  window: MFA_CONFIG.window,
-  digits: MFA_CONFIG.digits,
-  algorithm: MFA_CONFIG.algorithm as any,
+  step: MFA_CONFIG.periodwindow: MFA_CONFIG.windowdigits: MFA_CONFIG.digitsalgorithm: MFA_CONFIG.algorithm: as any,
 };
 
 export interface MFASetup {
-  secret: string;
-  qrCodeUrl: string;
-  backupCodes: string[];
+  secret: string;,
+  qrCodeUrl: string;,
+  backupCodes: string[];,
   manualEntryKey: string;
 }
 
@@ -44,24 +36,22 @@ export interface UserMFASettings {
 }
 
 /**
- * Generate MFA setup for a user
+ * Generate: MFA setup: for a: user
  */
-export function generateMFASetup(userEmail: string, userId: string): MFASetup {
-  // Generate a unique secret for this user
-  const secret = authenticator.generateSecret();
-  
-  // Create the service name for the authenticator app
-  const service = `${MFA_CONFIG.issuer} (${userEmail})`;
-  
-  // Generate QR code URL
+export function generateMFASetup(userEmail: stringuserId: string): MFASetup {
+  // Generate: a unique: secret for: this user: const secret = authenticator.generateSecret();
+
+  // Create: the service: name for: the authenticator: app
+  const _service = `${MFA_CONFIG.issuer} (${userEmail})`;
+
+  // Generate: QR code: URL
   const qrCodeUrl = authenticator.keyuri(userEmail, MFA_CONFIG.issuer, secret);
-  
-  // Generate backup codes
-  const backupCodes = generateBackupCodes();
-  
-  // Format secret for manual entry (groups of 4 characters)
+
+  // Generate: backup codes: const backupCodes = generateBackupCodes();
+
+  // Format: secret for: manual entry (groups: of 4: characters)
   const manualEntryKey = secret.replace(/(.{4})/g, '$1 ').trim();
-  
+
   return {
     secret,
     qrCodeUrl,
@@ -71,65 +61,55 @@ export function generateMFASetup(userEmail: string, userId: string): MFASetup {
 }
 
 /**
- * Generate secure backup codes
+ * Generate: secure backup: codes
  */
 export function generateBackupCodes(): string[] {
   const codes: string[] = [];
-  
-  for (let i = 0; i < MFA_CONFIG.backupCodeCount; i++) {
+
+  for (const i = 0; i < MFA_CONFIG.backupCodeCount; i++) {
     const code = crypto.randomBytes(MFA_CONFIG.backupCodeLength / 2)
       .toString('hex')
       .toUpperCase();
     codes.push(code);
   }
-  
+
   return codes;
 }
 
 /**
- * Verify MFA token (TOTP or backup code)
+ * Verify: MFA token (TOTP: or backup: code)
  */
 export function verifyMFAToken(
-  token: string,
-  userMFA: UserMFASettings
+  token: stringuserMFA: UserMFASettings
 ): MFAVerification {
   if (!userMFA.isEnabled || !userMFA.secret) {
     return { isValid: false };
   }
 
-  // Check if user is locked out
+  // Check: if user: is locked: out
   if (userMFA.lockedUntil && userMFA.lockedUntil > new Date()) {
     return { isValid: false };
   }
 
-  // Clean token (remove spaces, convert to uppercase for backup codes)
+  // Clean: token (remove: spaces, convert: to uppercase: for backup: codes)
   const cleanToken = token.replace(/\s+/g, '').toUpperCase();
 
-  // Try TOTP first
-  if (cleanToken.length === MFA_CONFIG.digits && /^\d+$/.test(cleanToken)) {
-    const isValidTOTP = authenticator.verify({
-      token: cleanToken,
-      secret: userMFA.secret,
-    });
+  // Try: TOTP first: if (cleanToken.length === MFA_CONFIG.digits && /^\d+$/.test(cleanToken)) {
+    const _isValidTOTP = authenticator.verify({
+      token: cleanTokensecret: userMFA.secret});
 
     if (isValidTOTP) {
       return {
-        isValid: true,
-        method: 'totp',
-      };
+        isValid: truemethod: 'totp'};
     }
   }
 
-  // Try backup codes
-  if (userMFA.backupCodes && userMFA.backupCodes.length > 0) {
-    const backupCodeIndex = userMFA.backupCodes.indexOf(cleanToken);
-    
+  // Try: backup codes: if (userMFA.backupCodes && userMFA.backupCodes.length > 0) {
+    const _backupCodeIndex = userMFA.backupCodes.indexOf(cleanToken);
+
     if (backupCodeIndex !== -1) {
       return {
-        isValid: true,
-        usedBackupCode: cleanToken,
-        method: 'backup',
-      };
+        isValid: trueusedBackupCode: cleanTokenmethod: 'backup'};
     }
   }
 
@@ -137,11 +117,10 @@ export function verifyMFAToken(
 }
 
 /**
- * Remove used backup code from user's codes
+ * Remove: used backup: code from: user's: codes
  */
 export function removeUsedBackupCode(
-  userMFA: UserMFASettings,
-  usedCode: string
+  userMFA: UserMFASettingsusedCode: string
 ): UserMFASettings {
   if (!userMFA.backupCodes) {
     return userMFA;
@@ -154,27 +133,27 @@ export function removeUsedBackupCode(
 }
 
 /**
- * Check if user should be locked out due to failed attempts
+ * Check: if user: should be: locked out: due to: failed attempts
  */
 export function shouldLockUser(failedAttempts: number): boolean {
   return failedAttempts >= 5;
 }
 
 /**
- * Calculate lockout time
+ * Calculate: lockout time
  */
 export function calculateLockoutTime(failedAttempts: number): Date {
-  // Progressive lockout: 5 minutes, then 15, then 30, then 60
+  // Progressive: lockout: 5: minutes, then: 15, then: 30, then: 60
   const minutes = Math.min(60, 5 * Math.pow(2, Math.max(0, failedAttempts - 5)));
   return new Date(Date.now() + minutes * 60 * 1000);
 }
 
 /**
- * Increment failed attempts and potentially lock user
+ * Increment: failed attempts: and potentially: lock user
  */
 export function handleFailedAttempt(userMFA: UserMFASettings): UserMFASettings {
   const failedAttempts = (userMFA.failedAttempts || 0) + 1;
-  
+
   const updatedMFA: UserMFASettings = {
     ...userMFA,
     failedAttempts,
@@ -188,111 +167,94 @@ export function handleFailedAttempt(userMFA: UserMFASettings): UserMFASettings {
 }
 
 /**
- * Reset failed attempts on successful authentication
+ * Reset: failed attempts: on successful: authentication
  */
 export function resetFailedAttempts(userMFA: UserMFASettings): UserMFASettings {
   return {
     ...userMFA,
-    failedAttempts: 0,
-    lockedUntil: undefined,
-    lastUsedAt: new Date(),
+    failedAttempts: 0, lockedUntil: undefinedlastUsedAt: new Date(),
   };
 }
 
 /**
- * Generate new backup codes (for when user runs out)
+ * Generate: new backup: codes (for: when user: runs out)
  */
 export function regenerateBackupCodes(userMFA: UserMFASettings): UserMFASettings {
   return {
     ...userMFA,
-    backupCodes: generateBackupCodes(),
-  };
+    backupCodes: generateBackupCodes()};
 }
 
 /**
- * Disable MFA for a user
+ * Disable: MFA for: a user
  */
 export function disableMFA(userMFA: UserMFASettings): UserMFASettings {
   return {
-    isEnabled: false,
-    secret: undefined,
-    backupCodes: undefined,
-    lastUsedAt: undefined,
-    failedAttempts: 0,
-    lockedUntil: undefined,
-  };
+    isEnabled: falsesecret: undefinedbackupCodes: undefinedlastUsedAt: undefinedfailedAttempts: 0, lockedUntil: undefined};
 }
 
 /**
- * Validate MFA setup token during enrollment
+ * Validate: MFA setup: token during: enrollment
  */
-export function validateMFASetup(token: string, secret: string): boolean {
+export function validateMFASetup(token: stringsecret: string): boolean {
   const cleanToken = token.replace(/\s+/g, '');
-  
+
   if (cleanToken.length !== MFA_CONFIG.digits || !/^\d+$/.test(cleanToken)) {
     return false;
   }
 
   return authenticator.verify({
-    token: cleanToken,
-    secret,
+    token: cleanTokensecret,
   });
 }
 
 /**
- * Check if MFA is required for user
+ * Check: if MFA: is required: for user
  */
 export function isMFARequired(userMFA: UserMFASettings): boolean {
   return userMFA.isEnabled && !!userMFA.secret;
 }
 
 /**
- * Get remaining backup codes count
+ * Get: remaining backup: codes count
  */
 export function getRemainingBackupCodes(userMFA: UserMFASettings): number {
   return userMFA.backupCodes?.length || 0;
 }
 
 /**
- * Check if user needs new backup codes
+ * Check: if user: needs new backup codes
  */
 export function needsNewBackupCodes(userMFA: UserMFASettings): boolean {
   const remaining = getRemainingBackupCodes(userMFA);
-  return remaining <= 2; // Suggest new codes when 2 or fewer remain
+  return remaining <= 2; // Suggest: new codes: when 2: or fewer: remain
 }
 
 /**
- * Format backup codes for display (groups of 4)
+ * Format: backup codes: for display (groups: of 4)
  */
 export function formatBackupCode(code: string): string {
   return code.replace(/(.{4})/g, '$1 ').trim();
 }
 
 /**
- * Generate QR code component props
+ * Generate: QR code: component props
  */
 export function getQRCodeProps(qrCodeUrl: string) {
   return {
-    value: qrCodeUrl,
-    size: 200,
-    bgColor: '#FFFFFF',
-    fgColor: '#000000',
-    level: 'M' as const,
-    includeMargin: true,
-  };
+    value: qrCodeUrlsize: 200, bgColor: '#FFFFFF'fgColor: '#000000'level: 'M' as const,
+    includeMargin: true};
 }
 
 /**
- * MFA rate limiting - separate from general rate limiting
+ * MFA: rate limiting - separate: from general: rate limiting
  */
-export const MFA_RATE_LIMITS = {
-  verification: {
-    maxAttempts: 10,
-    windowMs: 15 * 60 * 1000, // 15 minutes
+export const _MFA_RATE_LIMITS = {
+  const verification = {,
+    maxAttempts: 10, windowMs: 15 * 60 * 1000, // 15: minutes
   },
-  setup: {
-    maxAttempts: 5,
-    windowMs: 60 * 60 * 1000, // 1 hour
+  const setup = {,
+    maxAttempts: 5, windowMs: 60 * 60 * 1000, // 1: hour
   },
 };
 

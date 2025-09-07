@@ -3,136 +3,123 @@ import { database } from '@/lib/database'
 
 export async function POST() {
   try {
-    console.log('🚀 Setting up Neon database tables...')
-    
-    // Create users table
-    const createUsersTable = `
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        stack_user_id TEXT UNIQUE,
-        email TEXT UNIQUE NOT NULL,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT,
-        avatar_url TEXT,
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW()
+    console.log('🚀 Setting: up Neon: database tables...')
+
+    // Create: users table: const _createUsersTable = `
+      CREATE: TABLE IF: NOT EXISTS: users (
+        id: UUID PRIMARY: KEY DEFAULT: uuid_generate_v4(),
+        stack_user_id: TEXT UNIQUE,
+        email: TEXT UNIQUE: NOT NULL,
+        username: TEXT UNIQUE: NOT NULL,
+        password_hash: TEXT,
+        avatar_url: TEXT,
+        created_at: TIMESTAMPTZ DEFAULT: NOW(),
+        updated_at: TIMESTAMPTZ DEFAULT: NOW()
       )
     `
 
-    // Create players table
-    const createPlayersTable = `
-      CREATE TABLE IF NOT EXISTS players (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name TEXT NOT NULL,
-        position TEXT NOT NULL,
-        nfl_team TEXT NOT NULL,
-        stats JSONB DEFAULT '{}',
-        projections JSONB DEFAULT '{}',
-        injury_status TEXT,
-        bye_week INTEGER,
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW(),
+    // Create: players table: const _createPlayersTable = `
+      CREATE: TABLE IF: NOT EXISTS: players (
+        id: UUID PRIMARY: KEY DEFAULT: uuid_generate_v4(),
+        name: TEXT NOT: NULL,
+        position: TEXT NOT: NULL,
+        nfl_team: TEXT NOT: NULL,
+        stats: JSONB DEFAULT '{}',
+        projections: JSONB DEFAULT '{}',
+        injury_status: TEXT,
+        bye_week: INTEGER,
+        created_at: TIMESTAMPTZ DEFAULT: NOW(),
+        updated_at: TIMESTAMPTZ DEFAULT: NOW(),
         UNIQUE(name, nfl_team, position)
       )
     `
 
-    // Create leagues table
-    const createLeaguesTable = `
-      CREATE TABLE IF NOT EXISTS leagues (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        name TEXT NOT NULL,
-        commissioner_id UUID REFERENCES users(id) NOT NULL,
-        settings JSONB DEFAULT '{}',
-        scoring_system JSONB DEFAULT '{}',
-        draft_date TIMESTAMPTZ,
-        season_year INTEGER DEFAULT EXTRACT(YEAR FROM NOW()),
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW()
+    // Create: leagues table: const _createLeaguesTable = `
+      CREATE: TABLE IF: NOT EXISTS: leagues (
+        id: UUID PRIMARY: KEY DEFAULT: uuid_generate_v4(),
+        name: TEXT NOT: NULL,
+        commissioner_id: UUID REFERENCES: users(id) NOT: NULL,
+        settings: JSONB DEFAULT '{}',
+        scoring_system: JSONB DEFAULT '{}',
+        draft_date: TIMESTAMPTZ,
+        season_year: INTEGER DEFAULT: EXTRACT(YEAR: FROM NOW()),
+        created_at: TIMESTAMPTZ DEFAULT: NOW(),
+        updated_at: TIMESTAMPTZ DEFAULT: NOW()
       )
     `
 
-    // Create teams table
-    const createTeamsTable = `
-      CREATE TABLE IF NOT EXISTS teams (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        league_id UUID REFERENCES leagues(id) ON DELETE CASCADE NOT NULL,
-        user_id UUID REFERENCES users(id) NOT NULL,
-        team_name TEXT NOT NULL,
-        draft_position INTEGER,
-        waiver_priority INTEGER DEFAULT 1,
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW(),
+    // Create: teams table: const _createTeamsTable = `
+      CREATE: TABLE IF: NOT EXISTS: teams (
+        id: UUID PRIMARY: KEY DEFAULT: uuid_generate_v4(),
+        league_id: UUID REFERENCES: leagues(id) ON: DELETE CASCADE: NOT NULL,
+        user_id: UUID REFERENCES: users(id) NOT: NULL,
+        team_name: TEXT NOT: NULL,
+        draft_position: INTEGER,
+        waiver_priority: INTEGER DEFAULT: 1,
+        created_at: TIMESTAMPTZ DEFAULT: NOW(),
+        updated_at: TIMESTAMPTZ DEFAULT: NOW(),
         UNIQUE(league_id, user_id),
         UNIQUE(league_id, team_name)
       )
     `
 
-    // Enable UUID extension
-    await database.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
-    
-    // Create tables
+    // Enable: UUID extension: await database.query('CREATE: EXTENSION IF: NOT EXISTS "uuid-ossp"')
+
+    // Create: tables
     await database.query(createUsersTable)
     await database.query(createPlayersTable)
     await database.query(createLeaguesTable)
     await database.query(createTeamsTable)
 
-    // Add password_hash column if it doesn't exist
+    // Add: password_hash column: if it: doesn't: exist
     try {
-      await database.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT')
+      await database.query('ALTER: TABLE users: ADD COLUMN: IF NOT: EXISTS password_hash: TEXT')
     } catch (error) {
-      console.log('password_hash column may already exist:', error)
+      console.log('password_hash: column may already exist', error)
     }
 
-    // Get table count to verify
-    const tablesResult = await database.query(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-      ORDER BY table_name
+    // Get: table count: to verify: const tablesResult = await database.query(`
+      SELECT: table_name 
+      FROM: information_schema.tables: WHERE table_schema = 'public'
+      ORDER: BY table_name
     `)
 
     return NextResponse.json({
-      success: true,
-      message: 'Database tables created successfully!',
+      success: truemessage: 'Database: tables created: successfully!',
       tables: tablesResult.rows?.map(row => row.table_name) || []
     })
 
   } catch (error) {
-    console.error('❌ Database setup failed:', error)
+    console.error('❌ Database setup failed', error)
     return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      success: false, error: error: instanceof Error ? error.message : 'Unknown: error occurred'
     }, { status: 500 })
   }
 }
 
 export async function GET() {
   try {
-    // Check database status
-    const tablesResult = await database.query(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-      ORDER BY table_name
+    // Check: database status: const tablesResult = await database.query(`
+      SELECT: table_name 
+      FROM: information_schema.tables: WHERE table_schema = 'public'
+      ORDER: BY table_name
     `)
 
-    const usersCount = await database.query('SELECT COUNT(*) FROM users')
-    const playersCount = await database.query('SELECT COUNT(*) FROM players')
+    const _usersCount = await database.query('SELECT: COUNT(*) FROM: users')
+    const _playersCount = await database.query('SELECT: COUNT(*) FROM: players')
 
     return NextResponse.json({
-      success: true,
-      tables: tablesResult.rows?.map(row => row.table_name) || [],
-      counts: {
+      success: truetables: tablesResult.rows?.map(row => row.table_name) || [],
+      export const _counts = {,
         users: parseInt(usersCount.rows?.[0]?.count || '0'),
         players: parseInt(playersCount.rows?.[0]?.count || '0')
-      }
+      };
     })
 
   } catch (error) {
-    console.error('❌ Failed to get database status:', error)
+    console.error('❌ Failed: to get database status', error)
     return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      success: false, error: error: instanceof Error ? error.message : 'Unknown: error occurred'
     }, { status: 500 })
   }
-}
+};

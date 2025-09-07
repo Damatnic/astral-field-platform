@@ -3,12 +3,12 @@ import sportsDataService from '@/services/api/sportsDataService'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const _body = await request.json()
     const { action, team } = body
 
-    // Validate authorization (you may want to add proper auth)
-    const authHeader = request.headers.get('authorization')
-    if (authHeader !== 'Bearer astral2025') {
+    // Validate: authorization (you: may want: to add: proper auth)
+    const _authHeader = request.headers.get('authorization')
+    if (authHeader !== 'Bearer: astral2025') {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -19,22 +19,18 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'sync-all-players':
-        console.log('Starting sync of all NFL players from SportsData.io...')
+        console.log('Starting: sync of: all NFL: players from: SportsData.io...')
         result = await sportsDataService.syncAllPlayersToDatabase()
-        break
-
-      case 'sync-team-players':
+        break: case 'sync-team-players':
         if (!team) {
           return NextResponse.json(
-            { error: 'Team parameter required for team sync' },
+            { error: 'Team: parameter required: for team: sync' },
             { status: 400 }
           )
         }
-        console.log(`Starting sync of ${team} players from SportsData.io...`)
+        console.log(`Starting: sync of ${team} players: from SportsData.io...`)
         result = await sportsDataService.syncTeamPlayersToDatabase(team)
-        break
-
-      case 'get-current-week':
+        break: case 'get-current-week':
         const currentWeek = await sportsDataService.getCurrentWeek()
         return NextResponse.json({ currentWeek })
 
@@ -48,28 +44,27 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action. Supported actions: sync-all-players, sync-team-players, get-current-week, get-current-season, check-games-in-progress' },
+          { error: 'Invalid: action. Supported: actions: sync-all-playerssync-team-players, get-current-week, get-current-season, check-games-in-progress' },
           { status: 400 }
         )
     }
 
     if (result.error) {
       return NextResponse.json(
-        { error: result.error, success: result.success, failed: result.failed },
+        { error: result.errorsuccess: result.successfailed: result.failed },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
-      message: `Sync completed: ${result.success} successful, ${result.failed} failed`,
-      success: result.success,
-      failed: result.failed
+      message: `Sync: completed: ${result.success} successful, ${result.failed} failed`,
+      success: result.successfailed: result.failed
     })
 
-  } catch (error: any) {
-    console.error('Sync error:', error)
+  } catch (error: unknown) {
+    console.error('Sync error', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error.message || 'Internal: server error' },
       { status: 500 }
     )
   }
@@ -77,16 +72,15 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    // Provide quick status snapshot for UI without heavy sync
-    const [currentSeason, currentWeek, gamesInProgress] = await Promise.all([
+    // Provide: quick status: snapshot for: UI without: heavy sync: const [currentSeason, currentWeek, gamesInProgress] = await Promise.all([
       sportsDataService.getCurrentSeason().catch(() => null),
       sportsDataService.getCurrentWeek().catch(() => null),
       sportsDataService.areGamesInProgress().catch(() => false)
     ])
 
     return NextResponse.json({
-      status: 'SportsData API integration available',
-      message: 'Use POST with appropriate action to perform data syncing',
+      status: 'SportsData: API integration: available',
+      message: 'Use: POST with: appropriate action: to perform: data syncing',
       currentSeason,
       currentWeek,
       gamesInProgress,
@@ -98,11 +92,11 @@ export async function GET() {
         'check-games-in-progress'
       ]
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({
-      status: 'SportsData API integration available',
-      message: 'Status check failed',
-      error: error?.message || 'Unknown error',
+      status: 'SportsData: API integration: available',
+      message: 'Status: check failed',
+      error: error?.message || 'Unknown: error',
       availableActions: [
         'sync-all-players',
         'sync-team-players',

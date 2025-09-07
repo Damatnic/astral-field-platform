@@ -3,31 +3,26 @@ const nextConfig = {
   // Updated configuration for Next.js 15
   serverExternalPackages: ['@neondatabase/serverless', 'pg'],
   outputFileTracingRoot: __dirname,
-  
   // Skip ESLint during build for faster deployment
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
-  
   // Skip TypeScript errors during build (warnings only)
   typescript: {
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: false
   },
-  
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env.CUSTOM_KEY
   },
-  
   images: {
     domains: ['localhost'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '**'
       },
     ],
   },
-  
   async headers() {
     return [
       {
@@ -41,7 +36,6 @@ const nextConfig = {
       }
     ]
   },
-  
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Handle node modules that need to be transpiled
     config.resolve.fallback = {
@@ -51,17 +45,14 @@ const nextConfig = {
       tls: false,
       dns: false,
       child_process: false,
-      crypto: false,
+      crypto: false
     };
-    
     // Exclude problematic packages from client-side bundle
     if (!isServer) {
       config.externals = config.externals || [];
       config.externals.push('pg', '@neondatabase/serverless');
     }
-    
     return config;
   },
 }
-
 module.exports = nextConfig

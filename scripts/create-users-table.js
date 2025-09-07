@@ -1,25 +1,19 @@
 const { Pool } = require('pg')
-
 // Database connection using the Neon connection string
 const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:npg_IrC1uWYi3FdA@ep-floral-lake-aeiztgic-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require',
-  ssl: { rejectUnauthorized: false }
+  connectionString: 'postgresql://neondb_owner:npg_IrC1uWYi3FdA@ep-floral-lake-aeiztgic-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require'ssl: { rejectUnauthorized: false }
 })
-
 async function createUsersTable() {
   console.log('🚀 Creating users table in Neon database...\n')
-  
   try {
     // Test connection
     console.log('🔌 Testing database connection...')
     const testResult = await pool.query('SELECT NOW()')
-    console.log('✅ Connected to Neon database at:', testResult.rows[0].now)
-    
+    console.log('✅ Connected to Neon database at: 'testResult.rows[0].now)
     // Enable UUID extension
     console.log('\n🔧 Enabling UUID extension...')
     await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     console.log('✅ UUID extension enabled')
-    
     // Create users table
     console.log('\n📋 Creating users table...')
     await pool.query(`
@@ -34,7 +28,6 @@ async function createUsersTable() {
       )
     `)
     console.log('✅ Users table created')
-    
     // Create players table
     console.log('\n🏈 Creating players table...')
     await pool.query(`
@@ -53,7 +46,6 @@ async function createUsersTable() {
       )
     `)
     console.log('✅ Players table created')
-    
     // Verify tables exist
     console.log('\n📊 Verifying tables...')
     const tablesResult = await pool.query(`
@@ -62,18 +54,14 @@ async function createUsersTable() {
       WHERE table_schema = 'public'
       ORDER BY table_name
     `)
-    
     const existingTables = tablesResult.rows.map(row => row.table_name)
-    console.log('✅ Created tables:', existingTables)
-    
+    console.log('✅ Created tables: 'existingTables)
     console.log('\n🎉 Database setup complete!')
     console.log('Next: Run `node scripts/create-neon-test-users.js` to add users')
-    
   } catch (error) {
-    console.error('❌ Setup failed:', error.message)
+    console.error('❌ Setup failed: 'error.message)
   } finally {
     await pool.end()
   }
 }
-
 createUsersTable().catch(console.error)

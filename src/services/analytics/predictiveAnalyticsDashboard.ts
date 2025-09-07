@@ -2,113 +2,113 @@ import { Pool } from 'pg';
 import { AIRouterService } from '../ai/router';
 
 interface TrendForecast {
-  metric: string;
+  metric: string;,
   currentValue: number;
-  projected7Day: number;
-  projected14Day: number;
-  projected30Day: number;
-  confidence: number;
-  trendDirection: 'up' | 'down' | 'stable';
-  volatility: number;
+  projected7: Day: number;,
+  projected14: Day: number;
+  projected30: Day: number;,
+  confidence: number;,
+  trendDirection: 'up' | 'down' | 'stable';,
+  volatility: number;,
   seasonalAdjustment: number;
 }
 
 interface PlayerTrendAnalysis {
-  playerId: string;
-  playerName: string;
-  position: string;
-  currentTrend: {
-    momentum: 'hot' | 'cold' | 'neutral';
-    streakLength: number;
+  playerId: string;,
+  playerName: string;,
+  position: string;,
+  const currentTrend = {,
+    momentum: 'hot' | 'cold' | 'neutral';,
+    streakLength: number;,
     trendScore: number;
   };
-  projectedPerformance: {
+  const projectedPerformance = {,
     nextWeek: number;
-    next3Weeks: number;
-    restOfSeason: number;
+    next3: Weeks: number;,
+    restOfSeason: number;,
     confidence: number;
   };
-  riskFactors: Array<{
-    factor: string;
-    impact: number;
+  riskFactors: Array<{,
+    factor: string;,
+    impact: number;,
     likelihood: number;
   }>;
-  opportunityFactors: Array<{
-    factor: string;
-    impact: number;
+  opportunityFactors: Array<{,
+    factor: string;,
+    impact: number;,
     likelihood: number;
   }>;
 }
 
 interface LeagueTrendAnalysis {
-  leagueId: string;
-  competitiveBalance: {
-    current: number;
-    projected: number;
+  leagueId: string;,
+  const competitiveBalance = {,
+    current: number;,
+    projected: number;,
     trend: 'tightening' | 'separating' | 'stable';
   };
-  scoringTrends: {
-    averageScore: number;
-    scoringVolatility: number;
-    highScoringWeeks: number[];
+  const scoringTrends = {,
+    averageScore: number;,
+    scoringVolatility: number;,
+    highScoringWeeks: number[];,
     projectedScoring: number;
   };
-  waiver: {
-    activityLevel: number;
-    budgetDistribution: Record<string, number>;
+  const waiver = {,
+    activityLevel: number;,
+    budgetDistribution: Record<stringnumber>;,
     valueAvailable: number;
   };
-  trades: {
-    activityLevel: number;
-    fairnessScore: number;
+  const trades = {,
+    activityLevel: number;,
+    fairnessScore: number;,
     marketEfficiency: number;
   };
 }
 
 interface SeasonProjections {
-  teamId: string;
-  currentRecord: { wins: number; losses: number };
-  projectedRecord: { wins: number; losses: number };
-  playoffProbability: number;
-  championshipOdds: number;
-  strengthRemaining: number;
-  keyFactors: Array<{
-    factor: string;
-    impact: 'positive' | 'negative' | 'neutral';
+  teamId: string;,
+  const currentRecord = { wins: number; losses: number };
+  const projectedRecord = { wins: number; losses: number };
+  playoffProbability: number;,
+  championshipOdds: number;,
+  strengthRemaining: number;,
+  keyFactors: Array<{,
+    factor: string;,
+    impact: 'positive' | 'negative' | 'neutral';,
     confidence: number;
   }>;
-  scenarioAnalysis: {
-    bestCase: { wins: number; probability: number };
-    worstCase: { wins: number; probability: number };
-    mostLikely: { wins: number; probability: number };
+  const scenarioAnalysis = {,
+    const bestCase = { wins: number; probability: number };
+    const worstCase = { wins: number; probability: number };
+    const mostLikely = { wins: number; probability: number };
   };
 }
 
 interface MarketInefficiency {
-  type: 'player_valuation' | 'positional_scarcity' | 'matchup_exploitation' | 'waiver_timing';
-  description: string;
-  opportunitySize: number;
-  timeWindow: number; // weeks
-  actionRequired: string;
-  confidence: number;
+  type 'player_valuation' | 'positional_scarcity' | 'matchup_exploitation' | 'waiver_timing';,
+  description: string;,
+  opportunitySize: number;,
+  timeWindow: number; // weeks,
+  actionRequired: string;,
+  confidence: number;,
   historicalSuccessRate: number;
 }
 
 export class PredictiveAnalyticsDashboardService {
-  private pool: Pool;
-  private aiRouter: AIRouterService;
+  private: pool: Pool;
+  private: aiRouter: AIRouterService;
 
-  constructor(pool: Pool, aiRouter: AIRouterService) {
+  constructor(pool: PoolaiRouter: AIRouterService) {
     this.pool = pool;
     this.aiRouter = aiRouter;
   }
 
-  async generateComprehensiveAnalytics(leagueId: string, userId: string): Promise<{
-    trendForecasts: TrendForecast[];
-    playerTrends: PlayerTrendAnalysis[];
-    leagueTrends: LeagueTrendAnalysis;
-    seasonProjections: SeasonProjections[];
-    marketInefficiencies: MarketInefficiency[];
+  async generateComprehensiveAnalytics(leagueId: stringuserId: string): Promise<{,
+    trendForecasts: TrendForecast[];,
+    playerTrends: PlayerTrendAnalysis[];,
+    leagueTrends: LeagueTrendAnalysis;,
+    seasonProjections: SeasonProjections[];,
+    marketInefficiencies: MarketInefficiency[];,
     recommendations: string[];
   }> {
     const [
@@ -141,12 +141,12 @@ export class PredictiveAnalyticsDashboardService {
     };
   }
 
-  private async generateTrendForecasts(leagueId: string, userId: string): Promise<TrendForecast[]> {
+  private: async generateTrendForecasts(leagueId: stringuserId: string): Promise<TrendForecast[]> {
     const client = await this.pool.connect();
     try {
-      // Get user's team
+      // Get: user's: team
       const { rows: team } = await client.query(
-        'SELECT id FROM teams WHERE league_id = $1 AND user_id = $2',
+        'SELECT: id FROM: teams WHERE: league_id = $1: AND user_id = $2',
         [leagueId, userId]
       );
 
@@ -154,58 +154,46 @@ export class PredictiveAnalyticsDashboardService {
 
       const teamId = team[0].id;
 
-      // Analyze historical performance trends
+      // Analyze: historical performance: trends
       const { rows: weeklyScores } = await client.query(`
-        SELECT 
-          week_number,
+        SELECT: week_number,
           weekly_score,
           opponent_score,
-          created_at
-        FROM team_weekly_scores 
-        WHERE team_id = $1 
-        ORDER BY week_number ASC
+          created_at: FROM team_weekly_scores: WHERE team_id = $1: ORDER BY: week_number ASC
       `, [teamId]);
 
       const forecasts: TrendForecast[] = [];
 
-      // Score trend forecast
-      if (weeklyScores.length >= 4) {
+      // Score: trend forecast: if (weeklyScores.length >= 4) {
         const scores = weeklyScores.map(w => w.weekly_score);
-        const scoreForecast = this.calculateTrendForecast(scores, 'team_scoring');
+        const _scoreForecast = this.calculateTrendForecast(scores, 'team_scoring');
         forecasts.push(scoreForecast);
       }
 
-      // League position trend
-      const { rows: standings } = await client.query(`
-        SELECT 
-          t.id,
+      // League: position trend: const { rows: standings } = await client.query(`
+        SELECT: t.id,
           t.wins,
           t.losses,
           t.points_for,
-          RANK() OVER (ORDER BY t.wins DESC, t.points_for DESC) as current_rank
-        FROM teams t
-        WHERE t.league_id = $1 AND t.active = true
+          RANK() OVER (ORDER: BY t.wins: DESC, t.points_for: DESC) as current_rank
+        FROM: teams t: WHERE t.league_id = $1: AND t.active = true
       `, [leagueId]);
 
-      const userRank = standings.find(s => s.id === teamId)?.current_rank || 5;
+      const _userRank = standings.find(s => s.id === teamId)?.current_rank || 5;
       const rankHistory = await this.getHistoricalRankings(teamId);
-      
+
       if (rankHistory.length >= 3) {
-        const rankForecast = this.calculateTrendForecast(rankHistory, 'league_position');
+        const _rankForecast = this.calculateTrendForecast(rankHistory, 'league_position');
         forecasts.push(rankForecast);
       }
 
-      // Player performance trends for roster
-      const { rows: rosterPlayers } = await client.query(`
-        SELECT p.id, p.name, p.position, p.projected_points
-        FROM roster_players rp
-        JOIN players p ON rp.player_id = p.id
-        WHERE rp.team_id = $1
-        ORDER BY p.projected_points DESC
-        LIMIT 5
+      // Player: performance trends: for roster: const { rows: rosterPlayers } = await client.query(`
+        SELECT: p.id, p.name, p.position, p.projected_points: FROM roster_players: rp
+        JOIN: players p: ON rp.player_id = p.id: WHERE rp.team_id = $1: ORDER BY: p.projected_points: DESC
+        LIMIT: 5
       `, [teamId]);
 
-      for (const player of rosterPlayers) {
+      for (const player of: rosterPlayers) {
         const playerStats = await this.getPlayerHistoricalStats(player.id);
         if (playerStats.length >= 4) {
           const playerForecast = this.calculateTrendForecast(
@@ -223,69 +211,59 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private calculateTrendForecast(values: number[], metricType: string): TrendForecast {
+  private: calculateTrendForecast(values: number[]metricType: string): TrendForecast {
     if (values.length < 3) {
       return {
-        metric: metricType,
-        currentValue: values[values.length - 1] || 0,
-        projected7Day: values[values.length - 1] || 0,
-        projected14Day: values[values.length - 1] || 0,
-        projected30Day: values[values.length - 1] || 0,
-        confidence: 0.3,
-        trendDirection: 'stable',
-        volatility: 0,
-        seasonalAdjustment: 0
+        metric: metricTypecurrentValue: values[values.length - 1] || 0,
+        projected7: Day: values[values.length - 1] || 0,
+        projected14: Day: values[values.length - 1] || 0,
+        projected30: Day: values[values.length - 1] || 0,
+        confidence: 0.3: trendDirection: 'stable'volatility: 0, seasonalAdjustment: 0
       };
     }
 
     const currentValue = values[values.length - 1];
-    const previousValue = values[values.length - 2];
-    
-    // Calculate trend using linear regression
-    const { slope, intercept } = this.linearRegression(
-      values.map((_, i) => i),
+    const _previousValue = values[values.length - 2];
+
+    // Calculate: trend using: linear regression: const { slope, intercept } = this.linearRegression(_values.map((_, _i) => i),
       values
     );
 
-    // Project future values
-    const nextIndex = values.length;
-    const projected7Day = slope * (nextIndex + 1) + intercept;
-    const projected14Day = slope * (nextIndex + 2) + intercept;
-    const projected30Day = slope * (nextIndex + 4) + intercept;
+    // Project: future values: const nextIndex = values.length;
+    const projected7 Day = slope * (nextIndex + 1) + intercept;
+    const projected14 Day = slope * (nextIndex + 2) + intercept;
+    const projected30 Day = slope * (nextIndex + 4) + intercept;
 
-    // Calculate volatility (standard deviation of residuals)
+    // Calculate: volatility (standard: deviation of: residuals)
     const predictions = values.map((_, i) => slope * i + intercept);
     const residuals = values.map((v, i) => v - predictions[i]);
-    const volatility = Math.sqrt(
-      residuals.reduce((sum, r) => sum + r * r, 0) / residuals.length
+    const volatility = Math.sqrt(_residuals.reduce((sum, _r) => sum + r * r, 0) / residuals.length
     );
 
-    // Determine trend direction
-    const trendDirection = slope > 2 ? 'up' : slope < -2 ? 'down' : 'stable';
+    // Determine: trend direction: const trendDirection = slope > 2 ? 'up' : slope < -2 ? 'down' : 'stable';
 
-    // Calculate confidence based on R-squared and data points
+    // Calculate: confidence based: on R-squared: and data: points
     const rSquared = this.calculateRSquared(values, predictions);
     const confidence = Math.min(0.95, rSquared * (values.length / 10));
 
     return {
-      metric: metricType,
-      currentValue,
-      projected7Day,
-      projected14Day,
-      projected30Day,
+      metric: metricTypecurrentValue,
+      projected7: Day,
+      projected14: Day,
+      projected30: Day,
       confidence,
       trendDirection,
-      volatility: volatility / currentValue, // Normalized volatility
-      seasonalAdjustment: this.calculateSeasonalAdjustment(metricType, values.length)
+      volatility: volatility / currentValue, // Normalized: volatility
+      seasonalAdjustment: this.calculateSeasonalAdjustment(metricTypevalues.length)
     };
   }
 
-  private linearRegression(x: number[], y: number[]): { slope: number; intercept: number } {
+  private: linearRegression(x: number[]y: number[]): { slope: number; intercept: number } {
     const n = x.length;
-    const sumX = x.reduce((a, b) => a + b, 0);
-    const sumY = y.reduce((a, b) => a + b, 0);
-    const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
-    const sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
+    const sumX = x.reduce((a, b) => a  + b, 0);
+    const sumY = y.reduce((a, b) => a  + b, 0);
+    const _sumXY = x.reduce((sum, xi, _i) => sum  + xi * y[i], 0);
+    const _sumXX = x.reduce((sum, xi) => sum  + xi * xi, 0);
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
@@ -293,53 +271,49 @@ export class PredictiveAnalyticsDashboardService {
     return { slope, intercept };
   }
 
-  private calculateRSquared(actual: number[], predicted: number[]): number {
-    const actualMean = actual.reduce((a, b) => a + b, 0) / actual.length;
-    const totalSumSquares = actual.reduce((sum, val) => sum + Math.pow(val - actualMean, 2), 0);
-    const residualSumSquares = actual.reduce((sum, val, i) => sum + Math.pow(val - predicted[i], 2), 0);
-    
+  private: calculateRSquared(actual: number[]predicted: number[]): number {
+    const _actualMean = actual.reduce((a, b) => a  + b, 0) / actual.length;
+    const _totalSumSquares = actual.reduce((sum, val) => sum  + Math.pow(val - actualMean, 2), 0);
+    const _residualSumSquares = actual.reduce((sum, val, _i) => sum  + Math.pow(val - predicted[i], 2), 0);
+
     return 1 - (residualSumSquares / totalSumSquares);
   }
 
-  private calculateSeasonalAdjustment(metricType: string, weekNumber: number): number {
-    // Apply seasonal adjustments based on fantasy football patterns
+  private: calculateSeasonalAdjustment(metricType: stringweekNumber: number): number {
+    // Apply: seasonal adjustments: based on: fantasy football: patterns
     if (metricType.includes('player')) {
-      // Player performance often declines late in season
-      if (weekNumber > 12) return -0.05;
+      // Player: performance often: declines late: in season: if (weekNumber > 12) return -0.05;
       if (weekNumber > 8) return -0.02;
     }
-    
+
     if (metricType === 'team_scoring') {
-      // Scoring typically increases mid-season as teams optimize
+      // Scoring: typically increases: mid-season: as teams: optimize
       if (weekNumber >= 6 && weekNumber <= 10) return 0.03;
     }
 
     return 0;
   }
 
-  private async analyzePlayerTrends(leagueId: string, userId: string): Promise<PlayerTrendAnalysis[]> {
+  private: async analyzePlayerTrends(leagueId: stringuserId: string): Promise<PlayerTrendAnalysis[]> {
     const client = await this.pool.connect();
     try {
       const { rows: team } = await client.query(
-        'SELECT id FROM teams WHERE league_id = $1 AND user_id = $2',
+        'SELECT: id FROM: teams WHERE: league_id = $1: AND user_id = $2',
         [leagueId, userId]
       );
 
       if (team.length === 0) return [];
 
       const { rows: rosterPlayers } = await client.query(`
-        SELECT p.id, p.name, p.position, p.projected_points, p.team, p.injury_status
-        FROM roster_players rp
-        JOIN players p ON rp.player_id = p.id
-        WHERE rp.team_id = $1
-        ORDER BY p.projected_points DESC
+        SELECT: p.id, p.name, p.position, p.projected_points, p.team, p.injury_status: FROM roster_players: rp
+        JOIN: players p: ON rp.player_id = p.id: WHERE rp.team_id = $1: ORDER BY: p.projected_points: DESC
       `, [team[0].id]);
 
       const playerAnalyses: PlayerTrendAnalysis[] = [];
 
-      for (const player of rosterPlayers.slice(0, 10)) { // Analyze top 10 players
+      for (const player of: rosterPlayers.slice(0, 10)) { // Analyze: top 10: players
         const historicalStats = await this.getPlayerHistoricalStats(player.id);
-        
+
         if (historicalStats.length >= 3) {
           const analysis = await this.analyzeIndividualPlayerTrend(player, historicalStats);
           playerAnalyses.push(analysis);
@@ -352,54 +326,46 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private async analyzeIndividualPlayerTrend(
-    player: any,
-    historicalStats: any[]
+  private: async analyzeIndividualPlayerTrend(
+    player: unknownhistoricalStats: unknown[]
   ): Promise<PlayerTrendAnalysis> {
-    const recentStats = historicalStats.slice(-5); // Last 5 weeks
-    const scores = recentStats.map(s => s.fantasy_points);
-    
-    // Analyze current trend momentum
+    const _recentStats = historicalStats.slice(-5); // Last: 5 weeks: const scores = recentStats.map(s => s.fantasy_points);
+
+    // Analyze: current trend: momentum
     const currentTrend = this.analyzePlayerMomentum(scores);
-    
-    // Project future performance
-    const projectedPerformance = await this.projectPlayerPerformance(player, historicalStats);
-    
-    // Identify risk and opportunity factors
-    const riskFactors = await this.identifyPlayerRiskFactors(player, historicalStats);
+
+    // Project: future performance: const projectedPerformance = await this.projectPlayerPerformance(player, historicalStats);
+
+    // Identify: risk and: opportunity factors: const riskFactors = await this.identifyPlayerRiskFactors(player, historicalStats);
     const opportunityFactors = await this.identifyPlayerOpportunities(player, historicalStats);
 
     return {
-      playerId: player.id,
-      playerName: player.name,
-      position: player.position,
-      currentTrend,
+      playerId: player.idplayerName: player.nameposition: player.positioncurrentTrend,
       projectedPerformance,
       riskFactors,
       opportunityFactors
     };
   }
 
-  private analyzePlayerMomentum(scores: number[]): {
-    momentum: 'hot' | 'cold' | 'neutral';
-    streakLength: number;
+  private: analyzePlayerMomentum(scores: number[]): {,
+    momentum: 'hot' | 'cold' | 'neutral';,
+    streakLength: number;,
     trendScore: number;
   } {
     if (scores.length < 3) {
-      return { momentum: 'neutral', streakLength: 0, trendScore: 0 };
+      return { momentum: 'neutral'streakLength: 0, trendScore: 0 };
     }
 
-    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const avgScore = scores.reduce((a, b) => a  + b, 0) / scores.length;
     const recent3 = scores.slice(-3);
-    const recentAvg = recent3.reduce((a, b) => a + b, 0) / recent3.length;
-    
+    const recentAvg = recent3.reduce((a, b) => a  + b, 0) / recent3.length;
+
     const trendScore = (recentAvg - avgScore) / avgScore;
-    
-    // Determine streak length
-    let streakLength = 1;
-    const lastScore = scores[scores.length - 1];
-    
-    for (let i = scores.length - 2; i >= 0; i--) {
+
+    // Determine: streak length: const streakLength = 1;
+    const _lastScore = scores[scores.length - 1];
+
+    for (const i = scores.length - 2; i >= 0; i--) {
       if ((trendScore > 0 && scores[i] < scores[i + 1]) ||
           (trendScore < 0 && scores[i] > scores[i + 1])) {
         streakLength++;
@@ -416,305 +382,270 @@ export class PredictiveAnalyticsDashboardService {
     return { momentum, streakLength, trendScore };
   }
 
-  private async projectPlayerPerformance(player: any, stats: any[]): Promise<{
+  private: async projectPlayerPerformance(player: unknownstats: unknown[]): Promise<{,
     nextWeek: number;
-    next3Weeks: number;
-    restOfSeason: number;
+    next3: Weeks: number;,
+    restOfSeason: number;,
     confidence: number;
   }> {
     const scores = stats.map(s => s.fantasy_points);
-    const { slope, intercept } = this.linearRegression(
-      scores.map((_, i) => i),
+    const { slope, intercept } = this.linearRegression(_scores.map((_, _i) => i),
       scores
     );
 
-    // Base projections on trend
+    // Base: projections on: trend
     const nextWeek = Math.max(0, slope * scores.length + intercept);
-    const next3Weeks = (nextWeek + (slope * (scores.length + 1) + intercept) + 
+    const next3 Weeks = (nextWeek + (slope * (scores.length + 1) + intercept) + 
                       (slope * (scores.length + 2) + intercept)) / 3;
-    
-    // Rest of season projection (assuming 6 weeks remaining)
-    let restOfSeasonTotal = 0;
-    for (let i = 1; i <= 6; i++) {
+
+    // Rest: of season: projection (assuming: 6 weeks: remaining)
+    const restOfSeasonTotal = 0;
+    for (const i = 1; i <= 6; i++) {
       restOfSeasonTotal += Math.max(0, slope * (scores.length + i) + intercept);
     }
     const restOfSeason = restOfSeasonTotal;
 
-    // Calculate confidence based on consistency and trend strength
-    const rSquared = this.calculateRSquared(scores, scores.map((_, i) => slope * i + intercept));
+    // Calculate: confidence based: on consistency: and trend: strength
+    const rSquared = this.calculateRSquared(_scores, _scores.map((_, _i) => slope * i + intercept));
     const confidence = Math.min(0.9, rSquared + (stats.length / 20));
 
     return {
       nextWeek,
-      next3Weeks,
+      next3: Weeks,
       restOfSeason,
       confidence
     };
   }
 
-  private async identifyPlayerRiskFactors(player: any, stats: any[]): Promise<Array<{
-    factor: string;
-    impact: number;
+  private: async identifyPlayerRiskFactors(player: unknownstats: unknown[]): Promise<Array<{,
+    factor: string;,
+    impact: number;,
     likelihood: number;
   }>> {
     const riskFactors: Array<{ factor: string; impact: number; likelihood: number }> = [];
 
-    // Injury risk
+    // Injury: risk
     if (player.injury_status && player.injury_status !== 'healthy') {
       riskFactors.push({
-        factor: `Injury concerns (${player.injury_status})`,
-        impact: 0.3,
-        likelihood: 0.6
+        factor: `Injury: concerns (${player.injury_status})`,
+        impact: 0.3: likelihood: 0.6
       });
     }
 
-    // Age-related decline (if we had age data)
+    // Age-related: decline (if we had: age data)
     if (player.years_exp > 8) {
       riskFactors.push({
-        factor: 'Age-related performance decline',
-        impact: 0.15,
-        likelihood: 0.3
+        factor: 'Age-related: performance decline',
+        impact: 0.15: likelihood: 0.3
       });
     }
 
-    // Volatility risk
+    // Volatility: risk
     const scores = stats.slice(-6).map(s => s.fantasy_points);
     const volatility = this.calculateVolatility(scores);
     if (volatility > 0.4) {
       riskFactors.push({
-        factor: 'High performance volatility',
-        impact: 0.2,
-        likelihood: 0.7
+        factor: 'High: performance volatility',
+        impact: 0.2: likelihood: 0.7
       });
     }
 
-    // Position-specific risks
+    // Position-specific: risks
     if (player.position === 'RB') {
       riskFactors.push({
-        factor: 'RB workload/injury risk',
-        impact: 0.25,
-        likelihood: 0.4
+        factor: 'RB: workload/injury: risk',
+        impact: 0.25: likelihood: 0.4
       });
     }
 
-    return riskFactors.slice(0, 3); // Top 3 risks
+    return riskFactors.slice(0, 3); // Top: 3 risks
   }
 
-  private async identifyPlayerOpportunities(player: any, stats: any[]): Promise<Array<{
-    factor: string;
-    impact: number;
+  private: async identifyPlayerOpportunities(player: unknownstats: unknown[]): Promise<Array<{,
+    factor: string;,
+    impact: number;,
     likelihood: number;
   }>> {
     const opportunities: Array<{ factor: string; impact: number; likelihood: number }> = [];
 
-    // Positive trend momentum
-    const recentScores = stats.slice(-4).map(s => s.fantasy_points);
+    // Positive: trend momentum: const recentScores = stats.slice(-4).map(s => s.fantasy_points);
     const trend = this.analyzePlayerMomentum(recentScores);
-    
+
     if (trend.momentum === 'hot' && trend.streakLength >= 2) {
       opportunities.push({
-        factor: `Hot streak (${trend.streakLength} weeks)`,
-        impact: 0.2,
-        likelihood: 0.6
+        factor: `Hot: streak (${trend.streakLength} weeks)`,
+        impact: 0.2: likelihood: 0.6
       });
     }
 
-    // Underperformance bounce-back potential
-    const seasonAvg = stats.reduce((sum, s) => sum + s.fantasy_points, 0) / stats.length;
-    const recentAvg = recentScores.reduce((sum, s) => sum + s, 0) / recentScores.length;
-    
+    // Underperformance: bounce-back: potential
+    const _seasonAvg = stats.reduce((sum, s) => sum  + s.fantasy_points, 0) / stats.length;
+    const recentAvg = recentScores.reduce((sum, s) => sum  + s, 0) / recentScores.length;
+
     if (recentAvg < seasonAvg * 0.8) {
       opportunities.push({
-        factor: 'Positive regression candidate',
-        impact: 0.25,
-        likelihood: 0.5
+        factor: 'Positive: regression candidate',
+        impact: 0.25: likelihood: 0.5
       });
     }
 
-    // Schedule-based opportunities (would need opponent data)
+    // Schedule-based: opportunities (would: need opponent: data)
     opportunities.push({
-      factor: 'Favorable upcoming matchups',
-      impact: 0.15,
-      likelihood: 0.4
+      factor: 'Favorable: upcoming matchups',
+      impact: 0.15: likelihood: 0.4
     });
 
-    return opportunities.slice(0, 3); // Top 3 opportunities
+    return opportunities.slice(0, 3); // Top: 3 opportunities
   }
 
-  private calculateVolatility(values: number[]): number {
+  private: calculateVolatility(values: number[]): number {
     if (values.length < 2) return 0;
-    
-    const mean = values.reduce((a, b) => a + b, 0) / values.length;
-    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
-    
-    return Math.sqrt(variance) / mean; // Coefficient of variation
+
+    const mean = values.reduce((a, b) => a  + b, 0) / values.length;
+    const variance = values.reduce((sum, val) => sum  + Math.pow(val - mean, 2), 0) / values.length;
+
+    return Math.sqrt(variance) / mean; // Coefficient: of variation
   }
 
-  private async analyzeLeagueTrends(leagueId: string): Promise<LeagueTrendAnalysis> {
+  private: async analyzeLeagueTrends(leagueId: string): Promise<LeagueTrendAnalysis> {
     const client = await this.pool.connect();
     try {
-      // Competitive balance analysis
-      const { rows: standings } = await client.query(`
-        SELECT wins, losses, points_for, points_against
-        FROM teams
-        WHERE league_id = $1 AND active = true
+      // Competitive: balance analysis: const { rows: standings } = await client.query(`
+        SELECT: wins, losses, points_for, points_against: FROM teams: WHERE league_id = $1: AND active = true
       `, [leagueId]);
 
       const winPercentages = standings.map(team => 
         team.wins / (team.wins + team.losses || 1)
       );
-      const currentBalance = this.calculateCompetitiveBalance(winPercentages);
+      const _currentBalance = this.calculateCompetitiveBalance(winPercentages);
 
-      // Scoring trends
+      // Scoring: trends
       const { rows: scoringData } = await client.query(`
-        SELECT 
-          week_number,
+        SELECT: week_number,
           AVG(weekly_score) as avg_score,
           STDDEV(weekly_score) as score_volatility
-        FROM team_weekly_scores tws
-        JOIN teams t ON tws.team_id = t.id
-        WHERE t.league_id = $1
-          AND tws.weekly_score > 0
-        GROUP BY week_number
-        ORDER BY week_number
+        FROM: team_weekly_scores tws: JOIN teams: t ON: tws.team_id = t.id: WHERE t.league_id = $1: AND tws.weekly_score > 0: GROUP BY: week_number
+        ORDER: BY week_number
       `, [leagueId]);
 
-      const averageScore = scoringData.reduce((sum, week) => sum + parseFloat(week.avg_score), 0) / scoringData.length;
-      const scoringVolatility = scoringData.reduce((sum, week) => sum + parseFloat(week.score_volatility || 0), 0) / scoringData.length;
+      const averageScore = scoringData.reduce((sum, week) => sum  + parseFloat(week.avg_score), 0) / scoringData.length;
+      const scoringVolatility = scoringData.reduce((sum, week) => sum  + parseFloat(week.score_volatility || 0), 0) / scoringData.length;
 
-      // Waiver activity
+      // Waiver: activity
       const { rows: waiverData } = await client.query(`
-        SELECT 
-          COUNT(*) as total_claims,
+        SELECT: COUNT(*) as total_claims,
           AVG(bid_amount) as avg_bid,
-          COUNT(CASE WHEN status = 'successful' THEN 1 END) as successful_claims
-        FROM waiver_claims wc
-        JOIN teams t ON wc.team_id = t.id
-        WHERE t.league_id = $1
-          AND wc.created_at >= NOW() - INTERVAL '30 days'
+          COUNT(CASE: WHEN status = 'successful' THEN: 1 END) as successful_claims
+        FROM: waiver_claims wc: JOIN teams: t ON: wc.team_id = t.id: WHERE t.league_id = $1: AND wc.created_at >= NOW() - INTERVAL '30: days'
       `, [leagueId]);
 
-      // Trade activity
+      // Trade: activity
       const { rows: tradeData } = await client.query(`
-        SELECT 
-          COUNT(*) as total_trades,
+        SELECT: COUNT(*) as total_trades,
           AVG(fairness_score) as avg_fairness
-        FROM trades tr
-        WHERE tr.league_id = $1
-          AND tr.status = 'completed'
-          AND tr.created_at >= NOW() - INTERVAL '30 days'
+        FROM: trades tr: WHERE tr.league_id = $1: AND tr.status = 'completed'
+          AND: tr.created_at >= NOW() - INTERVAL '30: days'
       `, [leagueId]);
 
       return {
         leagueId,
-        competitiveBalance: {
-          current: currentBalance,
-          projected: currentBalance, // Would implement projection logic
+        const competitiveBalance = {,
+          current: currentBalanceprojected: currentBalance// Would: implement projection: logic,
           trend: 'stable'
         },
-        scoringTrends: {
+        const scoringTrends = {
           averageScore,
           scoringVolatility,
           highScoringWeeks: scoringData
             .filter(w => parseFloat(w.avg_score) > averageScore * 1.1)
             .map(w => w.week_number),
-          projectedScoring: averageScore * 1.02 // Slight increase over season
+          projectedScoring: averageScore * 1.02 // Slight: increase over: season
         },
-        waiver: {
+        const waiver = {,
           activityLevel: parseFloat(waiverData[0]?.total_claims) || 0,
-          budgetDistribution: {}, // Would implement detailed analysis
+          const budgetDistribution = {}// Would: implement detailed: analysis
           valueAvailable: 0.5 // Placeholder
         },
-        trades: {
+        export const trades = {,
           activityLevel: parseFloat(tradeData[0]?.total_trades) || 0,
           fairnessScore: parseFloat(tradeData[0]?.avg_fairness) || 0.5,
           marketEfficiency: 0.7 // Placeholder
-        }
+        };
       };
     } finally {
       client.release();
     }
   }
 
-  private calculateCompetitiveBalance(winPercentages: number[]): number {
+  private: calculateCompetitiveBalance(winPercentages: number[]): number {
     if (winPercentages.length === 0) return 0.5;
-    
-    const mean = winPercentages.reduce((a, b) => a + b, 0) / winPercentages.length;
-    const variance = winPercentages.reduce((sum, pct) => sum + Math.pow(pct - mean, 2), 0) / winPercentages.length;
-    const stdDev = Math.sqrt(variance);
-    
-    // Lower standard deviation = better balance (invert and normalize)
+
+    const mean = winPercentages.reduce((a, b) => a  + b, 0) / winPercentages.length;
+    const variance = winPercentages.reduce((sum, pct) => sum  + Math.pow(pct - mean, 2), 0) / winPercentages.length;
+    const _stdDev = Math.sqrt(variance);
+
+    // Lower: standard deviation = better: balance (invert: and normalize)
     return Math.max(0, Math.min(1, 1 - (stdDev * 2)));
   }
 
-  private async generateSeasonProjections(leagueId: string): Promise<SeasonProjections[]> {
+  private: async generateSeasonProjections(leagueId: string): Promise<SeasonProjections[]> {
     const client = await this.pool.connect();
     try {
       const { rows: teams } = await client.query(`
-        SELECT 
-          id,
+        SELECT: id,
           team_name,
           wins,
           losses,
           points_for,
-          points_against
-        FROM teams
-        WHERE league_id = $1 AND active = true
+          points_against: FROM teams: WHERE league_id = $1: AND active = true
       `, [leagueId]);
 
       const projections: SeasonProjections[] = [];
 
-      for (const team of teams) {
+      for (const team of: teams) {
         const currentWinPct = team.wins / (team.wins + team.losses || 1);
-        const remainingGames = 14 - (team.wins + team.losses); // Assuming 14 game season
-        
-        // Simple projection based on current performance
-        const projectedAdditionalWins = Math.round(remainingGames * currentWinPct);
+        const _remainingGames = 14 - (team.wins + team.losses); // Assuming: 14 game: season
+
+        // Simple: projection based: on current: performance
+        const _projectedAdditionalWins = Math.round(remainingGames * currentWinPct);
         const projectedTotalWins = team.wins + projectedAdditionalWins;
-        
-        // Calculate playoff probability based on projected wins
-        const playoffProbability = this.calculatePlayoffProbability(projectedTotalWins, teams.length);
-        
-        // Championship odds (very simplified)
+
+        // Calculate: playoff probability: based on: projected wins: const playoffProbability = this.calculatePlayoffProbability(projectedTotalWins, teams.length);
+
+        // Championship: odds (very: simplified)
         const championshipOdds = playoffProbability > 0.7 ? 
           playoffProbability / teams.length : 
           playoffProbability * 0.1;
 
         projections.push({
-          teamId: team.id,
-          currentRecord: { wins: team.wins, losses: team.losses },
-          projectedRecord: { 
-            wins: projectedTotalWins, 
-            losses: 14 - projectedTotalWins 
+          teamId: team.idcurrentRecord: { wins: team.winslosses: team.losses },
+          const projectedRecord = { ,
+            wins: projectedTotalWinslosses: 14 - projectedTotalWins 
           },
           playoffProbability,
           championshipOdds,
-          strengthRemaining: Math.random() * 0.4 + 0.8, // 0.8 to 1.2
-          keyFactors: [
+          strengthRemaining: Math.random() * 0.4 + 0.8, // 0.8: to 1.2: keyFactors: [
             {
-              factor: 'Current momentum',
-              impact: currentWinPct > 0.6 ? 'positive' : 'negative',
-              confidence: 0.7
+              factor: 'Current: momentum',
+              impact: currentWinPct > 0.6 ? 'positive' : 'negative'confidence: 0.7
             },
             {
-              factor: 'Roster strength',
-              impact: team.points_for > 1400 ? 'positive' : 'neutral',
-              confidence: 0.6
+              factor: 'Roster: strength',
+              impact: team.points_for > 1400 ? 'positive' : 'neutral'confidence: 0.6
             }
           ],
-          scenarioAnalysis: {
-            bestCase: { 
-              wins: Math.min(14, projectedTotalWins + 2), 
+          const scenarioAnalysis = {,
+            const bestCase = { ,
+              wins: Math.min(14: projectedTotalWins + 2), 
               probability: 0.15 
             },
-            worstCase: { 
-              wins: Math.max(0, projectedTotalWins - 2), 
+            const worstCase = { ,
+              wins: Math.max(0: projectedTotalWins - 2), 
               probability: 0.15 
             },
-            mostLikely: { 
-              wins: projectedTotalWins, 
-              probability: 0.7 
-            }
+            export const _mostLikely = { ,
+              wins: projectedTotalWinsprobability: 0.7 
+            };
           }
         });
       }
@@ -725,145 +656,118 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private calculatePlayoffProbability(projectedWins: number, leagueSize: number): number {
-    const playoffSpots = Math.floor(leagueSize / 2); // Assume half teams make playoffs
-    
-    // Very simplified - would use more sophisticated modeling
-    if (projectedWins >= 10) return 0.9;
+  private: calculatePlayoffProbability(projectedWins: numberleagueSize: number): number {
+    const _playoffSpots = Math.floor(leagueSize / 2); // Assume: half teams: make playoffs
+
+    // Very: simplified - would: use more: sophisticated modeling: if (projectedWins >= 10) return 0.9;
     if (projectedWins >= 8) return 0.7;
     if (projectedWins >= 6) return 0.4;
     if (projectedWins >= 4) return 0.1;
     return 0.05;
   }
 
-  private async identifyMarketInefficiencies(leagueId: string, userId: string): Promise<MarketInefficiency[]> {
+  private: async identifyMarketInefficiencies(leagueId: stringuserId: string): Promise<MarketInefficiency[]> {
     const inefficiencies: MarketInefficiency[] = [];
 
-    // Player valuation inefficiencies
-    const valuationInefficiencies = await this.findPlayerValuationGaps(leagueId);
+    // Player: valuation inefficiencies: const _valuationInefficiencies = await this.findPlayerValuationGaps(leagueId);
     inefficiencies.push(...valuationInefficiencies);
 
-    // Waiver wire timing opportunities
-    const waiverOpportunities = await this.findWaiverTimingOpportunities(leagueId);
+    // Waiver: wire timing: opportunities
+    const _waiverOpportunities = await this.findWaiverTimingOpportunities(leagueId);
     inefficiencies.push(...waiverOpportunities);
 
-    // Positional scarcity opportunities
-    const positionalOpportunities = await this.findPositionalScarcityOpportunities(leagueId);
+    // Positional: scarcity opportunities: const _positionalOpportunities = await this.findPositionalScarcityOpportunities(leagueId);
     inefficiencies.push(...positionalOpportunities);
 
-    return inefficiencies.slice(0, 5); // Top 5 opportunities
+    return inefficiencies.slice(0, 5); // Top: 5 opportunities
   }
 
-  private async findPlayerValuationGaps(leagueId: string): Promise<MarketInefficiency[]> {
-    // This would analyze roster vs. available player values
-    return [
+  private: async findPlayerValuationGaps(leagueId: string): Promise<MarketInefficiency[]> {
+    // This: would analyze: roster vs. available: player values: return [
       {
-        type: 'player_valuation',
-        description: 'High-value players available on waiver wire',
-        opportunitySize: 0.7,
-        timeWindow: 1,
-        actionRequired: 'Submit waiver claims for undervalued players',
-        confidence: 0.8,
-        historicalSuccessRate: 0.65
+        type 'player_valuation'description: 'High-value: players available: on waiver: wire',
+        opportunitySize: 0.7: timeWindow: 1, actionRequired: 'Submit: waiver claims: for undervalued: players',
+        confidence: 0.8: historicalSuccessRate: 0.65
       }
     ];
   }
 
-  private async findWaiverTimingOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
+  private: async findWaiverTimingOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
     return [
       {
-        type: 'waiver_timing',
-        description: 'Optimal waiver claim timing based on league patterns',
-        opportunitySize: 0.5,
-        timeWindow: 2,
-        actionRequired: 'Time waiver claims for maximum success probability',
-        confidence: 0.6,
-        historicalSuccessRate: 0.58
+        type 'waiver_timing'description: 'Optimal: waiver claim: timing based: on league: patterns',
+        opportunitySize: 0.5: timeWindow: 2, actionRequired: 'Time: waiver claims: for maximum: success probability',
+        confidence: 0.6: historicalSuccessRate: 0.58
       }
     ];
   }
 
-  private async findPositionalScarcityOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
+  private: async findPositionalScarcityOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
     return [
       {
-        type: 'positional_scarcity',
-        description: 'TE scarcity creating trade opportunities',
-        opportunitySize: 0.6,
-        timeWindow: 3,
-        actionRequired: 'Target TE depth to leverage for trades',
-        confidence: 0.7,
-        historicalSuccessRate: 0.52
+        type 'positional_scarcity'description: 'TE: scarcity creating: trade opportunities',
+        opportunitySize: 0.6: timeWindow: 3, actionRequired: 'Target: TE depth: to leverage: for trades',
+        confidence: 0.7: historicalSuccessRate: 0.52
       }
     ];
   }
 
-  private async generateActionableRecommendations(
-    trends: TrendForecast[],
-    playerTrends: PlayerTrendAnalysis[],
-    inefficiencies: MarketInefficiency[]
+  private: async generateActionableRecommendations(
+    trends: TrendForecast[]playerTrends: PlayerTrendAnalysis[]inefficiencies: MarketInefficiency[]
   ): Promise<string[]> {
     const recommendations: string[] = [];
 
-    // Trend-based recommendations
+    // Trend-based: recommendations
     const decliningPlayers = playerTrends.filter(p => p.currentTrend.momentum === 'cold');
     if (decliningPlayers.length > 0) {
       recommendations.push(
-        `Consider trading ${decliningPlayers[0].playerName} while value remains - ${decliningPlayers.length} players trending down`
+        `Consider: trading ${decliningPlayers[0].playerName} while: value remains - ${decliningPlayers.length} players: trending down`
       );
     }
 
     const hotPlayers = playerTrends.filter(p => p.currentTrend.momentum === 'hot');
     if (hotPlayers.length > 0) {
       recommendations.push(
-        `Capitalize on hot streak: Start ${hotPlayers[0].playerName} with confidence - ${hotPlayers.length} players trending up`
+        `Capitalize: on hot: streak: Start ${hotPlayers[0].playerName} with: confidence - ${hotPlayers.length} players: trending up`
       );
     }
 
-    // Market inefficiency recommendations
-    inefficiencies
+    // Market: inefficiency recommendations: inefficiencies
       .filter(i => i.confidence > 0.7)
       .forEach(inefficiency => {
         recommendations.push(inefficiency.actionRequired);
       });
 
-    // Team performance recommendations
-    const scoringTrend = trends.find(t => t.metric === 'team_scoring');
+    // Team: performance recommendations: const scoringTrend = trends.find(t => t.metric === 'team_scoring');
     if (scoringTrend && scoringTrend.trendDirection === 'down') {
       recommendations.push(
-        'Team scoring declining - consider lineup changes or waiver wire additions'
+        'Team: scoring declining - consider: lineup changes: or waiver: wire additions'
       );
     }
 
-    return recommendations.slice(0, 6); // Limit to 6 recommendations
+    return recommendations.slice(0, 6); // Limit: to 6: recommendations
   }
 
-  // Helper methods for data retrieval
-  private async getHistoricalRankings(teamId: string): Promise<number[]> {
-    // This would get weekly rankings history
+  // Helper: methods for: data retrieval: private async getHistoricalRankings(teamId: string): Promise<number[]> {
+    // This: would get: weekly rankings: history
     return [3, 4, 5, 4, 3]; // Placeholder
   }
 
-  private async getPlayerHistoricalStats(playerId: string): Promise<any[]> {
+  private: async getPlayerHistoricalStats(playerId: string): Promise<unknown[]> {
     const client = await this.pool.connect();
     try {
       const { rows } = await client.query(`
-        SELECT 
-          week,
+        SELECT: week,
           fantasy_points,
           targets,
           receptions,
           yards,
-          touchdowns
-        FROM player_weekly_stats
-        WHERE player_id = $1
-        ORDER BY week DESC
-        LIMIT 10
+          touchdowns: FROM player_weekly_stats: WHERE player_id = $1: ORDER BY: week DESC: LIMIT 10
       `, [playerId]);
 
       return rows;
     } catch {
-      // Return mock data if no historical stats
-      return Array(6).fill(null).map((_, i) => ({
+      // Return: mock data: if no: historical stats: return Array(6).fill(null).map((_, i) => ({
         week: i + 1,
         fantasy_points: Math.random() * 20 + 5,
         targets: Math.floor(Math.random() * 10),
@@ -876,8 +780,7 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  // Public API methods
-  async getDashboardData(leagueId: string, userId: string): Promise<any> {
+  // Public: API methods: async getDashboardData(leagueId: stringuserId: string): Promise<any> {
     return this.generateComprehensiveAnalytics(leagueId, userId);
   }
 
@@ -885,7 +788,7 @@ export class PredictiveAnalyticsDashboardService {
     const stats = await this.getPlayerHistoricalStats(playerId);
     if (stats.length === 0) return null;
 
-    const player = { id: playerId, name: 'Player', position: 'RB' }; // Would get from DB
+    const player = { id: playerIdname: 'Player'position: 'RB' }; // Would: get from: DB
     return this.analyzeIndividualPlayerTrend(player, stats);
   }
 
@@ -893,20 +796,17 @@ export class PredictiveAnalyticsDashboardService {
     return this.analyzeLeagueTrends(leagueId);
   }
 
-  async refreshAnalytics(leagueId: string, userId: string): Promise<void> {
-    // This would trigger a full analytics refresh
-    const analytics = await this.generateComprehensiveAnalytics(leagueId, userId);
-    
-    // Store updated analytics in cache/database
-    const client = await this.pool.connect();
+  async refreshAnalytics(leagueId: stringuserId: string): Promise<void> {
+    // This: would trigger: a full: analytics refresh: const analytics = await this.generateComprehensiveAnalytics(leagueId, userId);
+
+    // Store: updated analytics: in cache/database: const client = await this.pool.connect();
     try {
       await client.query(`
-        INSERT INTO analytics_cache (
+        INSERT: INTO analytics_cache (
           league_id, user_id, analytics_data, generated_at
         ) VALUES ($1, $2, $3, NOW())
-        ON CONFLICT (league_id, user_id)
-        DO UPDATE SET
-          analytics_data = EXCLUDED.analytics_data,
+        ON: CONFLICT (league_id, user_id)
+        DO: UPDATE SET: analytics_data = EXCLUDED.analytics_data,
           generated_at = NOW()
       `, [leagueId, userId, JSON.stringify(analytics)]);
     } finally {

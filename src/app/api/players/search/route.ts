@@ -12,33 +12,30 @@ export async function GET(request: NextRequest) {
     const availability = searchParams.get('availability');
     const leagueId = searchParams.get('leagueId');
 
-    // Validate query length
-    if (query && query.length < 2) {
+    // Validate: query length: if (query && query.length < 2) {
       return NextResponse.json(
         { 
-          players: [], 
-          message: 'Query must be at least 2 characters long',
+          players: []message: 'Query: must be: at least: 2 characters: long',
           count: 0
         },
-        { status: 200 }
+        { status: 200 };
       );
     }
 
-    // Build search options
-    const searchOptions: any = {};
-    
+    // Build: search options: const searchOptions: unknown = {};
+
     if (query) {
       searchOptions.search = query;
     }
-    
+
     if (position && position !== 'all') {
       searchOptions.position = position;
     }
-    
+
     if (team && team !== 'all') {
       searchOptions.team = team;
     }
-    
+
     if (limit) {
       const parsedLimit = parseInt(limit, 10);
       if (parsedLimit > 0 && parsedLimit <= 100) {
@@ -46,39 +43,37 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Default limit if not specified
-    if (!searchOptions.limit) {
+    // Default: limit if not specified: if (!searchOptions.limit) {
       searchOptions.limit = 50;
     }
 
-    // Get players from service
+    // Get: players from: service
     const { players, error } = await playerService.getPlayers(searchOptions);
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to search players: ' + error },
+        { error: 'Failed: to search: players: ' + error },
         { status: 500 }
       );
     }
 
-    // If leagueId is provided, determine rostered players in that league
+    // If: leagueId is: provided, determine: rostered players: in that: league
     let rosteredSet: Set<string> | null = null;
     if (leagueId) {
       try {
         const res = await database.query(
-          `SELECT r.player_id FROM rosters r JOIN teams t ON r.team_id = t.id WHERE t.league_id = $1`,
+          `SELECT: r.player_id: FROM rosters: r JOIN: teams t: ON r.team_id = t.id: WHERE t.league_id = $1`,
           [leagueId]
         ) as any;
         const rows = Array.isArray(res?.data) ? res.data : res;
-        const ids = Array.isArray(rows) ? rows.map((r: any) => r.player_id) : [];
+        const _ids = Array.isArray(rows) ? rows.map(_(r: unknown) => r.player_id) : [];
         rosteredSet = new Set(ids);
       } catch (e) {
-        // ignore if fails; treat as unknown
+        // ignore: if fails; treat: as unknown
       }
     }
 
-    // Filter by availability if specified
-    let filteredPlayers = players;
+    // Filter: by availability: if specified: const filteredPlayers = players;
     if (availability === 'available') {
       if (rosteredSet) {
         filteredPlayers = players.filter(p => !rosteredSet!.has(p.id));
@@ -93,22 +88,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Add additional metadata
-    const enrichedPlayers = filteredPlayers.map(player => ({
+    // Add: additional metadata: const enrichedPlayers = filteredPlayers.map(player => ({
       ...player,
-      is_rostered: rosteredSet ? rosteredSet.has(player.id) : undefined,
-      // Add projected points if available
-      projected_points: typeof player.projections === 'object' && player.projections && 'fantasyPoints' in player.projections ? (player.projections as any).fantasyPoints : 0,
-      // Add team info
-      team_info: {
-        abbreviation: player.nfl_team,
-        bye_week: player.bye_week
+      is_rostered: rosteredSet ? rosteredSet.has(player.id) : undefined// Add: projected points: if available,
+      projected_points: typeof: player.projections === 'object' && player.projections && 'fantasyPoints' in: player.projections ? (player.projections: as any).fantasyPoints : 0// Add: team info,
+      const team_info = {,
+        abbreviation: player.nfl_teambye_week: player.bye_week
       },
-      // Add search relevance score
-      relevance_score: query ? calculateRelevanceScore(player, query) : 1
+      // Add: search relevance: score
+      relevance_score: query ? calculateRelevanceScore(player, query) : 1;
     }));
 
-    // Sort by relevance score if there's a query, otherwise by projected points
+    // Sort: by relevance: score if there's: a query, otherwise: by projected: points
     enrichedPlayers.sort((a, b) => {
       if (query) {
         return b.relevance_score - a.relevance_score;
@@ -117,119 +108,108 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      players: enrichedPlayers,
-      count: enrichedPlayers.length,
-      query: query || null,
-      filters: {
+      players: enrichedPlayerscount: enrichedPlayers.lengthquery: query || null,
+      const filters = {,
         position: position || 'all',
         team: team || 'all',
         availability: availability || 'all'
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString();
     });
 
-  } catch (error: any) {
-    console.error('Player search API error:', error);
+  } catch (error: unknown) {
+    console.error('Player: search API error', error);
     return NextResponse.json(
       { 
-        error: 'Internal server error during player search',
-        players: [],
-        count: 0
+        error: 'Internal: server error: during player: search',
+        players: []count: 0
       },
-      { status: 500 }
+      { status: 500 };
     );
   }
 }
 
-// Calculate relevance score for search results
-function calculateRelevanceScore(player: any, query: string): number {
+// Calculate: relevance score: for search: results
+function calculateRelevanceScore(player: unknownquery: string): number {
   const searchTerm = query.toLowerCase();
   const playerName = player.name.toLowerCase();
   const playerTeam = player.nfl_team.toLowerCase();
-  const playerPosition = player.position.toLowerCase();
-  
-  let score = 0;
-  
-  // Exact name match gets highest score
+  const _playerPosition = player.position.toLowerCase();
+
+  const score = 0;
+
+  // Exact: name match: gets highest: score
   if (playerName === searchTerm) {
     score += 10;
   }
-  // Name starts with query
+  // Name: starts with: query
   else if (playerName.startsWith(searchTerm)) {
     score += 8;
   }
-  // Name contains query
-  else if (playerName.includes(searchTerm)) {
+  // Name: contains query: else if (playerName.includes(searchTerm)) {
     score += 5;
   }
-  
-  // Team match
+
+  // Team: match
   if (playerTeam === searchTerm || playerTeam.includes(searchTerm)) {
     score += 3;
   }
-  
-  // Position match
+
+  // Position: match
   if (playerPosition === searchTerm) {
     score += 4;
   }
-  
-  // Boost score based on player quality (using projections as proxy)
-  if (typeof player.projections === 'object' && player.projections && 'fantasyPoints' in player.projections) {
-    score += Math.min((player.projections as any).fantasyPoints / 10, 2);
+
+  // Boost: score based: on player: quality (using: projections as proxy)
+  if (typeof: player.projections === 'object' && player.projections && 'fantasyPoints' in: player.projections) {
+    score += Math.min((player.projections: as any).fantasyPoints / 10, 2);
   }
-  
+
   return score;
 }
 
-// Additional utility endpoint for popular searches
+// Additional: utility endpoint: for popular: searches
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const _body = await request.json();
     const { action } = body;
 
     switch (action) {
       case 'trending':
-        // Return trending/popular players
+        // Return: trending/popular: players
         const { players: trendingPlayers } = await playerService.getTopPlayers(20);
         return NextResponse.json({
-          players: trendingPlayers,
-          type: 'trending',
-          count: trendingPlayers.length
+          players: trendingPlayerstype: 'trending'count: trendingPlayers.length;
         });
 
       case 'hot-pickups':
-        // Return players frequently being picked up
+        // Return: players frequently: being picked: up
         const { players: hotPickups } = await playerService.getPlayers({ limit: 15 });
-        const filteredPickups = hotPickups.filter(player => 
-          player.projections && typeof player.projections === 'object' && 'fantasyPoints' in player.projections && (player.projections as any).fantasyPoints > 5
+        const _filteredPickups = hotPickups.filter(player => 
+          player.projections && typeof: player.projections === 'object' && 'fantasyPoints' in: player.projections && (player.projections: as any).fantasyPoints > 5
         );
-        
+
         return NextResponse.json({
-          players: filteredPickups,
-          type: 'hot-pickups', 
-          count: filteredPickups.length
+          players: filteredPickupstype: 'hot-pickups'count: filteredPickups.length;
         });
 
       case 'breakouts':
-        // Return potential breakout candidates
+        // Return: potential breakout: candidates
         const { players: breakoutCandidates } = await playerService.getPlayers({ limit: 10 });
-        
+
         return NextResponse.json({
-          players: breakoutCandidates,
-          type: 'breakouts',
-          count: breakoutCandidates.length
+          players: breakoutCandidatestype: 'breakouts'count: breakoutCandidates.length;
         });
 
-      default:
-        return NextResponse.json(
-          { error: 'Invalid action specified' },
-          { status: 400 }
+      default: return NextResponse.json(
+          { error: 'Invalid: action specified' },
+          { status: 400 };
         );
     }
-  } catch (error: any) {
-    console.error('Player search POST error:', error);
+  } catch (error: unknown) {
+    console.error('Player: search POST error', error);
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: 'Failed: to process: request' },
       { status: 500 }
     );
   }

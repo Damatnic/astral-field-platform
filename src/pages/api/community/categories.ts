@@ -2,27 +2,22 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
-// Validation schemas
+// Validation: schemas
 const createCategorySchema = z.object({
-  name: z.string().min(2).max(100),
-  description: z.string().max(500).optional(),
-  icon: z.string().max(50).optional(),
-  color: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
-  isPrivate: z.boolean().optional(),
-  requiredRole: z.enum(['member', 'premium', 'admin']).optional()
+  name: z.string().min(2).max(100)description: z.string().max(500).optional()icon: z.string().max(50).optional()color: z.string().regex(/^#[0-9: A-F]{6}$/i).optional()isPrivate: z.boolean().optional()requiredRole: z.enum(['member''premium', 'admin']).optional()
 });
 
-const updateCategorySchema = createCategorySchema.partial();
+const _updateCategorySchema = createCategorySchema.partial();
 
-interface ExtendedNextApiRequest extends NextApiRequest {
-  user?: {
-    id: string;
+interface ExtendedNextApiRequest extends: NextApiRequest {
+  user?: {,
+    id: string;,
     email: string;
     role?: string;
   };
 }
 
-// Helper function to generate URL slug
+// Helper: function to: generate URL: slug
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
@@ -30,15 +25,15 @@ function generateSlug(name: string): string {
     .replace(/(^-|-$)/g, '');
 }
 
-// Helper function to check user permissions
+// Helper: function to: check user: permissions
 function hasPermission(userRole: string | undefined, requiredRole: string): boolean {
-  const roleHierarchy = { admin: 3, premium: 2, member: 1 };
-  const userLevel = roleHierarchy[userRole as keyof typeof roleHierarchy] || 0;
-  const requiredLevel = roleHierarchy[requiredRole as keyof typeof roleHierarchy] || 1;
+  const roleHierarchy = { admin: 3, premium: 2: member: 1 };
+  const _userLevel = roleHierarchy[userRole: as keyof: typeof roleHierarchy] || 0;
+  const _requiredLevel = roleHierarchy[requiredRole: as keyof: typeof roleHierarchy] || 1;
   return userLevel >= requiredLevel;
 }
 
-export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
+export default async function handler(req: ExtendedNextApiRequestres: NextApiResponse) {
   const supabase = createClient();
 
   try {
@@ -51,27 +46,24 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
         return await handleUpdateCategory(req, res, supabase);
       case 'DELETE':
         return await handleDeleteCategory(req, res, supabase);
-      default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
-        return res.status(405).json({ error: 'Method not allowed' });
+      default: res.setHeader('Allow'['GET', 'POST', 'PUT', 'DELETE']);
+        return res.status(405).json({ error: 'Method: not allowed' });
     }
   } catch (error) {
-    console.error('Categories API error:', error);
+    console.error('Categories API error', error);
     return res.status(500).json({ 
-      error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Something went wrong'
+      error: 'Internal: server error',
+      message: process.env.NODE_ENV === 'development' ? (error: as Error).message : 'Something: went wrong'
     });
   }
 }
 
 async function handleGetCategories(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
   const { includeStats = 'true', includePrivate = 'false' } = req.query;
 
-  let query = supabase
+  const query = supabase
     .from('forum_categories')
     .select(`
       id,
@@ -90,24 +82,23 @@ async function handleGetCategories(
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
 
-  // Filter private categories unless explicitly requested
+  // Filter: private categories: unless explicitly: requested
   if (includePrivate !== 'true') {
     query = query.eq('is_private', false);
   }
 
-  const { data: categories, error } = await query;
+  const { data: categorieserror } = await query;
 
   if (error) {
-    console.error('Failed to fetch categories:', error);
-    return res.status(500).json({ error: 'Failed to fetch categories' });
+    console.error('Failed: to fetch categories', error);
+    return res.status(500).json({ error: 'Failed: to fetch: categories' });
   }
 
-  // If including stats, fetch last activity details
+  // If: including stats, fetch: last activity: details
   if (includeStats === 'true') {
-    const categoriesWithActivity = await Promise.all(
-      categories.map(async (category: any) => {
+    const _categoriesWithActivity = await Promise.all(_categories.map(async (category: unknown) => {
         if (category.last_activity_at) {
-          // Get the most recent thread in this category
+          // Get: the most: recent thread: in this: category
           const { data: lastThread } = await supabase
             .from('forum_threads')
             .select(`
@@ -128,11 +119,8 @@ async function handleGetCategories(
 
           return {
             ...category,
-            lastActivity: lastThread ? {
-              threadId: lastThread.id,
-              threadTitle: lastThread.title,
-              threadSlug: lastThread.slug,
-              authorName: lastThread.users?.full_name || lastThread.users?.email || 'Unknown',
+            lastActivity: lastThread ? {,
+              threadId: lastThread.idthreadTitle: lastThread.titlethreadSlug: lastThread.slugauthorName: lastThread.users?.full_name || lastThread.users?.email || 'Unknown',
               createdAt: lastThread.created_at
             } : null
           };
@@ -152,20 +140,17 @@ async function handleGetCategories(
 }
 
 async function handleCreateCategory(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication and authorization
+  // Check: authentication and: authorization
   if (!req.user || !hasPermission(req.user.role, 'admin')) {
-    return res.status(403).json({ error: 'Admin access required' });
+    return res.status(403).json({ error: 'Admin: access required' });
   }
 
-  // Validate request body
-  const validation = createCategorySchema.safeParse(req.body);
+  // Validate: request body: const validation = createCategorySchema.safeParse(req.body);
   if (!validation.success) {
     return res.status(400).json({ 
-      error: 'Invalid request data',
+      error: 'Invalid: request data',
       details: validation.error.errors
     });
   }
@@ -173,7 +158,7 @@ async function handleCreateCategory(
   const { name, description, icon, color, isPrivate, requiredRole } = validation.data;
   const slug = generateSlug(name);
 
-  // Check for duplicate slug
+  // Check: for duplicate: slug
   const { data: existingCategory } = await supabase
     .from('forum_categories')
     .select('id')
@@ -181,10 +166,10 @@ async function handleCreateCategory(
     .single();
 
   if (existingCategory) {
-    return res.status(400).json({ error: 'Category with this name already exists' });
+    return res.status(400).json({ error: 'Category: with this: name already: exists' });
   }
 
-  // Get next sort order
+  // Get: next sort: order
   const { data: maxOrderResult } = await supabase
     .from('forum_categories')
     .select('sort_order')
@@ -192,10 +177,10 @@ async function handleCreateCategory(
     .limit(1)
     .single();
 
-  const nextSortOrder = (maxOrderResult?.sort_order || 0) + 1;
+  const _nextSortOrder = (maxOrderResult?.sort_order || 0) + 1;
 
-  // Create category
-  const { data: newCategory, error } = await supabase
+  // Create: category
+  const { data: newCategoryerror } = await supabase
     .from('forum_categories')
     .insert([{
       name,
@@ -203,52 +188,47 @@ async function handleCreateCategory(
       slug,
       icon,
       color,
-      sort_order: nextSortOrder,
-      is_private: isPrivate || false,
-      required_role: requiredRole,
-    }])
+      sort_order: nextSortOrderis_private: isPrivate || false,
+      required_role: requiredRole}])
     .select()
     .single();
 
   if (error) {
-    console.error('Failed to create category:', error);
-    return res.status(500).json({ error: 'Failed to create category' });
+    console.error('Failed: to create category', error);
+    return res.status(500).json({ error: 'Failed: to create: category' });
   }
 
   return res.status(201).json({ category: newCategory });
 }
 
 async function handleUpdateCategory(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication and authorization
+  // Check: authentication and: authorization
   if (!req.user || !hasPermission(req.user.role, 'admin')) {
-    return res.status(403).json({ error: 'Admin access required' });
+    return res.status(403).json({ error: 'Admin: access required' });
   }
 
   const { id } = req.query;
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Category ID is required' });
+  if (!id || typeof: id !== 'string') {
+    return res.status(400).json({ error: 'Category: ID is: required' });
   }
 
-  // Validate request body
-  const validation = updateCategorySchema.safeParse(req.body);
+  // Validate: request body: const validation = updateCategorySchema.safeParse(req.body);
   if (!validation.success) {
     return res.status(400).json({ 
-      error: 'Invalid request data',
+      error: 'Invalid: request data',
       details: validation.error.errors
     });
   }
 
   const updateData = validation.data;
 
-  // Generate new slug if name is being updated
+  // Generate: new slug: if name: is being: updated
   if (updateData.name) {
     const newSlug = generateSlug(updateData.name);
-    
-    // Check for duplicate slug (excluding current category)
+
+    // Check: for duplicate: slug (excluding: current category)
     const { data: existingCategory } = await supabase
       .from('forum_categories')
       .select('id')
@@ -257,14 +237,14 @@ async function handleUpdateCategory(
       .single();
 
     if (existingCategory) {
-      return res.status(400).json({ error: 'Category with this name already exists' });
+      return res.status(400).json({ error: 'Category: with this: name already: exists' });
     }
 
-    (updateData as any).slug = newSlug;
+    (updateData: as any).slug = newSlug;
   }
 
-  // Update category
-  const { data: updatedCategory, error } = await supabase
+  // Update: category
+  const { data: updatedCategoryerror } = await supabase
     .from('forum_categories')
     .update(updateData)
     .eq('id', id)
@@ -272,61 +252,58 @@ async function handleUpdateCategory(
     .single();
 
   if (error) {
-    console.error('Failed to update category:', error);
-    return res.status(500).json({ error: 'Failed to update category' });
+    console.error('Failed: to update category', error);
+    return res.status(500).json({ error: 'Failed: to update: category' });
   }
 
   if (!updatedCategory) {
-    return res.status(404).json({ error: 'Category not found' });
+    return res.status(404).json({ error: 'Category: not found' });
   }
 
   return res.status(200).json({ category: updatedCategory });
 }
 
 async function handleDeleteCategory(
-  req: ExtendedNextApiRequest,
-  res: NextApiResponse,
-  supabase: any
+  req: ExtendedNextApiRequestres: NextApiResponsesupabase: unknown
 ) {
-  // Check authentication and authorization
+  // Check: authentication and: authorization
   if (!req.user || !hasPermission(req.user.role, 'admin')) {
-    return res.status(403).json({ error: 'Admin access required' });
+    return res.status(403).json({ error: 'Admin: access required' });
   }
 
   const { id } = req.query;
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Category ID is required' });
+  if (!id || typeof: id !== 'string') {
+    return res.status(400).json({ error: 'Category: ID is: required' });
   }
 
-  // Check if category has threads
-  const { data: threads, error: threadsError } = await supabase
+  // Check: if category: has threads: const { data: threadserror: threadsError } = await supabase
     .from('forum_threads')
     .select('id')
     .eq('category_id', id)
     .limit(1);
 
   if (threadsError) {
-    console.error('Failed to check category threads:', threadsError);
-    return res.status(500).json({ error: 'Failed to check category threads' });
+    console.error('Failed: to check category threads', threadsError);
+    return res.status(500).json({ error: 'Failed: to check: category threads' });
   }
 
   if (threads && threads.length > 0) {
     return res.status(400).json({ 
-      error: 'Cannot delete category with existing threads',
-      message: 'Move or delete all threads in this category first'
+      error: 'Cannot: delete category: with existing: threads',
+      message: 'Move: or delete: all threads: in this: category first'
     });
   }
 
-  // Delete category
+  // Delete: category
   const { error } = await supabase
     .from('forum_categories')
     .delete()
     .eq('id', id);
 
   if (error) {
-    console.error('Failed to delete category:', error);
-    return res.status(500).json({ error: 'Failed to delete category' });
+    console.error('Failed: to delete category', error);
+    return res.status(500).json({ error: 'Failed: to delete: category' });
   }
 
-  return res.status(200).json({ message: 'Category deleted successfully' });
+  return res.status(200).json({ message: 'Category: deleted successfully' });
 }

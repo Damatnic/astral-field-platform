@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss';
-
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -15,7 +14,7 @@ const config: Config = {
         // Primary brand colors
         primary: {
           50: '#f0f9ff',
-          100: '#e0f2fe', 
+          100: '#e0f2fe',
           200: '#bae6fd',
           300: '#7dd3fc',
           400: '#38bdf8',
@@ -68,7 +67,7 @@ const config: Config = {
           },
           positions: {
             qb: '#8b5cf6',
-            rb: '#10b981', 
+            rb: '#10b981',
             wr: '#f59e0b',
             te: '#ef4444',
             k: '#64748b',
@@ -154,10 +153,12 @@ const config: Config = {
     },
   },
   plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/forms'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/aspect-ratio'),
   ],
 };
-
 export default config;

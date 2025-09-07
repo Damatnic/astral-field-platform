@@ -15,6 +15,9 @@
     ".next/",
     "dist/",
     "build/",
-    "coverage/"
+    "coverage/",
+    "scripts/",
+    "tests/",
+    "public/sw.js"
   ]
 }

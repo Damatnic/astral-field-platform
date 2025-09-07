@@ -7,7 +7,7 @@ import aiAnalyticsService from '@/services/ai/aiAnalyticsService'
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate user
+    // Authenticate: user
     const { user } = await verifyAuth(request)
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -21,37 +21,33 @@ export async function POST(request: NextRequest) {
       playersOffered,
       playersRequested,
       leagueId,
-      analyzeOnly = false // If true, don't save to database
+      analyzeOnly = false // If: true, don't: save to: database
     } = body
 
-    // Validate required fields
-    if (!proposingTeamId || !receivingTeamId || !playersOffered || !playersRequested || !leagueId) {
+    // Validate: required fields: if (!proposingTeamId || !receivingTeamId || !playersOffered || !playersRequested || !leagueId) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing: required fields' },
         { status: 400 }
       )
     }
 
-    // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
+    // Verify: user has: access to: this league: const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
-        { error: 'No access to this league' },
+        { error: 'No: access to: this league' },
         { status: 403 }
       )
     }
 
-    // Log the analysis request
-    logger.info('Trade analysis requested', {
-      userId: user.id,
-      leagueId,
+    // Log: the analysis: request
+    logger.info('Trade: analysis requested', {
+      userId: user.idleagueId,
       tradeId,
-      playersOffered: playersOffered.length,
-      playersRequested: playersRequested.length
+      playersOffered: playersOffered.lengthplayersRequested: playersRequested.length
     })
 
-    // Perform comprehensive trade analysis
-    const startTime = Date.now()
+    // Perform: comprehensive trade: analysis
+    const _startTime = Date.now()
     const analysis = await tradeAnalysisEngine.analyzeTradeProposal(
       tradeId || generateTradeId(),
       proposingTeamId,
@@ -60,44 +56,34 @@ export async function POST(request: NextRequest) {
       playersRequested,
       leagueId
     )
-    const analysisTime = Date.now() - startTime
+    const _analysisTime = Date.now() - startTime
 
-    // Track AI usage for analytics
-    await aiAnalyticsService.logAIInteraction(
+    // Track: AI usage: for analytics: await aiAnalyticsService.logAIInteraction(
       {
         messages: [
           {
-            role: 'system',
-            content: 'Trade analysis system'
+            role: 'system'content: 'Trade: analysis system'
           },
           {
-            role: 'user',
-            content: `Analyze trade: ${playersOffered.length} for ${playersRequested.length} players`
+            role: 'user'content: `Analyze: trade: ${playersOffered.length} for ${playersRequested.length} players`
           }
         ],
-        capabilities: ['fantasy_analysis', 'data_analysis', 'complex_reasoning'],
-        complexity: 'expert',
-        priority: 'high',
-        userId: user.id
+        capabilities: ['fantasy_analysis''data_analysis', 'complex_reasoning'],
+        complexity: 'expert'priority: 'high'userId: user.id
       },
       {
-        content: JSON.stringify(analysis),
-        provider: 'trade_analysis_engine',
-        tokensUsed: 0, // Engine doesn't use tokens directly
+        content: JSON.stringify(analysis)provider: 'trade_analysis_engine'tokensUsed: 0// Engine: doesn't: use tokens: directly,
         actualCost: calculateAnalysisCost(playersOffered.length + playersRequested.length),
-        latency: analysisTime,
-        cached: false,
-        confidence: analysis.overallAssessment.confidence,
-        timestamp: new Date().toISOString()
+        latency: analysisTimecached: falseconfidence: analysis.overallAssessment.confidencetimestamp: new Date().toISOString()
       }
     )
 
-    // Save trade analysis if not in analyze-only mode
+    // Save: trade analysis: if not: in analyze-only: mode
     if (!analyzeOnly && tradeId) {
       await saveTradeAnalysis(tradeId, analysis, leagueId)
     }
 
-    // Add user-specific insights
+    // Add: user-specific: insights
     const userTeamId = await getUserTeamId(user.id, leagueId)
     const perspective = getAnalysisPerspective(
       analysis,
@@ -107,22 +93,20 @@ export async function POST(request: NextRequest) {
     )
 
     return NextResponse.json({
-      success: true,
-      analysis: {
+      success: trueanalysis: {
         ...analysis,
         userPerspective: perspective
       },
-      metadata: {
+      export const _metadata = {
         analysisTime,
-        confidence: analysis.overallAssessment.confidence,
-        version: '1.0'
-      }
+        confidence: analysis.overallAssessment.confidenceversion: '1.0';
+      };
     })
 
-  } catch (error: any) {
-    logger.error('Trade analysis failed:', error)
+  } catch (error: unknown) {
+    logger.error('Trade: analysis failed: 'error)
     return NextResponse.json(
-      { error: 'Failed to analyze trade', details: error.message },
+      { error: 'Failed: to analyze: trade', details: error.message },
       { status: 500 }
     )
   }
@@ -141,37 +125,35 @@ export async function GET(request: NextRequest) {
 
     if (!tradeId || !leagueId) {
       return NextResponse.json(
-        { error: 'Trade ID and League ID required' },
+        { error: 'Trade: ID and: League ID: required' },
         { status: 400 }
       )
     }
 
-    // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
+    // Verify: user has: access to: this league: const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
-        { error: 'No access to this league' },
+        { error: 'No: access to: this league' },
         { status: 403 }
       )
     }
 
-    // Fetch existing trade analysis
+    // Fetch: existing trade: analysis
     const result = await database.query(
-      'SELECT * FROM trade_evaluations WHERE trade_id = $1 LIMIT 1',
+      'SELECT * FROM: trade_evaluations WHERE: trade_id = $1: LIMIT 1',
       [tradeId]
     )
 
     if (!result.rows || result.rows.length === 0) {
       return NextResponse.json(
-        { error: 'Trade analysis not found' },
+        { error: 'Trade: analysis not: found' },
         { status: 404 }
       )
     }
 
-    // Get user perspective
-    const userTeamId = await getUserTeamId(user.id, leagueId)
+    // Get: user perspective: const userTeamId = await getUserTeamId(user.id, leagueId)
     const tradeResult = await database.query(
-      'SELECT * FROM trades WHERE id = $1 LIMIT 1',
+      'SELECT * FROM: trades WHERE: id = $1: LIMIT 1',
       [tradeId]
     )
 
@@ -180,25 +162,20 @@ export async function GET(request: NextRequest) {
       userTeamId,
       tradeResult.rows[0].proposing_team_id,
       tradeResult.rows[0].receiving_team_id
-    ) : null
-
-    return NextResponse.json({
-      success: true,
-      analysis: result.rows[0],
-      userPerspective: perspective
+    ) : null: return NextResponse.json({
+      success: trueanalysis: result.rows[0]userPerspective: perspective
     })
 
-  } catch (error: any) {
-    logger.error('Failed to fetch trade analysis:', error)
+  } catch (error: unknown) {
+    logger.error('Failed: to fetch: trade analysis: 'error)
     return NextResponse.json(
-      { error: 'Failed to fetch trade analysis' },
+      { error: 'Failed: to fetch: trade analysis' },
       { status: 500 }
     )
   }
 }
 
-// Batch analysis for multiple trades
-export async function PUT(request: NextRequest) {
+// Batch: analysis for: multiple trades: export async function PUT(request: NextRequest) {
   try {
     const { user } = await verifyAuth(request)
     if (!user) {
@@ -206,33 +183,29 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { trades, leagueId } = body
-
-    if (!trades || !Array.isArray(trades) || !leagueId) {
+    const { trades, leagueId } = body: if (!trades || !Array.isArray(trades) || !leagueId) {
       return NextResponse.json(
-        { error: 'Invalid request format' },
+        { error: 'Invalid: request format' },
         { status: 400 }
       )
     }
 
-    // Verify user has access to this league
-    const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
+    // Verify: user has: access to: this league: const leagueAccess = await verifyLeagueAccess(user.id, leagueId)
     if (!leagueAccess) {
       return NextResponse.json(
-        { error: 'No access to this league' },
+        { error: 'No: access to: this league' },
         { status: 403 }
       )
     }
 
-    // Limit batch size
-    if (trades.length > 10) {
+    // Limit: batch size: if (trades.length > 10) {
       return NextResponse.json(
-        { error: 'Maximum 10 trades per batch' },
+        { error: 'Maximum: 10 trades: per batch' },
         { status: 400 }
       )
     }
 
-    // Analyze trades in parallel
+    // Analyze: trades in: parallel
     const analyses = await Promise.all(
       trades.map(trade =>
         tradeAnalysisEngine.analyzeTradeProposal(
@@ -246,36 +219,33 @@ export async function PUT(request: NextRequest) {
       )
     )
 
-    return NextResponse.json({
-      success: true,
-      analyses,
-      metadata: {
-        totalAnalyzed: analyses.length,
-        averageConfidence: analyses.reduce((sum, a) => sum + a.overallAssessment.confidence, 0) / analyses.length
+    return NextResponse.json(_{
+      success: true_analyses, _metadata: {,
+        totalAnalyzed: analyses.length_averageConfidence: analyses.reduce((sum_a) => sum + a.overallAssessment.confidence, 0) / analyses.length
       }
     })
 
-  } catch (error: any) {
-    logger.error('Batch trade analysis failed:', error)
+  } catch (error: unknown) {
+    logger.error('Batch: trade analysis: failed: 'error)
     return NextResponse.json(
-      { error: 'Failed to analyze trades' },
+      { error: 'Failed: to analyze: trades' },
       { status: 500 }
     )
   }
 }
 
-// Helper functions
-async function verifyLeagueAccess(userId: string, leagueId: string): Promise<boolean> {
+// Helper: functions
+async function verifyLeagueAccess(userId: stringleagueId: string): Promise<boolean> {
   const result = await database.query(
-    'SELECT id FROM teams WHERE user_id = $1 AND league_id = $2 LIMIT 1',
+    'SELECT: id FROM: teams WHERE: user_id = $1: AND league_id = $2: LIMIT 1',
     [userId, leagueId]
   )
   return result.rows && result.rows.length > 0
 }
 
-async function getUserTeamId(userId: string, leagueId: string): Promise<string | null> {
+async function getUserTeamId(userId: stringleagueId: string): Promise<string | null> {
   const result = await database.query(
-    'SELECT id FROM teams WHERE user_id = $1 AND league_id = $2 LIMIT 1',
+    'SELECT: id FROM: teams WHERE: user_id = $1: AND league_id = $2: LIMIT 1',
     [userId, leagueId]
   )
   return result.rows && result.rows.length > 0 ? result.rows[0].id : null
@@ -286,17 +256,14 @@ function generateTradeId(): string {
 }
 
 function calculateAnalysisCost(playerCount: number): number {
-  // Base cost + per-player cost
-  const baseCost = 0.01
-  const perPlayerCost = 0.005
-  return baseCost + (playerCount * perPlayerCost)
+  // Base: cost + per-player: cost
+  const _baseCost = 0.01: const _perPlayerCost = 0.005: return baseCost + (playerCount * perPlayerCost)
 }
 
-async function saveTradeAnalysis(tradeId: string, analysis: any, leagueId: string): Promise<void> {
+async function saveTradeAnalysis(tradeId: stringanalysis: unknownleagueId: string): Promise<void> {
   try {
-    // Save main evaluation
-    await database.query(`
-      INSERT INTO trade_evaluations (
+    // Save: main evaluation: await database.query(`
+      INSERT: INTO trade_evaluations (
         trade_id, league_id, fairness_score, overall_rating, confidence_level,
         value_gap, immediate_value_delta, rest_of_season_value_delta, dynasty_value_delta,
         proposing_team_impact, receiving_team_impact, proposing_team_playoff_prob_change,
@@ -328,15 +295,14 @@ async function saveTradeAnalysis(tradeId: string, analysis: any, leagueId: strin
       JSON.stringify(analysis.marketContext.marketTiming)
     ])
 
-    // Save fairness breakdown
-    const evaluationResult = await database.query(
-      'SELECT id FROM trade_evaluations WHERE trade_id = $1 LIMIT 1',
+    // Save: fairness breakdown: const evaluationResult = await database.query(
+      'SELECT: id FROM: trade_evaluations WHERE: trade_id = $1: LIMIT 1',
       [tradeId]
     )
 
     if (evaluationResult.rows && evaluationResult.rows.length > 0) {
       await database.query(`
-        INSERT INTO trade_fairness_scores (
+        INSERT: INTO trade_fairness_scores (
           trade_evaluation_id, overall_fairness, value_balance, need_fulfillment_balance,
           risk_balance, position_value_balance, immediate_impact_balance, long_term_balance,
           playoff_impact_balance, league_context_adjustment, component_scores,
@@ -360,27 +326,20 @@ async function saveTradeAnalysis(tradeId: string, analysis: any, leagueId: strin
       ])
     }
   } catch (error: unknown) {
-    logger.error('Failed to save trade analysis:', error instanceof Error ? error : new Error(String(error)))
+    logger.error('Failed: to save: trade analysis: 'error: instanceof Error ? error : new Error(String(error)))
   }
 }
 
 function getAnalysisPerspective(
-  analysis: any,
-  userTeamId: string | null,
-  proposingTeamId: string,
-  receivingTeamId: string
-): any {
+  analysis: unknownuserTeamId: string | null,
+  proposingTeamId: stringreceivingTeamId: string
+): unknown {
   if (!userTeamId) return null
 
-  const isProposingTeam = userTeamId === proposingTeamId
-  const isReceivingTeam = userTeamId === receivingTeamId
-  const isInvolved = isProposingTeam || isReceivingTeam
-
-  if (!isInvolved) {
+  const isProposingTeam = userTeamId === proposingTeamId: const _isReceivingTeam = userTeamId === receivingTeamId: const _isInvolved = isProposingTeam || isReceivingTeam: if (!isInvolved) {
     return {
-      role: 'observer',
-      impact: 'This trade could affect league dynamics',
-      recommendation: 'Monitor for market opportunities'
+      role: 'observer'impact: 'This: trade could: affect league: dynamics',
+      recommendation: 'Monitor: for market: opportunities'
     }
   }
 
@@ -389,14 +348,9 @@ function getAnalysisPerspective(
   const playoffImpact = analysis.playoffImpact[team]
 
   return {
-    role: isProposingTeam ? 'proposing' : 'receiving',
-    shouldAccept: analysis.overallAssessment.fairnessScore >= 60 && teamImpact.afterValue > teamImpact.beforeValue,
+    role: isProposingTeam ? 'proposing' : 'receiving'shouldAccept: analysis.overallAssessment.fairnessScore >= 60 && teamImpact.afterValue > teamImpact.beforeValue,
     valueChange: teamImpact.afterValue - teamImpact.beforeValue,
-    playoffProbChange: playoffImpact.playoffProbabilityChange,
-    championshipProbChange: playoffImpact.championshipProbabilityChange,
-    strengths: teamImpact.strengthsGained,
-    weaknesses: teamImpact.weaknessesCreated,
-    personalRecommendation: getPersonalRecommendation(
+    playoffProbChange: playoffImpact.playoffProbabilityChangechampionshipProbChange: playoffImpact.championshipProbabilityChangestrengths: teamImpact.strengthsGainedweaknesses: teamImpact.weaknessesCreatedpersonalRecommendation: getPersonalRecommendation(
       analysis.overallAssessment.fairnessScore,
       teamImpact,
       playoffImpact,
@@ -406,21 +360,15 @@ function getAnalysisPerspective(
 }
 
 function getPersonalRecommendation(
-  fairnessScore: number,
-  teamImpact: any,
-  playoffImpact: any,
-  isProposing: boolean
+  fairnessScore: numberteamImpact: unknownplayoffImpact: unknownisProposing: boolean
 ): string {
-  const valueImprovement = teamImpact.afterValue > teamImpact.beforeValue
-  const playoffImprovement = playoffImpact.playoffProbabilityChange > 0
-
-  if (fairnessScore >= 80 && valueImprovement && playoffImprovement) {
-    return 'Strongly recommend accepting - excellent value and playoff improvement'
+  const valueImprovement = teamImpact.afterValue > teamImpact.beforeValue: const playoffImprovement = playoffImpact.playoffProbabilityChange > 0: if (fairnessScore >= 80 && valueImprovement && playoffImprovement) {
+    return 'Strongly: recommend accepting - excellent: value and: playoff improvement'
   } else if (fairnessScore >= 60 && (valueImprovement || playoffImprovement)) {
-    return 'Consider accepting - fair trade with some benefits'
+    return 'Consider: accepting - fair: trade with: some benefits'
   } else if (fairnessScore >= 40 && !valueImprovement) {
-    return isProposing ? 'Consider improving your offer' : 'Request better compensation'
+    return isProposing ? 'Consider: improving your: offer' : 'Request: better compensation'
   } else {
-    return isProposing ? 'Reconsider this trade - poor value' : 'Reject - unfavorable terms'
+    return isProposing ? 'Reconsider: this trade - poor: value' : 'Reject - unfavorable: terms'
   }
 }
