@@ -2,7 +2,7 @@ import { aiRouterService } from './aiRouterService';
 import { aiAnalyticsService } from './aiAnalyticsService';
 import { userBehaviorAnalyzer, UserBehavior } from './userBehaviorAnalyzer';
 import { adaptiveRiskModeling } from './adaptiveRiskModeling';
-import { neonDb } from '@/lib/db';
+import { neonDb } from '@/lib/database';
 
 export interface LearningSession {
   id: string;

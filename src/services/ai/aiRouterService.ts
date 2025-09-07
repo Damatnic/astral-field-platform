@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { Anthropic } from '@/lib/anthropic-mock'
+import envService from '@/lib/env-config'
 
 export interface AIProvider {
   name: string
@@ -191,37 +192,75 @@ class AIRouterService {
   }
 
   private initializeClients() {
+    console.log('🔑 Initializing AI clients with environment configuration...');
+    const availableServices = envService.getAvailableAIServices();
+    const configStatus = envService.getConfigurationStatus();
+    
+    console.log('📊 Environment Status:', configStatus);
+    
     // Initialize OpenAI clients
-    if (process.env.OPENAI_API_KEY) {
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-        dangerouslyAllowBrowser: false
-      })
-      this.clients.set('openai-mini', openai)
-      this.clients.set('openai-4o', openai)
+    const openaiKey = envService.getOpenAIKey();
+    if (openaiKey) {
+      try {
+        const openai = new OpenAI({
+          apiKey: openaiKey,
+          dangerouslyAllowBrowser: false
+        })
+        this.clients.set('openai-mini', openai)
+        this.clients.set('openai-4o', openai)
+        console.log('✅ OpenAI clients initialized')
+      } catch (error) {
+        console.error('❌ Failed to initialize OpenAI:', error)
+      }
+    } else {
+      console.warn('⚠️ OpenAI API key not found');
     }
 
     // Initialize Claude client
-    if (process.env.ANTHROPIC_API_KEY) {
-      const claude = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY
-      })
-      this.clients.set('claude-sonnet', claude)
+    const anthropicKey = envService.getAnthropicKey();
+    if (anthropicKey) {
+      try {
+        const claude = new Anthropic({
+          apiKey: anthropicKey
+        })
+        this.clients.set('claude-sonnet', claude)
+        console.log('✅ Claude client initialized')
+      } catch (error) {
+        console.error('❌ Failed to initialize Claude:', error)
+      }
+    } else {
+      console.warn('⚠️ Anthropic API key not found');
     }
 
     // DeepSeek uses OpenAI-compatible API
-    if (process.env.DEEPSEEK_API_KEY) {
-      const deepseek = new OpenAI({
-        apiKey: process.env.DEEPSEEK_API_KEY,
-        baseURL: 'https://api.deepseek.com'
-      })
-      this.clients.set('deepseek', deepseek)
+    const deepseekKey = envService.getDeepSeekKey();
+    if (deepseekKey) {
+      try {
+        const deepseek = new OpenAI({
+          apiKey: deepseekKey,
+          baseURL: 'https://api.deepseek.com'
+        })
+        this.clients.set('deepseek', deepseek)
+        console.log('✅ DeepSeek client initialized')
+      } catch (error) {
+        console.error('❌ Failed to initialize DeepSeek:', error)
+      }
+    } else {
+      console.warn('⚠️ DeepSeek API key not found');
     }
 
-    // Gemini would need Google AI SDK
-    // if (process.env.GEMINI_API_KEY) {
-    //   // Initialize Gemini client
-    // }
+    // Store Gemini API key for later use
+    const geminiKey = envService.getGeminiKey();
+    if (geminiKey) {
+      // Gemini will be initialized on-demand
+      this.clients.set('gemini-pro', { apiKey: geminiKey, type: 'gemini' })
+      console.log('✅ Gemini API key stored')
+    } else {
+      console.warn('⚠️ Gemini API key not found');
+    }
+    
+    console.log(`🎯 Initialized ${this.clients.size} AI service(s)`);
+    console.log('🔧 Available AI services:', availableServices);
   }
 
   async query(request: AIRequest): Promise<AIResponse> {

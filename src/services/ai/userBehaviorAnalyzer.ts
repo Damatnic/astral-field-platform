@@ -1,7 +1,6 @@
-// @ts-nocheck
-import aiRouterService from './aiRouterService';
-import aiAnalyticsService from './aiAnalyticsService';
-import { neonDb } from '@/lib/db';
+import { aiRouterService } from './aiRouterService';
+import { aiAnalyticsService } from './aiAnalyticsService';
+import { neonDb } from '@/lib/database';
 
 export interface UserBehavior {
   userId: string;
