@@ -485,7 +485,7 @@ export default function StandingsPage({ params }: StandingsPageProps) {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg Points</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {(standings.reduce((sum, t) => sum + t.points_for, 0) / standings.length).toFixed(1)}
+                      {(standings.reduce((sum, t) => sum + (typeof t.points_for === 'number' ? t.points_for : 0), 0) / standings.length).toFixed(1)}
                     </p>
                   </div>
                 </div>
@@ -587,7 +587,7 @@ export default function StandingsPage({ params }: StandingsPageProps) {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            {team.points_for.toFixed(1)}
+                            {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -654,7 +654,7 @@ export default function StandingsPage({ params }: StandingsPageProps) {
                             {team.team_name}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {team.wins}-{team.losses}-{team.ties} • {team.points_for.toFixed(1)} PF
+                            {team.wins}-{team.losses}-{team.ties} • {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)} PF
                           </div>
                         </div>
                       </div>

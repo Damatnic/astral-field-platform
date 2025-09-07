@@ -375,7 +375,7 @@ export default function LeaguePage({ params }: LeaguePageProps) {
                         </td>
                         <td className="text-right py-3">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            {team.points_for.toFixed(1)}
+                            {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
                           </span>
                         </td>
                       </tr>

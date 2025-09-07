@@ -346,7 +346,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                           {team.wins}-{team.losses}-{team.ties}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {team.points_for.toFixed(1)} PF
+                          {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)} PF
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">

@@ -108,6 +108,7 @@ export default function DashboardPage() {
   // Helper functions
   function getUserName(profileId: number): string {
     const names = [
+      'Nicholas D\'Amato', // Crown 👑 - moved to position 1
       'Jon Kornbeck',
       'Jack McCaigue',
       'Nick Hartley',
@@ -116,7 +117,6 @@ export default function DashboardPage() {
       'David Jarvey',
       'Larry McCaigue',
       'Renee McCaigue',
-      'Nicholas D\'Amato',
       'Kaity Lorbecki'
     ];
     return names[profileId - 1] || 'Unknown User';
@@ -124,6 +124,7 @@ export default function DashboardPage() {
 
   function getTeamName(profileId: number): string {
     const teams = [
+      'D\'Amato Dynasty', // Crown 👑 - moved to position 1
       'Kornbeck\'s Krusaders',
       'Jack\'s Juggernauts',
       'Hartley\'s Heroes',
@@ -132,29 +133,28 @@ export default function DashboardPage() {
       'Jarvey\'s Giants',
       'Larry\'s Legends',
       'Renee\'s Raiders',
-      'D\'Amato Dynasty',
       'Kaity\'s Knights'
     ];
     return teams[profileId - 1] || 'Unknown Team';
   }
 
   function getIcon(profileId: number): string {
-    const icons = ['🏈', '⚡', '🔥', '⭐', '🏆', '🎯', '🚀', '💎', '👤', '👑'];
+    const icons = ['👑', '🏈', '⚡', '🔥', '⭐', '🏆', '🎯', '🚀', '💎', '👤']; // Crown moved to position 1
     return icons[profileId - 1] || '👤';
   }
 
   function getMockStandings(): Team[] {
     return [
-      { id: 1, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Jon Kornbeck' },
-      { id: 2, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Jack McCaigue' },
-      { id: 3, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Nick Hartley' },
-      { id: 4, team_name: 'Minor League', abbreviation: 'MIN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Cason Minor' },
-      { id: 5, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Brittany Bergum' },
-      { id: 6, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'David Jarvey' },
-      { id: 7, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Larry McCaigue' },
-      { id: 8, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Renee McCaigue' },
-      { id: 9, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Nicholas D\'Amato' },
-      { id: 10, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 0, losses: 0, ties: 0, points_for: 0, owner_name: 'Kaity Lorbecki' }
+      { id: 1, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 12, losses: 1, ties: 0, points_for: 1847.3, owner_name: 'Nicholas D\'Amato' },
+      { id: 2, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 8, losses: 5, ties: 0, points_for: 1456.7, owner_name: 'Jon Kornbeck' },
+      { id: 3, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 7, losses: 6, ties: 0, points_for: 1398.2, owner_name: 'Jack McCaigue' },
+      { id: 4, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 7, losses: 6, ties: 0, points_for: 1365.1, owner_name: 'Nick Hartley' },
+      { id: 5, team_name: 'Minor League', abbreviation: 'MIN', wins: 6, losses: 7, ties: 0, points_for: 1298.4, owner_name: 'Cason Minor' },
+      { id: 6, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 6, losses: 7, ties: 0, points_for: 1287.9, owner_name: 'Brittany Bergum' },
+      { id: 7, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 5, losses: 8, ties: 0, points_for: 1234.6, owner_name: 'David Jarvey' },
+      { id: 8, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 5, losses: 8, ties: 0, points_for: 1198.7, owner_name: 'Larry McCaigue' },
+      { id: 9, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 4, losses: 9, ties: 0, points_for: 1156.3, owner_name: 'Renee McCaigue' },
+      { id: 10, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 3, losses: 10, ties: 0, points_for: 1089.2, owner_name: 'Kaity Lorbecki' }
     ];
   }
 
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                         {team.wins}-{team.losses}-{team.ties}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-300">
-                        {team.points_for.toFixed(1)}
+                        {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
                       </td>
                     </tr>
                   ))}
