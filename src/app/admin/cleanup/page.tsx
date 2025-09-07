@@ -15,14 +15,17 @@ export default function DatabaseCleanupPage() {
   const checkDatabaseStatus = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/database/cleanup');
+      const response = await fetch('/api/database/reset');
       const data = await response.json();
       
       if (data.success) {
         setDbStatus(data.database);
         setMessage('Database status retrieved');
+      } else {
+        setMessage('Failed to retrieve database status');
       }
     } catch (error) {
+      console.error('Status check error:', error);
       setMessage('Failed to check database status');
     } finally {
       setIsLoading(false);
@@ -41,7 +44,7 @@ export default function DatabaseCleanupPage() {
     setMessage('Cleaning database and resetting all data...');
 
     try {
-      const response = await fetch('/api/database/cleanup', {
+      const response = await fetch('/api/database/reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adminPin })
