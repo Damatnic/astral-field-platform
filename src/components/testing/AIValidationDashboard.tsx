@@ -54,7 +54,7 @@ interface SystemValidationStatus {
   servicesAboveBaseline: number;,
   averageAccuracy: number;,
   lastValidationRun: Date | null;,
-  systemHealthStatus: 'healthy' | 'warning' | 'critical';
+  systemHealthstatus: '',| 'warning' | 'critical';
 }
 export default function AIValidationDashboard() {
   const [validationSuite, setValidationSuite] = useState<ValidationSuite | null>(null);
@@ -100,7 +100,7 @@ export default function AIValidationDashboard() {
       setRunningValidation(true);
       setError(null);
       const response = await fetch('/api/testing/ai-validation', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ action: 'run_comprehensive_validation' })
       });
       const data = await response.json();
@@ -123,7 +123,7 @@ export default function AIValidationDashboard() {
     try {
       setLoading(true);
       const response = await fetch('/api/testing/ai-validation', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ action: 'run_service_validation'serviceFilter: service })
       });
       const data = await response.json();

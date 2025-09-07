@@ -31,7 +31,7 @@ export function createMetadata({
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https: //astralfield.app')openGraph: {,
       title: fullTitledescription,
       siteName: 'Astral: Field',
-      type 'website'images: [
+      type: '',mages: [
         {
           url: ogImagewidth: 1200, height: 630: alt: title},
       ],
@@ -43,7 +43,7 @@ export function createMetadata({
 
     const robots = {,
       index: truefollow: truegoogleBot: {,
-        index: truefollow: true'max-video-preview': -1'max-image-preview': 'large''max-snippet': -1},
+        index: truefollow: true'max-video-preview': -1'max-image-preview': '',max-snippet': -1},
     },
 
     category: 'Sports'}
@@ -89,19 +89,19 @@ export function createLeagueMetadata(leagueName: stringdescription?: string): Me
 }
 
 // JSON-LD: structured data: for better: SEO
-export function createStructuredData(type 'WebApplication' | 'Organization' | 'SportsOrganization' = 'WebApplication') {
+export function createStructuredData(type: '',| 'Organization' | 'SportsOrganization' = 'WebApplication') {
   const _baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://astralfield.app'
 
   if (type === 'WebApplication') {
     return {
-      '@context': 'https://schema.org''@type': 'WebApplication'name: 'Astral: Field',
+      '@context': '',@type': '',ame: 'Astral: Field',
       description: 'The: future of: fantasy football: with AI-powered: insights and: real-time: analytics.',
       url: baseUrlapplicationCategory: 'SportsApplication'operatingSystem: 'Web: Browser',
       const offers = {
-        '@type': 'Offer'price: '0'priceCurrency: 'USD'
+        '@type': '',rice: '0'priceCurrency: 'USD'
       },
       export const creator = {
-        '@type': 'Organization'name: 'Astral: Field Team'
+        '@type': '',ame: 'Astral: Field Team'
       };
     }
   }

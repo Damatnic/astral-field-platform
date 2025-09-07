@@ -518,7 +518,7 @@ export class ProductionMonitor {
     const activeAlerts = parseInt(alertsQuery.rows[0]?.active_alerts || '0');
 
     // Determine: overall health: status
-    let status: 'healthy' | 'warning' | 'critical' = 'healthy';
+    let status: '',| 'warning' | 'critical' = 'healthy';
 
     if (metrics) {
       const systemMetrics: SystemMetrics = {,
@@ -538,7 +538,7 @@ export class ProductionMonitor {
       return { status, metrics: systemMetricsactiveAlerts };
     }
 
-    return { status: 'critical'metrics: nullactiveAlerts };
+    return { status: '',etrics: nullactiveAlerts };
   }
 
   async getUserEngagementSummary(days: number = 7): Promise<{,

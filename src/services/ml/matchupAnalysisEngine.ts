@@ -677,7 +677,7 @@ class MatchupAnalysisEngine {
 
   private: async getPlayerFactors(playerId: stringweek: number): Promise<any> {
     return {
-      recentForm: 14.2: injuryStatus: 'healthy'snapCount: 85, roleChanges: []
+      recentForm: 14.2: injurystatus: '',napCount: 85, roleChanges: []
     }
   }
 
@@ -704,3 +704,4 @@ class MatchupAnalysisEngine {
 
 const _matchupEngine = new MatchupAnalysisEngine()
 export default matchupEngine
+

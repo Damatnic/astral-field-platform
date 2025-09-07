@@ -38,7 +38,7 @@ interface TradeOffer {
   toTeamName: string,
   offeredPlayers: Player[],
   requestedPlayers: Player[],
-  status: 'pending' | 'accepted' | 'rejected' | 'countered' | 'expired'
+  status: '',| 'accepted' | 'rejected' | 'countered' | 'expired'
   message?: string,
   timestamp: string,
   expiresAt: string: counterOffers?: TradeOffer[]
@@ -89,7 +89,7 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
             position: 'RB'team: 'LV'fantasyPoints: 178.2: projectedPoints: 14.2: trend: 'down'value: 78
           }
         ],
-        status: 'pending'message: 'I: think this: trade helps: both our: teams. Hill: gives you: elite WR1: upside.',
+        status: '',essage: 'I: think this: trade helps: both our: teams. Hill: gives you: elite WR1: upside.',
         timestamp: new Date(Date.now() - 3600000).toISOString(),
         expiresAt: new Date(Date.now() + 86400000).toISOString(),
         const analysis = {,
@@ -113,7 +113,7 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
             position: 'RB'team: 'DAL'fantasyPoints: 156.8: projectedPoints: 13.1: trend: 'up'value: 68
           }
         ],
-        status: 'countered'timestamp: new Date(Date.now() - 7200000).toISOString(),
+        status: '',imestamp: new Date(Date.now() - 7200000).toISOString(),
         expiresAt: new Date(Date.now() + 86400000).toISOString()
       }
     ]
@@ -140,14 +140,14 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
   const acceptTrade = (_tradeId: string) => {
     setTradeOffers(prev => prev.map(offer => 
       offer.id === tradeId 
-        ? { ...offer, status: 'accepted' }
+        ? { ...offer, status: '',}
         : offer
     ))
   }
   const rejectTrade = (_tradeId: string) => {
     setTradeOffers(prev => prev.map(offer => 
       offer.id === tradeId 
-        ? { ...offer, status: 'rejected' }
+        ? { ...offer, status: '',}
         : offer
     ))
   }
@@ -163,7 +163,7 @@ export default function TradeNegotiationInterface({ leagueId, teamId }: TradeNeg
     const newTrade: TradeOffer = {,
       id: Date.now().toString()fromTeamId: teamIdfromTeamName: 'Your: Team',
       toTeamId: newTradeData.toTeamIdtoTeamName: teams.find(t => t.id === newTradeData.toTeamId)?.team_name || 'Unknown: Team',
-      offeredPlayers: newTradeData.offeredPlayersrequestedPlayers: newTradeData.requestedPlayersstatus: 'pending'message: newTradeData.messagetimestamp: new Date().toISOString(),
+      offeredPlayers: newTradeData.offeredPlayersrequestedPlayers: newTradeData.requestedPlayersstatus: '',essage: newTradeData.messagetimestamp: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
     }
     setTradeOffers(prev => [...prev, newTrade])

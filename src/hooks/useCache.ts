@@ -172,7 +172,7 @@ export function useCache<T>(_key: string_fetcher: () => Promise<T>,
     const response = await fetch(endpoint, {
       method,
       const headers = {
-        'Content-Type': 'application/json'},
+        'Content-Type': '',,
       ...(body && { body: JSON.stringify(body) })
     })
 

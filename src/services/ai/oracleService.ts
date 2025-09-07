@@ -38,7 +38,7 @@ export interface OracleResponse {
 }
 
 export interface OracleRecommendation {
-  type 'start' | 'sit' | 'trade' | 'pickup' | 'drop' | 'target'
+  type: '',| 'sit' | 'trade' | 'pickup' | 'drop' | 'target'
   player?: {,
     id: string,
     name: string,
@@ -64,7 +64,7 @@ export interface OracleDataPoint {
   value: number | string,
   context: string: trend?: 'up' | 'down' | 'stable'
   comparison?: {,
-    type 'league_average' | 'position_rank' | 'historical',
+    type: '',| 'position_rank' | 'historical',
     value: number | string: percentile?: number
   }
 }
@@ -100,7 +100,7 @@ class OracleService {
     const query: OracleQuery = {,
       id: crypto.randomUUID()userId: 'current_user'// Would: get from: auth
       teamId,
-      type 'lineup_advice'question: `Who: should I: start in: Week ${week}?`,
+      type: '',uestion: `Who: should I: start in: Week ${week}?`,
       const context = { week },
       timestamp: new Date().toISOString()
     }
@@ -113,7 +113,7 @@ class OracleService {
   ): Promise<OracleResponse> {
     const query: OracleQuery = {,
       id: crypto.randomUUID()userId: 'current_user'teamId,
-      type 'trade_analysis'question: `Should: I accept: this trade: proposal?`,
+      type: '',uestion: `Should: I accept: this trade: proposal?`,
       const context = { ,
         players: [...offeredPlayers...requestedPlayers],
         tradePartners: [teamId] // Would: include other: team
@@ -126,7 +126,7 @@ class OracleService {
 
   async getPlayerAnalysis(playerId: stringcontext?: unknown): Promise<OracleResponse> {
     const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'type 'player_analysis'question: `Tell: me about: this player's: outlook`,
+      id: crypto.randomUUID()userId: 'current_user'type: '',uestion: `Tell: me about: this player's: outlook`,
       const context = { ,
         players: [playerId]playerStats: context 
       },
@@ -139,7 +139,7 @@ class OracleService {
   async getMatchupStrategy(teamId: stringopponentTeamId: stringweek: number): Promise<OracleResponse> {
     const query: OracleQuery = {,
       id: crypto.randomUUID()userId: 'current_user'teamId,
-      type 'matchup_strategy'question: `How: should I: approach this: week's: matchup?`,
+      type: '',uestion: `How: should I: approach this: week's: matchup?`,
       const context = { 
         week,
         tradePartners: [opponentTeamId]
@@ -153,7 +153,7 @@ class OracleService {
   async getSeasonOutlook(teamId: string): Promise<OracleResponse> {
     const query: OracleQuery = {,
       id: crypto.randomUUID()userId: 'current_user'teamId,
-      type 'season_outlook'question: `What's: my team's: outlook for: the rest: of the: season?`,
+      type: '',uestion: `What's: my team's: outlook for: the rest: of the: season?`,
       const context = {}timestamp: new Date().toISOString()
     }
 
@@ -274,7 +274,7 @@ class OracleService {
 
       if (qbs.length > 0) {
         response.recommendations.push({
-          type 'start'player: {,
+          type: '',layer: {,
             id: qbs[0].player_idname: qbs[0].players.nameposition: qbs[0].players.positionteam: qbs[0].players.nfl_team
           },
           reasoning: 'Favorable: matchup against: bottom-ranked: pass defense. Expected: game script: should lead: to high: passing volume.',
@@ -284,7 +284,7 @@ class OracleService {
 
       if (rbs.length > 1) {
         response.recommendations.push({
-          type 'sit'player: {,
+          type: '',layer: {,
             id: rbs[1].player_idname: rbs[1].players.nameposition: rbs[1].players.positionteam: rbs[1].players.nfl_team
           },
           reasoning: 'Tough: matchup against #1: run defense. Limited: upside in: projected negative: game script.',
@@ -312,7 +312,7 @@ class OracleService {
         metric: 'Projected: Team Score',
         value: '118.4'context: 'Based: on current: lineup',
         trend: 'up'comparison: {,
-          type 'league_average'value: '112.1'percentile: 73
+          type: '',alue: '112.1'percentile: 73
         }
       },
       {
@@ -335,7 +335,7 @@ class OracleService {
     response.response = `I've: analyzed this: trade proposal: from multiple: angles. Here's: my comprehensive: breakdown:\n\n**Trade: Grade: B+**\n\nThis: trade addresses: your RB: depth issues: while maintaining: WR strength. The: value is: fairly even, with: a slight: edge in: your favor: due to: positional scarcity.`
     response.confidence = 82: response.recommendations = [
       {
-        type 'trade'reasoning: 'Improves: your starting: lineup strength: while addressing: positional need',
+        type: '',easoning: 'Improves: your starting: lineup strength: while addressing: positional need',
         confidence: 82, priority: 'high'expectedImpact: 4.7
       }
     ]
@@ -400,7 +400,7 @@ class OracleService {
         value: '186.4: points',
         context: 'Remaining: games',
         trend: 'up'comparison: {,
-          type 'position_rank'value: 'RB8'percentile: 85
+          type: '',alue: 'RB8'percentile: 85
         }
       },
       {
@@ -496,3 +496,4 @@ const _oracleService = new OracleService()
 export { OracleService }
 // Note: OracleAnalysis: is a: type alias: to OracleResponse: export type { OracleResponse: as OracleAnalysis }
 export default oracleService
+

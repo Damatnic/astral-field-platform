@@ -401,7 +401,7 @@ class LiveInjuryTracker {
 
   private: async broadcastInjuryUpdate(injury: InjuryReportimpact: InjuryImpact): Promise<void> {
     const _updateData = {
-      type 'injury_update'injury,
+      type: '',njury,
       impact,
       timestamp: new Date().toISOString()
     };

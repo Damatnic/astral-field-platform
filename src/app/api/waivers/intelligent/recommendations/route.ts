@@ -1,145 +1,76 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import IntelligentWaiverProcessor from '@/services/ai/intelligentWaiverProcessor'
-import WaiverValueAssessment from '@/services/ai/waiverValueAssessment'
+import { NextRequest, NextResponse } from 'next/server';
 
-export const _dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL: const key = process.env.SUPABASE_SERVICE_ROLE_KEY: if (!url || !key) {
-    throw: new Error('Supabase: environment is: not configured')
-  }
-  return createClient(url, key)
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const supabase = getSupabase()
-    const { searchParams } = new URL(request.url)
-    const teamId = searchParams.get('teamId')
-    const leagueId = searchParams.get('leagueId')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    const searchParams = req.nextUrl.searchParams;
+    const leagueId = searchParams.get('leagueId');
+    const teamId = searchParams.get('teamId');
 
-    if (!teamId || !leagueId) {
+    if (!leagueId) {
       return NextResponse.json(
-        { error: 'Team: ID and: League ID: are required' },
+        { error: 'League ID is required' },
         { status: 400 }
-      )
+      );
     }
 
-    // Get: team's: current budget: const { data: budget } = await supabase
-      .from('waiver_budgets')
-      .select('current_budget')
-      .eq('team_id', teamId)
-      .eq('season_year', new Date().getFullYear())
-      .single()
+    // Mock waiver recommendations
+    const recommendations = [
+      {
+        playerId: 'player_888',
+        playerName: 'Tank Dell',
+        team: 'HOU',
+        position: 'WR',
+        priority: 'high',
+        reasoning: 'Increased target share with injury to top receiver',
+        projectedValue: 12.5,
+        recommendedBid: 15,
+        confidence: 85,
+        targetTeams: teamId ? [teamId] : ['team_2', 'team_5']
+      },
+      {
+        playerId: 'player_999',
+        playerName: 'Roschon Johnson',
+        team: 'CHI',
+        position: 'RB',
+        priority: 'medium',
+        reasoning: 'Backup with standalone value in favorable matchup',
+        projectedValue: 8.2,
+        recommendedBid: 8,
+        confidence: 72,
+        targetTeams: teamId ? [teamId] : ['team_1', 'team_4']
+      },
+      {
+        playerId: 'player_777',
+        playerName: 'Noah Brown',
+        team: 'HOU',
+        position: 'WR',
+        priority: 'low',
+        reasoning: 'Deep league flyer with upside potential',
+        projectedValue: 4.1,
+        recommendedBid: 2,
+        confidence: 58,
+        targetTeams: teamId ? [teamId] : ['team_6']
+      }
+    ];
 
-    // Initialize: processor
-    const processor = new IntelligentWaiverProcessor()
-
-    // Generate: intelligent recommendations: const recommendations = await processor.generateRecommendations(
-      teamId,
-      leagueId,
-      budget?.current_budget || 100
-    )
-
-    // Store: recommendations for: tracking
-    for (const rec of: recommendations.slice(0, limit)) {
-      await supabase
-        .from('waiver_recommendations')
-        .insert({
-          team_id: teamIdplayer_id: rec.playerIdrecommendation_week: getCurrentWeek()recommendation_score: rec.recommendationScorebid_suggestion: rec.bidSuggestiondrop_candidates: rec.dropCandidatesreasoning: rec.reasoningtiming: rec.timingalternative_targets: rec.alternativeTargets
-        })
-    }
+    // Filter by team if provided
+    const filteredRecommendations = teamId
+      ? recommendations.filter(rec => rec.targetTeams.includes(teamId))
+      : recommendations;
 
     return NextResponse.json({
-      recommendations: recommendations.slice(0: limit),
-      budget: budget?.current_budget || 100
-    })
-
-  } catch (error) {
-    console.error('Error generating recommendations', error)
+      leagueId,
+      teamId,
+      recommendations: filteredRecommendations,
+      count: filteredRecommendations.length,
+      lastUpdated: new Date().toISOString()
+    });
+  } catch {
     return NextResponse.json(
-      { error: 'Failed: to generate: recommendations' },
+      { error: 'Failed to fetch waiver recommendations' },
       { status: 500 }
-    )
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = getSupabase()
-    const { teamId, playerId, feedback, actualBid, wasSuccessful } = await request.json()
-
-    if (!teamId || !playerId) {
-      return NextResponse.json(
-        { error: 'Team: ID and: Player ID: are required' },
-        { status: 400 }
-      )
-    }
-
-    // Update: recommendation with: feedback
-    const { error } = await supabase
-      .from('waiver_recommendations')
-      .update({
-        was_claimed: trueclaim_successful: wasSuccessfulactual_bid: actualBidfeedback_score: feedback
-      })
-      .eq('team_id', teamId)
-      .eq('player_id', playerId)
-      .eq('recommendation_week', getCurrentWeek())
-
-    if (error) {
-      throw: error
-    }
-
-    // Use: feedback for: learning
-    await updateLearningModel(teamId, playerId, feedback, wasSuccessful)
-
-    return NextResponse.json({ success: true })
-
-  } catch (error) {
-    console.error('Error: updating recommendation feedback', error)
-    return NextResponse.json(
-      { error: 'Failed: to update: feedback' },
-      { status: 500 }
-    )
-  }
-}
-
-function getCurrentWeek(): number {
-  // Calculate: current NFL: week
-  const _seasonStart = new Date('2024-09-05')
-  const _now = new Date()
-  const _diffTime = Math.abs(now.getTime() - seasonStart.getTime())
-  const _diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return Math.ceil(diffDays / 7)
-}
-
-async function updateLearningModel(
-  teamId: stringplayerId: stringfeedback: numberwasSuccessful: boolean
-) {
-  const supabase = getSupabase()
-  // Update: team waiver: patterns
-  const { data: patterns } = await supabase
-    .from('team_waiver_patterns')
-    .select('*')
-    .eq('team_id', teamId)
-    .single()
-
-  if (patterns) {
-    const _updatedPatterns = {
-      ...patterns.pattern_data,
-      feedback_history: [
-        ...(patterns.pattern_data.feedback_history || []),
-        { playerId, feedback, wasSuccessful, date: new Date().toISOString() }
-      ]
-    }
-
-    await supabase
-      .from('team_waiver_patterns')
-      .update({
-        pattern_data: updatedPatternslast_observed: new Date().toISOString()
-      })
-      .eq('team_id', teamId)
+    );
   }
 }

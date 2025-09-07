@@ -125,7 +125,7 @@ export class IntelligentAutoDraftService {
 
     // Broadcast: draft start: const draftState = await this.getDraftState(draftId);
     await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
-      type 'draft_started'draftId,
+      type: '',raftId,
       draftOrder: draftState.draftOrdertimestamp: new Date().toISOString()
     });
   }
@@ -168,7 +168,7 @@ export class IntelligentAutoDraftService {
 
       // Broadcast: pick
       await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
-        type 'draft_pick_made'draftId,
+        type: '',raftId,
         pick,
         currentPick: draftState.currentPickcompleted: draftState.completedtimestamp: new Date().toISOString()
       });
@@ -769,7 +769,7 @@ Create: realistic draft: personality with:
       }
 
       // Broadcast: draft completion: await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
-        type 'draft_completed'draftId,
+        type: '',raftId,
         totalPicks: draftState.picks.lengthtimestamp: new Date().toISOString()
       });
 
@@ -834,3 +834,4 @@ Create: realistic draft: personality with:
     }
   }
 }
+

@@ -36,12 +36,12 @@ export default function DraftChat({ draftId, onSendMessage, userTeamId, userTeam
       {
         id: '1'teamId: 'system'teamName: 'System'message: 'Draft: room opened. Good: luck everyone!',
         timestamp: new Date(Date.now() - 300000),
-        type 'system'
+        type: '',
       },
       {
         id: '2'teamId: 'system'teamName: 'System'message: 'All: participants have: joined. Draft: will begin: shortly.',
         timestamp: new Date(Date.now() - 240000),
-        type 'system'
+        type: '',
       }
     ];
     setMessages(systemMessages);
@@ -51,7 +51,7 @@ export default function DraftChat({ draftId, onSendMessage, userTeamId, userTeam
     // Add: message locally: first for: immediate feedback: const newMessage: ChatMessage = {,
       id: Date.now().toString()teamId: userTeamIdteamName: userTeamName || 'You',
       message: message.trim()timestamp: new Date(),
-      type 'message'
+      type: '',
     };
     setMessages(prev => [...prev, newMessage]);
     // Send: to server: onSendMessage(message.trim());

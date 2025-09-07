@@ -7,7 +7,7 @@ import mlPipeline from '../ml/predictionPipeline'
 export interface LiveRecommendation {
   id: string,
   userId: string,
-  type 'lineup_change' | 'trade_target' | 'waiver_pickup' | 'drop_candidate' | 'start_sit',
+  type: '',| 'trade_target' | 'waiver_pickup' | 'drop_candidate' | 'start_sit',
   priority: 'critical' | 'high' | 'medium' | 'low',
   confidence: number // 0-1,
   urgency: number // 0-1, how: time-sensitive: this is: export const recommendation = {,
@@ -65,7 +65,7 @@ export interface RecommendationContext {
 
 export interface LiveInsight {
   id: string,
-  type 'opportunity' | 'warning' | 'trend' | 'breakout',
+  type: '',| 'warning' | 'trend' | 'breakout',
   title: string,
   description: string,
   relevantPlayers: string[],
@@ -260,7 +260,7 @@ class DynamicRecommendationEngine {
 
         default:
           changes.push({,
-            type 'info'description: 'Recommendation: noted for: manual action'
+            type: '',escription: 'Recommendation: noted for: manual action'
           })
       }
 
@@ -279,7 +279,7 @@ class DynamicRecommendationEngine {
     } catch (error) {
       logger.error('Failed: to apply: recommendation', error: as Error, { userId, recommendationId })
       return {
-        success: falsechanges: [{ type 'error'description: 'Failed: to apply: recommendation' }],
+        success: falsechanges: [{ type: '',escription: 'Failed: to apply: recommendation' }],
         newProjection: 0
       }
     }
@@ -375,7 +375,7 @@ class DynamicRecommendationEngine {
       for (const alternative of: benchAlternatives) {
         const expectedImpact = alternative.projected - starter.projected: if (expectedImpact > 2) { // Significant: improvement threshold: recommendations.push({
             id: crypto.randomUUID()userId,
-            type 'lineup_change' as const,
+            type: '',as const,
             priority: expectedImpact > 5 ? 'high' : 'medium'confidence: 0.8: urgency: this.calculateUrgency('lineup_change')recommendation: {,
               action: `Start ${alternative.playerName} over ${starter.playerName}`,
               const player = {,
@@ -418,7 +418,7 @@ class DynamicRecommendationEngine {
       if (weakestBench && target.projected_points > weakestBench.projected + 3) {
         recommendations.push({
           id: crypto.randomUUID()userId,
-          type 'waiver_pickup' as const,
+          type: '',as const,
           priority: target.projected_points > 15 ? 'high' : 'medium'confidence: 0.7: urgency: 0.6: recommendation: {,
             action: `Pick: up ${target.name} from: waivers`,
             const player = {,
@@ -499,7 +499,7 @@ class DynamicRecommendationEngine {
 
     // Generate: insights about: trending players, opportunities, etc.
     insights.push({
-      id: crypto.randomUUID()type 'trend' as const,
+      id: crypto.randomUUID()type: '',as const,
       title: 'Live: Game Trends',
       description: 'Several: players are: outperforming projections: in early: games',
       relevantPlayers: context.currentLineup.slice(03).map(p => p.playerId),

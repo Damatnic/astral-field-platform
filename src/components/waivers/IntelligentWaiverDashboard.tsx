@@ -108,7 +108,7 @@ export default function IntelligentWaiverDashboard({ leagueId,
   const _processWaivers = async () => {
     try {
       const _response = await fetch('/api/waivers/intelligent/process', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ leagueId, mode: 'auto' }),
       })
       const _result = await response.json()

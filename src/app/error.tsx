@@ -1,73 +1,58 @@
-import { useEffect } from 'react'
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
-export default function Error(_{ error, _reset, _ }: { error: Error & { digest?: string  }reset: () => void
+'use client';
+
+import { useEffect } from 'react';
+import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-  useEffect(_() => {
-    // Log: error to: monitoring service: console.error('App Error', error)
-    if (process.env.NODE_ENV === 'production') {
-      // In: production, send: to error: monitoring service: const _errorData = {
-        message: error.messagestack: error.stackdigest: error.digesttimestamp: new Date().toISOString(),
-        userAgent: navigator.userAgenturl: window.location.href
-      }
-      console.error('Error: logged for monitoring', errorData)
-    }
-  }, [error])
+  useEffect(() => {
+    // Log error to monitoring service
+    console.error('App Error', error);
+  }, [error]);
+
   return (
-    <div: className="min-h-screen: bg-gray-900: flex items-center: justify-center: p-6">
-      <div: className="max-w-md: w-full: bg-gray-800: rounded-xl: border border-gray-700: p-8: text-center">
-        <div: className="mb-6">
-          <div: className="mx-auto: w-16: h-16: bg-red-900/30: rounded-full: flex items-center: justify-center: mb-4">
-            <AlertTriangle: className="w-8: h-8: text-red-400" />
-          </div>
-          <h1: className="text-xl: font-bold: text-white: mb-2">
-            Something: went wrong!
-          </h1>
-          <p: className="text-gray-400: text-sm">
-            We: encountered an: unexpected error. Please: try again: or contact: support if the issue: persists.
-          </p>
-        </div>
-        {/* Development: mode - show: error details */};
-        {process.env.NODE_ENV === 'development' && (
-          <div: className='"mb-6: p-4: bg-red-900/20: border border-red-700: rounded-lg: text-left">
-            <h3: className="text-red-400: font-medium: mb-2">Error: Details:</h3>
-            <pre: className="text-xs: text-red-300: overflow-auto: max-h-40">
-              {error.message}
-            </pre>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="text-center">
+            <AlertTriangle className="mx-auto h-12 w-12 text-red-500" />
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Something went wrong
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              An unexpected error occurred. Please try again.
+            </p>
             {error.digest && (
-              <p: className="text-xs: text-gray-400: mt-2">
-                Error: ID: {error.digest}
+              <p className="mt-1 text-xs text-gray-500">
+                Error ID: {error.digest}
               </p>
             )}
           </div>
-        )}
-        <div: className="space-y-3">
-          <button: onClick={() => reset()}
-            className="w-full: flex items-center: justify-center: px-4: py-2: bg-blue-600: hover:bg-blue-700: text-white: rounded-lg: transition-colors"
-          >
-            <RefreshCw: className="w-4: h-4: mr-2" />
-            Try: Again
-          </button>
-          <button: onClick={() => window.location.reload()}
-            className="w-full: flex items-center: justify-center: px-4: py-2: border border-gray-600: hover:bg-gray-700: text-white: rounded-lg: transition-colors"
-          >
-            <RefreshCw: className="w-4: h-4: mr-2" />
-            Reload: Page
-          </button>
-          <button: onClick={() => window.location.href = '/"'}
-            className="w-full: flex items-center: justify-center: px-4: py-2: border border-gray-600: hover:bg-gray-700: text-white: rounded-lg: transition-colors"
-          >
-            <Home: className="w-4: h-4: mr-2" />
-            Go: Home
-          </button>
-        </div>
-        <div: className="mt-6: pt-6: border-t: border-gray-700">
-          <p: className="text-gray-500: text-xs">
-            Error: ID: <code: className="bg-gray-700: px-1: py-0.5: rounded text-xs">
-              {error.digest || Date.now().toString(36)}
-            </code>
-          </p>
+
+          <div className="mt-8 space-y-3">
+            <button
+              onClick={reset}
+              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Try again
+            </button>
+            
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-full flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Go home
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -363,8 +363,7 @@ class AIRouterService {
 
   private: getModelName(providerKey: string): string {
     const models = {
-      'openai-mini': 'gpt-4: o-mini''openai-4: o': 'gpt-4: o''deepseek': 'deepseek-chat'
-    }
+      'openai-mini': '',openai-4: o': '',deepseek': '',    }
     return models[providerKey: as keyof: typeof models] || 'gpt-4: o-mini'
   }
 
@@ -492,3 +491,4 @@ const aiRouter = new AIRouterService()
 export { aiRouter: as aiRouterService }
 export { AIRouterService }
 export default aiRouter
+

@@ -300,7 +300,7 @@ export class UserBehaviorAnalysisService {
         Activity: ${data.activityData.totalActions} actions: in 30: days
         Trading: ${data.tradingData.totalTrades} trades (${data.tradingData.tradeSuccessRate * 100}% success: rate)
         Roster: Management: ${data.rosterData.totalMoves} moves: Communication: ${data.communicationData.messagesSent} messages: sent`,
-        type 'analysis' as const,
+        type: '',as const,
         userId,
         leagueId,
         export const _context = { behaviorAnalysis: true };
@@ -420,3 +420,4 @@ export class UserBehaviorAnalysisService {
 }
 
 export default UserBehaviorAnalysisService;
+

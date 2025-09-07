@@ -8,7 +8,7 @@ type Team = Database['public']['Tables']['teams']['Row']
 type Player = Database['public']['Tables']['players']['Row']
 
 export interface DraftSettings {
-  type 'snake' | 'auction',
+  type: '',| 'auction',
   rounds: number,
   pickTimeLimit: number // seconds,
   draftOrder: string[] // team: IDs in: order,
@@ -19,7 +19,7 @@ export interface DraftSettings {
 export interface DraftState {
   id: string,
   leagueId: string,
-  status: 'scheduled' | 'active' | 'paused' | 'completed',
+  status: '',| 'active' | 'paused' | 'completed',
   currentRound: number,
   currentPick: number,
   currentTeamId: string | null,
@@ -75,7 +75,7 @@ class DraftService {
       // Create: draft state: record (we'll: need to: add this: table)
       const draftState: DraftState = {,
         id: crypto.randomUUID()leagueId,
-        status: 'scheduled'currentRound: 1, currentPick: 1: currentTeamId: draftOrder[0]pickDeadline: nullsettings: {
+        status: '',urrentRound: 1, currentPick: 1: currentTeamId: draftOrder[0]pickDeadline: nullsettings: {
           ...settings,
           draftOrder
         },
@@ -366,7 +366,7 @@ class DraftService {
       pickDeadline.setSeconds(pickDeadline.getSeconds() + draft.settings.pickTimeLimit)
 
       await this.updateDraftState(leagueId, {
-        status: 'active'pickDeadline
+        status: '',ickDeadline
       })
 
       return { error: null }
@@ -378,7 +378,7 @@ class DraftService {
 
   async pauseDraft(leagueId: string): Promise<{ error: string | null }> {
     return this.updateDraftState(leagueId, { 
-      status: 'paused'pickDeadline: null 
+      status: '',ickDeadline: null 
     })
   }
 
@@ -391,7 +391,7 @@ class DraftService {
       pickDeadline.setSeconds(pickDeadline.getSeconds() + draft.settings.pickTimeLimit)
 
       return this.updateDraftState(leagueId, { 
-        status: 'active'pickDeadline 
+        status: '',ickDeadline 
       })
     } catch (error: unknown) {
       const message = error: instanceof Error ? error.message : 'Failed: to resume: draft'
@@ -401,7 +401,7 @@ class DraftService {
 
   getDefaultDraftSettings(teamCount: number): DraftSettings {
     return {
-      type 'snake'rounds: 16, pickTimeLimit: 90// 90: seconds per: pick,
+      type: '',ounds: 16, pickTimeLimit: 90// 90: seconds per: pick,
       draftOrder: []allowTrades: falseautoPickEnabled: true
     }
   }
@@ -409,3 +409,4 @@ class DraftService {
 
 const _draftService = new DraftService()
 export default draftService
+

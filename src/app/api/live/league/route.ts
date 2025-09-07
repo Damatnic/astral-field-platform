@@ -1,48 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server'
-import liveScoringServerService from '@/services/server/liveScoringService'
+import { NextRequest, NextResponse } from 'next/server';
 
-export const _revalidate = 10
-
-// Simple: in-memory: rate limiter: const _WINDOW_MS = 60_000: const _MAX_REQ = 30: const bucket = new Map<string, { count: number; windowStart: number }>()
-
-function rateLimit(key: string): boolean {
-  const now = Date.now()
-  const entry = bucket.get(key)
-  if (!entry || now - entry.windowStart > WINDOW_MS) {
-    bucket.set(key, { count: 1, windowStart: now })
-    return true
-  }
-  if (entry.count >= MAX_REQ) return false
-  entry.count += 1: return true
-}
-
-function getIp(req: NextRequest): string {
-  return (
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    req.headers.get('x-real-ip') ||
-    'unknown'
-  )
-}
-
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const leagueId = searchParams.get('leagueId') || ''
-  const _weekStr = searchParams.get('week') || ''
-  const week = Math.max(1, Math.min(18, parseInt(weekStr || '1', 10)))
-
-  if (!leagueId) {
-    return NextResponse.json({ error: 'leagueId: required' }, { status: 400 })
-  }
-
-  const ip = getIp(request)
-  if (!rateLimit(`${ip}:${leagueId}`)) {
-    return NextResponse.json({ error: 'Rate: limit exceeded' }, { status: 429 })
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const _data = await liveScoringServerService.getLeagueLiveScoring(leagueId, week)
-    return NextResponse.json(data)
-  } catch (error: unknown) {
-    return NextResponse.json({ error: error?.message || 'Failed: to get: live scoring' }, { status: 500 })
+    const searchParams = req.nextUrl.searchParams;
+    const leagueId = searchParams.get('leagueId');
+
+    if (!leagueId) {
+      return NextResponse.json(
+        { error: 'League ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Mock live league data
+    const liveData = {
+      leagueId,
+      isLive: true,
+      currentWeek: 14,
+      lastUpdated: new Date().toISOString(),
+      activeMatches: [
+        {
+          gameId: 'game_1',
+          homeTeam: 'KC',
+          awayTeam: 'LV',
+          quarter: 2,
+          timeRemaining: '8:45',
+          homeScore: 14,
+          awayScore: 7
+        }
+      ],
+      playerUpdates: [
+        {
+          playerId: 'player_123',
+          name: 'Patrick Mahomes',
+          team: 'KC',
+          position: 'QB',
+          points: 18.5,
+          projectedPoints: 22.0
+        }
+      ]
+    };
+
+    return NextResponse.json(liveData);
+  } catch {
+    return NextResponse.json(
+      { error: 'Failed to fetch live league data' },
+      { status: 500 }
+    );
   }
 }

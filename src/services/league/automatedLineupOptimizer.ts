@@ -266,7 +266,7 @@ class AutomatedLineupOptimizer {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: optimizationPromptuserId: settings.leagueId// Use: league as context,
+        type: '',omplexity: 'high'content: optimizationPromptuserId: settings.leagueId// Use: league as context,
         priority: 'medium'
       });
 
@@ -776,3 +776,4 @@ class AutomatedLineupOptimizer {
 }
 
 export const _automatedLineupOptimizer = new AutomatedLineupOptimizer();
+

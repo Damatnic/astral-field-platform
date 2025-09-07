@@ -20,7 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 export interface RealTimeNotification {
   id: string,
-  type 'injury_alert' | 'game_reminder' | 'trade_offer' | 'waiver_claim' | 'score_update' | 'lineup_lock' | 'player_news' | 'achievement',
+  type: '',| 'game_reminder' | 'trade_offer' | 'waiver_claim' | 'score_update' | 'lineup_lock' | 'player_news' | 'achievement',
   title: string,
   message: string,
   timestamp: Date,
@@ -204,7 +204,7 @@ export function RealTimeNotifications({
   const _markAsRead = async (_notificationId: string) => {
     try {
       await fetch(`/api/notifications/${notificationId}/read`, {
-        method: 'POST'headers: { 'Content-Type': 'application/json' }
+        method: '',eaders: { 'Content-Type': '',}
       })
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
@@ -216,7 +216,7 @@ export function RealTimeNotifications({
   const _dismissNotification = async (_notificationId: string) => {
     try {
       await fetch(`/api/notifications/${notificationId}`, {
-        method: 'DELETE'
+        method: '',
       })
       setNotifications(prev => prev.filter(n => n.id !== notificationId))
     } catch (error) {
@@ -227,7 +227,7 @@ export function RealTimeNotifications({
     try {
       const _unreadIds = notifications.filter(n => !n.read).map(n => n.id)
       await fetch('/api/notifications/mark-all-read', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ notificationIds: unreadIds })
       })
       setNotifications(prev => prev.map(n => ({ ...n, read: true })))

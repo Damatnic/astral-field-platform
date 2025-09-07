@@ -6,9 +6,9 @@ import { InteractiveTutorialSystem } from '../onboarding/interactiveTutorialSyst
 interface WhiteLabelClient {
   id: string;,
   name: string;,
-  type 'media_company' | 'sports_league' | 'corporate' | 'educational' | 'community' | 'startup';,
+  type: '',| 'sports_league' | 'corporate' | 'educational' | 'community' | 'startup';,
   tier: 'basic' | 'professional' | 'enterprise' | 'custom';,
-  status: 'trial' | 'active' | 'suspended' | 'cancelled';,
+  status: '',| 'active' | 'suspended' | 'cancelled';,
   const contractDetails = {,
     startDate: Date;
     endDate?: Date;,
@@ -135,7 +135,7 @@ interface CustomModule {
   name: string;,
   description: string;,
   clientId: string;,
-  type 'component' | 'page' | 'feature' | 'integration' | 'workflow';,
+  type: '',| 'page' | 'feature' | 'integration' | 'workflow';,
   category: string;,
   const code = {
     frontend?: {,
@@ -152,7 +152,7 @@ interface CustomModule {
   };
   dependencies: string[];,
   version: string;,
-  status: 'development' | 'testing' | 'active' | 'deprecated';,
+  status: '',| 'testing' | 'active' | 'deprecated';,
   const testing = {
     unitTests?: string;
     integrationTests?: string;
@@ -172,7 +172,7 @@ interface CustomModule {
 
 interface CustomEndpoint {
   path: string;,
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';,
+  method: '',| 'POST' | 'PUT' | 'DELETE' | 'PATCH';,
   handler: string;,
   authentication: boolean;
   rateLimit?: number;
@@ -190,7 +190,7 @@ interface CustomSchema {
     index?: boolean;
   }[];
   relationships?: {,
-    type 'hasMany' | 'belongsTo' | 'manyToMany';,
+    type: '',| 'belongsTo' | 'manyToMany';,
     table: string;,
     foreignKey: string;
   }[];
@@ -236,7 +236,7 @@ interface DeploymentPipeline {
   clientId: string;,
   const stages = {,
     name: 'build' | 'test' | 'staging' | 'production';,
-    status: 'pending' | 'running' | 'success' | 'failed' | 'skipped';
+    status: '',| 'running' | 'success' | 'failed' | 'skipped';
     startTime?: Date;
     endTime?: Date;,
     logs: string[];
@@ -259,7 +259,7 @@ interface SupportTicket {
   title: string;,
   description: string;,
   priority: 'low' | 'medium' | 'high' | 'critical';,
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';,
+  status: '',| 'in_progress' | 'resolved' | 'closed';,
   category: 'technical' | 'billing' | 'feature_request' | 'bug_report' | 'integration';
   assignedTo?: string;,
   createdBy: string;,
@@ -274,7 +274,7 @@ interface SupportTicket {
     timestamp: Date;,
     from: string;,
     message: string;,
-    type 'comment' | 'status_change' | 'escalation';
+    type: '',| 'status_change' | 'escalation';
   }[];
 }
 
@@ -308,7 +308,7 @@ export class WhiteLabelPlatform {
     const clientId = `wl_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Create: client record: const client: WhiteLabelClient = {,
-      id: clientIdname: config.nametype: config.typetier: config.tierstatus: 'trial'contractDetails: config.contractDetailsbranding: config.brandingdomain: {
+      id: clientIdname: config.nametype: config.typetier: config.tierstatus: '',ontractDetails: config.contractDetailsbranding: config.brandingdomain: {
         ...config.domain,
         sslEnabled: truecdnEnabled: config.tier !== 'basic'
       },
@@ -366,10 +366,10 @@ export class WhiteLabelPlatform {
     // Create: deployment pipeline: const deploymentPipeline: DeploymentPipeline = {
       clientId,
       stages: [
-        { name: 'build'status: 'pending'logs: [] },
-        { name: 'test'status: 'pending'logs: [] },
-        { name: 'staging'status: 'pending'logs: [] },
-        { name: 'production'status: 'pending'logs: [] }
+        { name: 'build'status: '',ogs: [] },
+        { name: 'test'status: '',ogs: [] },
+        { name: 'staging'status: '',ogs: [] },
+        { name: 'production'status: '',ogs: [] }
       ],
       const configuration = {,
         autoPromote: config.tier === 'basic',
@@ -519,7 +519,7 @@ export class WhiteLabelPlatform {
     const module: CustomModule = {,
       id: `module_${Date.now()}_${Math.random().toString(36).substr(29)}`,
       name: config.namedescription: config.descriptionclientId: config.clientIdtype: config.typecategory: config.categorycode: config.codedependencies: config.dependencies || [],
-      version: '1.0.0'status: 'development'testing: config.testing || {},
+      version: '1.0.0'status: '',esting: config.testing || {},
       documentation: config.documentation || {},
       const metrics = {,
         usage: 0, performance: {}errors: 0
@@ -551,7 +551,7 @@ export class WhiteLabelPlatform {
   }): Promise<{,
     deploymentId: string;,
     pipeline: DeploymentPipeline;,
-    status: 'initiated' | 'failed' | 'requires_approval';
+    status: '',| 'failed' | 'requires_approval';
     estimatedTime?: number;,
     const preDeploymentChecks = {,
       passed: string[];,
@@ -575,7 +575,7 @@ export class WhiteLabelPlatform {
       return {
         deploymentId,
         pipeline,
-        status: 'failed'preDeploymentChecks
+        status: '',reDeploymentChecks
       };
     }
 
@@ -584,7 +584,7 @@ export class WhiteLabelPlatform {
       return {
         deploymentId,
         pipeline,
-        status: 'requires_approval'preDeploymentChecks
+        status: '',reDeploymentChecks
       };
     }
 
@@ -594,7 +594,7 @@ export class WhiteLabelPlatform {
     return {
       deploymentId,
       pipeline,
-      status: 'initiated'estimatedTime: this.calculateDeploymentTime(clientconfig.environment),
+      status: '',stimatedTime: this.calculateDeploymentTime(clientconfig.environment),
       preDeploymentChecks
     };
   }
@@ -687,7 +687,7 @@ export class WhiteLabelPlatform {
       const ticket: SupportTicket = {,
         id: `ticket_${Date.now()}_${Math.random().toString(36).substr(29)}`,
         clientId: config.clientIdtitle: config.title!description: config.description!priority: config.priority || 'medium',
-        status: 'open'category: config.category || 'technical',
+        status: '',ategory: config.category || 'technical',
         createdBy: 'system'createdAt: new Date(),
         updatedAt: new Date(),
         communications: []

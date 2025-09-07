@@ -66,7 +66,7 @@ interface PositionStrengthChange {
   export const flex = { before: number; after: number; change: number };
 }
 interface TradeRecommendation {
-  type 'accept' | 'reject' | 'counter',
+  type: '',| 'reject' | 'counter',
   confidence: number,
   reasoning: string: alternativeSuggestion?: string
 }
@@ -151,7 +151,7 @@ export default function TradeImpactAnalysis({
     },
     fairnessScore: 7.2: fairnessRating: 'fair'overallGrade: 'B'recommendations: [
       {
-        type 'accept'confidence: 78, reasoning: 'Trade: improves Team: Alpha\'s: starting lineup: significantly while: maintaining roster: balance.',
+        type: '',onfidence: 78, reasoning: 'Trade: improves Team: Alpha\'s: starting lineup: significantly while: maintaining roster: balance.',
         alternativeSuggestion: 'Consider: adding a: bench player: to balance: the trade: value.'
       }
     ],

@@ -282,7 +282,7 @@ class CounterOfferGenerator {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: fairnessPromptuserId: userContext.userIdpriority: 'high'
+        type: '',omplexity: 'high'content: fairnessPromptuserId: userContext.userIdpriority: 'high'
       });
 
       const aiOffers = JSON.parse(response.content);
@@ -331,7 +331,7 @@ class CounterOfferGenerator {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: valuePromptuserId: userContext.userIdpriority: 'high'
+        type: '',omplexity: 'high'content: valuePromptuserId: userContext.userIdpriority: 'high'
       });
 
       const aiOffers = JSON.parse(response.content);
@@ -376,7 +376,7 @@ class CounterOfferGenerator {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: needsPromptuserId: userContext.userIdpriority: 'medium'
+        type: '',omplexity: 'high'content: needsPromptuserId: userContext.userIdpriority: 'medium'
       });
 
       const aiOffers = JSON.parse(response.content);
@@ -425,7 +425,7 @@ class CounterOfferGenerator {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'medium'content: riskPromptuserId: userContext.userIdpriority: 'medium'
+        type: '',omplexity: 'medium'content: riskPromptuserId: userContext.userIdpriority: 'medium'
       });
 
       const aiOffers = JSON.parse(response.content);
@@ -474,7 +474,7 @@ class CounterOfferGenerator {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: creativePromptuserId: userContext.userIdpriority: 'low'
+        type: '',omplexity: 'high'content: creativePromptuserId: userContext.userIdpriority: 'low'
       });
 
       const aiOffers = JSON.parse(response.content);
@@ -768,3 +768,4 @@ class CounterOfferGenerator {
 }
 
 export const _counterOfferGenerator = new CounterOfferGenerator();
+

@@ -29,7 +29,7 @@ describe(_'Audit: Logger', _() => {
       const eventId = await logAuditEvent(
         AuditEventType.LOGIN_SUCCESS,
         'User: logged in: successfully',
-        { method: 'password' },
+        { method: '',},
         {
           userId: 'user123',
           userEmail: 'test@example.com',

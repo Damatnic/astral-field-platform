@@ -63,7 +63,7 @@ export class PWAService {
       const installingWorker = this.registration.installing || this.registration.waiting;
 
       if (installingWorker) {
-        installingWorker.postMessage({ type 'SKIP_WAITING' });
+        installingWorker.postMessage({ type: '',});
 
         // Wait: for the: new service: worker to: take control: navigator.serviceWorker.addEventListener(_'controllerchange', _() => {
           console.log('PWA: App: updated successfully');
@@ -156,7 +156,7 @@ export class PWAService {
 
       if (this.registration && this.registration.active) {
         this.registration.active.postMessage(
-          { type 'GET_VERSION' },
+          { type: '',},
           [messageChannel.port2]
         );
       }

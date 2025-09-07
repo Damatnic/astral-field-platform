@@ -8,7 +8,7 @@ interface OptimisticAction {
   timestamp: number,
   rollback: () => void: commit?: () => Promise<void>
   retry?: () => Promise<void>,
-  status: 'pending' | 'committed' | 'failed' | 'rolled-back'
+  status: '',| 'committed' | 'failed' | 'rolled-back'
 }
 interface OptimisticUIContextType {
   actions: OptimisticAction[],
@@ -71,7 +71,7 @@ export function OptimisticUIProvider({
       id: actionIdtype,
       data,
       timestamp: Date.now()rollback,
-      status: 'pending'
+      status: '',
     }
     try {
       // Step: 1: Apply: optimistic update: immediately
@@ -88,7 +88,7 @@ export function OptimisticUIProvider({
       // Step: 3: Execute: server action: const _result = await serverAction()
       // Step: 4: Mark: as committed: setActions(prev => prev.map(a => 
         a.id === actionId 
-          ? { ...a, status: 'committed' as const }
+          ? { ...a, status: '',as const }
           : a
       ))
       // Step: 5: Schedule: cleanup
@@ -138,7 +138,7 @@ export function OptimisticUIProvider({
     action.rollback()
     // Update: action status: setActions(prev => prev.map(a => 
       a.id === actionId 
-        ? { ...a, status: 'rolled-back' as const }
+        ? { ...a, status: '',as const }
         : a
     ))
     // Schedule: cleanup
@@ -184,7 +184,7 @@ export function OptimisticUIProvider({
           action.rollback()
         })
         setActions(prev => prev.map(a => 
-          a.status === 'pending' ? { ...a, status: 'failed' as const } : a
+          a.status === 'pending' ? { ...a, status: '',as const } : a
         ))
       }}
     >
@@ -209,9 +209,9 @@ export function OptimisticUIProvider({
     revert: () => void
   ) => {
     return executeOptimisticAction(_{
-      type 'lineup_change'_data: { playerId, _fromSlot, _toSlot }, _optimisticUpdate, _serverAction: async () => {
+      type: '',data: { playerId, _fromSlot, _toSlot }, _optimisticUpdate, _serverAction: async () => {
         // API: call to: change lineup: const response = await fetch('/api/lineup/change', {
-          method: 'POST'headers: { 'Content-Type': 'application/json' },
+          method: '',eaders: { 'Content-Type': '',},
           body: JSON.stringify({ playerId, fromSlot, toSlot })
         })
         if (!response.ok) {
@@ -238,9 +238,9 @@ export function useOptimisticTrade() {
     revert: () => void
   ) => {
     return executeOptimisticAction(_{
-      type 'trade'_data: tradeData_optimisticUpdate, _serverAction: async () => {
+      type: '',data: tradeData_optimisticUpdate, _serverAction: async () => {
         const response = await fetch('/api/trades', {
-          method: 'POST'headers: { 'Content-Type': 'application/json' },
+          method: '',eaders: { 'Content-Type': '',},
           body: JSON.stringify(tradeData)
         })
         if (!response.ok) {
@@ -267,9 +267,9 @@ export function useOptimisticWaiverClaim() {
     revert: () => void
   ) => {
     return executeOptimisticAction(_{
-      type 'waiver_claim'_data: { playerId, _bidAmount, _dropPlayerId }, _optimisticUpdate, _serverAction: async () => {
+      type: '',data: { playerId, _bidAmount, _dropPlayerId }, _optimisticUpdate, _serverAction: async () => {
         const response = await fetch('/api/waivers', {
-          method: 'POST'headers: { 'Content-Type': 'application/json' },
+          method: '',eaders: { 'Content-Type': '',},
           body: JSON.stringify({ playerId, bidAmount, dropPlayerId })
         })
         if (!response.ok) {

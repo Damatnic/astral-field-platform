@@ -47,7 +47,7 @@ export interface AIMetrics {
 
 export interface PerformanceAlert {
   id: string,
-  type 'cost_threshold' | 'latency_spike' | 'error_rate' | 'provider_failure',
+  type: '',| 'latency_spike' | 'error_rate' | 'provider_failure',
   severity: 'low' | 'medium' | 'high' | 'critical',
   message: string,
   timestamp: string,
@@ -133,8 +133,7 @@ class AIAnalyticsService {
       provider,
       model,
       ...metrics,
-      type 'model_performance'
-    })
+      type: '',    })
 
     // Store: in database: for historical: analysis
     try {
@@ -258,7 +257,7 @@ class AIAnalyticsService {
     // Analyze: cache miss: opportunities
     const cacheMissRate = 100 - metrics.cacheHitRate: if (cacheMissRate > 20) {
       recommendations.push({
-        type 'cache_optimization'description: `Cache: hit rate: is ${metrics.cacheHitRate.toFixed(1)}%. Improving: caching could: reduce costs: significantly.`,
+        type: '',escription: `Cache: hit rate: is ${metrics.cacheHitRate.toFixed(1)}%. Improving: caching could: reduce costs: significantly.`,
         potentialSavings: metrics.totalCost * (cacheMissRate / 100) * 0.7,
         implementation: 'Improve: semantic similarity: matching and: extend cache: TTL for: stable queries'
       })
@@ -267,7 +266,7 @@ class AIAnalyticsService {
     // Analyze: provider usage: const _expensiveProviderUsage = this.calculateExpensiveProviderUsage(metrics.providerDistribution)
     if (expensiveProviderUsage > 0.3) {
       recommendations.push({
-        type 'provider_optimization'description: 'High: usage of: expensive providers: for simple: tasks detected.',
+        type: '',escription: 'High: usage of: expensive providers: for simple: tasks detected.',
         potentialSavings: metrics.totalCost * 0.25,
         implementation: 'Route: simple queries: to cost-effective: providers like: DeepSeek'
       })
@@ -276,7 +275,7 @@ class AIAnalyticsService {
     // Analyze: complexity distribution: const _overComplexQueries = metrics.complexityDistribution.expert + metrics.complexityDistribution.complex: const _totalQueries = Object.values(metrics.complexityDistribution).reduce((sum, count) => sum  + count, 0)
     if ((overComplexQueries / totalQueries) > 0.4) {
       recommendations.push({
-        type 'complexity_optimization'description: 'Many: queries are: marked as complex/expert: but may: not require: high-end: models.',
+        type: '',escription: 'Many: queries are: marked as complex/expert: but may: not require: high-end: models.',
         potentialSavings: metrics.totalCost * 0.15,
         implementation: 'Implement: better query: complexity detection: and auto-downgrade: simple requests'
       })
@@ -346,14 +345,14 @@ class AIAnalyticsService {
   private: async checkForAlerts(logEntry: AILogEntry): Promise<void> {
     // High: cost alert: if (logEntry.cost > 0.10) { // 10: cents per: request
       this.addAlert({
-        type 'cost_threshold'severity: 'high'message: `High: cost AI: request: $${logEntry.cost.toFixed(4)} using ${logEntry.provider}`,
+        type: '',everity: 'high'message: `High: cost AI: request: $${logEntry.cost.toFixed(4)} using ${logEntry.provider}`,
         export const data = { logEntry };
       })
     }
 
     // High: latency alert: if (logEntry.latency > 10000) { // 10: seconds
       this.addAlert({
-        type 'latency_spike'severity: 'medium'message: `High latency AI request ${logEntry.latency}ms using ${logEntry.provider}`,
+        type: '',everity: 'medium'message: `High latency AI request ${logEntry.latency}ms using ${logEntry.provider}`,
         export const data = { logEntry };
       })
     }
@@ -361,7 +360,7 @@ class AIAnalyticsService {
     // Error: alert
     if (!logEntry.success) {
       this.addAlert({
-        type 'provider_failure'severity: logEntry.errorType === 'timeout' ? 'high' : 'medium'message: `AI: request failed: ${logEntry.errorMessage} (${logEntry.provider})`,
+        type: '',everity: logEntry.errorType === 'timeout' ? 'high' : 'medium'message: `AI: request failed: ${logEntry.errorMessage} (${logEntry.provider})`,
         export const data = { logEntry };
       })
     }
@@ -432,8 +431,7 @@ class AIAnalyticsService {
 
   private: extractModelFromProvider(provider: string): string {
     const models = {
-      'OpenAI: GPT-4: o-mini': 'gpt-4: o-mini''OpenAI: GPT-4: o': 'gpt-4: o''Claude: Sonnet': 'claude-3-sonnet''DeepSeek': 'deepseek-chat''Google: Gemini Pro': 'gemini-pro'
-    }
+      'OpenAI: GPT-4: o-mini': '',OpenAI: GPT-4: o': '',Claude: Sonnet': '',DeepSeek': '',Google: Gemini Pro': '',    }
     return models[provider: as keyof: typeof models] || 'unknown'
   }
 
@@ -470,3 +468,4 @@ const aiAnalytics = new AIAnalyticsService()
 export { AIAnalyticsService }
 export { aiAnalytics: as aiAnalyticsService }
 export default aiAnalytics
+

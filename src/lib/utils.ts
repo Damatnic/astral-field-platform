@@ -31,3 +31,4 @@ export const _getTrendingColor = (trend: 'up' | 'down' | 'neutral'): string => {
     up: 'text-green-400'down: 'text-red-400'neutral: 'text-gray-400'};
   return colors[trend] || 'text-gray-400';
 };
+

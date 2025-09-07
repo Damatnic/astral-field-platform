@@ -538,7 +538,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
 
   // Performance: monitoring
   async getSystemHealth(): Promise<{,
-    status: 'healthy' | 'degraded' | 'unhealthy';,
+    status: '',| 'degraded' | 'unhealthy';,
     const metrics = {,
       memoryUsage: number;,
       routingHistorySize: number;,
@@ -583,3 +583,4 @@ export class EnhancedAIRouter: extends AIServiceRouter {
     };
   }
 }
+

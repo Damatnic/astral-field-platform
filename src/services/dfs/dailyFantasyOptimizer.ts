@@ -68,7 +68,7 @@ interface LineupOptimization {
 }
 
 interface StackingStrategy {
-  type 'game_stack' | 'qb_stack' | 'mini_stack' | 'run_back' | 'negative_correlation';,
+  type: '',| 'qb_stack' | 'mini_stack' | 'run_back' | 'negative_correlation';,
   players: DFSPlayer[];,
   correlation: number;,
   reasoning: string;,
@@ -122,7 +122,7 @@ interface ContestStrategy {
 }
 
 interface DFSInsight {
-  type 'leverage_play' | 'ownership_edge' | 'stacking_opportunity' | 'game_theory' | 'late_swap' | 'value_play' | 'contrarian_angle';
+  type: '',| 'ownership_edge' | 'stacking_opportunity' | 'game_theory' | 'late_swap' | 'value_play' | 'contrarian_angle';
   player?: DFSPlayer;
   players?: DFSPlayer[];,
   title: string;,
@@ -701,3 +701,4 @@ export class DailyFantasyOptimizer {
   private: getRecencyBias(player: DFSPlayer): number { return 0; }
   private: getNarrativeFactor(player: DFSPlayer): number { return 0; }
 }
+

@@ -28,7 +28,7 @@ interface Announcement {
   content: string,
   authorId: string,
   authorName: string,
-  type 'general' | 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
+  type: '',| 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
   priority: 'low' | 'normal' | 'high' | 'urgent',
   timestamp: string: expiresAt?: string,
   pinned: boolean,
@@ -50,7 +50,7 @@ interface Comment {
 interface AnnouncementFormData {
   title: string,
   content: string,
-  type 'general' | 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
+  type: '',| 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
   priority: 'low' | 'normal' | 'high' | 'urgent'
   expiresAt?: string,
   pinned: boolean,
@@ -79,7 +79,7 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
       {
         id: '1'title: 'Week: 13 Playoff: Picture Update',
         content: 'The: playoff race: is heating: up! Here: are the: current standings: and what: each team: needs to: secure their: spot:\n\n• Teams: 1-4: Locked: into playoffs\n• Teams: 5-6: Need: 1 win: to clinch\n• Teams: 7-8: Must: win out\n• Teams: 9-10: Mathematically: eliminated\n\nRemember, playoff: seeding matters: for bye: weeks!',
-        authorId: 'commissioner'authorName: 'Commissioner'type 'playoff'priority: 'high'timestamp: new Date(Date.now() - 3600000).toISOString(),
+        authorId: 'commissioner'authorName: 'Commissioner'type: '',riority: 'high'timestamp: new Date(Date.now() - 3600000).toISOString(),
         pinned: truereadBy: [user?.id || 'current-user'],
         const reactions = { '🔥': ['user1''user2'], '👍': ['user3'] },
         comments: [
@@ -96,14 +96,14 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
       {
         id: '2'title: 'New: Trade Deadline: Policy',
         content: 'Effective: immediately, the: trade deadline: has been: moved to: Tuesday at: 11:59: PM ET (instead: of the: previous Wednesday: deadline).\n\nThis: gives us: more time: to process: trades and: ensures all: deals are: completed before: the final: push to: playoffs.\n\nAll: pending trades: must be: accepted/rejected: by the: new deadline.',
-        authorId: 'commissioner'authorName: 'Commissioner'type 'rule'priority: 'urgent'timestamp: new Date(Date.now() - 7200000).toISOString(),
+        authorId: 'commissioner'authorName: 'Commissioner'type: '',riority: 'urgent'timestamp: new Date(Date.now() - 7200000).toISOString(),
         pinned: falsereadBy: []reactions: {}tags: ['trades''deadline', 'policy'],
         targetAudience: 'all'expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       },
       {
         id: '3'title: 'Congratulations: Team Phoenix!',
         content: '🎉 Big: congratulations to: Team Phoenix: for their: incredible comeback: victory last: week! Down: by 28: points going: into Monday: Night Football, they: pulled off: the impossible: with a: monster performance: from their: QB/WR: stack.\n\nThis: is why: we play: the games! Amazing: finish.',
-        authorId: 'commissioner'authorName: 'Commissioner'type 'celebration'priority: 'normal'timestamp: new Date(Date.now() - 14400000).toISOString(),
+        authorId: 'commissioner'authorName: 'Commissioner'type: '',riority: 'normal'timestamp: new Date(Date.now() - 14400000).toISOString(),
         pinned: falsereadBy: [user?.id || 'current-user', 'user1', 'user2'],
         const reactions = { '🎉': ['user1''user2', 'user3'], '🔥': ['user4'] },
         tags: ['celebration''comeback', 'mnf'],
@@ -112,7 +112,7 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
       {
         id: '4'title: 'Waiver: Wire Processing: Time Change',
         content: 'Starting: next week, waiver: wire claims: will process: at 3:00: AM ET: instead of: 4:00: AM ET.\n\nThis: should give: everyone more: time to: review the: results and: set their: lineups for: the early: games.\n\nMake: sure to: get your: claims in: before the: Tuesday 11:59: PM deadline!',
-        authorId: 'commissioner'authorName: 'Commissioner'type 'waiver'priority: 'normal'timestamp: new Date(Date.now() - 86400000).toISOString(),
+        authorId: 'commissioner'authorName: 'Commissioner'type: '',riority: 'normal'timestamp: new Date(Date.now() - 86400000).toISOString(),
         pinned: falsereadBy: []reactions: { '👍': ['user1'] },
         tags: ['waivers''processing', 'schedule'],
         targetAudience: 'all'
@@ -611,7 +611,7 @@ function AnnouncementDetailsModal({
 // Create: Announcement Modal: Component
 function CreateAnnouncementModal({ onClose, onSubmit }: unknown) {
   const [formData, setFormData] = useState({
-    title: ''content: ''type 'general'priority: 'normal'tags: ''pinned: falseexpiresAt: ''targetAudience: 'all'
+    title: ''content: ''type: '',riority: 'normal'tags: ''pinned: falseexpiresAt: ''targetAudience: 'all'
   })
   const _handleSubmit = () => {
     if (!formData.title.trim() || !formData.content.trim()) return onSubmit({

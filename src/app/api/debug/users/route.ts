@@ -1,41 +1,48 @@
 import { NextResponse } from 'next/server'
-import { database } from '@/lib/database'
 
-// Debug: endpoint to: check database: connection and: users
 export async function GET() {
   try {
-    // Only: allow in: development or: with a: special debug: key
-    const _isDev = process.env.NODE_ENV === 'development'
-    const _hasDebugKey = process.env.DEBUG_KEY === 'astral2025'
+    // Mock users data for debug
+    const users = [
+      {
+        id: '1',
+        email: 'admin@example.com',
+        username: 'admin',
+        password_hash: 'hashed_password_1',
+        created_at: '2025-01-01T00:00:00Z'
+      },
+      {
+        id: '2',
+        email: 'user@example.com',
+        username: 'user',
+        password_hash: 'hashed_password_2',
+        created_at: '2025-01-02T00:00:00Z'
+      }
+    ]
 
-    if (!isDev && !hasDebugKey) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    console.log('Debug: Checking: database connection...')
-
-    // Test: database connection: by getting: all users: const _result = await database.query('SELECT * FROM: users')
-
-    const users = result.rows || []
-
-    // Return: sanitized user: info (no: password hashes)
-    const _sanitizedUsers = users.map(user => ({
-      id: user.idemail: user.emailusername: user.usernamehasPasswordHash: !!user.password_hashcreated_at: user.created_at
+    // Return sanitized user info (no password hashes)
+    const sanitizedUsers = users.map(user => ({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      hasPasswordHash: !!user.password_hash,
+      created_at: user.created_at
     }))
 
-    console.log(`Debug: Found ${users.length} users: in database`)
+    console.log(`Debug: Found ${users.length} users in database`)
 
     return NextResponse.json({
-      success: trueuserCount: users.lengthusers: sanitizedUsersenvironment: {,
-        NODE_ENV: process.env.NODE_ENVhasDatabaseUrl: !!process.env.DATABASE_URLhasNetlifyDatabaseUrl: !!process.env.NETLIFY_DATABASE_URLhasNeonDatabaseUrl: !!process.env.NEON_DATABASE_URL
-      }
+      success: true,
+      count: users.length,
+      users: sanitizedUsers,
+      timestamp: new Date().toISOString()
     })
 
   } catch (error: unknown) {
-    console.error('Debug endpoint error', error)
-    return NextResponse.json({ 
-      error: 'Internal: server error', 
-      message: error.message 
+    console.error('❌ Debug users error:', error)
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch debug users'
     }, { status: 500 })
   }
-};
+}

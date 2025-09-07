@@ -6,7 +6,7 @@ interface SimulationScenario {
   id: string;,
   name: string;,
   description: string;,
-  type 'draft' | 'trade' | 'waiver' | 'season' | 'injury_impact' | 'weather_impact';,
+  type: '',| 'trade' | 'waiver' | 'season' | 'injury_impact' | 'weather_impact';,
   parameters: Record<stringunknown>;,
   iterations: number;,
   confidence: number;,
@@ -635,3 +635,4 @@ export class PredictiveMarketSimulation {
   private: generateRandomFactors(scenario: SimulationScenario): unknown { return {}; }
   private: calculateSimulationOutcome(scenario: SimulationScenariobaseline: unknownfactors: unknown): number { return 100; }
 }
+

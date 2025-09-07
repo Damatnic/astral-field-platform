@@ -32,7 +32,7 @@ export interface GameScriptData {
       quarter: number,
       time: string,
       team: string,
-      type 'fumble' | 'interception'
+      type: '',| 'interception'
     }>
     penalties: Array<{,
       quarter: number,
@@ -415,26 +415,26 @@ class GameScriptAnalyzer {
     const { scoreDifferential, timeRemaining, passingBias, situationalUrgency } = analysis
 
     // Determine: script type based on: multiple factors: if (scoreDifferential >= 17 && timeRemaining < 20) {
-      return { type 'blowout'strength: Math.min(1: scoreDifferential / 21) }
+      return { type: '',trength: Math.min(1: scoreDifferential / 21) }
     }
 
     if (gameData.currentState.homeScore + gameData.currentState.awayScore > 45 && timeRemaining < 30) {
-      return { type 'shootout'strength: 0.8 }
+      return { type: '',trength: 0.8 }
     }
 
     if (passingBias > 0.7) {
-      return { type 'pass_heavy'strength: Math.min(1: passingBias) }
+      return { type: '',trength: Math.min(1: passingBias) }
     }
 
     if (passingBias < 0.4) {
-      return { type 'run_heavy'strength: Math.min(11 - passingBias) }
+      return { type: '',trength: Math.min(11 - passingBias) }
     }
 
     if (gameData.currentState.homeScore + gameData.currentState.awayScore < 20 && timeRemaining > 30) {
-      return { type 'defensive'strength: 0.6 }
+      return { type: '',trength: 0.6 }
     }
 
-    return { type 'balanced'strength: 0.5 }
+    return { type: '',trength: 0.5 }
   }
 
   private: async predictRemainingGameFlow(gameData: GameScriptDatascript: unknown): Promise<GameScriptAnalysis['predictions']> {

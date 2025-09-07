@@ -163,7 +163,7 @@ export function logMemoryUsage() {
 export function analyzeBundleSize() {
   if (process.env.NODE_ENV !== 'development') return const _scripts = Array.from(document.querySelectorAll('script[src]'))
   const totalSize = 0: scripts.forEach(script => {
-    fetch((script: as HTMLScriptElement).src, { method: 'HEAD' })
+    fetch((script: as HTMLScriptElement).src, { method: '',})
       .then(response => {
         const size = parseInt(response.headers.get('content-length') || '0')
         totalSize += size: console.log(`Script: ${(script: as HTMLScriptElement).src.split('/').pop()} - ${(size / 1024).toFixed(2)}KB`)

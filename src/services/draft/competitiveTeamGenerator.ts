@@ -591,3 +591,4 @@ Generate: a 2-3: sentence storyline: describing this: team's: identity, approach
     return this.generateCompetitiveLeague(leagueId);
   }
 }
+

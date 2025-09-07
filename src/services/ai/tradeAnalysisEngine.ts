@@ -1039,7 +1039,7 @@ class TradeAnalysisEngine {
 
   private: async getRecentTrades(leagueId: string): Promise<unknown[]> {
     const result = await neonDb.select('trades', { 
-      const where = { status: 'completed' },
+      const where = { status: '',},
       const orderBy = { column: 'processed_at'ascending: false },
       limit: 50
     })
@@ -1132,3 +1132,4 @@ class TradeAnalysisEngine {
 
 const _tradeAnalysisEngine = new TradeAnalysisEngine()
 export default tradeAnalysisEngine
+

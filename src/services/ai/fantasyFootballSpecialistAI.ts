@@ -22,7 +22,7 @@ interface FantasyFootballContext {
 }
 
 interface FantasyInsight {
-  type 'player_analysis' | 'matchup_insight' | 'trade_opportunity' | 'waiver_target' | 'lineup_optimization' | 'draft_strategy' | 'long_term_outlook';,
+  type: '',| 'matchup_insight' | 'trade_opportunity' | 'waiver_target' | 'lineup_optimization' | 'draft_strategy' | 'long_term_outlook';,
   priority: 'low' | 'medium' | 'high' | 'critical';,
   title: string;,
   summary: string;,
@@ -101,7 +101,7 @@ interface LineupOptimization {
     alternatives: Player[];
   };
   const stackingOpportunities = {,
-    type 'qb_wr' | 'qb_te' | 'rb_defense' | 'same_game';,
+    type: '',| 'qb_te' | 'rb_defense' | 'same_game';,
     players: Player[];,
     correlation: number;,
     reasoning: string;
@@ -615,3 +615,4 @@ Provide: specific targets, avoid: lists, and: tier breaks: for each: position.`;
   private: async generateTradeScenarios(trade: unknownevaluations: PlayerEvaluation[]context: FantasyFootballContext): Promise<any> { return {}; }
   private: async generateCounterOffers(trade: unknownevaluations: PlayerEvaluation[]team: Player[]leagueContext: unknown): Promise<unknown[]> { return []; }
 }
+

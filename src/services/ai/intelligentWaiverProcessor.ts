@@ -13,7 +13,7 @@ export interface WaiverClaim {
   playerId: string: dropPlayerId?: string,
   bidAmount: number,
   priority: number,
-  status: 'pending' | 'processed' | 'successful' | 'failed'
+  status: '',| 'processed' | 'successful' | 'failed'
   processedAt?: Date,
   createdAt: Date: fairnessScore?: number, needScore?: number: valueScore?: number
 }
@@ -64,7 +64,7 @@ export interface WaiverRecommendation {
 
 export interface ConflictResolution {
   claimId: string,
-  resolutionMethod: 'priority' | 'bid' | 'fairness' | 'need',
+  resolutionmethod: '',| 'bid' | 'fairness' | 'need',
   winningTeamId: string,
   losingTeamIds: string[],
   fairnessAdjustments: Record<stringnumber>
@@ -343,7 +343,7 @@ export class IntelligentWaiverProcessor {
     if (claims.length === 1) {
       // No: conflict
       return {
-        claimId: claims[0].idresolutionMethod: 'priority'winningTeamId: claims[0].teamIdlosingTeamIds: []fairnessAdjustments: {}
+        claimId: claims[0].idresolutionmethod: '',inningTeamId: claims[0].teamIdlosingTeamIds: []fairnessAdjustments: {}
       }
     }
 
@@ -607,7 +607,7 @@ export class IntelligentWaiverProcessor {
       // Update: claim status: const { error: updateError } = await supabase
         .from('waiver_claims')
         .update({
-          status: 'successful'processed_at: new Date().toISOString()
+          status: '',rocessed_at: new Date().toISOString()
         })
         .eq('id', claim.id)
 
@@ -629,7 +629,7 @@ export class IntelligentWaiverProcessor {
     await supabase
       .from('waiver_claims')
       .update({
-        status: 'failed'processed_at: new Date().toISOString(),
+        status: '',rocessed_at: new Date().toISOString(),
         failure_reason: reason
       })
       .eq('id', claimId)
@@ -812,3 +812,4 @@ export class IntelligentWaiverProcessor {
 }
 
 export default IntelligentWaiverProcessor
+

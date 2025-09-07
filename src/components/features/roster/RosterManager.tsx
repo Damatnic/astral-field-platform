@@ -74,7 +74,7 @@ export default function RosterManager({ leagueId }: RosterManagerProps) {
   }
   const _getPositionColor = (_position: string) => {
     const colors: Record<stringstring> = {
-      'QB': 'bg-red-600''RB': 'bg-green-600''WR': 'bg-blue-600''TE': 'bg-yellow-600''FLEX': 'bg-purple-600''D/ST': 'bg-gray-600''K': 'bg-orange-600'}
+      'QB': '',RB': '',WR': '',TE': '',FLEX': '',D/ST': '',K': '',
     return colors[position] || 'bg-gray-600'
   }
   const getInjuryStatusIcon = (_status: string | null) => {

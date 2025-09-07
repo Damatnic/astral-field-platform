@@ -60,7 +60,7 @@ export interface LeagueAnalytics {
     ties: number,
     pointsFor: number,
     pointsAgainst: number,
-    export const _streak = { type 'W' | 'L'; count: number };
+    export const _streak = { type: '',| 'L'; count: number };
   }>
   powerRankings: Array<{,
     rank: number,
@@ -322,7 +322,7 @@ class AnalyticsService {
       losses: index + 2,
       ties: 0, pointsFor: 1500 - (index * 50),
       pointsAgainst: 1300 + (index * 30),
-      const streak = { type index < 3 ? 'W' : 'L'count: Math.floor(Math.random() * 4) + 1 } as { type 'W' | 'L'; count: number }
+      const streak = { type index < 3 ? 'W' : 'L'count: Math.floor(Math.random() * 4) + 1 } as { type: '',| 'L'; count: number }
     }))
   }
 

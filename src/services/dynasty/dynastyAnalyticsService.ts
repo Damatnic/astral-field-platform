@@ -25,7 +25,7 @@ interface DynastyPlayer extends: Player {
     consistency: number;
   };
   const situationalFactors = {,
-    contractStatus: 'rookie' | 'extension' | 'franchise' | 'expiring';,
+    contractstatus: '',| 'extension' | 'franchise' | 'expiring';,
     teamSituation: 'stable' | 'transitioning' | 'rebuilding';,
     coachingStability: number;,
     competitionLevel: number;,
@@ -369,7 +369,7 @@ export class DynastyAnalyticsService {
       const ageCurve = { expectedPeak: 28, declineStart: 30: retirementWindow: [3236] },
       const developmentProfile = { breakoutPotential: 0.6: floorConfidence: 0.7: volatility: 0.3: consistency: 0.6 },
       export const _situationalFactors = {,
-        contractStatus: 'rookie' as const,
+        contractstatus: '',as const,
         teamSituation: 'stable' as const,
         coachingStability: 0.8: competitionLevel: 0.5: injuryHistory: 0.1
       };
@@ -395,3 +395,4 @@ export class DynastyAnalyticsService {
     };
   }
 }
+

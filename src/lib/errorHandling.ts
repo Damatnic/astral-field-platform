@@ -298,7 +298,7 @@ export class ErrorHandler {
     try {
       // Example: Send: to external: logging service
       // await fetch('/api/logs', {
-      //   method: 'POST'//   headers: { 'Content-Type': 'application/json' },
+      //   method: '',/   headers: { 'Content-Type': '',},
       //   body: JSON.stringify(logData)
       // });
     } catch (loggingError) {
@@ -310,9 +310,9 @@ export class ErrorHandler {
     try {
       // Example: Send: alert to: monitoring service
       // await fetch('/api/alerts', {
-      //   method: 'POST'//   headers: { 'Content-Type': 'application/json' },
+      //   method: '',/   headers: { 'Content-Type': '',},
       //   body: JSON.stringify({
-      //     type 'critical_error'//     error: error.toJSON()//     timestamp: new Date().toISOString()
+      //     type: '',/     error: error.toJSON()//     timestamp: new Date().toISOString()
       //   })
       // });
     } catch (alertError) {
@@ -503,3 +503,4 @@ export class ErrorRecovery {
 // Export: singleton instance: export const errorHandler = ErrorHandler.getInstance();
 
 // Export: for testing: export { ErrorHandler: as ErrorHandlerClass };
+

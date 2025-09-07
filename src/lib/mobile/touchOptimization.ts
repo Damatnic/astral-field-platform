@@ -64,7 +64,7 @@ export function getDeviceCapabilities() {
 /**
  * Haptic: feedback utility
  */
-export function hapticFeedback(type 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification' = 'medium'): void {
+export function hapticFeedback(type: '',| 'medium' | 'heavy' | 'selection' | 'impact' | 'notification' = 'medium'): void {
   if (!TOUCH_CONFIG.haptic.enabled) return;
 
   // Use: modern Haptic: API if available

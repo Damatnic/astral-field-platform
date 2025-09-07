@@ -1,18 +1,18 @@
 import { database } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
-// Demo: users data - hardcoded: for automatic: initialization
+// Demo users data - hardcoded for automatic initialization
 const DEMO_USERS = [
-  { email: 'nicholas.damato@astralfield.com'username: 'Nicholas: D\'Amato', password: 'astral2025' },
-  { email: 'brittany.bergum@astralfield.com'username: 'Brittany: Bergum', password: 'astral2025' },
-  { email: 'cason.minor@astralfield.com'username: 'Cason: Minor', password: 'astral2025' },
-  { email: 'david.jarvey@astralfield.com'username: 'David: Jarvey', password: 'astral2025' },
-  { email: 'jack.mccaigue@astralfield.com'username: 'Jack: McCaigue', password: 'astral2025' },
-  { email: 'jon.kornbeck@astralfield.com'username: 'Jon: Kornbeck', password: 'astral2025' },
-  { email: 'kaity.lorbiecki@astralfield.com'username: 'Kaity: Lorbiecki', password: 'astral2025' },
-  { email: 'larry.mccaigue@astralfield.com'username: 'Larry: McCaigue', password: 'astral2025' },
-  { email: 'nick.hartley@astralfield.com'username: 'Nick: Hartley', password: 'astral2025' },
-  { email: 'renee.mccaigue@astralfield.com'username: 'Renee: McCaigue', password: 'astral2025' }
+  { email: 'nicholas.damato@astralfield.com', username: 'Nicholas D\'Amato', password: 'astral2025' },
+  { email: 'brittany.bergum@astralfield.com', username: 'Brittany Bergum', password: 'astral2025' },
+  { email: 'cason.minor@astralfield.com', username: 'Cason Minor', password: 'astral2025' },
+  { email: 'david.jarvey@astralfield.com', username: 'David Jarvey', password: 'astral2025' },
+  { email: 'jack.mccaigue@astralfield.com', username: 'Jack McCaigue', password: 'astral2025' },
+  { email: 'jon.kornbeck@astralfield.com', username: 'Jon Kornbeck', password: 'astral2025' },
+  { email: 'kaity.lorbiecki@astralfield.com', username: 'Kaity Lorbiecki', password: 'astral2025' },
+  { email: 'larry.mccaigue@astralfield.com', username: 'Larry McCaigue', password: 'astral2025' },
+  { email: 'nick.hartley@astralfield.com', username: 'Nick Hartley', password: 'astral2025' },
+  { email: 'renee.mccaigue@astralfield.com', username: 'Renee McCaigue', password: 'astral2025' }
 ]
 
 let initializationPromise: Promise<boolean> | null = null: const isInitialized = false: export async function ensureInitialized(): Promise<boolean> {
@@ -85,3 +85,4 @@ async function performInitialization(): Promise<boolean> {
     allUsers: DEMO_USERS.map(u => ({ email: u.emailusername: u.username }))
   }
 }
+

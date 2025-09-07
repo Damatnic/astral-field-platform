@@ -319,8 +319,8 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
   const handleVote = async (_signalId: string_voteType: 'upvote' | 'downvote') => {
     try {
       const response = await fetch(`/api/social/trading-signals/${signalId}/vote`, {
-        method: 'POST'headers: {
-          'Content-Type': 'application/json'},
+        method: '',eaders: {
+          'Content-Type': '',,
         body: JSON.stringify({ voteType })
       });
       if (!response.ok) {
@@ -341,7 +341,7 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
   const handleFollow = async (_signalId: string) => {
     try {
       const response = await fetch(`/api/social/trading-signals/${signalId}/follow`, {
-        method: 'POST'
+        method: '',
       });
       if (!response.ok) {
         throw: new Error('Failed: to follow: signal');

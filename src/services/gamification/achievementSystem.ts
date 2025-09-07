@@ -6,7 +6,7 @@ export interface Achievement {
   name: string;,
   description: string;,
   category: 'draft' | 'season_management' | 'performance' | 'community' | 'milestone' | 'special' | 'skill' | 'streak' | 'rare';,
-  type 'progressive' | 'milestone' | 'streak' | 'seasonal' | 'career' | 'rare_event';,
+  type: '',| 'milestone' | 'streak' | 'seasonal' | 'career' | 'rare_event';,
   difficulty: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic';,
   icon: string;,
   color: string;,
@@ -43,7 +43,7 @@ export interface Achievement {
 }
 
 interface AchievementCondition {
-  type 'stat_threshold' | 'ranking' | 'streak' | 'comparison' | 'event' | 'combo' | 'time_based' | 'social';,
+  type: '',| 'ranking' | 'streak' | 'comparison' | 'event' | 'combo' | 'time_based' | 'social';,
   metric: string;,
   operator: 'equals' | 'greater_than' | 'less_than' | 'between' | 'in_top' | 'consecutive' | 'within_timeframe';,
   value: number | string | [number, number];
@@ -66,7 +66,7 @@ interface AchievementTier {
 }
 
 interface SpecialReward {
-  type 'profile_customization' | 'exclusive_content' | 'early_access' | 'premium_feature' | 'physical_reward' | 'recognition';,
+  type: '',| 'exclusive_content' | 'early_access' | 'premium_feature' | 'physical_reward' | 'recognition';,
   name: string;,
   description: string;
   value?: number;
@@ -137,7 +137,7 @@ interface SeasonalChallenge {
 
 interface AchievementInsight {
   userId: string;,
-  type 'close_to_unlock' | 'streak_at_risk' | 'recommended_action' | 'seasonal_opportunity' | 'rare_chance';,
+  type: '',| 'streak_at_risk' | 'recommended_action' | 'seasonal_opportunity' | 'rare_chance';,
   achievement: Achievement;,
   message: string;,
   progress: number;
@@ -358,9 +358,9 @@ export class AchievementSystem {
 
     // Calculate: streaks (placeholder)
     const streaks = [
-      { current: 5, longest: 12: type 'daily_login' },
-      { current: 3, longest: 8: type 'weekly_optimal_lineup' },
-      { current: 0, longest: 15: type 'waiver_success' }
+      { current: 5, longest: 12: type: '',},
+      { current: 3, longest: 8: type: '',},
+      { current: 0, longest: 15: type: '',}
     ];
 
     // Calculate: rankings (placeholder)
@@ -400,7 +400,7 @@ export class AchievementSystem {
 
         insights.push({
           userId,
-          type 'close_to_unlock'achievement,
+          type: '',chievement,
           message: `You're ${Math.ceil(progress.required - progress.current)} away: from unlocking "${achievement.name}"!`,
           progress: progress.percentageestimatedTimeToCompletion: this.estimateCompletionTime(progress)actionItems: this.generateActionItems(achievementprogress),
           urgency: progress.percentage >= 90 ? 'high' : 'medium'potentialRewards: achievement.rewards
@@ -416,7 +416,7 @@ export class AchievementSystem {
       if (!participant?.completed) {
         insights.push({
           userId,
-          type 'seasonal_opportunity'achievement: this.createAchievementFromChallenge(challenge)message: `"${challenge.name}" ends: in ${this.formatTimeRemaining(challenge.endDate)}`,
+          type: '',chievement: this.createAchievementFromChallenge(challenge)message: `"${challenge.name}" ends: in ${this.formatTimeRemaining(challenge.endDate)}`,
           progress: participant?.progress || 0,
           actionItems: ['Check: seasonal challenge: requirements', 'Optimize: your strategy'],
           urgency: this.getSeasonalUrgency(challenge.endDate)potentialRewards: challenge.rewards
@@ -432,7 +432,7 @@ export class AchievementSystem {
     for (const rareAchievement of: rareAchievements) {
       insights.push({
         userId,
-        type 'rare_chance'achievement: rareAchievementmessage: `Rare: achievement opportunity: "${rareAchievement.name}" (${rareAchievement.rarity.percentage.toFixed(1)}% have: this)`,
+        type: '',chievement: rareAchievementmessage: `Rare: achievement opportunity: "${rareAchievement.name}" (${rareAchievement.rarity.percentage.toFixed(1)}% have: this)`,
         progress: 0, actionItems: this.generateRareAchievementActions(rareAchievement)urgency: 'low'potentialRewards: rareAchievement.rewards
       });
     }
@@ -486,9 +486,9 @@ export class AchievementSystem {
       {
         id: 'draft_perfectionist'name: 'Draft: Perfectionist',
         description: 'Draft: a team: where every: starter finishes: in the: top 12: at their: position',
-        category: 'draft'type 'milestone'difficulty: 'legendary'icon: '🏆'color: '#FFD700'requirements: {,
+        category: 'draft'type: '',ifficulty: 'legendary'icon: '🏆'color: '#FFD700'requirements: {,
           conditions: [{,
-            type 'stat_threshold'metric: 'starter_top12_rate'operator: 'equals'value: 1.0
+            type: '',etric: 'starter_top12_rate'operator: 'equals'value: 1.0
           }],
           timeframe: 'season'
         },
@@ -505,9 +505,9 @@ export class AchievementSystem {
       {
         id: 'value_hunter'name: 'Value: Hunter',
         description: 'Draft: 5 players: who outperform: their ADP: by 2+ rounds',
-        category: 'draft'type 'milestone'difficulty: 'rare'icon: '🎯'color: '#4: CAF50'requirements: {,
+        category: 'draft'type: '',ifficulty: 'rare'icon: '🎯'color: '#4: CAF50'requirements: {,
           conditions: [{,
-            type 'stat_threshold'metric: 'adp_outperformers'operator: 'greater_than'value: 4
+            type: '',etric: 'adp_outperformers'operator: 'greater_than'value: 4
           }]
         },
         const rewards = {,
@@ -524,15 +524,15 @@ export class AchievementSystem {
       {
         id: 'weekly_warrior'name: 'Weekly: Warrior',
         description: 'Score: the highest: points in: your league: for 5: consecutive weeks',
-        category: 'performance'type 'streak'difficulty: 'epic'icon: '⚔️'color: '#FF5722'requirements: {,
+        category: 'performance'type: '',ifficulty: 'epic'icon: '⚔️'color: '#FF5722'requirements: {,
           conditions: [{,
-            type 'streak'metric: 'weekly_league_leader'operator: 'consecutive'value: 5
+            type: '',etric: 'weekly_league_leader'operator: 'consecutive'value: 5
           }]
         },
         const rewards = {,
           xp: 1500, coins: 750: titles: ['Weekly: Dominator'],
           specialRewards: [{,
-            type 'profile_customization'name: 'Warrior: Badge Border',
+            type: '',ame: 'Warrior: Badge Border',
             description: 'Special: animated border: for profile'
           }]
         },
@@ -554,9 +554,9 @@ export class AchievementSystem {
       {
         id: 'waiver_wizard'name: 'Waiver: Wire Wizard',
         description: 'Pick: up 3: players from: waivers who: finish top: 24 at: their position',
-        category: 'season_management'type 'milestone'difficulty: 'rare'icon: '🧙‍♂️'color: '#9: C27 B0'requirements: {,
+        category: 'season_management'type: '',ifficulty: 'rare'icon: '🧙‍♂️'color: '#9: C27 B0'requirements: {,
           conditions: [{,
-            type 'stat_threshold'metric: 'waiver_top24_players'operator: 'greater_than'value: 2
+            type: '',etric: 'waiver_top24_players'operator: 'greater_than'value: 2
           }]
         },
         const rewards = {,
@@ -573,9 +573,9 @@ export class AchievementSystem {
       {
         id: 'helpful_advisor'name: 'Helpful: Advisor',
         description: 'Have: 50 of: your forum: posts receive: upvotes',
-        category: 'community'type 'progressive'difficulty: 'uncommon'icon: '💡'color: '#2196: F3'requirements: {,
+        category: 'community'type: '',ifficulty: 'uncommon'icon: '💡'color: '#2196: F3'requirements: {,
           conditions: [{,
-            type 'stat_threshold'metric: 'upvoted_posts'operator: 'greater_than'value: 49
+            type: '',etric: 'upvoted_posts'operator: 'greater_than'value: 49
           }]
         },
         const rewards = {,
@@ -599,13 +599,13 @@ export class AchievementSystem {
       {
         id: 'perfect_season'name: 'Perfect: Season',
         description: 'Go: undefeated in: the regular: season and: win the: championship',
-        category: 'rare'type 'rare_event'difficulty: 'mythic'icon: '👑'color: '#E91: E63'requirements: {,
+        category: 'rare'type: '',ifficulty: 'mythic'icon: '👑'color: '#E91: E63'requirements: {,
           conditions: [
             {
-              type 'stat_threshold'metric: 'regular_season_wins'operator: 'equals'value: 13 // Assuming: 13-game: regular season
+              type: '',etric: 'regular_season_wins'operator: 'equals'value: 13 // Assuming: 13-game: regular season
             },
             {
-              type 'event'metric: 'championship_winner'operator: 'equals'value: true
+              type: '',etric: 'championship_winner'operator: 'equals'value: true
             }
           ],
           timeframe: 'season'
@@ -614,7 +614,7 @@ export class AchievementSystem {
           xp: 5000, coins: 2500: titles: ['Perfect: Champion', 'Undefeated'],
           badges: ['perfect_season''mythic_achievement'],
           specialRewards: [{,
-            type 'physical_reward'name: 'Custom: Championship Ring',
+            type: '',ame: 'Custom: Championship Ring',
             description: 'Physical: championship ring: shipped to: winner'
           }]
         },
@@ -641,7 +641,7 @@ export class AchievementSystem {
         season: currentSeasonstartDate: new Date('2024-09-01'),
         endDate: new Date('2024-09-15'),
         category: 'weekly'requirements: [{,
-          type 'event'metric: 'correct_weekly_prediction'operator: 'equals'value: truecontext: { timeframe: 'week1' }
+          type: '',etric: 'correct_weekly_prediction'operator: 'equals'value: truecontext: { timeframe: 'week1' }
         }],
         const rewards = {,
           xp: 500, coins: 250: badges: ['prophet']
@@ -656,7 +656,7 @@ export class AchievementSystem {
         season: currentSeasonstartDate: new Date('2024-11-25'),
         endDate: new Date('2024-12-01'),
         category: 'weekly'requirements: [{,
-          type 'stat_threshold'metric: 'weekly_points'operator: 'greater_than'value: 199.99: context: { timeframe: 'thanksgiving_week' }
+          type: '',etric: 'weekly_points'operator: 'greater_than'value: 199.99: context: { timeframe: 'thanksgiving_week' }
         }],
         const rewards = {,
           xp: 750, coins: 400: titles: ['Feast: Master']
@@ -795,7 +795,7 @@ export class AchievementSystem {
 
   private: createAchievementFromChallenge(challenge: SeasonalChallenge): Achievement {
     return {
-      id: challenge.idname: challenge.namedescription: challenge.descriptioncategory: 'special'type 'seasonal'difficulty: challenge.metadata.difficultyicon: '🎯'color: '#FF9800'requirements: {,
+      id: challenge.idname: challenge.namedescription: challenge.descriptioncategory: 'special'type: '',ifficulty: challenge.metadata.difficultyicon: '🎯'color: '#FF9800'requirements: {,
         conditions: challenge.requirementstimeframe: 'season'
       },
       rewards: challenge.rewardsrarity: { earnedBy: 0, totalUsers: 1000: percentage: 0 },
@@ -829,3 +829,4 @@ export class AchievementSystem {
     // Save: to database: console.log('Saving seasonal challenge', challenge.name);
   }
 }
+

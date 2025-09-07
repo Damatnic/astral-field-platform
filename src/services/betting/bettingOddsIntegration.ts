@@ -148,7 +148,7 @@ interface GameTotalAnalysis {
 }
 
 interface FantasyBettingEdge {
-  type 'lineup_correlation' | 'prop_arbitrage' | 'market_inefficiency' | 'contrarian_opportunity';,
+  type: '',| 'prop_arbitrage' | 'market_inefficiency' | 'contrarian_opportunity';,
   description: string;,
   fantasyPlayers: Player[];,
   const bettingMarkets = {,
@@ -172,7 +172,7 @@ interface LiveBettingAlert {
   market: string;
   player?: Player;,
   const alert = {,
-    type 'line_movement' | 'volume_spike' | 'injury_news' | 'weather_change' | 'sharp_action';,
+    type: '',| 'volume_spike' | 'injury_news' | 'weather_change' | 'sharp_action';,
     severity: 'low' | 'medium' | 'high' | 'critical';,
     message: string;,
     actionRequired: string;,
@@ -744,3 +744,4 @@ export class BettingOddsIntegration {
     };
   }
 }
+

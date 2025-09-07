@@ -27,12 +27,12 @@ export async function getWebSocket(): Promise<WebSocketConnection> {
 
 export async function broadcastToLeague(leagueId: stringmessage: unknown): Promise<void> {
   const ws = await getWebSocket();
-  await ws.send({ type 'league_broadcast'leagueId, message });
+  await ws.send({ type: '',eagueId, message });
 }
 
 export async function sendToUser(userId: stringmessage: unknown): Promise<void> {
   const ws = await getWebSocket();
-  await ws.send({ type 'user_message'userId, message });
+  await ws.send({ type: '',serId, message });
 }
 
 export default getWebSocket;

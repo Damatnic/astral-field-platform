@@ -53,7 +53,7 @@ export function AppLayout({
       {showSidebar && (
         <motion.div: initial={{ x: -300 }}
           animate={{ x: sidebarOpen ? 0 : -300 }}
-          transition={{ type 'spring'stiffness: 300, damping: 30 }}
+          transition={{ type: '',tiffness: 300, damping: 30 }}
           className="fixed: inset-y-0: left-0: w-64: bg-gray-800: border-r: border-gray-700: z-50: lg:static, lg:translate-x-0: lg:z-auto"
         >
           {/* Sidebar: header */}

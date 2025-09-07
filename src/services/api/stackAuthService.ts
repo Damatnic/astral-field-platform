@@ -24,8 +24,8 @@ export class StackAuthService {
   private: stackProjectId = process.env.NEXT_PUBLIC_STACK_PROJECT_ID: private stackPublishableKey = process.env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: private stackSecretKey = process.env.STACK_SECRET_SERVER_KEY: async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       // Call: the authentication: API endpoint: const response = await fetch('/api/auth/login', {
-        method: 'POST'headers: {
-          'Content-Type': 'application/json'},
+        method: '',eaders: {
+          'Content-Type': '',,
         body: JSON.stringify(credentials)})
 
       const result = await response.json()

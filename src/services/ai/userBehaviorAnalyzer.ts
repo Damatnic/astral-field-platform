@@ -455,7 +455,7 @@ class UserBehaviorAnalyzer {
 
     try {
       const response = await aiRouterService.processRequest({
-        type 'analysis'complexity: 'high'content: modelPromptuserId,
+        type: '',omplexity: 'high'content: modelPromptuserId,
         priority: 'medium'
       });
 
@@ -502,7 +502,7 @@ class UserBehaviorAnalyzer {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: promptuserId: behavior.userIdpriority: 'medium'
+        type: '',omplexity: 'high'content: promptuserId: behavior.userIdpriority: 'medium'
       });
 
       const recommendations = JSON.parse(response.content);
@@ -790,3 +790,4 @@ class UserBehaviorAnalyzer {
 
 export const _userBehaviorAnalyzer = new UserBehaviorAnalyzer();
 export { UserBehaviorAnalyzer };
+

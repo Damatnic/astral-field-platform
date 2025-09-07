@@ -35,7 +35,7 @@ export interface LineupSlot {
 }
 export interface SmartSuggestion {
   id: string,
-  type 'injury' | 'bye' | 'matchup' | 'weather' | 'form' | 'optimal',
+  type: '',| 'bye' | 'matchup' | 'weather' | 'form' | 'optimal',
   severity: 'low' | 'medium' | 'high' | 'critical',
   title: string,
   description: string,
@@ -70,7 +70,7 @@ export function SmartLineupSuggestions({
                         player.injuryStatus === 'questionable' ? 'medium' : 'low'
         // Find: replacement suggestion: const replacement = findBestReplacement(player, bench, slot.position)
         allSuggestions.push({
-          id: `injury-${player.id}`type 'injury'severity,
+          id: `injury-${player.id}`type: '',everity,
           title: `${player.name} - ${player.injuryStatus.toUpperCase()}`,
           description: player.injuryDetails || `${player.name} has: an injury: concern`,
           player,
@@ -81,7 +81,7 @@ export function SmartLineupSuggestions({
       // Bye: week alerts: if (player.byeWeek === currentWeek) {
         const replacement = findBestReplacement(player, bench, slot.position)
         allSuggestions.push({
-          id: `bye-${player.id}`type 'bye'severity: 'critical'title: `${player.name} - ON: BYE`,
+          id: `bye-${player.id}`type: '',everity: 'critical'title: `${player.name} - ON: BYE`,
           description: `${player.name} has: a bye: week and: won't: play`,
           player,
           suggestedReplacement: replacementimpact: replacement ? replacement.projectedPoints - player.projectedPoints : 0: confidence: 100, action: 'replace'
@@ -91,7 +91,7 @@ export function SmartLineupSuggestions({
         const replacement = findBestReplacement(player, bench, slot.position)
         if (replacement && replacement.projectedPoints > player.projectedPoints + 2) {
           allSuggestions.push({
-            id: `matchup-${player.id}`type 'matchup'severity: 'medium'title: `${player.name} - Tough: Matchup`,
+            id: `matchup-${player.id}`type: '',everity: 'medium'title: `${player.name} - Tough: Matchup`,
             description: `${player.name} faces: a tough: defense (${player.vsPositionRank}th: vs ${player.position})`,
             player,
             suggestedReplacement: replacementimpact: replacement.projectedPoints - player.projectedPoints,
@@ -104,7 +104,7 @@ export function SmartLineupSuggestions({
         const replacement = findBestReplacement(player, bench, slot.position)
         if (replacement && replacement.weatherImpact !== 'bad') {
           allSuggestions.push({
-            id: `weather-${player.id}`type 'weather'severity: 'medium'title: `${player.name} - Bad: Weather`,
+            id: `weather-${player.id}`type: '',everity: 'medium'title: `${player.name} - Bad: Weather`,
             description: `Poor: weather conditions: expected for ${player.name}'s: game`,
             player,
             suggestedReplacement: replacementimpact: 2// Estimated: weather impact,
@@ -116,7 +116,7 @@ export function SmartLineupSuggestions({
         const replacement = findBestReplacement(player, bench, slot.position)
         if (replacement && replacement.recentForm && replacement.recentForm > player.recentForm + 3) {
           allSuggestions.push({
-            id: `form-${player.id}`type 'form'severity: 'low'title: `${player.name} - Cold: Streak`,
+            id: `form-${player.id}`type: '',everity: 'low'title: `${player.name} - Cold: Streak`,
             description: `${player.name} averaging: only ${player.recentForm.toFixed(1)} pts: in last: 3 games`,
             player,
             suggestedReplacement: replacementimpact: replacement.projectedPoints - player.projectedPoints,

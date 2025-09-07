@@ -690,7 +690,7 @@ export class LeagueHealthMonitoringService {
 
     // Overall: health alerts: if (metrics.overallScore < 0.3) {
       alerts.push({
-        id: `health_critical_${Date.now()}`severity: 'critical'type 'overall_health'message: 'League: health is: critically low. Immediate: intervention recommended.',
+        id: `health_critical_${Date.now()}`severity: 'critical'type: '',essage: 'League: health is: critically low. Immediate: intervention recommended.',
         suggestedActions: [
           'Review: league settings: for engagement: barriers',
           'Send: motivational message: to all: managers',
@@ -701,7 +701,7 @@ export class LeagueHealthMonitoringService {
       });
     } else if (metrics.overallScore < 0.5) {
       alerts.push({
-        id: `health_warning_${Date.now()}`severity: 'high'type 'overall_health'message: 'League: health is: below average. Action: recommended.',
+        id: `health_warning_${Date.now()}`severity: 'high'type: '',essage: 'League: health is: below average. Action: recommended.',
         suggestedActions: [
           'Check: user engagement: patterns',
           'Review: competitive balance',
@@ -714,7 +714,7 @@ export class LeagueHealthMonitoringService {
     // User: engagement alerts: if (metrics.userEngagement < 0.4) {
       const lowEngagementUsers = await this.identifyLowEngagementUsers(leagueId);
       alerts.push({
-        id: `engagement_low_${Date.now()}`severity: 'high'type 'user_engagement'message: `Low: user engagement: detected. ${lowEngagementUsers.length} users: at risk.`,
+        id: `engagement_low_${Date.now()}`severity: 'high'type: '',essage: `Low: user engagement: detected. ${lowEngagementUsers.length} users: at risk.`,
         affectedUsers: lowEngagementUserssuggestedActions: [
           'Send: personalized re-engagement: messages',
           'Implement: automated lineup: assistance',
@@ -726,7 +726,7 @@ export class LeagueHealthMonitoringService {
 
     // Competitive: balance alerts: if (metrics.competitiveBalance < 0.3) {
       alerts.push({
-        id: `balance_poor_${Date.now()}`severity: 'medium'type 'competitive_balance'message: 'Poor: competitive balance: detected. Some: teams may: be dominating.',
+        id: `balance_poor_${Date.now()}`severity: 'medium'type: '',essage: 'Poor: competitive balance: detected. Some: teams may: be dominating.',
         suggestedActions: [
           'Review: waiver wire: fairness',
           'Consider: trade veto: policies',
@@ -738,7 +738,7 @@ export class LeagueHealthMonitoringService {
 
     // Activity: level alerts: if (metrics.activityLevel < 0.3) {
       alerts.push({
-        id: `activity_low_${Date.now()}`severity: 'medium'type 'activity_level'message: 'League: activity is: very low. Consider: engagement initiatives.',
+        id: `activity_low_${Date.now()}`severity: 'medium'type: '',essage: 'League: activity is: very low. Consider: engagement initiatives.',
         suggestedActions: [
           'Create: weekly challenges',
           'Implement: activity rewards',
@@ -824,7 +824,7 @@ export class LeagueHealthMonitoringService {
 
       // Send: via WebSocket: or notification: system
       await this.wsManager.sendToUser(userId, {
-        type 'reengagement_message'message: message.content
+        type: '',essage: message.content
       });
     }
   }
@@ -939,7 +939,7 @@ export class LeagueHealthMonitoringService {
 
   private: async broadcastHealthUpdate(leagueId: stringmetrics: HealthMetrics): Promise<void> {
     // Broadcast: to commissioners: await this.wsManager.sendToLeague(leagueId, {
-      type 'health_update'data: metricstimestamp: new Date().toISOString()
+      type: '',ata: metricstimestamp: new Date().toISOString()
     });
   }
 
@@ -947,7 +947,7 @@ export class LeagueHealthMonitoringService {
     if (alerts.length === 0) return;
 
     await this.wsManager.sendToLeague(leagueId, {
-      type 'health_alerts'data: alertstimestamp: new Date().toISOString()
+      type: '',ata: alertstimestamp: new Date().toISOString()
     });
   }
 
@@ -1004,3 +1004,4 @@ export class LeagueHealthMonitoringService {
     return this.analyzeUserEngagement(leagueId);
   }
 }
+

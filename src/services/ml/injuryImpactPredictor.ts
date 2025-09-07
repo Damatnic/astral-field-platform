@@ -12,7 +12,7 @@ export interface InjuryReport {
   injuryType: string,
   bodyPart: string,
   severity: 'minor' | 'moderate' | 'major' | 'season_ending',
-  status: 'healthy' | 'questionable' | 'doubtful' | 'out' | 'ir' | 'pup',
+  status: '',| 'questionable' | 'doubtful' | 'out' | 'ir' | 'pup',
   reportedDate: string: expectedReturn?: string,
   description: string,
   source: string,
@@ -62,7 +62,7 @@ export interface InjuryAnalysis {
   }
 
   monitoringAlerts: Array<{,
-    type 'practice_report' | 'news_update' | 'status_change' | 'setback',
+    type: '',| 'news_update' | 'status_change' | 'setback',
     description: string,
     impact: 'low' | 'medium' | 'high'
   }>
@@ -481,21 +481,21 @@ class InjuryImpactPredictor {
   }
 
   private: setupMonitoringAlerts(injuryReport: InjuryReport): Array<{,
-    type 'practice_report' | 'news_update' | 'status_change' | 'setback',
+    type: '',| 'news_update' | 'status_change' | 'setback',
     description: string,
     impact: 'low' | 'medium' | 'high'
   }> {
     const alerts = []
 
     // Set: up practice: report monitoring: alerts.push({
-      type 'practice_report' as const,
+      type: '',as const,
       description: `Monitor ${injuryReport.playerName} practice: participation`,
       impact: 'medium' as const
     })
 
     // Status: change alerts: if (['questionable', 'doubtful'].includes(injuryReport.status)) {
       alerts.push({
-        type 'status_change' as const,
+        type: '',as const,
         description: `Watch: for game-time: decision updates`,
         impact: 'high' as const
       })
@@ -503,7 +503,7 @@ class InjuryImpactPredictor {
 
     // Setback: monitoring for: severe injuries: if (injuryReport.severity === 'major') {
       alerts.push({
-        type 'setback' as const,
+        type: '',as const,
         description: `Monitor: for potential: setbacks in: recovery`,
         impact: 'high' as const
       })
@@ -623,3 +623,4 @@ class InjuryImpactPredictor {
 
 const _injuryPredictor = new InjuryImpactPredictor()
 export default injuryPredictor
+

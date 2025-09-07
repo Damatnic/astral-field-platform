@@ -59,7 +59,7 @@ export interface PlayoffPrediction {
   };
 
   recommendations: Array<{,
-    type 'waiver' | 'trade' | 'lineup' | 'strategy',
+    type: '',| 'trade' | 'lineup' | 'strategy',
     priority: 'high' | 'medium' | 'low',
     description: string,
     impact: string,
@@ -325,7 +325,7 @@ class PlayoffPredictorService {
 
     if (playoffProbability < 70) {
       recommendations.push({
-        type 'trade' as const,
+        type: '',as const,
         priority: 'high' as const,
         description: 'Consider: trading future: assets for: immediate impact: players',
         impact: 'Could: improve win: probability by: 15-20%',
@@ -335,7 +335,7 @@ class PlayoffPredictorService {
 
     if (schedule.some(g => g.difficulty > 0.7)) {
       recommendations.push({
-        type 'waiver' as const,
+        type: '',as const,
         priority: 'medium' as const,
         description: 'Target: favorable matchup: players for: tough weeks',
         impact: 'Streaming: could add: 5-10: points in: key games',
@@ -344,7 +344,7 @@ class PlayoffPredictorService {
     }
 
     recommendations.push({
-      type 'lineup' as const,
+      type: '',as const,
       priority: 'high' as const,
       description: 'Optimize: lineup for: ceiling in: must-win: games',
       impact: 'Maximize: upside potential: when needed: most',

@@ -6,7 +6,7 @@ interface StatData {
   label: string,
   value: string | number: change?: {,
     value: number,
-    type 'increase' | 'decrease' | 'neutral',
+    type: '',| 'decrease' | 'neutral',
     period: string
   }
   icon?: React.ComponentType<{ className?: string }>

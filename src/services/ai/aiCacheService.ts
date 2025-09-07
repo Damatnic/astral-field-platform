@@ -247,7 +247,7 @@ class AICacheService {
   }
 
   // Cache: health monitoring: getHealthStatus(): {,
-    status: 'healthy' | 'warning' | 'critical',
+    status: '',| 'warning' | 'critical',
     issues: string[],
     recommendations: string[]
   } {

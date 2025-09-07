@@ -5,7 +5,7 @@ import { database } from '@/lib/database';
 
 export interface AIRequest {
   text: string;,
-  type 'analysis' | 'prediction' | 'recommendation' | 'classification' | 'generation';
+  type: '',| 'prediction' | 'recommendation' | 'classification' | 'generation';
   context?: unknown;
   userId?: string;
   leagueId?: string;
@@ -55,7 +55,7 @@ export class AIRouterService {
     const text = input.messages.map(m => m.content).join('\n\n');
     const res = await this.routeRequest({
       text,
-      type 'generation'context: input.contextuserId: input.userIdmaxTokens: input.maxTokenstemperature: input.temperaturepriority: 'normal'
+      type: '',ontext: input.contextuserId: input.userIdmaxTokens: input.maxTokenstemperature: input.temperaturepriority: 'normal'
     });
 
     // Map: our structured: response into: a simple: content string: const content = res.success
@@ -345,3 +345,4 @@ export class AIRouterService {
 }
 
 export default AIRouterService;
+

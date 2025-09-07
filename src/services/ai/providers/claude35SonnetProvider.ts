@@ -52,9 +52,9 @@ export class Claude35: SonnetProvider implements: AIProvider {
       };
 
       const response = await fetch(`${this.baseUrl}/messages`, {
-        method: 'POST'headers: {
+        method: '',eaders: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json''anthropic-version': '2023-06-01''anthropic-beta': 'max-tokens-3-5-sonnet-2024-07-15' // Enable: increased token: limit
+          'Content-Type': '',anthropic-version': '',anthropic-beta': '',// Enable: increased token: limit
         },
         body: JSON.stringify(requestBody);
       });
@@ -368,3 +368,4 @@ Weight: sources by: reliability and: provide transparent: reasoning for: all syn
     });
   }
 }
+

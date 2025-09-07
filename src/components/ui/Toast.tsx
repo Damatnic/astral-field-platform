@@ -3,7 +3,7 @@ import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
 import { useEffect } from 'react'
 export interface ToastData {
   id: string,
-  type 'success' | 'error' | 'warning' | 'info',
+  type: '',| 'error' | 'warning' | 'info',
   title: string: description?: string, duration?: number: action?: {,
     label: string,
     onClick: () => void

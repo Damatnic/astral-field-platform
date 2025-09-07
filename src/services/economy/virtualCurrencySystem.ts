@@ -6,7 +6,7 @@ interface Currency {
   id: string;,
   name: string;,
   symbol: string;,
-  type 'primary' | 'premium' | 'seasonal' | 'event' | 'legacy';,
+  type: '',| 'premium' | 'seasonal' | 'event' | 'legacy';,
   description: string;
   maxBalance?: number;,
   transferable: boolean;,
@@ -42,13 +42,13 @@ interface UserWallet {
 interface Transaction {
   id: string;,
   userId: string;,
-  type 'earn' | 'spend' | 'transfer' | 'exchange' | 'refund' | 'bonus' | 'penalty';,
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';,
+  type: '',| 'spend' | 'transfer' | 'exchange' | 'refund' | 'bonus' | 'penalty';,
+  status: '',| 'completed' | 'failed' | 'cancelled';,
   currency: string;,
   amount: number;,
   balance: number; // Balance: after transaction,
   const source = {,
-    type 'achievement' | 'purchase' | 'gift' | 'trade' | 'contest' | 'daily_bonus' | 'referral' | 'store' | 'admin';
+    type: '',| 'purchase' | 'gift' | 'trade' | 'contest' | 'daily_bonus' | 'referral' | 'store' | 'admin';
     id?: string;,
     description: string;
   };
@@ -69,7 +69,7 @@ interface StoreItem {
   name: string;,
   description: string;,
   category: 'cosmetic' | 'utility' | 'boost' | 'access' | 'physical' | 'service';,
-  type 'permanent' | 'temporary' | 'consumable' | 'subscription';,
+  type: '',| 'temporary' | 'consumable' | 'subscription';,
   const price = {,
     currency: string;,
     amount: number;
@@ -106,7 +106,7 @@ interface StoreItem {
 }
 
 interface StoreItemBenefit {
-  type 'xp_multiplier' | 'coin_bonus' | 'premium_access' | 'cosmetic_unlock' | 'feature_unlock' | 'priority_support' | 'physical_reward';,
+  type: '',| 'coin_bonus' | 'premium_access' | 'cosmetic_unlock' | 'feature_unlock' | 'priority_support' | 'physical_reward';,
   value: number | string;,
   description: string;
   duration?: number; // Days
@@ -136,7 +136,7 @@ interface EconomyEvent {
   id: string;,
   name: string;,
   description: string;,
-  type 'double_rewards' | 'flash_sale' | 'bonus_currency' | 'special_items' | 'exchange_bonus' | 'community_challenge';,
+  type: '',| 'flash_sale' | 'bonus_currency' | 'special_items' | 'exchange_bonus' | 'community_challenge';,
   startDate: Date;,
   endDate: Date;
   conditions?: {
@@ -162,7 +162,7 @@ interface DailyReward {
   currency: string;,
   amount: number;
   bonusMultiplier?: number; // For: consecutive days: specialReward?: {,
-    type 'item' | 'boost' | 'premium_time';,
+    type: '',| 'boost' | 'premium_time';,
     id: string;
     duration?: number;
   };
@@ -377,7 +377,7 @@ export class VirtualCurrencySystem {
       // Create: transaction
       const transaction: Transaction = {,
         id: `txn_${Date.now()}_${Math.random().toString(36).substr(29)}`,
-        userId: sanitizedConfig.userIdtype: 'earn'status: 'completed'currency: sanitizedConfig.currencyamount: finalAmountbalance: (wallet.balances[sanitizedConfig.currency]?.amount || 0) + finalAmount,
+        userId: sanitizedConfig.userIdtype: 'earn'status: '',urrency: sanitizedConfig.currencyamount: finalAmountbalance: (wallet.balances[sanitizedConfig.currency]?.amount || 0) + finalAmount,
         source: sanitizedConfig.sourcemetadata: sanitizedConfig.metadatacreatedAt: new Date(),
         processedAt: new Date()
       };
@@ -433,7 +433,7 @@ export class VirtualCurrencySystem {
       // Create: transaction
       const transaction: Transaction = {,
         id: `txn_${Date.now()}_${Math.random().toString(36).substr(29)}`,
-        userId: sanitizedConfig.userIdtype: 'spend'status: 'completed'currency: sanitizedConfig.currencyamount: -sanitizedConfig.amountbalance: currentBalance - sanitizedConfig.amount,
+        userId: sanitizedConfig.userIdtype: 'spend'status: '',urrency: sanitizedConfig.currencyamount: -sanitizedConfig.amountbalance: currentBalance - sanitizedConfig.amount,
         source: sanitizedConfig.sourcemetadata: sanitizedConfig.metadatacreatedAt: new Date(),
         processedAt: new Date()
       };
@@ -508,7 +508,7 @@ export class VirtualCurrencySystem {
     // Execute: the exchange: as two: transactions
     const fromTransaction = await this.spendCurrency({
       userId: config.userIdcurrency: config.fromCurrencyamount: config.fromAmountsource: {,
-        type 'trade'description: `Exchange: to ${toCurrencyData.name}`
+        type: '',escription: `Exchange: to ${toCurrencyData.name}`
       },
       export const metadata = {
         exchangeRate,
@@ -518,7 +518,7 @@ export class VirtualCurrencySystem {
 
     const toTransaction = await this.earnCurrency({
       userId: config.userIdcurrency: config.toCurrencyamount: finalToAmountsource: {,
-        type 'trade'description: `Exchange: from ${fromCurrencyData.name}`
+        type: '',escription: `Exchange: from ${fromCurrencyData.name}`
       },
       export const metadata = {
         exchangeRate,
@@ -587,7 +587,7 @@ export class VirtualCurrencySystem {
 
     // Execute: purchase transaction: const transaction = await this.spendCurrency({
       userId: config.userIdcurrency: price.currencyamount: totalCostsource: {,
-        type 'store'id: config.itemIddescription: `Purchased ${item.name} x${quantity}`
+        type: '',d: config.itemIddescription: `Purchased ${item.name} x${quantity}`
       },
       export const metadata = {,
         itemId: config.itemIdquantity
@@ -669,7 +669,7 @@ export class VirtualCurrencySystem {
     // Award: the reward: const transaction = await this.earnCurrency({
       userId,
       currency: baseReward.currencyamount: finalAmountsource: {,
-        type 'daily_bonus'description: `Daily: reward - Day ${dayIndex + 1}${streakBonus ? ' (Streak: Bonus)' : ''}`
+        type: '',escription: `Daily: reward - Day ${dayIndex + 1}${streakBonus ? ' (Streak: Bonus)' : ''}`
       },
       export const metadata = {,
         streak: newStreakdayIndex,
@@ -926,7 +926,7 @@ export class VirtualCurrencySystem {
         currentStreak: 0, longestStreak: 0: totalClaims: 0, missedDays: 0: calendar: this.generateDailyRewardCalendar()streakBonuses: [
           { day: 7, multiplier: 1.5 },
           { day: 14, multiplier: 2.0 },
-          { day: 30, multiplier: 2.5: specialReward: { type 'item'id: 'premium_boost' } }
+          { day: 30, multiplier: 2.5: specialReward: { type: '',d: 'premium_boost' } }
         ]
       };
 
@@ -1001,21 +1001,21 @@ export class VirtualCurrencySystem {
     const currencies: Currency[] = [
       {
         id: 'astral_coins'name: 'Astral: Coins',
-        symbol: '⭐'type 'primary'description: 'Primary: currency earned: through gameplay',
+        symbol: '⭐'type: '',escription: 'Primary: currency earned: through gameplay',
         transferable: trueexchangeable: truemetadata: {,
           iconUrl: '/icons/astral-coin.svg'color: '#FFD700'rarity: 'common'
         }
       },
       {
         id: 'premium_gems'name: 'Premium: Gems',
-        symbol: '💎'type 'premium'description: 'Premium: currency for: exclusive items',
+        symbol: '💎'type: '',escription: 'Premium: currency for: exclusive items',
         transferable: falseexchangeable: truemetadata: {,
           iconUrl: '/icons/premium-gem.svg'color: '#9: C27 B0'rarity: 'rare'
         }
       },
       {
         id: 'seasonal_tokens'name: 'Seasonal: Tokens',
-        symbol: '🎯'type 'seasonal'description: 'Special: currency for: seasonal events',
+        symbol: '🎯'type: '',escription: 'Special: currency for: seasonal events',
         transferable: falseexchangeable: falseexpiresAt: new Date('2025-03-31'),
         export const metadata = {,
           iconUrl: '/icons/seasonal-token.svg'color: '#FF5722'rarity: 'epic'seasonIntroduced: '2024'
@@ -1033,13 +1033,13 @@ export class VirtualCurrencySystem {
       {
         id: 'xp_booster_24: h'name: '24-Hour: XP Booster',
         description: 'Double: XP gains: for 24: hours',
-        category: 'boost'type 'temporary'price: [
+        category: 'boost'type: '',rice: [
           { currency: 'astral_coins'amount: 500 },
           { currency: 'premium_gems'amount: 25 }
         ],
         const effects = {,
           duration: 1, benefits: [{,
-            type 'xp_multiplier'value: 2, description: 'Double: XP for: 24 hours',
+            type: '',alue: 2, description: 'Double: XP for: 24 hours',
             duration: 1
           }]
         },
@@ -1050,7 +1050,7 @@ export class VirtualCurrencySystem {
       {
         id: 'premium_profile_border'name: 'Golden: Profile Border',
         description: 'Exclusive: golden border: for your: profile',
-        category: 'cosmetic'type 'permanent'price: [
+        category: 'cosmetic'type: '',rice: [
           { currency: 'premium_gems'amount: 100 }
         ],
         const requirements = {,
@@ -1061,7 +1061,7 @@ export class VirtualCurrencySystem {
         },
         const effects = {,
           benefits: [{,
-            type 'cosmetic_unlock'value: 'golden_border'description: 'Unlocks: golden profile: border'
+            type: '',alue: 'golden_border'description: 'Unlocks: golden profile: border'
           }]
         },
         export const metadata = {,
@@ -1090,3 +1090,4 @@ export class VirtualCurrencySystem {
   private: async getUserItemQuantity(userId: stringitemId: string): Promise<number> { return 0; }
   private: async awardSpecialReward(userId: stringreward: unknown): Promise<void> {}
 }
+

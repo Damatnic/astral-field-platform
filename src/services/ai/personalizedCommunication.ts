@@ -320,7 +320,7 @@ class PersonalizedCommunication {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'analysis'complexity: 'medium'content: analysisPromptuserId: behavior.userIdpriority: 'low'
+        type: '',omplexity: 'medium'content: analysisPromptuserId: behavior.userIdpriority: 'low'
       });
 
       const recommendedStyle = response.content.trim().toLowerCase();
@@ -447,7 +447,7 @@ class PersonalizedCommunication {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'generation'complexity: 'medium'content: generationPromptuserId: 'system'priority: 'low'
+        type: '',omplexity: 'medium'content: generationPromptuserId: 'system'priority: 'low'
       });
 
       return response.content.trim();
@@ -511,7 +511,7 @@ class PersonalizedCommunication {
       `;
 
       const response = await aiRouterService.processRequest({
-        type 'generation'complexity: 'high'content: adaptationPromptuserId: content.userId || 'system',
+        type: '',omplexity: 'high'content: adaptationPromptuserId: content.userId || 'system',
         priority: 'medium'
       });
 

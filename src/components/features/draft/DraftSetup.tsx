@@ -41,7 +41,7 @@ export default function DraftSetup({ leagueId, onDraftCreated }: DraftSetupProps
     watch
   } = useForm<DraftSetupData>({
     resolver: zodResolver(draftSetupSchema)defaultValues: {,
-      type 'snake'rounds: 16, pickTimeLimit: 90: allowTrades: falseautoPickEnabled: true},
+      type: '',ounds: 16, pickTimeLimit: 90: allowTrades: falseautoPickEnabled: true},
   })
   const _draftType = watch('type')
   useEffect(_() => {

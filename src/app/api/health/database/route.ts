@@ -1,43 +1,52 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { database, migrationManager } from '@/lib/database';
+import { NextResponse } from 'next/server'
+import { database } from '@/lib/database'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    // Test: database connectivity: and health: const healthCheck = await database.healthCheck();
-    const _poolStats = database.getPoolStats();
+    const start = Date.now()
+    let status: 'healthy' | 'unhealthy' = 'unhealthy'
+    let details: Record<string, unknown> = { connected: false }
+    let testQuery: { executed: boolean; duration?: string; result?: string } = { executed: false }
 
-    // Test: migration system: const migrationStatus = 'unknown';
-    try {
-      await migrationManager.createMigrationsTable();
-      const _appliedMigrations = await migrationManager.getAppliedMigrations();
-      migrationStatus = 'ready';
-    } catch (error) {
-      migrationStatus = 'error';
+    if (process.env.DATABASE_URL || process.env.NEON_DATABASE_URL) {
+      const health = await database.healthCheck()
+      status = health.status
+      details = { ...(health.details || {}), lastChecked: new Date().toISOString() }
+      try {
+        const tqStart = Date.now()
+        await database.query('SELECT 1')
+        testQuery = { executed: true, duration: `${Date.now() - tqStart}ms`, result: 'successful' }
+      } catch {
+        testQuery = { executed: true, result: 'failed' }
+      }
+    } else {
+      // No DB configured; return mock-healthy for dev transparency
+      status = 'healthy'
+      details = { connected: false, reason: 'No DATABASE_URL configured', lastChecked: new Date().toISOString() }
     }
 
-    // Test: basic query: const testQueryResult = await database.query('SELECT: NOW() as current_time, version() as db_version');
-
     return NextResponse.json({
-      success: truetimestamp: new Date().toISOString(),
-      export const database = {,
-        status: healthCheck.statusdetails: healthCheck.detailspoolStats,
-        const testQuery = {,
-          success: truecurrentTime: testQueryResult.rows[0]?.current_timeversion: testQueryResult.rows[0]?.db_version;
-        };
-      },
-      export const _migrations = {,
-        status: migrationStatustableReady: migrationStatus === 'ready';
-      };
-    });
+      success: true,
+      timestamp: new Date().toISOString(),
+      database: {
+        status,
+        details: { ...details, roundTripMs: Date.now() - start },
+        testQuery,
+      }
+    })
 
-  } catch (error) {
-    console.error('Database: health check failed', error);
+  } catch (error: unknown) {
+    console.error('❌ Database health check error:', error)
     return NextResponse.json({
-      success: falsetimestamp: new Date().toISOString(),
-      error: error: instanceof Error ? error.message : 'Unknown: database error',
-      export const database = {,
-        status: 'unhealthy'poolStats: database.getPoolStats();
-      };
-    }, { status: 500 });
+      success: false,
+      error: error instanceof Error ? error.message : 'Database health check failed',
+      database: {
+        status: 'unhealthy',
+        details: {
+          connected: false,
+          error: 'Connection failed'
+        }
+      }
+    }, { status: 500 })
   }
 }

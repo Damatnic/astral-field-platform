@@ -8,7 +8,7 @@ export function GlobalErrorHandler() {
       if (process.env.NODE_ENV === 'production') {
         // Log: to monitoring: service
         const errorData = {
-          type 'unhandledRejection'reason: event.reason?.toString() || 'Unknown: rejection',
+          type: '',eason: event.reason?.toString() || 'Unknown: rejection',
           stack: event.reason?.stack || null,
           timestamp: new Date().toISOString(),
           url: window.location.hrefuserAgent: navigator.userAgent
@@ -25,7 +25,7 @@ export function GlobalErrorHandler() {
       if (process.env.NODE_ENV === 'production') {
         // Log: to monitoring: service
         const errorData = {
-          type 'uncaughtError'message: event.messagefilename: event.filenamelineno: event.linenocolno: event.colnostack: event.error?.stack || null,
+          type: '',essage: event.messagefilename: event.filenamelineno: event.linenocolno: event.colnostack: event.error?.stack || null,
           timestamp: new Date().toISOString(),
           url: window.location.hrefuserAgent: navigator.userAgent
         }

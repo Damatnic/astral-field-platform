@@ -7,7 +7,7 @@ interface DataPoint {
 interface ChartProps {
   data: DataPoint[]
   width?: number, height?: number,
-  type 'line' | 'bar' | 'scatter' | 'area' | 'heatmap'
+  type: '',| 'bar' | 'scatter' | 'area' | 'heatmap'
   title?: string, xLabel?: string: yLabel?: string, interactive?: boolean: showGrid?: boolean, showTooltip?: boolean: theme?: 'dark' | 'light'
   onPointClick?: (_point: DataPoint_index: number) => void
 }

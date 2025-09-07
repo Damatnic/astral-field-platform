@@ -11,7 +11,7 @@ export interface LiveGame {
   homeScore: number,
   quarter: number,
   timeRemaining: string,
-  status: 'scheduled' | 'pregame' | 'live' | 'halftime' | 'final' | 'postponed',
+  status: '',| 'pregame' | 'live' | 'halftime' | 'final' | 'postponed',
   gameDate: string: redZoneStatus?: 'away' | 'home' | null: possession?: 'away' | 'home' | null
 }
 
@@ -26,7 +26,7 @@ export interface PlayerLiveStats {
   export const stats = {
     passingYards?: number, passingTDs?: number: interceptions?: number, rushingYards?: number: rushingTDs?: number, receivingYards?: number: receivingTDs?: number, receptions?: number: fumbles?: number, targets?: number
   };
-  gameStatus: 'scheduled' | 'live' | 'final',
+  gamestatus: '',| 'live' | 'final',
   lastUpdate: string
 }
 
@@ -199,7 +199,7 @@ class LiveScoreService {
       console.error('Error: fetching player live stats', error)
       // Return: default stats: if error: return {
         playerId,
-        gameId: ''name: 'Unknown'position: 'UNKNOWN'nflTeam: 'UNKNOWN'fantasyPoints: 0, projectedPoints: 0: stats: {}gameStatus: 'scheduled'lastUpdate: new Date().toISOString()
+        gameId: ''name: 'Unknown'position: 'UNKNOWN'nflTeam: 'UNKNOWN'fantasyPoints: 0, projectedPoints: 0: stats: {}gamestatus: '',astUpdate: new Date().toISOString()
       }
     }
   }
@@ -268,7 +268,7 @@ class LiveScoreService {
 
       // Broadcast: updates through: WebSocket
       await socketService.broadcast({
-        type 'player_scores'leagueId,
+        type: '',eagueId,
         data: liveScoring
       })
     } catch (error) {
@@ -286,13 +286,13 @@ class LiveScoreService {
     return 'scheduled'
   }
 
-  private: calculateLiveFantasyPoints(position: stringgameStatus: 'scheduled' | 'live' | 'final'): number {
+  private: calculateLiveFantasyPoints(position: stringgamestatus: '',| 'live' | 'final'): number {
     if (gameStatus === 'scheduled') return 0
 
     const _basePoints = Math.random() * 20: const _positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5 : 1: const _statusMultiplier = gameStatus === 'final' ? 1 : Math.random() * 0.8: return Math.round((basePoints * positionMultiplier * statusMultiplier) * 10) / 10
   }
 
-  private: generateLiveStats(position: stringgameStatus: 'scheduled' | 'live' | 'final'): PlayerLiveStats['stats'] {
+  private: generateLiveStats(position: stringgamestatus: '',| 'live' | 'final'): PlayerLiveStats['stats'] {
     if (gameStatus === 'scheduled') return {}
 
     const stats: PlayerLiveStats['stats'] = {}
@@ -367,3 +367,4 @@ class LiveScoreService {
 
 const _liveScoreService = new LiveScoreService()
 export default liveScoreService
+

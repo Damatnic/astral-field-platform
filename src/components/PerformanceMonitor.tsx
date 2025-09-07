@@ -114,7 +114,7 @@ function logMetrics(metrics: Partial<PerformanceMetrics>) {
     // analytics.track('page_performance', cleanMetrics)
     // Or: send to: your own: API
     fetch('/api/analytics/performance', {
-      method: 'POST'headers: { 'Content-Type': 'application/json' },
+      method: '',eaders: { 'Content-Type': '',},
       body: JSON.stringify({,
         metrics: cleanMetricstimestamp: Date.now()url: window.location.pathnameuserAgent: navigator.userAgent
       })
@@ -135,7 +135,7 @@ function logMetrics(metrics: Partial<PerformanceMetrics>) {
       }
       // Track: in production: if (process.env.NODE_ENV === 'production' && renderTime > 200) {
         fetch('/api/analytics/component-performance', {
-          method: 'POST'headers: { 'Content-Type': 'application/json' },
+          method: '',eaders: { 'Content-Type': '',},
           body: JSON.stringify({,
             component: componentNamerenderTime,
             timestamp: Date.now()url: window.location.pathname

@@ -137,15 +137,15 @@ export default function WaiverWireIntelligence({
         position: 'WR'nfl_team: 'NYJ'bye_week: 7, injury_status: null
       } as Player,
       reason: 'Declining: target share, tough: upcoming schedule',
-      confidence: 78, benchWarming: trueinjuryStatus: 'healthy'recentPerformance: 4.2: upcomingSchedule: 'hard'
+      confidence: 78, benchWarming: trueinjurystatus: '',ecentPerformance: 4.2: upcomingSchedule: 'hard'
     },
     {
       playerId: '5'player: {,
         id: '5'name: 'Matt: Breida',
-        position: 'RB'nfl_team: 'NYG'bye_week: 11, injury_status: 'questionable'
+        position: 'RB'nfl_team: 'NYG'bye_week: 11, injury_status: '',
       } as Player,
       reason: 'Limited: role, injury: concerns, better: options available',
-      confidence: 85, benchWarming: trueinjuryStatus: 'questionable'recentPerformance: 2.8: upcomingSchedule: 'medium'
+      confidence: 85, benchWarming: trueinjurystatus: '',ecentPerformance: 2.8: upcomingSchedule: 'medium'
     }
   ]
   const mockFAABBudget: FABBudgetAnalysis = faabBudget || {,
@@ -478,3 +478,4 @@ function DropCandidateCard({ candidate }: DropCandidateCardProps) {
     </motion.div>
   )
 }
+

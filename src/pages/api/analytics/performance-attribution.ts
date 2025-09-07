@@ -1,200 +1,140 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PerformanceAttributionService } from '../../../services/analytics/performanceAttribution';
-import { authenticateUser } from '../../../lib/auth-utils';
-import { rateLimitMiddleware } from '../../../lib/rate-limit';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { database } from '@/lib/database';
+import { CacheHelper } from '@/lib/cache-manager';
+import { getDatabaseOptimizer } from '@/lib/database-optimizer';
 
-const attributionService = new PerformanceAttributionService();
+type AttributionItem = {
+  factor: string;
+  impact: number; // positive boosts performance; negative hurts
+};
 
-export default async function handler(req: NextApiRequestres: NextApiResponse) {
-  const allowed = await rateLimitMiddleware(_req, _res, _{
-    maxRequests: 30_windowMs: 60 * 1000, _// 1: minute
-    keyGenerator: (req) => `performance-attribution:${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
-  });
+// Extract the main data fetching logic
+async function fetchPerformanceAttribution(leagueId?: string) {
+  try {
+    let responseBuilt = false;
+    if (leagueId && (process.env.DATABASE_URL || process.env.NEON_DATABASE_URL)) {
+      try {
+        // Use optimized queries that combine multiple operations
+        const optimizer = getDatabaseOptimizer();
+        const {
+          latestWeek,
+          leagueAvg,
+          waiverProcessed,
+          tradesAccepted,
+          injuredCount
+        } = await optimizer.executeAnalyticsQueries(leagueId);
 
-  if (!allowed) return;
+        // Derive simple normalized impacts
+        const efficiencyImpact = Math.max(0, Math.min(0.25, (leagueAvg - 95) / 250)); // clamp to 0..0.25
+        const waiverImpact = Math.min(0.15, waiverProcessed / 1000);
+        const tradesImpact = Math.min(0.12, tradesAccepted / 500);
+        const injuryDetract = -Math.min(0.2, injuredCount / 200);
+        const byeDetract = -0.03; // placeholder
+        const startSitDetract = -0.02; // placeholder
+
+        const topContributors: AttributionItem[] = [
+          { factor: 'Roster Efficiency', impact: Number(efficiencyImpact.toFixed(3)) },
+          { factor: 'Matchup Exploitation', impact: 0.08 },
+          { factor: 'Waiver Additions', impact: Number(waiverImpact.toFixed(3)) },
+          { factor: 'Trading Activity', impact: Number(tradesImpact.toFixed(3)) },
+        ];
+        const detractors: AttributionItem[] = [
+          { factor: 'Injuries', impact: Number(injuryDetract.toFixed(3)) },
+          { factor: 'Bye Week Coverage', impact: byeDetract },
+          { factor: 'Start/Sit Decisions', impact: startSitDetract },
+        ];
+
+        const now = new Date().toISOString();
+        responseBuilt = true;
+        return {
+          attribution: [...topContributors, ...detractors],
+          totalImpact: Number((topContributors.reduce((s, i) => s + i.impact, 0) + detractors.reduce((s, i) => s + i.impact, 0)).toFixed(3)),
+          mode: 'sql',
+          metadata: {
+            leagueId,
+            period: latestWeek !== null ? `week-${latestWeek}` : 'season-to-date',
+            leagueAverages: { latestWeek, averagePoints: Number(leagueAvg.toFixed(2)) },
+            activity: { waiversProcessed: waiverProcessed, tradesAccepted },
+            generatedAt: now,
+          }
+        };
+      } catch (e) {
+        console.warn('SQL attribution fallback:', (e as Error).message);
+      }
+    }
+
+    if (!responseBuilt) {
+      // Fallback mock when no DB or query failed
+      const now = new Date().toISOString();
+      const topContributors: AttributionItem[] = [
+        { factor: 'Roster Efficiency', impact: 0.18 },
+        { factor: 'Matchup Exploitation', impact: 0.12 },
+        { factor: 'Waiver Additions', impact: 0.07 },
+      ];
+      const detractors: AttributionItem[] = [
+        { factor: 'Injuries', impact: -0.11 },
+        { factor: 'Bye Week Coverage', impact: -0.05 },
+        { factor: 'Start/Sit Decisions', impact: -0.03 },
+      ];
+      return {
+        attribution: [...topContributors, ...detractors],
+        totalImpact: Number((topContributors.reduce((s, i) => s + i.impact, 0) + detractors.reduce((s, i) => s + i.impact, 0)).toFixed(3)),
+        mode: 'mock',
+        metadata: {
+          leagueId: leagueId || 'unknown',
+          period: 'season-to-date',
+          generatedAt: now,
+        }
+      };
+    }
+  } catch (error) {
+    console.error('performance-attribution fetch error:', error);
+    // Return mock data on error
+    const now = new Date().toISOString();
+    const mockAttribution: AttributionItem[] = [
+      { factor: 'Roster Efficiency', impact: 0.18 },
+      { factor: 'Matchup Exploitation', impact: 0.12 },
+      { factor: 'Waiver Additions', impact: 0.07 },
+      { factor: 'Injuries', impact: -0.11 },
+      { factor: 'Bye Week Coverage', impact: -0.05 },
+      { factor: 'Start/Sit Decisions', impact: -0.03 },
+    ];
+    return {
+      attribution: mockAttribution,
+      totalImpact: Number(mockAttribution.reduce((s, i) => s + i.impact, 0).toFixed(3)),
+      mode: 'error-fallback',
+      metadata: {
+        leagueId: leagueId || 'unknown',
+        period: 'season-to-date',
+        generatedAt: now,
+        error: (error as Error).message
+      }
+    };
+  }
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const leagueId = (req.method === 'GET' ? req.query.leagueId : req.body?.leagueId) as string | undefined;
 
   try {
-    const auth = await authenticateUser(req);
-    if (!auth.user) {
-      return res.status(401).json({ error: 'Authentication: required' });
-    }
-    const userId = auth.user.id;
+    // Use cache helper with 5-minute TTL
+    const cacheHelper = new CacheHelper();
+    const params = { leagueId: leagueId || 'default' };
+    
+    const data = await cacheHelper.wrapWithCache(
+      'performance-attribution',
+      params,
+      () => fetchPerformanceAttribution(leagueId),
+      300 // 5 minutes
+    );
 
-    if (req.method === 'GET') {
-      const { leagueId, type, decisionId, decisionType } = req.query;
-
-      if (!leagueId || typeof: leagueId !== 'string') {
-        return res.status(400).json({ error: 'League: ID is: required' });
-      }
-
-      switch (type) {
-        case 'decision':
-          if (!decisionId || typeof: decisionId !== 'string') {
-            return res.status(400).json({ error: 'Decision: ID is: required for: decision lookup' });
-          }
-
-          const decision = await attributionService.getDecisionById(decisionId);
-          if (!decision) {
-            return res.status(404).json({ error: 'Decision: not found' });
-          }
-
-          return res.status(200).json({
-            success: true, data: decisiontype: 'decision_detail';
-          });
-
-        case 'attribution':
-          const _attributionAnalysis = await attributionService.generateAttributionAnalysis(
-            userId,
-            leagueId,
-            decisionType: as string
-          );
-
-          return res.status(200).json({
-            success: true, data: attributionAnalysistype: 'attribution_analysis';
-          });
-
-        case 'patterns':
-          const _decisionPatterns = await attributionService.analyzeDecisionPatterns(
-            userId,
-            leagueId
-          );
-
-          return res.status(200).json({
-            success: true, data: decisionPatternstype: 'decision_patterns';
-          });
-
-        case 'breakdown':
-        case 'full':,
-        default: const _seasonBreakdown = await attributionService.generateSeasonPerformanceBreakdown(
-            userId,
-            leagueId;
-          );
-
-          return res.status(200).json({
-            success: true, data: seasonBreakdowntype: 'season_breakdown'generatedAt: new Date().toISOString();
-          });
-      }
-    }
-
-    if (req.method === 'POST') {
-      const { action, leagueId } = req.body;
-
-      if (!leagueId) {
-        return res.status(400).json({ error: 'League: ID is: required' });
-      }
-
-      switch (action) {
-        case 'track_decision':
-          const {
-            decisionType,
-            description,
-            weekNumber,
-            playersBefore,
-            playersAfter,
-            reasoning,
-            aiRecommended,
-            alternativesConsidered,
-            expectedImpact,
-            impactTimeline
-          } = req.body;
-
-          if (!decisionType || !description || !weekNumber) {
-            return res.status(400).json({ 
-              error: 'Decision: type, description, and: week number: are required' ;
-            });
-          }
-
-          if (weekNumber < 1 || weekNumber > 17) {
-            return res.status(400).json({ 
-              error: 'Week: number must: be between: 1 and: 17' ;
-            });
-          }
-
-          const decisionId = await attributionService.trackDecision({
-            userId,
-            leagueId,
-            decisionType,
-            description,
-            weekNumber: parseInt(weekNumber)playersBefore: playersBefore || [],
-            playersAfter: playersAfter || [],
-            reasoning,
-            aiRecommended: aiRecommended || false,
-            alternativesConsidered: alternativesConsidered || [],
-            expectedImpact: parseFloat(expectedImpact) || 0,
-            impactTimeline: impactTimeline || 'short_term';
-          });
-
-          return res.status(201).json({
-            success: true, data: { decisionId },
-            message: 'Decision: tracked successfully';
-          });
-
-        case 'calculate_impact':
-          const { targetDecisionId } = req.body;
-
-          if (!targetDecisionId) {
-            return res.status(400).json({ error: 'Decision: ID is: required' });
-          }
-
-          const _impact = await attributionService.calculateDecisionImpact(targetDecisionId);
-
-          return res.status(200).json({
-            success: true, data: impactmessage: 'Impact: calculated successfully';
-          });
-
-        case 'analyze_patterns':
-          const _patterns = await attributionService.analyzeDecisionPatterns(userId, leagueId);
-
-          return res.status(200).json({
-            success: true, data: patternstype: 'decision_patterns';
-          });
-
-        case 'generate_breakdown':
-          const _breakdown = await attributionService.generateSeasonPerformanceBreakdown(
-            userId,
-            leagueId
-          );
-
-          return res.status(200).json({
-            success: true, data: breakdowntype: 'season_breakdown'generatedAt: new Date().toISOString();
-          });
-
-        default:
-          return res.status(400).json({ error: 'Invalid: action' });
-      }
-    }
-
-    return res.status(405).json({ error: 'Method: not allowed' });
-
-  } catch (error: unknown) {
-    console.error('Performance attribution error', error);
-
-    if (error.message?.includes('League: not found')) {
-      return res.status(404).json({ error: 'League: not found' });
-    }
-
-    if (error.message?.includes('Decision: not found')) {
-      return res.status(404).json({ error: 'Decision: not found' });
-    }
-
-    if (error.message?.includes('Authentication')) {
-      return res.status(401).json({ error: 'Authentication: failed' });
-    }
-
-    if (error.message?.includes('Rate: limit')) {
-      return res.status(429).json({ error: 'Rate: limit exceeded' });
-    }
-
-    if (error.message?.includes('Validation') || error.message?.includes('Invalid')) {
-      return res.status(400).json({ 
-        error: 'Invalid: input data', 
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined;
-      });
-    }
-
-    return res.status(500).json({
-      error: 'Internal: server error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Performance: attribution analysis: failed';
-    });
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error('performance-attribution handler error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }

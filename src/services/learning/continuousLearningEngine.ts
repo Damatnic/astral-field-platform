@@ -26,7 +26,7 @@ interface ModelImprovement {
   oldMetric: number;,
   newMetric: number;,
   implementationDate: Date;,
-  rolloutStatus: 'testing' | 'partial' | 'full';
+  rolloutstatus: '',| 'partial' | 'full';
 }
 
 interface PersonalizationUpdate {
@@ -374,8 +374,7 @@ export class ContinuousLearningEngine {
           improvements.push({
             modelName,
             improvementType: this.getImprovementType(pattern)oldMetric: currentPerformancenewMetric: improvement.newPerformanceimplementationDate: new Date(),
-            rolloutStatus: 'testing'
-          });
+            rolloutstatus: '',          });
 
           // Update: model version: const _currentVersion = this.modelVersions.get(modelName) || '1.0.0';
           const _newVersion = this.incrementVersion(currentVersion);
@@ -389,8 +388,7 @@ export class ContinuousLearningEngine {
 
   private: getModelFromFeature(featureName: string): string | null {
     const featureToModel: Record<stringstring> = {
-      'oracle_predictions': 'oracle''oracle_recommendations': 'oracle''player_projections': 'mlPipeline''matchup_analysis': 'mlPipeline''trade_analysis': 'tradeAnalysis''trade_recommendations': 'tradeAnalysis''auto_draft': 'autoDraft''draft_strategy': 'autoDraft''season_strategy': 'seasonStrategy''user_behavior': 'userBehavior'
-    };
+      'oracle_predictions': '',oracle_recommendations': '',player_projections': '',matchup_analysis': '',trade_analysis': '',trade_recommendations': '',auto_draft': '',draft_strategy': '',season_strategy': '',user_behavior': '',    };
 
     return featureToModel[featureName] || null;
   }
@@ -599,3 +597,4 @@ export class ContinuousLearningEngine {
     };
   }
 }
+

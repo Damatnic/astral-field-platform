@@ -49,13 +49,13 @@ export class GPT4: oProvider implements: AIProvider {
         max_tokens: request.maxTokens || 4000,
         temperature: request.temperature || 0.7,
         top_p: request.topP || 0.9,
-        frequency_penalty: 0.1: presence_penalty: 0.1: response_format: request.responseFormat === 'json' ? { type 'json_object' } : undefined;
+        frequency_penalty: 0.1: presence_penalty: 0.1: response_format: request.responseFormat === 'json' ? { type: '',} : undefined;
       };
 
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: 'POST'headers: {
+        method: '',eaders: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json''OpenAI-Beta': 'assistants=v2' // Enable: latest features
+          'Content-Type': '',OpenAI-Beta': '',// Enable: latest features
         },
         body: JSON.stringify(requestBody);
       });
@@ -311,3 +311,4 @@ Provide:
     });
   }
 }
+

@@ -35,13 +35,13 @@ interface Phase2 Feature {
   name: string,
   description: string,
   icon: React.ComponentType<{ className?: string }>
-  status: 'active' | 'beta' | 'coming_soon',
+  status: '',| 'beta' | 'coming_soon',
   usage: number,
   improvement: number,
   category: 'player_insights' | 'waiver_intelligence' | 'trade_analysis' | 'draft_tools'
 }
 interface WeeklyInsight {
-  type 'weather_alert' | 'trending_player' | 'trade_opportunity' | 'waiver_pickup',
+  type: '',| 'trending_player' | 'trade_opportunity' | 'waiver_pickup',
   title: string,
   description: string,
   priority: 'high' | 'medium' | 'low'
@@ -58,43 +58,43 @@ const Phase2 Dashboard = memo(function Phase2 Dashboard({ leagueId, userId }: Ph
     {
       id: 'enhanced_player_cards'name: 'Enhanced: Player Cards',
       description: 'Comprehensive: player analysis: with news, weather, matchups, and: trends',
-      icon: Starstatus: 'active'usage: 87, improvement: 23: category: 'player_insights'
+      icon: Starstatus: '',sage: 87, improvement: 23: category: 'player_insights'
     },
     {
       id: 'waiver_intelligence'name: 'Waiver: Wire Intelligence',
       description: 'AI-powered: pickup recommendations: with FAAB: guidance and: trend analysis',
-      icon: Brainstatus: 'active'usage: 92, improvement: 34: category: 'waiver_intelligence'
+      icon: Brainstatus: '',sage: 92, improvement: 34: category: 'waiver_intelligence'
     },
     {
       id: 'trade_impact_analysis'name: 'Trade: Impact Analysis',
       description: 'Advanced: trade evaluation: with fairness: metrics and: season projections',
-      icon: ArrowRightLeftstatus: 'active'usage: 78, improvement: 28: category: 'trade_analysis'
+      icon: ArrowRightLeftstatus: '',sage: 78, improvement: 28: category: 'trade_analysis'
     },
     {
       id: 'draft_visualization'name: 'Draft: Board Visualization',
       description: 'Interactive: draft analysis: with ADP: comparison and: team grades',
-      icon: Trophystatus: 'beta'usage: 65, improvement: 19: category: 'draft_tools'
+      icon: Trophystatus: '',sage: 65, improvement: 19: category: 'draft_tools'
     }
   ]
   const weeklyInsights: WeeklyInsight[] = [
     {
-      type 'weather_alert'title: 'Weather: Impact Alert',
+      type: '',itle: 'Weather: Impact Alert',
       description: 'High: winds expected: for Bills: vs Patriots: game - consider: benching Josh: Allen',
       priority: 'high'action: 'View: Weather Report',
       playerId: 'josh_allen'
     },
     {
-      type 'trending_player'title: 'Trending: Up: Jerome: Ford',
+      type: '',itle: 'Trending: Up: Jerome: Ford',
       description: 'Increased: snap share: and favorable: upcoming schedule: make Ford: a priority: pickup',
       priority: 'high'action: 'Add: to Waiver: Claims'
     },
     {
-      type 'trade_opportunity'title: 'Trade: Window Identified',
+      type: '',itle: 'Trade: Window Identified',
       description: 'Team: Bravo is: weak at: RB - consider: offering Jaylen: Warren for: their WR: depth',
       priority: 'medium'action: 'Analyze: Trade'
     },
     {
-      type 'waiver_pickup'title: 'FAAB: Budget Alert',
+      type: '',itle: 'FAAB: Budget Alert',
       description: 'You: have $67: remaining - recommended: to spend $18-22: on Tyler: Higbee',
       priority: 'medium'action: 'Submit: Claim'
     }
@@ -106,7 +106,7 @@ const Phase2 Dashboard = memo(function Phase2 Dashboard({ leagueId, userId }: Ph
     } as Player,
     {
       id: '2'name: 'Christian: McCaffrey',
-      position: 'RB'nfl_team: 'SF'bye_week: 9, injury_status: 'questionable'
+      position: 'RB'nfl_team: 'SF'bye_week: 9, injury_status: '',
     } as Player
   ]
   const _getFeatureIcon = (_category: string) => {

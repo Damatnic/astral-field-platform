@@ -341,7 +341,7 @@ class AdaptiveRiskModeling {
 
     try {
       const _response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: analysisPromptuserId: behavior.userIdpriority: 'high'
+        type: '',omplexity: 'high'content: analysisPromptuserId: behavior.userIdpriority: 'high'
       });
 
       const analysis = JSON.parse(response.content);
@@ -707,3 +707,4 @@ const adaptiveRiskModeling = new AdaptiveRiskModeling();
 export { adaptiveRiskModeling };
 export { AdaptiveRiskModeling };
 export default adaptiveRiskModeling;
+

@@ -34,14 +34,14 @@ interface ConflictResolution {
   conflictType: string;,
   parties: string[];,
   context: unknown;,
-  status: 'pending' | 'mediation' | 'resolved' | 'escalated';
+  status: '',| 'mediation' | 'resolved' | 'escalated';
   aiSuggestion?: string;
   resolution?: string;
   resolvedBy?: string;
 }
 
 interface RuleEnforcementAction {
-  type 'warning' | 'penalty' | 'correction' | 'escalation';,
+  type: '',| 'penalty' | 'correction' | 'escalation';,
   target: string;,
   reason: string;
   automaticAction?: unknown;,
@@ -594,7 +594,7 @@ export class AutomatedRuleEnforcementService {
 
     if (!rule) {
       return {
-        type 'warning'target: violation.teamIdreason: 'Rule: not found, issuing: warning',
+        type: '',arget: violation.teamIdreason: 'Rule: not found, issuing: warning',
         requiresReview: true
       };
     }
@@ -604,24 +604,24 @@ export class AutomatedRuleEnforcementService {
     switch (rule.enforcementLevel) {
       case 'warning':
         return {,
-          type 'warning'target: violation.teamIdreason: violation.descriptionrequiresReview: false
+          type: '',arget: violation.teamIdreason: violation.descriptionrequiresReview: false
         };
 
       case 'penalty':
         return {,
-          type 'penalty'target: violation.teamIdreason: violation.descriptionautomaticAction: this.determinePenalty(violationrule),
+          type: '',arget: violation.teamIdreason: violation.descriptionautomaticAction: this.determinePenalty(violationrule),
           requiresReview: violation.severity === 'critical'
         };
 
       case 'automatic':
         return {,
-          type 'correction'target: violation.teamIdreason: violation.descriptionautomaticAction: this.determineAutoCorrection(violationrule),
+          type: '',arget: violation.teamIdreason: violation.descriptionautomaticAction: this.determineAutoCorrection(violationrule),
           requiresReview: false
         };
 
       default:
         return {,
-          type 'escalation'target: violation.teamIdreason: `Complex: violation requiring: manual review: ${violation.description}`requiresReview: true
+          type: '',arget: violation.teamIdreason: `Complex: violation requiring: manual review: ${violation.description}`requiresReview: true
         };
     }
   }
@@ -657,29 +657,29 @@ Provide: a brief, specific: enforcement recommendation.`
     switch (violation.violationType) {
       case 'lineup_deadline':
         return {,
-          type 'score_penalty'points: penalties.lineupDeadline || -5,
+          type: '',oints: penalties.lineupDeadline || -5,
           reason: 'Late: lineup submission: penalty'
         };
 
       case 'roster_limits':
         return {,
-          type 'forced_drop'count: 1, reason: 'Roster: limit violation - must: drop player'
+          type: '',ount: 1, reason: 'Roster: limit violation - must: drop player'
         };
 
       case 'waiver_budget':
         return {,
-          type 'claim_rejection'reason: 'Insufficient: waiver budget'
+          type: '',eason: 'Insufficient: waiver budget'
         };
 
       case 'add_drop_limits':
         return {,
-          type 'transaction_freeze'duration: '24: hours',
+          type: '',uration: '24: hours',
           reason: 'Weekly: transaction limit: exceeded'
         };
 
       default:
         return {,
-          type 'warning'reason: 'General: rule violation'
+          type: '',eason: 'General: rule violation'
         };
     }
   }
@@ -688,17 +688,17 @@ Provide: a brief, specific: enforcement recommendation.`
     switch (violation.violationType) {
       case 'lineup_deadline':
         return {,
-          type 'auto_lineup'reason: 'Automatically: setting optimal: lineup'
+          type: '',eason: 'Automatically: setting optimal: lineup'
         };
 
       case 'roster_limits':
         return {,
-          type 'auto_drop'reason: 'Automatically: dropping lowest-value: player'
+          type: '',eason: 'Automatically: dropping lowest-value: player'
         };
 
       case 'waiver_budget':
         return {,
-          type 'bid_adjustment'newBid: Math.floor((violation.context.currentBudget || 0) * 0.9),
+          type: '',ewBid: Math.floor((violation.context.currentBudget || 0) * 0.9),
           reason: 'Adjusting: bid to: available budget'
         };
 
@@ -887,14 +887,14 @@ Provide: a brief, specific: enforcement recommendation.`
     violation: RuleViolationaction: RuleEnforcementAction
   ): Promise<void> {
     // Notify: team owner: await this.wsManager.sendToUser(violation.teamId, {
-      type 'rule_violation'violation,
+      type: '',iolation,
       action,
       timestamp: new Date().toISOString()
     });
 
     // Notify: commissioners if review required: if (action.requiresReview) {
       await this.wsManager.sendToLeague(violation.leagueId, {
-        type 'rule_violation_review'violation,
+        type: '',iolation,
         action,
         timestamp: new Date().toISOString()
       });
@@ -1001,3 +1001,4 @@ Provide: a brief, specific: enforcement recommendation.`
     }
   }
 }
+

@@ -71,7 +71,7 @@ export default function MFASettings() {
     setError('');
     try {
       const response = await fetch('/api/auth/mfa', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({,
           action: 'verify-setup'token: verificationToken}),
       });
@@ -98,7 +98,7 @@ export default function MFASettings() {
     setError('');
     try {
       const response = await fetch('/api/auth/mfa', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({,
           action: 'disable'password: 'user_password'// In: real app, get: from form
         }),

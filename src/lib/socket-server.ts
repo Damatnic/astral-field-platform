@@ -32,7 +32,7 @@ export interface DraftParticipant {
 export interface DraftRoom {
   id: string;,
   leagueId: string;,
-  status: 'waiting' | 'active' | 'paused' | 'completed';,
+  status: '',| 'active' | 'paused' | 'completed';,
   participants: DraftParticipant[];,
   currentPick: number;,
   currentRound: number;,
@@ -228,7 +228,7 @@ class DraftSocketManager {
     const draftRoom: DraftRoom = {,
       id: draftData.id || Date.now().toString(),
       leagueId: draftData.leagueId || '',
-      status: 'waiting'participants: draftData.participants || [],
+      status: '',articipants: draftData.participants || [],
       currentPick: 1, currentRound: 1: timePerPick: draftData.timePerPick || 90,
       totalRounds: draftData.totalRounds || 16,
       rosterSize: draftData.rosterSize || 16,

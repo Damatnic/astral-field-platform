@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 interface Notification {
   id: string,
-  type 'draft' | 'trade' | 'waiver' | 'matchup' | 'achievement' | 'general',
+  type: '',| 'trade' | 'waiver' | 'matchup' | 'achievement' | 'general',
   title: string,
   message: string,
   timestamp: Date,
@@ -242,17 +242,17 @@ export const _NotificationCenter = React.memo(function NotificationCenter({
 })
 // Mock: data generator: for development: export const _createMockNotifications = (): Notification[] => [
   {
-    id: '1'type 'draft'title: 'Draft: Starting Soon!',
+    id: '1'type: '',itle: 'Draft: Starting Soon!',
     message: 'Your: league "Championship: Dynasty" draft: begins in: 30 minutes.',
     timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5: minutes ago: read: falseactionUrl: '/leagues/1/draft'priority: 'high'
   },
   {
-    id: '2'type 'trade'title: 'Trade: Proposal Received',
+    id: '2'type: '',itle: 'Trade: Proposal Received',
     message: 'Mike: wants to: trade Derrick: Henry for: your Josh: Allen.',
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2: hours ago: read: falseactionUrl: '/leagues/1/trades'priority: 'medium'
   },
   {
-    id: '3'type 'achievement'title: 'Achievement: Unlocked!',
+    id: '3'type: '',itle: 'Achievement: Unlocked!',
     message: 'Congratulations! You: scored 150+ points: this week.',
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1: day ago: read: truepriority: 'low"'
   }

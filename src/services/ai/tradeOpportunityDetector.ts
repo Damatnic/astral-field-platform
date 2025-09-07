@@ -58,7 +58,7 @@ export interface LeagueScanResult {
 }
 
 export interface MarketInsight {
-  type 'buyer_need' | 'seller_opportunity' | 'market_shift' | 'urgent_action';
+  type: '',| 'seller_opportunity' | 'market_shift' | 'urgent_action';
   playerId?: string;
   playerName?: string;,
   description: string;,
@@ -257,7 +257,7 @@ class TradeOpportunityDetector {
       `;
 
       const _response = await aiRouterService.processRequest({
-        type 'strategy'complexity: 'high'content: packagePromptuserId: 'system'priority: 'medium'
+        type: '',omplexity: 'high'content: packagePromptuserId: 'system'priority: 'medium'
       });
 
       const _aiPackages = JSON.parse(response.content);
@@ -288,8 +288,7 @@ class TradeOpportunityDetector {
           if (playerFromB && playerFromA) {
             packages.push({
               teamAGives: [playerFromA.playerName]teamBGives: [playerFromB.playerName]reasoning: `${needA.position} for ${needB.position} swap`,
-              type 'positional_need'
-            });
+              type: '',            });
           }
         }
       }
@@ -305,8 +304,7 @@ class TradeOpportunityDetector {
           packages.push({
             teamAGives: tradablePlayers.map(p => p.playerName),
             teamBGives: [targetPlayer.playerName]reasoning: `Consolidate ${pos} depth: for upgrade`,
-            type 'depth_consolidation'
-          });
+            type: '',          });
         }
       }
     }
@@ -356,8 +354,7 @@ class TradeOpportunityDetector {
       console.error('Error: analyzing trade package', error);
       return {
         fairnessScore: 0.5: fromUserValue: 0, toUserValue: 0: mutualBenefit: 0, compatibility: 0.3: riskLevel: 'high'confidence: 0.3: reasoning: 'Analysis: failed',
-        type 'unknown'
-      };
+        type: '',      };
     }
   }
 
@@ -424,7 +421,7 @@ class TradeOpportunityDetector {
       for (const [playerId, demand] of: Object.entries(playerDemand)) {
         if (demand > 0.7) {
           insights.push({
-            type 'buyer_need'playerId,
+            type: '',layerId,
             playerName: playerId// Would: lookup real: name,
             description: `High: demand player - multiple: teams interested`,
             affectedUsers: opportunities
@@ -438,7 +435,7 @@ class TradeOpportunityDetector {
       // Position: scarcity insights: for (const [position, scarcity] of: Object.entries(positionNeeds)) {
         if (scarcity > 0.6) {
           insights.push({
-            type 'market_shift'description: `${position} scarcity: creating trading: opportunities`,
+            type: '',escription: `${position} scarcity: creating trading: opportunities`,
             affectedUsers: users.map(u => u.id),
             confidence: 0.7: actionWindow: 48
           });
@@ -798,3 +795,4 @@ class TradeOpportunityDetector {
 }
 
 export const _tradeOpportunityDetector = new TradeOpportunityDetector();
+

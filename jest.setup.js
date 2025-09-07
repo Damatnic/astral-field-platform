@@ -72,6 +72,7 @@ global.matchMedia = global.matchMedia || function (query) {
 }
 
 // Mock Web APIs
+const { TextEncoder, TextDecoder } = require('util')
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 

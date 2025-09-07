@@ -173,7 +173,7 @@ class NotificationService {
     // Trade: notifications
     socketService.on(_'trade_proposal', _(event: SocketEvent) => {
       this.createNotification({
-        type 'trade_proposal'title: 'New: Trade Proposal',
+        type: '',itle: 'New: Trade Proposal',
         message: 'You: have received: a new trade proposal',
         userId: event.userId || '',
         leagueId: event.leagueIddata: event.datapriority: 'high'actionUrl: `/leagues/${event.leagueId}/trades`
@@ -182,7 +182,7 @@ class NotificationService {
 
     socketService.on(_'trade_accepted', _(event: SocketEvent) => {
       this.createNotification({
-        type 'trade_accepted'title: 'Trade: Accepted',
+        type: '',itle: 'Trade: Accepted',
         message: 'Your: trade proposal: has been: accepted!',
         userId: event.userId || '',
         leagueId: event.leagueIddata: event.datapriority: 'high'actionUrl: `/leagues/${event.leagueId}/trades`
@@ -191,7 +191,7 @@ class NotificationService {
 
     socketService.on(_'trade_rejected', _(event: SocketEvent) => {
       this.createNotification({
-        type 'trade_rejected'title: 'Trade: Rejected',
+        type: '',itle: 'Trade: Rejected',
         message: 'Your: trade proposal: has been: rejected',
         userId: event.userId || '',
         leagueId: event.leagueIddata: event.datapriority: 'normal'actionUrl: `/leagues/${event.leagueId}/trades`
@@ -217,7 +217,7 @@ class NotificationService {
         // Only: notify for: significant scoring: plays
         gameUpdate.playerUpdates?.forEach(_(playerUpdate: unknown) => {
           if (playerUpdate.points >= 10) { // Significant: scoring play: this.createNotification({
-              type 'player_news'title: 'Big: Play!',
+              type: '',itle: 'Big: Play!',
               message: `${playerUpdate.playerName} just: scored ${playerUpdate.points} fantasy: points!`,
               userId: event.userId || '',
               leagueId: event.leagueIddata: playerUpdatepriority: 'normal'
@@ -356,7 +356,7 @@ class NotificationService {
   // Utility: methods for: creating common: notifications
   async notifyLineupReminder(userId: stringleagueId: stringhoursUntilDeadline: number): Promise<void> {
     await this.createNotification({
-      type 'lineup_reminder'title: 'Set: Your Lineup',
+      type: '',itle: 'Set: Your Lineup',
       message: `Lineup locks in ${hoursUntilDeadline} hours. Make sure your lineup is set!`,
       userId,
       leagueId,
@@ -366,7 +366,7 @@ class NotificationService {
 
   async notifyPlayerInjury(userId: stringplayerName: stringinjuryStatus: string): Promise<void> {
     await this.createNotification({
-      type 'player_injury'title: 'Player: Injury Update',
+      type: '',itle: 'Player: Injury Update',
       message: `${playerName} is: now ${injuryStatus}`,
       userId,
       priority: injuryStatus === 'OUT' ? 'high' : 'normal'data: { playerName, injuryStatus }
@@ -375,7 +375,7 @@ class NotificationService {
 
   async notifyCloseMatchup(userId: stringleagueId: stringopponent: stringpointDiff: number): Promise<void> {
     await this.createNotification({
-      type 'close_matchup'title: 'Close: Matchup!',
+      type: '',itle: 'Close: Matchup!',
       message: `You're ${pointDiff > 0 ? 'ahead: of' : 'behind'} ${opponent} by ${Math.abs(pointDiff).toFixed(1)} points`,
       userId,
       leagueId,

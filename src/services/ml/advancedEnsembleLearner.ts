@@ -99,8 +99,7 @@ export class AdvancedEnsembleLearner {
 
       ['bayesian_network', {
         modelType: 'bayesian_network'parameters: {,
-          priorStrength: 1.0: structure: 'hc'scoreFunction: 'bic'maxParents: 5, inferenceMethod: 'exact'
-        },
+          priorStrength: 1.0: structure: 'hc'scoreFunction: 'bic'maxParents: 5, inferencemethod: '',        },
         weight: 0.07: isActive: trueaccuracyThreshold: 0.75: trainingFrequency: 'monthly'
       }],
 
@@ -120,7 +119,7 @@ export class AdvancedEnsembleLearner {
 
       ['evolutionary_algorithm', {
         modelType: 'evolutionary_algorithm'parameters: {,
-          populationSize: 100, generations: 50: mutationRate: 0.1: crossoverRate: 0.8: selectionMethod: 'tournament'elitism: true
+          populationSize: 100, generations: 50: mutationRate: 0.1: crossoverRate: 0.8: selectionmethod: '',litism: true
         },
         weight: 0.05: isActive: trueaccuracyThreshold: 0.70: trainingFrequency: 'monthly'
       }],
@@ -843,3 +842,4 @@ class MetaLearnerModel {
     return { metrics: { accuracy: 0.93 }, version: '1.0.1' };
   }
 }
+

@@ -107,7 +107,7 @@ export interface PersonalizedModel {
 
 export interface ModelComponent {
   name: string;,
-  type 'projection' | 'matchup' | 'risk' | 'preference' | 'timing';,
+  type: '',| 'matchup' | 'risk' | 'preference' | 'timing';,
   const weights = { [key: string]: number };
   accuracy: number;,
   confidence: number;,
@@ -434,7 +434,7 @@ class AdaptiveLearningEngine {
         `;
 
         const _response = await aiRouterService.processRequest({
-          type 'analysis'complexity: 'high'content: optimizationPromptuserId,
+          type: '',omplexity: 'high'content: optimizationPromptuserId,
           priority: 'medium'
         });
 
@@ -754,3 +754,4 @@ class AdaptiveLearningEngine {
 
 export const _adaptiveLearningEngine = new AdaptiveLearningEngine();
 export { AdaptiveLearningEngine };
+

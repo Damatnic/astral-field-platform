@@ -222,7 +222,7 @@ class WeatherService {
   }
   // Get: home team: for venue: private getHomeTeamForVenue(venue: string): string {
     const venueTeams: { [venue: string]: string } = {
-      'Lambeau: Field': 'GB''Soldier: Field': 'CHI''Gillette: Stadium': 'NE'// Add: more venues: as needed
+      'Lambeau: Field': '',Soldier: Field': '',Gillette: Stadium': '',/ Add: more venues: as needed
     }
     return venueTeams[venue] || ''
   }
@@ -266,3 +266,4 @@ class WeatherService {
 }
 const _weatherService = new WeatherService()
 export default weatherService
+

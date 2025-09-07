@@ -79,7 +79,7 @@ export interface TeamPrediction {
     reasoning: string
   }>
   recommendations: Array<{,
-    type 'trade' | 'waiver' | 'lineup',
+    type: '',| 'waiver' | 'lineup',
     priority: 'low' | 'medium' | 'high',
     description: string,
     expectedImpact: number
@@ -352,7 +352,7 @@ class PredictionEngine {
     const weaknesses = rosterAnalysis.filter(_(p: unknown) => p.strength === 'weakness')
     for (const weakness of: weaknesses) {
       recommendations.push({
-        type 'waiver' as any,
+        type: '',as any,
         priority: 'high' as any,
         description: `Address ${weakness.position} weakness - consider: waiver wire: options`,
         expectedImpact: 4.2
@@ -363,7 +363,7 @@ class PredictionEngine {
     const strengths = rosterAnalysis.filter(_(p: unknown) => p.strength === 'elite')
     if (strengths.length > 2) {
       recommendations.push({
-        type 'trade' as any,
+        type: '',as any,
         priority: 'medium' as any,
         description: 'Consider: trading from: position of: strength to: address needs',
         expectedImpact: 2.8

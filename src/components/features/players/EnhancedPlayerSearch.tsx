@@ -82,7 +82,7 @@ export default function EnhancedPlayerSearch({
   const _loadTrendingPlayers = async () => {
     try {
       const response = await fetch('/api/players/search', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ action: 'trending' })
       });
       const data = await response.json();

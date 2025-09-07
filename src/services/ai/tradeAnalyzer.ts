@@ -247,7 +247,7 @@ class TradeAnalyzerService {
     return 'stable'
   }
 
-  private: calculatePositionImpact(players: TradePlayer[]type 'gaining' | 'losing'): Record<stringnumber> {
+  private: calculatePositionImpact(players: TradePlayer[]type: '',| 'losing'): Record<stringnumber> {
     const impact: Record<stringnumber> = {}
 
     players.forEach(player => {

@@ -132,7 +132,7 @@ export function createRateLimit(
           }),
           {
             status: 429, headers: {
-              'Content-Type': 'application/json''X-RateLimit-Limit': maxRequests.toString()'X-RateLimit-Remaining': result.remaining.toString()'X-RateLimit-Reset': result.resetTime.toString()'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString()
+              'Content-Type': '',X-RateLimit-Limit': maxRequests.toString()'X-RateLimit-Remaining': result.remaining.toString()'X-RateLimit-Reset': result.resetTime.toString()'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString()
             }
           }
         );

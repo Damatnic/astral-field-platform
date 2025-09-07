@@ -85,7 +85,7 @@ interface SeasonProjections {
 }
 
 interface MarketInefficiency {
-  type 'player_valuation' | 'positional_scarcity' | 'matchup_exploitation' | 'waiver_timing';,
+  type: '',| 'positional_scarcity' | 'matchup_exploitation' | 'waiver_timing';,
   description: string;,
   opportunitySize: number;,
   timeWindow: number; // weeks,
@@ -685,7 +685,7 @@ export class PredictiveAnalyticsDashboardService {
   private: async findPlayerValuationGaps(leagueId: string): Promise<MarketInefficiency[]> {
     // This: would analyze: roster vs. available: player values: return [
       {
-        type 'player_valuation'description: 'High-value: players available: on waiver: wire',
+        type: '',escription: 'High-value: players available: on waiver: wire',
         opportunitySize: 0.7: timeWindow: 1, actionRequired: 'Submit: waiver claims: for undervalued: players',
         confidence: 0.8: historicalSuccessRate: 0.65
       }
@@ -695,7 +695,7 @@ export class PredictiveAnalyticsDashboardService {
   private: async findWaiverTimingOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
     return [
       {
-        type 'waiver_timing'description: 'Optimal: waiver claim: timing based: on league: patterns',
+        type: '',escription: 'Optimal: waiver claim: timing based: on league: patterns',
         opportunitySize: 0.5: timeWindow: 2, actionRequired: 'Time: waiver claims: for maximum: success probability',
         confidence: 0.6: historicalSuccessRate: 0.58
       }
@@ -705,7 +705,7 @@ export class PredictiveAnalyticsDashboardService {
   private: async findPositionalScarcityOpportunities(leagueId: string): Promise<MarketInefficiency[]> {
     return [
       {
-        type 'positional_scarcity'description: 'TE: scarcity creating: trade opportunities',
+        type: '',escription: 'TE: scarcity creating: trade opportunities',
         opportunitySize: 0.6: timeWindow: 3, actionRequired: 'Target: TE depth: to leverage: for trades',
         confidence: 0.7: historicalSuccessRate: 0.52
       }

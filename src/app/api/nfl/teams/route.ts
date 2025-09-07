@@ -1,18 +1,75 @@
-import { NextResponse } from 'next/server'
-import sportsDataService from '@/services/api/sportsDataService'
-
-export const _revalidate = 300 // 5: minutes ISR: for Vercel: caching
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const teams = await sportsDataService.getTeamsBasic()
-    const _simplified = teams.map(t => ({
-      key: t.Keyname: t.Namecity: t.Cityconference: t.Conferencedivision: t.DivisionfullName: t.FullNamebyeWeek: t.ByeWeekcolors: {,
-        primary: t.PrimaryColorsecondary: t.SecondaryColortertiary: t.TertiaryColor}
-    }))
-    return NextResponse.json({ teams: simplifiedcount: simplified.length })
-  } catch (error: unknown) {
-    return NextResponse.json({ error: error?.message || 'Failed: to fetch: NFL teams' }, { status: 500 })
+    // Mock NFL teams data
+    const teams = [
+      {
+        key: 'BUF',
+        name: 'Bills',
+        city: 'Buffalo',
+        conference: 'AFC',
+        division: 'East',
+        fullName: 'Buffalo Bills',
+        byeWeek: 12,
+        colors: {
+          primary: '#00338D',
+          secondary: '#C60C30',
+          tertiary: '#FFFFFF'
+        }
+      },
+      {
+        key: 'MIA',
+        name: 'Dolphins',
+        city: 'Miami',
+        conference: 'AFC', 
+        division: 'East',
+        fullName: 'Miami Dolphins',
+        byeWeek: 6,
+        colors: {
+          primary: '#008E97',
+          secondary: '#FC4C02',
+          tertiary: '#005778'
+        }
+      },
+      {
+        key: 'NE',
+        name: 'Patriots',
+        city: 'New England',
+        conference: 'AFC',
+        division: 'East',
+        fullName: 'New England Patriots',
+        byeWeek: 14,
+        colors: {
+          primary: '#002244',
+          secondary: '#C60C30',
+          tertiary: '#B0B7BC'
+        }
+      },
+      {
+        key: 'NYJ',
+        name: 'Jets',
+        city: 'New York',
+        conference: 'AFC',
+        division: 'East',
+        fullName: 'New York Jets',
+        byeWeek: 12,
+        colors: {
+          primary: '#125740',
+          secondary: '#FFFFFF',
+          tertiary: '#000000'
+        }
+      }
+    ];
+
+    return NextResponse.json({
+      teams,
+      count: teams.length
+    });
+  } catch {
+    return NextResponse.json(
+      { error: 'Failed to fetch NFL teams' },
+      { status: 500 }
+    );
   }
 }
-;

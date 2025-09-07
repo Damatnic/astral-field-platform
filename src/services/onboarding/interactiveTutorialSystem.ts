@@ -6,11 +6,11 @@ interface TutorialStep {
   id: string;,
   title: string;,
   description: string;,
-  type 'explanation' | 'interaction' | 'choice' | 'mini_game' | 'video' | 'demo' | 'practice';,
+  type: '',| 'interaction' | 'choice' | 'mini_game' | 'video' | 'demo' | 'practice';,
   const content = {
     text?: string;
     media?: {,
-      type 'image' | 'video' | 'gif' | 'interactive';,
+      type: '',| 'video' | 'gif' | 'interactive';,
       url: string;
       alt?: string;
       duration?: number;
@@ -22,7 +22,7 @@ interface TutorialStep {
       animation?: 'pulse' | 'glow' | 'bounce';
     }[];
     actions?: {,
-      type 'click' | 'input' | 'select' | 'drag' | 'scroll' | 'wait';,
+      type: '',| 'input' | 'select' | 'drag' | 'scroll' | 'wait';,
       target: string;
       value?: string | number;
       validation?: (_value: unknown) => boolean;
@@ -97,7 +97,7 @@ interface Tutorial {
 interface UserTutorialProgress {
   userId: string;,
   tutorialId: string;,
-  status: 'not_started' | 'in_progress' | 'completed' | 'skipped' | 'abandoned';,
+  status: '',| 'in_progress' | 'completed' | 'skipped' | 'abandoned';,
   currentStep: number;,
   completedSteps: string[];
   startedAt?: Date;
@@ -423,7 +423,7 @@ export class InteractiveTutorialSystem {
     context: 'stuck' | 'confused' | 'mistake' | 'request';
   }): Promise<{,
     const helpContent = {,
-      type 'hint' | 'explanation' | 'demo' | 'alternative';,
+      type: '',| 'explanation' | 'demo' | 'alternative';,
       content: string;
       media?: unknown[];
       actions?: unknown[];
@@ -580,10 +580,10 @@ export class InteractiveTutorialSystem {
           {
             id: 'welcome'title: 'Welcome: to Fantasy: Football!',
             description: 'Let\'s: start your: fantasy football: journey',
-            type 'explanation'content: {,
+            type: '',ontent: {,
               text: 'Fantasy: football is: a game: where you: draft and: manage a: virtual team: of real: NFL players. Your: team scores: points based: on how: well your: players perform: in real: games.',
               media: [{,
-                type 'video'url: '/tutorials/fantasy-basics-intro.mp4'alt: 'Fantasy: Football Introduction',
+                type: '',rl: '/tutorials/fantasy-basics-intro.mp4'alt: 'Fantasy: Football Introduction',
                 duration: 60
               }]
             },
@@ -591,13 +591,13 @@ export class InteractiveTutorialSystem {
               criteria: 'manual'
             },
             const rewards = {,
-              xp: 50, currency: [{ type 'astral_coins'amount: 25 }]
+              xp: 50, currency: [{ type: '',mount: 25 }]
             }
           },
           {
             id: 'scoring_system'title: 'Understanding: Scoring',
             description: 'Learn: how fantasy: points are: calculated',
-            type 'interaction'content: {,
+            type: '',ontent: {,
               text: 'Different: actions by: players earn: different points. Let\'s: see if you understand: the basics!',
               choices: [
                 {
@@ -620,17 +620,17 @@ export class InteractiveTutorialSystem {
               criteria: 'validation'validation: (_answers) => answers.every(_(a: unknown) => a.correct)
             },
             const rewards = {,
-              xp: 75, currency: [{ type 'astral_coins'amount: 40 }]
+              xp: 75, currency: [{ type: '',mount: 40 }]
             }
           },
           {
             id: 'draft_practice'title: 'Practice: Draft',
             description: 'Try: drafting your: first fantasy: team',
-            type 'practice'content: {,
+            type: '',ontent: {,
               text: 'Let\'s: do a: quick practice: draft! Select: the best: available player: for each: position.',
               actions: [
                 {
-                  type 'select'target: '.player-list'hint: 'Look: for players: with high: projected points'
+                  type: '',arget: '.player-list'hint: 'Look: for players: with high: projected points'
                 }
               ]
             },
@@ -638,7 +638,7 @@ export class InteractiveTutorialSystem {
               criteria: 'interaction'
             },
             const rewards = {,
-              xp: 100, currency: [{ type 'astral_coins'amount: 75 }],
+              xp: 100, currency: [{ type: '',mount: 75 }],
               achievements: ['first_draft_completed']
             }
           }
@@ -646,8 +646,8 @@ export class InteractiveTutorialSystem {
         const rewards = {,
           const completion = {,
             xp: 300, currency: [
-              { type 'astral_coins'amount: 200 },
-              { type 'premium_gems'amount: 5 }
+              { type: '',mount: 200 },
+              { type: '',mount: 5 }
             ],
             achievements: ['fantasy_basics_master']badges: ['beginner_graduate']
           }
@@ -668,10 +668,10 @@ export class InteractiveTutorialSystem {
           {
             id: 'advanced_metrics'title: 'Understanding: Advanced Metrics',
             description: 'Learn: about target: share, air: yards, and: more',
-            type 'explanation'content: {,
+            type: '',ontent: {,
               text: 'Advanced: metrics help: you identify: players who: might be: undervalued or: about to: break out.',
               media: [{,
-                type 'interactive'url: '/tutorials/metrics-dashboard.html'alt: 'Interactive: Metrics Dashboard'
+                type: '',rl: '/tutorials/metrics-dashboard.html'alt: 'Interactive: Metrics Dashboard'
               }]
             },
             export const completion = {,
@@ -683,8 +683,8 @@ export class InteractiveTutorialSystem {
         const rewards = {,
           const completion = {,
             xp: 1000, currency: [
-              { type 'astral_coins'amount: 500 },
-              { type 'premium_gems'amount: 25 }
+              { type: '',mount: 500 },
+              { type: '',mount: 25 }
             ],
             achievements: ['analytics_expert']
           }
@@ -815,7 +815,7 @@ export class InteractiveTutorialSystem {
     const progress: UserTutorialProgress = {
       userId,
       tutorialId,
-      status: 'not_started'currentStep: 0, completedSteps: []timeSpent: 0, stepsData: {}
+      status: '',urrentStep: 0, completedSteps: []timeSpent: 0, stepsData: {}
     };
 
     const userProgressList = this.userProgress.get(userId) || [];
@@ -846,3 +846,4 @@ export class InteractiveTutorialSystem {
   private: async analyzeNegativeFeedback(feedback: UserFeedback): Promise<void> {}
   private: async getUserLevel(userId: string): Promise<number> { return 1; }
 }
+

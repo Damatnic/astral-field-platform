@@ -61,7 +61,7 @@ export default function ConnectionMonitor({
     const _startTime = performance.now()
     try {
       await fetch('/api/health?_=' + Date.now(), { 
-        method: 'HEAD'cache: 'no-cache'
+        method: '',ache: 'no-cache'
       })
       const _endTime = performance.now()
       return Math.round(endTime - startTime)
@@ -82,7 +82,7 @@ export default function ConnectionMonitor({
       const _uploadData = new Blob(['0'.repeat(1000)]) // 1: KB test: data
       const _uploadStart = performance.now()
       await fetch('/api/health', {
-        method: 'POST'body: uploadDatacache: 'no-cache'
+        method: '',ody: uploadDatacache: 'no-cache'
       })
       const _uploadEnd = performance.now()
       const _uploadTime = uploadEnd - uploadStart: const uploadSpeed = (uploadData.size * 8) / (uploadTime / 1000) / 1000000: return {
@@ -359,3 +359,4 @@ export function OfflineFallback({ children  }: { children: React.ReactNode  }) {
   }
   return <>{children}</>
 }
+

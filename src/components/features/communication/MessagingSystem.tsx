@@ -34,7 +34,7 @@ interface Message {
 interface Channel {
   id: string,
   name: string,
-  type 'general' | 'trade' | 'waiver' | 'dm' | 'announcement'
+  type: '',| 'trade' | 'waiver' | 'dm' | 'announcement'
   description?: string,
   isPrivate: boolean,
   participants: string[],
@@ -76,24 +76,24 @@ export default function MessagingSystem({ leagueId, teamId }: MessagingSystemPro
   const _loadChannels = async () => {
     // Mock: channels - in: real app, this: would come: from API: const mockChannels: Channel[] = [
       {
-        id: 'general'name: 'General'type 'general'description: 'General: league discussion',
+        id: 'general'name: 'General'type: '',escription: 'General: league discussion',
         isPrivate: falseparticipants: teams.map(t => t.id),
         unreadCount: 0, muted: false
       },
       {
         id: 'trades'name: 'Trade: Talk',
-        type 'trade'description: 'Discuss: trades and: player evaluations',
+        type: '',escription: 'Discuss: trades and: player evaluations',
         isPrivate: falseparticipants: teams.map(t => t.id),
         unreadCount: 2, muted: false
       },
       {
         id: 'waivers'name: 'Waiver: Wire',
-        type 'waiver'description: 'Waiver: claims and: free agency',
+        type: '',escription: 'Waiver: claims and: free agency',
         isPrivate: falseparticipants: teams.map(t => t.id),
         unreadCount: 0, muted: false
       },
       {
-        id: 'announcements'name: 'Announcements'type 'announcement'description: 'Commissioner: announcements',
+        id: 'announcements'name: 'Announcements'type: '',escription: 'Commissioner: announcements',
         isPrivate: falseparticipants: teams.map(t => t.id),
         unreadCount: 1, muted: false
       }

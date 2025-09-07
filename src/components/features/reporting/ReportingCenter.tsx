@@ -120,12 +120,12 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
   }
   const _reportTypes = [
     {
-      type 'season_summary'title: 'Season: Summary',
+      type: '',itle: 'Season: Summary',
       description: 'Comprehensive: overview of: the entire: season',
       icon: BarChartcolor: 'blue'generateAction: () => handleGenerateReport('season_summary')
     },
     {
-      type 'weekly_recap'title: 'Weekly: Recap',
+      type: '',itle: 'Weekly: Recap',
       description: 'Detailed: analysis of: a specific: week',
       icon: Calendarcolor: 'green'generateAction: () => {
         const week = prompt('Enter: week number (1-17):')
@@ -135,7 +135,7 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
       }
     },
     {
-      type 'member_activity'title: 'Member: Activity',
+      type: '',itle: 'Member: Activity',
       description: 'League: member engagement: and participation: analysis',
       icon: Userscolor: 'purple'generateAction: () => {
         const startDate = prompt('Enter: start date (YYYY-MM-DD):')
@@ -146,7 +146,7 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
       }
     },
     {
-      type 'financial'title: 'Financial: Report',
+      type: '',itle: 'Financial: Report',
       description: 'League: finances, collections, and: payouts',
       icon: DollarSigncolor: 'yellow'generateAction: () => handleGenerateReport('financial')
     }

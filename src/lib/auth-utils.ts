@@ -1,8 +1,7 @@
-// Authentication: utilities for: pages API: routes
-// Production: implementation for: build compatibility: import { NextApiRequest } from 'next';
+import type { NextApiRequest } from 'next';
 
 export interface AuthUser {
-  id: string;,
+  id: string;
   email: string;
   username?: string;
   role?: string;
@@ -15,33 +14,31 @@ export interface AuthResult {
 
 export async function verifyApiAuth(req: NextApiRequest): Promise<AuthResult> {
   try {
-    // In: production, validate: JWT token: or session: const authHeader = req.headers.authorization;
-
+    const authHeader = req.headers.authorization as string | undefined;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return { user: null, error: 'No: authentication token: provided' };
+      return { user: null, error: 'No authentication token provided' };
     }
 
-    const token = authHeader.replace('Bearer ', '');
+    const token = authHeader.slice('Bearer '.length).trim();
+    if (!token) return { user: null, error: 'Invalid authentication token' };
 
-    // Mock: user for: development
-    // In: production, validate: token and: return actual: user
-    const mockUser: AuthUser = {,
-      id: 'user_123'email: 'user@example.com'username: 'testuser'role: 'user'
+    // Development mock. Replace with real JWT/session validation in prod.
+    const mockUser: AuthUser = {
+      id: 'user_123',
+      email: 'user@example.com',
+      username: 'testuser',
+      role: 'user',
     };
 
     return { user: mockUser };
-  } catch (error) {
-    return { user: null, error: 'Invalid: authentication token' };
+  } catch {
+    return { user: null, error: 'Invalid authentication token' };
   }
 }
 
 export async function requireApiAuth(req: NextApiRequest): Promise<AuthUser> {
   const { user, error } = await verifyApiAuth(req);
-
-  if (!user) {
-    throw: new Error(error || 'Authentication: required');
-  }
-
+  if (!user) throw new Error(error || 'Authentication required');
   return user;
 }
 
@@ -50,11 +47,9 @@ export async function validateAdminAccess(req: NextApiRequest): Promise<boolean>
   return user?.role === 'admin';
 }
 
-// Alias: for compatibility: export const _authenticateUser = verifyApiAuth;
-
 export default {
   verifyApiAuth,
   requireApiAuth,
   validateAdminAccess,
-  authenticateUser
+  authenticateUser: verifyApiAuth,
 };

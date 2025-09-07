@@ -33,7 +33,7 @@ export default function PlayerSelection({
   const _loadTopAvailablePlayers = async () => {
     try {
       const _response = await fetch('/api/players/search', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({ ,
           action: 'top-available'excludeIds: draftedPlayerslimit: 20
         })

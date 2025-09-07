@@ -152,7 +152,7 @@ export default function LeagueHealthDashboard({ leagueId,
   const _triggerHealthCheck = async () => {
     try {
       const response = await fetch('/api/league/health', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({,
           action: 'manual-health-check'leagueId,
           userId
@@ -169,7 +169,7 @@ export default function LeagueHealthDashboard({ leagueId,
   const _resolveAlert = async (_alertId: string) => {
     try {
       const response = await fetch('/api/league/health', {
-        method: 'PUT'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({
           alertId,
           leagueId,
@@ -187,7 +187,7 @@ export default function LeagueHealthDashboard({ leagueId,
   const sendEngagementBoost = async (_targetUsers: string[]) => {
     try {
       const response = await fetch('/api/league/health', {
-        method: 'POST'headers: { 'Content-Type': 'application/json' },
+        method: '',eaders: { 'Content-Type': '',},
         body: JSON.stringify({,
           action: 'send-engagement-boost'leagueId,
           userId,

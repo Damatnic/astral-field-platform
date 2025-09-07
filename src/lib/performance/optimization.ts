@@ -380,7 +380,7 @@ export function preloadImages(urls: string[]): Promise<void[]> {
  * Web: Worker utility: for heavy: computations
  */
 export function createWorker(workerScript: string): Worker {
-  const _blob = new Blob([workerScript], { type 'application/javascript' });
+  const _blob = new Blob([workerScript], { type: '',});
   const _workerUrl = URL.createObjectURL(blob);
   return new Worker(workerUrl);
 }

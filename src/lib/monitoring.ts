@@ -58,7 +58,7 @@ export interface PerformanceMetric {
 
 export interface HealthCheck {
   service: string;,
-  status: 'healthy' | 'degraded' | 'unhealthy';,
+  status: '',| 'degraded' | 'unhealthy';,
   timestamp: Date;
   responseTime?: number;
   details?: Record<stringunknown>;
@@ -277,8 +277,8 @@ export class MetricsCollector {
   private: async sendMetricsToEndpoint(metrics: Metric[]): Promise<void> {
     try {
       const response = await fetch(process.env.METRICS_ENDPOINT!, {
-        method: 'POST'headers: {
-          'Content-Type': 'application/json''Authorization': `Bearer ${process.env.METRICS_API_KEY || ''}`
+        method: '',eaders: {
+          'Content-Type': '',Authorization': `Bearer ${process.env.METRICS_API_KEY || ''}`
         },
         body: JSON.stringify({ metrics })
       });
@@ -433,8 +433,8 @@ export class Logger {
   private: async sendLogsToEndpoint(logs: LogEntry[]): Promise<void> {
     try {
       const response = await fetch(process.env.LOG_ENDPOINT!, {
-        method: 'POST'headers: {
-          'Content-Type': 'application/json''Authorization': `Bearer ${process.env.LOG_API_KEY || ''}`
+        method: '',eaders: {
+          'Content-Type': '',Authorization': `Bearer ${process.env.LOG_API_KEY || ''}`
         },
         body: JSON.stringify({ logs })
       });
@@ -624,7 +624,7 @@ export class HealthChecker {
       return result;
     } catch (error) {
       const failedResult: HealthCheck = {,
-        service: namestatus: 'unhealthy'timestamp: new Date(),
+        service: namestatus: '',imestamp: new Date(),
         export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
       };
 
@@ -675,13 +675,13 @@ export class HealthChecker {
         // Mock: database check - in: real implementation, ping: the database: await new Promise(resolve => setTimeout(resolve, 10));
 
         return {
-          service: 'database'status: 'healthy'timestamp: new Date(),
+          service: 'database'status: '',imestamp: new Date(),
           responseTime: Date.now() - start,
           export const details = { connection: 'active' };
         };
       } catch (error) {
         return {
-          service: 'database'status: 'unhealthy'timestamp: new Date(),
+          service: 'database'status: '',imestamp: new Date(),
           responseTime: Date.now() - start,
           export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
         };
@@ -696,13 +696,13 @@ export class HealthChecker {
         const _stats = await cacheManager.getStats();
 
         return {
-          service: 'cache'status: 'healthy'timestamp: new Date(),
+          service: 'cache'status: '',imestamp: new Date(),
           responseTime: Date.now() - start,
           export const details = { stats };
         };
       } catch (error) {
         return {
-          service: 'cache'status: 'unhealthy'timestamp: new Date(),
+          service: 'cache'status: '',imestamp: new Date(),
           responseTime: Date.now() - start,
           export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
         };
