@@ -5,7 +5,7 @@ export async function POST() {
   try {
     console.log('🏆 Creating 2025 Astral Field Championship League...');
     
-    let leagueId: string;
+    let leagueId: string = '';
     let nicholasUserId: string;
     
     await database.transaction(async (client) => {

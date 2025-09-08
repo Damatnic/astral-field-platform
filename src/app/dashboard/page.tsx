@@ -82,7 +82,7 @@ export default function DashboardPage() {
             name: 'Astral Field Championship League',
             season: 2024,
             team_count: 10,
-            teams: getMockStandings()
+            teams: get2025Standings()
           });
         }
       } catch (error) {

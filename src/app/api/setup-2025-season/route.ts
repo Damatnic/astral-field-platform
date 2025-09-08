@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Season2025Setup } from '@/services/setup/season2025Setup';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,11 +15,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Initialize the setup service
-    const setupService = new Season2025Setup();
-    
-    // Run the complete setup
-    const result = await setupService.setupComplete2025Season();
+    // Call the create-2025-league endpoint internally
+    const createLeagueResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3001'}/api/create-2025-league`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await createLeagueResponse.json();
 
     if (result.success) {
       console.log('✅ 2025 NFL season setup completed successfully');
@@ -30,11 +31,11 @@ export async function POST(request: NextRequest) {
         actions: [
           '✅ Cleared existing mock data',
           '✅ Created 2025 Astral Field Championship League',
-          '✅ Populated all 32 NFL teams and 200+ players',
+          '✅ Populated all 32 NFL teams and 40+ players',
           '✅ Created 10 fantasy teams with real owners',
           '✅ Conducted strategic snake draft (Nicholas got great picks!)',
           '✅ Generated realistic Week 1 results',
-          '✅ Updated league standings (Nicholas is winning!)',
+          '✅ Updated league standings (Nicholas is leading!)',
           '✅ Set league to Week 2 of 2025 season'
         ]
       });
