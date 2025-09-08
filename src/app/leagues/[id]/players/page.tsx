@@ -128,7 +128,7 @@ export default function PlayersPage({ params }: PlayersPageProps) {
         sortBy,
         sortOrder,
         page: currentPage.toString(),
-        limit: '20'
+        limit: '50'
       });
 
       const response = await fetch(`/api/leagues/${leagueId}/players?${queryParams}`);
@@ -432,7 +432,11 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     }}
                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
-                    {playersData?.filters.availabilityOptions.map(option => (
+                    {(playersData?.filters.availabilityOptions || [
+                      { value: 'all', label: 'All Players' },
+                      { value: 'available', label: 'Available' },
+                      { value: 'owned', label: 'Owned' }
+                    ]).map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
@@ -453,7 +457,7 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="all">All Positions</option>
-                    {playersData?.filters.positions.map(position => (
+                    {(playersData?.filters.positions || ['QB', 'RB', 'WR', 'TE', 'K', 'DST']).map(position => (
                       <option key={position} value={position}>{position}</option>
                     ))}
                   </select>
@@ -472,7 +476,11 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="all">All Teams</option>
-                    {playersData?.filters.teams.map(team => (
+                    {(playersData?.filters.teams || [
+                      'ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB',
+                      'HOU', 'IND', 'JAX', 'KC', 'LV', 'LAC', 'LAR', 'MIA', 'MIN', 'NE', 'NO', 'NYG',
+                      'NYJ', 'PHI', 'PIT', 'SF', 'SEA', 'TB', 'TEN', 'WAS'
+                    ]).map(team => (
                       <option key={team} value={team}>{team}</option>
                     ))}
                   </select>

@@ -21,10 +21,14 @@ interface Player {
   position: string;
   team: string;
   roster_position: string;
-  projected_points: number;
-  season_points: number;
-  injury_status: string;
-  bye_week: number;
+  projected_points?: number;
+  season_points?: number;
+  injury_status?: string;
+  bye_week?: number;
+  projections?: {
+    points?: number;
+    week?: number;
+  };
 }
 
 interface Team {
@@ -128,7 +132,7 @@ export default function RosterPage({ params }: RosterPageProps) {
             </span>
             {player && (
               <div className="flex items-center space-x-1">
-                {getInjuryStatusIcon(player.injury_status)}
+                {getInjuryStatusIcon(player.injury_status || '')}
                 <button className="text-gray-400 hover:text-gray-600">
                   <Settings className="h-4 w-4" />
                 </button>
@@ -146,10 +150,10 @@ export default function RosterPage({ params }: RosterPageProps) {
                 <span className={`px-1.5 py-0.5 rounded text-xs ${getPositionColor(player.position)}`}>
                   {player.position}
                 </span>
-                <span className="text-gray-600">{player.projected_points.toFixed(1)} pts</span>
+                <span className="text-gray-600">{(player.projected_points || player.projections?.points || 0).toFixed(1)} pts</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-                <span>Season: {player.season_points.toFixed(1)}</span>
+                <span>Season: {(player.season_points || 0).toFixed(1)}</span>
                 <span>Bye: {player.bye_week}</span>
               </div>
             </div>
@@ -260,7 +264,7 @@ export default function RosterPage({ params }: RosterPageProps) {
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {rosterData.roster
                     .filter(p => p.roster_position !== 'BENCH')
-                    .reduce((sum, p) => sum + p.projected_points, 0)
+                    .reduce((sum, p) => sum + (p.projected_points || 0), 0)
                     .toFixed(1)}
                 </p>
               </div>
@@ -273,7 +277,7 @@ export default function RosterPage({ params }: RosterPageProps) {
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Season Points</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {rosterData.roster.reduce((sum, p) => sum + p.season_points, 0).toFixed(1)}
+                  {rosterData.roster.reduce((sum, p) => sum + (p.season_points || 0), 0).toFixed(1)}
                 </p>
               </div>
             </div>
@@ -371,7 +375,7 @@ export default function RosterPage({ params }: RosterPageProps) {
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {getInjuryStatusIcon(player.injury_status)}
+                      {getInjuryStatusIcon(player.injury_status || '')}
                       <button className="text-gray-400 hover:text-red-600">
                         <Minus className="h-4 w-4" />
                       </button>
@@ -380,10 +384,10 @@ export default function RosterPage({ params }: RosterPageProps) {
                   
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">
-                      Projected: {player.projected_points.toFixed(1)}
+                      Projected: {(player.projected_points || 0).toFixed(1)}
                     </span>
                     <span className="text-gray-600 dark:text-gray-400">
-                      Season: {player.season_points.toFixed(1)}
+                      Season: {(player.season_points || 0).toFixed(1)}
                     </span>
                   </div>
 

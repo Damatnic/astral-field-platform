@@ -85,6 +85,7 @@ export async function POST() {
       await client.query(`
         CREATE TABLE IF NOT EXISTS rosters (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          league_id UUID REFERENCES leagues(id) ON DELETE CASCADE NOT NULL,
           team_id UUID REFERENCES teams(id) ON DELETE CASCADE NOT NULL,
           player_id TEXT REFERENCES players(id) NOT NULL,
           position_slot TEXT NOT NULL,

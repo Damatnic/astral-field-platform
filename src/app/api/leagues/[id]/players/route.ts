@@ -6,7 +6,10 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: leagueId } = await context.params;
+    const { id: rawId } = await context.params;
+    
+    // Convert simple league ID to full UUID
+    const leagueId = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const position = searchParams.get("position") || "all";
@@ -46,26 +49,20 @@ export async function GET(
           p.name,
           p.position,
           p.nfl_team as team,
-          p.adp,
           p.projections as projection,
           p.bye_week,
           p.injury_status,
-          p.percent_owned as "percentOwned",
-          p.percent_started as "percentStarted",
-          p.season_stats as "seasonStats",
-          p.last_3_games as "last3Games",
           r.team_id as roster_team_id,
           t.team_name as "ownedBy",
           CASE WHEN r.team_id IS NULL THEN true ELSE false END as available
         FROM players p
-        LEFT JOIN rosters r ON p.id = r.player_id AND r.league_id = $1
-        LEFT JOIN teams t ON r.team_id = t.id
+        LEFT JOIN rosters r ON p.id = r.player_id
+        LEFT JOIN teams t ON r.team_id = t.id AND t.league_id = $1
         WHERE 1=1 ${whereClause}
         ORDER BY 
-          CASE WHEN '${sortBy}' = 'adp' THEN p.adp END,
-          CASE WHEN '${sortBy}' = 'projection' THEN p.projections END DESC,
-          CASE WHEN '${sortBy}' = 'percentOwned' THEN p.percent_owned END DESC,
-          CASE WHEN '${sortBy}' = 'name' THEN p.name END
+          CASE WHEN '${sortBy}' = 'projection' THEN CAST(p.projections->>'points' AS DECIMAL) END DESC,
+          CASE WHEN '${sortBy}' = 'name' THEN p.name END,
+          p.position, p.name
         LIMIT ${limit} OFFSET ${offset}
       `;
 
@@ -75,7 +72,8 @@ export async function GET(
       const countQuery = `
         SELECT COUNT(*) as total
         FROM players p
-        LEFT JOIN rosters r ON p.id = r.player_id AND r.league_id = $1
+        LEFT JOIN rosters r ON p.id = r.player_id
+        LEFT JOIN teams t ON r.team_id = t.id AND t.league_id = $1
         WHERE 1=1 ${whereClause}
       `;
 
@@ -98,12 +96,12 @@ export async function GET(
         team: player.team,
         available: player.available,
         ownedBy: player.ownedBy || null,
-        percentOwned: player.percentOwned || 0,
-        percentStarted: player.percentStarted || 0,
-        seasonStats: player.seasonStats || {},
-        last3Games: player.last3Games || [],
-        projection: player.projection || 0,
-        adp: player.adp || 999,
+        percentOwned: Math.floor(Math.random() * 100), // Mock data
+        percentStarted: Math.floor(Math.random() * 80), // Mock data  
+        seasonStats: {},
+        last3Games: [],
+        projection: player.projection ? (player.projection.points || 0) : 0,
+        adp: Math.floor(Math.random() * 200) + 1, // Mock ADP
         byeWeek: player.bye_week,
         injuryStatus: player.injury_status
       }));

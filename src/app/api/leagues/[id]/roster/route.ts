@@ -6,7 +6,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
+    const { id: rawId } = await params;
+    
+    // Convert simple league ID to full UUID
+    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
 
     // Get team and league data using database transaction
     const result = await database.transaction(async (client) => {
@@ -312,7 +315,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params;
+    const { id: rawId } = await params;
+    
+    // Convert simple league ID to full UUID
+    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
     const body = await request.json();
     const { action, playerId, dropPlayerId, position } = body;
 
