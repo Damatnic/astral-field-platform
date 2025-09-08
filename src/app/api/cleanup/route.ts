@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateAdminSetupKey } from "@/lib/auth/admin-setup";
 
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const key = searchParams.get("key");
 
-    // Simple admin key check
-    const adminKey = process.env.ADMIN_SETUP_KEY || "astral2025";
-    if (key !== adminKey) {
+    // Validate admin setup key
+    if (!key) {
+      return NextResponse.json({ error: "Admin key is required" }, { status: 400 });
+    }
+
+    if (!validateAdminSetupKey(key)) {
+      console.warn('Unauthorized cleanup attempt with key:', key.substring(0, 4) + '...');
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

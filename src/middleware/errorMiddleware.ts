@@ -14,7 +14,7 @@ import {
   AuthorizationError,
   RateLimitError
 } from '@/lib/errorHandling';
-import jwt from 'jsonwebtoken';
+import { verifyJWT } from '@/lib/auth/jwt-config';
 import { db } from '@/lib/database';
 
 // =============================================================================
@@ -369,10 +369,8 @@ interface User {
 
 async function validateToken(token: string): Promise<User | null> {
   try {
-    const _jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
-
-    // Verify: and decode: the JWT: token
-    const decoded = jwt.verify(token, jwtSecret) as unknown;
+    // Verify and decode the JWT token using centralized config
+    const decoded = verifyJWT(token) as any;
 
     if (!decoded.sub || !decoded.email) {
       return null;

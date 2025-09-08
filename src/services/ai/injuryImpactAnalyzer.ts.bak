@@ -1,0 +1,476 @@
+/**
+ * Real-Time Injury Impact Analysis and Replacement Recommendations
+ * Advanced system for analyzing injury impacts and providing immediate replacement suggestions
+ */
+
+import { database } from '../../lib/database';
+import { webSocketManager } from '../../lib/websocket/server';
+import { aiPredictionEngine, type InjuryImpactAnalysis } from './predictionEngine';
+import { breakoutIdentifier } from './breakoutIdentifier';
+
+export interface InjuryAlert {
+  alertId: string;
+  playerId: string;
+  playerName: string;
+  position: string;
+  team: string;
+  injuryType: string;
+  severity: 'minor' | 'moderate' | 'major' | 'season_ending';
+  reportedAt: Date;
+  estimatedReturnWeek: number;
+  fantasyImpact: {
+    immediateImpact: number; // 0-1 scale
+    seasonLongImpact: number;
+    replacementValue: number;
+    marketReaction: 'minimal' | 'moderate' | 'significant' | 'severe';
+  };
+  affectedTeams: Array<{
+    teamId: string;
+    ownershipType: 'starter' | 'bench' | 'flex';
+    urgency: 'low' | 'medium' | 'high' | 'critical';
+  }>;
+  replacementRecommendations: ReplacementRecommendation[];
+}
+
+export interface ReplacementRecommendation {
+  playerId: string;
+  playerName: string;
+  position: string;
+  team: string;
+  replacementScore: number; // 0-100 overall replacement fit
+  availability: {
+    waiverWire: boolean;
+    avgFAAB: number;
+    ownershipPercentage: number;
+    claimDifficulty: 'easy' | 'moderate' | 'difficult' | 'nearly_impossible';
+  };
+  projection: {
+    weeklyPoints: number;
+    remainingSeasonPoints: number;
+    consistency: number;
+    upside: number;
+  };
+  contextualFit: {
+    teamNeedMatch: number;
+    scheduleAlign: number;
+    rosterSynergy: number;
+    playoffValue: number;
+  };
+  reasoning: string[];
+  urgencyLevel: 'immediate' | 'this_week' | 'monitor' | 'long_term';
+}
+
+export interface InjuryTrendAnalysis {
+  position: string;
+  injuryType: string;
+  historicalData: {
+    avgRecoveryTime: number;
+    successRate: number; // percentage who return to form
+    reinjuryRate: number;
+    seasonEndingRate: number;
+  };
+  similarCases: Array<{
+    playerId: string;
+    playerName: string;
+    season: number;
+    outcome: 'full_recovery' | 'diminished' | 'season_ended';
+    timeToReturn: number;
+  }>;
+  riskFactors: string[];
+  recommendations: string[];
+}
+
+export interface ReplacementStrategy {
+  leagueId: string;
+  teamId: string;
+  injuredPlayer: string;
+  strategy: 'immediate_replacement' | 'streaming' | 'long_term_stash' | 'committee_approach';
+  prioritizedTargets: ReplacementRecommendation[];
+  budgetAllocation: {
+    recommendedFAAB: number;
+    maxBid: number;
+    fallbackOptions: Array<{
+      playerId: string;
+      bidRange: number[];
+    }>;
+  };
+  timeline: {
+    immediateActions: string[];
+    weeklyMonitoring: string[];
+    futureConsiderations: string[];
+  };
+}
+
+class InjuryImpactAnalyzer {
+  private injuryAlerts = new Map<string, InjuryAlert>();
+  private trendCache = new Map<string, InjuryTrendAnalysis>();
+  private readonly CACHE_TTL = 3600000; // 1 hour
+  private readonly SEVERITY_THRESHOLDS = {
+    minor: 0.2,
+    moderate: 0.5,
+    major: 0.8,
+    season_ending: 1.0
+  };
+
+  // Process new injury report
+  async processInjuryReport(
+    playerId: string,
+    injuryType: string,
+    initialSeverity: 'questionable' | 'doubtful' | 'out' | 'ir',
+    source: 'official' | 'beat_reporter' | 'team_report' | 'insider'
+  ): Promise<InjuryAlert> {
+    try {
+      console.log(`🚨 Processing injury report for player ${playerId}: ${injuryType}`);
+
+      // Get player information
+      const playerData = await this.getPlayerData(playerId);
+      
+      // Analyze injury severity and timeline
+      const injuryAnalysis = await this.analyzeInjurySeverity(
+        playerId,
+        injuryType,
+        initialSeverity,
+        playerData
+      );
+
+      // Calculate fantasy impact
+      const fantasyImpact = await this.calculateFantasyImpact(
+        playerData,
+        injuryAnalysis
+      );
+
+      // Identify affected fantasy teams
+      const affectedTeams = await this.identifyAffectedTeams(playerId);
+
+      // Generate replacement recommendations
+      const replacementRecommendations = await this.generateReplacementRecommendations(
+        playerData,
+        injuryAnalysis,
+        affectedTeams
+      );
+
+      // Create injury alert
+      const alert: InjuryAlert = {
+        alertId: `injury_${playerId}_${Date.now()}`,
+        playerId,
+        playerName: `${playerData.first_name} ${playerData.last_name}`,
+        position: playerData.position,
+        team: playerData.team_abbr || 'FA',
+        injuryType,
+        severity: this.mapSeverity(injuryAnalysis.fantasyImpact),
+        reportedAt: new Date(),
+        estimatedReturnWeek: injuryAnalysis.expectedReturnWeek,
+        fantasyImpact,
+        affectedTeams,
+        replacementRecommendations
+      };
+
+      // Store alert
+      this.injuryAlerts.set(alert.alertId, alert);
+
+      // Broadcast to affected teams
+      await this.broadcastInjuryAlert(alert);
+
+      // Store in database for historical tracking
+      await this.storeInjuryReport(alert);
+
+      console.log(`✅ Injury alert created: ${alert.alertId}`);
+      return alert;
+    } catch (error) {
+      console.error('Error processing injury report:', error);
+      throw error;
+    }
+  }
+
+  // Generate personalized replacement strategy for a team
+  async generateReplacementStrategy(
+    leagueId: string,
+    teamId: string,
+    injuredPlayerId: string
+  ): Promise<ReplacementStrategy> {
+    try {
+      // Get team context
+      const [teamRoster, teamBudget, leagueSettings] = await Promise.all([
+        this.getTeamRoster(teamId),
+        this.getTeamBudget(teamId),
+        this.getLeagueSettings(leagueId)
+      ]);
+
+      // Get injury alert for the player
+      const injuryAlert = Array.from(this.injuryAlerts.values())
+        .find(alert => alert.playerId === injuredPlayerId);
+
+      if (!injuryAlert) {
+        throw new Error('Injury alert not found for player');
+      }
+
+      // Determine replacement strategy
+      const strategy = this.determineReplacementStrategy(
+        injuryAlert,
+        teamRoster,
+        teamBudget,
+        leagueSettings
+      );
+
+      // Get personalized targets
+      const prioritizedTargets = await this.getPersonalizedTargets(
+        injuryAlert,
+        teamRoster,
+        leagueSettings,
+        strategy
+      );
+
+      // Calculate budget allocation
+      const budgetAllocation = this.calculateBudgetAllocation(
+        prioritizedTargets,
+        teamBudget,
+        injuryAlert.severity
+      );
+
+      // Create timeline
+      const timeline = this.createReplacementTimeline(
+        strategy,
+        injuryAlert,
+        prioritizedTargets
+      );
+
+      return {
+        leagueId,
+        teamId,
+        injuredPlayer: injuredPlayerId,
+        strategy,
+        prioritizedTargets,
+        budgetAllocation,
+        timeline
+      };
+    } catch (error) {
+      console.error('Error generating replacement strategy:', error);
+      throw error;
+    }
+  }
+
+  // Analyze historical injury trends
+  async analyzeInjuryTrends(
+    position: string,
+    injuryType: string
+  ): Promise<InjuryTrendAnalysis> {
+    const cacheKey = `trends_${position}_${injuryType}`;
+    const cached = this.trendCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.historicalData.avgRecoveryTime < this.CACHE_TTL) {
+      return cached;
+    }
+
+    try {
+      // Get historical injury data
+      const historicalData = await this.getHistoricalInjuryData(position, injuryType);
+      
+      // Find similar cases
+      const similarCases = await this.findSimilarInjuryCases(position, injuryType);
+      
+      // Identify risk factors
+      const riskFactors = this.identifyRiskFactors(position, injuryType, historicalData);
+      
+      // Generate recommendations
+      const recommendations = this.generateTrendRecommendations(
+        position,
+        injuryType,
+        historicalData,
+        riskFactors
+      );
+
+      const analysis: InjuryTrendAnalysis = {
+        position,
+        injuryType,
+        historicalData,
+        similarCases,
+        riskFactors,
+        recommendations
+      };
+
+      this.trendCache.set(cacheKey, analysis);
+      return analysis;
+    } catch (error) {
+      console.error('Error analyzing injury trends:', error);
+      return this.getFallbackTrendAnalysis(position, injuryType);
+    }
+  }
+
+  // Monitor injury status updates
+  async updateInjuryStatus(
+    alertId: string,
+    newStatus: 'improving' | 'worsening' | 'setback' | 'resolved',
+    additionalInfo?: string
+  ): Promise<void> {
+    try {
+      const alert = this.injuryAlerts.get(alertId);
+      if (!alert) {
+        throw new Error('Injury alert not found');
+      }
+
+      // Update alert based on new status
+      const updatedAlert = await this.processStatusUpdate(alert, newStatus, additionalInfo);
+      
+      // Update stored alert
+      this.injuryAlerts.set(alertId, updatedAlert);
+      
+      // Broadcast update to affected teams
+      await this.broadcastStatusUpdate(updatedAlert, newStatus);
+      
+      // Update database
+      await this.updateStoredInjuryReport(updatedAlert);
+
+      console.log(`📊 Updated injury status for ${alert.playerName}: ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating injury status:', error);
+      throw error;
+    }
+  }
+
+  // Private helper methods
+  private async getPlayerData(playerId: string): Promise<any> {
+    const result = await database.query(`
+      SELECT 
+        np.*,
+        nt.abbreviation as team_abbr,
+        COALESCE(np.projected_points, 0) as projected_points,
+        COALESCE(np.adp, 999) as adp
+      FROM nfl_players np
+      LEFT JOIN nfl_teams nt ON np.team_id = nt.id
+      WHERE np.id = $1
+    `, [playerId]);
+
+    if (result.rows.length === 0) {
+      throw new Error('Player not found');
+    }
+
+    return result.rows[0];
+  }
+
+  private async analyzeInjurySeverity(
+    playerId: string,
+    injuryType: string,
+    initialSeverity: string,
+    playerData: any
+  ): Promise<InjuryImpactAnalysis> {
+    try {
+      // Use AI prediction engine for detailed analysis
+      const aiAnalysis = await aiPredictionEngine.analyzeInjuryImpact(playerId, injuryType);
+      
+      // Enhance with position-specific factors
+      const positionFactor = this.getPositionInjuryFactor(playerData.position, injuryType);
+      const ageFactor = this.getAgeInjuryFactor(playerData.age || 26);
+      
+      // Adjust impact based on additional factors
+      const adjustedImpact = Math.min(1, aiAnalysis.fantasyImpact * positionFactor * ageFactor);
+      
+      return {
+        ...aiAnalysis,
+        fantasyImpact: adjustedImpact,
+        expectedReturnWeek: this.calculateReturnWeek(injuryType, initialSeverity, playerData.age)
+      };
+    } catch (error) {
+      // Fallback analysis
+      return {
+        playerId,
+        injuryType,
+        severity: 'moderate',
+        expectedReturnWeek: 3,
+        fantasyImpact: 0.5,
+        replacementOptions: []
+      };
+    }
+  }
+
+  private getPositionInjuryFactor(position: string, injuryType: string): number {
+    const factors: Record<string, Record<string, number>> = {
+      RB: {
+        'ankle': 1.2, 'knee': 1.3, 'hamstring': 1.1, 'shoulder': 0.8
+      },
+      WR: {
+        'hamstring': 1.2, 'ankle': 1.1, 'concussion': 1.0, 'shoulder': 0.9
+      },
+      QB: {
+        'shoulder': 1.3, 'thumb': 1.2, 'ankle': 0.9, 'concussion': 1.1
+      },
+      TE: {
+        'ankle': 1.1, 'knee': 1.2, 'shoulder': 1.0, 'concussion': 1.0
+      }
+    };
+    
+    return factors[position]?.[injuryType.toLowerCase()] || 1.0;
+  }
+
+  private getAgeInjuryFactor(age: number): number {
+    if (age < 25) return 0.9; // Young players recover better
+    if (age < 30) return 1.0; // Prime years
+    if (age < 33) return 1.1; // Slower recovery
+    return 1.2; // Significantly slower recovery
+  }
+
+  private calculateReturnWeek(injuryType: string, severity: string, age: number): number {
+    const baseWeeks: Record<string, number> = {
+      'ankle': 2,
+      'hamstring': 3,
+      'knee': 4,
+      'shoulder': 3,
+      'concussion': 1,
+      'groin': 2,
+      'calf': 2,
+      'quad': 3
+    };
+    
+    let weeks = baseWeeks[injuryType.toLowerCase()] || 3;
+    
+    // Adjust for severity
+    if (severity === 'questionable') weeks *= 0.5;
+    else if (severity === 'doubtful') weeks *= 0.8;
+    else if (severity === 'out') weeks *= 1.2;
+    else if (severity === 'ir') weeks = Math.max(weeks * 2, 4);
+    
+    // Adjust for age
+    if (age > 30) weeks *= 1.2;
+    
+    return Math.ceil(weeks);
+  }
+
+  private async calculateFantasyImpact(
+    playerData: any,
+    injuryAnalysis: InjuryImpactAnalysis
+  ): Promise<InjuryAlert['fantasyImpact']> {
+    const projectedPoints = parseFloat(playerData.projected_points) || 0;
+    const adp = parseFloat(playerData.adp) || 999;
+    
+    // Calculate immediate impact
+    const immediateImpact = Math.min(1, projectedPoints / 300); // Normalize to 0-1
+    
+    // Calculate season-long impact
+    const weeksRemaining = Math.max(1, 18 - injuryAnalysis.expectedReturnWeek);
+    const seasonLongImpact = (immediateImpact * injuryAnalysis.expectedReturnWeek) / 18;
+    
+    // Replacement value calculation
+    const replacementValue = this.calculateReplacementValue(playerData.position, projectedPoints);
+    
+    // Market reaction based on ADP and impact
+    let marketReaction: 'minimal' | 'moderate' | 'significant' | 'severe';
+    if (adp <= 24 && immediateImpact > 0.8) marketReaction = 'severe';
+    else if (adp <= 60 && immediateImpact > 0.6) marketReaction = 'significant';
+    else if (adp <= 120 && immediateImpact > 0.4) marketReaction = 'moderate';
+    else marketReaction = 'minimal';
+    
+    return {
+      immediateImpact,
+      seasonLongImpact,
+      replacementValue,
+      marketReaction
+    };
+  }
+
+  private calculateReplacementValue(position: string, playerPoints: number): number {
+    const positionBaselines: Record<string, number> = {
+      QB: 250, RB: 150, WR: 120, TE: 80, K: 120, DST: 100
+    };
+    
+    const baseline = positionBaselines[position] || 100;
+    return Math.max(0, (playerPoints - baseline) / baseline);
+  }\n\n  private async identifyAffectedTeams(playerId: string): Promise<InjuryAlert['affectedTeams']> {\n    try {\n      const result = await database.query(`\n        SELECT \n          r.team_id,\n          r.is_starter,\n          r.position_type\n        FROM rosters r\n        WHERE r.player_id = $1 AND r.season_year = 2025\n      `, [playerId]);\n      \n      return result.rows.map(row => ({\n        teamId: row.team_id,\n        ownershipType: row.is_starter ? 'starter' : 'bench',\n        urgency: row.is_starter ? 'critical' : 'medium'\n      }));\n    } catch (error) {\n      return [];\n    }\n  }\n\n  private async generateReplacementRecommendations(\n    playerData: any,\n    injuryAnalysis: InjuryImpactAnalysis,\n    affectedTeams: InjuryAlert['affectedTeams']\n  ): Promise<ReplacementRecommendation[]> {\n    try {\n      // Get available players at the same position\n      const availableResult = await database.query(`\n        SELECT \n          np.id,\n          CONCAT(np.first_name, ' ', np.last_name) as name,\n          np.position,\n          COALESCE(nt.abbreviation, 'FA') as team,\n          COALESCE(np.projected_points, 0) as projected_points,\n          COALESCE(np.ownership_percentage, 0) as ownership,\n          COALESCE(np.waiver_priority, 999) as waiver_priority\n        FROM nfl_players np\n        LEFT JOIN nfl_teams nt ON np.team_id = nt.id\n        WHERE np.position = $1\n          AND np.id != $2\n          AND np.ownership_percentage < 80\n          AND np.is_active = true\n        ORDER BY np.projected_points DESC\n        LIMIT 15\n      `, [playerData.position, playerData.id]);\n      \n      const recommendations: ReplacementRecommendation[] = [];\n      \n      for (const candidate of availableResult.rows) {\n        const replacementScore = await this.calculateReplacementScore(\n          candidate,\n          playerData,\n          injuryAnalysis\n        );\n        \n        if (replacementScore > 40) {\n          const recommendation: ReplacementRecommendation = {\n            playerId: candidate.id,\n            playerName: candidate.name,\n            position: candidate.position,\n            team: candidate.team,\n            replacementScore,\n            availability: {\n              waiverWire: parseFloat(candidate.ownership) < 50,\n              avgFAAB: this.estimateFAAB(candidate, replacementScore),\n              ownershipPercentage: parseFloat(candidate.ownership),\n              claimDifficulty: this.assessClaimDifficulty(candidate)\n            },\n            projection: {\n              weeklyPoints: parseFloat(candidate.projected_points) / 17,\n              remainingSeasonPoints: parseFloat(candidate.projected_points),\n              consistency: 0.7, // Mock value\n              upside: parseFloat(candidate.projected_points) * 1.3\n            },\n            contextualFit: {\n              teamNeedMatch: 0.8,\n              scheduleAlign: 0.6,\n              rosterSynergy: 0.7,\n              playoffValue: 0.5\n            },\n            reasoning: this.generateReplacementReasoning(candidate, playerData),\n            urgencyLevel: this.determineUrgencyLevel(injuryAnalysis, replacementScore)\n          };\n          \n          recommendations.push(recommendation);\n        }\n      }\n      \n      return recommendations.sort((a, b) => b.replacementScore - a.replacementScore);\n    } catch (error) {\n      console.error('Error generating replacement recommendations:', error);\n      return [];\n    }\n  }\n\n  private async calculateReplacementScore(\n    candidate: any,\n    injuredPlayer: any,\n    injuryAnalysis: InjuryImpactAnalysis\n  ): Promise<number> {\n    let score = 50; // Base score\n    \n    // Performance comparison (40% weight)\n    const injuredPoints = parseFloat(injuredPlayer.projected_points) || 0;\n    const candidatePoints = parseFloat(candidate.projected_points) || 0;\n    const performanceRatio = candidatePoints / Math.max(injuredPoints, 1);\n    score += Math.min(30, performanceRatio * 30);\n    \n    // Availability factor (30% weight)\n    const ownership = parseFloat(candidate.ownership) || 0;\n    const availabilityBonus = Math.max(0, (80 - ownership) / 80 * 30);\n    score += availabilityBonus;\n    \n    // Position scarcity (20% weight)\n    const scarcityBonus = this.getPositionScarcityBonus(candidate.position);\n    score += scarcityBonus;\n    \n    // Timeline alignment (10% weight)\n    if (injuryAnalysis.expectedReturnWeek > 4) {\n      score += 10; // Long-term replacement needed\n    }\n    \n    return Math.min(100, score);\n  }\n\n  private getPositionScarcityBonus(position: string): number {\n    const bonuses: Record<string, number> = {\n      QB: 5, RB: 15, WR: 10, TE: 12, K: 2, DST: 3\n    };\n    return bonuses[position] || 8;\n  }\n\n  private estimateFAAB(candidate: any, replacementScore: number): number {\n    const baseValue = Math.floor(replacementScore / 4);\n    const ownership = parseFloat(candidate.ownership) || 0;\n    \n    if (ownership < 10) return baseValue + 10;\n    if (ownership < 25) return baseValue + 5;\n    if (ownership < 50) return baseValue;\n    return Math.max(1, baseValue - 5);\n  }\n\n  private assessClaimDifficulty(candidate: any): 'easy' | 'moderate' | 'difficult' | 'nearly_impossible' {\n    const ownership = parseFloat(candidate.ownership) || 0;\n    \n    if (ownership < 15) return 'easy';\n    if (ownership < 35) return 'moderate';\n    if (ownership < 60) return 'difficult';\n    return 'nearly_impossible';\n  }\n\n  private generateReplacementReasoning(candidate: any, injuredPlayer: any): string[] {\n    const reasons: string[] = [];\n    \n    const candidatePoints = parseFloat(candidate.projected_points) || 0;\n    const injuredPoints = parseFloat(injuredPlayer.projected_points) || 0;\n    const ratio = candidatePoints / Math.max(injuredPoints, 1);\n    \n    if (ratio > 0.8) {\n      reasons.push('Projects similar production to injured player');\n    } else if (ratio > 0.6) {\n      reasons.push('Solid production floor with upside potential');\n    }\n    \n    const ownership = parseFloat(candidate.ownership) || 0;\n    if (ownership < 25) {\n      reasons.push('Low ownership provides good availability');\n    }\n    \n    if (candidate.team !== injuredPlayer.team_abbr) {\n      reasons.push('Different team reduces bye week conflicts');\n    }\n    \n    return reasons;\n  }\n\n  private determineUrgencyLevel(\n    injuryAnalysis: InjuryImpactAnalysis,\n    replacementScore: number\n  ): 'immediate' | 'this_week' | 'monitor' | 'long_term' {\n    if (injuryAnalysis.severity === 'major' && replacementScore > 70) {\n      return 'immediate';\n    }\n    if (injuryAnalysis.expectedReturnWeek > 2 && replacementScore > 60) {\n      return 'this_week';\n    }\n    if (injuryAnalysis.expectedReturnWeek > 4) {\n      return 'long_term';\n    }\n    return 'monitor';\n  }\n\n  private mapSeverity(fantasyImpact: number): 'minor' | 'moderate' | 'major' | 'season_ending' {\n    if (fantasyImpact >= this.SEVERITY_THRESHOLDS.season_ending) return 'season_ending';\n    if (fantasyImpact >= this.SEVERITY_THRESHOLDS.major) return 'major';\n    if (fantasyImpact >= this.SEVERITY_THRESHOLDS.moderate) return 'moderate';\n    return 'minor';\n  }\n\n  private async broadcastInjuryAlert(alert: InjuryAlert): Promise<void> {\n    try {\n      // Broadcast to all affected teams\n      for (const affectedTeam of alert.affectedTeams) {\n        webSocketManager.broadcastInjuryAlert({\n          teamId: affectedTeam.teamId,\n          alert,\n          urgency: affectedTeam.urgency\n        });\n      }\n      \n      // Broadcast to league if high-profile player\n      if (alert.severity === 'major' || alert.severity === 'season_ending') {\n        webSocketManager.broadcastLeagueAlert({\n          type: 'injury',\n          playerName: alert.playerName,\n          severity: alert.severity,\n          alert\n        });\n      }\n    } catch (error) {\n      console.error('Error broadcasting injury alert:', error);\n    }\n  }\n\n  private async storeInjuryReport(alert: InjuryAlert): Promise<void> {\n    try {\n      await database.query(`\n        INSERT INTO injury_reports (\n          alert_id, player_id, injury_type, severity, reported_at,\n          estimated_return_week, fantasy_impact, replacement_data\n        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n      `, [\n        alert.alertId,\n        alert.playerId,\n        alert.injuryType,\n        alert.severity,\n        alert.reportedAt,\n        alert.estimatedReturnWeek,\n        JSON.stringify(alert.fantasyImpact),\n        JSON.stringify(alert.replacementRecommendations)\n      ]);\n    } catch (error) {\n      console.error('Error storing injury report:', error);\n    }\n  }\n\n  // Additional helper methods would be implemented here...\n  private async getHistoricalInjuryData(position: string, injuryType: string): Promise<any> {\n    // Mock implementation\n    return {\n      avgRecoveryTime: 3.5,\n      successRate: 0.75,\n      reinjuryRate: 0.15,\n      seasonEndingRate: 0.1\n    };\n  }\n\n  private async findSimilarInjuryCases(position: string, injuryType: string): Promise<any[]> {\n    // Mock implementation\n    return [];\n  }\n\n  private identifyRiskFactors(position: string, injuryType: string, historicalData: any): string[] {\n    return ['Age factor', 'Previous injury history', 'Playing surface'];\n  }\n\n  private generateTrendRecommendations(position: string, injuryType: string, historicalData: any, riskFactors: string[]): string[] {\n    return ['Monitor status closely', 'Consider long-term replacement', 'Evaluate similar injury patterns'];\n  }\n\n  private getFallbackTrendAnalysis(position: string, injuryType: string): InjuryTrendAnalysis {\n    return {\n      position,\n      injuryType,\n      historicalData: {\n        avgRecoveryTime: 3,\n        successRate: 0.7,\n        reinjuryRate: 0.2,\n        seasonEndingRate: 0.1\n      },\n      similarCases: [],\n      riskFactors: ['Limited historical data'],\n      recommendations: ['Monitor closely']\n    };\n  }\n\n  // Placeholder methods for strategy generation\n  private async getTeamRoster(teamId: string): Promise<any[]> {\n    const result = await database.query(\n      'SELECT * FROM rosters WHERE team_id = $1 AND season_year = 2025',\n      [teamId]\n    );\n    return result.rows;\n  }\n\n  private async getTeamBudget(teamId: string): Promise<number> {\n    const result = await database.query(\n      'SELECT waiver_budget FROM teams WHERE id = $1',\n      [teamId]\n    );\n    return parseInt(result.rows[0]?.waiver_budget || '100');\n  }\n\n  private async getLeagueSettings(leagueId: string): Promise<any> {\n    const result = await database.query(\n      'SELECT * FROM leagues WHERE id = $1',\n      [leagueId]\n    );\n    return result.rows[0] || {};\n  }\n\n  private determineReplacementStrategy(\n    injuryAlert: InjuryAlert,\n    teamRoster: any[],\n    teamBudget: number,\n    leagueSettings: any\n  ): 'immediate_replacement' | 'streaming' | 'long_term_stash' | 'committee_approach' {\n    if (injuryAlert.severity === 'season_ending') {\n      return 'immediate_replacement';\n    }\n    if (injuryAlert.estimatedReturnWeek > 6) {\n      return 'long_term_stash';\n    }\n    if (injuryAlert.estimatedReturnWeek <= 2) {\n      return 'streaming';\n    }\n    return 'committee_approach';\n  }\n\n  private async getPersonalizedTargets(\n    injuryAlert: InjuryAlert,\n    teamRoster: any[],\n    leagueSettings: any,\n    strategy: string\n  ): Promise<ReplacementRecommendation[]> {\n    // Filter recommendations based on team needs and strategy\n    return injuryAlert.replacementRecommendations.filter(rec => {\n      if (strategy === 'immediate_replacement') {\n        return rec.urgencyLevel === 'immediate' || rec.urgencyLevel === 'this_week';\n      }\n      return rec.replacementScore > 50;\n    });\n  }\n\n  private calculateBudgetAllocation(\n    targets: ReplacementRecommendation[],\n    teamBudget: number,\n    severity: string\n  ): ReplacementStrategy['budgetAllocation'] {\n    const urgencyMultiplier = severity === 'major' || severity === 'season_ending' ? 1.5 : 1.0;\n    const topTarget = targets[0];\n    \n    if (!topTarget) {\n      return {\n        recommendedFAAB: 0,\n        maxBid: 0,\n        fallbackOptions: []\n      };\n    }\n\n    const recommendedFAAB = Math.min(\n      teamBudget * 0.3 * urgencyMultiplier,\n      topTarget.availability.avgFAAB * 1.2\n    );\n\n    return {\n      recommendedFAAB: Math.floor(recommendedFAAB),\n      maxBid: Math.min(teamBudget * 0.5, recommendedFAAB * 1.5),\n      fallbackOptions: targets.slice(1, 4).map(target => ({\n        playerId: target.playerId,\n        bidRange: [target.availability.avgFAAB * 0.8, target.availability.avgFAAB * 1.2]\n      }))\n    };\n  }\n\n  private createReplacementTimeline(\n    strategy: string,\n    injuryAlert: InjuryAlert,\n    targets: ReplacementRecommendation[]\n  ): ReplacementStrategy['timeline'] {\n    const immediateActions: string[] = [];\n    const weeklyMonitoring: string[] = [];\n    const futureConsiderations: string[] = [];\n\n    // Immediate actions\n    if (targets.length > 0) {\n      immediateActions.push(`Submit waiver claim for ${targets[0].playerName}`);\n    }\n    immediateActions.push(`Monitor ${injuryAlert.playerName} injury status`);\n\n    // Weekly monitoring\n    weeklyMonitoring.push('Check injury reports and practice participation');\n    weeklyMonitoring.push('Evaluate replacement performance');\n    weeklyMonitoring.push('Adjust waiver priorities as needed');\n\n    // Future considerations\n    if (injuryAlert.estimatedReturnWeek > 4) {\n      futureConsiderations.push('Consider trading for long-term solution');\n    }\n    futureConsiderations.push('Plan for injured player return');\n\n    return {\n      immediateActions,\n      weeklyMonitoring,\n      futureConsiderations\n    };\n  }\n\n  private async processStatusUpdate(\n    alert: InjuryAlert,\n    newStatus: string,\n    additionalInfo?: string\n  ): Promise<InjuryAlert> {\n    // Update alert based on status change\n    const updatedAlert = { ...alert };\n    \n    if (newStatus === 'improving') {\n      updatedAlert.estimatedReturnWeek = Math.max(1, alert.estimatedReturnWeek - 1);\n    } else if (newStatus === 'worsening') {\n      updatedAlert.estimatedReturnWeek = alert.estimatedReturnWeek + 2;\n    } else if (newStatus === 'setback') {\n      updatedAlert.estimatedReturnWeek = alert.estimatedReturnWeek + 3;\n      if (updatedAlert.severity !== 'season_ending') {\n        updatedAlert.severity = 'major';\n      }\n    } else if (newStatus === 'resolved') {\n      updatedAlert.estimatedReturnWeek = 0;\n      updatedAlert.severity = 'minor';\n    }\n    \n    return updatedAlert;\n  }\n\n  private async broadcastStatusUpdate(alert: InjuryAlert, status: string): Promise<void> {\n    for (const affectedTeam of alert.affectedTeams) {\n      webSocketManager.broadcastInjuryUpdate({\n        teamId: affectedTeam.teamId,\n        playerId: alert.playerId,\n        status,\n        updatedEstimate: alert.estimatedReturnWeek\n      });\n    }\n  }\n\n  private async updateStoredInjuryReport(alert: InjuryAlert): Promise<void> {\n    try {\n      await database.query(`\n        UPDATE injury_reports \n        SET \n          severity = $2,\n          estimated_return_week = $3,\n          fantasy_impact = $4,\n          updated_at = NOW()\n        WHERE alert_id = $1\n      `, [\n        alert.alertId,\n        alert.severity,\n        alert.estimatedReturnWeek,\n        JSON.stringify(alert.fantasyImpact)\n      ]);\n    } catch (error) {\n      console.error('Error updating injury report:', error);\n    }\n  }\n\n  // Health check\n  async healthCheck(): Promise<{\n    status: 'healthy' | 'degraded' | 'unhealthy';\n    activeAlerts: number;\n    cacheSize: number;\n    lastProcessed: Date | null;\n  }> {\n    try {\n      await database.query('SELECT 1');\n      \n      const lastAlert = Array.from(this.injuryAlerts.values())\n        .sort((a, b) => b.reportedAt.getTime() - a.reportedAt.getTime())[0];\n      \n      return {\n        status: 'healthy',\n        activeAlerts: this.injuryAlerts.size,\n        cacheSize: this.trendCache.size,\n        lastProcessed: lastAlert?.reportedAt || null\n      };\n    } catch (error) {\n      return {\n        status: 'unhealthy',\n        activeAlerts: this.injuryAlerts.size,\n        cacheSize: this.trendCache.size,\n        lastProcessed: null\n      };\n    }\n  }\n}\n\n// Singleton instance\nexport const injuryImpactAnalyzer = new InjuryImpactAnalyzer();\nexport default injuryImpactAnalyzer;

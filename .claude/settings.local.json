@@ -63,7 +63,9 @@
       "Bash(timeout 15 npm run build)",
       "Bash(timeout 20 npm run build)",
       "Bash(timeout:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(npx eslint:*)",
+      "Bash(JWT_SECRET=\"astral-field-secure-jwt-secret-key-that-is-at-least-32-characters-long-for-production\" timeout 120 npm run build)"
     ],
     "deny": [],
     "ask": []

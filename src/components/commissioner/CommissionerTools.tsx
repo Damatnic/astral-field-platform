@@ -6,7 +6,11 @@ import {
   DollarSign, MessageCircle, AlertTriangle, Crown,
   Edit, Trash2, Plus, Eye, Lock, Unlock,
   RefreshCw, Download, Upload, Mail, Bell,
-  CheckCircle, XCircle, Clock, Target
+  CheckCircle, XCircle, Clock, Target, TrendingUp,
+  Award, FileText, Database, Activity, Zap,
+  UserCheck, Ban, AlertCircle, Filter, Search,
+  MoreHorizontal, ChevronDown, ChevronUp, Star,
+  History, Gavel, Users2, Scale, ExternalLink
 } from 'lucide-react';
 
 interface CommissionerToolsProps {
@@ -50,7 +54,7 @@ interface Transaction {
 }
 
 export default function CommissionerTools({ leagueId }: CommissionerToolsProps) {
-  const [activeTab, setActiveTab] = useState<'settings' | 'teams' | 'transactions' | 'schedule' | 'communications'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'teams' | 'transactions' | 'schedule' | 'communications' | 'analytics' | 'moderation' | 'automation'>('settings');
   const [showConfirmModal, setShowConfirmModal] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -156,11 +160,14 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
             { id: 'teams', label: 'Team Management', icon: Users },
             { id: 'transactions', label: 'Transactions', icon: DollarSign },
             { id: 'schedule', label: 'Schedule Tools', icon: Calendar },
-            { id: 'communications', label: 'Communications', icon: MessageCircle }
+            { id: 'communications', label: 'Communications', icon: MessageCircle },
+            { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+            { id: 'moderation', label: 'Moderation', icon: Shield },
+            { id: 'automation', label: 'Automation', icon: Zap }
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as 'transactions' | 'teams' | 'settings' | 'schedule' | 'communications')}
+              onClick={() => setActiveTab(id as 'transactions' | 'teams' | 'settings' | 'schedule' | 'communications' | 'analytics' | 'moderation' | 'automation')}
               className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === id
                   ? 'border-red-500 text-red-600 dark:text-red-400'
@@ -586,6 +593,21 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
         </div>
       )}
 
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <AnalyticsTab leagueId={leagueId} />
+      )}
+
+      {/* Moderation Tab */}
+      {activeTab === 'moderation' && (
+        <ModerationTab leagueId={leagueId} />
+      )}
+
+      {/* Automation Tab */}
+      {activeTab === 'automation' && (
+        <AutomationTab leagueId={leagueId} />
+      )}
+
       {/* Confirmation Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -617,6 +639,756 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Analytics Tab Component
+function AnalyticsTab({ leagueId }: { leagueId: string }) {
+  const [analyticsData] = useState({
+    weeklyActivity: [
+      { week: 'Week 1', trades: 12, waivers: 34, lineupChanges: 89 },
+      { week: 'Week 2', trades: 8, waivers: 28, lineupChanges: 76 },
+      { week: 'Week 3', trades: 15, waivers: 31, lineupChanges: 82 },
+      { week: 'Week 4', trades: 10, waivers: 25, lineupChanges: 73 },
+    ],
+    leagueHealth: {
+      engagement: 87,
+      activityScore: 92,
+      competitiveness: 78,
+      fairnessIndex: 96
+    },
+    teamPerformance: [
+      { team: 'Gridiron Gladiators', efficiency: 94, consistency: 89, luck: 67 },
+      { team: 'Touchdown Titans', efficiency: 88, consistency: 92, luck: 73 },
+      { team: 'Field Goal Phantoms', efficiency: 82, consistency: 85, luck: 81 }
+    ]
+  });
+
+  return (
+    <div className="space-y-8">
+      {/* League Health Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-green-600 dark:text-green-400">
+                Engagement Score
+              </p>
+              <p className="text-3xl font-bold text-green-700 dark:text-green-300">
+                {analyticsData.leagueHealth.engagement}%
+              </p>
+            </div>
+            <TrendingUp className="h-8 w-8 text-green-500" />
+          </div>
+          <div className="mt-4">
+            <div className="w-full bg-green-200 dark:bg-green-900/30 rounded-full h-2">
+              <div
+                className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analyticsData.leagueHealth.engagement}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                Activity Score
+              </p>
+              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
+                {analyticsData.leagueHealth.activityScore}%
+              </p>
+            </div>
+            <Activity className="h-8 w-8 text-blue-500" />
+          </div>
+          <div className="mt-4">
+            <div className="w-full bg-blue-200 dark:bg-blue-900/30 rounded-full h-2">
+              <div
+                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analyticsData.leagueHealth.activityScore}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                Competitiveness
+              </p>
+              <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+                {analyticsData.leagueHealth.competitiveness}%
+              </p>
+            </div>
+            <Target className="h-8 w-8 text-purple-500" />
+          </div>
+          <div className="mt-4">
+            <div className="w-full bg-purple-200 dark:bg-purple-900/30 rounded-full h-2">
+              <div
+                className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analyticsData.leagueHealth.competitiveness}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                Fairness Index
+              </p>
+              <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">
+                {analyticsData.leagueHealth.fairnessIndex}%
+              </p>
+            </div>
+            <Scale className="h-8 w-8 text-orange-500" />
+          </div>
+          <div className="mt-4">
+            <div className="w-full bg-orange-200 dark:bg-orange-900/30 rounded-full h-2">
+              <div
+                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analyticsData.leagueHealth.fairnessIndex}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Weekly Activity Chart */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          Weekly League Activity
+        </h3>
+        <div className="space-y-4">
+          {analyticsData.weeklyActivity.map((week) => (
+            <div key={week.week} className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {week.week}
+              </span>
+              <div className="flex items-center space-x-4 text-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {week.trades} trades
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {week.waivers} waivers
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {week.lineupChanges} lineup changes
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Team Performance Analysis */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          Team Performance Metrics
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Team
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Efficiency
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Consistency
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Luck Factor
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
+              {analyticsData.teamPerformance.map((team) => (
+                <tr key={team.team}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {team.team}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className={`text-sm font-medium ${
+                      team.efficiency >= 90 ? 'text-green-600 dark:text-green-400' :
+                      team.efficiency >= 80 ? 'text-yellow-600 dark:text-yellow-400' :
+                      'text-red-600 dark:text-red-400'
+                    }`}>
+                      {team.efficiency}%
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className={`text-sm font-medium ${
+                      team.consistency >= 90 ? 'text-green-600 dark:text-green-400' :
+                      team.consistency >= 80 ? 'text-yellow-600 dark:text-yellow-400' :
+                      'text-red-600 dark:text-red-400'
+                    }`}>
+                      {team.consistency}%
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      {team.luck}%
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Export Options */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Analytics Export
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <Download className="h-4 w-4 mr-2" />
+            Export Season Report
+          </button>
+          <button className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+            <FileText className="h-4 w-4 mr-2" />
+            Generate League Summary
+          </button>
+          <button className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Performance Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Moderation Tab Component
+function ModerationTab({ leagueId }: { leagueId: string }) {
+  const [moderationActions] = useState([
+    {
+      id: '1',
+      type: 'warning',
+      user: 'Mike Chen',
+      reason: 'Inappropriate team name',
+      action: 'Team name changed to "Field Goal Phantoms"',
+      date: '2024-11-15',
+      status: 'resolved'
+    },
+    {
+      id: '2',
+      type: 'trade_review',
+      user: 'Sarah Johnson',
+      reason: 'Suspicious trade reported by league members',
+      action: 'Trade reviewed and approved - fair value exchange',
+      date: '2024-11-10',
+      status: 'resolved'
+    },
+    {
+      id: '3',
+      type: 'collusion_check',
+      user: 'Alex Rodriguez',
+      reason: 'Potential roster sharing with eliminated team',
+      action: 'Investigation ongoing',
+      date: '2024-11-18',
+      status: 'pending'
+    }
+  ]);
+
+  const [reportedIssues] = useState([
+    {
+      id: '1',
+      reporter: 'Jessica Martinez',
+      reported: 'Mike Chen',
+      category: 'Unsportsmanlike Conduct',
+      description: 'Excessive trash talk in league chat',
+      severity: 'medium',
+      status: 'under_review',
+      date: '2024-11-20'
+    },
+    {
+      id: '2',
+      reporter: 'Nicholas D\'Amato',
+      reported: 'Sarah Johnson',
+      category: 'Roster Manipulation',
+      description: 'Starting injured players to potentially lose games',
+      severity: 'high',
+      status: 'investigating',
+      date: '2024-11-19'
+    }
+  ]);
+
+  return (
+    <div className="space-y-8">
+      {/* Moderation Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">3</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Open Reports</p>
+            </div>
+            <AlertTriangle className="h-8 w-8 text-orange-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">12</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Resolved Issues</p>
+            </div>
+            <CheckCircle className="h-8 w-8 text-green-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Active Warnings</p>
+            </div>
+            <AlertCircle className="h-8 w-8 text-blue-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-400">0</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Suspended Users</p>
+            </div>
+            <Ban className="h-8 w-8 text-red-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Moderation Actions */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Recent Moderation Actions
+          </h3>
+          <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+            <Plus className="h-4 w-4 mr-2 inline" />
+            New Action
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {moderationActions.map((action) => (
+            <div key={action.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      action.type === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
+                      action.type === 'trade_review' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
+                    }`}>
+                      {action.type.replace('_', ' ').toUpperCase()}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      {action.user}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {action.date}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <strong>Reason:</strong> {action.reason}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <strong>Action:</strong> {action.action}
+                  </p>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                  action.status === 'resolved' 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
+                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
+                }`}>
+                  {action.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Reported Issues */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          Reported Issues
+        </h3>
+
+        <div className="space-y-4">
+          {reportedIssues.map((issue) => (
+            <div key={issue.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      issue.severity === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' :
+                      issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
+                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                    }`}>
+                      {issue.severity.toUpperCase()}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      {issue.category}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {issue.date}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <strong>Reported:</strong> {issue.reported} by {issue.reporter}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    {issue.description}
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    <button className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                      <CheckCircle className="h-3 w-3 mr-1 inline" />
+                      Resolve
+                    </button>
+                    <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+                      <Eye className="h-3 w-3 mr-1 inline" />
+                      Investigate
+                    </button>
+                    <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                      <Ban className="h-3 w-3 mr-1 inline" />
+                      Take Action
+                    </button>
+                  </div>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                  issue.status === 'under_review' 
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
+                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300'
+                }`}>
+                  {issue.status.replace('_', ' ')}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Moderation Tools */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Moderation Tools
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button className="flex items-center justify-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Issue Warning
+          </button>
+          <button className="flex items-center justify-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+            <UserCheck className="h-4 w-4 mr-2" />
+            Review User Activity
+          </button>
+          <button className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+            <Ban className="h-4 w-4 mr-2" />
+            Suspend User
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Automation Tab Component
+function AutomationTab({ leagueId }: { leagueId: string }) {
+  const [automationRules] = useState([
+    {
+      id: '1',
+      name: 'Auto-approve small FAAB claims',
+      description: 'Automatically approve waiver claims under $5 FAAB',
+      enabled: true,
+      type: 'transaction',
+      conditions: 'FAAB amount < $5 AND no objections within 24 hours',
+      lastTriggered: '2024-11-20'
+    },
+    {
+      id: '2',
+      name: 'Lineup reminder notifications',
+      description: 'Send reminders to teams with incomplete lineups',
+      enabled: true,
+      type: 'notification',
+      conditions: 'Thursday 6 PM if lineup not set',
+      lastTriggered: '2024-11-21'
+    },
+    {
+      id: '3',
+      name: 'Suspicious activity alerts',
+      description: 'Alert commissioner of potential collusion',
+      enabled: true,
+      type: 'monitoring',
+      conditions: 'Multiple beneficial trades between same teams',
+      lastTriggered: 'Never'
+    }
+  ]);
+
+  const [scheduledTasks] = useState([
+    {
+      id: '1',
+      task: 'Process weekly waivers',
+      schedule: 'Wednesday 3:00 AM',
+      nextRun: '2024-11-27 03:00:00',
+      status: 'active'
+    },
+    {
+      id: '2',
+      task: 'Generate weekly reports',
+      schedule: 'Tuesday 9:00 AM',
+      nextRun: '2024-11-26 09:00:00',
+      status: 'active'
+    },
+    {
+      id: '3',
+      task: 'Backup league data',
+      schedule: 'Daily 2:00 AM',
+      nextRun: '2024-11-25 02:00:00',
+      status: 'active'
+    }
+  ]);
+
+  return (
+    <div className="space-y-8">
+      {/* Automation Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">7</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Active Rules</p>
+            </div>
+            <Zap className="h-8 w-8 text-green-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">23</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Tasks This Week</p>
+            </div>
+            <Clock className="h-8 w-8 text-blue-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">156</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Hours Saved</p>
+            </div>
+            <TrendingUp className="h-8 w-8 text-purple-500" />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">98.5%</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Success Rate</p>
+            </div>
+            <CheckCircle className="h-8 w-8 text-orange-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* Automation Rules */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Automation Rules
+          </h3>
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <Plus className="h-4 w-4 mr-2 inline" />
+            Create Rule
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {automationRules.map((rule) => (
+            <div key={rule.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h4 className="font-medium text-gray-900 dark:text-white">
+                      {rule.name}
+                    </h4>
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      rule.type === 'transaction' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
+                      rule.type === 'notification' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
+                    }`}>
+                      {rule.type}
+                    </span>
+                    <div className="flex items-center">
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={rule.enabled}
+                          className="sr-only peer"
+                          readOnly
+                        />
+                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    {rule.description}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500 mb-2">
+                    <strong>Conditions:</strong> {rule.conditions}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-600">
+                    Last triggered: {rule.lastTriggered}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button className="p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scheduled Tasks */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          Scheduled Tasks
+        </h3>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Task
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Schedule
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Next Run
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
+              {scheduledTasks.map((task) => (
+                <tr key={task.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {task.task}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    {task.schedule}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    {new Date(task.nextRun).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      task.status === 'active' 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                    }`}>
+                      {task.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400">
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button className="text-green-600 hover:text-green-900 dark:text-green-400">
+                        <RefreshCw className="h-4 w-4" />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900 dark:text-red-400">
+                        <XCircle className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Automation Templates */}
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Automation Templates
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              Trade Processing
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Auto-process trades after review period
+            </p>
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              Use Template
+            </button>
+          </div>
+
+          <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              Injury Notifications
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Alert owners when their players get injured
+            </p>
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              Use Template
+            </button>
+          </div>
+
+          <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              Weekly Reports
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              Generate and send weekly league summaries
+            </p>
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              Use Template
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

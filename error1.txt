@@ -1,0 +1,73 @@
+background.js:80 [BackgroundStorage] Using browser.storage.persistent
+background.js:80 [BackgroundStorage] Using browser.storage.session
+background.js:80 Performance diagnostic: "initializeStorage" took 7.8ms to execute.
+background.js:80 Performance diagnostic: "initialize-feature-flags-cache" took 0.2ms to execute.
+background.js:122 👋 Initializing 1Password
+background.js:80 using deprecated parameters for the initialization function; pass a single object instead
+(anonymous) @ background.js:80
+background.js:80 channel: stable
+version: 8.11.8.40
+build: 81108040 (139.1.7258.139)
+browser: Chrome (139.1.7258.139)
+os: Windows (11.0)
+background.js:80 WASM: Initializing.  Log Level: Info
+background.js:80 Performance diagnostic: "initializeCoreInterface" took 48.4ms to execute.
+background.js:80 Performance diagnostic: "collectAllPreRegFeatureFlags" took 0.2ms to execute.
+background.js:80 Performance diagnostic: "initializeNativeAppConnection" took 1.6ms to execute.
+background.js:80 Performance diagnostic: "unlockWithContextInitCache" took 0.1ms to execute.
+background.js:80 💫 Looking for desktop app com.1password.1password
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <428486287>
+background.js:80 👍 Finished initializing 1Password
+background.js:80 Performance diagnostic: "initialize" took 92.4ms to execute.
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 💫 Looking for desktop app com.1password.1password7
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <2005373579>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+Unchecked runtime.lastError: The message port closed before a response was received.
+background.js:80 DeviceTrust: access denied: [ missing backoffice permission, missing admin permission ] - aborting
+(anonymous) @ background.js:80
+background.js:80 💫 Looking for desktop app com.1password.1password
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <177497188>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 💫 Looking for desktop app com.1password.1password7
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <1716824405>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 💫 Looking for desktop app com.1password.1password
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <782243908>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 💫 Looking for desktop app com.1password.1password7
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <259359992>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 Could not get default saving location, resetting location.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 The item cache has not been initialized yet.
+(anonymous) @ background.js:80
+background.js:80 💫 Looking for desktop app com.1password.1password
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <3303342562>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+background.js:80 💫 Looking for desktop app com.1password.1password7
+background.js:80 📤 Sending <NmRequestAccounts> message to native core <2315142519>
+background.js:80 Desktop app port disconnected. Error: Specified native messaging host not found.
+/api/leagues/00000000-0000-0000-0000-000000000001/matchup:1  Failed to load resource: the server responded with a status of 500 ()

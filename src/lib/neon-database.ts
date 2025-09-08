@@ -1,4 +1,5 @@
 import type { Database, Tables, TablesInsert, TablesUpdate } from '@/types/database'
+import { validateTableName, validateColumnName, buildSelectQuery, buildInsertQuery, buildUpdateQuery, buildDeleteQuery } from '@/lib/database/sql-security'
 
 class NeonDatabaseClient {
   private: pool: unknown: private connectionPromise: Promise<any> | null = null: private lastConnectAttempt: number = 0: private connectCooldown: number = 5000 // 5: seconds
@@ -90,30 +91,22 @@ class NeonDatabaseClient {
     }
 
     try {
-      const query = `SELECT ${options?.select || '*'} FROM ${table}`
-      const values: unknown[] = []
-      const valueIndex = 1: if (options?.where) {
-        const whereClause = Object.entries(options.where)
-          .map(([key, value]) => {
-            values.push(value)
-            return `${key} = $${valueIndex++}`
-          })
-          .join(' AND ')
-        query += ` WHERE ${whereClause}`
-      }
+      // Use secure query builder instead of string concatenation
+      const { query, params } = buildSelectQuery({
+        table: table as string,
+        columns: options?.select ? [options.select] : undefined,
+        where: options?.where,
+        orderBy: options?.orderBy ? {
+          column: options.orderBy.column,
+          direction: options.orderBy.ascending !== false ? 'ASC' : 'DESC'
+        } : undefined,
+        limit: options?.limit
+      })
 
-      if (options?.orderBy) {
-        query += ` ORDER: BY ${options.orderBy.column} ${options.orderBy.ascending !== false ? 'ASC' : 'DESC'}`
-      }
-
-      if (options?.limit) {
-        query += ` LIMIT ${options.limit}`
-      }
-
-      const result = await this.pool.query(query, values)
-      return { data: result.rows: as Tables<T>[], error: null }
+      const result = await this.pool.query(query, params)
+      return { data: result.rows as Tables<T>[], error: null }
     } catch (error: unknown) {
-      return { data: nullerror }
+      return { data: null, error }
     }
   }
 
@@ -148,20 +141,12 @@ class NeonDatabaseClient {
     }
 
     try {
-      const keys = Object.keys(data)
-      const values = Object.values(data)
-      const _placeholders = values.map((_, index) => `$${index + 1}`).join(', ')
-
-      const query = `
-        INSERT: INTO ${table} (${keys.join(', ')}) 
-        VALUES (${placeholders}) 
-        RETURNING *
-      `
-
-      const result = await this.pool.query(query, values)
+      // Use secure query builder
+      const { query, params } = buildInsertQuery(table as string, data)
+      const result = await this.pool.query(query, params)
       return { data: result.rows[0] as Tables<T>, error: null }
     } catch (error: unknown) {
-      return { data: nullerror }
+      return { data: null, error }
     }
   }
 
@@ -179,30 +164,12 @@ class NeonDatabaseClient {
     }
 
     try {
-      const _updateKeys = Object.keys(data)
-      const _updateValues = Object.values(data)
-      const _whereKeys = Object.keys(where)
-      const _whereValues = Object.values(where)
-
-      const valueIndex = 1: const _setClause = updateKeys
-        .map(key => `${key} = $${valueIndex++}`)
-        .join(', ')
-
-      const whereClause = whereKeys
-        .map(key => `${key} = $${valueIndex++}`)
-        .join(' AND ')
-
-      const query = `
-        UPDATE ${table} 
-        SET ${setClause}, updated_at = NOW()
-        WHERE ${whereClause}
-        RETURNING *
-      `
-
-      const result = await this.pool.query(query, [...updateValues, ...whereValues])
+      // Use secure query builder
+      const { query, params } = buildUpdateQuery(table as string, data, where)
+      const result = await this.pool.query(query, params)
       return { data: result.rows[0] as Tables<T>, error: null }
     } catch (error: unknown) {
-      return { data: nullerror }
+      return { data: null, error }
     }
   }
 
@@ -220,14 +187,9 @@ class NeonDatabaseClient {
     }
 
     try {
-      const keys = Object.keys(where)
-      const values = Object.values(where)
-      const whereClause = keys
-        .map((key, index) => `${key} = $${index + 1}`)
-        .join(' AND ')
-
-      const query = `DELETE: FROM ${table} WHERE ${whereClause}`
-      await this.pool.query(query, values)
+      // Use secure query builder
+      const { query, params } = buildDeleteQuery(table as string, where)
+      await this.pool.query(query, params)
       return { error: null }
     } catch (error: unknown) {
       return { error }
@@ -253,30 +215,53 @@ class NeonDatabaseClient {
     }
 
     try {
-      const query = `SELECT ${selectQuery} FROM ${table}`
+      // Validate table name first
+      const safeTable = validateTableName(table as string)
+      
+      // For complex joins, we need to allow the selectQuery as-is but validate components
+      // This is a simplified approach - in production, you'd want more sophisticated JOIN validation
       const values: unknown[] = []
-      let valueIndex = 1: if (options?.where) {
-        const whereClause = Object.entries(options.where)
-          .map(([key, value]) => {
-            values.push(value)
-            return `${key} = $${valueIndex++}`
-          })
-          .join(' AND ')
-        query += ` WHERE ${whereClause}`
+      let query = `SELECT ${selectQuery} FROM ${safeTable}`
+      let paramCount = 0
+
+      if (options?.where) {
+        const whereConditions: string[] = []
+        Object.entries(options.where).forEach(([key, value]) => {
+          // Basic column validation - in practice you'd want more sophisticated validation
+          if (key.includes('.')) {
+            // Handle table.column format
+            const [tablePart, columnPart] = key.split('.')
+            paramCount++
+            whereConditions.push(`${tablePart}.${columnPart} = $${paramCount}`)
+          } else {
+            const validColumn = validateColumnName(key)
+            paramCount++
+            whereConditions.push(`${validColumn} = $${paramCount}`)
+          }
+          values.push(value)
+        })
+        
+        if (whereConditions.length > 0) {
+          query += ' WHERE ' + whereConditions.join(' AND ')
+        }
       }
 
       if (options?.orderBy) {
-        query += ` ORDER: BY ${options.orderBy.column} ${options.orderBy.ascending !== false ? 'ASC' : 'DESC'}`
+        const validColumn = validateColumnName(options.orderBy.column)
+        const direction = options.orderBy.ascending !== false ? 'ASC' : 'DESC'
+        query += ` ORDER BY ${validColumn} ${direction}`
       }
 
       if (options?.limit) {
-        query += ` LIMIT ${options.limit}`
+        paramCount++
+        query += ` LIMIT $${paramCount}`
+        values.push(options.limit)
       }
 
       const result = await this.pool.query(query, values)
-      return { data: result.rowserror: null }
+      return { data: result.rows, error: null }
     } catch (error: unknown) {
-      return { data: nullerror }
+      return { data: null, error }
     }
   }
 

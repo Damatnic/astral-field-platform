@@ -1,12 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
+import { z } from 'zod';
+import { 
+  validateRouteParams,
+  createValidationErrorResponse,
+  hasValidationErrors,
+  idSchema
+} from "@/lib/validation";
+
+// Schema for route parameters
+const leagueParamsSchema = z.object({
+  id: idSchema.or(z.enum(['1'])) // Allow '1' for backward compatibility
+});
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id: rawId } = await params;
+    const resolvedParams = await params;
+    
+    // Validate route parameters
+    const paramsValidation = validateRouteParams(resolvedParams, leagueParamsSchema);
+    
+    if (hasValidationErrors(paramsValidation)) {
+      return NextResponse.json(
+        createValidationErrorResponse(paramsValidation.errors),
+        { status: 400 }
+      );
+    }
+
+    const { id: rawId } = paramsValidation.data!;
     
     // Convert simple league ID to full UUID
     const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;

@@ -19,5 +19,17 @@
     "scripts/",
     "tests/",
     "public/sw.js"
+  ],
+  "overrides": [
+    {
+      "files": ["*.config.js", "*.config.ts", "jest.*.js"],
+      "env": {
+        "node": true
+      },
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-commonjs": "off"
+      }
+    }
   ]
 }

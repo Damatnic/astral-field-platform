@@ -1,0 +1,124 @@
+# Codecov configuration for Astral Field
+
+# Coverage thresholds
+coverage:
+  status:
+    # Overall project coverage
+    project:
+      default:
+        target: 75%
+        threshold: 2%
+        if_no_uploads: error
+        if_not_found: success
+        if_ci_failed: error
+        
+    # Individual file coverage
+    patch:
+      default:
+        target: 80%
+        threshold: 5%
+        if_no_uploads: error
+        if_not_found: success
+        if_ci_failed: error
+        
+    # Changes in PR coverage
+    changes:
+      default:
+        target: 70%
+        threshold: 5%
+
+# Component-specific coverage targets
+coverage:
+  status:
+    project:
+      # Services should have high coverage
+      services:
+        paths:
+          - "src/services/"
+        target: 85%
+        threshold: 3%
+        
+      # Components should have good coverage
+      components:
+        paths:
+          - "src/components/"
+        target: 75%
+        threshold: 5%
+        
+      # API routes need thorough testing
+      api:
+        paths:
+          - "src/app/api/"
+        target: 80%
+        threshold: 3%
+        
+      # Utilities and libs should be well tested
+      utilities:
+        paths:
+          - "src/lib/"
+          - "src/utils/"
+        target: 90%
+        threshold: 2%
+
+# Coverage parsing
+parsers:
+  javascript:
+    enable_partials: true
+
+# Files to ignore for coverage
+ignore:
+  - "**/*.d.ts"
+  - "**/*.config.js"
+  - "**/*.config.ts"
+  - "**/stories/**"
+  - "**/*.stories.tsx"
+  - "**/*.stories.ts"
+  - "src/app/globals.css"
+  - "src/app/layout.tsx"
+  - "src/middleware.ts"
+  - "next.config.js"
+  - "tailwind.config.js"
+  - "postcss.config.js"
+  - "jest.*.js"
+  - "playwright.config.ts"
+  - ".next/**"
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  - "e2e/**"
+  - "performance-tests/**"
+  - "scripts/**"
+
+# Comment configuration
+comment:
+  layout: "diff, flags, files"
+  behavior: default
+  require_changes: true
+  require_base: false
+  require_head: true
+  
+# Pull request comments
+github_checks:
+  annotations: true
+
+# Flags for different test types
+flags:
+  unittests:
+    paths:
+      - src/
+    carryforward: true
+    
+  integration:
+    paths:
+      - src/app/api/
+      - src/services/
+    carryforward: true
+    
+  e2e:
+    paths:
+      - e2e/
+    carryforward: false
+
+# Notification settings
+notify:
+  require_ci_to_pass: true

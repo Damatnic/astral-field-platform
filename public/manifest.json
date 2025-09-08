@@ -1,37 +1,63 @@
 {
-  "name": "Astral Field - Elite Fantasy Football Platform",
+  "name": "Astral Field - Fantasy Football",
   "short_name": "Astral Field",
-  "description": "AI-powered fantasy football platform with real-time analytics, live NFL data, and advanced insights",
-  "start_url": "/",
+  "description": "AI-Powered Fantasy Football Platform with Real-Time Updates, Offline Support, and Advanced Analytics",
+  "start_url": "/dashboard?utm_source=pwa",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#0ea5e9",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#1F2937",
+  "theme_color": "#3B82F6",
   "orientation": "portrait-primary",
   "scope": "/",
-  "categories": ["sports", "games", "entertainment", "productivity"],
+  "id": "astral-field-fantasy-football",
   "lang": "en-US",
   "dir": "ltr",
+  "categories": ["sports", "games", "entertainment", "productivity"],
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "any",
-      "type": "image/x-icon",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icon-192.png",
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -39,13 +65,13 @@
   ],
   "shortcuts": [
     {
-      "name": "AI Oracle",
-      "short_name": "Oracle",
-      "description": "Get AI-powered fantasy football advice",
-      "url": "/dashboard#oracle",
+      "name": "My Team",
+      "short_name": "Team",
+      "description": "View your fantasy team",
+      "url": "/dashboard",
       "icons": [
         {
-          "src": "/icon.svg",
+          "src": "/icons/team-icon.png",
           "sizes": "96x96"
         }
       ]
@@ -53,45 +79,58 @@
     {
       "name": "Live Scores",
       "short_name": "Scores",
-      "description": "View live fantasy football scores",
-      "url": "/dashboard#scores",
+      "description": "View live fantasy scores",
+      "url": "/live",
       "icons": [
         {
-          "src": "/icon.svg",
+          "src": "/icons/scores-icon.png",
           "sizes": "96x96"
         }
       ]
     },
     {
-      "name": "Analytics",
-      "short_name": "Analytics",
-      "description": "View detailed analytics and insights",
-      "url": "/leagues/test/analytics",
+      "name": "Waiver Wire",
+      "short_name": "Waivers",
+      "description": "Browse waiver wire",
+      "url": "/waivers",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Draft Room",
-      "short_name": "Draft",
-      "description": "Join live draft rooms",
-      "url": "/draft",
-      "icons": [
-        {
-          "src": "/icon.svg",
+          "src": "/icons/waiver-icon.png",
           "sizes": "96x96"
         }
       ]
     }
   ],
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard view on mobile"
+    },
+    {
+      "src": "/screenshots/live-scores-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Live scores on mobile"
+    },
+    {
+      "src": "/screenshots/dashboard-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard view on desktop"
+    }
+  ],
   "prefer_related_applications": false,
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://astral-field.vercel.app/manifest.json"
+    }
+  ],
   "file_handlers": [
     {
       "action": "/import",
@@ -101,11 +140,22 @@
       }
     }
   ],
-  "protocol_handlers": [
-    {
-      "protocol": "web+astralfield",
-      "url": "/share?url=%s"
-    }
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
+  "capture_links": "existing-client-navigate",
+  "features": [
+    "real-time-updates",
+    "offline-support",
+    "push-notifications",
+    "ai-predictions",
+    "live-chat",
+    "drag-and-drop",
+    "touch-gestures",
+    "background-sync",
+    "installable",
+    "responsive-design"
   ],
   "share_target": {
     "action": "/share",
@@ -117,15 +167,48 @@
       "url": "url",
       "files": [
         {
-          "name": "roster",
-          "accept": ["text/csv", "application/json"]
+          "name": "file",
+          "accept": ["image/*", "text/csv", "application/json"]
         }
       ]
     }
   },
-  "launch_handler": {
-    "client_mode": "focus-existing"
+  "edge_side_panel": {
+    "preferred_width": 400
   },
-  "handle_links": "preferred",
-  "capture_links": "existing-client-navigate"
+  "protocol_handlers": [
+    {
+      "protocol": "web+astralfield",
+      "url": "/share?url=%s"
+    },
+    {
+      "protocol": "mailto",
+      "url": "/contact?email=%s"
+    }
+  ],
+  "url_handlers": [
+    {
+      "origin": "https://astral-field.vercel.app"
+    }
+  ],
+  "display_mode_override": [
+    {
+      "display": "standalone",
+      "media": "(min-width: 768px)"
+    },
+    {
+      "display": "minimal-ui",
+      "media": "(max-width: 767px)"
+    }
+  ],
+  "background_fetch": {
+    "auto_display_ui": true,
+    "icons": [
+      {
+        "src": "/icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ]
+  }
 }

@@ -1,4 +1,4 @@
-'use: client';
+'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
@@ -11,66 +11,71 @@ import {
 } from '@/lib/mobile/touchOptimization';
 
 export interface MobileState {
-  isMobile: boolean;,
-  isTablet: boolean;,
-  hasTouch: boolean;,
-  hasHaptic: boolean;,
-  isStandalone: boolean;,
-  isIOS: boolean;,
-  const screenSize = {,
-    width: number;,
-    height: number;,
-    ratio: number;,
-    isSmall: boolean;,
-    isMedium: boolean;,
+  isMobile: boolean;
+  isTablet: boolean;
+  hasTouch: boolean;
+  hasHaptic: boolean;
+  isStandalone: boolean;
+  isIOS: boolean;
+  screenSize: {
+    width: number;
+    height: number;
+    ratio: number;
+    isSmall: boolean;
+    isMedium: boolean;
     isLarge: boolean;
   };
-  orientation: 'portrait' | 'landscape';,
-  keyboardVisible: boolean;,
+  orientation: 'portrait' | 'landscape';
+  keyboardVisible: boolean;
   canInstallPWA: boolean;
 }
 
 export interface TouchGestures {
-  onSwipe?: (_gesture: SwipeGesture) => void;
-  onTap?: (_point: TouchPoint) => void;
-  onDoubleTap?: (_point: TouchPoint) => void;
-  onLongPress?: (_point: TouchPoint) => void;
+  onSwipe?: (gesture: SwipeGesture) => void;
+  onTap?: (point: TouchPoint) => void;
+  onDoubleTap?: (point: TouchPoint) => void;
+  onLongPress?: (point: TouchPoint) => void;
 }
 
 /**
- * Main: mobile hook: for device: detection and: mobile-specific: features
+ * Main mobile hook for device detection and mobile-specific features
  */
-export function useMobile(): MobileState & {,
-  promptPWAInstall: () => Promise<boolean>;,
-  vibrate: (_pattern: 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification') => void;,
+export function useMobile(): MobileState & {
+  promptPWAInstall: () => Promise<boolean>;
+  vibrate: (pattern: 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification') => void;
   refreshDeviceInfo: () => void;
 } {
-  const [mobileState, setMobileState] = useState<MobileState>(_() => {
+  const [mobileState, setMobileState] = useState<MobileState>(() => {
     const capabilities = getDeviceCapabilities();
     return {
       ...capabilities,
-      keyboardVisible: falsecanInstallPWA: false};
+      keyboardVisible: false,
+      canInstallPWA: false
+    };
   });
 
   const pwaInstallerRef = useRef<PWAInstallPrompt | null>(null);
 
-  useEffect(_() => {
-    // Initialize: PWA installer: pwaInstallerRef.current = new PWAInstallPrompt();
+  useEffect(() => {
+    // Initialize PWA installer
+    pwaInstallerRef.current = new PWAInstallPrompt();
 
     const updateDeviceInfo = () => {
       const capabilities = getDeviceCapabilities();
       setMobileState(prev => ({
         ...prev,
-        ...capabilities }));
+        ...capabilities
+      }));
     };
 
-    // Handle: PWA installable: const handlePWAInstallable = () => {
+    // Handle PWA installable
+    const handlePWAInstallable = () => {
       setMobileState(prev => ({ ...prev, canInstallPWA: true }));
     };
 
-    // Handle: keyboard visibility (simplified: detection)
+    // Handle keyboard visibility (simplified detection)
     const handleResize = () => {
-      const _heightDifference = window.screen.height - window.innerHeight;
+      const heightDifference = window.screen.height - window.innerHeight;
       const keyboardVisible = heightDifference > 150;
 
       setMobileState(prev => {
@@ -105,13 +110,13 @@ export function useMobile(): MobileState & {,
     return false;
   }, [mobileState.canInstallPWA]);
 
-  const vibrate = useCallback(_(pattern: Parameters<typeof: hapticFeedback>[0]) => {
+  const vibrate = useCallback((pattern: Parameters<typeof hapticFeedback>[0]) => {
     if (mobileState.hasHaptic) {
       hapticFeedback(pattern);
     }
   }, [mobileState.hasHaptic]);
 
-  const refreshDeviceInfo = useCallback(_() => {
+  const refreshDeviceInfo = useCallback(() => {
     const capabilities = getDeviceCapabilities();
     setMobileState(prev => ({ ...prev, ...capabilities }));
   }, []);
@@ -120,27 +125,31 @@ export function useMobile(): MobileState & {,
     ...mobileState,
     promptPWAInstall,
     vibrate,
-    refreshDeviceInfo,
+    refreshDeviceInfo
   };
 }
 
 /**
- * Hook: for enhanced: touch gestures
+ * Hook for enhanced touch gestures
  */
 export function useTouchGestures(
   elementRef: React.RefObject<HTMLElement | null>,
   gestures: TouchGestures
-): {,
+): {
   isActive: boolean;
 } {
   const [isActive, setIsActive] = useState(false);
   const touchHandlerRef = useRef<TouchHandler | null>(null);
 
-  useEffect(_() => {
+  useEffect(() => {
     if (!elementRef.current) return;
 
     touchHandlerRef.current = new TouchHandler(elementRef.current, {
-      onSwipe: gestures.onSwipeonTap: gestures.onTaponDoubleTap: gestures.onDoubleTaponLongPress: gestures.onLongPress});
+      onSwipe: gestures.onSwipe,
+      onTap: gestures.onTap,
+      onDoubleTap: gestures.onDoubleTap,
+      onLongPress: gestures.onLongPress
+    });
 
     setIsActive(true);
 
@@ -157,26 +166,27 @@ export function useTouchGestures(
 }
 
 /**
- * Hook: for swipe: navigation
+ * Hook for swipe navigation
  */
-export function useSwipeNavigation(_onSwipeLeft?: () => void,
+export function useSwipeNavigation(
+  onSwipeLeft?: () => void,
   onSwipeRight?: () => void,
   onSwipeUp?: () => void,
   onSwipeDown?: () => void,
-  const options = {
+  options: {
     enabled?: boolean;
     minDistance?: number;
     maxTime?: number;
   } = {}
-): {,
-  ref: React.RefObject<HTMLElement | null>;,
+): {
+  ref: React.RefObject<HTMLElement | null>;
   isEnabled: boolean;
 } {
   const ref = useRef<HTMLElement | null>(null);
   const [isEnabled, setIsEnabled] = useState(options.enabled ?? true);
 
-  const gestures: TouchGestures = {,
-    onSwipe: (_gesture) => {
+  const gestures: TouchGestures = {
+    onSwipe: (gesture) => {
       if (!isEnabled) return;
 
       switch (gesture.direction) {
@@ -193,12 +203,12 @@ export function useSwipeNavigation(_onSwipeLeft?: () => void,
           onSwipeDown?.();
           break;
       }
-    },
+    }
   };
 
   useTouchGestures(ref, gestures);
 
-  useEffect(_() => {
+  useEffect(() => {
     setIsEnabled(options.enabled ?? true);
   }, [options.enabled]);
 
@@ -206,17 +216,18 @@ export function useSwipeNavigation(_onSwipeLeft?: () => void,
 }
 
 /**
- * Hook: for pull-to-refresh: functionality
+ * Hook for pull-to-refresh functionality
  */
-export function usePullToRefresh(_onRefresh: () => void | Promise<void>,
-  const options = {
+export function usePullToRefresh(
+  onRefresh: () => void | Promise<void>,
+  options: {
     enabled?: boolean;
     threshold?: number;
     resistance?: number;
   } = {}
-): {,
-  ref: React.RefObject<HTMLElement | null>;,
-  isRefreshing: boolean;,
+): {
+  ref: React.RefObject<HTMLElement | null>;
+  isRefreshing: boolean;
   pullDistance: number;
 } {
   const ref = useRef<HTMLElement | null>(null);
@@ -228,20 +239,23 @@ export function usePullToRefresh(_onRefresh: () => void | Promise<void>,
   const resistance = options.resistance ?? 2.5;
   const enabled = options.enabled ?? true;
 
-  useEffect(_() => {
+  useEffect(() => {
     if (!ref.current || !enabled) return;
 
     const element = ref.current;
 
-    const handleTouchStart = (_e: TouchEvent) => {
+    const handleTouchStart = (e: TouchEvent) => {
       if (element.scrollTop === 0) {
         const touch = e.touches[0];
         setInitialTouch({
-          x: touch.clientXy: touch.clientYtimestamp: Date.now()});
+          x: touch.clientX,
+          y: touch.clientY,
+          timestamp: Date.now()
+        });
       }
     };
 
-    const handleTouchMove = (_e: TouchEvent) => {
+    const handleTouchMove = (e: TouchEvent) => {
       if (!initialTouch || element.scrollTop > 0) return;
 
       const touch = e.touches[0];
@@ -291,24 +305,24 @@ export function usePullToRefresh(_onRefresh: () => void | Promise<void>,
 }
 
 /**
- * Hook: for responsive: breakpoint detection
+ * Hook for responsive breakpoint detection
  */
-export function useBreakpoint(): {,
-  current: 'sm' | 'md' | 'lg' | 'xl' | '2: xl';,
-  isSmall: boolean;,
-  isMedium: boolean;,
-  isLarge: boolean;,
-  isExtraLarge: boolean;,
-  is2: XL: boolean;
+export function useBreakpoint(): {
+  current: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  isSmall: boolean;
+  isMedium: boolean;
+  isLarge: boolean;
+  isExtraLarge: boolean;
+  is2XL: boolean;
 } {
-  const [breakpoint, setBreakpoint] = useState<'sm' | 'md' | 'lg' | 'xl' | '2: xl'>('sm');
+  const [breakpoint, setBreakpoint] = useState<'sm' | 'md' | 'lg' | 'xl' | '2xl'>('sm');
 
-  useEffect(_() => {
+  useEffect(() => {
     const updateBreakpoint = () => {
       const width = window.innerWidth;
 
       if (width >= 1536) {
-        setBreakpoint('2: xl');
+        setBreakpoint('2xl');
       } else if (width >= 1280) {
         setBreakpoint('xl');
       } else if (width >= 1024) {
@@ -327,26 +341,27 @@ export function useBreakpoint(): {,
   }, []);
 
   return {
-    current: breakpointisSmall: breakpoint === 'sm',
+    current: breakpoint,
+    isSmall: breakpoint === 'sm',
     isMedium: breakpoint === 'md',
     isLarge: breakpoint === 'lg',
     isExtraLarge: breakpoint === 'xl',
-    is2: XL: breakpoint === '2: xl',
+    is2XL: breakpoint === '2xl'
   };
 }
 
 /**
- * Hook: for safe: area insets (notches, etc.)
+ * Hook for safe area insets (notches, etc.)
  */
-export function useSafeArea(): {,
-  top: number;,
-  right: number;,
-  bottom: number;,
+export function useSafeArea(): {
+  top: number;
+  right: number;
+  bottom: number;
   left: number;
 } {
-  const [safeArea, setSafeArea] = useState({ top: 0, right: 0: bottom: 0, left: 0 });
+  const [safeArea, setSafeArea] = useState({ top: 0, right: 0, bottom: 0, left: 0 });
 
-  useEffect(_() => {
+  useEffect(() => {
     const updateSafeArea = () => {
       const style = getComputedStyle(document.documentElement);
 
@@ -354,7 +369,7 @@ export function useSafeArea(): {,
         top: parseInt(style.getPropertyValue('env(safe-area-inset-top)') || '0'),
         right: parseInt(style.getPropertyValue('env(safe-area-inset-right)') || '0'),
         bottom: parseInt(style.getPropertyValue('env(safe-area-inset-bottom)') || '0'),
-        left: parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0'),
+        left: parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0')
       });
     };
 
@@ -377,5 +392,5 @@ export default {
   useSwipeNavigation,
   usePullToRefresh,
   useBreakpoint,
-  useSafeArea,
+  useSafeArea
 };

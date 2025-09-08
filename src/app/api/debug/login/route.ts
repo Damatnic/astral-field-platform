@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateAdminSetupKey } from "@/lib/auth/admin-setup";
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate admin key for debug routes
+    const { searchParams } = new URL(request.url);
+    const debugKey = searchParams.get("key");
+
+    if (!debugKey || !validateAdminSetupKey(debugKey)) {
+      return NextResponse.json({ error: "Unauthorized debug access" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
@@ -19,48 +28,53 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Mock debug user lookup
+    // Mock debug user lookup - clearly marked as test data
     const mockUsers = [
       {
-        email: "admin@example.com",
-        username: "admin",
-        password_hash: "hashed_password",
+        email: "test.admin@example.com",
+        username: "Test Admin (DEBUG)",
+        password_hash: "$2b$12$securely.hashed.password.example",
+        isTestAccount: true,
       },
       {
-        email: "user@example.com",
-        username: "user",
-        password_hash: "hashed_password",
+        email: "test.user@example.com",
+        username: "Test User (DEBUG)",
+        password_hash: "$2b$12$another.securely.hashed.password",
+        isTestAccount: true,
       },
     ];
 
     const user = mockUsers.find((u) => u.email === email);
 
     if (!user) {
-      console.log("Debug: User not found in database");
+      console.log("Debug: Test user not found in database");
       return NextResponse.json({
         success: false,
-        error: "User not found",
+        error: "Test user not found",
         debug: {
           userFound: false,
           searchedEmail: email,
-          availableUsers: mockUsers.map((u) => u.email),
+          availableTestUsers: mockUsers.map((u) => u.email),
+          note: "These are test accounts only"
         },
       });
     }
 
-    // Mock password verification
-    const passwordValid = password === "password"; // Simple mock
+    // For debug purposes only - this would use proper password verification in production
+    const passwordValid = false; // Always fail since no real authentication exists
 
-    console.log("Debug: Login attempt:", { email, passwordValid });
+    console.log("Debug: Test login attempt:", { email, passwordValid, isTestAccount: true });
 
     return NextResponse.json({
       success: passwordValid,
-      message: passwordValid ? "Login successful" : "Invalid password",
+      message: passwordValid ? "Test login successful" : "Authentication disabled for security",
       debug: {
         userFound: true,
         passwordValid,
         userId: user.email,
         username: user.username,
+        isTestAccount: user.isTestAccount,
+        securityNote: "Debug authentication always fails for security reasons"
       },
     });
   } catch (error: unknown) {

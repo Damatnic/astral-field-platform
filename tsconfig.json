@@ -32,22 +32,26 @@
     "next-env.d.ts",
     "src/app/**/*.ts",
     "src/app/**/*.tsx",
-    "src/lib/database.ts", "src/lib/db.ts", "src/lib/cache.ts", "src/lib/auth.ts", "src/lib/env-config.ts", "src/lib/utils.ts", "src/lib/api-error-handler.ts", "src/lib/openai-service.ts", "src/lib/supabase/**/*.ts",
-    "src/types/**/*.ts",
-    "src/pages/api/**/*.ts",
+    "src/lib/database.ts",
+    "src/lib/env-config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
+    ".next",
+    "dist",
+    "build",
+    "coverage",
     "scripts/**/*",
-    "__tests__/**",
-    "tests/**",
-    "src/stores/**",
-    "src/services/**",
-    "src/components/**",
-    "src/hooks/**",
-    "src/pages/*",
-    "src/lib/auto-init.ts",
-    "src/lib/auth/__tests__/**"
+    "src/services/**/*",
+    "src/components/**/*",
+    "src/hooks/**/*",
+    "src/stores/**/*",
+    "src/lib/**/*",
+    "!src/lib/database.ts",
+    "!src/lib/env-config.ts",
+    "__tests__/**/*",
+    "tests/**/*",
+    "playwright-tests/**/*"
   ]
 }

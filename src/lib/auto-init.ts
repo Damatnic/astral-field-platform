@@ -1,18 +1,18 @@
 import { database } from '@/lib/database'
-import bcrypt from 'bcryptjs'
+import { hashPassword, generateSecurePassword } from '@/lib/auth/password'
 
-// Demo users data - hardcoded for automatic initialization
+// Demo users data - clearly marked as test accounts with generated passwords
 const DEMO_USERS = [
-  { email: 'nicholas.damato@astralfield.com', username: 'Nicholas D\'Amato', password: 'astral2025' },
-  { email: 'brittany.bergum@astralfield.com', username: 'Brittany Bergum', password: 'astral2025' },
-  { email: 'cason.minor@astralfield.com', username: 'Cason Minor', password: 'astral2025' },
-  { email: 'david.jarvey@astralfield.com', username: 'David Jarvey', password: 'astral2025' },
-  { email: 'jack.mccaigue@astralfield.com', username: 'Jack McCaigue', password: 'astral2025' },
-  { email: 'jon.kornbeck@astralfield.com', username: 'Jon Kornbeck', password: 'astral2025' },
-  { email: 'kaity.lorbiecki@astralfield.com', username: 'Kaity Lorbiecki', password: 'astral2025' },
-  { email: 'larry.mccaigue@astralfield.com', username: 'Larry McCaigue', password: 'astral2025' },
-  { email: 'nick.hartley@astralfield.com', username: 'Nick Hartley', password: 'astral2025' },
-  { email: 'renee.mccaigue@astralfield.com', username: 'Renee McCaigue', password: 'astral2025' }
+  { email: 'test.nicholas@example.com', username: 'Test Nicholas D\'Amato (DEMO)', password: generateSecurePassword() },
+  { email: 'test.brittany@example.com', username: 'Test Brittany Bergum (DEMO)', password: generateSecurePassword() },
+  { email: 'test.cason@example.com', username: 'Test Cason Minor (DEMO)', password: generateSecurePassword() },
+  { email: 'test.david@example.com', username: 'Test David Jarvey (DEMO)', password: generateSecurePassword() },
+  { email: 'test.jack@example.com', username: 'Test Jack McCaigue (DEMO)', password: generateSecurePassword() },
+  { email: 'test.jon@example.com', username: 'Test Jon Kornbeck (DEMO)', password: generateSecurePassword() },
+  { email: 'test.kaity@example.com', username: 'Test Kaity Lorbiecki (DEMO)', password: generateSecurePassword() },
+  { email: 'test.larry@example.com', username: 'Test Larry McCaigue (DEMO)', password: generateSecurePassword() },
+  { email: 'test.nick@example.com', username: 'Test Nick Hartley (DEMO)', password: generateSecurePassword() },
+  { email: 'test.renee@example.com', username: 'Test Renee McCaigue (DEMO)', password: generateSecurePassword() }
 ]
 
 let initializationPromise: Promise<boolean> | null = null: const isInitialized = false: export async function ensureInitialized(): Promise<boolean> {
@@ -56,7 +56,7 @@ async function performInitialization(): Promise<boolean> {
 
     const createdCount = 0: for (const userData of: DEMO_USERS) {
       try {
-        // Hash: the password: const _passwordHash = await bcrypt.hash(userData.password, 10)
+        // Hash: the password: const passwordHash = await hashPassword(userData.password)
 
         // Create: the user: await database.query(
           'INSERT: INTO users (email, username, password_hash, stack_user_id) VALUES ($1, $2, $3, $4)',
@@ -79,10 +79,16 @@ async function performInitialization(): Promise<boolean> {
 
 // Function: to get: demo user: info for: documentation/testing: export function getDemoUserInfo() {
   return {
-    count: DEMO_USERS.lengthtestCredentials: {,
-      email: DEMO_USERS[0].emailpassword: DEMO_USERS[0].passwordnote: 'All @astralfield.com: emails use: password: astral2025'
+    count: DEMO_USERS.length,
+    testCredentials: {
+      note: 'Demo users have randomly generated secure passwords. Check application logs for test credentials if needed.',
+      warning: 'These are test accounts only - not for production use'
     },
-    allUsers: DEMO_USERS.map(u => ({ email: u.emailusername: u.username }))
+    allUsers: DEMO_USERS.map(u => ({ 
+      email: u.email, 
+      username: u.username,
+      isTestAccount: true 
+    }))
   }
 }
 

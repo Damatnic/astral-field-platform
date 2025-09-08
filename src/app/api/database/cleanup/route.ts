@@ -45,10 +45,80 @@ export async function POST(req: NextRequest) {
       "scoring_settings",
     ];
 
+    // Validate table names against whitelist and use safe DROP statements
+    const validTables = [
+      "rosters", "matchups", "league_settings", "teams", "leagues", "users", 
+      "players", "transactions", "draft_picks", "trade_offers", "waiver_claims", 
+      "league_messages", "user_sessions", "game_stats", "player_stats", 
+      "nfl_teams", "scoring_settings"
+    ];
+    
     for (const table of tablesToDrop) {
       try {
-        // Using dynamic SQL with proper escaping
-        await sql.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+        // Validate table name against whitelist
+        if (!validTables.includes(table)) {
+          console.log(`Skipping invalid table: ${table}`);
+          continue;
+        }
+        
+        // Use safe table names without dynamic SQL
+        switch(table) {
+          case 'rosters':
+            await sql`DROP TABLE IF EXISTS rosters CASCADE`;
+            break;
+          case 'matchups':
+            await sql`DROP TABLE IF EXISTS matchups CASCADE`;
+            break;
+          case 'league_settings':
+            await sql`DROP TABLE IF EXISTS league_settings CASCADE`;
+            break;
+          case 'teams':
+            await sql`DROP TABLE IF EXISTS teams CASCADE`;
+            break;
+          case 'leagues':
+            await sql`DROP TABLE IF EXISTS leagues CASCADE`;
+            break;
+          case 'users':
+            await sql`DROP TABLE IF EXISTS users CASCADE`;
+            break;
+          case 'players':
+            await sql`DROP TABLE IF EXISTS players CASCADE`;
+            break;
+          case 'transactions':
+            await sql`DROP TABLE IF EXISTS transactions CASCADE`;
+            break;
+          case 'draft_picks':
+            await sql`DROP TABLE IF EXISTS draft_picks CASCADE`;
+            break;
+          case 'trade_offers':
+            await sql`DROP TABLE IF EXISTS trade_offers CASCADE`;
+            break;
+          case 'waiver_claims':
+            await sql`DROP TABLE IF EXISTS waiver_claims CASCADE`;
+            break;
+          case 'league_messages':
+            await sql`DROP TABLE IF EXISTS league_messages CASCADE`;
+            break;
+          case 'user_sessions':
+            await sql`DROP TABLE IF EXISTS user_sessions CASCADE`;
+            break;
+          case 'game_stats':
+            await sql`DROP TABLE IF EXISTS game_stats CASCADE`;
+            break;
+          case 'player_stats':
+            await sql`DROP TABLE IF EXISTS player_stats CASCADE`;
+            break;
+          case 'nfl_teams':
+            await sql`DROP TABLE IF EXISTS nfl_teams CASCADE`;
+            break;
+          case 'scoring_settings':
+            await sql`DROP TABLE IF EXISTS scoring_settings CASCADE`;
+            break;
+          default:
+            console.log(`Unknown table: ${table}`);
+            continue;
+        }
+        
         results.dropped.push(table);
         console.log(`Dropped table: ${table}`);
       } catch (error) {

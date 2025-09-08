@@ -1,39 +1,55 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { validateAdminSetupKey } from "@/lib/auth/admin-setup";
+import { generateSecurePassword } from "@/lib/auth/password";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    // Validate admin key
+    const { searchParams } = new URL(request.url);
+    const key = searchParams.get("key");
+
+    if (!key) {
+      return NextResponse.json({ error: "Admin key is required" }, { status: 400 });
+    }
+
+    if (!validateAdminSetupKey(key)) {
+      console.warn('Unauthorized setup-users attempt');
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     console.log("🚀 Setting up demo users...");
 
+    // Generate secure test users with random passwords
     const testUsers = [
       {
-        email: "nicholas.damato@astralfield.com",
-        username: "Nicholas D'Amato",
-        password: "astral2025",
+        email: "test.nicholas@example.com",
+        username: "Test Nicholas D'Amato (DEMO)",
+        password: generateSecurePassword(),
       },
       {
-        email: "brittany.bergum@astralfield.com",
-        username: "Brittany Bergum",
-        password: "astral2025",
+        email: "test.brittany@example.com",
+        username: "Test Brittany Bergum (DEMO)",
+        password: generateSecurePassword(),
       },
       {
-        email: "cason.minor@astralfield.com",
-        username: "Cason Minor",
-        password: "astral2025",
+        email: "test.cason@example.com",
+        username: "Test Cason Minor (DEMO)",
+        password: generateSecurePassword(),
       },
       {
-        email: "david.jarvey@astralfield.com",
-        username: "David Jarvey",
-        password: "astral2025",
+        email: "test.david@example.com",
+        username: "Test David Jarvey (DEMO)",
+        password: generateSecurePassword(),
       },
       {
-        email: "demo1@astralfield.com",
-        username: "Demo User 1",
-        password: "astral2025",
+        email: "demo1@example.com",
+        username: "Demo User 1 (TEST)",
+        password: generateSecurePassword(),
       },
       {
-        email: "demo2@astralfield.com",
-        username: "Demo User 2",
-        password: "astral2025",
+        email: "demo2@example.com",
+        username: "Demo User 2 (TEST)",
+        password: generateSecurePassword(),
       },
     ];
 
@@ -49,9 +65,15 @@ export async function POST() {
         emailVerified: true,
         createdAt: new Date().toISOString(),
         lastLogin: null,
+        isTestAccount: true,
       })),
       count: testUsers.length,
-      message: "Demo users created successfully",
+      message: "Demo users created successfully with secure random passwords",
+      security: {
+        note: "All test accounts use randomly generated secure passwords",
+        warning: "These are test accounts only - not for production use",
+        passwordsGenerated: testUsers.length
+      },
       timestamp: new Date().toISOString(),
     };
 

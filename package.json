@@ -47,7 +47,9 @@
     "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false",
     "demo:setup": "node scripts/one-click-setup.js",
     "db:migrate": "node scripts/run-migrations.js",
-    "db:seed": "node scripts/seed-demo-data.js"
+    "db:seed": "node scripts/seed-demo-data.js",
+    "db:generate-types": "tsx scripts/generate-database-types.ts generate",
+    "db:validate-types": "tsx scripts/generate-database-types.ts validate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

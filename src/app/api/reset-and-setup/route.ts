@@ -22,9 +22,38 @@ export async function POST(req: NextRequest) {
         'users'
       ];
       
+      // Use parameterized queries for table clearing - validated against whitelist
+      const validTables = ['lineups', 'matchups', 'teams', 'leagues', 'users'];
+      
       for (const table of tablesToClear) {
         try {
-          await client.query(`DELETE FROM ${table}`);
+          // Validate table name against whitelist
+          if (!validTables.includes(table)) {
+            console.log(`⚠️ Skipping invalid table: ${table}`);
+            continue;
+          }
+          
+          // Use safe table names (no dynamic SQL)
+          switch(table) {
+            case 'lineups':
+              await client.query('DELETE FROM lineups');
+              break;
+            case 'matchups':
+              await client.query('DELETE FROM matchups');
+              break;
+            case 'teams':
+              await client.query('DELETE FROM teams');
+              break;
+            case 'leagues':
+              await client.query('DELETE FROM leagues');
+              break;
+            case 'users':
+              await client.query('DELETE FROM users');
+              break;
+            default:
+              console.log(`⚠️ Unknown table: ${table}`);
+              continue;
+          }
           console.log(`✅ Cleared ${table}`);
         } catch (e) {
           console.log(`⚠️ Could not clear ${table}:`, e);

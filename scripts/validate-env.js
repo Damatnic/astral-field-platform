@@ -1,46 +1,131 @@
 #!/usr/bin/env node
+
+/**
+ * Environment Validation CLI Script for Astral Field
+ * 
+ * This script validates environment configuration before deployment
+ * and provides detailed feedback about configuration status.
+ */
+
 const fs = require('fs');
 const path = require('path');
-console.log('🔍 Validating Production Environment...\n');
-// Required environment variables for production
+
+// Colors for terminal output
+const colors = {
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+  white: '\x1b[37m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m'
+};
+
+function print(message, color = colors.white) {
+  console.log(`${color}${message}${colors.reset}`);
+}
+
+function printHeader(message) {
+  console.log(`\n${colors.bold}${colors.blue}=== ${message} ===${colors.reset}`);
+}
+
+console.log(`${colors.bold}${colors.magenta}🚀 Astral Field Environment Validator${colors.reset}`);
+console.log(`${colors.dim}Validating environment configuration...${colors.reset}\n`);
+
+// Required environment variables for all environments
 const requiredEnvVars = [
   {
-    name: 'NODE_ENV'description: 'Node environment',
-    required: trueexpectedValue: 'production'
+    name: 'NODE_ENV',
+    description: 'Node environment',
+    required: true,
+    validValues: ['development', 'test', 'production']
   },
   {
-    name: 'NEXT_PUBLIC_APP_URL'description: 'Application URL',
-    required: trueformat: /^https:\/\/.+/
+    name: 'NEXT_PUBLIC_APP_URL',
+    description: 'Application URL',
+    required: true,
+    format: /^https?:\/\/.+/
   },
   {
-    name: 'DATABASE_URL'description: 'Database connection string',
-    required: trueformat: /^postgresql:\/\/.+/
+    name: 'DATABASE_URL',
+    description: 'Database connection string',
+    required: true,
+    format: /^postgresql:\/\/.+/
   },
   {
-    name: 'NEXTAUTH_SECRET'description: 'NextAuth secret key',
-    required: trueminLength: 32
+    name: 'JWT_SECRET',
+    description: 'JWT secret key',
+    required: true,
+    minLength: 64
   },
   {
-    name: 'OPENAI_API_KEY'description: 'OpenAI API key',
-    required: trueformat: /^sk-.+/
+    name: 'ADMIN_SETUP_KEY',
+    description: 'Admin setup key',
+    required: true,
+    minLength: 32
+  },
+  {
+    name: 'ENCRYPTION_SECRET',
+    description: 'Encryption secret key',
+    required: true,
+    minLength: 32
+  },
+  {
+    name: 'NEXT_PUBLIC_SUPABASE_URL',
+    description: 'Supabase URL',
+    required: true,
+    format: /^https:\/\/.+\.supabase\.co$/
+  },
+  {
+    name: 'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    description: 'Supabase anonymous key',
+    required: true,
+    minLength: 100
   }
 ];
+// Production-specific required variables
+const productionRequiredVars = [
+  'VAPID_PUBLIC_KEY',
+  'VAPID_PRIVATE_KEY'
+];
+
 // Optional but recommended environment variables
 const recommendedEnvVars = [
-  'SPORTS_DATA_API_KEY',
-  'REDIS_URL',
-  'SENTRY_DSN',
-  'ANALYTICS_ID',
-  'WEBHOOK_SECRET'
+  {
+    name: 'REDIS_URL',
+    description: 'Redis caching service',
+    alternatives: ['KV_URL', 'UPSTASH_REDIS_URL'],
+    category: 'Caching'
+  },
+  {
+    name: 'OPENAI_API_KEY',
+    description: 'OpenAI API key',
+    alternatives: ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY'],
+    category: 'AI Services'
+  },
+  {
+    name: 'SPORTS_IO_API_KEY',
+    description: 'Sports data API key',
+    alternatives: ['SPORTSDATA_API_KEY'],
+    category: 'Sports Data'
+  },
+  {
+    name: 'SENTRY_DSN',
+    description: 'Error monitoring',
+    category: 'Monitoring'
+  },
+  {
+    name: 'WEATHER_API_KEY',
+    description: 'Weather data for games',
+    category: 'Sports Data'
+  }
 ];
-// Security-related environment variables
-const securityEnvVars = [
-  'RATE_LIMIT_SECRET',
-  'AUDIT_LOG_SECRET',
-  'MFA_ENCRYPTION_KEY'
-];
-const hasErrors = false;
-const hasWarnings = false;
+
+let hasErrors = false;
+let hasWarnings = false;
 // Load environment variables from .env files
 const envFiles = ['.env.production.local', '.env.production', '.env.local', '.env'];
 for (const envFile of envFiles) {
@@ -60,132 +145,161 @@ for (const envFile of envFiles) {
     }
   }
 }
-console.log('\n🔒 Validating Required Variables...');
+printHeader('Required Environment Variables');
+
 // Validate required environment variables
 for (const envVar of requiredEnvVars) {
   const value = process.env[envVar.name];
+  
   if (!value) {
-    console.error(`❌ ${envVar.name}: Missing required variable (${envVar.description})`);
+    print(`❌ ${envVar.name}: Missing required variable (${envVar.description})`, colors.red);
     hasErrors = true;
     continue;
   }
-  // Check expected value
-  if (envVar.expectedValue && value !== envVar.expectedValue) {
-    console.error(`❌ ${envVar.name}: Expected "${envVar.expectedValue}", got "${value}"`);
+  
+  // Check valid values
+  if (envVar.validValues && !envVar.validValues.includes(value)) {
+    print(`❌ ${envVar.name}: Invalid value "${value}". Expected: ${envVar.validValues.join(', ')}`, colors.red);
     hasErrors = true;
     continue;
   }
+  
   // Check format
   if (envVar.format && !envVar.format.test(value)) {
-    console.error(`❌ ${envVar.name}: Invalid format`);
+    print(`❌ ${envVar.name}: Invalid format`, colors.red);
     hasErrors = true;
     continue;
   }
+  
   // Check minimum length
   if (envVar.minLength && value.length < envVar.minLength) {
-    console.error(`❌ ${envVar.name}: Too short (minimum ${envVar.minLength} characters)`);
+    print(`❌ ${envVar.name}: Too short (minimum ${envVar.minLength} characters)`, colors.red);
     hasErrors = true;
     continue;
   }
-  console.log(`✅ ${envVar.name}: Valid`);
+  
+  print(`✅ ${envVar.name}: Valid`, colors.green);
 }
-console.log('\n🔧 Checking Recommended Variables...');
-// Check recommended variables
-for (const envVar of recommendedEnvVars) {
-  const value = process.env[envVar];
-  if (!value) {
-    console.warn(`⚠️  ${envVar}: Not set (recommended for production)`);
+
+// Check production-specific variables
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) {
+  printHeader('Production-Specific Requirements');
+  
+  for (const varName of productionRequiredVars) {
+    const value = process.env[varName];
+    if (!value) {
+      print(`❌ ${varName}: Required for production`, colors.red);
+      hasErrors = true;
+    } else {
+      print(`✅ ${varName}: Set`, colors.green);
+    }
+  }
+  
+  // Check production security
+  if (process.env.ADMIN_SETUP_KEY === 'astral2025') {
+    print(`⚠️  ADMIN_SETUP_KEY: Using default value in production is insecure`, colors.yellow);
     hasWarnings = true;
+  }
+  
+  if (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.startsWith('http://')) {
+    print(`⚠️  NEXT_PUBLIC_APP_URL: Using HTTP in production is insecure`, colors.yellow);
+    hasWarnings = true;
+  }
+}
+printHeader('Recommended Services');
+
+// Check recommended variables with alternatives
+for (const service of recommendedEnvVars) {
+  const mainValue = process.env[service.name];
+  const alternatives = service.alternatives || [];
+  const hasAlternative = alternatives.some(alt => process.env[alt]);
+  
+  if (mainValue) {
+    print(`✅ ${service.category}: ${service.name} configured`, colors.green);
+  } else if (hasAlternative) {
+    const configuredAlt = alternatives.find(alt => process.env[alt]);
+    print(`✅ ${service.category}: ${configuredAlt} configured (alternative)`, colors.green);
   } else {
-    console.log(`✅ ${envVar}: Set`);
+    print(`⚠️  ${service.category}: ${service.description} not configured`, colors.yellow);
+    if (alternatives.length > 0) {
+      print(`   Alternatives: ${alternatives.join(', ')}`, colors.dim);
+    }
+    hasWarnings = true;
   }
 }
-console.log('\n🛡️  Validating Security Variables...');
-// Check security variables
-for (const envVar of securityEnvVars) {
-  const value = process.env[envVar];
-  if (!value) {
-    console.warn(`⚠️  ${envVar}: Not set (recommended for enhanced security)`);
-    hasWarnings = true;
-  } else if (value.length < 32) {
-    console.warn(`⚠️  ${envVar}: Should be at least 32 characters for security`);
-    hasWarnings = true;
+// Database connection validation
+printHeader('Database Configuration');
+
+const databaseUrl = process.env.DATABASE_URL || process.env.NEON_DATABASE_URL;
+if (databaseUrl) {
+  if (databaseUrl.includes('pooling=true') || databaseUrl.includes('pgbouncer=true')) {
+    print(`✅ Database: Connection pooling enabled`, colors.green);
   } else {
-    console.log(`✅ ${envVar}: Set and secure`);
-  }
-}
-console.log('\n📊 Environment Validation Summary:');
-// Check for insecure configurations
-const insecureConfigs = [];
-if (process.env.NODE_ENV !== 'production') {
-  insecureConfigs.push('NODE_ENV is not set to production');
-}
-if (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.startsWith('http://')) {
-  insecureConfigs.push('Using HTTP instead of HTTPS');
-}
-if (process.env.NEXTAUTH_SECRET && process.env.NEXTAUTH_SECRET.length < 32) {
-  insecureConfigs.push('NEXTAUTH_SECRET is too short');
-}
-if (insecureConfigs.length > 0) {
-  console.log('\n🚨 Security Warnings:');
-  for (const config of insecureConfigs) {
-    console.warn(`⚠️  ${config}`);
+    print(`⚠️  Database: Consider enabling connection pooling for better performance`, colors.yellow);
     hasWarnings = true;
   }
-}
-// Performance recommendations
-console.log('\n⚡ Performance Recommendations:');
-const performanceChecks = [
-  {
-    name: 'Database pooling',
-    check: () => process.env.DATABASE_URL && process.env.DATABASE_URL.includes('pooling=true'),
-    message: 'Consider enabling database connection pooling'
-  },
-  {
-    name: 'Redis caching',
-    check: () => !!process.env.REDIS_URL,
-    message: 'Redis recommended for production caching'
-  },
-  {
-    name: 'CDN configuration',
-    check: () => process.env.NEXT_PUBLIC_CDN_URL,
-    message: 'CDN recommended for static assets'
-  }
-];
-for (const check of performanceChecks) {
-  if (check.check()) {
-    console.log(`✅ ${check.name}: Configured`);
+  
+  if (databaseUrl.includes('sslmode=require')) {
+    print(`✅ Database: SSL mode enabled`, colors.green);
   } else {
-    console.warn(`⚠️  ${check.name}: ${check.message}`);
+    print(`⚠️  Database: Consider enabling SSL mode for security`, colors.yellow);
     hasWarnings = true;
   }
+} else {
+  print(`❌ Database: No valid database URL found`, colors.red);
+  hasErrors = true;
 }
 // Final validation result
-console.log('\n' + '='.repeat(50));
+console.log('\n' + '='.repeat(60));
+
 if (hasErrors) {
-  console.error('❌ Environment validation FAILED');
-  console.error('   Please fix the errors above before proceeding with production deployment.');
+  print('❌ Environment validation: FAILED', colors.red);
+  print('   Critical configuration errors must be fixed before deployment.', colors.red);
+  
+  console.log('\n💡 Quick fixes:');
+  print('   1. Copy .env.example to .env.local', colors.dim);
+  print('   2. Generate secure secrets with: openssl rand -hex 64', colors.dim);
+  print('   3. Configure your database and Supabase credentials', colors.dim);
+  
   process.exit(1);
 } else if (hasWarnings) {
-  console.warn('⚠️  Environment validation completed with warnings');
-  console.warn('   Consider addressing the warnings for optimal production performance.');
-  console.log('✅ Proceeding with build...');
+  print('⚠️  Environment validation: PASSED WITH WARNINGS', colors.yellow);
+  print('   Optional features are not configured but the app will work.', colors.yellow);
+  print('   Consider adding recommended services for better performance.', colors.yellow);
 } else {
-  console.log('✅ Environment validation PASSED');
-  console.log('   Production environment is properly configured.');
+  print('🎉 Environment validation: ALL CHECKS PASSED', colors.green);
+  print('   Your Astral Field installation is fully configured!', colors.green);
 }
+
 // Save validation report
 const report = {
   timestamp: new Date().toISOString(),
-  status: hasErrors ? 'failed' : hasWarnings ? 'warning' : 'passed'errors: hasErrorswarnings: hasWarningsenvironment: Object.keys(process.env)
-    .filter(key => key.startsWith('NEXT_PUBLIC_') || requiredEnvVars.some(v => v.name === key))
-    .reduce((obj, key) => {
-      obj[key] = key.includes('SECRET') || key.includes('KEY') ? '[REDACTED]' : process.env[key];
-      return obj;
-    }, {})
+  status: hasErrors ? 'failed' : hasWarnings ? 'warning' : 'passed',
+  errors: hasErrors,
+  warnings: hasWarnings,
+  environment: process.env.NODE_ENV || 'development',
+  summary: {
+    required_variables: requiredEnvVars.length,
+    configured_services: recommendedEnvVars.filter(service => 
+      process.env[service.name] || 
+      (service.alternatives && service.alternatives.some(alt => process.env[alt]))
+    ).length,
+    total_services: recommendedEnvVars.length
+  }
 };
-fs.writeFileSync(
-  path.join(process.cwd(), 'env-validation-report.json'),
-  JSON.stringify(report, null, 2)
-);
-console.log('\n📄 Validation report saved to env-validation-report.json');
+
+try {
+  fs.writeFileSync(
+    path.join(process.cwd(), 'env-validation-report.json'),
+    JSON.stringify(report, null, 2)
+  );
+  print('\n📄 Validation report saved to env-validation-report.json', colors.dim);
+} catch (error) {
+  print(`⚠️  Could not save validation report: ${error.message}`, colors.yellow);
+}
+
+console.log('\n📚 Resources:');
+print('   📖 Configuration guide: .env.example', colors.dim);
+print('   🔧 Detailed validation: node src/lib/env/check-env.js', colors.dim);
+print('   🚀 Start application: npm run dev', colors.dim);
