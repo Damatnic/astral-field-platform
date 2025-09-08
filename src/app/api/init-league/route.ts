@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
     const commissionerUser = usersWithIds.find((u) => u.isAdmin);
 
     // Step 2: Create the main league
-    const leagueResult = await db.query(
+    const leagueResult = await client.query(
       `INSERT INTO leagues (
         name, 
         season_year, 
@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
 
     // Step 3: Create teams for all players
     const teamInserts = usersWithIds.map(async (player, index) => {
-      const teamResult = await db.query(
+      const teamResult = await client.query(
         `INSERT INTO teams (
           league_id,
           user_id,
@@ -210,7 +210,7 @@ export async function POST(req: NextRequest) {
     const teamsWithIds = await Promise.all(teamInserts);
 
     // Step 4: Create basic matchup schedule for current week
-    await db.query(
+    await client.query(
       `INSERT INTO matchups (
         league_id, 
         week, 
@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
 
     // Step 5: Create initial lineups for each team
     const lineupInserts = teamsWithIds.map(async (team) => {
-      return db.query(
+      return client.query(
         `INSERT INTO lineups (team_id, week, season_year)
          VALUES ($1, $2, $3)
          RETURNING id`,
