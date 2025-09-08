@@ -66,6 +66,9 @@ export async function POST(req: NextRequest) {
       console.log("🏆 Creating 2025 league...");
       
       const nicholas = userIds.find(u => u.name === "Nicholas D'Amato");
+      if (!nicholas) {
+        throw new Error("Nicholas D'Amato user not found");
+      }
       
       const leagueResult = await client.query(
         `INSERT INTO leagues (
