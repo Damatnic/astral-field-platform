@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     // Check if account is locked
     if (user.locked_until && new Date(user.locked_until) > new Date()) {
-      await auditLogger.logAuthentication(userId, 'login_failure', {
+      await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip,
         userAgent,
         failureReason: 'Account locked'
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user is suspended
     if (user.role === 'suspended') {
-      await auditLogger.logAuthentication(userId, 'login_failure', {
+      await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip,
         userAgent,
         failureReason: 'Account suspended'
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       const lockoutResult = await securityMiddleware.handleFailedLogin(email, 'email');
       await securityMiddleware.handleFailedLogin(ip, 'ip');
 
-      await auditLogger.logAuthentication(userId, 'login_failure', {
+      await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip,
         userAgent,
         failureReason: 'Invalid password'
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     // Check email verification
     if (!user.email_verified) {
-      await auditLogger.logAuthentication(userId, 'login_failure', {
+      await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip,
         userAgent,
         failureReason: 'Email not verified'
@@ -169,12 +169,12 @@ export async function POST(request: NextRequest) {
       if (!challengeId && !mfaToken) {
         // Create MFA challenge
         const mfaChallengeId = await enhancedMFA.createMFAChallenge(
-          userId,
+          userId || '',
           'totp', // Default method, could be user preference
           { ip, userAgent }
         );
 
-        await auditLogger.logAuthentication(userId, 'login_failure', {
+        await auditLogger.logAuthentication(userId || '', 'login_failure', {
           ipAddress: ip,
           userAgent,
           failureReason: 'MFA required'
@@ -199,7 +199,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!mfaResult.success) {
-          await auditLogger.logAuthentication(userId, 'login_failure', {
+          await auditLogger.logAuthentication(userId || '', 'login_failure', {
             ipAddress: ip,
             userAgent,
             failureReason: 'Invalid MFA token'
@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     // Log successful login
-    await auditLogger.logAuthentication(userId, 'login_success', {
+    await auditLogger.logAuthentication(userId || '', 'login_success', {
       ipAddress: ip,
       userAgent,
       sessionId,
@@ -320,7 +320,7 @@ export async function POST(request: NextRequest) {
     console.error('Login error:', error);
 
     if (userId) {
-      await auditLogger.logAuthentication(userId, 'login_failure', {
+      await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
         userAgent: request.headers.get('user-agent') || '',
         failureReason: 'System error'

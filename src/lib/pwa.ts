@@ -184,12 +184,6 @@ export class PWAService {
     // You could dispatch a custom event here
     window.dispatchEvent(new CustomEvent('pwa-app-ready'));
   }
-
-// Global PWA event handling
-declare global {
-  interface Window {
-    deferredInstallPrompt: any;
-  }
 }
 
 // Capture install prompt
