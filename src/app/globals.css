@@ -4,6 +4,7 @@
 @import '../styles/design-tokens.css';
 @import '../styles/animations.css';
 @import '../styles/glassmorphism.css';
+@import '../styles/pwa-touch.css';
 
 :root {
   --background: #0f172a;

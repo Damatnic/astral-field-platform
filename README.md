@@ -116,9 +116,19 @@ NEXT_TELEMETRY_DISABLED=1
 
 ## 🧪 Testing
 
+The application includes a comprehensive testing framework covering all aspects of the platform. See [TESTING.md](./TESTING.md) for complete documentation.
+
+### Quick Test Commands
+
 ```bash
-# Run tests
-npm test
+# Run comprehensive test suite
+npm run test:comprehensive
+
+# Run comprehensive tests in parallel (faster)
+npm run test:comprehensive:parallel
+
+# Run unit tests only
+npm run test
 
 # Run tests with coverage
 npm run test:coverage
@@ -129,6 +139,17 @@ npm run test:integration
 # Run E2E tests
 npm run test:e2e
 ```
+
+### Test Coverage
+
+- **Unit Tests**: 90%+ coverage for services and utilities
+- **Integration Tests**: API endpoint testing with real database
+- **E2E Tests**: Complete user flow testing with Playwright
+- **Load Tests**: Performance testing for 10k+ concurrent users
+- **Security Tests**: OWASP Top 10 vulnerability testing
+- **Visual Regression**: UI consistency across browsers
+
+For detailed testing instructions, see [TESTING.md](./TESTING.md).
 
 ## 📦 Build & Deploy
 

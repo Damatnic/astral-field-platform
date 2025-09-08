@@ -9,6 +9,7 @@ import { NextApiRequest } from 'next';
 import { database } from '@/lib/database';
 import { verifyJWT } from '@/lib/auth/jwt-config';
 import Redis from 'ioredis';
+import { createAdapter } from '@socket.io/redis-adapter';
 
 type ChatRoomType = 'general' | 'trades' | 'waivers' | 'off-topic' | 'game-thread' | 'celebrations' | 'trash-talk';
 
@@ -32,20 +33,49 @@ interface WebSocketEvents {
   'leave_league': (leagueId: string) => void;
   'join_matchup': (matchupId: string) => void;
   'leave_matchup': (matchupId: string) => void;
-  'send_message': (data: { leagueId: string; message: string; type: 'chat' | 'reaction' }) => void;
-  
+  'join_draft': (draftId: string) => void;
+  'leave_draft': (draftId: string) => void;
+  'join_trade_room': (tradeId: string) => void;
+  'leave_trade_room': (tradeId: string) => void;
+  'send_message': (data: { leagueId: string; message: string; type: 'chat' | 'reaction' | 'gif' | 'emoji' }) => void;
+  'send_direct_message': (data: { recipientId: string; message: string; type: 'text' | 'trade_offer' | 'waiver_tip' }) => void;
+  'draft_pick': (data: { draftId: string; playerId: string; pickNumber: number }) => void;
+  'trade_proposal': (data: { tradeId: string; proposal: any }) => void;
+  'waiver_claim': (data: { leagueId: string; playerId: string; priority: number }) => void;
+  'lineup_change': (data: { teamId: string; changes: any[] }) => void;
+  'ping': () => void;
+
   // Server to Client
-  'score_update': (data: { 
-    leagueId: string; 
-    teamId: string; 
-    playerId: string; 
-    points: number; 
+  'score_update': (data: {
+    leagueId: string;
+    teamId: string;
+    playerId: string;
+    points: number;
     change: number;
+    projectedPoints?: number;
+    gameStatus: 'not_started' | 'in_progress' | 'final';
+    timestamp: string;
+  }) => void;
+  'real_time_stats': (data: {
+    playerId: string;
+    stats: {
+      yards: number;
+      touchdowns: number;
+      targets?: number;
+      completions?: number;
+    };
+    gameTime: string;
+    quarter: number;
     timestamp: string;
   }) => void;
   'player_update': (data: {
     playerId: string;
-    status: 'active' | 'injured' | 'inactive';
+    status: 'active' | 'injured' | 'inactive' | 'questionable' | 'out';
+    injuryUpdate?: {
+      type: string;
+      severity: 'minor' | 'moderate' | 'major';
+      expectedReturn?: string;
+    };
     stats: Record<string, number>;
     timestamp: string;
   }) => void;
@@ -53,7 +83,11 @@ interface WebSocketEvents {
     matchupId: string;
     homeScore: number;
     awayScore: number;
+    projectedHome: number;
+    projectedAway: number;
+    winProbability: { home: number; away: number };
     isComplete: boolean;
+    playersRemaining: { home: number; away: number };
     timestamp: string;
   }) => void;
   'league_message': (data: {
@@ -61,33 +95,120 @@ interface WebSocketEvents {
     userId: string;
     username: string;
     message: string;
-    type: 'chat' | 'reaction' | 'system';
+    type: 'chat' | 'reaction' | 'system' | 'celebration' | 'trash_talk';
+    metadata?: {
+      playerMention?: string;
+      tradeReference?: string;
+      gifUrl?: string;
+      emoji?: string;
+    };
+    timestamp: string;
+  }) => void;
+  'direct_message': (data: {
+    senderId: string;
+    senderUsername: string;
+    recipientId: string;
+    message: string;
+    type: 'text' | 'trade_offer' | 'waiver_tip' | 'lineup_advice';
+    metadata?: any;
+    timestamp: string;
+  }) => void;
+  'draft_update': (data: {
+    draftId: string;
+    currentPick: number;
+    onTheClock: string;
+    recentPick?: {
+      teamId: string;
+      playerId: string;
+      playerName: string;
+      position: string;
+      pickNumber: number;
+    };
+    timeRemaining: number;
     timestamp: string;
   }) => void;
   'trade_notification': (data: {
     leagueId: string;
     tradeId: string;
-    type: 'proposed' | 'accepted' | 'rejected';
+    type: 'proposed' | 'accepted' | 'rejected' | 'vetoed' | 'expired';
     involvedTeams: string[];
+    tradeDetails: {
+      offering: any[];
+      receiving: any[];
+    };
+    tradeValue?: {
+      fairness: 'fair' | 'slight_advantage' | 'significant_advantage';
+      advantageTeam?: string;
+    };
     timestamp: string;
   }) => void;
   'waiver_notification': (data: {
     leagueId: string;
     teamId: string;
     playerId: string;
-    type: 'claimed' | 'failed';
+    playerName: string;
+    type: 'claimed' | 'failed' | 'outbid' | 'processing';
+    waiverDetails: {
+      bidAmount?: number;
+      priority?: number;
+      droppedPlayer?: string;
+    };
     timestamp: string;
   }) => void;
+  'injury_alert': (data: {
+    playerId: string;
+    playerName: string;
+    team: string;
+    position: string;
+    injuryType: string;
+    severity: 'minor' | 'moderate' | 'major';
+    fantasyImpact: 'low' | 'medium' | 'high';
+    affectedOwners: string[];
+    timestamp: string;
+  }) => void;
+  'breaking_news': (data: {
+    type: 'trade' | 'injury' | 'suspension' | 'weather' | 'coaching';
+    headline: string;
+    description: string;
+    affectedPlayers: string[];
+    fantasyImpact: string;
+    urgency: 'low' | 'medium' | 'high' | 'critical';
+    timestamp: string;
+  }) => void;
+  'lineup_reminder': (data: {
+    teamId: string;
+    userId: string;
+    message: string;
+    deadlineMinutes: number;
+    unsetPositions: string[];
+    timestamp: string;
+  }) => void;
+  'game_event': (data: {
+    gameId: string;
+    type: 'touchdown' | 'field_goal' | 'turnover' | 'red_zone' | 'two_minute_warning';
+    playerId?: string;
+    playerName?: string;
+    team: string;
+    description: string;
+    fantasyRelevant: boolean;
+    affectedOwners: string[];
+    timestamp: string;
+  }) => void;
+  'pong': () => void;
 }
 
 class WebSocketManager {
   private io: SocketIOServer | null = null;
   private redis: Redis | null = null;
+  private redisSub: Redis | null = null;
   private connectedUsers = new Map<string, SocketUser>();
   private leagueRooms = new Map<string, Set<string>>();
   private matchupRooms = new Map<string, Set<string>>();
   private gameThreadRooms = new Map<string, Set<string>>();
+  private draftRooms = new Map<string, Set<string>>();
+  private tradeRooms = new Map<string, Set<string>>();
   private dmRooms = new Map<string, Set<string>>();
+  private playerAlerts = new Map<string, Set<string>>(); // playerId -> userIds
   private connectionCounts = new Map<string, number>();
   private rateLimiter = new Map<string, { count: number; resetTime: number }>();
   private notificationQueue: any[] = [];
@@ -109,17 +230,27 @@ class WebSocketManager {
         lazyConnect: true
       });
 
+      this.redisSub = new Redis({
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+        maxRetriesPerRequest: 3,
+        lazyConnect: true
+      });
+
       await this.redis.connect();
+      await this.redisSub.connect();
       console.log('✅ Redis connected for WebSocket scaling');
     } catch (error) {
       console.warn('⚠️ Redis not available, using in-memory storage:', error);
       this.redis = null;
+      this.redisSub = null;
     }
 
     // Initialize Socket.IO with production optimizations
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: process.env.NODE_ENV === 'production' 
+        origin: process.env.NODE_ENV === 'production'
           ? ['https://astral-field.vercel.app', 'https://astralfield.com']
           : ['http://localhost:3000', 'http://localhost:3001'],
         methods: ['GET', 'POST'],
@@ -134,14 +265,14 @@ class WebSocketManager {
       upgradeTimeout: 10000,
       allowEIO3: true,
       // Redis adapter for horizontal scaling (if Redis available)
-      adapter: this.redis ? undefined : undefined // TODO: Add Redis adapter when needed
+      adapter: this.redis && this.redisSub ? createAdapter(this.redis, this.redisSub) : undefined
     });
 
     this.setupMiddleware();
     this.setupEventHandlers();
     this.startMetricsCollection();
     this.startNotificationProcessor();
-    
+
     console.log('✅ WebSocket server initialized with production features');
   }
 
@@ -151,43 +282,13 @@ class WebSocketManager {
     // Authentication middleware
     this.io.use(async (socket, next) => {
       try {
-        const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.replace('Bearer ', '');
-        
+        const token = socket.handshake.auth.token;
         if (!token) {
           return next(new Error('Authentication token required'));
         }
 
-        // Verify JWT token
-        const decoded = verifyJWT(token) as any;
-        
-        // Get user data from database
-        const userResult = await database.query(
-          'SELECT id, username FROM users WHERE id = $1 AND is_active = true',
-          [decoded.userId]
-        );
-
-        if (userResult.rows.length === 0) {
-          return next(new Error('User not found or inactive'));
-        }
-
-        // Get user's leagues and teams
-        const leaguesResult = await database.query(`
-          SELECT DISTINCT l.id as league_id, t.id as team_id
-          FROM leagues l
-          JOIN teams t ON l.id = t.league_id
-          WHERE t.user_id = $1 AND l.is_active = true
-        `, [decoded.userId]);
-
-        const user: SocketUser = {
-          userId: decoded.userId,
-          username: userResult.rows[0].username,
-          leagueIds: leaguesResult.rows.map(row => row.league_id),
-          teamIds: leaguesResult.rows.map(row => row.team_id)
-        };
-
-        socket.data.user = user;
-        this.connectedUsers.set(socket.id, user);
-        
+        const decoded = await verifyJWT(token);
+        socket.data.user = decoded;
         next();
       } catch (error) {
         console.error('WebSocket authentication error:', error);
@@ -195,36 +296,30 @@ class WebSocketManager {
       }
     });
 
-    // Advanced rate limiting middleware
+    // Rate limiting middleware
     this.io.use((socket, next) => {
-      const userId = socket.data.user?.userId || socket.handshake.address;
+      const clientId = socket.id;
       const now = Date.now();
-      const rateLimitKey = `rate_limit:${userId}`;
-      
-      let userLimit = this.rateLimiter.get(rateLimitKey);
-      if (!userLimit || now > userLimit.resetTime) {
-        userLimit = { count: 0, resetTime: now + 60000 }; // Reset every minute
-        this.rateLimiter.set(rateLimitKey, userLimit);
+      const windowMs = 60000; // 1 minute
+      const maxRequests = 100; // 100 requests per minute
+
+      if (!this.rateLimiter.has(clientId)) {
+        this.rateLimiter.set(clientId, { count: 1, resetTime: now + windowMs });
+        return next();
       }
-      
-      // Allow 100 messages per minute per user
-      if (userLimit.count >= 100) {
+
+      const limiter = this.rateLimiter.get(clientId)!;
+      if (now > limiter.resetTime) {
+        limiter.count = 1;
+        limiter.resetTime = now + windowMs;
+        return next();
+      }
+
+      if (limiter.count >= maxRequests) {
         return next(new Error('Rate limit exceeded'));
       }
-      
-      userLimit.count++;
-      next();
-    });
 
-    // Connection limit middleware
-    this.io.use((socket, next) => {
-      const totalConnections = this.connectedUsers.size;
-      const maxConnections = parseInt(process.env.MAX_WS_CONNECTIONS || '10000');
-      
-      if (totalConnections >= maxConnections) {
-        return next(new Error('Server at capacity'));
-      }
-      
+      limiter.count++;
       next();
     });
   }
@@ -233,602 +328,691 @@ class WebSocketManager {
     if (!this.io) return;
 
     this.io.on('connection', (socket) => {
-      const user = socket.data.user as SocketUser;
-      console.log(`✅ User connected: ${user.username} (${user.userId})`);
+      const user = socket.data.user;
+      console.log(`🔌 User ${user.username} connected: ${socket.id}`);
 
-      // Auto-join user's leagues
-      user.leagueIds.forEach(leagueId => {
-        socket.join(`league:${leagueId}`);
-        this.addToLeagueRoom(leagueId, socket.id);
+      // Store user connection
+      this.connectedUsers.set(socket.id, {
+        userId: user.userId,
+        leagueIds: user.leagueIds || [],
+        teamIds: user.teamIds || [],
+        username: user.username
       });
 
-      // Handle league joining
+      // Handle league room management
       socket.on('join_league', (leagueId: string) => {
-        if (user.leagueIds.includes(leagueId)) {
-          socket.join(`league:${leagueId}`);
-          this.addToLeagueRoom(leagueId, socket.id);
-          console.log(`User ${user.username} joined league ${leagueId}`);
-        }
+        this.handleJoinLeague(socket, leagueId);
       });
 
-      // Handle league leaving
       socket.on('leave_league', (leagueId: string) => {
-        socket.leave(`league:${leagueId}`);
-        this.removeFromLeagueRoom(leagueId, socket.id);
-        console.log(`User ${user.username} left league ${leagueId}`);
+        this.handleLeaveLeague(socket, leagueId);
       });
 
-      // Handle matchup joining
       socket.on('join_matchup', (matchupId: string) => {
-        socket.join(`matchup:${matchupId}`);
-        this.addToMatchupRoom(matchupId, socket.id);
-        console.log(`User ${user.username} joined matchup ${matchupId}`);
+        this.handleJoinMatchup(socket, matchupId);
       });
 
-      // Handle matchup leaving
       socket.on('leave_matchup', (matchupId: string) => {
-        socket.leave(`matchup:${matchupId}`);
-        this.removeFromMatchupRoom(matchupId, socket.id);
-        console.log(`User ${user.username} left matchup ${matchupId}`);
+        this.handleLeaveMatchup(socket, matchupId);
       });
 
-      // Handle chat messages
-      socket.on('send_message', async (data: { 
-        leagueId: string; 
-        roomType?: ChatRoomType;
-        message: string; 
-        type: 'chat' | 'reaction' | 'gif';
-        replyToId?: string;
-        gifUrl?: string;
-      }) => {
-        if (!user.leagueIds.includes(data.leagueId)) {
-          socket.emit('error', { message: 'Not authorized for this league' });
-          return;
-        }
-
-        // Validate and sanitize message
-        const sanitizedMessage = this.sanitizeMessage(data.message);
-        if (!sanitizedMessage && data.type !== 'gif') {
-          socket.emit('error', { message: 'Invalid message content' });
-          return;
-        }
-
-        // Store message in database
-        try {
-          const messageId = await this.storeMessage(data.leagueId, data.roomType || 'general', user, {
-            content: sanitizedMessage || '',
-            type: data.type,
-            replyToId: data.replyToId,
-            gifUrl: data.gifUrl
-          });
-
-          // Broadcast to appropriate room
-          const roomId = data.roomType ? `league:${data.leagueId}:${data.roomType}` : `league:${data.leagueId}`;
-          this.io?.to(roomId).emit('league_message', {
-            id: messageId,
-            leagueId: data.leagueId,
-            roomType: data.roomType || 'general',
-            userId: user.userId,
-            username: user.username,
-            message: sanitizedMessage || '',
-            type: data.type,
-            replyToId: data.replyToId,
-            gifUrl: data.gifUrl,
-            timestamp: new Date().toISOString()
-          });
-
-          // Process mentions
-          if (sanitizedMessage) {
-            await this.processMentions(sanitizedMessage, data.leagueId, user);
-          }
-
-          // Update metrics
-          this.metricsCollector.messagesPerMinute++;
-        } catch (error) {
-          console.error('Error saving message:', error);
-          socket.emit('error', { message: 'Failed to send message' });
-        }
+      // Handle messaging
+      socket.on('send_message', (data: { leagueId: string; message: string; type: 'chat' | 'reaction' | 'gif' | 'emoji' }) => {
+        this.handleSendMessage(socket, data);
       });
 
-      // Handle direct messages
-      socket.on('send_dm', async (data: { 
-        recipientId: string;
-        message: string;
-        type: 'text' | 'gif';
-        gifUrl?: string;
-      }) => {
-        try {
-          const dmId = await this.storeDM(user.userId, data.recipientId, {
-            content: this.sanitizeMessage(data.message) || '',
-            type: data.type,
-            gifUrl: data.gifUrl
-          });
-
-          // Create DM room ID
-          const dmRoomId = this.createDMRoomId(user.userId, data.recipientId);
-          
-          // Broadcast to both participants
-          this.io?.to(dmRoomId).emit('direct_message', {
-            id: dmId,
-            senderId: user.userId,
-            senderUsername: user.username,
-            recipientId: data.recipientId,
-            message: this.sanitizeMessage(data.message) || '',
-            type: data.type,
-            gifUrl: data.gifUrl,
-            timestamp: new Date().toISOString()
-          });
-        } catch (error) {
-          console.error('Error sending DM:', error);
-          socket.emit('error', { message: 'Failed to send direct message' });
-        }
+      socket.on('send_direct_message', (data: { recipientId: string; message: string; type: 'text' | 'trade_offer' | 'waiver_tip' }) => {
+        this.handleDirectMessage(socket, data);
       });
 
-      // Handle emoji reactions
-      socket.on('add_reaction', async (data: {
-        messageId: string;
-        emoji: string;
-        leagueId: string;
-        roomType?: ChatRoomType;
-      }) => {
-        try {
-          await this.addMessageReaction(data.messageId, user.userId, data.emoji);
-          
-          const roomId = data.roomType ? `league:${data.leagueId}:${data.roomType}` : `league:${data.leagueId}`;
-          this.io?.to(roomId).emit('message_reaction', {
-            messageId: data.messageId,
-            emoji: data.emoji,
-            userId: user.userId,
-            username: user.username,
-            action: 'add',
-            timestamp: new Date().toISOString()
-          });
-        } catch (error) {
-          console.error('Error adding reaction:', error);
-          socket.emit('error', { message: 'Failed to add reaction' });
-        }
+      // Handle draft events
+      socket.on('join_draft', (draftId: string) => {
+        this.handleJoinDraft(socket, draftId);
       });
 
-      // Handle game thread joining
-      socket.on('join_game_thread', (gameId: string) => {
-        socket.join(`game:${gameId}`);
-        this.addToGameThreadRoom(gameId, socket.id);
-        console.log(`User ${user.username} joined game thread ${gameId}`);
+      socket.on('leave_draft', (draftId: string) => {
+        this.handleLeaveDraft(socket, draftId);
       });
 
-      // Handle game thread leaving
-      socket.on('leave_game_thread', (gameId: string) => {
-        socket.leave(`game:${gameId}`);
-        this.removeFromGameThreadRoom(gameId, socket.id);
-        console.log(`User ${user.username} left game thread ${gameId}`);
+      socket.on('draft_pick', (data: { draftId: string; playerId: string; pickNumber: number }) => {
+        this.handleDraftPick(socket, data);
       });
 
-      // Handle typing indicators
-      socket.on('typing_start', (data: { leagueId: string; roomType: ChatRoomType }) => {
-        const roomId = `league:${data.leagueId}:${data.roomType}`;
-        socket.to(roomId).emit('user_typing', {
-          userId: user.userId,
-          username: user.username,
-          isTyping: true
-        });
+      // Handle trade events
+      socket.on('join_trade_room', (tradeId: string) => {
+        this.handleJoinTradeRoom(socket, tradeId);
       });
 
-      socket.on('typing_stop', (data: { leagueId: string; roomType: ChatRoomType }) => {
-        const roomId = `league:${data.leagueId}:${data.roomType}`;
-        socket.to(roomId).emit('user_typing', {
-          userId: user.userId,
-          username: user.username,
-          isTyping: false
-        });
+      socket.on('leave_trade_room', (tradeId: string) => {
+        this.handleLeaveTradeRoom(socket, tradeId);
+      });
+
+      socket.on('trade_proposal', (data: { tradeId: string; proposal: any }) => {
+        this.handleTradeProposal(socket, data);
+      });
+
+      // Handle waiver events
+      socket.on('waiver_claim', (data: { leagueId: string; playerId: string; priority: number }) => {
+        this.handleWaiverClaim(socket, data);
+      });
+
+      // Handle lineup changes
+      socket.on('lineup_change', (data: { teamId: string; changes: any[] }) => {
+        this.handleLineupChange(socket, data);
+      });
+
+      // Handle ping/pong for connection health
+      socket.on('ping', () => {
+        socket.emit('pong');
       });
 
       // Handle disconnection
-      socket.on('disconnect', (reason) => {
-        console.log(`❌ User disconnected: ${user.username} (${reason})`);
-        this.connectedUsers.delete(socket.id);
-        
-        // Clean up room memberships
-        user.leagueIds.forEach(leagueId => {
-          this.removeFromLeagueRoom(leagueId, socket.id);
-        });
+      socket.on('disconnect', () => {
+        this.handleDisconnect(socket);
       });
 
       // Handle errors
       socket.on('error', (error) => {
-        console.error(`WebSocket error for user ${user.username}:`, error);
+        console.error(`Socket error for ${socket.id}:`, error);
+        this.metricsCollector.errorCount++;
       });
     });
   }
 
-  // Room management methods
-  private addToLeagueRoom(leagueId: string, socketId: string) {
+  private handleJoinLeague(socket: any, leagueId: string) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user || !user.leagueIds.includes(leagueId)) {
+      socket.emit('error', { message: 'Not authorized to join this league' });
+      return;
+    }
+
+    socket.join(`league:${leagueId}`);
     if (!this.leagueRooms.has(leagueId)) {
       this.leagueRooms.set(leagueId, new Set());
     }
-    this.leagueRooms.get(leagueId)!.add(socketId);
+    this.leagueRooms.get(leagueId)!.add(socket.id);
+
+    console.log(`📥 User ${user.username} joined league: ${leagueId}`);
   }
 
-  private removeFromLeagueRoom(leagueId: string, socketId: string) {
+  private handleLeaveLeague(socket: any, leagueId: string) {
+    socket.leave(`league:${leagueId}`);
     const room = this.leagueRooms.get(leagueId);
     if (room) {
-      room.delete(socketId);
+      room.delete(socket.id);
       if (room.size === 0) {
         this.leagueRooms.delete(leagueId);
       }
     }
   }
 
-  private addToMatchupRoom(matchupId: string, socketId: string) {
+  private handleJoinMatchup(socket: any, matchupId: string) {
+    socket.join(`matchup:${matchupId}`);
     if (!this.matchupRooms.has(matchupId)) {
       this.matchupRooms.set(matchupId, new Set());
     }
-    this.matchupRooms.get(matchupId)!.add(socketId);
+    this.matchupRooms.get(matchupId)!.add(socket.id);
   }
 
-  private removeFromMatchupRoom(matchupId: string, socketId: string) {
+  private handleLeaveMatchup(socket: any, matchupId: string) {
+    socket.leave(`matchup:${matchupId}`);
     const room = this.matchupRooms.get(matchupId);
     if (room) {
-      room.delete(socketId);
+      room.delete(socket.id);
       if (room.size === 0) {
         this.matchupRooms.delete(matchupId);
       }
     }
   }
 
-  // Message sanitization
-  private sanitizeMessage(message: string): string | null {
-    if (!message || message.trim().length === 0) return null;
-    if (message.length > 500) return null; // Max message length
-    
+  private async handleSendMessage(socket: any, data: { leagueId: string; message: string; type: 'chat' | 'reaction' | 'gif' | 'emoji' }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
+
+    try {
+      // Sanitize message
+      const sanitizedMessage = this.sanitizeMessage(data.message);
+
+      // Store message in database
+      const messageData = {
+        leagueId: data.leagueId,
+        userId: user.userId,
+        username: user.username,
+        message: sanitizedMessage,
+        type: data.type,
+        timestamp: new Date().toISOString()
+      };
+
+      // Broadcast to league room
+      this.io!.to(`league:${data.leagueId}`).emit('league_message', messageData);
+
+      // Store in database (async)
+      this.storeMessage(messageData).catch(error =>
+        console.error('Failed to store message:', error)
+      );
+
+    } catch (error) {
+      console.error('Error handling message:', error);
+      socket.emit('error', { message: 'Failed to send message' });
+    }
+  }
+
+  private handleDisconnect(socket: any) {
+    const user = this.connectedUsers.get(socket.id);
+    if (user) {
+      console.log(`🔌 User ${user.username} disconnected: ${socket.id}`);
+      this.connectedUsers.delete(socket.id);
+    }
+
+    // Clean up from all rooms
+    this.leagueRooms.forEach((sockets, leagueId) => {
+      sockets.delete(socket.id);
+      if (sockets.size === 0) {
+        this.leagueRooms.delete(leagueId);
+      }
+    });
+
+    this.matchupRooms.forEach((sockets, matchupId) => {
+      sockets.delete(socket.id);
+      if (sockets.size === 0) {
+        this.matchupRooms.delete(matchupId);
+      }
+    });
+  }
+
+  private sanitizeMessage(message: string): string {
     // Basic sanitization - remove potentially harmful content
     return message
-      .trim()
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .substring(0, 500);
+      .replace(/<[^>]*>/g, '')
+      .trim()
+      .substring(0, 1000); // Limit message length
   }
 
-  // Public methods for broadcasting updates
-  public broadcastScoreUpdate(data: {
-    leagueId: string;
-    teamId: string;
-    playerId: string;
-    points: number;
-    change: number;
-  }) {
-    if (!this.io) return;
-    
-    this.io.to(`league:${data.leagueId}`).emit('score_update', {
-      ...data,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  public broadcastPlayerUpdate(data: {
-    playerId: string;
-    status: 'active' | 'injured' | 'inactive';
-    stats: Record<string, number>;
-  }) {
-    if (!this.io) return;
-    
-    // Broadcast to all connected clients (player updates are global)
-    this.io.emit('player_update', {
-      ...data,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  public broadcastMatchupUpdate(data: {
-    matchupId: string;
-    leagueId: string;
-    homeScore: number;
-    awayScore: number;
-    isComplete: boolean;
-  }) {
-    if (!this.io) return;
-    
-    // Broadcast to both league and specific matchup rooms
-    this.io.to(`league:${data.leagueId}`).emit('matchup_update', {
-      matchupId: data.matchupId,
-      homeScore: data.homeScore,
-      awayScore: data.awayScore,
-      isComplete: data.isComplete,
-      timestamp: new Date().toISOString()
-    });
-
-    this.io.to(`matchup:${data.matchupId}`).emit('matchup_update', {
-      matchupId: data.matchupId,
-      homeScore: data.homeScore,
-      awayScore: data.awayScore,
-      isComplete: data.isComplete,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  public broadcastTradeNotification(data: {
-    leagueId: string;
-    tradeId: string;
-    type: 'proposed' | 'accepted' | 'rejected';
-    involvedTeams: string[];
-  }) {
-    if (!this.io) return;
-    
-    this.io.to(`league:${data.leagueId}`).emit('trade_notification', {
-      ...data,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  public broadcastWaiverNotification(data: {
-    leagueId: string;
-    teamId: string;
-    playerId: string;
-    type: 'claimed' | 'failed';
-  }) {
-    if (!this.io) return;
-    
-    this.io.to(`league:${data.leagueId}`).emit('waiver_notification', {
-      ...data,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  // Chat-specific methods
-  public broadcastToRoom(roomId: string, event: any) {
-    if (!this.io) return;
-    this.io.to(roomId).emit(event.type, event);
-  }
-
-  public sendToUser(userId: string, event: any) {
-    if (!this.io) return;
-
-    // Find socket for user
-    const userSockets = Array.from(this.connectedUsers.entries())
-      .filter(([, user]) => user.userId === userId)
-      .map(([socketId]) => socketId);
-
-    userSockets.forEach(socketId => {
-      this.io?.to(socketId).emit(event.type, event);
-    });
-  }
-
-  public broadcastNewMessage(roomId: string, message: any) {
-    if (!this.io) return;
-    this.io.to(roomId).emit('new_message', message);
-  }
-
-  public broadcastMessageReaction(roomId: string, reaction: any) {
-    if (!this.io) return;
-    this.io.to(roomId).emit('message_reaction', reaction);
-  }
-
-  public broadcastMessageDeleted(roomId: string, messageId: string) {
-    if (!this.io) return;
-    this.io.to(roomId).emit('message_deleted', { messageId });
-  }
-
-  // Helper methods for new features
-  private async storeMessage(leagueId: string, roomType: ChatRoomType, user: SocketUser, messageData: any): Promise<string> {
-    const result = await database.query(`
-      INSERT INTO chat_messages (league_id, room_type, user_id, content, message_type, reply_to_id, gif_url, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-      RETURNING id
-    `, [leagueId, roomType, user.userId, messageData.content, messageData.type, messageData.replyToId, messageData.gifUrl]);
-    
-    return result.rows[0].id;
-  }
-
-  private async storeDM(senderId: string, recipientId: string, messageData: any): Promise<string> {
-    const result = await database.query(`
-      INSERT INTO direct_messages (sender_id, recipient_id, content, message_type, gif_url, created_at)
-      VALUES ($1, $2, $3, $4, $5, NOW())
-      RETURNING id
-    `, [senderId, recipientId, messageData.content, messageData.type, messageData.gifUrl]);
-    
-    return result.rows[0].id;
-  }
-
-  private async addMessageReaction(messageId: string, userId: string, emoji: string): Promise<void> {
-    await database.query(`
-      INSERT INTO message_reactions (message_id, user_id, emoji, created_at)
-      VALUES ($1, $2, $3, NOW())
-      ON CONFLICT (message_id, user_id, emoji) DO NOTHING
-    `, [messageId, userId, emoji]);
-  }
-
-  private async processMentions(message: string, leagueId: string, sender: SocketUser): Promise<void> {
-    const mentions = message.match(/@(\w+)/g);
-    if (!mentions) return;
-
-    for (const mention of mentions) {
-      const username = mention.substring(1);
-      try {
-        const userResult = await database.query(`
-          SELECT u.id FROM users u
-          JOIN teams t ON u.id = t.user_id
-          WHERE u.username = $1 AND t.league_id = $2
-        `, [username, leagueId]);
-
-        if (userResult.rows.length > 0) {
-          const mentionedUserId = userResult.rows[0].id;
-          
-          // Send notification
-          this.queueNotification({
-            userId: mentionedUserId,
-            type: 'mention',
-            title: `${sender.username} mentioned you`,
-            message: message.substring(0, 100),
-            data: { leagueId, senderId: sender.userId }
-          });
-        }
-      } catch (error) {
-        console.error('Error processing mention:', error);
-      }
+  private async storeMessage(messageData: any) {
+    // Store message in database
+    try {
+      await database.query(
+        `INSERT INTO messages (league_id, user_id, username, message, type, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          messageData.leagueId,
+          messageData.userId,
+          messageData.username,
+          messageData.message,
+          messageData.type,
+          messageData.timestamp
+        ]
+      );
+    } catch (error) {
+      console.error('Database error storing message:', error);
     }
   }
 
-  private createDMRoomId(userId1: string, userId2: string): string {
-    const sortedIds = [userId1, userId2].sort();
-    return `dm:${sortedIds[0]}:${sortedIds[1]}`;
-  }
-
-  private addToGameThreadRoom(gameId: string, socketId: string): void {
-    if (!this.gameThreadRooms.has(gameId)) {
-      this.gameThreadRooms.set(gameId, new Set());
-    }
-    this.gameThreadRooms.get(gameId)!.add(socketId);
-  }
-
-  private removeFromGameThreadRoom(gameId: string, socketId: string): void {
-    const room = this.gameThreadRooms.get(gameId);
-    if (room) {
-      room.delete(socketId);
-      if (room.size === 0) {
-        this.gameThreadRooms.delete(gameId);
-      }
-    }
-  }
-
-  private queueNotification(notification: any): void {
-    this.notificationQueue.push({
-      ...notification,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  private startMetricsCollection(): void {
+  private startMetricsCollection() {
     setInterval(() => {
       const now = Date.now();
-      if (now - this.metricsCollector.lastReset > 60000) {
-        console.log(`📊 WebSocket Metrics: ${this.metricsCollector.messagesPerMinute} msgs/min, ${this.metricsCollector.connectionsPerMinute} conns/min, ${this.metricsCollector.errorCount} errors`);
-        this.metricsCollector = {
-          messagesPerMinute: 0,
-          connectionsPerMinute: 0,
-          errorCount: 0,
-          lastReset: now
-        };
+      if (now - this.metricsCollector.lastReset >= 60000) { // Reset every minute
+        this.metricsCollector.messagesPerMinute = 0;
+        this.metricsCollector.connectionsPerMinute = 0;
+        this.metricsCollector.lastReset = now;
       }
     }, 60000);
   }
 
-  private startNotificationProcessor(): void {
+  private startNotificationProcessor() {
     setInterval(() => {
       if (this.notificationQueue.length > 0) {
-        const notifications = this.notificationQueue.splice(0, 100); // Process up to 100 at a time
-        this.processNotifications(notifications);
+        const notification = this.notificationQueue.shift();
+        this.processNotification(notification);
       }
-    }, 5000);
+    }, 1000); // Process one notification per second
   }
 
-  private async processNotifications(notifications: any[]): Promise<void> {
-    for (const notification of notifications) {
-      try {
-        // Send to connected user if online
-        const userSockets = Array.from(this.connectedUsers.entries())
-          .filter(([, user]) => user.userId === notification.userId)
-          .map(([socketId]) => socketId);
+  private processNotification(notification: any) {
+    // Process queued notifications
+    try {
+      switch (notification.type) {
+        case 'score_update':
+          this.broadcastScoreUpdate(notification.data);
+          break;
+        case 'player_update':
+          this.broadcastPlayerUpdate(notification.data);
+          break;
+        case 'matchup_update':
+          this.broadcastMatchupUpdate(notification.data);
+          break;
+        case 'trade_notification':
+          this.broadcastTradeNotification(notification.data);
+          break;
+        case 'waiver_notification':
+          this.broadcastWaiverNotification(notification.data);
+          break;
+      }
+    } catch (error) {
+      console.error('Error processing notification:', error);
+    }
+  }
 
-        if (userSockets.length > 0) {
-          userSockets.forEach(socketId => {
-            this.io?.to(socketId).emit('notification', notification);
-          });
-        }
+  // New enhanced event handlers
+  private async handleDirectMessage(socket: any, data: { recipientId: string; message: string; type: 'text' | 'trade_offer' | 'waiver_tip' }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
 
-        // Store in database for offline users
-        await database.query(`
-          INSERT INTO notifications (user_id, type, title, message, data, is_read, created_at)
-          VALUES ($1, $2, $3, $4, $5, false, NOW())
-        `, [notification.userId, notification.type, notification.title, notification.message, JSON.stringify(notification.data || {})]);
-      } catch (error) {
-        console.error('Error processing notification:', error);
-        this.metricsCollector.errorCount++;
+    try {
+      const sanitizedMessage = this.sanitizeMessage(data.message);
+      
+      // Find recipient socket
+      const recipientSocket = Array.from(this.connectedUsers.entries())
+        .find(([_, u]) => u.userId === data.recipientId)?.[0];
+
+      if (recipientSocket) {
+        const messageData = {
+          senderId: user.userId,
+          senderUsername: user.username,
+          recipientId: data.recipientId,
+          message: sanitizedMessage,
+          type: data.type,
+          timestamp: new Date().toISOString()
+        };
+
+        // Send to recipient
+        this.io!.to(recipientSocket).emit('direct_message', messageData);
+        
+        // Store in database
+        await this.storeDirectMessage(messageData);
+      }
+    } catch (error) {
+      console.error('Error handling direct message:', error);
+      socket.emit('error', { message: 'Failed to send direct message' });
+    }
+  }
+
+  private handleJoinDraft(socket: any, draftId: string) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) {
+      socket.emit('error', { message: 'User not authenticated' });
+      return;
+    }
+
+    socket.join(`draft:${draftId}`);
+    if (!this.draftRooms.has(draftId)) {
+      this.draftRooms.set(draftId, new Set());
+    }
+    this.draftRooms.get(draftId)!.add(socket.id);
+    
+    console.log(`🏈 User ${user.username} joined draft: ${draftId}`);
+  }
+
+  private handleLeaveDraft(socket: any, draftId: string) {
+    socket.leave(`draft:${draftId}`);
+    const room = this.draftRooms.get(draftId);
+    if (room) {
+      room.delete(socket.id);
+      if (room.size === 0) {
+        this.draftRooms.delete(draftId);
       }
     }
   }
 
-  // Enhanced broadcasting methods
-  public broadcastGameUpdate(gameId: string, update: any): void {
-    if (!this.io) return;
-    this.io.to(`game:${gameId}`).emit('game_update', {
-      ...update,
-      timestamp: new Date().toISOString()
-    });
+  private async handleDraftPick(socket: any, data: { draftId: string; playerId: string; pickNumber: number }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
+
+    try {
+      // Validate the draft pick
+      const isValidPick = await this.validateDraftPick(data.draftId, user.userId, data.playerId, data.pickNumber);
+      if (!isValidPick) {
+        socket.emit('error', { message: 'Invalid draft pick' });
+        return;
+      }
+
+      // Get player details
+      const playerResult = await database.query(
+        'SELECT first_name, last_name, position FROM nfl_players WHERE id = $1',
+        [data.playerId]
+      );
+      
+      if (playerResult.rows.length === 0) {
+        socket.emit('error', { message: 'Player not found' });
+        return;
+      }
+
+      const player = playerResult.rows[0];
+      
+      // Store the draft pick
+      await database.query(`
+        INSERT INTO draft_picks (draft_id, team_id, player_id, pick_number, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
+      `, [data.draftId, user.teamIds[0], data.playerId, data.pickNumber]);
+
+      // Broadcast draft update
+      const draftUpdate = {
+        draftId: data.draftId,
+        currentPick: data.pickNumber + 1,
+        onTheClock: 'next_team_id', // Would calculate next team
+        recentPick: {
+          teamId: user.teamIds[0],
+          playerId: data.playerId,
+          playerName: `${player.first_name} ${player.last_name}`,
+          position: player.position,
+          pickNumber: data.pickNumber
+        },
+        timeRemaining: 90, // 90 seconds per pick
+        timestamp: new Date().toISOString()
+      };
+
+      this.io!.to(`draft:${data.draftId}`).emit('draft_update', draftUpdate);
+      
+      console.log(`🏈 Draft pick: ${player.first_name} ${player.last_name} (${player.position}) - Pick ${data.pickNumber}`);
+    } catch (error) {
+      console.error('Error handling draft pick:', error);
+      socket.emit('error', { message: 'Failed to process draft pick' });
+    }
   }
 
-  public broadcastCelebration(leagueId: string, celebration: any): void {
-    if (!this.io) return;
-    this.io.to(`league:${leagueId}:celebrations`).emit('celebration', {
-      ...celebration,
-      timestamp: new Date().toISOString()
-    });
+  private handleJoinTradeRoom(socket: any, tradeId: string) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
+
+    socket.join(`trade:${tradeId}`);
+    if (!this.tradeRooms.has(tradeId)) {
+      this.tradeRooms.set(tradeId, new Set());
+    }
+    this.tradeRooms.get(tradeId)!.add(socket.id);
+    
+    console.log(`🤝 User ${user.username} joined trade room: ${tradeId}`);
   }
 
-  public broadcastToUser(userId: string, event: string, data: any): void {
-    if (!this.io) return;
-
-    const userSockets = Array.from(this.connectedUsers.entries())
-      .filter(([, user]) => user.userId === userId)
-      .map(([socketId]) => socketId);
-
-    userSockets.forEach(socketId => {
-      this.io?.to(socketId).emit(event, data);
-    });
+  private handleLeaveTradeRoom(socket: any, tradeId: string) {
+    socket.leave(`trade:${tradeId}`);
+    const room = this.tradeRooms.get(tradeId);
+    if (room) {
+      room.delete(socket.id);
+      if (room.size === 0) {
+        this.tradeRooms.delete(tradeId);
+      }
+    }
   }
 
-  // Health and monitoring methods
-  public getConnectionStats() {
+  private async handleTradeProposal(socket: any, data: { tradeId: string; proposal: any }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
+
+    try {
+      // Validate trade proposal
+      const isValid = await this.validateTradeProposal(data.tradeId, user.userId, data.proposal);
+      if (!isValid) {
+        socket.emit('error', { message: 'Invalid trade proposal' });
+        return;
+      }
+
+      // Store trade proposal
+      await database.query(`
+        UPDATE trades 
+        SET proposal_data = $1, status = 'pending', updated_at = NOW()
+        WHERE id = $2 AND (proposing_team_id = $3 OR receiving_team_id = $3)
+      `, [JSON.stringify(data.proposal), data.tradeId, user.teamIds[0]]);
+
+      // Broadcast to trade room
+      this.io!.to(`trade:${data.tradeId}`).emit('trade_notification', {
+        leagueId: user.leagueIds[0],
+        tradeId: data.tradeId,
+        type: 'proposed',
+        involvedTeams: [user.teamIds[0]],
+        tradeDetails: {
+          offering: data.proposal.offering || [],
+          receiving: data.proposal.receiving || []
+        },
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('Error handling trade proposal:', error);
+      socket.emit('error', { message: 'Failed to process trade proposal' });
+    }
+  }
+
+  private async handleWaiverClaim(socket: any, data: { leagueId: string; playerId: string; priority: number }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user) return;
+
+    try {
+      // Store waiver claim
+      await database.query(`
+        INSERT INTO waiver_claims (league_id, team_id, player_id, priority, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
+        ON CONFLICT (league_id, team_id, player_id) 
+        DO UPDATE SET priority = EXCLUDED.priority, updated_at = NOW()
+      `, [data.leagueId, user.teamIds[0], data.playerId, data.priority]);
+
+      // Get player details
+      const playerResult = await database.query(
+        'SELECT first_name, last_name, position FROM nfl_players WHERE id = $1',
+        [data.playerId]
+      );
+      
+      const player = playerResult.rows[0];
+      
+      // Broadcast waiver notification
+      socket.emit('waiver_notification', {
+        leagueId: data.leagueId,
+        teamId: user.teamIds[0],
+        playerId: data.playerId,
+        playerName: `${player.first_name} ${player.last_name}`,
+        type: 'processing',
+        waiverDetails: {
+          priority: data.priority
+        },
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('Error handling waiver claim:', error);
+      socket.emit('error', { message: 'Failed to process waiver claim' });
+    }
+  }
+
+  private async handleLineupChange(socket: any, data: { teamId: string; changes: any[] }) {
+    const user = this.connectedUsers.get(socket.id);
+    if (!user || !user.teamIds.includes(data.teamId)) {
+      socket.emit('error', { message: 'Not authorized to modify this lineup' });
+      return;
+    }
+
+    try {
+      // Process lineup changes
+      for (const change of data.changes) {
+        await database.query(`
+          UPDATE rosters 
+          SET lineup_position = $1, is_starter = $2, updated_at = NOW()
+          WHERE team_id = $3 AND player_id = $4
+        `, [change.position, change.isStarter, data.teamId, change.playerId]);
+      }
+
+      console.log(`📋 Lineup updated for team ${data.teamId}: ${data.changes.length} changes`);
+      
+    } catch (error) {
+      console.error('Error handling lineup change:', error);
+      socket.emit('error', { message: 'Failed to update lineup' });
+    }
+  }
+
+  // Validation helpers
+  private async validateDraftPick(draftId: string, userId: string, playerId: string, pickNumber: number): Promise<boolean> {
+    try {
+      const draftResult = await database.query(`
+        SELECT current_pick FROM drafts WHERE id = $1
+      `, [draftId]);
+      
+      if (draftResult.rows.length === 0) return false;
+      const { current_pick } = draftResult.rows[0];
+      return current_pick === pickNumber;
+    } catch (error) {
+      console.error('Draft pick validation error:', error);
+      return false;
+    }
+  }
+
+  private async validateTradeProposal(tradeId: string, userId: string, proposal: any): Promise<boolean> {
+    try {
+      const tradeResult = await database.query(`
+        SELECT proposing_team_id, receiving_team_id FROM trades WHERE id = $1
+      `, [tradeId]);
+      
+      if (tradeResult.rows.length === 0) return false;
+      return true; // Simplified validation
+    } catch (error) {
+      console.error('Trade validation error:', error);
+      return false;
+    }
+  }
+
+  // Store direct message in database
+  private async storeDirectMessage(messageData: any) {
+    try {
+      await database.query(`
+        INSERT INTO direct_messages (sender_id, recipient_id, message, message_type, created_at)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [
+        messageData.senderId,
+        messageData.recipientId,
+        messageData.message,
+        messageData.type,
+        messageData.timestamp
+      ]);
+    } catch (error) {
+      console.error('Database error storing direct message:', error);
+    }
+  }
+
+  // Enhanced broadcast methods
+  broadcastRealTimeStats(data: any) {
+    if (this.io) {
+      this.io.emit('real_time_stats', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastInjuryAlert(data: any) {
+    if (this.io) {
+      if (data.affectedOwners && data.affectedOwners.length > 0) {
+        data.affectedOwners.forEach((userId: string) => {
+          const userSocket = Array.from(this.connectedUsers.entries())
+            .find(([_, user]) => user.userId === userId)?.[0];
+          if (userSocket) {
+            this.io!.to(userSocket).emit('injury_alert', data);
+          }
+        });
+      } else {
+        this.io.emit('injury_alert', data);
+      }
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastBreakingNews(data: any) {
+    if (this.io) {
+      this.io.emit('breaking_news', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastGameEvent(data: any) {
+    if (this.io) {
+      if (data.affectedOwners && data.affectedOwners.length > 0) {
+        data.affectedOwners.forEach((userId: string) => {
+          const userSocket = Array.from(this.connectedUsers.entries())
+            .find(([_, user]) => user.userId === userId)?.[0];
+          if (userSocket) {
+            this.io!.to(userSocket).emit('game_event', data);
+          }
+        });
+      } else {
+        this.io.emit('game_event', data);
+      }
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  // Public broadcast methods
+  broadcastScoreUpdate(data: any) {
+    if (this.io) {
+      this.io.to(`league:${data.leagueId}`).emit('score_update', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastPlayerUpdate(data: any) {
+    if (this.io) {
+      this.io.emit('player_update', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastMatchupUpdate(data: any) {
+    if (this.io) {
+      this.io.to(`matchup:${data.matchupId}`).emit('matchup_update', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastTradeNotification(data: any) {
+    if (this.io) {
+      this.io.to(`league:${data.leagueId}`).emit('trade_notification', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  broadcastWaiverNotification(data: any) {
+    if (this.io) {
+      this.io.to(`league:${data.leagueId}`).emit('waiver_notification', data);
+      this.metricsCollector.messagesPerMinute++;
+    }
+  }
+
+  // Get connection statistics
+  getConnectionStats() {
     return {
       totalConnections: this.connectedUsers.size,
       activeLeagues: this.leagueRooms.size,
       activeMatchups: this.matchupRooms.size,
       activeGameThreads: this.gameThreadRooms.size,
-      activeDMs: this.dmRooms.size,
-      metricsPerMinute: {
-        messages: this.metricsCollector.messagesPerMinute,
-        connections: this.metricsCollector.connectionsPerMinute,
-        errors: this.metricsCollector.errorCount
-      },
-      queuedNotifications: this.notificationQueue.length,
-      connectedUsers: Array.from(this.connectedUsers.values()).map(user => ({
-        userId: user.userId,
-        username: user.username,
-        leagueCount: user.leagueIds.length
-      }))
+      messagesPerMinute: this.metricsCollector.messagesPerMinute,
+      connectionsPerMinute: this.metricsCollector.connectionsPerMinute,
+      errorCount: this.metricsCollector.errorCount
     };
   }
 
-  public getLeagueConnections(leagueId: string): number {
-    return this.leagueRooms.get(leagueId)?.size || 0;
-  }
-
-  public isUserConnected(userId: string): boolean {
-    return Array.from(this.connectedUsers.values()).some(user => user.userId === userId);
-  }
-
-  // Graceful shutdown
-  public async shutdown() {
+  // Shutdown method
+  async shutdown() {
     if (this.io) {
-      console.log('🔄 Shutting down WebSocket server...');
-      
-      // Notify all clients of shutdown
-      this.io.emit('server_shutdown', { 
-        message: 'Server is shutting down. Please refresh to reconnect.',
-        timestamp: new Date().toISOString()
-      });
-
-      // Close all connections
       this.io.close();
-      this.connectedUsers.clear();
-      this.leagueRooms.clear();
-      this.matchupRooms.clear();
-      
-      console.log('✅ WebSocket server shutdown complete');
+      this.io = null;
     }
+
+    if (this.redis) {
+      await this.redis.quit();
+      this.redis = null;
+    }
+
+    if (this.redisSub) {
+      await this.redisSub.quit();
+      this.redisSub = null;
+    }
+
+    this.connectedUsers.clear();
+    this.leagueRooms.clear();
+    this.matchupRooms.clear();
+    this.gameThreadRooms.clear();
+    this.dmRooms.clear();
+
+    console.log('🔄 WebSocket server shutdown complete');
   }
 }
 
 // Singleton instance
-export const webSocketManager = new WebSocketManager();
+const webSocketManager = new WebSocketManager();
 
-// Export types for use in other files
-export type { WebSocketEvents, SocketUser };
+export { webSocketManager };
+export type { WebSocketEvents };

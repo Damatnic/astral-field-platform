@@ -32,8 +32,11 @@
     "next-env.d.ts",
     "src/app/**/*.ts",
     "src/app/**/*.tsx",
-    "src/lib/database.ts",
-    "src/lib/env-config.ts",
+    "src/lib/**/*.ts",
+    "src/services/**/*.ts",
+    "src/components/**/*.ts",
+    "src/hooks/**/*.ts",
+    "src/stores/**/*.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
@@ -43,13 +46,6 @@
     "build",
     "coverage",
     "scripts/**/*",
-    "src/services/**/*",
-    "src/components/**/*",
-    "src/hooks/**/*",
-    "src/stores/**/*",
-    "src/lib/**/*",
-    "!src/lib/database.ts",
-    "!src/lib/env-config.ts",
     "__tests__/**/*",
     "tests/**/*",
     "playwright-tests/**/*"

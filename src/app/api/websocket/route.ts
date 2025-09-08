@@ -1,42 +1,39 @@
 /**
- * WebSocket API Endpoint
- * Handles WebSocket server initialization and connection management
+ * WebSocket API Route for Next.js Integration
+ * Handles WebSocket server initialization and management
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Server as HTTPServer } from 'http';
 import { webSocketManager } from '@/lib/websocket/server';
+import { createServer } from 'http';
 
-// Store server instance globally
-let httpServer: HTTPServer | null = null;
-let isWebSocketInitialized = false;
+// Store the HTTP server instance for WebSocket integration
+let httpServer: ReturnType<typeof createServer> | null = null;
 
 export async function GET(request: NextRequest) {
   try {
-    // Return WebSocket connection information and status
-    const stats = webSocketManager.getConnectionStats();
-    
-    return NextResponse.json({
-      status: 'healthy',
-      websocket: {
-        initialized: isWebSocketInitialized,
-        connections: stats.totalConnections,
-        activeLeagues: stats.activeLeagues,
-        activeMatchups: stats.activeMatchups,
-        endpoint: process.env.NODE_ENV === 'production' 
-          ? 'wss://astral-field.vercel.app'
-          : 'ws://localhost:3000'
-      },
-      timestamp: new Date().toISOString()
-    });
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get('action');
+
+    switch (action) {
+      case 'initialize':
+        return await handleInitialize();
+      case 'shutdown':
+        return await handleShutdown();
+      case 'stats':
+        return await handleStats();
+      case 'health':
+        return await handleHealth();
+      default:
+        return NextResponse.json(
+          { error: 'Invalid action parameter' },
+          { status: 400 }
+        );
+    }
   } catch (error) {
-    console.error('WebSocket status check error:', error);
+    console.error('WebSocket API error:', error);
     return NextResponse.json(
-      {
-        status: 'error',
-        error: 'Failed to get WebSocket status',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
@@ -44,162 +41,127 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { action } = await request.json();
+    const body = await request.json();
+    const { action, data } = body;
 
     switch (action) {
-      case 'initialize':
-        return await initializeWebSocket();
-      
-      case 'shutdown':
-        return await shutdownWebSocket();
-      
-      case 'stats':
-        return NextResponse.json({
-          status: 'success',
-          stats: webSocketManager.getConnectionStats()
-        });
-      
-      case 'health':
-        return await healthCheck();
-      
+      case 'broadcast_score_update':
+        webSocketManager.broadcastScoreUpdate(data);
+        return NextResponse.json({ success: true });
+      case 'broadcast_player_update':
+        webSocketManager.broadcastPlayerUpdate(data);
+        return NextResponse.json({ success: true });
+      case 'broadcast_matchup_update':
+        webSocketManager.broadcastMatchupUpdate(data);
+        return NextResponse.json({ success: true });
+      case 'broadcast_trade_notification':
+        webSocketManager.broadcastTradeNotification(data);
+        return NextResponse.json({ success: true });
+      case 'broadcast_waiver_notification':
+        webSocketManager.broadcastWaiverNotification(data);
+        return NextResponse.json({ success: true });
       default:
         return NextResponse.json(
-          { error: 'Invalid action. Supported actions: initialize, shutdown, stats, health' },
+          { error: 'Invalid action' },
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('WebSocket API error:', error);
+    console.error('WebSocket POST error:', error);
     return NextResponse.json(
-      {
-        error: 'WebSocket operation failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
-async function initializeWebSocket() {
+async function handleInitialize(): Promise<NextResponse> {
   try {
-    if (isWebSocketInitialized) {
-      return NextResponse.json({
-        status: 'already_initialized',
-        message: 'WebSocket server is already running',
-        stats: webSocketManager.getConnectionStats()
+    // Create HTTP server if it doesn't exist
+    if (!httpServer) {
+      httpServer = createServer();
+
+      // Initialize WebSocket server with the HTTP server
+      await webSocketManager.initialize(httpServer);
+
+      // Start listening on a separate port for WebSocket connections
+      const wsPort = parseInt(process.env.WEBSOCKET_PORT || '3001');
+      httpServer.listen(wsPort, () => {
+        console.log(`✅ WebSocket server listening on port ${wsPort}`);
       });
     }
 
-    // In a real Next.js app, we need to handle WebSocket differently
-    // This is a simplified version for demonstration
-    console.log('🚀 Initializing WebSocket server...');
-    
-    // For Next.js, WebSocket initialization would typically happen in a custom server
-    // or through a separate WebSocket service
-    isWebSocketInitialized = true;
-    
     return NextResponse.json({
-      status: 'initialized',
+      success: true,
       message: 'WebSocket server initialized successfully',
-      endpoint: process.env.NODE_ENV === 'production' 
-        ? 'wss://astral-field.vercel.app'
-        : 'ws://localhost:3000',
-      timestamp: new Date().toISOString()
+      port: process.env.WEBSOCKET_PORT || '3001'
     });
   } catch (error) {
-    console.error('WebSocket initialization error:', error);
+    console.error('Failed to initialize WebSocket server:', error);
     return NextResponse.json(
-      {
-        error: 'Failed to initialize WebSocket server',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Failed to initialize WebSocket server' },
       { status: 500 }
     );
   }
 }
 
-async function shutdownWebSocket() {
+async function handleShutdown(): Promise<NextResponse> {
   try {
-    if (!isWebSocketInitialized) {
-      return NextResponse.json({
-        status: 'not_running',
-        message: 'WebSocket server is not running'
-      });
+    if (httpServer) {
+      httpServer.close();
+      httpServer = null;
     }
 
-    console.log('🔄 Shutting down WebSocket server...');
     await webSocketManager.shutdown();
-    isWebSocketInitialized = false;
 
     return NextResponse.json({
-      status: 'shutdown',
-      message: 'WebSocket server shutdown successfully',
-      timestamp: new Date().toISOString()
+      success: true,
+      message: 'WebSocket server shutdown successfully'
     });
   } catch (error) {
-    console.error('WebSocket shutdown error:', error);
+    console.error('Failed to shutdown WebSocket server:', error);
     return NextResponse.json(
-      {
-        error: 'Failed to shutdown WebSocket server',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Failed to shutdown WebSocket server' },
       { status: 500 }
     );
   }
 }
 
-async function healthCheck() {
+async function handleStats(): Promise<NextResponse> {
   try {
     const stats = webSocketManager.getConnectionStats();
-    const isHealthy = isWebSocketInitialized && stats.totalConnections >= 0;
-
     return NextResponse.json({
-      status: isHealthy ? 'healthy' : 'unhealthy',
-      websocket: {
-        initialized: isWebSocketInitialized,
-        healthy: isHealthy,
-        connections: stats.totalConnections,
-        activeLeagues: stats.activeLeagues,
-        activeMatchups: stats.activeMatchups,
-        uptime: isWebSocketInitialized ? 'running' : 'stopped'
-      },
-      timestamp: new Date().toISOString()
+      success: true,
+      stats
     });
   } catch (error) {
+    console.error('Failed to get WebSocket stats:', error);
     return NextResponse.json(
-      {
-        status: 'unhealthy',
-        error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Failed to get WebSocket stats' },
       { status: 500 }
     );
   }
 }
 
-// Helper function to broadcast updates (can be called from other API routes)
-export async function broadcastUpdate(type: string, data: any) {
+async function handleHealth(): Promise<NextResponse> {
   try {
-    switch (type) {
-      case 'score_update':
-        webSocketManager.broadcastScoreUpdate(data);
-        break;
-      case 'player_update':
-        webSocketManager.broadcastPlayerUpdate(data);
-        break;
-      case 'matchup_update':
-        webSocketManager.broadcastMatchupUpdate(data);
-        break;
-      case 'trade_notification':
-        webSocketManager.broadcastTradeNotification(data);
-        break;
-      case 'waiver_notification':
-        webSocketManager.broadcastWaiverNotification(data);
-        break;
-      default:
-        console.warn(`Unknown broadcast type: ${type}`);
-    }
+    const stats = webSocketManager.getConnectionStats();
+    const isHealthy = stats.totalConnections >= 0; // Basic health check
+
+    return NextResponse.json({
+      success: true,
+      healthy: isHealthy,
+      stats,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    console.error(`Failed to broadcast ${type}:`, error);
+    console.error('WebSocket health check failed:', error);
+    return NextResponse.json(
+      { error: 'Health check failed' },
+      { status: 500 }
+    );
   }
 }
+
+// Export the HTTP server for Next.js integration
+export { httpServer };

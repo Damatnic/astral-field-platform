@@ -45,6 +45,10 @@
     "optimize:images": "node scripts/optimize-images.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "test:production": "NODE_ENV=test npm run test -- --coverage --watchAll=false",
+    "test:comprehensive": "node scripts/test-runner.js",
+    "test:comprehensive:parallel": "node scripts/test-runner.js --parallel",
+    "test:comprehensive:fast": "node scripts/test-runner.js --types unit,integration --fail-fast",
+    "test:comprehensive:verbose": "node scripts/test-runner.js --verbose",
     "demo:setup": "node scripts/one-click-setup.js",
     "db:migrate": "node scripts/run-migrations.js",
     "db:seed": "node scripts/seed-demo-data.js",
@@ -129,6 +133,11 @@
     "prettier": "^3.6.2",
     "supabase": "^2.39.2",
     "ts-jest": "^29.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "chalk": "^4.1.2",
+    "faker": "^5.5.3",
+    "jest-junit": "^16.0.0",
+    "supertest": "^7.0.0",
+    "wait-on": "^8.0.1"
   }
 }
