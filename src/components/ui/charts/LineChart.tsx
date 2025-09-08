@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/card/Card';
+import { Card, CardContent } from '@/components/ui/Card/Card';
 
 interface DataPoint {
   x: number | string;

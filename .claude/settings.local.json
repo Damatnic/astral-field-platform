@@ -62,7 +62,8 @@
       "Bash(do sed -i \"s|from ''@/lib/db''|from ''@/lib/database''|g\" \"$file\")",
       "Bash(timeout 15 npm run build)",
       "Bash(timeout 20 npm run build)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(vercel:*)"
     ],
     "deny": [],
     "ask": []

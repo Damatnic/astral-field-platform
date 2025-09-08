@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { VirtualList, useVirtualList } from '@/components/ui/virtual-list';
-import { Card, CardContent } from '@/components/ui/card/Card';
+import { Card, CardContent } from '@/components/ui/Card/Card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button/Button';
+import { Button } from '@/components/ui/Button/Button';
 import { debounce } from '@/utils/performance';
 import { 
   Trophy, 

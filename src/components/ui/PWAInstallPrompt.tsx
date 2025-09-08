@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Download, Smartphone, Bell, Wifi, WifiOff } from 'lucide-react';
-import { Button } from '@/components/ui/button/Button';
-import { Card, CardContent } from '@/components/ui/card/Card';
+import { Button } from '@/components/ui/Button/Button';
+import { Card, CardContent } from '@/components/ui/Card/Card';
 import { usePWA } from '@/hooks/usePWA';
 
 export function PWAInstallPrompt() {

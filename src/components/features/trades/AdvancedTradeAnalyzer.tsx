@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/Card';
-import { Button } from '@/components/ui/button/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card/Card';
+import { Button } from '@/components/ui/Button/Button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
