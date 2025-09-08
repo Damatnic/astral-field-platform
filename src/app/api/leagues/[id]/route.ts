@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 
 export async function GET(
   request: NextRequest,
@@ -9,11 +9,12 @@ export async function GET(
     const { id } = await params;
 
     // Get league details
-    const leagueResult = await db.query(
+    const result = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
       `
       SELECT 
         l.*,
-        u.display_name as commissioner_name,
+        u.username as commissioner_name,
         u.email as commissioner_email
       FROM leagues l
       LEFT JOIN users u ON l.commissioner_id = u.id
@@ -23,17 +24,17 @@ export async function GET(
     );
 
     if (leagueResult.rows.length === 0) {
-      return NextResponse.json({ error: "League not found" }, { status: 404 });
-    }
+        return null;
+      }
 
-    const league = leagueResult.rows[0];
+      const league = leagueResult.rows[0];
 
-    // Get teams with standings
-    const teamsResult = await db.query(
+      // Get teams with standings
+      const teamsResult = await client.query(
       `
       SELECT 
         t.*,
-        u.display_name as owner_name,
+        u.username as owner_name,
         u.email as owner_email,
         u.pin as owner_pin
       FROM teams t
@@ -44,8 +45,8 @@ export async function GET(
       [id],
     );
 
-    // Get current week matchups
-    const matchupsResult = await db.query(
+      // Get current week matchups
+      const matchupsResult = await client.query(
       `
       SELECT 
         m.*,
@@ -53,8 +54,8 @@ export async function GET(
         ht.team_abbreviation as home_team_abbreviation,
         at.team_name as away_team_name,
         at.team_abbreviation as away_team_abbreviation,
-        hu.display_name as home_owner_name,
-        au.display_name as away_owner_name
+        hu.username as home_owner_name,
+        au.username as away_owner_name
       FROM matchups m
       LEFT JOIN teams ht ON m.home_team_id = ht.id
       LEFT JOIN teams at ON m.away_team_id = at.id
@@ -66,30 +67,35 @@ export async function GET(
       [id, league.current_week, league.season_year],
     );
 
-    // Get recent activity (placeholder for now)
-    const recentActivity = [
-      {
-        id: 1,
-        type: "trade",
-        description: "Trade between Team A and Team B",
-        timestamp: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        type: "waiver",
-        description: "Player X claimed off waivers",
-        timestamp: new Date().toISOString(),
-      },
-    ];
+      // Get recent activity (placeholder for now)
+      const recentActivity = [
+        {
+          id: 1,
+          type: "trade",
+          description: "Trade between Team A and Team B",
+          timestamp: new Date().toISOString(),
+        },
+        {
+          id: 2,
+          type: "waiver",
+          description: "Player X claimed off waivers",
+          timestamp: new Date().toISOString(),
+        },
+      ];
 
-    return NextResponse.json({
-      league: {
+      return {
         ...league,
         teams: teamsResult.rows,
         matchups: matchupsResult.rows,
         recentActivity,
-      },
+      };
     });
+
+    if (!result) {
+      return NextResponse.json({ error: "League not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ league: result });
   } catch (error) {
     console.error("Error fetching league:", error);
     return NextResponse.json(

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 
 // Comprehensive NFL player database for realistic display
 const nflPlayers = [
@@ -468,13 +468,16 @@ export async function GET(
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "50");
 
-    // Verify league exists
-    const leagueResult = await db.query(
-      "SELECT id FROM leagues WHERE id = $1 AND is_active = true",
-      [id],
-    );
+    // Verify league exists using database transaction
+    const leagueCheck = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
+        "SELECT id FROM leagues WHERE id = $1",
+        [id],
+      );
+      return leagueResult.rows.length > 0;
+    });
 
-    if (leagueResult.rows.length === 0) {
+    if (!leagueCheck) {
       return NextResponse.json({ error: "League not found" }, { status: 404 });
     }
 
@@ -640,13 +643,16 @@ export async function POST(
     const body = await request.json();
     const { action, playerId, dropPlayerId } = body; // action: 'add' or 'drop' or 'claim'
 
-    // Verify league exists
-    const leagueResult = await db.query(
-      "SELECT id FROM leagues WHERE id = $1 AND is_active = true",
-      [id],
-    );
+    // Verify league exists using database transaction
+    const leagueCheck = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
+        "SELECT id FROM leagues WHERE id = $1",
+        [id],
+      );
+      return leagueResult.rows.length > 0;
+    });
 
-    if (leagueResult.rows.length === 0) {
+    if (!leagueCheck) {
       return NextResponse.json({ error: "League not found" }, { status: 404 });
     }
 

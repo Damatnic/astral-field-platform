@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 import fs from "fs";
 import path from "path";
 
@@ -16,40 +16,42 @@ export async function POST(req: NextRequest) {
 
     console.log("Starting database migration...");
 
-    // Enable UUID extension
-    await db.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+    // Use database transaction for migration
+    const result = await database.transaction(async (client) => {
+      // Enable UUID extension
+      await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
 
-    // Drop existing tables for clean migration
-    const tablesToDrop = [
-      "ai_insights",
-      "activity_feed",
-      "notifications",
-      "messages",
-      "player_stats",
-      "draft_picks",
-      "drafts",
-      "waiver_claims",
-      "trade_items",
-      "trades",
-      "transactions",
-      "matchups",
-      "lineup_slots",
-      "lineups",
-      "rosters",
-      "players",
-      "teams",
-      "leagues",
-      "users",
-      "power_rankings",
-      "achievements",
-    ];
+      // Drop existing tables for clean migration
+      const tablesToDrop = [
+        "ai_insights",
+        "activity_feed",
+        "notifications",
+        "messages",
+        "player_stats",
+        "draft_picks",
+        "drafts",
+        "waiver_claims",
+        "trade_items",
+        "trades",
+        "transactions",
+        "matchups",
+        "lineup_slots",
+        "lineups",
+        "rosters",
+        "players",
+        "teams",
+        "leagues",
+        "users",
+        "power_rankings",
+        "achievements",
+      ];
 
-    for (const table of tablesToDrop) {
-      await db.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
-    }
+      for (const table of tablesToDrop) {
+        await client.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+      }
 
     // Create Users table
-    await db.query(`
+    await client.query(`
       CREATE TABLE users (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Leagues table
-    await db.query(`
+    await client.query(`
       CREATE TABLE leagues (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name VARCHAR(255) NOT NULL,
@@ -103,7 +105,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Teams table
-    await db.query(`
+    await client.query(`
       CREATE TABLE teams (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -133,7 +135,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Players table
-    await db.query(`
+    await client.query(`
       CREATE TABLE players (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         external_id VARCHAR(100) UNIQUE,
@@ -164,7 +166,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Rosters table
-    await db.query(`
+    await client.query(`
       CREATE TABLE rosters (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
@@ -182,7 +184,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Lineups table
-    await db.query(`
+    await client.query(`
       CREATE TABLE lineups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
@@ -203,7 +205,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Lineup Slots table
-    await db.query(`
+    await client.query(`
       CREATE TABLE lineup_slots (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         lineup_id UUID REFERENCES lineups(id) ON DELETE CASCADE,
@@ -220,7 +222,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Matchups table
-    await db.query(`
+    await client.query(`
       CREATE TABLE matchups (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -246,7 +248,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Transactions table
-    await db.query(`
+    await client.query(`
       CREATE TABLE transactions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -262,7 +264,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Trades table
-    await db.query(`
+    await client.query(`
       CREATE TABLE trades (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         transaction_id UUID REFERENCES transactions(id) ON DELETE CASCADE,
@@ -286,7 +288,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Add foreign key for counter offers
-    await db.query(`
+    await client.query(`
       ALTER TABLE trades 
       ADD CONSTRAINT fk_counter_offer 
       FOREIGN KEY (counter_offer_id) 
@@ -294,7 +296,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Trade Items table
-    await db.query(`
+    await client.query(`
       CREATE TABLE trade_items (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         trade_id UUID REFERENCES trades(id) ON DELETE CASCADE,
@@ -310,7 +312,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Waiver Claims table
-    await db.query(`
+    await client.query(`
       CREATE TABLE waiver_claims (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         transaction_id UUID REFERENCES transactions(id) ON DELETE CASCADE,
@@ -327,7 +329,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Drafts table
-    await db.query(`
+    await client.query(`
       CREATE TABLE drafts (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -349,7 +351,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Draft Picks table
-    await db.query(`
+    await client.query(`
       CREATE TABLE draft_picks (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         draft_id UUID REFERENCES drafts(id) ON DELETE CASCADE,
@@ -367,7 +369,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Player Stats table
-    await db.query(`
+    await client.query(`
       CREATE TABLE player_stats (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         player_id UUID REFERENCES players(id),
@@ -392,7 +394,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Messages table
-    await db.query(`
+    await client.query(`
       CREATE TABLE messages (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -413,7 +415,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Notifications table
-    await db.query(`
+    await client.query(`
       CREATE TABLE notifications (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -433,7 +435,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Activity Feed table
-    await db.query(`
+    await client.query(`
       CREATE TABLE activity_feed (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -450,7 +452,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create AI Insights table
-    await db.query(`
+    await client.query(`
       CREATE TABLE ai_insights (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id),
@@ -473,7 +475,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Power Rankings table
-    await db.query(`
+    await client.query(`
       CREATE TABLE power_rankings (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         league_id UUID REFERENCES leagues(id) ON DELETE CASCADE,
@@ -493,7 +495,7 @@ export async function POST(req: NextRequest) {
     `);
 
     // Create Achievements table
-    await db.query(`
+    await client.query(`
       CREATE TABLE achievements (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         user_id UUID REFERENCES users(id),
@@ -550,11 +552,11 @@ export async function POST(req: NextRequest) {
     ];
 
     for (const index of indexes) {
-      await db.query(index);
+      await client.query(index);
     }
 
     // Create update timestamp trigger function
-    await db.query(`
+    await client.query(`
       CREATE OR REPLACE FUNCTION update_updated_at_column()
       RETURNS TRIGGER AS $$
       BEGIN
@@ -576,7 +578,7 @@ export async function POST(req: NextRequest) {
     ];
 
     for (const table of triggeredTables) {
-      await db.query(`
+      await client.query(`
         CREATE TRIGGER update_${table}_updated_at 
         BEFORE UPDATE ON ${table}
         FOR EACH ROW 
@@ -650,7 +652,7 @@ export async function POST(req: NextRequest) {
 
     const userIds = [];
     for (const user of demoUsers) {
-      const result = await db.query(`
+      const result = await client.query(`
         INSERT INTO users (email, username, display_name, pin, is_demo_user)
         VALUES (${user.email}, ${user.username}, ${user.name}, ${user.pin}, true)
         RETURNING id
@@ -659,7 +661,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create demo league
-    const leagueResult = await db.query(`
+    const leagueResult = await client.query(`
       INSERT INTO leagues (
         name, 
         commissioner_id, 
@@ -694,7 +696,7 @@ export async function POST(req: NextRequest) {
     ];
 
     for (let i = 0; i < userIds.length; i++) {
-      await db.query(`
+      await client.query(`
         INSERT INTO teams (
           league_id,
           user_id,
@@ -714,15 +716,20 @@ export async function POST(req: NextRequest) {
       `);
     }
 
+    console.log("Migration completed successfully!");
+    
+    return {
+      usersCreated: userIds.length,
+      leagueId,
+      tablesCreated: tablesToDrop.length,
+      indexesCreated: indexes.length,
+    };
+    }); // End of transaction
+
     return NextResponse.json({
       success: true,
       message: "Database migration completed successfully!",
-      data: {
-        usersCreated: userIds.length,
-        leagueId,
-        tablesCreated: tablesToDrop.length,
-        indexesCreated: indexes.length,
-      },
+      data: result,
     });
   } catch (error) {
     console.error("Migration error:", error);
@@ -740,30 +747,34 @@ export async function POST(req: NextRequest) {
 // GET endpoint to check migration status
 export async function GET() {
   try {
-    const tables = await db.query(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public' 
-      AND table_type = 'BASE TABLE'
-      ORDER BY table_name
-    `);
+    const result = await database.transaction(async (client) => {
+      const tables = await client.query(`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_type = 'BASE TABLE'
+        ORDER BY table_name
+      `);
 
-    const users = await db.query(`
-      SELECT COUNT(*) as count FROM users WHERE is_demo_user = true
-    `);
+      const users = await client.query(`
+        SELECT COUNT(*) as count FROM users WHERE is_demo_user = true
+      `);
 
-    const leagues = await db.query(`
-      SELECT COUNT(*) as count FROM leagues WHERE is_active = true
-    `);
+      const leagues = await client.query(`
+        SELECT COUNT(*) as count FROM leagues
+      `);
+
+      return {
+        tables: tables.rows.map((r) => r.table_name),
+        demoUsers: users.rows[0]?.count || 0,
+        activeLeagues: leagues.rows[0]?.count || 0,
+      };
+    });
 
     return NextResponse.json({
       success: true,
       status: "ready",
-      database: {
-        tables: tables.rows.map((r) => r.table_name),
-        demoUsers: users.rows[0]?.count || 0,
-        activeLeagues: leagues.rows[0]?.count || 0,
-      },
+      database: result,
     });
   } catch (error) {
     return NextResponse.json({

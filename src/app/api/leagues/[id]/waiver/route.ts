@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 
 // Mock waiver players and data
 const waiverPlayers = [
@@ -172,12 +172,15 @@ export async function GET(
     const { id } = await params;
 
     // Verify league exists
-    const leagueResult = await db.query(
-      "SELECT id FROM leagues WHERE id = $1 AND is_active = true",
-      [id],
-    );
+    const leagueExists = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
+        "SELECT id FROM leagues WHERE id = $1",
+        [id],
+      );
+      return leagueResult.rows.length > 0;
+    });
 
-    if (leagueResult.rows.length === 0) {
+    if (!leagueExists) {
       return NextResponse.json({ error: "League not found" }, { status: 404 });
     }
 
@@ -221,12 +224,15 @@ export async function POST(
     const { action, playerId, dropPlayerId, bidAmount, priority } = body;
 
     // Verify league exists
-    const leagueResult = await db.query(
-      "SELECT id FROM leagues WHERE id = $1 AND is_active = true",
-      [id],
-    );
+    const leagueExists = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
+        "SELECT id FROM leagues WHERE id = $1",
+        [id],
+      );
+      return leagueResult.rows.length > 0;
+    });
 
-    if (leagueResult.rows.length === 0) {
+    if (!leagueExists) {
       return NextResponse.json({ error: "League not found" }, { status: 404 });
     }
 

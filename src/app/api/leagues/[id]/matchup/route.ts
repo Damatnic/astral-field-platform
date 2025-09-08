@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 
 // Mock NFL players and game data for realistic display
 const mockPlayers = [
@@ -205,42 +205,52 @@ export async function GET(
     const userTeamId = "user-team-1"; // This would come from JWT/session
 
     // Get league details
-    const leagueResult = await db.query(
-      `
-      SELECT * FROM leagues WHERE id = $1 AND is_active = true
-    `,
-      [id],
-    );
+    const result = await database.transaction(async (client) => {
+      const leagueResult = await client.query(
+        `
+        SELECT * FROM leagues WHERE id = $1
+      `,
+        [id],
+      );
 
-    if (leagueResult.rows.length === 0) {
+      if (leagueResult.rows.length === 0) {
+        return null;
+      }
+
+      const league = leagueResult.rows[0];
+
+      // Get current week matchup for user's team
+      const matchupResult = await client.query(
+        `
+        SELECT 
+          m.*,
+          ht.team_name as home_team_name,
+          ht.team_abbreviation as home_team_abbreviation,
+          at.team_name as away_team_name,
+          at.team_abbreviation as away_team_abbreviation,
+          hu.username as home_owner_name,
+          au.username as away_owner_name
+        FROM matchups m
+        LEFT JOIN teams ht ON m.home_team_id = ht.id
+        LEFT JOIN teams at ON m.away_team_id = at.id
+        LEFT JOIN users hu ON ht.user_id = hu.id
+        LEFT JOIN users au ON at.user_id = au.id
+        WHERE m.league_id = $1 
+          AND m.week = $2 
+          AND m.season_year = $3
+          AND (ht.id = $4 OR at.id = $4)
+      `,
+        [id, league.current_week, league.season_year, userTeamId],
+      );
+      
+      return { league, matchupResult };
+    });
+    
+    if (!result) {
       return NextResponse.json({ error: "League not found" }, { status: 404 });
     }
-
-    const league = leagueResult.rows[0];
-
-    // Get current week matchup for user's team
-    const matchupResult = await db.query(
-      `
-      SELECT 
-        m.*,
-        ht.team_name as home_team_name,
-        ht.team_abbreviation as home_team_abbreviation,
-        at.team_name as away_team_name,
-        at.team_abbreviation as away_team_abbreviation,
-        hu.display_name as home_owner_name,
-        au.display_name as away_owner_name
-      FROM matchups m
-      LEFT JOIN teams ht ON m.home_team_id = ht.id
-      LEFT JOIN teams at ON m.away_team_id = at.id
-      LEFT JOIN users hu ON ht.user_id = hu.id
-      LEFT JOIN users au ON at.user_id = au.id
-      WHERE m.league_id = $1 
-        AND m.week = $2 
-        AND m.season_year = $3
-        AND (ht.id = $4 OR at.id = $4)
-    `,
-      [id, league.current_week, league.season_year, userTeamId],
-    );
+    
+    const { league, matchupResult } = result;
 
     // Mock matchup data if no real matchup exists
     const mockMatchup = {
