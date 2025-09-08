@@ -1,7 +1,7 @@
 import aiRouterService from './aiRouterService';
 import aiAnalyticsService from './aiAnalyticsService';
 import tradeAnalysisEngine from './tradeAnalysisEngine';
-import { neonDb } from '@/lib/db';
+import { neonDb } from '@/lib/database';
 
 export interface TradeOpportunity {
   id: string;,

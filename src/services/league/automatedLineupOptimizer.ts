@@ -4,7 +4,7 @@ import { aiAnalyticsService } from '../ai/aiAnalyticsService';
 import { userBehaviorAnalyzer } from '../ai/userBehaviorAnalyzer';
 
 import predictionPipeline from '../ml/predictionPipeline';
-import { neonDb } from '@/lib/db';
+import { neonDb } from '@/lib/database';
 
 export interface InactiveManager {
   userId: string;,

@@ -33,9 +33,11 @@ export default function DatabaseCleanupPage() {
   };
 
   const runCleanup = async () => {
-    if (adminPin !== '9999') {
+    // For security, admin PIN should be validated on the server side
+    // The PIN check will be done by the API endpoint
+    if (!adminPin || adminPin.length !== 4) {
       setStatus('error');
-      setMessage('Invalid admin PIN. Use 9999 to proceed.');
+      setMessage('Please enter a 4-digit admin PIN.');
       return;
     }
 
@@ -151,7 +153,7 @@ export default function DatabaseCleanupPage() {
               type="password"
               value={adminPin}
               onChange={(e) => setAdminPin(e.target.value)}
-              placeholder="Enter 9999 to confirm"
+              placeholder="Enter admin PIN"
               maxLength={4}
               className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
             />
@@ -200,7 +202,7 @@ export default function DatabaseCleanupPage() {
 
             <button
               onClick={runCleanup}
-              disabled={isLoading || adminPin !== '9999'}
+              disabled={isLoading || !adminPin || adminPin.length !== 4}
               className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
                 isLoading || adminPin !== '9999'
                   ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
@@ -228,7 +230,7 @@ export default function DatabaseCleanupPage() {
           </p>
           <ol className="text-yellow-400/80 text-sm mt-2 list-decimal list-inside">
             <li>Click "Check Status" to see current database state</li>
-            <li>Enter admin PIN: <strong>9999</strong></li>
+            <li>Enter the admin PIN (check with administrator)</li>
             <li>Click "CLEANUP & RESET" to wipe and rebuild database</li>
             <li>You'll be redirected to login after cleanup</li>
           </ol>

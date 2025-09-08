@@ -1,6 +1,6 @@
 'use: client'
 
-import { db } from '@/lib/db';
+import { db } from '@/lib/database';
 
 export interface TeamAnalytics {
   teamId: string,

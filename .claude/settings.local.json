@@ -58,7 +58,8 @@
       "Bash(mkdir:*)",
       "Bash(timeout 120 npm run build)",
       "Bash(timeout 90 npm run build)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(do sed -i \"s|from ''@/lib/db''|from ''@/lib/database''|g\" \"$file\")"
     ],
     "deny": [],
     "ask": []

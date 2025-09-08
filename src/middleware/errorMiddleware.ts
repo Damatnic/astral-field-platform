@@ -15,7 +15,7 @@ import {
   RateLimitError
 } from '@/lib/errorHandling';
 import jwt from 'jsonwebtoken';
-import { db } from '@/lib/db';
+import { db } from '@/lib/database';
 
 // =============================================================================
 // MIDDLEWARE: TYPES

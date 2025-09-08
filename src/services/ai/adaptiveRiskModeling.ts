@@ -1,7 +1,7 @@
 import { aiRouterService } from './aiRouterService';
 import { aiAnalyticsService } from './aiAnalyticsService';
 import { userBehaviorAnalyzer, UserBehavior, RiskProfile } from './userBehaviorAnalyzer';
-import { neonDb } from '@/lib/db';
+import { neonDb } from '@/lib/database';
 
 export interface RiskScenario {
   id: string;,

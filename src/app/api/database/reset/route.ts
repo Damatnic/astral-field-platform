@@ -8,9 +8,18 @@ export async function POST(req: NextRequest) {
     const { adminPin } = await req.json().catch(() => ({ adminPin: null }));
 
     // Simple auth check - only admin can run this
-    if (adminPin !== "9999") {
+    const ADMIN_PIN = process.env.ADMIN_CLEANUP_PIN || process.env.ADMIN_PIN;
+    
+    if (!ADMIN_PIN) {
       return NextResponse.json(
-        { error: "Unauthorized. Admin PIN (9999) required." },
+        { error: "Admin PIN not configured. Contact administrator." },
+        { status: 500 },
+      );
+    }
+    
+    if (adminPin !== ADMIN_PIN) {
+      return NextResponse.json(
+        { error: "Unauthorized. Invalid admin PIN." },
         { status: 401 },
       );
     }
@@ -110,7 +119,7 @@ export async function GET() {
         },
       },
       message:
-        "Database status (mock mode). Use POST with adminPin: 9999 to reset.",
+        "Database status (mock mode). Use POST with valid admin PIN to reset.",
     });
   } catch (error) {
     return NextResponse.json(
