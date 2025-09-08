@@ -166,7 +166,7 @@ export async function GET() {
         JOIN leagues l ON t.league_id = l.id 
         LEFT JOIN draft_picks dp ON t.id = dp.team_id
         LEFT JOIN players p ON dp.player_id = p.id
-        WHERE l.season_year = $1 AND t.team_name = 'Astral Crushers'
+        WHERE l.season_year = $1 AND t.team_name = 'D\'Amato Dynasty'
         GROUP BY t.id, t.team_name, t.draft_position
       `, [2025]);
       

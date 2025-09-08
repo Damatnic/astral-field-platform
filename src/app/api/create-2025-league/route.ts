@@ -46,18 +46,18 @@ export async function POST() {
       
       leagueId = leagueResult.rows[0].id;
       
-      // Create the 10 fantasy teams
+      // Create the 10 fantasy teams using your preferred team names
       const teams = [
-        { name: 'Astral Crushers', owner: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', position: 3 },
-        { name: 'Thunder Bolts', owner: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', position: 1 },
-        { name: 'Victory Vipers', owner: 'Marcus Johnson', email: 'marcus.johnson@astralfield.com', position: 2 },
-        { name: 'Championship Chasers', owner: 'Sarah Mitchell', email: 'sarah.mitchell@astralfield.com', position: 4 },
-        { name: 'Kaity\'s Killers', owner: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', position: 5 },
-        { name: 'End Zone Eagles', owner: 'David Jarvey', email: 'david.jarvey@astralfield.com', position: 6 },
-        { name: 'Grid Iron Giants', owner: 'Cason Minor', email: 'cason.minor@astralfield.com', position: 7 },
-        { name: 'Playoff Predators', owner: 'Mike Rodriguez', email: 'mike.rodriguez@astralfield.com', position: 8 },
-        { name: 'Fantasy Phenoms', owner: 'Jessica Chen', email: 'jessica.chen@astralfield.com', position: 9 },
-        { name: 'Title Town Titans', owner: 'Alex Thompson', email: 'alex.thompson@astralfield.com', position: 10 }
+        { name: 'D\'Amato Dynasty', owner: 'Nicholas D\'Amato', email: 'nicholas.damato@astralfield.com', position: 3 },
+        { name: 'Kornbeck\'s Krusaders', owner: 'Jon Kornbeck', email: 'jon.kornbeck@astralfield.com', position: 1 },
+        { name: 'Jack\'s Juggernauts', owner: 'Jack McCaigue', email: 'jack.mccaigue@astralfield.com', position: 2 },
+        { name: 'Hartley\'s Heroes', owner: 'Nick Hartley', email: 'nick.hartley@astralfield.com', position: 4 },
+        { name: 'Kaity\'s Knights', owner: 'Kaity Lorbecki', email: 'kaity.lorbecki@astralfield.com', position: 5 },
+        { name: 'Jarvey\'s Giants', owner: 'David Jarvey', email: 'david.jarvey@astralfield.com', position: 6 },
+        { name: 'Minor League', owner: 'Cason Minor', email: 'cason.minor@astralfield.com', position: 7 },
+        { name: 'Bergum\'s Blitz', owner: 'Brittany Bergum', email: 'brittany.bergum@astralfield.com', position: 8 },
+        { name: 'Larry\'s Legends', owner: 'Larry McCaigue', email: 'larry.mccaigue@astralfield.com', position: 9 },
+        { name: 'Renee\'s Raiders', owner: 'Renee McCaigue', email: 'renee.mccaigue@astralfield.com', position: 10 }
       ];
       
       for (const team of teams) {
@@ -92,7 +92,7 @@ export async function POST() {
       // Simulate some draft picks for Nicholas (strategic positioning)
       const nicholasTeamResult = await client.query(
         'SELECT id FROM teams WHERE league_id = $1 AND team_name = $2',
-        [leagueId, 'Astral Crushers']
+        [leagueId, 'D\'Amato Dynasty']
       );
       
       const nicholasTeamId = nicholasTeamResult.rows[0].id;
@@ -137,7 +137,7 @@ export async function POST() {
       leagueId,
       details: {
         teams: 10,
-        nicholasTeam: 'Astral Crushers (3rd pick)',
+        nicholasTeam: 'D\'Amato Dynasty (3rd pick)',
         draftPosition: 'Strategic 3rd overall position',
         season: 2025,
         currentWeek: 2

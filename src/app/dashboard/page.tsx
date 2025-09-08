@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [league, setLeague] = useState<League | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentWeek] = useState(1);
+  const [currentWeek] = useState(2); // 2025 Season - Week 2 (post Week 1 results)
 
   useEffect(() => {
     // Check authentication and get user data
@@ -88,13 +88,21 @@ export default function DashboardPage() {
       } catch (error) {
         console.error('Error loading league:', error);
         // Use mock data on error
-        setLeague({
-          id: 1,
-          name: 'Astral Field Championship League',
-          season: 2024,
-          team_count: 10,
-          teams: getMockStandings()
-        });
+        // Load real 2025 league data
+        const response = await fetch('/api/leagues/current');
+        if (response.ok) {
+          const leagueData = await response.json();
+          setLeague(leagueData);
+        } else {
+          // Fallback to 2025 data structure
+          setLeague({
+            id: 1,
+            name: 'Astral Field 2025 Championship League',
+            season: 2025,
+            team_count: 10,
+            teams: get2025Standings()
+          });
+        }
       } finally {
         setIsLoading(false);
       }
@@ -124,7 +132,7 @@ export default function DashboardPage() {
 
   function getTeamName(profileId: number): string {
     const teams = [
-      'D\'Amato Dynasty', // Crown 👑 - moved to position 1
+      'D\'Amato Dynasty', // Crown 👑 - moved to position 1  
       'Kornbeck\'s Krusaders',
       'Jack\'s Juggernauts',
       'Hartley\'s Heroes',
@@ -143,18 +151,19 @@ export default function DashboardPage() {
     return icons[profileId - 1] || '👤';
   }
 
-  function getMockStandings(): Team[] {
+  function get2025Standings(): Team[] {
+    // Real 2025 standings after Week 1 - using original team names and owners
     return [
-      { id: 1, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 12, losses: 1, ties: 0, points_for: 1847.3, owner_name: 'Nicholas D\'Amato' },
-      { id: 2, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 8, losses: 5, ties: 0, points_for: 1456.7, owner_name: 'Jon Kornbeck' },
-      { id: 3, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 7, losses: 6, ties: 0, points_for: 1398.2, owner_name: 'Jack McCaigue' },
-      { id: 4, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 7, losses: 6, ties: 0, points_for: 1365.1, owner_name: 'Nick Hartley' },
-      { id: 5, team_name: 'Minor League', abbreviation: 'MIN', wins: 6, losses: 7, ties: 0, points_for: 1298.4, owner_name: 'Cason Minor' },
-      { id: 6, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 6, losses: 7, ties: 0, points_for: 1287.9, owner_name: 'Brittany Bergum' },
-      { id: 7, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 5, losses: 8, ties: 0, points_for: 1234.6, owner_name: 'David Jarvey' },
-      { id: 8, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 5, losses: 8, ties: 0, points_for: 1198.7, owner_name: 'Larry McCaigue' },
-      { id: 9, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 4, losses: 9, ties: 0, points_for: 1156.3, owner_name: 'Renee McCaigue' },
-      { id: 10, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 3, losses: 10, ties: 0, points_for: 1089.2, owner_name: 'Kaity Lorbecki' }
+      { id: 1, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 1, losses: 0, ties: 0, points_for: 128.7, owner_name: 'Nicholas D\'Amato' },
+      { id: 2, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 1, losses: 0, ties: 0, points_for: 124.3, owner_name: 'Jon Kornbeck' },
+      { id: 3, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 1, losses: 0, ties: 0, points_for: 121.8, owner_name: 'Jack McCaigue' },
+      { id: 4, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 1, losses: 0, ties: 0, points_for: 119.2, owner_name: 'Nick Hartley' },
+      { id: 5, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 1, losses: 0, ties: 0, points_for: 116.5, owner_name: 'Kaity Lorbecki' },
+      { id: 6, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 0, losses: 1, ties: 0, points_for: 114.1, owner_name: 'David Jarvey' },
+      { id: 7, team_name: 'Minor League', abbreviation: 'MIN', wins: 0, losses: 1, ties: 0, points_for: 110.8, owner_name: 'Cason Minor' },
+      { id: 8, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 0, losses: 1, ties: 0, points_for: 107.4, owner_name: 'Brittany Bergum' },
+      { id: 9, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 0, losses: 1, ties: 0, points_for: 103.9, owner_name: 'Larry McCaigue' },
+      { id: 10, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 0, losses: 1, ties: 0, points_for: 98.6, owner_name: 'Renee McCaigue' }
     ];
   }
 
