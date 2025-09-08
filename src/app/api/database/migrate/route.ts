@@ -137,16 +137,14 @@ export async function POST(req: NextRequest) {
     // Create Players table
     await client.query(`
       CREATE TABLE players (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        external_id VARCHAR(100) UNIQUE,
+        id TEXT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         position VARCHAR(10) NOT NULL,
-        team VARCHAR(10),
-        jersey_number INTEGER,
-        height VARCHAR(10),
-        weight INTEGER,
-        age INTEGER,
-        years_experience INTEGER,
+        nfl_team VARCHAR(10),
+        stats JSONB DEFAULT '{}',
+        projections JSONB DEFAULT '{}',
+        injury_status VARCHAR(50),
+        bye_week INTEGER,
         college VARCHAR(100),
         draft_year INTEGER,
         draft_round INTEGER,

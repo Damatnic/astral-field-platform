@@ -248,3 +248,4 @@ function generateTEProjection(depth: number) {
   const stats = baseStats[Math.min(depth, 2)];
   return { week: 2, points: stats.points, stats: { receivingYards: stats.receivingYards, receivingTDs: stats.receivingTDs, receptions: stats.receptions } };
 }
+
