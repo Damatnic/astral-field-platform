@@ -57,7 +57,8 @@
       "Bash(npm run fix-errors:*)",
       "Bash(mkdir:*)",
       "Bash(timeout 120 npm run build)",
-      "Bash(timeout 90 npm run build)"
+      "Bash(timeout 90 npm run build)",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": []
