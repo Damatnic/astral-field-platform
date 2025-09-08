@@ -108,18 +108,15 @@ export async function POST(req: NextRequest) {
       // Step 1: Create or update users (using pin-based demo accounts)
       const userInserts = LEAGUE_PLAYERS.map(async (player, index) => {
         const userResult = await client.query(
-        `INSERT INTO users (username, email, display_name, pin, is_demo_user) 
-         VALUES ($1, $2, $3, $4, true)
+        `INSERT INTO users (username, email) 
+         VALUES ($1, $2)
          ON CONFLICT (email) DO UPDATE SET 
-           display_name = EXCLUDED.display_name,
-           pin = EXCLUDED.pin,
+           username = EXCLUDED.username,
            updated_at = CURRENT_TIMESTAMP
          RETURNING id`,
         [
           player.name.toLowerCase().replace(/\s+/g, "."),
-          player.email,
-          player.name,
-          String(1000 + index + 1), // PIN: 1001, 1002, etc.
+          player.email
         ],
       );
       return { ...player, userId: userResult.rows[0].id };
@@ -257,28 +254,34 @@ export async function POST(req: NextRequest) {
 
     console.log("League initialized successfully with UUID schema!");
 
-    return NextResponse.json({
-      success: true,
-      message: "League initialized successfully with modern database schema!",
-      data: {
-        leagueId,
-        leagueName: LEAGUE_CONFIG.name,
-        season: LEAGUE_CONFIG.season,
-        totalTeams: LEAGUE_PLAYERS.length,
-        players: teamsWithIds.map((p) => ({
-          id: p.id,
-          name: p.name,
-          teamName: p.teamName,
-          abbreviation: p.abbreviation,
-          userId: p.userId,
-          teamId: p.teamId,
-          pin: String(
-            1000 + LEAGUE_PLAYERS.findIndex((lp) => lp.id === p.id) + 1,
-          ),
-        })),
-        settings: LEAGUE_CONFIG,
-      },
-    });
+    return {
+      leagueId,
+      teamsWithIds,
+    };
+  }); // End of transaction
+
+  return NextResponse.json({
+    success: true,
+    message: "League initialized successfully with modern database schema!",
+    data: {
+      leagueId: result.leagueId,
+      leagueName: LEAGUE_CONFIG.name,
+      season: LEAGUE_CONFIG.season,
+      totalTeams: LEAGUE_PLAYERS.length,
+      players: result.teamsWithIds.map((p) => ({
+        id: p.id,
+        name: p.name,
+        teamName: p.teamName,
+        abbreviation: p.abbreviation,
+        userId: p.userId,
+        teamId: p.teamId,
+        pin: String(
+          1000 + LEAGUE_PLAYERS.findIndex((lp) => lp.id === p.id) + 1,
+        ),
+      })),
+      settings: LEAGUE_CONFIG,
+    },
+  });
   } catch (error) {
     console.error("League initialization error:", error);
     return NextResponse.json(
@@ -316,53 +319,55 @@ function generateWeekMatchups(teams: number[], weekOffset: number) {
 // GET endpoint to check league status
 export async function GET() {
   try {
-    const leagues = await db.query(`
+    const result = await database.transaction(async (client) => {
+      const leagues = await client.query(`
       SELECT 
         l.*,
         COUNT(DISTINCT t.id) as team_count,
-        u.display_name as commissioner_name
+        u.username as commissioner_name
       FROM leagues l
       LEFT JOIN teams t ON l.id = t.league_id
       LEFT JOIN users u ON l.commissioner_id = u.id
-      WHERE l.is_active = true
-      GROUP BY l.id, u.display_name
+      GROUP BY l.id, u.username
       ORDER BY l.created_at DESC
       LIMIT 1
     `);
 
-    if (leagues.rows.length === 0) {
-      return NextResponse.json({
-        success: false,
-        message: "No active league found. Please initialize the league first.",
-        initialized: false,
-      });
-    }
+      if (leagues.rows.length === 0) {
+        return {
+          success: false,
+          message: "No active league found. Please initialize the league first.",
+          initialized: false,
+        };
+      }
 
-    const league = leagues.rows[0];
+      const league = leagues.rows[0];
 
-    const teams = await db.query(
+      const teams = await client.query(
       `
       SELECT 
         t.*,
-        u.display_name as owner_name,
-        u.email as owner_email,
-        u.pin as owner_pin
+        u.username as owner_name,
+        u.email as owner_email
       FROM teams t
       JOIN users u ON t.user_id = u.id
       WHERE t.league_id = $1
-      ORDER BY t.wins DESC, t.points_for DESC
+      ORDER BY t.created_at
     `,
-      [league.id],
-    );
+        [league.id],
+      );
 
-    return NextResponse.json({
-      success: true,
-      initialized: true,
-      league: {
-        ...league,
-        teams: teams.rows,
-      },
-    });
+      return {
+        success: true,
+        initialized: true,
+        league: {
+          ...league,
+          teams: teams.rows,
+        },
+      };
+    }); // End transaction
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error checking league status:", error);
     return NextResponse.json(
