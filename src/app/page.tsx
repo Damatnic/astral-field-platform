@@ -4,16 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const profiles = [
-  { id: 1, name: "Jon Kornbeck", color: "bg-blue-500", icon: "🏈" },
-  { id: 2, name: "Jack McCaigue", color: "bg-green-500", icon: "⚡" },
-  { id: 3, name: "Nick Hartley", color: "bg-purple-500", icon: "🔥" },
-  { id: 4, name: "Cason Minor", color: "bg-red-500", icon: "⭐" },
-  { id: 5, name: "Brittany Bergum", color: "bg-yellow-500", icon: "🏆" },
-  { id: 6, name: "David Jarvey", color: "bg-pink-500", icon: "🎯" },
-  { id: 7, name: "Larry McCaigue", color: "bg-indigo-500", icon: "🚀" },
-  { id: 8, name: "Renee McCaigue", color: "bg-orange-500", icon: "💎" },
-  { id: 9, name: "Nicholas D'Amato", color: "bg-teal-500", icon: "👤" },
-  { id: 10, name: "Kaity Lorbecki", color: "bg-gray-700", icon: "👑" },
+  { id: 1, name: "Nicholas D'Amato", color: "bg-gradient-to-br from-yellow-400 to-yellow-600", icon: "👑", highlight: true },
+  { id: 2, name: "Jon Kornbeck", color: "bg-gradient-to-br from-blue-500 to-blue-700", icon: "🏈" },
+  { id: 3, name: "Jack McCaigue", color: "bg-gradient-to-br from-green-500 to-green-700", icon: "⚡" },
+  { id: 4, name: "Nick Hartley", color: "bg-gradient-to-br from-purple-500 to-purple-700", icon: "🔥" },
+  { id: 5, name: "Cason Minor", color: "bg-gradient-to-br from-red-500 to-red-700", icon: "⭐" },
+  { id: 6, name: "Brittany Bergum", color: "bg-gradient-to-br from-pink-500 to-pink-700", icon: "🏆" },
+  { id: 7, name: "David Jarvey", color: "bg-gradient-to-br from-indigo-500 to-indigo-700", icon: "🎯" },
+  { id: 8, name: "Larry McCaigue", color: "bg-gradient-to-br from-orange-500 to-orange-700", icon: "🚀" },
+  { id: 9, name: "Renee McCaigue", color: "bg-gradient-to-br from-teal-500 to-teal-700", icon: "💎" },
+  { id: 10, name: "Kaity Lorbecki", color: "bg-gradient-to-br from-gray-600 to-gray-800", icon: "👤" },
 ];
 
 export default function HomePage() {
@@ -80,63 +80,94 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-      <div className="max-w-6xl mx-auto py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">🏈 Astral Field</h1>
-          <p className="text-xl text-gray-300">AI-powered fantasy football platform</p>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-6 shadow-2xl">
+            <span className="text-4xl">🏈</span>
+          </div>
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600 bg-clip-text text-transparent mb-4">
+            Astral Field
+          </h1>
+          <p className="text-xl text-gray-300 mb-2">AI-Powered Fantasy Football Platform</p>
+          <p className="text-sm text-gray-400">2025 NFL Season • Week 2</p>
         </div>
 
         {!selectedProfile ? (
           <>
             {/* Profile Selection */}
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-              <h2 className="text-2xl font-semibold text-white mb-6 text-center">
-                Select Your Profile
-              </h2>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl font-bold text-white mb-3">
+                  Choose Your Manager Profile
+                </h2>
+                <p className="text-gray-400">Select your fantasy team manager to continue</p>
+              </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {profiles.map((profile) => (
                   <button
                     key={profile.id}
                     onClick={() => handleProfileSelect(profile.id)}
-                    className={`${profile.color} hover:opacity-90 transition-all transform hover:scale-105 rounded-xl p-6 text-white shadow-lg`}
+                    className={`group relative ${profile.color} hover:scale-[1.02] transition-all duration-300 rounded-2xl p-6 text-white shadow-lg hover:shadow-2xl border border-white/20 ${
+                      profile.highlight ? 'ring-2 ring-yellow-400/50 animate-pulse' : ''
+                    }`}
                   >
-                    <div className="text-4xl mb-2">{profile.icon}</div>
-                    <div className="font-semibold">{profile.name}</div>
+                    <div className="relative z-10">
+                      <div className="text-5xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                        {profile.icon}
+                      </div>
+                      <div className="font-bold text-sm leading-tight">
+                        {profile.name}
+                      </div>
+                      {profile.highlight && (
+                        <div className="text-xs text-yellow-200 mt-1 font-medium">
+                          League Leader ✨
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300 rounded-2xl"></div>
                   </button>
                 ))}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <p className="text-sm text-gray-500">
+                  🔒 Secure PIN authentication • ⚡ Instant access • 🏆 Full fantasy management
+                </p>
               </div>
             </div>
           </>
         ) : (
           <>
             {/* PIN Entry */}
-            <div className="max-w-md mx-auto">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+            <div className="max-w-lg mx-auto">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
                 <button
                   onClick={() => setSelectedProfile(null)}
-                  className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
+                  className="text-gray-400 hover:text-white mb-6 flex items-center gap-2 transition-colors duration-200 group"
                 >
-                  ← Back to profiles
+                  <span className="group-hover:-translate-x-1 transition-transform duration-200">←</span>
+                  Back to profiles
                 </button>
 
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 shadow-lg"
-                       style={{ backgroundColor: profiles[selectedProfile - 1].color.replace('bg-', '#').replace('500', '500') }}>
-                    <span className="text-4xl">
+                <div className="text-center mb-8">
+                  <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 shadow-2xl ${
+                    profiles.find(p => p.id === selectedProfile)?.color
+                  } border-2 border-white/20`}>
+                    <span className="text-5xl">
                       {profiles.find(p => p.id === selectedProfile)?.icon}
                     </span>
                   </div>
-                  <h2 className="text-2xl font-semibold text-white">
-                    {profiles.find(p => p.id === selectedProfile)?.name}
+                  <h2 className="text-3xl font-bold text-white mb-2">
+                    Welcome back, {profiles.find(p => p.id === selectedProfile)?.name?.split(' ')[0]}!
                   </h2>
-                  <p className="text-gray-400 mt-2">Enter your 4-digit PIN</p>
+                  <p className="text-gray-400">Enter your secure 4-digit PIN to continue</p>
                 </div>
 
-                <form onSubmit={handlePinSubmit} className="space-y-6">
-                  <div>
+                <form onSubmit={handlePinSubmit} className="space-y-8">
+                  <div className="relative">
                     <input
                       type="password"
                       inputMode="numeric"
@@ -144,14 +175,17 @@ export default function HomePage() {
                       maxLength={4}
                       value={pin}
                       onChange={(e) => handlePinChange(e.target.value)}
-                      className="w-full text-center text-3xl font-mono tracking-widest bg-gray-700 text-white rounded-lg px-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full text-center text-4xl font-mono tracking-[0.5em] bg-white/5 text-white rounded-2xl px-6 py-6 focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-white/10 transition-all duration-300"
                       placeholder="• • • •"
                       autoFocus
                     />
+                    <div className="absolute inset-x-0 -bottom-1 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transform scale-x-0 transition-transform duration-300" 
+                         style={{ transform: `scaleX(${pin.length / 4})` }}>
+                    </div>
                   </div>
 
                   {error && (
-                    <div className="text-red-400 text-sm text-center">
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-red-400 text-sm text-center">
                       {error}
                     </div>
                   )}
@@ -159,23 +193,31 @@ export default function HomePage() {
                   <button
                     type="submit"
                     disabled={pin.length !== 4 || isLoading}
-                    className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                    className={`w-full py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
                       pin.length === 4 && !isLoading
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "bg-gray-700 text-gray-500 cursor-not-allowed"
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                        : "bg-white/5 text-gray-500 cursor-not-allowed border border-white/10"
                     }`}
                   >
-                    {isLoading ? "Authenticating..." : "Sign In"}
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Authenticating...
+                      </div>
+                    ) : (
+                      "Access Dashboard"
+                    )}
                   </button>
 
                   {/* PIN Keypad */}
-                  <div className="grid grid-cols-3 gap-2 mt-6">
+                  <div className="grid grid-cols-3 gap-3 mt-8">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                       <button
                         key={num}
                         type="button"
+                        disabled={pin.length >= 4}
                         onClick={() => handlePinChange(pin + num)}
-                        className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-semibold py-3 rounded-lg transition-all"
+                        className="bg-white/5 hover:bg-white/10 text-white text-2xl font-bold py-4 rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {num}
                       </button>
@@ -183,23 +225,25 @@ export default function HomePage() {
                     <button
                       type="button"
                       onClick={() => setPin("")}
-                      className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-3 rounded-lg transition-all"
+                      className="bg-red-500/20 hover:bg-red-500/30 text-red-400 text-sm font-bold py-4 rounded-xl transition-all duration-200 border border-red-500/20 hover:border-red-500/30 active:scale-95"
                     >
                       Clear
                     </button>
                     <button
                       type="button"
+                      disabled={pin.length >= 4}
                       onClick={() => handlePinChange(pin + "0")}
-                      className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-semibold py-3 rounded-lg transition-all"
+                      className="bg-white/5 hover:bg-white/10 text-white text-2xl font-bold py-4 rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       0
                     </button>
                     <button
                       type="button"
                       onClick={() => setPin(pin.slice(0, -1))}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-semibold py-3 rounded-lg transition-all"
+                      disabled={pin.length === 0}
+                      className="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-lg font-bold py-4 rounded-xl transition-all duration-200 border border-yellow-500/20 hover:border-yellow-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      ←
+                      ⌫
                     </button>
                   </div>
                 </form>
@@ -209,9 +253,24 @@ export default function HomePage() {
         )}
 
         {/* Quick Access Info */}
-        <div className="mt-12 text-center text-gray-400 text-sm">
-          <p>Quick access profiles • Each profile uses a 4-digit PIN</p>
-          <p className="mt-2">Enter your secure PIN to access your profile</p>
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center gap-8 bg-white/5 backdrop-blur-sm rounded-full px-8 py-4 border border-white/10">
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <span className="text-green-400">●</span>
+              <span>Secure Authentication</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <span className="text-blue-400">⚡</span>
+              <span>Instant Access</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <span className="text-purple-400">🏆</span>
+              <span>Full Team Management</span>
+            </div>
+          </div>
+          <p className="mt-6 text-xs text-gray-500">
+            Powered by advanced AI insights • Real-time NFL data • 2025 season ready
+          </p>
         </div>
       </div>
     </div>
