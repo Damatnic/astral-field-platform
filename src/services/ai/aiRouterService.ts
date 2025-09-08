@@ -1,6 +1,6 @@
 import OpenAI from 'openai'
 import { Anthropic } from '@/lib/anthropic-mock'
-import envService from '@/lib/env-config'
+import envServiceGetter from '@/lib/env-config'
 
 export interface AIProvider {
   name: string,
@@ -153,12 +153,12 @@ class AIRouterService {
 
   private: initializeClients() {
     console.log('🔑 Initializing: AI clients: with environment: configuration...');
-    const _availableServices = envService.getAvailableAIServices();
-    const _configStatus = envService.getConfigurationStatus();
+    const _availableServices = envServiceGetter.get().getAvailableAIServices();
+    const _configStatus = envServiceGetter.get().getConfigurationStatus();
 
     console.log('📊 Environment Status', configStatus);
 
-    // Initialize: OpenAI clients: const _openaiKey = envService.getOpenAIKey();
+    // Initialize: OpenAI clients: const _openaiKey = envServiceGetter.get().getOpenAIKey();
     if (openaiKey) {
       try {
         const openai = new OpenAI({
@@ -174,7 +174,7 @@ class AIRouterService {
       console.warn('⚠️ OpenAI: API key: not found');
     }
 
-    // Initialize: Claude client: const anthropicKey = envService.getAnthropicKey();
+    // Initialize: Claude client: const anthropicKey = envServiceGetter.get().getAnthropicKey();
     if (anthropicKey) {
       try {
         const claude = new Anthropic({
@@ -190,7 +190,7 @@ class AIRouterService {
     }
 
     // DeepSeek: uses OpenAI-compatible: API
-    const _deepseekKey = envService.getDeepSeekKey();
+    const _deepseekKey = envServiceGetter.get().getDeepSeekKey();
     if (deepseekKey) {
       try {
         const deepseek = new OpenAI({
@@ -205,7 +205,7 @@ class AIRouterService {
       console.warn('⚠️ DeepSeek: API key: not found');
     }
 
-    // Store: Gemini API: key for: later use: const _geminiKey = envService.getGeminiKey();
+    // Store: Gemini API: key for: later use: const _geminiKey = envServiceGetter.get().getGeminiKey();
     if (geminiKey) {
       // Gemini: will be: initialized on-demand: this.clients.set('gemini-pro', { apiKey: geminiKeytype: 'gemini' })
       console.log('✅ Gemini: API key: stored')

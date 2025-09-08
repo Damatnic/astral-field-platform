@@ -1,13 +1,13 @@
 import { aiPredictionEngine, PlayerPrediction, BreakoutCandidate, InjuryImpactAnalysis } from '../predictionEngine';
 import { database } from '@/lib/database';
-import envService from '@/lib/env-config';
+import envServiceGetter from '@/lib/env-config';
 
 // Mock dependencies
 jest.mock('@/lib/database');
 jest.mock('@/lib/env-config');
 
 const mockDatabase = database as jest.Mocked<typeof database>;
-const mockEnvService = envService as jest.Mocked<typeof envService>;
+const mockEnvService = envServiceGetter as jest.Mocked<typeof envServiceGetter>;
 
 describe('AIPredictionEngine', () => {
   let engine: typeof aiPredictionEngine;

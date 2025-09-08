@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
-import envService from "@/lib/env-config";
+import envServiceGetter from "@/lib/env-config";
 
 interface HealthCheck {
   service: string;
@@ -44,7 +44,7 @@ async function checkDatabase(): Promise<HealthCheck> {
 async function checkEnvironmentConfig(): Promise<HealthCheck> {
   const start = Date.now();
   try {
-    const config = envService.getConfigurationStatus();
+    const config = envServiceGetter.get().getConfigurationStatus();
     const hasIssues = !config.database.configured || !config.supabase.configured;
     
     return {

@@ -5,7 +5,7 @@
 
 import { database } from '../../lib/database';
 import { aiPredictionEngine, type BreakoutCandidate } from './predictionEngine';
-import envService from '../../lib/env-config';
+// Removed unused import
 
 export interface OpportunityMetrics {
   playerId: string;

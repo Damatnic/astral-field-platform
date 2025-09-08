@@ -4,7 +4,8 @@
  */
 
 import { database } from '@/lib/database';
-import envService from '@/lib/env-config';
+import envServiceGetter from '@/lib/env-config';
+const envService = envServiceGetter.get();
 
 export interface PlayerPrediction {
   playerId: string;
@@ -140,7 +141,7 @@ class AIPredictionEngine {
   // Analyze injury impact using AI
   async analyzeInjuryImpact(playerId: string, injuryType: string): Promise<InjuryImpactAnalysis> {
     try {
-      const aiServices = envService.getAvailableAIServices();
+      const aiServices = envServiceGetter.get().getAvailableAIServices();
       if (aiServices.length === 0) {
         return this.getFallbackInjuryAnalysis(playerId, injuryType);
       }
@@ -158,7 +159,7 @@ class AIPredictionEngine {
 
   // Private methods for AI model calls
   private async getOpenAIPrediction(playerData: any, matchupData: any, weatherData: any, injuryData: any, formData: any): Promise<any> {
-    const apiKey = envService.getOpenAIKey();
+    const apiKey = envServiceGetter.get().getOpenAIKey();
     if (!apiKey) return null;
 
     try {
@@ -196,7 +197,7 @@ class AIPredictionEngine {
   }
 
   private async getAnthropicPrediction(playerData: any, matchupData: any, weatherData: any, injuryData: any, formData: any): Promise<any> {
-    const apiKey = envService.getAnthropicKey();
+    const apiKey = envServiceGetter.get().getAnthropicKey();
     if (!apiKey) return null;
 
     try {
@@ -230,7 +231,7 @@ class AIPredictionEngine {
   }
 
   private async getGeminiPrediction(playerData: any, matchupData: any, weatherData: any, injuryData: any, formData: any): Promise<any> {
-    const apiKey = envService.getGeminiKey();
+    const apiKey = envServiceGetter.get().getGeminiKey();
     if (!apiKey) return null;
 
     try {
@@ -263,7 +264,7 @@ class AIPredictionEngine {
   }
 
   private async getDeepSeekPrediction(playerData: any, matchupData: any, weatherData: any, injuryData: any, formData: any): Promise<any> {
-    const apiKey = envService.getDeepSeekKey();
+    const apiKey = envServiceGetter.get().getDeepSeekKey();
     if (!apiKey) return null;
 
     try {
@@ -485,7 +486,7 @@ Provide analysis in JSON format:
   }
 
   private async callOpenAI(prompt: string): Promise<string> {
-    const apiKey = envService.getOpenAIKey();
+    const apiKey = envServiceGetter.get().getOpenAIKey();
     if (!apiKey) throw new Error('OpenAI API key not configured');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -507,7 +508,7 @@ Provide analysis in JSON format:
   }
 
   private async callAnthropic(prompt: string): Promise<string> {
-    const apiKey = envService.getAnthropicKey();
+    const apiKey = envServiceGetter.get().getAnthropicKey();
     if (!apiKey) throw new Error('Anthropic API key not configured');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -529,7 +530,7 @@ Provide analysis in JSON format:
   }
 
   private async callGemini(prompt: string): Promise<string> {
-    const apiKey = envService.getGeminiKey();
+    const apiKey = envServiceGetter.get().getGeminiKey();
     if (!apiKey) throw new Error('Gemini API key not configured');
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
@@ -692,7 +693,7 @@ Provide analysis in JSON format:
     availableModels: string[];
     cacheSize: number;
   }> {
-    const availableServices = envService.getAvailableAIServices();
+    const availableServices = envServiceGetter.get().getAvailableAIServices();
     
     return {
       status: availableServices.length > 0 ? 'healthy' : 'degraded',

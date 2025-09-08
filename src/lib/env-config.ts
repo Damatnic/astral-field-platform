@@ -58,21 +58,33 @@ class EnvironmentService {
   }
 
   private validateCriticalVariables(): void {
-    const criticalVars = [
+    // Skip validation during build phase
+    if (process.env.NEXT_PHASE === 'phase-production-build') {
+      return;
+    }
+
+    // Only validate truly critical variables at runtime
+    const runtimeCriticalVars = [
       "DATABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
     ];
 
-    const missing = criticalVars.filter(
+    // Supabase is optional if we're not using Supabase features
+    const supabaseInUse = process.env.USE_SUPABASE === 'true';
+    if (supabaseInUse) {
+      runtimeCriticalVars.push("NEXT_PUBLIC_SUPABASE_URL");
+      runtimeCriticalVars.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    }
+
+    const missing = runtimeCriticalVars.filter(
       (key) => !this.config[key as keyof EnvironmentConfig],
     );
 
     if (missing.length > 0) {
-      console.error("❌ Missing critical environment variables:", missing);
-      if (process.env.NODE_ENV === "production") {
+      console.warn("⚠️ Missing environment variables:", missing);
+      // Only throw in production if DATABASE_URL is missing
+      if (process.env.NODE_ENV === "production" && !this.config.DATABASE_URL) {
         throw new Error(
-          `Missing critical environment variables: ${missing.join(", ")}`,
+          `Missing critical environment variable: DATABASE_URL`,
         );
       }
     }
@@ -199,9 +211,16 @@ class EnvironmentService {
   }
 }
 
-// Create singleton instance
-const envService = new EnvironmentService();
+// Create singleton instance lazily to avoid build-time issues
+let _envService: EnvironmentService | null = null;
 
-// Export the service instance and types
-export { envService, type EnvironmentConfig };
-export default envService;
+function getEnvService(): EnvironmentService {
+  if (!_envService) {
+    _envService = new EnvironmentService();
+  }
+  return _envService;
+}
+
+// Export getter function and types
+export { getEnvService as envService, type EnvironmentConfig };
+export default { get: getEnvService };
