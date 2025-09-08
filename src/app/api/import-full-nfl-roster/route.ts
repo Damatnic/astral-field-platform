@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 
+// GET handler for browser access
+export async function GET() {
+  return POST(); // Just call the POST handler
+}
+
 export async function POST() {
   try {
     console.log('🏈 Importing comprehensive 2025 NFL player roster...');
