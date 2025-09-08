@@ -72,7 +72,7 @@ export async function POST() {
 
 // Generate comprehensive NFL roster similar to what you'd see in Yahoo/ESPN
 function generateComprehensive2025NFLRoster() {
-  const players = [];
+  const players: any[] = [];
   
   // All 32 NFL teams with bye weeks
   const nflTeams = [
