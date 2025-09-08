@@ -80,7 +80,7 @@ export default function DashboardPage() {
           setLeague({
             id: 1,
             name: 'Astral Field Championship League',
-            season: 2024,
+            season: 2025,
             team_count: 10,
             teams: get2025Standings()
           });
@@ -292,7 +292,7 @@ export default function DashboardPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Season:</span>
-                  <span className="text-white">{league?.season || 2024}</span>
+                  <span className="text-white">{league?.season || 2025}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Teams:</span>

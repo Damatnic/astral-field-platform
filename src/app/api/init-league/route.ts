@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { database } from "@/lib/database";
 
 // Define the 10 players with their profile data
 const LEAGUE_PLAYERS = [
@@ -78,7 +78,7 @@ const LEAGUE_PLAYERS = [
 
 const LEAGUE_CONFIG = {
   name: "Astral Field Championship League",
-  season: 2024,
+  season: 2025,
   maxTeams: 10,
   scoringSystem: "PPR", // Points Per Reception
   playoffTeams: 6,
@@ -104,9 +104,10 @@ export async function POST(req: NextRequest) {
   try {
     console.log("Initializing league with new UUID-based schema...");
 
-    // Step 1: Create or update users (using pin-based demo accounts)
-    const userInserts = LEAGUE_PLAYERS.map(async (player, index) => {
-      const userResult = await db.query(
+    const result = await database.transaction(async (client) => {
+      // Step 1: Create or update users (using pin-based demo accounts)
+      const userInserts = LEAGUE_PLAYERS.map(async (player, index) => {
+        const userResult = await client.query(
         `INSERT INTO users (username, email, display_name, pin, is_demo_user) 
          VALUES ($1, $2, $3, $4, true)
          ON CONFLICT (email) DO UPDATE SET 
@@ -147,7 +148,7 @@ export async function POST(req: NextRequest) {
       RETURNING id`,
       [
         LEAGUE_CONFIG.name,
-        LEAGUE_CONFIG.season,
+        2025, // Always use 2025 season
         commissionerUser?.userId || usersWithIds[0].userId,
         LEAGUE_CONFIG.maxTeams,
         "ppr",
@@ -228,7 +229,7 @@ export async function POST(req: NextRequest) {
         ($1, 1, $2, $11, $12)`,
       [
         leagueId,
-        LEAGUE_CONFIG.season,
+        2025, // Always use 2025 season
         teamsWithIds[0].teamId,
         teamsWithIds[1].teamId,
         teamsWithIds[2].teamId,
