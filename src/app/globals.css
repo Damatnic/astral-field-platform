@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+/* Import Design System */
+@import '../styles/design-tokens.css';
+@import '../styles/animations.css';
+@import '../styles/glassmorphism.css';
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
@@ -20,7 +25,212 @@
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Add animated background effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(79, 110, 247, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Mobile Touch Targets */
+button, a, input, textarea, select {
+  min-height: var(--touch-target-min, 44px);
+  transition: all var(--duration-fast, 150ms) var(--ease-out);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection Colors */
+::selection {
+  background: var(--color-primary-500, #4f6ef7);
+  color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-500, #4f6ef7);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-600, #2563eb);
+}
+
+/* Focus Visible */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500, #4f6ef7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Disabled State */
+:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-bold, 700);
+  line-height: var(--leading-tight, 1.25);
+}
+
+h1 {
+  font-size: var(--text-4xl, 2.25rem);
+}
+
+h2 {
+  font-size: var(--text-3xl, 1.875rem);
+}
+
+h3 {
+  font-size: var(--text-2xl, 1.5rem);
+}
+
+h4 {
+  font-size: var(--text-xl, 1.25rem);
+}
+
+h5 {
+  font-size: var(--text-lg, 1.125rem);
+}
+
+h6 {
+  font-size: var(--text-base, 1rem);
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-accent-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-accent-500) 100%);
+}
+
+.shadow-glow {
+  box-shadow: var(--glow-primary);
+}
+
+/* Safe Area for Mobile */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Prevent iOS Zoom on Inputs */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .glass-card,
+  .glass-button,
+  .glass {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

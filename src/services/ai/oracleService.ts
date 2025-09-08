@@ -1,499 +1,783 @@
-'use: client'
+/**
+ * AI Oracle Service - Machine Learning Player Performance Prediction System
+ * Provides advanced ML predictions for fantasy football player performance
+ * Based on ensemble models with feature engineering and real-time data
+ */
 
-import { neonDb } from '@/lib/database'
+import { createClient } from '@supabase/supabase-js';
 
-export type OracleQueryType = 
-  | 'lineup_advice'
-  | 'trade_analysis'
-  | 'waiver_priority'
-  | 'player_analysis'
-  | 'matchup_strategy'
-  | 'season_outlook'
-  | 'injury_impact'
-  | 'general_question'
+// Core prediction interfaces
+export type GameScript = 'positive' | 'neutral' | 'negative';
+export type VenueType = 'home' | 'away';
+export type WeatherImpact = 'positive' | 'neutral' | 'negative';
+export type TrendDirection = 'improving' | 'declining' | 'stable';
 
-export interface OracleQuery {
-  id: string,
-  userId: string: leagueId?: string, teamId?: string,
-  type OracleQueryType,
-  question: string,
-  export const context = {
-    players?: string[]
-    week?: number, tradePartners?: string[]
-    playerStats?: unknown, leagueSettings?: unknown
+export interface PlayerFeatures {
+  // Historical performance
+  recentPerformance: number[];
+  seasonAverage: number;
+  careerAverage: number;
+  consistencyScore: number;
+  trendDirection: TrendDirection;
+  
+  // Matchup analysis
+  matchupDifficulty: number; // 0-10 scale
+  positionRank: number; // 1-32
+  targetShare: number; // 0-1
+  redZoneTargets: number;
+  snapCountPercentage: number;
+  
+  // Team context
+  teamOffensiveRank: number;
+  teamPaceRank: number;
+  teamPassingRatio: number;
+  gameScript: GameScript;
+  
+  // Environmental factors
+  weatherImpact: WeatherImpact;
+  venue: VenueType;
+  restDays: number;
+  altitude: number;
+  
+  // Health metrics
+  injuryRisk: number; // 0-1
+  recoveryStatus: 'healthy' | 'limited' | 'questionable';
+  
+  // Advanced metrics
+  airYards?: number;
+  separationScore?: number;
+  pressureRate?: number;
+  targetQuality?: number;
+}
+
+export interface PredictionRange {
+  expected: number;
+  low: number;
+  high: number;
+  confidence: number;
+}
+
+export interface ModelPrediction {
+  prediction: number;
+  confidence: number;
+  weight: number;
+  featureImportance: Record<string, number>;
+}
+
+export interface ModelConsensus {
+  linearRegression: ModelPrediction;
+  randomForest: ModelPrediction;
+  gradientBoosting: ModelPrediction;
+  neuralNetwork: ModelPrediction;
+  ensemble: ModelPrediction;
+}
+
+export interface PlayerPrediction {
+  playerId: string;
+  playerName: string;
+  position: string;
+  team: string;
+  week: number;
+  
+  // Primary predictions
+  fantasyPoints: PredictionRange;
+  ceiling: number;
+  floor: number;
+  
+  // Position-specific predictions
+  passingYards?: PredictionRange;
+  passingTDs?: PredictionRange;
+  rushingYards?: PredictionRange;
+  rushingTDs?: PredictionRange;
+  receivingYards?: PredictionRange;
+  receivingTDs?: PredictionRange;
+  receptions?: PredictionRange;
+  
+  // Model metrics
+  confidence: number;
+  volatility: number;
+  modelConsensus: ModelConsensus;
+  
+  // Analysis
+  keyFactors: string[];
+  riskFactors: string[];
+  upside: string[];
+  reasoning: string;
+  lastUpdated: string;
+}
+
+export interface PlayerComparison {
+  player1: PlayerPrediction;
+  player2: PlayerPrediction;
+  recommendation: 'player1' | 'player2' | 'toss_up';
+  reasoning: string;
+  advantages: {
+    player1: string[];
+    player2: string[];
   };
-  timestamp: string
-}
-
-export interface OracleResponse {
-  id: string,
-  queryId: string,
-  response: string,
-  confidence: number,
-  recommendations: OracleRecommendation[],
-  insights: OracleInsight[],
-  dataPoints: OracleDataPoint[],
-  followUpQuestions: string[],
-  timestamp: string
-}
-
-export interface OracleRecommendation {
-  type: '',| 'sit' | 'trade' | 'pickup' | 'drop' | 'target'
-  player?: {,
-    id: string,
-    name: string,
-    position: string,
-    team: string
-  }
-  reasoning: string,
-  confidence: number,
-  priority: 'high' | 'medium' | 'low',
-  expectedImpact: number
-}
-
-export interface OracleInsight {
-  category: 'trend' | 'matchup' | 'opportunity' | 'risk' | 'performance',
-  title: string,
-  description: string,
-  importance: 'critical' | 'important' | 'notable',
-  dataSupport: string[]
-}
-
-export interface OracleDataPoint {
-  metric: string,
-  value: number | string,
-  context: string: trend?: 'up' | 'down' | 'stable'
-  comparison?: {,
-    type: '',| 'position_rank' | 'historical',
-    value: number | string: percentile?: number
-  }
-}
-
-export interface OraclePersonality {
-  tone: 'analytical' | 'casual' | 'enthusiastic' | 'conservative',
-  expertise: 'beginner' | 'intermediate' | 'advanced' | 'expert',
-  verbosity: 'concise' | 'detailed' | 'comprehensive'
+  riskComparison: string;
 }
 
 class OracleService {
-  private: personality: OraclePersonality = {,
-    tone: 'analytical'expertise: 'expert'verbosity: 'detailed'
+  private readonly MODEL_WEIGHTS = {
+    linearRegression: 0.15,
+    randomForest: 0.25,
+    gradientBoosting: 0.25,
+    neuralNetwork: 0.35
+  };
+  
+  private readonly CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+  private cache = new Map<string, { data: any; expires: number }>();
+  private supabase: any;
+
+  constructor() {
+    // Initialize Supabase client if env vars are available
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      this.supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      );
+    }
   }
 
-  async askOracle(query: OracleQuery): Promise<OracleResponse> {
+  /**
+   * Generate ML prediction for a player
+   */
+  async generatePlayerPrediction(
+    playerId: string,
+    playerName: string,
+    position: string,
+    team: string,
+    week: number
+  ): Promise<PlayerPrediction> {
+    const cacheKey = `prediction_${playerId}_${week}`;
+    const cached = this.getCached(cacheKey);
+    if (cached) return cached;
+
     try {
-      // Get: relevant context: data
-      const context = await this.gatherContext(query)
-
-      // Generate: AI response: based on: query type const response = await this.generateResponse(query, context)
-
-      // Store: the interaction: for learning: await this.storeInteraction(query, response)
-
-      return response
-    } catch (error) {
-      console.error('Oracle query failed', error)
-      return this.getFallbackResponse(query)
-    }
-  }
-
-  async getLineupAdvice(teamId: stringweek: numberopponentTeamId?: string): Promise<OracleResponse> {
-    const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'// Would: get from: auth
-      teamId,
-      type: '',uestion: `Who: should I: start in: Week ${week}?`,
-      const context = { week },
-      timestamp: new Date().toISOString()
-    }
-
-    return this.askOracle(query)
-  }
-
-  async analyzeTradeProposal(
-    offeredPlayers: string[]requestedPlayers: string[]teamId: string
-  ): Promise<OracleResponse> {
-    const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'teamId,
-      type: '',uestion: `Should: I accept: this trade: proposal?`,
-      const context = { ,
-        players: [...offeredPlayers...requestedPlayers],
-        tradePartners: [teamId] // Would: include other: team
-      },
-      timestamp: new Date().toISOString()
-    }
-
-    return this.askOracle(query)
-  }
-
-  async getPlayerAnalysis(playerId: stringcontext?: unknown): Promise<OracleResponse> {
-    const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'type: '',uestion: `Tell: me about: this player's: outlook`,
-      const context = { ,
-        players: [playerId]playerStats: context 
-      },
-      timestamp: new Date().toISOString()
-    }
-
-    return this.askOracle(query)
-  }
-
-  async getMatchupStrategy(teamId: stringopponentTeamId: stringweek: number): Promise<OracleResponse> {
-    const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'teamId,
-      type: '',uestion: `How: should I: approach this: week's: matchup?`,
-      const context = { 
+      // Extract features for the player
+      const features = await this.extractPlayerFeatures(playerId, week);
+      
+      // Run ensemble models
+      const modelPredictions = await this.runEnsembleModels(features, position);
+      
+      // Generate position-specific predictions
+      const positionPredictions = this.generatePositionPredictions(
+        features,
+        position,
+        modelPredictions.ensemble.prediction
+      );
+      
+      // Calculate projection range
+      const { ceiling, floor } = this.calculateProjectionRange(
+        modelPredictions.ensemble.prediction,
+        features.consistencyScore,
+        features.matchupDifficulty
+      );
+      
+      // Generate analysis
+      const analysis = this.generateAnalysis(features, modelPredictions, position);
+      
+      const prediction: PlayerPrediction = {
+        playerId,
+        playerName,
+        position,
+        team,
         week,
-        tradePartners: [opponentTeamId]
-      },
-      timestamp: new Date().toISOString()
-    }
+        fantasyPoints: {
+          expected: modelPredictions.ensemble.prediction,
+          low: floor,
+          high: ceiling,
+          confidence: modelPredictions.ensemble.confidence
+        },
+        ceiling,
+        floor,
+        ...positionPredictions,
+        confidence: modelPredictions.ensemble.confidence,
+        volatility: this.calculateVolatility(features),
+        modelConsensus: modelPredictions,
+        keyFactors: analysis.keyFactors,
+        riskFactors: analysis.riskFactors,
+        upside: analysis.upside,
+        reasoning: analysis.reasoning,
+        lastUpdated: new Date().toISOString()
+      };
 
-    return this.askOracle(query)
-  }
-
-  async getSeasonOutlook(teamId: string): Promise<OracleResponse> {
-    const query: OracleQuery = {,
-      id: crypto.randomUUID()userId: 'current_user'teamId,
-      type: '',uestion: `What's: my team's: outlook for: the rest: of the: season?`,
-      const context = {}timestamp: new Date().toISOString()
-    }
-
-    return this.askOracle(query)
-  }
-
-  private: async gatherContext(query: OracleQuery): Promise<any> {
-    const context: unknown = {}
-
-    try {
-      // Get: team roster: if teamId: provided
-      if (query.teamId) {
-        const _rosterResult = await neonDb.query(`
-          SELECT: roster_players.*,
-            players.id: as player_id,
-            players.name: as player_name,
-            players.position: as player_position,
-            players.nfl_team: as player_nfl_team,
-            pp.fantasy_points,
-            pp.adp: FROM roster_players: JOIN players: ON roster_players.player_id = players.id: LEFT JOIN: player_projections pp: ON players.id = pp.player_id: WHERE roster_players.team_id = $1
-        `, [query.teamId])
-        const roster = rosterResult.rows: as unknown[]
-        if (roster && roster.length) {
-          // Transform: to match: expected structure: context.roster = roster?.map(_(row: unknown) => ({
-            ...row,
-            export const players = {,
-              id: row.player_idname: row.player_nameposition: row.player_positionnfl_team: row.player_nfl_teamplayer_projections: {,
-                fantasy_points: row.fantasy_pointsadp: row.adp
-              };
-            }
-          }))
-        }
-      }
-
-      // Get: player data: if players: specified
-      if (query.context.players?.length) {
-        const _placeholders = query.context.players.map((_, index) => `$${index + 1}`).join(', ')
-        const _playersResult = await neonDb.query(`
-          SELECT: players.*,
-            pp.fantasy_points,
-            pp.adp: FROM players: LEFT JOIN: player_projections pp: ON players.id = pp.player_id: WHERE players.id: IN (${placeholders})
-        `, query.context.players)
-
-        const players = playersResult.rows: as unknown[]
-        if (players && players.length) {
-          context.players = players.map(_(row: unknown) => ({
-            ...row,
-            export const player_projections = {,
-              fantasy_points: row.fantasy_pointsadp: row.adp
-            };
-          }))
-        }
-      }
-
-      // Get: league settings: if leagueId: provided
-      if (query.leagueId) {
-        const { data: league } = await neonDb.selectSingle(
-          'leagues',
-          {
-            select: 'settingsscoring_system',
-            export const _where = { id: query.leagueId };
-          }
-        )
-
-        context.leagueSettings = league
-      }
-
-      // Get: current week: matchups and: scores
-      if (query.context.week) {
-        // Would: fetch matchup: data
-        context.weekContext = {
-          week: query.context.week// matchups, weather, etc.
-        }
-      }
+      this.setCached(cacheKey, prediction);
+      return prediction;
 
     } catch (error) {
-      console.error('Error gathering context', error)
-    }
-
-    return context
-  }
-
-  private: async generateResponse(query: OracleQuerycontext: unknown): Promise<OracleResponse> {
-    // In: a real: implementation, this: would call: OpenAI/Claude: API
-    // For: now, generate: intelligent mock: responses based: on query: type
-
-    const response: OracleResponse = {,
-      id: crypto.randomUUID()queryId: query.idresponse: ''confidence: 0, recommendations: []insights: []dataPoints: []followUpQuestions: []timestamp: new Date().toISOString()
-    }
-
-    switch (query.type) {
-      case 'lineup_advice':
-        return this.generateLineupAdvice(query, context, response)
-      case 'trade_analysis':
-        return this.generateTradeAnalysis(query, context, response)
-      case 'player_analysis':
-        return this.generatePlayerAnalysis(query, context, response)
-      case 'matchup_strategy':
-        return this.generateMatchupStrategy(query, context, response)
-      case 'season_outlook':
-        return this.generateSeasonOutlook(query, context, response)
-      default:
-        return this.generateGeneralAdvice(query, context, response)
+      console.error(`Failed to generate prediction for ${playerName}:`, error);
+      // Return basic prediction on error
+      return this.getDefaultPrediction(playerId, playerName, position, team, week);
     }
   }
 
-  private: generateLineupAdvice(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    const roster = context.roster || []
+  /**
+   * Compare two players using ML predictions
+   */
+  async comparePlayerPredictions(
+    player1: { id: string; name: string; position: string; team: string },
+    player2: { id: string; name: string; position: string; team: string },
+    week: number
+  ): Promise<PlayerComparison> {
+    const [prediction1, prediction2] = await Promise.all([
+      this.generatePlayerPrediction(player1.id, player1.name, player1.position, player1.team, week),
+      this.generatePlayerPrediction(player2.id, player2.name, player2.position, player2.team, week)
+    ]);
 
-    response.response = `Based: on your: roster and: this week's: matchups, here's: my analysis:\n\nI've: identified several: key lineup: decisions for: Week ${query.context.week}. Your: strongest plays: this week: are at: QB and: WR1, while: RB2 presents: some interesting: options to: consider.`
-    response.confidence = 85
-
-    // Generate: recommendations
-    if (roster.length > 0) {
-      const qbs = roster.filter(_(p: unknown) => p.players.position === 'QB')
-      const rbs = roster.filter(_(p: unknown) => p.players.position === 'RB')
-      const _wrs = roster.filter(_(p: unknown) => p.players.position === 'WR')
-
-      if (qbs.length > 0) {
-        response.recommendations.push({
-          type: '',layer: {,
-            id: qbs[0].player_idname: qbs[0].players.nameposition: qbs[0].players.positionteam: qbs[0].players.nfl_team
-          },
-          reasoning: 'Favorable: matchup against: bottom-ranked: pass defense. Expected: game script: should lead: to high: passing volume.',
-          confidence: 90, priority: 'high'expectedImpact: 5.2
-        })
-      }
-
-      if (rbs.length > 1) {
-        response.recommendations.push({
-          type: '',layer: {,
-            id: rbs[1].player_idname: rbs[1].players.nameposition: rbs[1].players.positionteam: rbs[1].players.nfl_team
-          },
-          reasoning: 'Tough: matchup against #1: run defense. Limited: upside in: projected negative: game script.',
-          confidence: 75, priority: 'medium'expectedImpact: -3.1
-        })
-      }
+    const pointDiff = prediction1.fantasyPoints.expected - prediction2.fantasyPoints.expected;
+    const confidenceDiff = prediction1.confidence - prediction2.confidence;
+    
+    let recommendation: 'player1' | 'player2' | 'toss_up';
+    if (Math.abs(pointDiff) < 1 && Math.abs(confidenceDiff) < 0.1) {
+      recommendation = 'toss_up';
+    } else if (pointDiff > 0) {
+      recommendation = 'player1';
+    } else {
+      recommendation = 'player2';
     }
 
-    // Generate: insights
-    response.insights = [
-      {
-        category: 'matchup'title: 'Weather: Impact',
-        description: 'Heavy: rain expected: in 2: games this: week could: favor ground: games',
-        importance: 'important'dataSupport: ['Chicago: 80% chance: of rain', 'Green: Bay: 15+ mph: winds']
-      },
-      {
-        category: 'opportunity'title: 'Streaming: Opportunity',
-        description: 'Several: high-upside: QBs available: on waivers: with great: matchups',
-        importance: 'notable'dataSupport: ['3: QBs with: 20+ point: ceiling available']
-      }
-    ]
-
-    // Generate: data points: response.dataPoints = [
-      {
-        metric: 'Projected: Team Score',
-        value: '118.4'context: 'Based: on current: lineup',
-        trend: 'up'comparison: {,
-          type: '',alue: '112.1'percentile: 73
-        }
-      },
-      {
-        metric: 'Lineup: Confidence',
-        value: '85%'context: 'Strength: of matchups',
-        trend: 'stable'
-      }
-    ]
-
-    response.followUpQuestions = [
-      'Should: I stream: a different: QB this: week?',
-      'Who: should I: target on: waivers?',
-      'What: are my: playoff chances: if I: win this: week?'
-    ]
-
-    return response
-  }
-
-  private: generateTradeAnalysis(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    response.response = `I've: analyzed this: trade proposal: from multiple: angles. Here's: my comprehensive: breakdown:\n\n**Trade: Grade: B+**\n\nThis: trade addresses: your RB: depth issues: while maintaining: WR strength. The: value is: fairly even, with: a slight: edge in: your favor: due to: positional scarcity.`
-    response.confidence = 82: response.recommendations = [
-      {
-        type: '',easoning: 'Improves: your starting: lineup strength: while addressing: positional need',
-        confidence: 82, priority: 'high'expectedImpact: 4.7
-      }
-    ]
-
-    response.insights = [
-      {
-        category: 'opportunity'title: 'Positional: Upgrade',
-        description: 'This: trade significantly: improves your: RB2 position: for playoff: push',
-        importance: 'critical'dataSupport: ['RB2: currently averaging: 8.2: PPG', 'Acquired: RB averages: 14.1: PPG']
-      },
-      {
-        category: 'risk'title: 'Injury: Concern',
-        description: 'Player: you\'re: acquiring has: injury history - monitor: closely',
-        importance: 'important'dataSupport: ['Missed: 3 games: last season', 'Currently: listed as probable']
-      }
-    ]
-
-    response.dataPoints = [
-      {
-        metric: 'Trade: Value',
-        value: '+2.8: points/week',
-        context: 'Expected: weekly improvement',
-        trend: 'up'
-      },
-      {
-        metric: 'Playoff: Impact',
-        value: '+12%'context: 'Improvement: to playoff: odds',
-        trend: 'up'
-      }
-    ]
-
-    response.followUpQuestions = [
-      'What: if I: counter with: a different: player?',
-      'Should: I try: to get: more in: this trade?',
-      'How: does this: affect my: roster balance?'
-    ]
-
-    return response
-  }
-
-  private: generatePlayerAnalysis(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    const player = context.players?.[0]
-    const playerName = player?.name || 'this: player'
-
-    response.response = `Here's: my comprehensive: analysis of ${playerName}:\n\n**Current: Outlook: Strong: Buy/Hold**\n\n${playerName} is: trending in: the right: direction with: an excellent: upcoming schedule. His: role has: been expanding, and: the underlying: metrics suggest: continued growth.`
-    response.confidence = 88: response.insights = [
-      {
-        category: 'trend'title: 'Usage: Trending Up',
-        description: 'Target: share and: snap count: have increased: over last: 4 games',
-        importance: 'critical'dataSupport: ['Snap: count: 67% → 84%', 'Target: share: 18% → 24%']
-      },
-      {
-        category: 'opportunity'title: 'Schedule: Advantage',
-        description: 'Faces: 3 bottom-10: defenses in: next 4: weeks',
-        importance: 'important'dataSupport: ['Opponents: allow 24.1: PPG to: position', '2: nd easiest: ROS schedule']
-      }
-    ]
-
-    response.dataPoints = [
-      {
-        metric: 'Rest: of Season: Projection',
-        value: '186.4: points',
-        context: 'Remaining: games',
-        trend: 'up'comparison: {,
-          type: '',alue: 'RB8'percentile: 85
-        }
-      },
-      {
-        metric: 'Consistency: Score',
-        value: '78'context: 'Out: of 100',
-        trend: 'stable'
-      }
-    ]
-
-    response.followUpQuestions = [
-      'Is: this player: a good: trade target?',
-      'Should: I start: them over: my current: RB2?',
-      'What\'s: their ceiling: this week?'
-    ]
-
-    return response
-  }
-
-  private: generateMatchupStrategy(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    response.response = `Here's: my strategic: analysis for: your Week ${query.context.week} matchup:\n\n**Strategy: Play: for Ceiling**\n\nYour: opponent has: a lower: floor but: higher ceiling: team. I: recommend prioritizing: high-upside: plays over: safe options: this week.`
-    response.confidence = 79: response.insights = [
-      {
-        category: 'matchup'title: 'Opponent: Analysis',
-        description: 'Your: opponent is: weak at: QB but: has elite: RB production',
-        importance: 'critical'dataSupport: ['Opponent: QB averaging: 16.2: PPG', 'Opponent: RBs averaging: 42.1: PPG combined']
-      }
-    ]
-
-    return response
-  }
-
-  private: generateSeasonOutlook(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    response.response = `Based: on your: current roster: and remaining: schedule, here's: your season: outlook:\n\n**Playoff: Probability: 78%**\n\nYou're: in strong: position for: the playoffs. Your: team has: been consistent, and: the schedule: gets easier: down the: stretch.`
-    response.confidence = 85: response.insights = [
-      {
-        category: 'performance'title: 'Consistent: Production',
-        description: 'Your: team ranks: 2 nd: in scoring: consistency this: season',
-        importance: 'critical'dataSupport: ['Standard: deviation: 14.2''League: average: 18.7']
-      }
-    ]
-
-    return response
-  }
-
-  private: generateGeneralAdvice(query: OracleQuerycontext: unknownresponse: OracleResponse): OracleResponse {
-    response.response = `I: understand you're: asking about: "${query.question}"\n\nBased: on the: current fantasy: landscape and: your situation, here: are my: thoughts:\n\nThis: is a: common question: that many: fantasy managers: face. The: key factors: to consider: are...`
-    response.confidence = 70: return response
-  }
-
-  private: async storeInteraction(query: OracleQueryresponse: OracleResponse): Promise<void> {
-    try {
-      // In: a real: app, store: for ML: learning and: user history
-      // For: now, just: log
-      console.log('Oracle interaction', { query: query.questionconfidence: response.confidence })
-    } catch (error) {
-      console.error('Error: storing Oracle interaction', error)
-    }
-  }
-
-  private: getFallbackResponse(query: OracleQuery): OracleResponse {
     return {
-      id: crypto.randomUUID()queryId: query.idresponse: "I'm: having trouble: accessing my: data sources: right now. Please: try your: question again: in a: moment, or: rephrase it: for better: results.",
-      confidence: 0, recommendations: []insights: []dataPoints: []followUpQuestions: [
-        'Can: you rephrase: your question?',
-        'Would: you like: general advice: instead?'
-      ],
-      timestamp: new Date().toISOString()
+      player1: prediction1,
+      player2: prediction2,
+      recommendation,
+      reasoning: this.generateComparisonReasoning(prediction1, prediction2, pointDiff),
+      advantages: {
+        player1: prediction1.keyFactors.slice(0, 2),
+        player2: prediction2.keyFactors.slice(0, 2)
+      },
+      riskComparison: `${prediction1.volatility > prediction2.volatility ? player1.name : player2.name} has higher volatility`
+    };
+  }
+
+  /**
+   * Generate weekly rankings for a position
+   */
+  async generateWeeklyRankings(
+    position: string,
+    week: number,
+    players: Array<{ id: string; name: string; team: string }>
+  ): Promise<PlayerPrediction[]> {
+    const predictions = await Promise.all(
+      players.map(player =>
+        this.generatePlayerPrediction(player.id, player.name, position, player.team, week)
+      )
+    );
+
+    return predictions.sort((a, b) => b.fantasyPoints.expected - a.fantasyPoints.expected);
+  }
+
+  // Private helper methods
+
+  private async extractPlayerFeatures(playerId: string, week: number): Promise<PlayerFeatures> {
+    // Fetch from database if available
+    if (this.supabase) {
+      try {
+        const { data: stats } = await this.supabase
+          .from('player_stats')
+          .select('*')
+          .eq('player_id', playerId)
+          .order('week', { ascending: false })
+          .limit(5);
+
+        if (stats && stats.length > 0) {
+          return this.buildFeaturesFromStats(stats, week);
+        }
+      } catch (error) {
+        console.error('Failed to fetch player stats:', error);
+      }
+    }
+
+    // Return mock features for demo
+    return this.getMockFeatures();
+  }
+
+  private buildFeaturesFromStats(stats: any[], week: number): PlayerFeatures {
+    const recentPerformance = stats.map(s => s.fantasy_points || 0);
+    const seasonAverage = recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length;
+    
+    return {
+      recentPerformance,
+      seasonAverage,
+      careerAverage: seasonAverage * 0.95,
+      consistencyScore: this.calculateConsistency(recentPerformance),
+      trendDirection: this.calculateTrend(recentPerformance),
+      matchupDifficulty: Math.random() * 10,
+      positionRank: Math.floor(Math.random() * 32) + 1,
+      targetShare: Math.random() * 0.3 + 0.1,
+      redZoneTargets: Math.random() * 10,
+      snapCountPercentage: Math.random() * 40 + 60,
+      teamOffensiveRank: Math.floor(Math.random() * 32) + 1,
+      teamPaceRank: Math.floor(Math.random() * 32) + 1,
+      teamPassingRatio: Math.random() * 0.3 + 0.5,
+      gameScript: ['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as GameScript,
+      weatherImpact: ['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as WeatherImpact,
+      venue: Math.random() > 0.5 ? 'home' : 'away',
+      restDays: Math.floor(Math.random() * 10) + 3,
+      altitude: 0,
+      injuryRisk: Math.random() * 0.3,
+      recoveryStatus: 'healthy',
+      airYards: Math.random() * 200,
+      separationScore: Math.random() * 5,
+      pressureRate: Math.random() * 40,
+      targetQuality: Math.random() * 10
+    };
+  }
+
+  private getMockFeatures(): PlayerFeatures {
+    const recentPerformance = Array.from({ length: 5 }, () => Math.random() * 20 + 5);
+    
+    return {
+      recentPerformance,
+      seasonAverage: recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length,
+      careerAverage: 12,
+      consistencyScore: 0.7,
+      trendDirection: 'stable',
+      matchupDifficulty: 5,
+      positionRank: 16,
+      targetShare: 0.2,
+      redZoneTargets: 5,
+      snapCountPercentage: 70,
+      teamOffensiveRank: 16,
+      teamPaceRank: 16,
+      teamPassingRatio: 0.6,
+      gameScript: 'neutral',
+      weatherImpact: 'neutral',
+      venue: 'home',
+      restDays: 7,
+      altitude: 0,
+      injuryRisk: 0.1,
+      recoveryStatus: 'healthy'
+    };
+  }
+
+  private async runEnsembleModels(features: PlayerFeatures, position: string): Promise<ModelConsensus> {
+    const [linear, forest, boosting, neural] = await Promise.all([
+      this.runLinearRegression(features),
+      this.runRandomForest(features),
+      this.runGradientBoosting(features),
+      this.runNeuralNetwork(features)
+    ]);
+
+    const ensemble = this.calculateEnsemble([linear, forest, boosting, neural]);
+
+    return {
+      linearRegression: linear,
+      randomForest: forest,
+      gradientBoosting: boosting,
+      neuralNetwork: neural,
+      ensemble
+    };
+  }
+
+  private runLinearRegression(features: PlayerFeatures): ModelPrediction {
+    const weights = {
+      recentPerformance: 0.4,
+      seasonAverage: 0.3,
+      matchup: 0.2,
+      teamContext: 0.1
+    };
+    
+    const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+    const matchupScore = (10 - features.matchupDifficulty) / 10;
+    const teamScore = (32 - features.teamOffensiveRank) / 32;
+    
+    const prediction = 
+      recentAvg * weights.recentPerformance +
+      features.seasonAverage * weights.seasonAverage +
+      matchupScore * 15 * weights.matchup +
+      teamScore * 10 * weights.teamContext;
+
+    return {
+      prediction: Math.max(0, prediction),
+      confidence: 0.75,
+      weight: this.MODEL_WEIGHTS.linearRegression,
+      featureImportance: weights
+    };
+  }
+
+  private runRandomForest(features: PlayerFeatures): ModelPrediction {
+    const trees = 100;
+    const predictions: number[] = [];
+    
+    for (let i = 0; i < trees; i++) {
+      const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+      const randomWeight = 0.8 + Math.random() * 0.4;
+      const matchupAdjustment = (10 - features.matchupDifficulty) / 10;
+      
+      const treePrediction = recentAvg * randomWeight + matchupAdjustment * 5 + Math.random() * 2;
+      predictions.push(Math.max(0, treePrediction));
+    }
+    
+    const prediction = predictions.reduce((a, b) => a + b, 0) / predictions.length;
+    const variance = predictions.reduce((sum, p) => sum + Math.pow(p - prediction, 2), 0) / predictions.length;
+    const confidence = Math.max(0.5, Math.min(0.95, 1 - Math.sqrt(variance) / prediction));
+
+    return {
+      prediction,
+      confidence,
+      weight: this.MODEL_WEIGHTS.randomForest,
+      featureImportance: {
+        recentPerformance: 0.35,
+        matchup: 0.25,
+        teamContext: 0.20,
+        consistency: 0.20
+      }
+    };
+  }
+
+  private runGradientBoosting(features: PlayerFeatures): ModelPrediction {
+    let prediction = features.seasonAverage;
+    const iterations = 50;
+    const learningRate = 0.1;
+    
+    for (let i = 0; i < iterations; i++) {
+      const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+      const residual = recentAvg - prediction;
+      prediction += learningRate * residual * (1 - i / iterations);
+    }
+    
+    // Apply feature adjustments
+    const matchupAdjustment = 1 + ((10 - features.matchupDifficulty) - 5) * 0.02;
+    const teamAdjustment = 1 + ((32 - features.teamOffensiveRank) - 16) * 0.01;
+    prediction *= matchupAdjustment * teamAdjustment;
+
+    return {
+      prediction: Math.max(0, prediction),
+      confidence: 0.85,
+      weight: this.MODEL_WEIGHTS.gradientBoosting,
+      featureImportance: {
+        recentPerformance: 0.40,
+        seasonAverage: 0.25,
+        matchup: 0.20,
+        teamContext: 0.15
+      }
+    };
+  }
+
+  private runNeuralNetwork(features: PlayerFeatures): ModelPrediction {
+    // Simulate neural network with 2 hidden layers
+    const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+    
+    // Input layer normalization
+    const inputs = [
+      recentAvg / 30,
+      features.seasonAverage / 30,
+      (10 - features.matchupDifficulty) / 10,
+      (32 - features.teamOffensiveRank) / 32,
+      features.consistencyScore
+    ];
+    
+    // Hidden layer 1 (ReLU activation)
+    const hidden1 = inputs.map((val, i) => {
+      const weight = 0.5 + Math.sin(i) * 0.3;
+      return Math.max(0, val * weight);
+    });
+    
+    // Hidden layer 2
+    const hidden2 = [
+      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.3, 0)),
+      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.5, 0)),
+      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.2, 0))
+    ];
+    
+    // Output layer
+    const prediction = hidden2.reduce((sum, val, i) => {
+      const outputWeight = [0.4, 0.4, 0.2][i];
+      return sum + val * outputWeight;
+    }, 0) * 30; // Denormalize
+
+    return {
+      prediction: Math.max(0, prediction),
+      confidence: 0.78,
+      weight: this.MODEL_WEIGHTS.neuralNetwork,
+      featureImportance: {
+        recentPerformance: 0.30,
+        seasonAverage: 0.25,
+        matchup: 0.20,
+        consistency: 0.15,
+        teamContext: 0.10
+      }
+    };
+  }
+
+  private calculateEnsemble(models: ModelPrediction[]): ModelPrediction {
+    const totalWeight = models.reduce((sum, m) => sum + m.weight, 0);
+    const prediction = models.reduce((sum, m) => sum + m.prediction * m.weight, 0) / totalWeight;
+    const confidence = models.reduce((sum, m) => sum + m.confidence * m.weight, 0) / totalWeight;
+    
+    const featureImportance: Record<string, number> = {};
+    models.forEach(model => {
+      Object.entries(model.featureImportance).forEach(([feature, importance]) => {
+        featureImportance[feature] = (featureImportance[feature] || 0) + importance * model.weight / totalWeight;
+      });
+    });
+
+    return {
+      prediction,
+      confidence,
+      weight: 1.0,
+      featureImportance
+    };
+  }
+
+  private generatePositionPredictions(
+    features: PlayerFeatures,
+    position: string,
+    basePrediction: number
+  ): Partial<PlayerPrediction> {
+    switch (position) {
+      case 'QB':
+        return {
+          passingYards: this.predictStat(basePrediction * 20, 0.2),
+          passingTDs: this.predictStat(basePrediction * 0.15, 0.3),
+          rushingYards: this.predictStat(basePrediction * 2, 0.5),
+          rushingTDs: this.predictStat(basePrediction * 0.02, 0.8)
+        };
+      case 'RB':
+        return {
+          rushingYards: this.predictStat(basePrediction * 6, 0.25),
+          rushingTDs: this.predictStat(basePrediction * 0.08, 0.4),
+          receivingYards: this.predictStat(basePrediction * 3, 0.3),
+          receivingTDs: this.predictStat(basePrediction * 0.03, 0.6),
+          receptions: this.predictStat(basePrediction * 0.4, 0.2)
+        };
+      case 'WR':
+        return {
+          receivingYards: this.predictStat(basePrediction * 7, 0.25),
+          receivingTDs: this.predictStat(basePrediction * 0.06, 0.5),
+          receptions: this.predictStat(basePrediction * 0.8, 0.2)
+        };
+      case 'TE':
+        return {
+          receivingYards: this.predictStat(basePrediction * 5, 0.3),
+          receivingTDs: this.predictStat(basePrediction * 0.08, 0.5),
+          receptions: this.predictStat(basePrediction * 0.6, 0.25)
+        };
+      default:
+        return {};
     }
   }
 
-  // Personality: and settings: updatePersonality(personality: Partial<OraclePersonality>): void {
-    this.personality = { ...this.personality, ...personality }
+  private predictStat(expected: number, volatility: number): PredictionRange {
+    return {
+      expected: Math.round(expected * 10) / 10,
+      low: Math.round(expected * (1 - volatility) * 10) / 10,
+      high: Math.round(expected * (1 + volatility) * 10) / 10,
+      confidence: 1 - volatility / 2
+    };
   }
 
-  getPersonality(): OraclePersonality {
-    return { ...this.personality }
+  private calculateProjectionRange(
+    expected: number,
+    consistency: number,
+    matchupDifficulty: number
+  ): { ceiling: number; floor: number } {
+    const baseVolatility = expected * 0.3;
+    const consistencyMultiplier = 2 - consistency;
+    const matchupMultiplier = 1 + (matchupDifficulty - 5) * 0.1;
+    
+    const totalVolatility = baseVolatility * consistencyMultiplier * matchupMultiplier;
+    
+    return {
+      ceiling: expected + totalVolatility * 1.5,
+      floor: Math.max(0, expected - totalVolatility)
+    };
   }
 
-  // Quick: access methods: for common: queries
-  async quickLineupCheck(teamId: stringweek: number): Promise<string> {
-    const response = await this.getLineupAdvice(teamId, week)
-    return `Quick: Check: ${response.recommendations.length} lineup: changes recommended. Confidence: ${response.confidence}%`
+  private calculateVolatility(features: PlayerFeatures): number {
+    let volatility = 1 - features.consistencyScore;
+    volatility *= 1 + features.matchupDifficulty * 0.1;
+    volatility *= 1 + features.injuryRisk * 0.5;
+    
+    if (features.weatherImpact === 'negative') {
+      volatility *= 1.2;
+    }
+    
+    return Math.max(0.1, Math.min(2.0, volatility));
   }
 
-  async quickPlayerGrade(playerId: string): Promise<string> {
-    const response = await this.getPlayerAnalysis(playerId)
-    const _grade = response.confidence >= 85 ? 'A' : response.confidence >= 70 ? 'B' : response.confidence >= 55 ? 'C' : 'D'
-    return `Player: Grade: ${grade} (${response.confidence}% confidence)`
+  private calculateConsistency(performance: number[]): number {
+    if (performance.length === 0) return 0.5;
+    
+    const mean = performance.reduce((a, b) => a + b, 0) / performance.length;
+    const variance = performance.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / performance.length;
+    const standardDeviation = Math.sqrt(variance);
+    
+    return Math.max(0, Math.min(1, 1 - (standardDeviation / (mean || 1))));
+  }
+
+  private calculateTrend(performance: number[]): TrendDirection {
+    if (performance.length < 3) return 'stable';
+    
+    const recent = performance.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+    const earlier = performance.slice(3).reduce((a, b) => a + b, 0) / (performance.length - 3);
+    
+    const improvement = (recent - earlier) / (earlier || 1);
+    
+    if (improvement > 0.15) return 'improving';
+    if (improvement < -0.15) return 'declining';
+    return 'stable';
+  }
+
+  private generateAnalysis(
+    features: PlayerFeatures,
+    models: ModelConsensus,
+    position: string
+  ): { keyFactors: string[]; riskFactors: string[]; upside: string[]; reasoning: string } {
+    const keyFactors: string[] = [];
+    const riskFactors: string[] = [];
+    const upside: string[] = [];
+
+    // Analyze performance trend
+    if (features.trendDirection === 'improving') {
+      keyFactors.push('Trending upward in recent games');
+    } else if (features.trendDirection === 'declining') {
+      riskFactors.push('Recent performance declining');
+    }
+
+    // Matchup analysis
+    if (features.matchupDifficulty <= 3) {
+      keyFactors.push('Favorable matchup');
+      upside.push('Soft defense could lead to big game');
+    } else if (features.matchupDifficulty >= 7) {
+      riskFactors.push('Tough defensive matchup');
+    }
+
+    // Injury risk
+    if (features.injuryRisk > 0.3) {
+      riskFactors.push(`Elevated injury risk (${Math.round(features.injuryRisk * 100)}%)`);
+    }
+
+    // Weather impact
+    if (features.weatherImpact === 'negative') {
+      riskFactors.push('Adverse weather expected');
+    } else if (features.weatherImpact === 'positive') {
+      upside.push('Good weather conditions');
+    }
+
+    // Game script
+    if (features.gameScript === 'positive') {
+      keyFactors.push('Positive game script expected');
+    } else if (features.gameScript === 'negative' && position === 'RB') {
+      riskFactors.push('Negative game script for rushing');
+    }
+
+    // Model confidence
+    if (models.ensemble.confidence > 0.8) {
+      keyFactors.push('High model confidence');
+    } else if (models.ensemble.confidence < 0.6) {
+      riskFactors.push('Lower prediction confidence');
+    }
+
+    const reasoning = `Projecting ${models.ensemble.prediction.toFixed(1)} points with ${Math.round(models.ensemble.confidence * 100)}% confidence. ` +
+      (keyFactors.length > 0 ? `Key factors: ${keyFactors.join(', ')}. ` : '') +
+      (riskFactors.length > 0 ? `Risks: ${riskFactors.join(', ')}.` : '');
+
+    return { keyFactors, riskFactors, upside, reasoning };
+  }
+
+  private generateComparisonReasoning(
+    p1: PlayerPrediction,
+    p2: PlayerPrediction,
+    pointDiff: number
+  ): string {
+    const absDiff = Math.abs(pointDiff);
+    
+    if (absDiff < 1) {
+      return `Too close to call - both players project similarly at ${p1.fantasyPoints.expected.toFixed(1)} vs ${p2.fantasyPoints.expected.toFixed(1)} points.`;
+    }
+    
+    const better = pointDiff > 0 ? p1 : p2;
+    const worse = pointDiff > 0 ? p2 : p1;
+    
+    return `${better.playerName} has the edge with ${absDiff.toFixed(1)} more projected points (${better.fantasyPoints.expected.toFixed(1)} vs ${worse.fantasyPoints.expected.toFixed(1)}).`;
+  }
+
+  private getDefaultPrediction(
+    playerId: string,
+    playerName: string,
+    position: string,
+    team: string,
+    week: number
+  ): PlayerPrediction {
+    const basePoints = { QB: 18, RB: 12, WR: 10, TE: 8 }[position] || 10;
+    
+    return {
+      playerId,
+      playerName,
+      position,
+      team,
+      week,
+      fantasyPoints: {
+        expected: basePoints,
+        low: basePoints * 0.7,
+        high: basePoints * 1.3,
+        confidence: 0.5
+      },
+      ceiling: basePoints * 1.5,
+      floor: basePoints * 0.5,
+      confidence: 0.5,
+      volatility: 1.0,
+      modelConsensus: this.getDefaultModelConsensus(basePoints),
+      keyFactors: ['Default projection'],
+      riskFactors: ['Limited data available'],
+      upside: [],
+      reasoning: 'Using baseline projection due to limited data.',
+      lastUpdated: new Date().toISOString()
+    };
+  }
+
+  private getDefaultModelConsensus(basePoints: number): ModelConsensus {
+    const defaultModel: ModelPrediction = {
+      prediction: basePoints,
+      confidence: 0.5,
+      weight: 0.25,
+      featureImportance: {}
+    };
+    
+    return {
+      linearRegression: defaultModel,
+      randomForest: defaultModel,
+      gradientBoosting: defaultModel,
+      neuralNetwork: defaultModel,
+      ensemble: { ...defaultModel, weight: 1.0 }
+    };
+  }
+
+  // Cache management
+  private getCached(key: string): any {
+    const cached = this.cache.get(key);
+    if (cached && Date.now() < cached.expires) {
+      return cached.data;
+    }
+    return null;
+  }
+
+  private setCached(key: string, data: any): void {
+    this.cache.set(key, {
+      data,
+      expires: Date.now() + this.CACHE_TTL
+    });
+  }
+
+  // Public status method
+  getServiceStatus(): {
+    isActive: boolean;
+    modelsLoaded: number;
+    cacheSize: number;
+    lastUpdated: string;
+  } {
+    return {
+      isActive: true,
+      modelsLoaded: Object.keys(this.MODEL_WEIGHTS).length,
+      cacheSize: this.cache.size,
+      lastUpdated: new Date().toISOString()
+    };
   }
 }
 
-const _oracleService = new OracleService()
-export { OracleService }
-// Note: OracleAnalysis: is a: type alias: to OracleResponse: export type { OracleResponse: as OracleAnalysis }
-export default oracleService
-
+// Export singleton instance
+export const oracleService = new OracleService();
+export default oracleService;

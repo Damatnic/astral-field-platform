@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astral Field - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 2px solid #3b82f6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+
+    .icon svg {
+      width: 60px;
+      height: 60px;
+      fill: #3b82f6;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #f3f4f6;
+    }
+
+    .status {
+      font-size: 1.25rem;
+      color: #9ca3af;
+      margin-bottom: 2rem;
+    }
+
+    .message {
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .message p {
+      color: #d1d5db;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .message p:last-child {
+      margin-bottom: 0;
+    }
+
+    .features {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .feature {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .feature:hover {
+      transform: translateX(5px);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #60a5fa;
+    }
+
+    .feature-text {
+      text-align: left;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      color: #f3f4f6;
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: #9ca3af;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #3b82f6;
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .network-status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(31, 41, 55, 0.95);
+      border: 1px solid #374151;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    .network-status.online {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .network-status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      animation: blink 2s infinite;
+    }
+
+    .network-status.online .dot {
+      background: #10b981;
+    }
+
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .cached-info {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #374151;
+    }
+
+    .cached-info h3 {
+      color: #60a5fa;
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+
+    .cached-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .cached-item {
+      background: rgba(59, 130, 246, 0.1);
+      color: #93c5fd;
+      padding: 0.25rem 0.75rem;
+      border-radius: 16px;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M4.5 10.5C4.5 12.9853 6.51472 15 9 15C11.4853 15 13.5 12.9853 13.5 10.5V4.5L12 3L9 4.5L6 3L4.5 4.5V10.5Z"/>
+        <path d="M19.5 10.5C19.5 12.9853 17.4853 15 15 15C12.5147 15 10.5 12.9853 10.5 10.5V4.5L12 3L15 4.5L18 3L19.5 4.5V10.5Z"/>
+        <path d="M9 15L12 21L15 15"/>
+      </svg>
+    </div>
+
+    <h1>You're Offline</h1>
+    <div class="status">But you can still access key features!</div>
+
+    <div class="message">
+      <p>Astral Field works offline for essential features. Your data is cached locally and will sync when you're back online.</p>
+      <p>Any changes you make will be saved and synchronized automatically once your connection is restored.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <div class="feature-title">View Your Roster</div>
+          <div class="feature-desc">Access your cached team data</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <div class="feature-title">Player Stats</div>
+          <div class="feature-desc">Browse cached player information</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <div class="feature-title">Draft Preparation</div>
+          <div class="feature-desc">Review your draft strategy offline</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="window.location.reload()">Try Again</button>
+
+    <div class="cached-info">
+      <h3>Cached Pages Available</h3>
+      <div class="cached-list">
+        <span class="cached-item">Dashboard</span>
+        <span class="cached-item">Roster</span>
+        <span class="cached-item">Players</span>
+        <span class="cached-item">Standings</span>
+        <span class="cached-item">Schedule</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="network-status" id="networkStatus">
+    <span class="dot"></span>
+    <span id="statusText">Offline</span>
+  </div>
+
+  <script>
+    // Check network status
+    function updateNetworkStatus() {
+      const statusEl = document.getElementById('networkStatus');
+      const textEl = document.getElementById('statusText');
+      
+      if (navigator.onLine) {
+        statusEl.classList.add('online');
+        textEl.textContent = 'Back Online!';
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        statusEl.classList.remove('online');
+        textEl.textContent = 'Offline';
+      }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    
+    // Check initially
+    updateNetworkStatus();
+
+    // Try to reconnect periodically
+    setInterval(() => {
+      fetch('/api/health', { method: 'HEAD' })
+        .then(() => {
+          if (!navigator.onLine) {
+            window.location.reload();
+          }
+        })
+        .catch(() => {});
+    }, 30000);
+  </script>
+</body>
+</html>
