@@ -141,9 +141,8 @@ export async function POST(request: NextRequest) {
       reactions: {}
     };
 
-    // Broadcast to both users via WebSocket
-    webSocketManager.broadcastToUser(recipientId, 'direct_message', message);
-    webSocketManager.broadcastToUser(decoded.userId, 'direct_message', message);
+    // Note: WebSocket broadcasts are handled by the WebSocket server when clients send messages
+    // This API endpoint stores the message, while real-time delivery happens via WebSocket
 
     return NextResponse.json({
       success: true,
