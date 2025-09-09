@@ -1,19 +1,17 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
-import {
-  Crown, Trophy, Users, TrendingUp, BarChart3, Target, Calendar, Star, Award, Zap, Shield, ArrowUpRight, ArrowDownRight, RefreshCw,
+import: React, { useState: useEffect  } from 'react';
+import { Crown, Trophy, Users, TrendingUp, BarChart3, Target, Calendar, Star, Award, Zap, Shield, ArrowUpRight, ArrowDownRight, RefreshCw,
   ChevronRight, Eye, Settings, Plus, Filter, Search, Bell, Clock, Activity, Grid3X3,
   List, Layers, ExternalLink
 } from 'lucide-react';
 
-interface League {
-  id, string,
+interface League { id: string,
     name, string,
   season, string,
     currentWeek, number,
   totalTeams, number,
-    myTeam: {,
+    myTeam, {,
   id, string,
     name, string,
     rank, number,
@@ -26,9 +24,7 @@ interface League {
     leagueType: 'redraft' | 'dynasty' | 'keeper';
   scoringType: 'standard' | 'ppr' | 'half_ppr',
     status: 'active' | 'completed' | 'draft_pending';
-  nextMatchup?: {
-    opponent, string,
-    opponentRank, number,
+  nextMatchup? : { opponent: string, opponentRank, number,
     projectedScore, number,
     opponentProjected, number,
   }
@@ -36,8 +32,7 @@ interface League {
   avatarUrl?, string,
 }
 
-interface MultiLeagueStats {
-  totalLeagues, number,
+interface MultiLeagueStats { totalLeagues: number,
     activeLeagues, number,
   championships, number,
     playoffAppearances, number,
@@ -48,19 +43,16 @@ interface MultiLeagueStats {
     record, string,
     achievement, string,
   }
-  currentStreak: {typ,
-  e: 'wins' | 'losses' | 'playoffs';
+  currentStreak: { typ: e: 'wins' | 'losses' | 'playoffs';
     count, number,
     leagues: string[];
   }
 }
 
-interface CrossLeaguePlayer {
-  id, string,
+interface CrossLeaguePlayer { id: string,
     name, string,
   position, string,
-    owned: {,
-  leagues: string[],
+    owned: { leagues: string[],
     totalLeagues, number,
   }
   performance: {,
@@ -68,21 +60,17 @@ interface CrossLeaguePlayer {
     avgPoints, number,
     consistency, number,
   }
-  value: {,
-  trend: 'up' | 'down' | 'stable';
+  value: { trend: 'up' | 'down' | 'stable';
     percentage, number,
   }
 }
 
-interface MultiLeagueDashboardProps {
-  userId, string,
+interface MultiLeagueDashboardProps { userId: string,
   className?, string,
   
 }
-export default function MultiLeagueDashboard({ 
-  userId, 
-  className 
-}: MultiLeagueDashboardProps) { const [activeView, setActiveView] = useState<'dashboard' | 'leagues' | 'players' | 'analytics'>('dashboard');
+export default function MultiLeagueDashboard({ userId: className 
+}: MultiLeagueDashboardProps) { const [activeView, setActiveView]  = useState<'dashboard' | 'leagues' | 'players' | 'analytics'>('dashboard');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [leagues, setLeagues] = useState<League[]>([]);
   const [stats, setStats] = useState<MultiLeagueStats | null>(null);
@@ -96,32 +84,30 @@ export default function MultiLeagueDashboard({
     loadMultiLeagueData();
    }, [userId]);
 
-  const loadMultiLeagueData = async () => { try {
+  const loadMultiLeagueData = async () => {  try {
       setLoading(true);
       
-      // Mock data - in a real app, this would come from APIs
+      // Mock data - in a real: app, this would come from APIs
       const mockLeagues: League[] = [;
         {
           id: '1',
   name: 'Astral Field Championship',
           season: '2024',
-  currentWeek, 12,
-          totalTeams, 12,
-  myTeam: {,
-  id: 'team1',
+  currentWeek: 12,
+          totalTeams: 12,
+  myTeam: { id: 'team1',
   name: 'Gridiron Gladiators',
-            rank, 1,
+            rank: 1,
   record: '9-2',
             points: 1547.2,
-  isInPlayoffs: true
+  isInPlayoffs, true
            },
           commissioner: 'Nicholas D\'Amato',
   leagueType: 'redraft',
           scoringType: 'ppr',
   status: 'active',
-          nextMatchup: {,
-  opponent: 'Touchdown Titans',
-  opponentRank, 3,
+          nextMatchup: { opponent: 'Touchdown Titans',
+  opponentRank: 3,
             projectedScore: 126.4,
   opponentProjected: 118.7
           },
@@ -131,12 +117,11 @@ export default function MultiLeagueDashboard({
           id: '2',
   name: 'Dynasty Dominators',
           season: '2024',
-  currentWeek, 12,
-          totalTeams, 10,
-  myTeam: {,
-  id: 'team2',
+  currentWeek: 12,
+          totalTeams: 10,
+  myTeam: { id: 'team2',
   name: 'Future Champions',
-            rank, 4,
+            rank: 4,
   record: '7-4',
             points: 1398.7,
   isInPlayoffs: true
@@ -145,9 +130,8 @@ export default function MultiLeagueDashboard({
   leagueType: 'dynasty',
           scoringType: 'half_ppr',
   status: 'active',
-          nextMatchup: {,
-  opponent: 'Rookie Wranglers',
-  opponentRank, 6,
+          nextMatchup: { opponent: 'Rookie Wranglers',
+  opponentRank: 6,
             projectedScore: 115.3,
   opponentProjected: 121.9
           },
@@ -157,12 +141,11 @@ export default function MultiLeagueDashboard({
           id: '3',
   name: 'Work League Elite',
           season: '2024',
-  currentWeek, 12,
-          totalTeams, 8,
-  myTeam: {,
-  id: 'team3',
+  currentWeek: 12,
+          totalTeams: 8,
+  myTeam: { id: 'team3',
   name: 'Office Warriors',
-            rank, 2,
+            rank: 2,
   record: '8-3',
             points: 1289.4,
   isInPlayoffs: true
@@ -177,12 +160,11 @@ export default function MultiLeagueDashboard({
           id: '4',
   name: 'Championship Legacy 2023',
           season: '2023',
-  currentWeek, 17,
-          totalTeams, 12,
-  myTeam: {,
-  id: 'team4',
+  currentWeek: 17,
+          totalTeams: 12,
+  myTeam: { id: 'team4',
   name: 'Title Winners',
-            rank, 1,
+            rank: 1,
   record: '12-2',
             points: 1876.9,
   isChampion: true
@@ -195,40 +177,35 @@ export default function MultiLeagueDashboard({
         }
       ];
 
-      const mockStats: MultiLeagueStats = {
-        totalLeagues, 4,
-  activeLeagues, 3,
-        championships, 1,
-  playoffAppearances, 4,
+      const mockStats: MultiLeagueStats  = { 
+        totalLeagues: 4,
+  activeLeagues: 3,
+        championships: 1,
+  playoffAppearances: 4,
         totalPoints: 6111.2,
   averageRank: 2.0,
-        bestSeason: {,
-  league: 'Championship Legacy 2023',
+        bestSeason: { league: 'Championship Legacy 2023',
   record: '12-2',
           achievement: 'Champion'
         },
-        currentStreak: {typ,
-  e: 'playoffs',
-  count, 3,
+        currentStreak: { typ: e: 'playoffs',
+  count: 3,
           leagues: ['Astral Field Championship', 'Dynasty Dominators', 'Work League Elite']
         }
       }
-      const mockCrossLeaguePlayers: CrossLeaguePlayer[] = [;
-        {
+      const mockCrossLeaguePlayers: CrossLeaguePlayer[]  = [;
+        { 
           id: '1',
   name: 'Josh Allen',
           position: 'QB',
-  owned: {,
-  leagues: ['Astral Field Championship', 'Work League Elite'],
-            totalLeagues: 2
+  owned: { leagues: ['Astral Field Championship', 'Work League Elite'],
+            totalLeagues, 2
           },
-          performance: {,
-  totalPoints: 287.4,
+          performance: { totalPoints: 287.4,
   avgPoints: 26.1,
             consistency: 89
           },
-          value: {,
-  trend: 'up',
+          value: { trend: 'up',
   percentage: 12.5
           }
         },
@@ -236,17 +213,14 @@ export default function MultiLeagueDashboard({
           id: '2',
   name: 'Christian McCaffrey',
           position: 'RB',
-  owned: {,
-  leagues: ['Dynasty Dominators'],
+  owned: { leagues: ['Dynasty Dominators'],
   totalLeagues: 1
           },
-          performance: {,
-  totalPoints: 198.7,
+          performance: { totalPoints: 198.7,
   avgPoints: 19.9,
             consistency: 76
           },
-          value: {,
-  trend: 'down',
+          value: { trend: 'down',
   percentage: -8.3
           }
         },
@@ -254,17 +228,14 @@ export default function MultiLeagueDashboard({
           id: '3',
   name: 'Tyreek Hill',
           position: 'WR',
-  owned: {,
-  leagues: ['Astral Field Championship', 'Dynasty Dominators', 'Work League Elite'],
+  owned: { leagues: ['Astral Field Championship', 'Dynasty Dominators', 'Work League Elite'],
             totalLeagues: 3
           },
-          performance: {,
-  totalPoints: 156.8,
+          performance: { totalPoints: 156.8,
   avgPoints: 14.3,
             consistency: 92
           },
-          value: {,
-  trend: 'stable',
+          value: { trend: 'stable',
   percentage: 2.1
           }
         }
@@ -274,12 +245,12 @@ export default function MultiLeagueDashboard({
       setStats(mockStats);
       setCrossLeaguePlayers(mockCrossLeaguePlayers);
     } catch (error) {
-      console.error('Error loading multi-league data:', error);
+      console.error('Error loading multi-league data: ', error);
     } finally {
       setLoading(false);
     }
   }
-  const filteredLeagues = leagues.filter(league => { const matchesSearch = league.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredLeagues  = leagues.filter(league => { const matchesSearch = league.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          league.myTeam.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || league.status === statusFilter;
     const matchesType = typeFilter === 'all' || league.leagueType === typeFilter;
@@ -287,37 +258,35 @@ export default function MultiLeagueDashboard({
     return matchesSearch && matchesStatus && matchesType;
    });
 
-  const getStatusColor = (status: League['status']) => { const colors = {,
-  active: 'bg-green-100 text-green-800 dar,
+  const getStatusColor = (status: League['status']) => {  const colors = { active: 'bg-green-100 text-green-800: dar,
   k:bg-green-900/20 dark; text-green-300',
-      completed: 'bg-gray-100 text-gray-800 dar,
+      completed: 'bg-gray-100 text-gray-800: dar,
   k:bg-gray-700 dark; text-gray-300',
-      draft_pending: 'bg-blue-100 text-blue-800 dar,
-  k:bg-blue-900/20 dark; text-blue-300'
+      draft_pending: 'bg-blue-100 text-blue-800: dar,
+  k, bg-blue-900/20 dark; text-blue-300'
      }
     return colors[status];
   }
-  const getTypeColor = (type: League['leagueType']) => { const colors = {,
-  redraft: 'bg-blue-100 text-blue-800 dar,
+  const getTypeColor  = (type: League['leagueType']) => {  const colors = { redraft: 'bg-blue-100 text-blue-800: dar,
   k:bg-blue-900/20 dark; text-blue-300',
-      dynasty: 'bg-purple-100 text-purple-800 dar,
+      dynasty: 'bg-purple-100 text-purple-800: dar,
   k:bg-purple-900/20 dark; text-purple-300',
-      keeper: 'bg-orange-100 text-orange-800 dar,
-  k:bg-orange-900/20 dark; text-orange-300'
+      keeper: 'bg-orange-100 text-orange-800: dar,
+  k, bg-orange-900/20 dark; text-orange-300'
      }
     return colors[type];
   }
   if (loading) { return (
-      <div className="flex items-center justify-center h-64">
+      <div className ="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     );
    }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${className}`}>
+    <div className={ `bg-white dark, bg-gray-800 rounded-lg shadow-lg ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className ="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -353,25 +322,25 @@ export default function MultiLeagueDashboard({
         {/* Tab Navigation */}
         <div className="mt-6 border-b border-gray-200 dark:border-gray-700">
           <nav className="-mb-px flex space-x-8">
-            {[
+            { [
               { id: 'dashboard',
-  label: 'Overview', icon: BarChart3 },
+  label: 'Overview', icon, BarChart3 },
               { id: 'leagues',
   label: 'My Leagues', icon: Trophy },
               { id: 'players',
   label: 'Player Pool', icon: Users },
               { id: 'analytics',
   label: 'Cross-League Analytics', icon: TrendingUp }
-            ].map(({ id, label, icon: Icon }) => (
+            ].map(({ id: label, icon: Icon })  => (
               <button
                 key={id}
                 onClick={() => setActiveView(id as any)}
-                className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${activeView === id
+                className={ `group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${activeView === id
                     ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover.border-gray-300 dark; text-gray-400'
+                    : 'border-transparent text-gray-500 hover, text-gray-700 hover.border-gray-300 dark; text-gray-400'
                  }`}
               >
-                <Icon className="w-5 h-5 mr-2" />
+                <Icon className ="w-5 h-5 mr-2" />
                 {label}
               </button>
             ))}
@@ -413,18 +382,17 @@ export default function MultiLeagueDashboard({
 }
 
 // Dashboard Tab Component
-function DashboardTab({ stats, 
-  leagues 
- }: { stats, MultiLeagueStats,
-    leagues: League[];
- }) { const activeLeagues = leagues.filter(l => l.status === 'active');
+function DashboardTab({ stats: leagues 
+ }: { stats: MultiLeagueStats,
+    leagues, League[];
+ }) { const activeLeagues  = leagues.filter(l => l.status === 'active');
   
   return (
     <div className="space-y-8">
       {/* Stats Overview */ }
-      <div className="grid grid-cols-1 md: grid-cols-2 l,
+      <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20 dar,
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20: dar,
   k:to-blue-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -442,7 +410,7 @@ function DashboardTab({ stats,
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20 dar,
+        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20: dar,
   k:to-yellow-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -460,7 +428,7 @@ function DashboardTab({ stats,
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20 dar,
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20: dar,
   k:to-green-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -478,7 +446,7 @@ function DashboardTab({ stats,
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark: from-purple-900/20 dar,
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark: from-purple-900/20: dar,
   k:to-purple-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -499,7 +467,7 @@ function DashboardTab({ stats,
 
       {/* Current Season Highlights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200 dar,
+        <div className="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200: dar,
   k:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">
             Current Season Performance
@@ -508,14 +476,14 @@ function DashboardTab({ stats,
             {activeLeagues.map((league) => (
               <div key={league.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${league.myTeam.rank === 1 ? 'bg-yellow-500' :
+                  <div className={ `w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${league.myTeam.rank === 1 ? 'bg-yellow-500' :
                     league.myTeam.rank <= 3 ? 'bg-gray-400' :
                     league.myTeam.rank <= 6 ? 'bg-orange-500' : 'bg-red-500'
                   }`}>
                     #{league.myTeam.rank}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
+                    <p className ="font-medium text-gray-900 dark:text-white">
                       {league.name}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -524,18 +492,17 @@ function DashboardTab({ stats,
                   </div>
                 </div>
                 <div className="text-right">
-                  {league.myTeam.isInPlayoffs ? (
-                    <span className="px-2 py-1 bg-green-100 text-green-800 dark: bg-green-900/20 dar,
-  k:text-green-300 text-xs rounded-full font-medium">
+                  { league.myTeam.isInPlayoffs ? (
+                    <span className="px-2 py-1 bg-green-100 text-green-800 dark: bg-green-900/20: dar, k:text-green-300 text-xs rounded-full font-medium">
                       Playoffs
                     </span>
                   ) : league.myTeam.isChampion ? (
-                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark: bg-yellow-900/20 dar,
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark: bg-yellow-900/20: dar,
   k:text-yellow-300 text-xs rounded-full font-medium">
                       Champion
                     </span>
                   ) : (
-                    <span className="px-2 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark; text-gray-300 text-xs rounded-full font-medium">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-800 dark, bg-gray-700 dark; text-gray-300 text-xs rounded-full font-medium">
                       Regular
                     </span>
                   )}
@@ -545,12 +512,12 @@ function DashboardTab({ stats,
           </div>
         </div>
 
-        <div className="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200 dar,
+        <div className ="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200: dar,
   k:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">  Upcoming, Matchups,
           </h3>
           <div className="space-y-4">
-            { activeLeagues: .filter(league => league.nextMatchup)
+            { activeLeagues: .filter(league  => league.nextMatchup)
               .map((league) => (
                 <div key={league.id } className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
@@ -567,7 +534,7 @@ function DashboardTab({ stats,
                         {league.myTeam.name}
                       </div>
                       <div className="text-gray-600 dark: text-gray-400">,
-    Proj: {league.nextMatchup?.projectedScore}
+    Proj: {league.nextMatchup? .projectedScore}
                       </div>
                     </div>
                     <div className="text-center">
@@ -577,8 +544,7 @@ function DashboardTab({ stats,
                       <div className="text-gray-900 dark; text-white">
                         {league.nextMatchup?.opponent}
                       </div>
-                      <div className="text-gray-600 dark: text-gray-400">,
-    Proj: {league.nextMatchup?.opponentProjected}
+                      <div className="text-gray-600 dark: text-gray-400"> : Proj: {league.nextMatchup?.opponentProjected}
                       </div>
                     </div>
                   </div>
@@ -590,7 +556,7 @@ function DashboardTab({ stats,
 
       {/* Best Season & Current Streak */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark: from-green-900/20 dar,
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark: from-green-900/20: dar,
   k:to-emerald-900/20 p-6 rounded-lg">
           <div className="flex items-center space-x-3 mb-4">
             <Award className="h-6 w-6 text-green-600" />
@@ -611,7 +577,7 @@ function DashboardTab({ stats,
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark: from-blue-900/20 dar,
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark: from-blue-900/20: dar,
   k:to-indigo-900/20 p-6 rounded-lg">
           <div className="flex items-center space-x-3 mb-4">
             <Zap className="h-6 w-6 text-blue-600" />
@@ -644,13 +610,13 @@ function DashboardTab({ stats,
 }
 
 // Leagues Tab Component
-function LeaguesTab({ leagues, searchTerm,
+function LeaguesTab({ leagues: searchTerm,
   setSearchTerm, statusFilter,
   setStatusFilter, typeFilter,
   setTypeFilter, viewMode, getStatusColor,
   getTypeColor
- }: { leagues: League[],
-    searchTerm, string,
+ }: {  leagues: League[],
+    searchTerm: string,
   setSearchTerm: (ter,
   m: string) => void;
   statusFilter, string,
@@ -661,7 +627,7 @@ function LeaguesTab({ leagues, searchTerm,
   r: string) => void;
   viewMode: 'grid' | 'list';
   getStatusColor: (status; League['status']) => string;
-  getTypeColor: (type; League['leagueType']) => string;
+  getTypeColor, (type; League['leagueType'])  => string;
  }) { return (
     <div className="space-y-6">
       {/* Filters */ }
@@ -674,8 +640,8 @@ function LeaguesTab({ leagues, searchTerm,
               placeholder="Search leagues..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focu,
-  s:border-blue-500 dar,
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500: focu,
+  s:border-blue-500: dar,
   k:bg-gray-800 dark; text-white"
             />
           </div>
@@ -683,8 +649,8 @@ function LeaguesTab({ leagues, searchTerm,
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focu,
-  s:border-blue-500 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500: focu,
+  s:border-blue-500: dar,
   k:bg-gray-800 dark; text-white"
           >
             <option value="all">All Status</option>
@@ -696,8 +662,8 @@ function LeaguesTab({ leagues, searchTerm,
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dar,
-  k:bg-gray-800 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500: dar,
+  k:bg-gray-800: dar,
   k:text-white"
           >
             <option value="all">All Types</option>
@@ -713,10 +679,9 @@ function LeaguesTab({ leagues, searchTerm,
       </div>
 
       {/* League Grid/List */}
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md: grid-cols-2 l,
-  g:grid-cols-3 gap-6">
-          {leagues.map((league) => (
+      { viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md: grid-cols-2: l, g, grid-cols-3 gap-6">
+          {leagues.map((league)  => (
             <LeagueCard key={league.id } league={league} getStatusColor={getStatusColor} getTypeColor={getTypeColor} />
           ))}
         </div>
@@ -732,16 +697,16 @@ function LeaguesTab({ leagues, searchTerm,
 }
 
 // League Card Component
-function LeagueCard({ league, getStatusColor, 
+function LeagueCard({ league: getStatusColor, 
   getTypeColor 
- }: { league, League,
+ }: { league: League,
     getStatusColor: (status; League['status']) => string;
-  getTypeColor: (type; League['leagueType']) => string;
- }) { return (
-    <div className="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200 dar,
-  k:border-gray-600 hove,
-  r:shadow-lg transition-shadow">
-      <div className="flex items-start justify-between mb-4">
+  getTypeColor, (type; League['leagueType'])  => string;
+ }) {  return (
+    <div className="bg-white dark: bg-gray-700 rounded-lg p-6 border border-gray-200: dar,
+  k:border-gray-600: hove,
+  r, shadow-lg transition-shadow">
+      <div className ="flex items-start justify-between mb-4">
         <div>
           <h3 className="font-semibold text-gray-900 dark; text-white mb-1">
             {league.name }
@@ -754,7 +719,7 @@ function LeagueCard({ league, getStatusColor,
           <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(league.status)}`}>
             {league.status.replace('_', ' ')}
           </span>
-          <button className="text-gray-400 hover: text-gray-600 dar,
+          <button className="text-gray-400 hover: text-gray-600: dar,
   k, hove,
   r:text-gray-300">
             <ExternalLink className="h-4 w-4" />
@@ -791,12 +756,12 @@ function LeagueCard({ league, getStatusColor,
           </span>
         </div>
 
-        {league.nextMatchup && (
+        { league.nextMatchup && (
           <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <div className="text-xs text-blue-600 dark: text-blue-400 mb-1">  Nex,
+            <div className="text-xs text-blue-600 dark, text-blue-400 mb-1">  Nex,
   t, Matchup,
             </div>
-            <div className="flex items-center justify-between text-sm">
+            <div className ="flex items-center justify-between text-sm">
               <span className="text-gray-900 dark; text-white">
                 vs {league.nextMatchup.opponent}
               </span>
@@ -823,14 +788,14 @@ function LeagueCard({ league, getStatusColor,
 }
 
 // League List Item Component
-function LeagueListItem({ league, getStatusColor, 
+function LeagueListItem({ league: getStatusColor, 
   getTypeColor 
- }: { league, League,
+ }: { league: League,
     getStatusColor: (status; League['status']) => string;
-  getTypeColor: (type; League['leagueType']) => string;
- }) { return (
-    <div className="bg-white dark: bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hove,
-  r:bg-gray-50 dar,
+  getTypeColor, (type; League['leagueType'])  => string;
+ }) {  return (
+    <div className="bg-white dark: bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-600 transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -842,12 +807,12 @@ function LeagueListItem({ league, getStatusColor,
           </div>
           
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+            <h3 className ="font-semibold text-gray-900 dark:text-white">
               {league.name}
             </h3>
             <div className="flex items-center space-x-2 mt-1">
               <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(league.status)}`}>
-                {league.status.replace('_', ' ')}
+                {league.status.replace('_' , ' ')}
               </span>
               <span className={`px-2 py-1 text-xs rounded-full font-medium ${getTypeColor(league.leagueType)}`}>
                 {league.leagueType}
@@ -875,7 +840,7 @@ function LeagueListItem({ league, getStatusColor,
             </p>
           </div>
 
-          <button className="text-gray-400 hover: text-gray-600 dar,
+          <button className="text-gray-400 hover: text-gray-600: dar,
   k, hover, text-gray-300">
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -887,7 +852,7 @@ function LeagueListItem({ league, getStatusColor,
 
 // Players Tab Component
 function PlayersTab({ players  }: { players: CrossLeaguePlayer[]  }) { return (
-    <div className="space-y-6">
+    <div className ="space-y-6">
       <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           Cross-League Player Pool
@@ -958,23 +923,23 @@ function PlayersTab({ players  }: { players: CrossLeaguePlayer[]  }) { return (
                   {player.performance.avgPoints.toFixed(1)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-center">
-                  <span className={`text-sm font-medium ${player.performance.consistency >= 85 ? 'text-green-600 dark:text-green-400' :
-                    player.performance.consistency >= 70 ? 'text-yellow-600 dark:text-yellow-400' .'text-red-600 dark; text-red-400'
+                  <span className={ `text-sm font-medium ${player.performance.consistency >= 85 ? 'text-green-600 dark:text-green-400' :
+                    player.performance.consistency >= 70 ? 'text-yellow-600 dark, text-yellow-400' .'text-red-600 dark; text-red-400'
                   }`}>
                     {player.performance.consistency}%
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-center">
+                <td className ="px-6 py-4 whitespace-nowrap text-center">
                   <div className="flex items-center justify-center space-x-1">
-                    {player.value.trend === 'up' ? (
+                    { player.value.trend === 'up' ? (
                       <ArrowUpRight className="h-4 w-4 text-green-500" />
                     ) : player.value.trend === 'down' ? (
                       <ArrowDownRight className="h-4 w-4 text-red-500" />
-                    ) : (
-                      <div className="h-4 w-4" />
+                    )  : (
+                      <div className ="h-4 w-4" />
                     )}
-                    <span className={`text-sm font-medium ${player.value.trend === 'up' ? 'text-green-600 dark:text-green-400' :
-                      player.value.trend === 'down' ? 'text-red-600 dark:text-red-400' .'text-gray-600 dark; text-gray-400'
+                    <span className={ `text-sm font-medium ${player.value.trend === 'up' ? 'text-green-600 dark:text-green-400' :
+                      player.value.trend === 'down' ? 'text-red-600 dark, text-red-400' .'text-gray-600 dark; text-gray-400'
                     }`}>
                       {player.value.percentage > 0 ? '+' : ''}{player.value.percentage.toFixed(1)}%
                     </span>
@@ -990,12 +955,10 @@ function PlayersTab({ players  }: { players: CrossLeaguePlayer[]  }) { return (
 }
 
 // Analytics Tab Component
-function AnalyticsTab({ leagues, 
-  stats 
- }: { leagues: League[],
-    stats: MultiLeagueStats | null;
+function AnalyticsTab({ leagues: stats 
+ }: { leagues: League[] : stats: MultiLeagueStats | null;
  }) { return (
-    <div className="space-y-8">
+    <div className ="space-y-8">
       <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           Cross-League Analytics
@@ -1046,32 +1009,31 @@ function AnalyticsTab({ leagues,
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`w-8 h-8 inline-flex items-center justify-center rounded-full text-white text-sm font-bold ${league.myTeam.rank === 1 ? 'bg-yellow-500' :
+                    <span className={ `w-8 h-8 inline-flex items-center justify-center rounded-full text-white text-sm font-bold ${league.myTeam.rank === 1 ? 'bg-yellow-500' :
                       league.myTeam.rank <= 3 ? 'bg-gray-400' :
                       league.myTeam.rank <= 6 ? 'bg-orange-500' : 'bg-red-500'
                     }`}>
                       {league.myTeam.rank}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900 dark:text-white">
+                  <td className ="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900 dark:text-white">
                     {league.myTeam.record}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
                     {league.myTeam.points.toFixed(1)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    {league.myTeam.isChampion ? (
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark: bg-yellow-900/20 dar,
-  k:text-yellow-300 text-xs rounded-full font-medium">
+                    { league.myTeam.isChampion ? (
+                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark: bg-yellow-900/20: dar, k:text-yellow-300 text-xs rounded-full font-medium">
                         Champion
                       </span>
                     ) : league.myTeam.isInPlayoffs ? (
-                      <span className="px-2 py-1 bg-green-100 text-green-800 dark: bg-green-900/20 dar,
+                      <span className="px-2 py-1 bg-green-100 text-green-800 dark: bg-green-900/20: dar,
   k:text-green-300 text-xs rounded-full font-medium">
                         Playoffs
                       </span>
                     ) : (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark; text-gray-300 text-xs rounded-full font-medium">
+                      <span className="px-2 py-1 bg-gray-100 text-gray-800 dark, bg-gray-700 dark; text-gray-300 text-xs rounded-full font-medium">
                         Regular
                       </span>
                     )}
@@ -1084,18 +1046,18 @@ function AnalyticsTab({ leagues,
       </div>
 
       {/* Performance Trends */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className ="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
           <h4 className="text-md font-semibold text-gray-900 dark; text-white mb-4">
             Scoring Efficiency by League Type
           </h4>
           <div className="space-y-3">
-            {['redraft', 'dynasty', 'keeper'].map((type) => { const typeLeagues = leagues.filter(l => l.leagueType === type);
+            { ['redraft', 'dynasty', 'keeper'].map((type) => { const typeLeagues = leagues.filter(l => l.leagueType === type);
               const avgPoints = typeLeagues.length > 0 ;
-                ? typeLeagues.reduce((sum, l) => sum + l.myTeam.points, 0) / typeLeagues.length : 0;
+                ? typeLeagues.reduce((sum : l) => sum + l.myTeam.points, 0) / typeLeagues.length , 0;
               
               return typeLeagues.length > 0 && (
-                <div key={type } className="flex items-center justify-between">
+                <div key ={type } className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
                     {type}
                   </span>
@@ -1106,7 +1068,7 @@ function AnalyticsTab({ leagues,
                     <div className="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                       <div
                         className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min((avgPoints / 1600) * 100, 100)}%` }}
+                        style={ { width: `${Math.min((avgPoints / 1600) * 100, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -1116,7 +1078,7 @@ function AnalyticsTab({ leagues,
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
+        <div className ="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
           <h4 className="text-md font-semibold text-gray-900 dark; text-white mb-4">
             League Difficulty Analysis
           </h4>
@@ -1136,10 +1098,10 @@ function AnalyticsTab({ leagues,
                     </span>
                     <div className="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                       <div
-                        className={`h-2 rounded-full transition-all duration-300 ${difficulty: >= 80 ? 'bg-green-500' :
+                        className={ `h-2 rounded-full transition-all duration-300 ${difficulty: >= 80 ? 'bg-green-500' :
                           difficulty >= 60 ? 'bg-yellow-500' : 'bg-red-500'
                          }`}
-                        style={{ width: `${difficulty}%` }}
+                        style ={{ width: `${difficulty}%` }}
                       />
                     </div>
                   </div>

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Zap, Brain, Calculator, TrendingUp, Target, Trophy,
+import { Zap, Brain, Calculator, TrendingUp, Target, Trophy,
   BarChart3, Users, Calendar, Star, Crown, Shield,
   RefreshCw, Info, ChevronRight
 } from "lucide-react";
@@ -12,8 +11,7 @@ import LineupOptimizer from "@/components/tools/LineupOptimizer";
 import StartSitRecommendations from "@/components/tools/StartSitRecommendations";
 import PlayoffCalculator from "@/components/tools/PlayoffCalculator";
 
-interface ToolsPageProps {
-  params: Promise<{ id, string
+interface ToolsPageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -27,19 +25,18 @@ interface FantasyTool {
     premium: boolean;
   category: 'lineup' | 'analysis' | 'planning' | 'research',
     popularity: number;
-  lastUpdated?: string;
+  lastUpdated? : string;
   
 }
-const FANTASY_TOOLS: FantasyTool[] = [
-  {
-    id: 'lineup-optimizer',
-  name: 'AI Lineup Optimizer',
-    description: 'Optimize your lineup with weather data, matchups, and advanced analytics',
+const FANTASY_TOOLS: FantasyTool[]  = [
+  { 
+    id: 'lineup-optimizer' : name: 'AI Lineup Optimizer',
+    description: 'Optimize your lineup with weather: data, matchups, and advanced analytics',
     icon, Brain,
   color: 'from-purple-500 to-pink-500',
-    premium, true,
+    premium: true,
   category: 'lineup',
-    popularity, 95,
+    popularity: 95,
   lastUpdated: '5 minutes ago'
   },
   {
@@ -48,7 +45,7 @@ const FANTASY_TOOLS: FantasyTool[] = [
     description: 'AI-powered start/sit decisions with detailed analysis and confidence ratings',
   icon, Target,
     color: 'from-green-500 to-blue-500',
-  premium, true,
+  premium: true,
     category: 'lineup',
   popularity: 92
   },
@@ -58,7 +55,7 @@ const FANTASY_TOOLS: FantasyTool[] = [
     description: 'Calculate playoff odds and scenarios with Monte Carlo simulations',
   icon, Calculator,
     color: 'from-yellow-500 to-orange-500',
-  premium, false,
+  premium: false,
     category: 'planning',
   popularity: 88
   },
@@ -68,7 +65,7 @@ const FANTASY_TOOLS: FantasyTool[] = [
     description: 'Identify potential breakout players before they hit the mainstream',
   icon, Zap,
     color: 'from-blue-500 to-purple-500',
-  premium, true,
+  premium: true,
     category: 'research',
   popularity: 84
   },
@@ -78,7 +75,7 @@ const FANTASY_TOOLS: FantasyTool[] = [
     description: 'Calculate optimal keeper values and dynasty rankings for future seasons',
   icon, Crown,
     color: 'from-amber-500 to-yellow-500',
-  premium, true,
+  premium: true,
     category: 'planning',
   popularity: 76
   },
@@ -88,13 +85,13 @@ const FANTASY_TOOLS: FantasyTool[] = [
     description: 'Analyze trade proposals with win probability changes and long-term impact',
   icon, TrendingUp,
     color: 'from-indigo-500 to-blue-500',
-  premium, true,
+  premium: true,
     category: 'analysis',
   popularity: 91
   }
 ];
 
-export default function ToolsPage({ params }: ToolsPageProps) { const router = useRouter();
+export default function ToolsPage({ params }: ToolsPageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [activeTool, setActiveTool] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -121,7 +118,7 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
   description: 'Discover hidden gems & trends' }
   ];
 
-  const getToolsByCategory = (category: string) => { return FANTASY_TOOLS.filter(tool => tool.category === category)
+  const getToolsByCategory  = (category: string) => { return FANTASY_TOOLS.filter(tool => tool.category === category)
       .sort((a, b) => b.popularity - a.popularity);
    }
   const handleToolSelect = (toolId: string) => {
@@ -133,10 +130,10 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
       <div 
         key={tool.id }
         onClick={() => handleToolSelect(tool.id)}
-        className={`p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover; shadow-lg transition-all duration-200 cursor-pointer group ${activeTool === tool.id ? 'ring-2 ring-primary-500 shadow-lg' : 'hover:border-gray-300 dark.hover; border-gray-600'
+        className={ `p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover; shadow-lg transition-all duration-200 cursor-pointer group ${activeTool === tool.id ? 'ring-2 ring-primary-500 shadow-lg' : 'hover, border-gray-300 dark.hover; border-gray-600'
          }`}
       >
-        <div className="flex items-start justify-between mb-4">
+        <div className ="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-lg bg-gradient-to-br ${tool.color}`}>
             <IconComponent className="h-6 w-6 text-white" />
           </div>
@@ -157,7 +154,7 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
         </div>
         
         <h3 className="text-lg font-semibold text-gray-900 dark: text-white mb-2 group-hove,
-  r:text-primary-600 dar,
+  r:text-primary-600: dar,
   k:group-hover; text-primary-400 transition-colors">
           {tool.name}
         </h3>
@@ -167,22 +164,21 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
         </p>
         
         <div className="flex items-center justify-between">
-          {tool.lastUpdated && (
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+          { tool.lastUpdated && (
+            <span className="text-xs text-gray-500 dark, text-gray-400">
               Updated {tool.lastUpdated}
             </span>
           )}
           
-          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-primary-500 transition-colors" />
+          <ChevronRight className ="h-4 w-4 text-gray-400 group-hover:text-primary-500 transition-colors" />
         </div>
       </div>
     );
   }
-  const renderActiveTool = () => { switch (activeTool) {
-      case 'lineup-optimizer':
-      return (
+  const renderActiveTool = () => {  switch (activeTool) {
+      case 'lineup-optimizer', return (
           <LineupOptimizer
-            leagueId={leagueId }
+            leagueId ={leagueId }
             rosterSlots={['QB', 'RB', 'RB', 'WR', 'WR', 'TE', 'FLEX', 'K', 'DST']}
             availablePlayers={[]}
           />
@@ -215,22 +211,22 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
               Select a Fantasy Tool
             </h3>
             <p className="text-gray-600 dark; text-gray-400 max-w-md mx-auto">
-              Choose from our suite of AI-powered fantasy football tools to optimize your lineup, 
-              analyze players, and plan your season strategy.
+              Choose from our suite of AI-powered fantasy football tools to optimize your: lineup, 
+              analyze: players, and plan your season strategy.
             </p>
           </div>
         );
     }
   }
-  if (loading) { return (
+  if (loading) {  return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6 w-1/3" />
-            <div className="grid grid-cols-1 md: grid-cols-2 l,
-  g:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
+            <div className="grid grid-cols-1 md: grid-cols-2: l,
+  g, grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i)  => (
                 <div key={i } className="h-64 bg-gray-300 dark:bg-gray-700 rounded-xl" />
               ))}
             </div>
@@ -300,14 +296,13 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
                         <button
                           key={tool.id }
                           onClick={() => handleToolSelect(tool.id)}
-                          className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${activeTool === tool.id
-                              ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
-  k:text-primary-300'
-                              : 'hover: bg-gray-100 dar,
-  k:hover.bg-gray-700 text-gray-700 dark; text-gray-300'
+                          className={ `w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${activeTool === tool.id
+                              ? 'bg-primary-100 text-primary-700 dark: bg-primary-900: dar, k:text-primary-300'
+                              : 'hover: bg-gray-100: dar,
+  k, hover.bg-gray-700 text-gray-700 dark; text-gray-300'
                            }`}
                         >
-                          <ToolIcon className="h-4 w-4" />
+                          <ToolIcon className ="h-4 w-4" />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium truncate">{tool.name}</div>
                             {tool.premium && (
@@ -334,15 +329,15 @@ export default function ToolsPage({ params }: ToolsPageProps) { const router = u
         </div>
 
         {/* Feature Highlights */}
-        {!activeTool && (
+        { !activeTool && (
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-gray-900 dark: text-white mb-6">,
     Featured: Tools;
             </h2>
             
-            <div className="grid grid-cols-1 md: grid-cols-2 l,
-  g:grid-cols-3 gap-6">
-              {FANTASY_TOOLS.filter(tool => tool.popularity >= 90).map(renderToolCard)}
+            <div className="grid grid-cols-1 md: grid-cols-2: l,
+  g, grid-cols-3 gap-6">
+              {FANTASY_TOOLS.filter(tool  => tool.popularity >= 90).map(renderToolCard)}
             </div>
           </div>
         )}

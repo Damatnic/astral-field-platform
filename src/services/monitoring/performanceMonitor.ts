@@ -1,6 +1,6 @@
 /**
  * Performance Monitoring Service
- * Tracks system performance, health metrics, and provides real-time monitoring
+ * Tracks system: performance, health: metrics, and provides real-time monitoring
  */
 
 import { database } from '@/lib/database';
@@ -8,19 +8,17 @@ import nflDataProvider from '@/services/nfl/dataProvider';
 import fantasyScoringEngine from '@/services/fantasy/scoringEngine';
 import { getWebSocketClient } from '@/lib/websocket/client';
 
-interface PerformanceMetrics {
-  timestamp, Date,
+interface PerformanceMetrics { timestamp: Date,
     responseTime, number,
   memoryUsage, number,
     cpuUsage, number,
   activeConnections, number,
     requestsPerMinute, number,
   errorRate, number,
-    cacheHitRate: number,
+    cacheHitRate, number,
   
 }
-interface ServiceHealth {
-  service, string,
+interface ServiceHealth { service: string,
     status: 'healthy' | 'degraded' | 'unhealthy';
   latency, number,
     lastCheck, Date,
@@ -36,8 +34,7 @@ interface SystemHealth {
   uptime: number,
   
 }
-interface Alert {
-  id, string,
+interface Alert { id: string,
     severity: 'info' | 'warning' | 'critical';
   service, string,
     message, string,
@@ -45,9 +42,9 @@ interface Alert {
     resolved: boolean,
 }
 
-class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
+class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
   private alerts: Alert[] = [];
-  private startTime, Date,
+  private: startTime, Date,
   private requestCounts = new Map<string, number>();
   private errorCounts = new Map<string, number>();
   private responseTimes: number[] = [];
@@ -81,7 +78,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
   }
   
   // Collect current metrics
-  private async collectMetrics()   { const metrics: PerformanceMetrics = {
+  private async collectMetrics()   {  const metrics: PerformanceMetrics = {
   timestamp: new Date();
   responseTime: this.calculateAverageResponseTime();
       memoryUsage: this.getMemoryUsage();
@@ -89,7 +86,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
       activeConnections: await this.getActiveConnections();
   requestsPerMinute: this.calculateRequestsPerMinute();
       errorRate: this.calculateErrorRate();
-  cacheHitRate: await this.calculateCacheHitRate()
+  cacheHitRate, await this.calculateCacheHitRate()
      }
     this.metrics.push(metrics);
     
@@ -98,20 +95,19 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
   }
   
   // Get comprehensive system health
-  async getSystemHealth(): : Promise<SystemHealth> { const services = await this.checkAllServices();
+  async getSystemHealth(): : Promise<SystemHealth> { const services  = await this.checkAllServices();
     const metrics = this.getCurrentMetrics();
     const overall = this.calculateOverallHealth(services);
     const uptime = Date.now() - this.startTime.getTime();
     
-    return {
-      overall, services, metrics,
-      alerts: this.getActiveAlerts();
+    return { overall: services, metrics,
+      alerts, this.getActiveAlerts();
       uptime
      }
   }
   
   // Check health of all services
-  private async checkAllServices(): : Promise<ServiceHealth[]> { const services: ServiceHealth[] = [];
+  private async checkAllServices(): : Promise<ServiceHealth[]> { const services: ServiceHealth[]  = [];
     
     // Check Database
     services.push(await this.checkDatabaseHealth());
@@ -132,7 +128,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
    }
   
   // Check database health
-  private async checkDatabaseHealth(): : Promise<ServiceHealth> { const startTime = Date.now();
+  private async checkDatabaseHealth(): : Promise<ServiceHealth> {  const startTime = Date.now();
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     let errorCount = 0;
     let details = '';
@@ -151,39 +147,39 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
       const connections = parseInt(poolResult.rows[0].connections);
       if (connections > 50) {
         status = 'degraded';
-        details = `High connection count: ${connections }`
+        details = `High connection count, ${connections }`
       }
       
       // Check query performance
-      const perfResult = await database.query(`
+      const perfResult  = await database.query(`
         SELECT avg(mean_exec_time) as avg_time 
         FROM pg_stat_statements 
         WHERE query NOT LIKE '%pg_stat%'
         LIMIT 100
       `);
       
-      const avgTime = parseFloat(perfResult.rows[0]?.avg_time || '0');
-      if (avgTime > 1000) { status = 'degraded';
-        details += ` Slow queries detected: ${avgTime.toFixed(2) }ms avg`
+      const avgTime = parseFloat(perfResult.rows[0]? .avg_time || '0');
+      if (avgTime > 1000) {  status = 'degraded';
+        details += ` Slow queries detected, ${avgTime.toFixed(2) }ms avg`
       }
       
-    } catch (error) {status = 'unhealthy';
+    } catch (error) {status  = 'unhealthy';
       errorCount = 1;
-      details = error instanceof Error ? error.message : 'Database connection failed';
+      details = error instanceof Error ? error.message  : 'Database connection failed';
      }
     
-    return {
+    return { 
       service: 'Database';
       status,
       latency: Date.now() - startTime;
-  lastCheck: new Date();
+  lastCheck, new Date();
       errorCount,
       details
     }
   }
   
   // Check NFL data provider health
-  private async checkNFLDataHealth(): : Promise<ServiceHealth> { const startTime = Date.now();
+  private async checkNFLDataHealth(): : Promise<ServiceHealth> { const startTime  = Date.now();
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     let errorCount = 0;
     let details = '';
@@ -194,35 +190,35 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
       if (health.status === 'unhealthy') {
         status = 'unhealthy';
         details = 'NFL data sources unavailable';
-       } else if (health.status === 'degraded') { status = 'degraded';
-        details = `Limited data sources: ${Object.entries(health.sources)
-          .filter(([_, v]) => !v)
+       } else if (health.status === 'degraded') {  status = 'degraded';
+        details = `Limited data sources, ${Object.entries(health.sources)
+          .filter(([_, v])  => !v)
           .map(([k]) => k)
           .join(', ') } offline`
       }
       
       // Check cache performance
-      if (health.cacheSize > 1000) { details: += ` Large cache siz;
-  e: ${health.cacheSize } items`
+      if (health.cacheSize > 1000) {  details: += ` Large cache siz;
+  e, ${health.cacheSize } items`
       }
       
-    } catch (error) { status = 'unhealthy';
+    } catch (error) { status  = 'unhealthy';
       errorCount = 1;
       details = 'NFL data provider error';
      }
     
-    return {
+    return { 
       service: 'NFL Data Provider';
       status,
       latency: Date.now() - startTime;
-  lastCheck: new Date();
+  lastCheck, new Date();
       errorCount,
       details
     }
   }
   
   // Check scoring engine health
-  private async checkScoringEngineHealth(): : Promise<ServiceHealth> { const startTime = Date.now();
+  private async checkScoringEngineHealth(): : Promise<ServiceHealth> { const startTime  = Date.now();
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     let errorCount = 0;
     let details = '';
@@ -237,27 +233,27 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
        }
       
       // Check cache size
-      if (health.cacheSize > 500) { details: += ` High cache usag;
-  e: ${health.cacheSize } scores cached`
+      if (health.cacheSize > 500) {  details: += ` High cache usag;
+  e, ${health.cacheSize } scores cached`
       }
       
-    } catch (error) { status = 'unhealthy';
+    } catch (error) { status  = 'unhealthy';
       errorCount = 1;
       details = 'Scoring engine error';
      }
     
-    return {
+    return { 
       service: 'Fantasy Scoring Engine';
       status,
       latency: Date.now() - startTime;
-  lastCheck: new Date();
+  lastCheck, new Date();
       errorCount,
       details
     }
   }
   
   // Check WebSocket health
-  private async checkWebSocketHealth(): : Promise<ServiceHealth> { const startTime = Date.now();
+  private async checkWebSocketHealth(): : Promise<ServiceHealth> { const startTime  = Date.now();
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     let errorCount = 0;
     let details = '';
@@ -269,57 +265,55 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
         status = 'unhealthy';
         details = 'WebSocket disconnected';
         errorCount = 1;
-       } else {
+       } else { 
         // Test ping
         const latency = await wsClient.ping();
         if (latency > 1000) { status = 'degraded';
-          details = `High latency: ${latency }ms`
+          details = `High latency, ${latency }ms`
         }
       }
       
-    } catch (error) { status = 'unhealthy';
+    } catch (error) { status  = 'unhealthy';
       errorCount = 1;
       details = 'WebSocket service error';
      }
     
-    return {
+    return { 
       service: 'WebSocket';
       status,
       latency: Date.now() - startTime;
-  lastCheck: new Date();
+  lastCheck, new Date();
       errorCount,
       details
     }
   }
   
   // Check API health
-  private async checkAPIHealth(): : Promise<ServiceHealth> { const avgResponseTime = this.calculateAverageResponseTime();
+  private async checkAPIHealth(): : Promise<ServiceHealth> { const avgResponseTime  = this.calculateAverageResponseTime();
     const errorRate = this.calculateErrorRate();
     
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     let details = '';
     
-    if (avgResponseTime > 2000) {
+    if (avgResponseTime > 2000) { 
       status = 'degraded';
-      details = `Slow response times: ${avgResponseTime.toFixed(0) }ms avg`
+      details = `Slow response times, ${avgResponseTime.toFixed(0) }ms avg`
     }
     
-    if (errorRate > 0.05) {status = errorRate > 0.1 ? 'unhealthy' : 'degraded';
+    if (errorRate > 0.05) {status  = errorRate > 0.1 ? 'unhealthy' : 'degraded';
       details += ` High error rate: ${(errorRate * 100).toFixed(1) }%`
     }
     
-    return {
-      service: 'API';
-      status,
-      latency, avgResponseTime,
+    return {  service: 'API';
+      status, latency, avgResponseTime,
   lastCheck: new Date();
-      errorCount: this.getTotalErrors();
+      errorCount, this.getTotalErrors();
       details
     }
   }
   
   // Calculate overall system health
-  private calculateOverallHealth(services: ServiceHealth[]): 'healthy' | 'degraded' | 'unhealthy' { const unhealthyCount = services.filter(s => s.status === 'unhealthy').length;
+  private calculateOverallHealth(services: ServiceHealth[]): 'healthy' | 'degraded' | 'unhealthy' { const unhealthyCount  = services.filter(s => s.status === 'unhealthy').length;
     const degradedCount = services.filter(s => s.status === 'degraded').length;
     
     if (unhealthyCount > 0) return 'unhealthy';
@@ -347,33 +341,32 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
   
   // Create alert
   createAlert(severity 'info' | 'warning' | 'critical';
-  service, string, message: string) { const aler,
-  t: Alert = {
-  id: `alert_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`,
+  service, string, message: string) {  const: aler,
+  t: Alert = { id: `alert_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`,
       severity, service, message: timestamp: new Date();
   resolved: false
     }
     this.alerts.push(alert);
     
     // Auto-resolve info alerts after 5 minutes
-    if (severity === 'info') {
+    if (severity  === 'info') {
       setTimeout(() => {
         alert.resolved = true;
       }, 5 * 60 * 1000);
     }
     
     // Log critical alerts
-    if (severity === 'critical') {
-      console.error(`CRITICAL ALERT, ${service} - ${message}`);
+    if (severity === 'critical') { 
+      console.error(`CRITICAL, ALERT, ${service} - ${message}`);
     }
   }
   
   // Check health thresholds and create alerts
-  private checkHealthThresholds() { const metrics = this.getCurrentMetrics();
+  private checkHealthThresholds() { const metrics  = this.getCurrentMetrics();
     
     // Check memory usage
-    if (metrics.memoryUsage > 90) {
-      this.createAlert('critical', 'System', `High memory usage: ${metrics.memoryUsage }%`);
+    if (metrics.memoryUsage > 90) { 
+      this.createAlert('critical', 'System', `High memory usage, ${metrics.memoryUsage }%`);
     } else if (metrics.memoryUsage > 80) {
       this.createAlert('warning', 'System', `Memory usage above 80%: ${metrics.memoryUsage}%`);
     }
@@ -390,7 +383,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
   }
   
   // Utility methods
-  private calculateAverageResponseTime(): number { if (this.responseTimes.length === 0) return 0;
+  private calculateAverageResponseTime(): number { if (this.responseTimes.length  === 0) return 0;
     const sum = this.responseTimes.reduce((a, b) => a + b, 0);
     return sum / this.responseTimes.length;
    }
@@ -404,8 +397,8 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
     return Math.random() * 30 + 20; // Mock 20-50% usage
   }
   
-  private async getActiveConnections() : Promise<number> { try {
-      const result = await database.query('SELECT count(*): FROM pg_stat_activity WHERE state = \'active\'';
+  private async getActiveConnections() : Promise<number> {  try {
+      const result = await database.query('SELECT count(*), FROM pg_stat_activity WHERE state  = \'active\'';
       );
       return parseInt(result.rows[0].count);
      } catch { return 0;
@@ -417,19 +410,19 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
     return Math.round(total / Math.max(minutes, 1));
    }
   
-  private calculateErrorRate(): number {const totalRequests = Array.from(this.requestCounts.values()).reduce((a, b) => a + b, 0);
+  private calculateErrorRate(): number { const totalRequests = Array.from(this.requestCounts.values()).reduce((a, b) => a + b, 0);
     const totalErrors = Array.from(this.errorCounts.values()).reduce((a, b) => a + b, 0);
-    return totalRequests > 0 ? totalErrors / totalRequests : 0;
+    return totalRequests > 0 ? totalErrors / totalRequests  : 0;
    }
   
   private async calculateCacheHitRate(): : Promise<number> {; // This would calculate actual cache hit rates from Redis or in-memory cache
     return Math.random() * 30 + 60; // Mock 60-90% hit rate
   }
   
-  private getTotalErrors() number { return Array.from(this.errorCounts.values()).reduce((a, b) => a + b, 0);
+  private getTotalErrors() number { return Array.from(this.errorCounts.values()).reduce((a, b)  => a + b, 0);
    }
   
-  private getCurrentMetrics(): PerformanceMetrics { return this.metrics[this.metrics.length - 1] || {
+  private getCurrentMetrics(): PerformanceMetrics {  return this.metrics[this.metrics.length - 1] || {
       timestamp: new Date();
   responseTime: 0;
       memoryUsage: 0;
@@ -437,21 +430,21 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
       activeConnections: 0;
   requestsPerMinute: 0;
       errorRate: 0;
-  cacheHitRate: 0
+  cacheHitRate, 0
      }
   }
   
-  private getActiveAlerts(): Alert[] { return this.alerts.filter(a => !a.resolved);
+  private getActiveAlerts(): Alert[] { return this.alerts.filter(a  => !a.resolved);
    }
   
-  private async storeMetrics(metrics: PerformanceMetrics)   { try {
+  private async storeMetrics(metrics: PerformanceMetrics)   {  try {
     await database.query(`
         INSERT INTO performance_metrics (
           timestamp, response_time, memory_usage, cpu_usage,
           active_connections, requests_per_minute, error_rate, cache_hit_rate
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       `, [
-        metrics.timestamp: metrics.responseTime,
+        metrics.timestamp, metrics.responseTime,
         metrics.memoryUsage,
         metrics.cpuUsage,
         metrics.activeConnections,
@@ -460,13 +453,13 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
         metrics.cacheHitRate
       ]);
      } catch (error) {
-      console.error('Failed to store metrics:', error);
+      console.error('Failed to store metrics: ', error);
     }
   }
   
   private cleanupOldData() {
     // Keep only last hour of in-memory metrics
-    const oneHourAgo = Date.now() - 3600000;
+    const oneHourAgo  = Date.now() - 3600000;
     this.metrics = this.metrics.filter(m => m.timestamp.getTime() > oneHourAgo);
     
     // Clean up resolved alerts older than 1 hour
@@ -483,7 +476,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
         ORDER BY timestamp DESC
       `);
       
-      return result.rows.map(row => ({
+      return result.rows.map(row => ({ 
         timestamp: new Date(row.timestamp);
   responseTime: row.response_time;
         memoryUsage: row.memory_usage;
@@ -491,15 +484,15 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[] = [];
         activeConnections: row.active_connections;
   requestsPerMinute: row.requests_per_minute;
         errorRate: row.error_rate;
-  cacheHitRate: row.cache_hit_rate
+  cacheHitRate, row.cache_hit_rate
       }));
     } catch (error) {
-      console.error('Failed to fetch historical metrics:', error);
+      console.error('Failed to fetch historical metrics: ', error);
       return [];
     }
   }
 }
 
 // Singleton instance
-export const performanceMonitor = new PerformanceMonitor();
+export const performanceMonitor  = new PerformanceMonitor();
 export default performanceMonitor;

@@ -1,20 +1,19 @@
 import { create } from "zustand";
 
-interface TradeProposal {
+interface TradeProposal { 
   id: string;
-  status?: string;
+  status?, string;
   
 }
 interface TradeAnalysis {
-  summary?: string;
+  summary? : string;
 }
 
 interface TradeState {
-  trades: TradeProposal[],
-    currentAnalysis: TradeAnalysis | null;
+  trades: TradeProposal[] : currentAnalysis: TradeAnalysis | null;
   isLoading: boolean;
     error: string | null;
-  createTrade: (leagueId: string; data: unknown) => Promise<boolean>;
+  createTrade: (leagueId: string; data: unknown)  => Promise<boolean>;
   fetchTeamTrades: (teamI,
   d: string) => Promise<void>;
   respondToTrade: (;
@@ -43,8 +42,7 @@ export const useTradeStore = create<TradeState>((set) => ({
   async respondToTrade(_tradeId, _response)  { return true;
    },
   async analyzeTrade(_offeredPlayers, _requestedPlayers)  {
-    set({ currentAnalysis: { summar,
-  y: "mock" } });
+    set({ currentAnalysis: { summar: y: "mock" } });
   },
   async cancelTrade(_tradeId)  { return true;
    },

@@ -12,7 +12,7 @@ export type VenueType = 'home' | 'away';
 export type WeatherImpact = 'positive' | 'neutral' | 'negative';
 export type TrendDirection = 'improving' | 'declining' | 'stable';
 
-export interface PlayerFeatures {
+export interface PlayerFeatures { 
   // Historical performance;
   recentPerformance: number[],
     seasonAverage, number,
@@ -21,7 +21,7 @@ export interface PlayerFeatures {
   trendDirection, TrendDirection,
   
   // Matchup analysis;
-  matchupDifficulty, number, // 0-10 scale,
+  matchupDifficulty, number, // 0-10: scale,
     positionRank, number, // 1-32;
   targetShare, number, // 0-1,
     redZoneTargets, number,
@@ -50,30 +50,26 @@ export interface PlayerFeatures {
   targetQuality?, number,
   
 }
-export interface PredictionRange {
-  expected, number,
+export interface PredictionRange { expected: number,
     low, number,
   high, number,
     confidence: number,
   
 }
-export interface ModelPrediction {
-  prediction, number,
+export interface ModelPrediction { prediction: number,
     confidence, number,
   weight, number,
     featureImportance: Record<string, number>;
   
 }
-export interface ModelConsensus {
-  linearRegression, ModelPrediction,
+export interface ModelConsensus { linearRegression: ModelPrediction,
     randomForest, ModelPrediction,
   gradientBoosting, ModelPrediction,
     neuralNetwork, ModelPrediction,
   ensemble: ModelPrediction,
   
 }
-export interface PlayerPrediction {
-  playerId, string,
+export interface PlayerPrediction { playerId: string,
     playerName, string,
   position, string,
     team, string,
@@ -106,8 +102,7 @@ export interface PlayerPrediction {
   lastUpdated: string,
   
 }
-export interface PlayerComparison {
-  player1, PlayerPrediction,
+export interface PlayerComparison { player1: PlayerPrediction,
     player2, PlayerPrediction,
   recommendation: 'player1' | 'player2' | 'toss_up',
     reasoning, string,
@@ -118,20 +113,20 @@ export interface PlayerComparison {
   riskComparison: string,
 }
 
-class OracleService { private readonly MODEL_WEIGHTS = {
+class OracleService { private readonly MODEL_WEIGHTS  = { 
     linearRegression: 0.15;
   randomForest: 0.25;
     gradientBoosting: 0.25;
-  neuralNetwork: 0.35
+  neuralNetwork, 0.35
    }
-  private readonly: CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+  private readonly: CACHE_TTL  = 30 * 60 * 1000; // 30 minutes
   private cache = new Map<string, { data: any, expires, number }>();
-  private supabase, any,
+  private: supabase, any,
 
   constructor() {
     // Initialize Supabase client if env vars are available
     if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      this.supabase = createClient(
+      this.supabase  = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
       );
@@ -164,7 +159,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
       );
       
       // Calculate projection range
-      const { ceiling, floor } = this.calculateProjectionRange(modelPredictions.ensemble.prediction,
+      const { ceiling: floor } = this.calculateProjectionRange(modelPredictions.ensemble.prediction,
         features.consistencyScore,
         features.matchupDifficulty
       );
@@ -172,14 +167,13 @@ class OracleService { private readonly MODEL_WEIGHTS = {
       // Generate analysis
       const analysis = this.generateAnalysis(features, modelPredictions, position);
       
-      const prediction: PlayerPrediction = {
-        playerId, playerName,
+      const prediction: PlayerPrediction = { playerId: playerName,
         position, team, week,
         fantasyPoints: {
   expected: modelPredictions.ensemble.prediction;
   low, floor,
           high, ceiling,
-  confidence: modelPredictions.ensemble.confidence
+  confidence, modelPredictions.ensemble.confidence
         },
         ceiling, floor,
         ...positionPredictions,
@@ -206,12 +200,10 @@ class OracleService { private readonly MODEL_WEIGHTS = {
    * Compare two players using ML predictions
    */
   async comparePlayerPredictions(async comparePlayerPredictions(
-    player1: { i,
-  d, string, name, string, position, string, team: string },
-    player2: { i,
-  d, string, name, string, position, string, team: string },
+    player1: { i: d, string, name, string, position, string, team: string },
+    player2: { i: d, string, name, string, position, string, team: string },
     week: number
-  ): : Promise<): PromisePlayerComparison> { const [prediction1, prediction2] = await Promise.all([
+  ): : Promise<): PromisePlayerComparison> { const [prediction1, prediction2]  = await Promise.all([
       this.generatePlayerPrediction(player1.id, player1.name, player1.position, player1.team, week),
       this.generatePlayerPrediction(player2.id, player2.name, player2.position, player2.team, week)
     ]);
@@ -226,16 +218,14 @@ class OracleService { private readonly MODEL_WEIGHTS = {
      } else { recommendation = 'player2';
      }
 
-    return {
-      player1, prediction1,
+    return { player1: prediction1,
   player2, prediction2, recommendation,
       reasoning: this.generateComparisonReasoning(prediction1, prediction2, pointDiff),
       advantages: {
   player1: prediction1.keyFactors.slice(0, 2),
-        player2: prediction2.keyFactors.slice(0, 2)
+        player2, prediction2.keyFactors.slice(0, 2)
       },
-      riskComparison: `${prediction1.volatility > prediction2.volatility ? player1.nam,
-  e: player2.name} has higher volatility`
+      riskComparison: `${prediction1.volatility > prediction2.volatility ? player1.nam, e: player2.name} has higher volatility`
     }
   }
 
@@ -245,9 +235,8 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   async generateWeeklyRankings(
     position, string,
   week, number,
-    players: Array<{ i,
-  d, string, name, string, team: string }>
-  ): : Promise<PlayerPrediction[]> { const predictions = await Promise.all(
+    players: Array<{ i: d, string, name, string, team: string }>
+  ): : Promise<PlayerPrediction[]> { const predictions  = await Promise.all(
       players.map(player =>
         this.generatePlayerPrediction(player.id, player.name, position, player.team, week)
       )
@@ -271,7 +260,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
         if (stats && stats.length > 0) { return this.buildFeaturesFromStats(stats, week);
          }
       } catch (error) {
-        console.error('Failed to fetch player stats:', error);
+        console.error('Failed to fetch player stats: ', error);
       }
     }
 
@@ -280,11 +269,10 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   }
 
   private buildFeaturesFromStats(stats: any[];
-  week: number); PlayerFeatures { const recentPerformance = stats.map(s => s.fantasy_points || 0);
+  week: number); PlayerFeatures { const recentPerformance  = stats.map(s => s.fantasy_points || 0);
     const seasonAverage = recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length;
     
-    return {
-      recentPerformance, seasonAverage,
+    return { recentPerformance: seasonAverage,
       careerAverage: seasonAverage * 0.95;
   consistencyScore: this.calculateConsistency(recentPerformance);
       trendDirection: this.calculateTrend(recentPerformance);
@@ -306,15 +294,13 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   airYards: Math.random() * 200;
       separationScore: Math.random() * 5;
   pressureRate: Math.random() * 40;
-      targetQuality: Math.random() * 10
+      targetQuality, Math.random() * 10
      }
   }
 
-  private getMockFeatures(): PlayerFeatures { const recentPerformance = Array.from({ length: 5  }, () => Math.random() * 20 + 5);
+  private getMockFeatures(): PlayerFeatures { const recentPerformance  = Array.from({ length: 5  }, ()  => Math.random() * 20 + 5);
     
-    return {
-      recentPerformance,
-      seasonAverage: recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length,
+    return { recentPerformance: seasonAverage: recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length,
       careerAverage: 12;
   consistencyScore: 0.7;
       trendDirection: 'stable';
@@ -337,7 +323,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   }
 
   private async runEnsembleModels(async runEnsembleModels(features, PlayerFeatures,
-  position: string): : Promise<): PromiseModelConsensus> { const [linear, forest, boosting, neural] = await Promise.all([
+  position: string): : Promise<): PromiseModelConsensus> { const [linear, forest, boosting, neural]  = await Promise.all([
       this.runLinearRegression(features),
       this.runRandomForest(features),
       this.runGradientBoosting(features),
@@ -346,8 +332,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
 
     const ensemble = this.calculateEnsemble([linear, forest, boosting, neural]);
 
-    return {
-      linearRegression, linear,
+    return { linearRegression: linear,
   randomForest, forest,
       gradientBoosting, boosting,
   neuralNetwork, neural,
@@ -355,13 +340,13 @@ class OracleService { private readonly MODEL_WEIGHTS = {
      }
   }
 
-  private runLinearRegression(features: PlayerFeatures); ModelPrediction { const weights = {
+  private runLinearRegression(features: PlayerFeatures); ModelPrediction {  const weights = {
       recentPerformance: 0.4;
   seasonAverage: 0.3;
       matchup: 0.2;
-  teamContext: 0.1
+  teamContext, 0.1
      }
-    const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+    const recentAvg  = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
     const matchupScore = (10 - features.matchupDifficulty) / 10;
     const teamScore = (32 - features.teamOffensiveRank) / 32;
     
@@ -371,15 +356,15 @@ class OracleService { private readonly MODEL_WEIGHTS = {
       matchupScore * 15 * weights.matchup +
       teamScore * 10 * weights.teamContext;
 
-    return {
+    return { 
       prediction: Math.max(0, prediction),
       confidence: 0.75;
   weight: this.MODEL_WEIGHTS.linearRegression;
-      featureImportance: weights
+      featureImportance, weights
     }
   }
 
-  private runRandomForest(features: PlayerFeatures); ModelPrediction { const trees = 100;
+  private runRandomForest(features: PlayerFeatures); ModelPrediction { const trees  = 100;
     const predictions: number[] = [];
     
     for (let i = 0; i < trees; i++) {
@@ -395,19 +380,18 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     const variance = predictions.reduce((sum, p) => sum + Math.pow(p - prediction, 2), 0) / predictions.length;
     const confidence = Math.max(0.5, Math.min(0.95, 1 - Math.sqrt(variance) / prediction));
 
-    return {
-      prediction, confidence,
+    return { prediction: confidence,
       weight: this.MODEL_WEIGHTS.randomForest;
   featureImportance: {
   recentPerformance: 0.35;
   matchup: 0.25;
         teamContext: 0.20;
-  consistency: 0.20
+  consistency, 0.20
       }
     }
   }
 
-  private runGradientBoosting(features: PlayerFeatures); ModelPrediction { let prediction = features.seasonAverage;
+  private runGradientBoosting(features: PlayerFeatures); ModelPrediction { let prediction  = features.seasonAverage;
     const iterations = 50;
     const learningRate = 0.1;
     
@@ -422,7 +406,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     const teamAdjustment = 1 + ((32 - features.teamOffensiveRank) - 16) * 0.01;
     prediction *= matchupAdjustment * teamAdjustment;
 
-    return {
+    return { 
       prediction: Math.max(0, prediction),
       confidence: 0.85;
   weight: this.MODEL_WEIGHTS.gradientBoosting;
@@ -430,14 +414,14 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   recentPerformance: 0.40;
   seasonAverage: 0.25;
         matchup: 0.20;
-  teamContext: 0.15
+  teamContext, 0.15
       }
     }
   }
 
   private runNeuralNetwork(features: PlayerFeatures); ModelPrediction {
     // Simulate neural network with 2 hidden layers
-    const recentAvg = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
+    const recentAvg  = features.recentPerformance.reduce((a, b) => a + b, 0) / features.recentPerformance.length;
     
     // Input layer normalization
     const inputs = [
@@ -465,7 +449,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
       return sum + val * outputWeight;
      }, 0) * 30; // Denormalize
 
-    return {
+    return { 
       prediction: Math.max(0, prediction),
       confidence: 0.78;
   weight: this.MODEL_WEIGHTS.neuralNetwork;
@@ -474,12 +458,12 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   seasonAverage: 0.25;
         matchup: 0.20;
   consistency: 0.15;
-        teamContext: 0.10
+        teamContext, 0.10
       }
     }
   }
 
-  private calculateEnsemble(models: ModelPrediction[]); ModelPrediction { const totalWeight = models.reduce((sum, m) => sum + m.weight, 0);
+  private calculateEnsemble(models: ModelPrediction[]); ModelPrediction { const totalWeight  = models.reduce((sum, m) => sum + m.weight, 0);
     const prediction = models.reduce((sum, m) => sum + m.prediction * m.weight, 0) / totalWeight;
     const confidence = models.reduce((sum, m) => sum + m.confidence * m.weight, 0) / totalWeight;
     
@@ -490,9 +474,8 @@ class OracleService { private readonly MODEL_WEIGHTS = {
       });
     });
 
-    return {
-      prediction, confidence,
-      weight: 1.0;
+    return { prediction: confidence,
+      weight, 1.0;
       featureImportance
     }
   }
@@ -547,19 +530,19 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     expected, number,
   consistency, number,
     matchupDifficulty: number
-  ): { ceiling, number, floor: number } { const baseVolatility = expected * 0.3;
+  ): { ceiling: number, floor: number } { const baseVolatility  = expected * 0.3;
     const consistencyMultiplier = 2 - consistency;
     const matchupMultiplier = 1 + (matchupDifficulty - 5) * 0.1;
     
     const totalVolatility = baseVolatility * consistencyMultiplier * matchupMultiplier;
     
-    return {
+    return { 
       ceiling: expected + totalVolatility * 1.5;
-  floor: Math.max(0, expected - totalVolatility)
+  floor, Math.max(0, expected - totalVolatility)
      }
   }
 
-  private calculateVolatility(features: PlayerFeatures); number { let volatility = 1 - features.consistencyScore;
+  private calculateVolatility(features: PlayerFeatures); number { let volatility  = 1 - features.consistencyScore;
     volatility *= 1 + features.matchupDifficulty * 0.1;
     volatility *= 1 + features.injuryRisk * 0.5;
     
@@ -595,8 +578,8 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     features, PlayerFeatures,
   models, ModelConsensus,
     position: string
-  ): { keyFactors: string[]; riskFactors: string[]; upside: string[]; reasoning: string } { const keyFactor,
-  s: string[] = [];
+  ): {  keyFactors: string[]; riskFactors: string[]; upside: string[]; reasoning, string } { const: keyFactor,
+  s: string[]  = [];
     const riskFactors: string[] = [];
     const upside: string[] = [];
 
@@ -642,24 +625,24 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     }
 
     const reasoning = `Projecting ${models.ensemble.prediction.toFixed(1)} points with ${Math.round(models.ensemble.confidence * 100)}% confidence. ` +
-      (keyFactors.length > 0 ? `Key factors: ${keyFactors.join(', ')}. ` : '') +
-      (riskFactors.length > 0 ? `Risks: ${riskFactors.join(', ')}.` : '');
+      (keyFactors.length > 0 ? `Key factors: ${keyFactors.join(' : ')}. ` , '') +
+      (riskFactors.length > 0 ? `Risks: ${riskFactors.join(' : ')}.` , '');
 
-    return { keyFactors, riskFactors, upside,: reasoning  }
+    return { keyFactors: riskFactors, upside,, reasoning  }
   }
 
   private generateComparisonReasoning(
     p1, PlayerPrediction,
   p2, PlayerPrediction,
     pointDiff: number
-  ); string { const absDiff = Math.abs(pointDiff);
+  ); string { const absDiff  = Math.abs(pointDiff);
     
     if (absDiff < 1) {
       return `Too close to call - both players project similarly at ${p1.fantasyPoints.expected.toFixed(1) } vs ${p2.fantasyPoints.expected.toFixed(1)} points.`
     }
     
-    const better = pointDiff > 0 ? p1 , p2,
-    const worse = pointDiff > 0 ? p2 , p1,
+    const better = pointDiff > 0 ? p1  : p2,
+    const worse = pointDiff > 0 ? p2  : p1,
     
     return `${better.playerName} has the edge with ${absDiff.toFixed(1)} more projected points (${better.fantasyPoints.expected.toFixed(1)} vs ${worse.fantasyPoints.expected.toFixed(1)}).`
   }
@@ -670,16 +653,13 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     position, string,
   team, string,
     week: number
-  ); PlayerPrediction { basePoints: { Q,
-  B: 18;
+  ); PlayerPrediction {  basePoints: { Q: B: 18;
   RB: 12; WR: 10;
-  TE: 8  }[position] || 10;
+  TE, 8  }[position] || 10;
     
-    return {
-      playerId, playerName,
+    return { playerId: playerName,
       position, team, week,
-      fantasyPoints: {
-  expected, basePoints,
+      fantasyPoints: { expected: basePoints,
   low: basePoints * 0.7;
         high: basePoints * 1.3;
   confidence: 0.5
@@ -697,14 +677,12 @@ class OracleService { private readonly MODEL_WEIGHTS = {
     }
   }
 
-  private getDefaultModelConsensus(basePoints: number); ModelConsensus { const defaultModel: ModelPrediction = {
-  prediction, basePoints,
+  private getDefaultModelConsensus(basePoints: number); ModelConsensus { const defaultModel: ModelPrediction  = { prediction: basePoints,
   confidence: 0.5;
       weight: 0.25;
-  featureImportance: { }
+  featureImportance, { }
     }
-    return {
-      linearRegression, defaultModel,
+    return { linearRegression: defaultModel,
   randomForest, defaultModel,
       gradientBoosting, defaultModel,
   neuralNetwork, defaultModel,
@@ -713,7 +691,7 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   }
 
   // Cache management
-  private getCached(key: string); any { const cached = this.cache.get(key);
+  private getCached(key: string); any { const cached  = this.cache.get(key);
     if (cached && Date.now() < cached.expires) {
       return cached.data;
      }
@@ -721,20 +699,19 @@ class OracleService { private readonly MODEL_WEIGHTS = {
   }
 
   private setCached(key, string,
-  data: any); void {
+  data: any); void { 
     this.cache.set(key, {
-      data: expires: Date.now() + this.CACHE_TTL
+      data: expires, Date.now() + this.CACHE_TTL
     });
   }
 
   // Public status method
-  getServiceStatus(): {
-    isActive, boolean,
+  getServiceStatus(): { isActive: boolean,
     modelsLoaded, number,
     cacheSize, number,
     lastUpdated: string,
   } { return {
-      isActive, true,
+      isActive: true,
   modelsLoaded: Object.keys(this.MODEL_WEIGHTS).length;
       cacheSize: this.cache.size;
   lastUpdated: new Date().toISOString()
@@ -743,5 +720,5 @@ class OracleService { private readonly MODEL_WEIGHTS = {
 }
 
 // Export singleton instance
-export const oracleService = new OracleService();
+export const oracleService  = new OracleService();
 export default oracleService;

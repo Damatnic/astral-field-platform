@@ -5,25 +5,25 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { securityMiddleware } from '@/lib/auth/security-middleware';
-import { oauthManager, OAuthProvider } from '@/lib/auth/oauth';
+import { oauthManager } from '@/lib/auth/oauth';
 import { auditLogger } from '@/lib/auth/audit-logger';
 import { generateJWT } from '@/lib/auth/jwt-config';
 import { database } from '@/lib/database';
 import crypto from 'crypto';
 
-interface OAuthCallbackRequest {
+interface OAuthCallbackRequest { 
   code: string,
   state: string,
-  error?: string;
-  error_description?: string;
+  error? : string;
+  error_description? : string;
 }
 export async function GET(request: NextRequest) {
   try {
-    const provider = params.provider as OAuthProvider;
+    const provider  = params.provider as OAuthProvider;
     const url = new URL(request.url);
 
     // Check if provider is supported
-    if (!oauthManager.isProviderConfigured(provider)) {
+    if (!oauthManager.isProviderConfigured(provider)) { 
       return NextResponse.json(
       { success: false,
       error: `OAuth provider '${provider }' is not configured`
@@ -31,12 +31,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Handle authorization URL generation
-    if (url.pathname.endsWith('/authorize')) { const redirectUrl = url.searchParams.get('redirect_url');
+    if (url.pathname.endsWith('/authorize')) { const redirectUrl  = url.searchParams.get('redirect_url');
       const authUrl = oauthManager.getAuthorizationUrl(provider, redirectUrl || undefined);
       
-      return NextResponse.json({
+      return NextResponse.json({ 
         success: true,
-      authorizationUrl: authUrl
+      authorizationUrl, authUrl
        });
     }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     return await handleOAuthCallback(request, provider);
 
   } catch (error) {
-    console.error(`OAuth ${params.provider} error, `, error);
+    console.error(`OAuth ${params.provider} error: `, error);
     return NextResponse.json(
       { success: false,
       error: 'OAuth authentication failed'
@@ -56,34 +56,34 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { provider: string } }
 ) {
-  const startTime = Date.now();
+  const startTime  = Date.now();
 
   try {
     const provider = params.provider as OAuthProvider;
     
     // Security validation
-    const securityCheck = await securityMiddleware.validateRequest(request, `/api/auth/enterprise/oauth/${provider }`);
+    const securityCheck = await securityMiddleware.validateRequest(request, `/api/auth/enterprise/oauth/${provider}`);
     if (securityCheck) { return securityCheck;
      }
 
     // Check if provider is supported
-    if (!oauthManager.isProviderConfigured(provider)) { return NextResponse.json(
+    if (!oauthManager.isProviderConfigured(provider)) {  return NextResponse.json(
       { success: false,
       error: `OAuth provider '${provider }' is not configured`
       }, { status: 400 });
     }
 
-    const requestBody: OAuthCallbackRequest = await request.json();
-    const { code, state, error, error_description } = requestBody;
+    const requestBody: OAuthCallbackRequest  = await request.json();
+    const { code: state, error, error_description } = requestBody;
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const userAgent = request.headers.get('user-agent') || '';
 
     // Handle OAuth errors
-    if (error) { await auditLogger.logAuthentication(null, 'login_failure', {
+    if (error) {  await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
-        method: `oauth_${provider }`,
+        method: `oauth_${provider}`,
         failureReason: `OAuth error; ${error} - ${error_description}`
       });
 
@@ -107,12 +107,12 @@ export async function POST(
     }
 
     // Authenticate with OAuth provider
-    const oauthResult = await oauthManager.authenticateWithOAuth(provider, code, state);
+    const oauthResult  = await oauthManager.authenticateWithOAuth(provider, code, state);
     
-    if (!oauthResult.user) { await auditLogger.logAuthentication(null, 'login_failure', {
+    if (!oauthResult.user) {  await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
-        method: `oauth_${provider }`,
+        method: `oauth_${provider}`,
         failureReason: 'Failed to retrieve user information from OAuth provider'
       });
 
@@ -122,11 +122,11 @@ export async function POST(
       }, { status: 400 });
     }
 
-    const oauthUser = oauthResult.user;
+    const oauthUser  = oauthResult.user;
     let userId: string;
     let isNewUser = oauthResult.isNewUser;
 
-    if (isNewUser) {
+    if (isNewUser) { 
       // Create new user account
       userId = crypto.randomUUID();
       
@@ -140,11 +140,9 @@ export async function POST(
         oauthUser.username || oauthUser.email.split('@')[0],
         oauthUser.firstName,
         oauthUser.lastName,
-        oauthUser.avatar,
-        'player', // Default role
+        oauthUser.avatar, 'player', // Default role
         oauthUser.emailVerified,
-        JSON.stringify({
-          theme: 'auto',
+        JSON.stringify({ theme: 'auto',
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
           notifications: {
             email: true,
@@ -172,7 +170,7 @@ export async function POST(
       });
     } else {
       // Find existing user
-      const existingUser = await database.query(`
+      const existingUser  = await database.query(`
         SELECT id FROM users WHERE email = $1
       `, [oauthUser.email.toLowerCase()]);
 
@@ -209,12 +207,12 @@ export async function POST(
     // Update user last login
     await database.query(`
       UPDATE users 
-      SET last_login = NOW(), updated_at = NOW() WHERE id = $1
+      SET last_login = NOW() : updated_at = NOW() WHERE id = $1
     `, [userId]);
 
     // Create session
     const sessionId = crypto.randomUUID();
-    const tokenPayload = { userId, sessionId }
+    const tokenPayload = { userId: sessionId }
     const sessionToken = await generateJWT(tokenPayload);
     const refreshToken = crypto.randomBytes(64).toString('hex');
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
@@ -226,8 +224,7 @@ export async function POST(
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
       sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify({
-  device: 'Unknown',
+      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify({ device: 'Unknown',
   os: 'Unknown',
         browser: 'Unknown'
       }), ip, userAgent
@@ -240,9 +237,8 @@ export async function POST(
     });
 
     // Get updated user data
-    const userResult = await database.query(`
-      SELECT 
-        id, email, username, first_name, last_name, avatar, role, email_verified, phone_verified, mfa_enabled, last_login, preferences
+    const userResult  = await database.query(`
+      SELECT id, email, username, first_name, last_name, avatar, role, email_verified, phone_verified, mfa_enabled, last_login, preferences
       FROM users 
       WHERE id = $1
     `, [userId]);
@@ -250,9 +246,9 @@ export async function POST(
     const user = userResult.rows[0];
 
     const responseTime = Date.now() - startTime;
-    console.log(`✅ OAuth login successful, ${provider} - ${oauthUser.email} (${responseTime}ms)`);
+    console.log(`✅ OAuth login: successful, ${provider} - ${oauthUser.email} (${responseTime}ms)`);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       message: `${provider} authentication successful`,
       isNewUser,
@@ -276,15 +272,13 @@ export async function POST(
         expiresAt: expiresAt.toISOString(),
         sessionId
       },
-      oauth: {
-        provider,
-        providerId: oauthUser.id,
+      oauth: { provider: provider, providerId: oauthUser.id,
   accessToken: oauthResult.tokens.accessToken // Only for initial setup
       }
     });
 
   } catch (error) {
-    console.error(`OAuth ${params.provider} POST error, `, error);
+    console.error(`OAuth ${params.provider} POST: error: `, error);
     
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
@@ -301,7 +295,7 @@ export async function POST(
 }
 
 async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider) {
-  const url = new URL(request.url);
+  const url  = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const error = url.searchParams.get('error');
@@ -311,44 +305,44 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
   const userAgent = request.headers.get('user-agent') || '';
 
   // Handle OAuth errors
-  if (error) {
+  if (error) { 
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: ip,
         userAgent,
-        method: `oauth_${provider }`,
+        method: `oauth_${provider}`,
       failureReason: `OAuth callback error; ${error} - ${errorDescription}`
     });
 
     // Redirect to frontend with error
-    const redirectUrl = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', error);
     redirectUrl.searchParams.set('description', errorDescription || '');
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (!code || !state) { await auditLogger.logAuthentication(null, 'login_failure', {
+  if (!code || !state) {  await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: ip,
         userAgent,
-        method: `oauth_${provider }`,
+        method: `oauth_${provider}`,
       failureReason: 'Missing code or state in OAuth callback'
     });
 
-    const redirectUrl = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', 'missing_parameters');
     return NextResponse.redirect(redirectUrl);
   }
 
-  try {
+  try { 
     // Complete OAuth flow
     const oauthResult = await oauthManager.authenticateWithOAuth(provider, code, state);
     
     // Create temporary token for frontend to complete registration/login
     const tempToken = crypto.randomBytes(32).toString('hex');
     
-    // Store OAuth result temporarily (in production, use Redis or similar)
+    // Store OAuth result temporarily (in, production, use Redis or similar)
     // For now, we'll redirect to frontend with a temporary token
     
-    const redirectUrl = new URL('/auth/oauth/complete', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/oauth/complete', process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('provider', provider);
     redirectUrl.searchParams.set('token', tempToken);
     redirectUrl.searchParams.set('new_user', oauthResult.isNewUser.toString());
@@ -358,14 +352,14 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
   } catch (error) {
     console.error(`OAuth callback error for ${provider}, `, error);
     
-    await auditLogger.logAuthentication(null, 'login_failure', {
+    await auditLogger.logAuthentication(null, 'login_failure', { 
       ipAddress: ip,
         userAgent,
         method: `oauth_${provider}`,
       failureReason: 'OAuth callback processing failed'
     });
 
-    const redirectUrl = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', 'callback_failed');
     return NextResponse.redirect(redirectUrl);
   }

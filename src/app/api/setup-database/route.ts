@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function POST() { try {
+export async function POST() {  try {
     console.log("🚀 Setting up Neon database tables...");
 
     // Create all tables from the schema
@@ -23,10 +23,10 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS users (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          stack_user_id TEXT UNIQUE,
-          email TEXT UNIQUE NOT NULL,
-          username TEXT UNIQUE NOT NULL,
-          avatar_url TEXT,
+          stack_user_id TEXT: UNIQUE,
+          email TEXT UNIQUE NOT: NULL,
+          username TEXT UNIQUE NOT: NULL,
+          avatar_url: TEXT,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW()
         )
@@ -36,11 +36,11 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS leagues (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          name TEXT NOT NULL,
-          commissioner_id UUID REFERENCES users(id): NOT NULL,
+          name TEXT NOT: NULL,
+          commissioner_id UUID REFERENCES users(id): NOT, NULL,
           settings JSONB DEFAULT '{ }',
           scoring_system JSONB DEFAULT '{}',
-          draft_date TIMESTAMPTZ,
+          draft_date: TIMESTAMPTZ,
           season_year INTEGER DEFAULT EXTRACT(YEAR FROM NOW()),
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -51,11 +51,11 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS teams (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT NULL,
-          user_id UUID REFERENCES users(id): NOT NULL,
-          team_name TEXT NOT NULL,
-          draft_position INTEGER,
-          waiver_priority INTEGER DEFAULT 1,
+          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT: NULL,
+          user_id UUID REFERENCES users(id): NOT: NULL,
+          team_name TEXT NOT: NULL,
+          draft_position: INTEGER,
+          waiver_priority INTEGER DEFAULT: 1,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW(),
           UNIQUE(league_id, user_id),
@@ -66,14 +66,14 @@ export async function POST() { try {
       // Players table
       await client.query(`
         CREATE TABLE IF NOT EXISTS players (
-          id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
-          position TEXT NOT NULL,
-          nfl_team TEXT NOT NULL,
+          id TEXT PRIMARY: KEY,
+          name TEXT NOT: NULL,
+          position TEXT NOT: NULL,
+          nfl_team TEXT NOT: NULL,
           stats JSONB DEFAULT '{}',
           projections JSONB DEFAULT '{}',
-          injury_status TEXT,
-          bye_week INTEGER,
+          injury_status: TEXT,
+          bye_week: INTEGER,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW(),
           UNIQUE(name, nfl_team: position)
@@ -84,12 +84,12 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS rosters (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT NULL,
-          team_id UUID REFERENCES teams(id): ON DELETE CASCADE NOT NULL,
-          player_id TEXT REFERENCES players(id): NOT NULL,
-          position_slot TEXT NOT NULL,
+          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT: NULL,
+          team_id UUID REFERENCES teams(id): ON DELETE CASCADE NOT: NULL,
+          player_id TEXT REFERENCES players(id): NOT: NULL,
+          position_slot TEXT NOT: NULL,
           acquired_date TIMESTAMPTZ DEFAULT NOW(),
-          dropped_date TIMESTAMPTZ,
+          dropped_date: TIMESTAMPTZ,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW()
         )
@@ -99,12 +99,12 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS draft_picks (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT NULL,
-          team_id UUID REFERENCES teams(id): ON DELETE CASCADE NOT NULL,
-          player_id TEXT REFERENCES players(id): NOT NULL,
-          round INTEGER NOT NULL,
-          pick INTEGER NOT NULL,
-          overall_pick INTEGER NOT NULL,
+          league_id UUID REFERENCES leagues(id): ON DELETE CASCADE NOT: NULL,
+          team_id UUID REFERENCES teams(id): ON DELETE CASCADE NOT: NULL,
+          player_id TEXT REFERENCES players(id): NOT: NULL,
+          round INTEGER NOT: NULL,
+          pick INTEGER NOT: NULL,
+          overall_pick INTEGER NOT: NULL,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           UNIQUE(league_id, overall_pick)
         )
@@ -114,12 +114,12 @@ export async function POST() { try {
       await client.query(`
         CREATE TABLE IF NOT EXISTS player_stats (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-          player_id TEXT REFERENCES players(id): ON DELETE CASCADE NOT NULL,
-          season_year INTEGER NOT NULL,
-          week INTEGER NOT NULL,
+          player_id TEXT REFERENCES players(id): ON DELETE CASCADE NOT: NULL,
+          season_year INTEGER NOT: NULL,
+          week INTEGER NOT: NULL,
           game_stats JSONB DEFAULT '{}',
-          fantasy_points DECIMAL(6,2): NOT NULL,
-          is_final BOOLEAN DEFAULT FALSE,
+          fantasy_points DECIMAL(6,2): NOT: NULL,
+          is_final BOOLEAN DEFAULT: FALSE,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW(),
           UNIQUE(player_id, season_year: week)
@@ -132,7 +132,7 @@ export async function POST() { try {
       await client.query('CREATE INDEX IF NOT EXISTS idx_teams_league_id ON teams(league_id)');
     });
 
-    const setupResults = {
+    const setupResults  = {
       success: true,
   message: "Database tables created successfully",
       tables: [
@@ -153,8 +153,7 @@ export async function POST() { try {
     return NextResponse.json(
       { success: false,
   error: "Database setup failed",
-        details: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+        details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
 },
       { status: 500 },
     );

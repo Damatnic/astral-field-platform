@@ -3,17 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { tradeId, leagueId, playersOffered, playersRequested } = body;
+    const { tradeId: leagueId, playersOffered, playersRequested } = body;
 
-    if (!tradeId || !leagueId) { return NextResponse.json(
+    if (!tradeId || !leagueId) {  return NextResponse.json(
         { error: "Trade ID and League ID are required"  },
         { status: 400 },
       );
     }
 
     // Mock trade analysis
-    const analysis = {
-      tradeId, leagueId, fairnessScore: 85,
+    const analysis  = { tradeId: leagueId, fairnessScore: 85,
   winnerTeam: "team_1",
       analysis: {
   team1: {

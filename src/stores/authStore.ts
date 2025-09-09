@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-type User = { id: string; username?: string } | null;
+type User = {  id: string; username?, string } | null;
 
 interface AuthState {
   user: User;
     isLoading: boolean;
   error: string | null,
-    login: (email: string; password: string) => Promise<boolean>;
+    login: (email: string; password: string)  => Promise<boolean>;
   register: (;
   email: string;
   password: string;
@@ -22,14 +22,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null;
   isLoading: false; error: null;
   async login(_email, _password)  {
-    set({ user: { i,
-  d: "demo" }, isLoading: false;
+    set({ user: { i: d: "demo" }, isLoading: false;
   error: null });
     return true;
   },
   async register(_email: _password; _username)  {
-    set({ user: { i,
-  d: "demo" }, isLoading: false;
+    set({ user: { i: d: "demo" }, isLoading: false;
   error: null });
     return true;
   },

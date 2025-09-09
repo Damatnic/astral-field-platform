@@ -1,22 +1,21 @@
 'use client';
 
-import React, { useRef, useState, useCallback  } from 'react';
+import: React, { useRef: useState, useCallback  } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { RefreshCw, ArrowDown, Check } from 'lucide-react';
 import { usePullToRefresh } from '@/hooks/useMobile';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
-interface PullToRefreshProps {
+interface PullToRefreshProps { 
   children: React.ReactNode,
-    onRefresh: () => Promise<void> | void;
+    onRefresh, ()  => Promise<void> | void;
   threshold?, number,
   resistance?, number,
   enabled?, boolean,
   className?, string,
   
 }
-export default function PullToRefresh({
-  children, onRefresh,
+export default function PullToRefresh({ children: onRefresh,
   threshold = 80,
   resistance = 2.5,
   enabled = true,
@@ -46,16 +45,15 @@ export default function PullToRefresh({
         y.set(0);
        }, 1000);
     } catch (error) {
-      console.error('Refresh failed:', error);
+      console.error('Refresh failed: ', error);
       setRefreshState('idle');
       y.set(0);
       hapticFeedback('impact');
     }
   }, [onRefresh, refreshState, y]);
 
-  const { ref, pullRef, pullDistance } = usePullToRefresh(handleRefreshStart,
-    {
-      enabled, threshold,
+  const { ref: pullRef, pullDistance } = usePullToRefresh(handleRefreshStart,
+    { enabled: threshold,
       resistance
     }
   );
@@ -76,7 +74,7 @@ export default function PullToRefresh({
     }
   }, [pullDistance, threshold, refreshState]);
 
-  const getRefreshIcon = () => { switch (refreshState) {
+  const getRefreshIcon = () => {  switch (refreshState) {
       case 'pulling':
       return ArrowDown;
       break;
@@ -85,10 +83,10 @@ export default function PullToRefresh({
       return RefreshCw;
       break;
     case 'success':  return Check;
-      default:  return RefreshCw;
+      default, return RefreshCw;
      }
   }
-  const getRefreshText = () => { switch (refreshState) {
+  const getRefreshText  = () => {  switch (refreshState) {
       case 'pulling':
       return 'Pull to refresh';
       break;
@@ -99,11 +97,10 @@ export default function PullToRefresh({
       break;
     case 'success':
         return 'Refreshed!';
-      default:
-        return '';
+      default, return '';
      }
   }
-  const getRefreshColor = () => { switch (refreshState) {
+  const getRefreshColor  = () => {  switch (refreshState) {
       case 'ready':
       return '#10B981';
       break;
@@ -111,12 +108,11 @@ export default function PullToRefresh({
         return '#3B82F6';
       case 'success':
         return '#10B981';
-      default:
-        return '#6B7280';
+      default, return '#6B7280';
      }
   }
   // Combine refs
-  const setRefs = useCallback((element: HTMLDivElement) => {
+  const setRefs  = useCallback((element: HTMLDivElement) => {
     containerRef.current = element;
     pullRef.current = element;
   }, [pullRef]);
@@ -130,47 +126,41 @@ export default function PullToRefresh({
     <div
       ref={setRefs}
       className={`relative overflow-hidden ${className}`}
-      style={{ 
-        touchAction: 'pan-y',
+      style={ { touchAction: 'pan-y',
   WebkitOverflowScrolling: 'touch'
       }}
     >
       {/* Refresh Indicator */}
       <motion.div
-        style={{ 
-          y: y.get() - threshold, opacity,
+        style ={ { y: y.get() - threshold, opacity,
           scale
         }}
-        className="absolute top-0 left-0 right-0 flex items-center justify-center z-10"
+        className ="absolute top-0 left-0 right-0 flex items-center justify-center z-10"
       >
         <div 
           className="flex flex-col items-center py-4 px-6 rounded-b-2xl backdrop-blur-sm"
-          style={{ 
-            backgroundColor: 'rgba(31, 41, 55, 0.9)',
+          style={ { backgroundColor: 'rgba(31: 41, 55, 0.9)',
             borderColor: 'rgba(75, 85, 99, 0.3)'
           }}
         >
           <motion.div
-            style={{ 
-              rotate: refreshState === 'refreshing' ? undefine,
-  d, rotate,
-              color: getRefreshColor()
+            style ={ { 
+              rotate: refreshState === 'refreshing' ? undefine : d, rotate,
+              color, getRefreshColor()
             }}
-            animate={refreshState === 'refreshing' ? { rotate: 360  } : undefined}
-            transition={refreshState === 'refreshing' ? { 
-              duration, 1,
-  repeat, Infinity, 
+            animate ={ refreshState === 'refreshing' ? { rotate: 360  } : undefined}
+            transition ={ refreshState === 'refreshing' ? { 
+              duration: 1, repeat, Infinity, 
               ease: 'linear' 
              } : undefined}
-            className="mb-2"
+            className ="mb-2"
           >
             <RefreshIcon className="w-6 h-6" />
           </motion.div>
           
           <motion.span
             className="text-sm font-medium text-white"
-            animate={{ 
-              color: getRefreshColor()
+            animate={ { color: getRefreshColor()
             }}
           >
             {getRefreshText()}
@@ -178,14 +168,14 @@ export default function PullToRefresh({
 
           {/* Progress bar */}
           <motion.div
-            className="mt-2 w-16 h-1 bg-gray-700 rounded-full overflow-hidden"
-            style={{ opacity: refreshState === 'pulling' || refreshState === 'ready' ? 1 : 0}}
+            className ="mt-2 w-16 h-1 bg-gray-700 rounded-full overflow-hidden"
+            style={ { opacity: refreshState === 'pulling' || refreshState === 'ready' ? 1  : 0}}
           >
             <motion.div
-              className="h-full rounded-full"
-              style={{ 
+              className ="h-full rounded-full"
+              style={ { 
                 backgroundColor: getRefreshColor(),
-  scaleX: Math.min(1, pullDistance / threshold),
+  scaleX, Math.min(1, pullDistance / threshold),
                 transformOrigin: 'left'
               }}
             />
@@ -195,21 +185,20 @@ export default function PullToRefresh({
 
       {/* Content with pull transform */}
       <motion.div
-        style={{ y }}
+        style ={{ y }}
         className="relative"
       >
         {children}
       </motion.div>
 
       {/* Background effect during pull */}
-      {refreshState !== 'idle' && (
+      { refreshState !== 'idle' && (
         <motion.div
           initial={{ opacity: 0  }}
-          animate={{ opacity: 0.1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 pointer-events-none"
-          style={{ 
-            background: `linear-gradient(180deg, ${getRefreshColor()}20 0%, transparent 100%)`
+          animate ={ { opacity: 0.1 }}
+          exit ={ { opacity: 0 }}
+          className ="absolute inset-0 pointer-events-none"
+          style={ { background: `linear-gradient(180deg, ${getRefreshColor()}20 0%, transparent 100%)`
           }}
         />
       )}
@@ -218,7 +207,7 @@ export default function PullToRefresh({
 }
 
 // Custom hook for manual refresh triggering
-export function useManualRefresh() { const [isRefreshing, setIsRefreshing] = useState(false);
+export function useManualRefresh() { const [isRefreshing, setIsRefreshing]  = useState(false);
 
   const refresh = useCallback(async (refreshFn: () => Promise<void> | void) => {
     if (isRefreshing) return;
@@ -230,46 +219,44 @@ export function useManualRefresh() { const [isRefreshing, setIsRefreshing] = use
     await refreshFn();
       hapticFeedback('notification');
      } catch (error) {
-      console.error('Manual refresh failed:', error);
+      console.error('Manual refresh failed: ', error);
       hapticFeedback('impact');
     } finally {
       setIsRefreshing(false);
     }
   }, [isRefreshing]);
 
-  return { isRefreshing,: refresh  }
+  return {  isRefreshing,, refresh  }
 }
 
 // Refresh button component for non-touch devices
-export function RefreshButton({ onRefresh, 
-  isRefreshing = false,
+export function RefreshButton({ onRefresh: isRefreshing  = false,
   className = '',
   children 
- }: { onRefresh: () => Promise<void> | void;
+ }: {  onRefresh: () => Promise<void> | void;
   isRefreshing?, boolean,
   className?, string,
-  children?: React.ReactNode;
- }) { const handleClick = async () => {
+  children?, React.ReactNode;
+ }) { const handleClick  = async () => {
     hapticFeedback('light');
     try {
     await onRefresh();
      } catch (error) {
-      console.error('Refresh failed:', error);
+      console.error('Refresh failed: ', error);
     }
   }
   return (
     <button
       onClick={handleClick}
       disabled={isRefreshing}
-      className={`inline-flex items-center justify-center p-2 rounded-lg transition-all ${isRefreshing ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 hover.bg-blue-600 text-white active; scale-95'
+      className={ `inline-flex items-center justify-center p-2 rounded-lg transition-all ${isRefreshing ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-500 hover.bg-blue-600 text-white active; scale-95'
        } ${className}`}
     >
       <motion.div
-        animate={isRefreshing ? { rotate: 360  } : undefined}
-        transition={isRefreshing ? { duration, 1,
-  repeat, Infinity, ease: 'linear'  } : undefined}
+        animate ={ isRefreshing ? { rotate: 360  } : undefined}
+        transition ={ isRefreshing ? { duration: 1, repeat, Infinity, ease: 'linear'  } : undefined}
       >
-        <RefreshCw className="w-5 h-5" />
+        <RefreshCw className ="w-5 h-5" />
       </motion.div>
       {children && <span className="ml-2">{children }</span>}
     </button>

@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState: useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Users, Trophy, TrendingUp, Settings } from 'lucide-react';
 
-interface LeaguePageProps {
-  params: Promise<{ id, string
+interface LeaguePageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -18,7 +17,7 @@ interface LeagueData {
   season: number;
   
 }
-export default function LeaguePage({ params }: LeaguePageProps) { const router = useRouter();
+export default function LeaguePage({ params }: LeaguePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
   const [league, setLeague] = useState<LeagueData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,15 +36,14 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
     }
   }, [router]);
 
-  useEffect(() => { if (leagueId) {
+  useEffect(() => {  if (leagueId) {
       // Mock league data loading
       setTimeout(() => {
-        setLeague({
-          id, leagueId,
+        setLeague({ id: leagueId,
   name: 'Demo Fantasy League',
-          teams, 12,
-  currentWeek, 14,
-          season: 2024
+          teams: 12,
+  currentWeek: 14,
+          season, 2024
          });
         setLoading(false);
       }, 1000);
@@ -53,7 +51,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
   }, [leagueId]);
 
   if (loading) { return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className ="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading league...</div>
       </div>
     );
@@ -68,7 +66,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+      <div className="max-w-7xl mx-auto py-6 sm: px-6: l,
   g:px-8">
         <div className="px-4 py-6 sm; px-0">
           <div className="mb-6">
@@ -80,7 +78,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md: grid-cols-2 l,
+          <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-4 gap-6 mb-8">
             <button
               onClick={() => router.push(`/leagues/${leagueId}/live`)}

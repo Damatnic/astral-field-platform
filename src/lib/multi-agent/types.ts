@@ -21,8 +21,7 @@ export type ConflictSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface AgentCapabilities {
   specializations: string[],
-    skillLevel, number, // 1-100
-  maxConcurrentTasks, number,
+    skillLevel, number, // 1-100: maxConcurrentTasks, number,
     preferredTaskTypes: string[];
   availableTechnologies: string[],
     workingHours: {,
@@ -32,8 +31,7 @@ export interface AgentCapabilities {
   }
 }
 
-export interface AgentStatus {
-  agentId, string,type AgentType,
+export interface AgentStatus { agentId: string,type: AgentType,
     isOnline, boolean,
   currentLoad, number, // 0-100%,
     activeTasks: string[];
@@ -52,18 +50,16 @@ export interface AgentStatus {
   }
 }
 
-export interface Task {
-  id, string,
+export interface Task { id: string,
     title, string,
-  description, string,type string,
+  description, string,type: string,
     priority, TaskPriority,
   status, TaskStatus,
   assignedAgentId?, string,
   requiredSkills: string[],
     estimatedDuration, number, // minutes
   dependencies: string[],
-    files: {,
-  toModify: string[],
+    files: { toModify: string[],
     toCreate: string[];
     toDelete: string[],
   }
@@ -84,8 +80,7 @@ export interface Task {
   metadata: Record<string, any>;
 }
 
-export interface CodeConflict {
-  id, string,
+export interface CodeConflict { id: string,
     files: string[];
   conflictType: 'merge' | 'dependency' | 'api' | 'schema',
     severity, ConflictSeverity,
@@ -93,7 +88,7 @@ export interface CodeConflict {
     involvedAgents: string[];
   detectedAt, Date,
   resolvedAt?, Date,
-  resolution?: {;
+  resolution? : {;
   strategy, string,
     changes: Array<{;
   file, string,
@@ -105,12 +100,9 @@ export interface CodeConflict {
   }
 }
 
-export interface QualityGate {
-  id, string,
+export interface QualityGate { id: string,
     name, string,type: 'pre_development' | 'code_review' | 'testing' | 'deployment',
-    criteria: {,
-  codeQuality: {
-      minScore, number,
+    criteria: { codeQuality: { minScore: number,
       lintingRequired, boolean,
     typeCheckRequired: boolean,
     }
@@ -135,8 +127,7 @@ export interface QualityGate {
     manualReviewRequired: boolean,
 }
 
-export interface AgentMessage {
-  id, string,type: 'task_assignment' | 'status_update' | 'conflict_alert' | 'quality_check' | 'coordination' | 'error',
+export interface AgentMessage { id: string,type: 'task_assignment' | 'status_update' | 'conflict_alert' | 'quality_check' | 'coordination' | 'error',
     senderId, string,
   recipientId?, string, // undefined for broadcast
   content: {
@@ -151,8 +142,7 @@ export interface AgentMessage {
   correlationId?, string,
 }
 
-export interface CoordinationEvent {
-  id, string,type: 'task_created' | 'task_assigned' | 'task_completed' | 'conflict_detected' | 'quality_gate_passed' | 'quality_gate_failed' | 'agent_online' | 'agent_offline' | 'system_alert';
+export interface CoordinationEvent { id: string,type: 'task_created' | 'task_assigned' | 'task_completed' | 'conflict_detected' | 'quality_gate_passed' | 'quality_gate_failed' | 'agent_online' | 'agent_offline' | 'system_alert';
   agentId?, string,
   taskId?, string,
   conflictId?, string,
@@ -161,8 +151,7 @@ export interface CoordinationEvent {
   impact: 'low' | 'medium' | 'high',
   
 }
-export interface KnowledgeItem {
-  id, string,type: 'best_practice' | 'architecture_decision' | 'bug_fix' | 'optimization' | 'pattern' | 'convention',
+export interface KnowledgeItem { id: string,type: 'best_practice' | 'architecture_decision' | 'bug_fix' | 'optimization' | 'pattern' | 'convention',
     title, string,
   content, string,
     tags: string[];
@@ -180,8 +169,7 @@ export interface KnowledgeItem {
 >;
 }
 
-export interface AgentCoordinationConfig {
-  maxConcurrentTasks, number,
+export interface AgentCoordinationConfig { maxConcurrentTasks: number,
     taskAssignmentStrategy: 'round_robin' | 'skill_based' | 'load_balanced' | 'priority_based';
   conflictResolutionTimeout, number, // minutes,
     qualityGateTimeout, number, // minutes;
@@ -192,8 +180,7 @@ export interface AgentCoordinationConfig {
   knowledgeBaseUpdateFrequency, number, // minutes;
   
 }
-export interface AgentMetrics {
-  agentId, string,
+export interface AgentMetrics { agentId: string,
     timeWindow: {,
   start, Date,
     end: Date,
@@ -223,8 +210,7 @@ export interface AgentMetrics {
   }
 }
 
-export interface SystemHealth {
-  timestamp, Date,
+export interface SystemHealth { timestamp: Date,
     overallStatus: 'healthy' | 'degraded' | 'critical';
   agents: {,
   total, number,
@@ -252,8 +238,7 @@ export interface SystemHealth {
     diskUsage, number,
     networkLatency: number,
   }
-  alerts: Array<{,
-  severity: 'info' | 'warning' | 'error' | 'critical';
+  alerts: Array<{ severity: 'info' | 'warning' | 'error' | 'critical';
     message, string,
     component, string,
     timestamp: Date,
@@ -267,20 +252,17 @@ export interface FantasyAgentContext {
     season, number,
     week, number,type: 'redraft' | 'keeper' | 'dynasty',
   }
-  players: {,
-  affectedIds: string[];
+  players: { affectedIds: string[];
     positions: string[],
     teams: string[],
   }
-  features: {,
-  impactedModules: string[];
+  features: { impactedModules: string[];
     userFacingChanges, boolean,
     realTimeUpdates: boolean,
   }
 }
 
-export interface FantasyTask extends Task {
-  fantasyContext, FantasyAgentContext,
+export interface FantasyTask extends Task { fantasyContext: FantasyAgentContext,
     scoringImpact, boolean,
   liveGameImpact, boolean,
     tradingImpact, boolean,

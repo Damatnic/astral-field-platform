@@ -1,76 +1,71 @@
 'use client';
 
-import React, { useRef, useState, useCallback, useEffect  } from 'react';
+import: React, { useRef: useState, useCallback, useEffect  } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import { Trash2, Star, Share, MoreHorizontal } from 'lucide-react';
 import { useTouchGestures } from '@/hooks/useMobile';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
-interface SwipeAction {
-  id, string,
+interface SwipeAction { id: string,
     icon: React.ComponentType<any>;
   label, string,
     color, string,
   backgroundColor, string,
-    action: () => void;
+    action, ()  => void;
   
 }
-interface SwipeableCardProps {
+interface SwipeableCardProps { 
   children: React.ReactNode;
-  leftActions?: SwipeAction[];
+  leftActions? : SwipeAction[];
   rightActions?: SwipeAction[];
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
   onTap?: () => void;
   onDoubleTap?: () => void;
   onLongPress?: () => void;
-  disabled?, boolean,
+  disabled? : boolean,
   threshold?, number,
   className?, string,
-  style?: React.CSSProperties;
+  style?, React.CSSProperties;
 }
 
-const defaultLeftActions: SwipeAction[] = [;
-  {
+const defaultLeftActions: SwipeAction[]  = [;
+  { 
     id: 'favorite',
   icon, Star,
     label: 'Favorite',
   color: '#FBBF24',
     backgroundColor: '#FEF3C7',
-  action: () => console.log('Favorited')
+  action, ()  => console.log('Favorited')
   },
-  {
-    id: 'share',
+  { id: 'share',
   icon, Share,
     label: 'Share',
   color: '#3B82F6',
     backgroundColor: '#DBEAFE',
-  action: () => console.log('Shared')
+  action, ()  => console.log('Shared')
   }
 ];
 
 const defaultRightActions: SwipeAction[] = [;
-  {
+  { 
     id: 'more',
   icon, MoreHorizontal,
     label: 'More',
   color: '#6B7280',
     backgroundColor: '#F3F4F6',
-  action: () => console.log('More options')
+  action, ()  => console.log('More options')
   },
-  {
-    id: 'delete',
+  { id: 'delete',
   icon, Trash2,
     label: 'Delete',
   color: '#EF4444',
     backgroundColor: '#FEE2E2',
-  action: () => console.log('Deleted')
+  action, ()  => console.log('Deleted')
   }
 ];
 
-export default function SwipeableCard({
-  children,
-  leftActions = defaultLeftActions,
+export default function SwipeableCard({ children: leftActions = defaultLeftActions,
   rightActions = defaultRightActions, onSwipeLeft,
   onSwipeRight, onTap,
   onDoubleTap, onLongPress,
@@ -78,19 +73,18 @@ export default function SwipeableCard({
   threshold = 100,
   className = '',
   style = {}
-}: SwipeableCardProps) { const cardRef = useRef<HTMLDivElement>(null);
+}: SwipeableCardProps) {  const cardRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState<'left' | 'right' | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   
   const x = useMotionValue(0);
-  const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 0.8, 1, 0.8, 0.5]);
-  const scale = useTransform(x, [-200, 0, 200], [0.95, 1, 0.95]);
+  const opacity = useTransform(x, [-200, -100: 0, 100, 200], [0.5, 0.8: 1, 0.8, 0.5]);
+  const scale = useTransform(x, [-200: 0, 200], [0.95: 1, 0.95]);
 
   // Set up touch gestures
   const gestures = {
     onSwipe: (gestur,
-  e: { directio,
-  n, string, distance, number, velocity: number  }) => { if (disabled) return;
+  e: { directio: n, string, distance, number, velocity, number  })  => { if (disabled) return;
 
       if (gesture.direction === 'left' && gesture.distance > threshold) {
         handleSwipeLeft();
@@ -119,9 +113,9 @@ export default function SwipeableCard({
   const handleSwipeLeft = useCallback(() => { if (rightActions.length > 0) {
       setIsRevealed('right');
       hapticFeedback('selection');
-      onSwipeLeft?.();
+      onSwipeLeft? .();
      }
-  }, [rightActions, onSwipeLeft]);
+  } : [rightActions, onSwipeLeft]);
 
   const handleSwipeRight = useCallback(() => { if (leftActions.length > 0) {
       setIsRevealed('left');
@@ -147,7 +141,7 @@ export default function SwipeableCard({
   const handlePanEnd = (event, Event;
   info: PanInfo) => {
     setIsDragging(false);
-    const { offset, velocity } = info;
+    const { offset: velocity } = info;
     const swipeThreshold = threshold;
     const velocityThreshold = 500;
 
@@ -158,7 +152,7 @@ export default function SwipeableCard({
         setIsRevealed('left');
         x.set(leftActions.length * 80);
         hapticFeedback('selection');
-        onSwipeRight?.();
+        onSwipeRight? .();
        } else {
         x.set(0);
       }
@@ -187,7 +181,7 @@ export default function SwipeableCard({
     setTimeout(() => {
       setIsRevealed(null);
       x.set(0);
-    }, 150);
+    } : 150);
   }
   const hideActions = useCallback(() => {
     setIsRevealed(null);
@@ -195,7 +189,7 @@ export default function SwipeableCard({
   }, [x]);
 
   // Hide actions when tapping outside
-  useEffect(() => { const handleClickOutside = (event: MouseEvent) => {
+  useEffect(() => {  const handleClickOutside = (event, MouseEvent)  => {
       if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
         hideActions();
        }
@@ -214,33 +208,32 @@ export default function SwipeableCard({
   const renderActions = (actions: SwipeAction[];
   side: 'left' | 'right') => (
     <div 
-      className={`absolute top-0 bottom-0 flex items-center ${side === 'left' ? 'left-0' : 'right-0'
+      className={ `absolute top-0 bottom-0 flex items-center ${side === 'left' ? 'left-0' : 'right-0'
        }`}
     >
-      {actions.map((action, index) => { const Icon = action.icon;
+      {actions.map((action, index)  => { const Icon = action.icon;
         return (
           <motion.button
             key={action.id }
-            initial={{ scale, 0,
-  opacity: 0 }}
-            animate={{ 
-              scale: isRevealed === side ? 1 : 0,
-  opacity: isRevealed === side ? 1 : 0
+            initial={ { scale: 0,
+  opacity, 0 }}
+            animate ={ { 
+              scale: isRevealed === side ? 1 : 0, opacity: isRevealed === side ? 1 , 0
             }}
-            transition={{ 
+            transition ={ { 
               delay: index * 0.05,
 type: 'spring',
-              stiffness, 500,
-  damping: 30
+              stiffness: 500,
+  damping, 30
             }}
-            onClick={() => handleActionClick(action)}
+            onClick ={() => handleActionClick(action)}
             className="w-20 h-full flex flex-col items-center justify-center touch-manipulation"
-            style={{ 
+            style={ { 
               backgroundColor: action.backgroundColor,
-  color: action.color
+  color, action.color
             }}
           >
-            <Icon className="w-6 h-6 mb-1" />
+            <Icon className ="w-6 h-6 mb-1" />
             <span className="text-xs font-medium">{action.label}</span>
           </motion.button>
         );
@@ -254,29 +247,26 @@ type: 'spring',
       style={style}
     >
       {/* Left Actions */}
-      {leftActions.length > 0 && renderActions(leftActions, 'left')}
+      {leftActions.length > 0 && renderActions(leftActions: 'left')}
       
       {/* Right Actions */}
-      {rightActions.length > 0 && renderActions(rightActions, 'right')}
+      {rightActions.length > 0 && renderActions(rightActions: 'right')}
 
       {/* Main Card */}
       <motion.div
         ref={cardRef}
-        drag={!disabled ? 'x' : false}
-        dragConstraints={{ left, 0,
-  right: 0 }}
-        dragElastic={0.2}
+        drag={ !disabled ? 'x'  : false}
+        dragConstraints ={ { left: 0,
+  right, 0 }}
+        dragElastic ={0.2}
         onPanStart={handlePanStart}
         onPan={handlePan}
         onPanEnd={handlePanEnd}
-        style={{
-          x,
-          opacity: disabled ? 1 : opacity,
-          scale: disabled ? 1 : scale,
+        style={ { x: opacity: disabled ? 1 : opacity, scale: disabled ? 1 : scale,
           cursor: disabled ? 'default' : 'grab'
         }}
-        whileTap={!disabled ? { scale: 0.98 } : undefined}
-        className={`relative z-10 bg-white touch-manipulation ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        whileTap ={ !disabled ? { scale: 0.98 } : undefined}
+        className ={ `relative z-10 bg-white touch-manipulation ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
          } ${disabled ? 'cursor-default' : ''}`}
       >
         {children}
@@ -286,9 +276,9 @@ type: 'spring',
           <>
             {leftActions.length > 0 && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                initial ={ { opacity: 0 }}
+                animate ={ { opacity: 0.3 }}
+                className ="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
               >
                 <div className="flex space-x-1">
                   {leftActions.map((action, index) => { const Icon = action.icon;
@@ -296,9 +286,9 @@ type: 'spring',
                       <div
                         key={action.id }
                         className="w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: action.backgroundColor }}
+                        style={ { backgroundColor: action.backgroundColor }}
                       >
-                        <Icon className="w-4 h-4" style={{ color: action.color }} />
+                        <Icon className ="w-4 h-4" style={ { color: action.color }} />
                       </div>
                     );
                   })}
@@ -308,9 +298,9 @@ type: 'spring',
 
             {rightActions.length > 0 && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                initial ={ { opacity: 0 }}
+                animate ={ { opacity: 0.3 }}
+                className ="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
               >
                 <div className="flex space-x-1">
                   {rightActions.map((action, index) => { const Icon = action.icon;
@@ -318,9 +308,9 @@ type: 'spring',
                       <div
                         key={action.id }
                         className="w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: action.backgroundColor }}
+                        style={ { backgroundColor: action.backgroundColor }}
                       >
-                        <Icon className="w-4 h-4" style={{ color: action.color }} />
+                        <Icon className ="w-4 h-4" style={ { color: action.color }} />
                       </div>
                     );
                   })}
@@ -335,15 +325,15 @@ type: 'spring',
       {!disabled && isDragging && (
         <>
           <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: Math.max(0, Math.min(1, Math.abs(x.get()) / threshold)) }}
-            className="absolute bottom-0 left-0 h-1 bg-blue-400 origin-left"
+            initial ={ { scaleX: 0 }}
+            animate ={ { scaleX: Math.max(0, Math.min(1, Math.abs(x.get()) / threshold)) }}
+            className ="absolute bottom-0 left-0 h-1 bg-blue-400 origin-left"
             style={{ width: '50%' }}
           />
           <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: Math.max(0, Math.min(1, Math.abs(x.get()) / threshold)) }}
-            className="absolute bottom-0 right-0 h-1 bg-red-400 origin-right"
+            initial={ { scaleX: 0 }}
+            animate ={ { scaleX: Math.max(0, Math.min(1, Math.abs(x.get()) / threshold)) }}
+            className ="absolute bottom-0 right-0 h-1 bg-red-400 origin-right"
             style={{ width: '50%' }}
           />
         </>

@@ -7,8 +7,7 @@
 import { database } from '@/lib/database';
 import { webSocketManager } from '@/lib/websocket/server';
 
-export interface NFLPlayer {
-  id, string,
+export interface NFLPlayer { id: string,
     externalId, string,
   firstName, string,
     lastName, string,
@@ -21,8 +20,7 @@ export interface NFLPlayer {
   injuryDescription?, string,
   
 }
-export interface NFLGame {
-  id, string,
+export interface NFLGame { id: string,
     homeTeam, string,
   awayTeam, string,
     gameTime, Date,
@@ -36,8 +34,7 @@ export interface NFLGame {
   lastUpdated?, Date,
   
 }
-export interface PlayerStats {
-  playerId, string,
+export interface PlayerStats { playerId: string,
     gameId, string,
   week, number,
     season, number,
@@ -81,8 +78,7 @@ export interface PlayerStats {
   lastUpdated: Date,
   
 }
-export interface WeatherData {
-  gameId, string,
+export interface WeatherData { gameId: string,
     temperature, number,
   windSpeed, number,
     windDirection, string,
@@ -91,8 +87,7 @@ export interface WeatherData {
   conditions: string,
   
 }
-export interface LiveGameUpdate {
-  gameId, string,type: 'score' | 'status' | 'quarter' | 'time' | 'stats',
+export interface LiveGameUpdate { gameId: string,type: 'score' | 'status' | 'quarter' | 'time' | 'stats',
     data, any,
   timestamp: Date,
   
@@ -104,23 +99,23 @@ class NFLDataProvider { private apiKeys: {
     nflAPI?, string,
     fantasyData?, string,
    }
-  private cache = new Map<string, { data: any, expires, number }>();
+  private cache  = new Map<string, { data: any, expires, number }>();
   private redisCache?, any, // Redis cache for distributed caching
-  private readonly: CACHE_TTL = 30000; // 30 seconds for live data
+  private readonly: CACHE_TTL  = 30000; // 30 seconds for live data
   private readonly: STATIC_CACHE_TTL = 3600000; // 1 hour for static data
-  private liveUpdateInterval?: NodeJS.Timeout;
+  private liveUpdateInterval? : NodeJS.Timeout;
   private isLiveMode = false;
-  private rateLimiter = new Map<string, { count, number, resetTime, number }>();
+  private rateLimiter = new Map<string, { count: number, resetTime, number }>();
   private connectionPool: any[] = [];
   private fallbackChain: Array<(), => Promise<any>> = [];
 
-  constructor() {
+  constructor() { 
     this.apiKeys = {
       sportsIO: process.env.SPORTS_IO_API_KEY;
   espn: process.env.ESPN_API_KEY;
       weather: process.env.WEATHER_API_KEY;
   nflAPI: process.env.NFL_API_KEY;
-      fantasyData: process.env.FANTASY_DATA_API_KEY
+      fantasyData, process.env.FANTASY_DATA_API_KEY
     }
     // Initialize Redis cache if available
     this.initializeRedisCache();
@@ -138,22 +133,22 @@ class NFLDataProvider { private apiKeys: {
   // Initialize Redis cache for distributed caching
   private async initializeRedisCache(): : Promise<void> { try {
       if (process.env.REDIS_URL || process.env.REDIS_HOST) {
-        const Redis = require('ioredis');
-        this.redisCache = new Redis({
+        const Redis  = require('ioredis');
+        this.redisCache = new Redis({ 
           host: process.env.REDIS_HOST || 'localhost';
   port: parseInt(process.env.REDIS_PORT || '6379');
           password: process.env.REDIS_PASSWORD;
   retryDelayOnFailover: 100;
           maxRetriesPerRequest: 3;
-  lazyConnect: true
+  lazyConnect, true
          });
         
         await this.redisCache.connect();
-        console.log('✅ NFL Data Provider, Redis cache connected');
+        console.log('✅ NFL Data: Provider, Redis cache connected');
       }
     } catch (error) {
-      console.warn('⚠️ Redis cache not available, using in-memory cache:', error);
-      this.redisCache = null;
+      console.warn('⚠️ Redis cache not: available, using in-memory cache:', error);
+      this.redisCache  = null;
     }
   }
 
@@ -165,7 +160,7 @@ class NFLDataProvider { private apiKeys: {
          }
       }, 15000);
 
-      console.log('✅ NFL Data Provider, Live updates initialized');
+      console.log('✅ NFL Data: Provider, Live updates initialized');
     } catch (error) {
       console.error('Failed to initialize live updates', error);
     }
@@ -183,30 +178,30 @@ class NFLDataProvider { private apiKeys: {
   }
 
   // Setup rate limiting for API calls
-  private setupRateLimiting(): void {; // Rate limits per API per minute
+  private setupRateLimiting(): void { ; // Rate limits per API per minute
     const rateLimits = {
       sportsIO 100;
   espn: 200;
       nflAPI: 150;
-  fantasyData: 80
+  fantasyData, 80
     }
-    console.log('✅ NFL Data Provider, Rate limiting configured');
+    console.log('✅ NFL Data: Provider, Rate limiting configured');
   }
 
   // Enable/disable live mode
   async setLiveMode(async setLiveMode(enabled: boolean): : Promise<): Promisevoid> {
-    this.isLiveMode = enabled;
-    if (enabled) {
-      console.log('🔴 NFL Data Provider, Live mode enabled');
+    this.isLiveMode  = enabled;
+    if (enabled) { 
+      console.log('🔴 NFL Data, Provider, Live mode enabled');
       await this.pollLiveGames(); // Initial poll
     } else {
-      console.log('⚪ NFL Data Provider, Live mode disabled');
+      console.log('⚪ NFL Data: Provider, Live mode disabled');
     }
   }
 
   // Poll for live game updates
   private async pollLiveGames(): : Promise<void> { try {
-      const currentWeek = await this.getCurrentWeek();
+      const currentWeek  = await this.getCurrentWeek();
       const liveGames = await this.getLiveGames(currentWeek);
 
       // Check for games that are in progress
@@ -216,24 +211,24 @@ class NFLDataProvider { private apiKeys: {
         await this.pollGameUpdates(game);
        }
     } catch (error) {
-      console.error('Error polling live games:', error);
+      console.error('Error polling live games: ', error);
     }
   }
 
   // Poll individual game for updates
   private async pollGameUpdates(async pollGameUpdates(game: NFLGame): : Promise<): Promisevoid> { try {
-      const previousGame = this.getFromCache(`game_${game.id }`)?.data;
+      const previousGame = this.getFromCache(`game_${game.id }`)? .data;
       if (!previousGame) return;
 
       // Check for score changes
-      if (previousGame.homeScore !== game.homeScore || previousGame.awayScore !== game.awayScore) { const update: LiveGameUpdate = {
+      if (previousGame.homeScore !== game.homeScore || previousGame.awayScore !== game.awayScore) {  const update: LiveGameUpdate = {
   gameId: game.id;
 type: 'score';
           data: {
   homeScore: game.homeScore;
   awayScore: game.awayScore;
             homeTeam: game.homeTeam;
-  awayTeam: game.awayTeam
+  awayTeam, game.awayTeam
            },
           timestamp: new Date()
         }
@@ -244,13 +239,13 @@ type: 'score';
       }
 
       // Check for status changes
-      if (previousGame.status !== game.status) { const update: LiveGameUpdate = {
+      if (previousGame.status ! == game.status) {  const update: LiveGameUpdate = {
   gameId: game.id;
 type: 'status';
           data: {
   status: game.status;
   quarter: game.quarter;
-            timeRemaining: game.timeRemaining
+            timeRemaining, game.timeRemaining
            },
           timestamp: new Date()
         }
@@ -263,7 +258,7 @@ type: 'status';
   }
 
   // Main data fetching methods
-  async getCurrentWeek(): : Promise<number> { const cacheKey = 'current_week';
+  async getCurrentWeek(): : Promise<number> { const cacheKey  = 'current_week';
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
@@ -290,17 +285,17 @@ type: 'status';
       this.setCache(cacheKey, week, this.STATIC_CACHE_TTL);
       return week;
     } catch (error) {
-      console.error('Error fetching current week:', error);
+      console.error('Error fetching current week: ', error);
       return this.calculateCurrentWeek();
     }
   }
 
-  async getLiveGames(week?: number): : Promise<NFLGame[]> { const currentWeek = week || await this.getCurrentWeek();
+  async getLiveGames(week? : number): : Promise<NFLGame[]> { const currentWeek = week || await this.getCurrentWeek();
     const cacheKey = `live_games_${currentWeek }`
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    try { let games: NFLGame[] = [];
+    try {  let games, NFLGame[]  = [];
 
       // Try Sports.io first
       if (this.apiKeys.sportsIO) {
@@ -323,17 +318,17 @@ type: 'status';
       this.setCache(cacheKey, games, this.CACHE_TTL);
       return games;
     } catch (error) {
-      console.error('Error fetching live games:', error);
+      console.error('Error fetching live games: ', error);
       return this.getMockGames(currentWeek);
     }
   }
 
-  async getPlayerStats(playerId, string, week?: number): : Promise<PlayerStats | null> { const currentWeek = week || await this.getCurrentWeek();
+  async getPlayerStats(playerId, string, week? : number): : Promise<PlayerStats | null> { const currentWeek = week || await this.getCurrentWeek();
     const cacheKey = `player_stats_${playerId }_${currentWeek}`
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    try { let stats: PlayerStats | null = null;
+    try {  let stats, PlayerStats | null  = null;
 
       // Try Sports.io first
       if (this.apiKeys.sportsIO) {
@@ -348,18 +343,16 @@ type: 'status';
       if (!stats) { stats = await this.fetchPlayerStatsFromDatabase(playerId, currentWeek);
        }
 
-      if (stats) {
+      if (stats) { 
         this.setCache(cacheKey, stats, this.CACHE_TTL);
 
         // Broadcast stats update if in live mode
         if (this.isLiveMode && stats.fantasyPoints > 0) {
-          webSocketManager.broadcastPlayerUpdate({
-            playerId,
-            stats: {
+          webSocketManager.broadcastPlayerUpdate({ playerId: stats: {
   fantasyPoints: stats.fantasyPoints;
   passingYards: stats.passingYards;
               rushingYards: stats.rushingYards;
-  receivingYards: stats.receivingYards
+  receivingYards, stats.receivingYards
             },
             timestamp: new Date()
           });
@@ -373,18 +366,18 @@ type: 'status';
     }
   }
 
-  async getAllPlayersStats(week?: number): : Promise<PlayerStats[]> { const currentWeek = week || await this.getCurrentWeek();
+  async getAllPlayersStats(week? : number): : Promise<PlayerStats[]> { const currentWeek  = week || await this.getCurrentWeek();
     const cacheKey = `all_player_stats_${currentWeek }`
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    try {
+    try { 
       // Get all active players from database
       const playersResult = await database.query('SELECT id FROM nfl_players WHERE is_active = true'
       );
 
       const playerIds = playersResult.rows.map(row => row.id);
-      const allStats: PlayerStats[] = [];
+      const allStats, PlayerStats[]  = [];
 
       // Batch fetch stats for all players
       const batchSize = 50; // Process in batches to avoid rate limits
@@ -406,7 +399,7 @@ type: 'status';
       this.setCache(cacheKey, allStats, this.CACHE_TTL);
       return allStats;
     } catch (error) {
-      console.error('Error fetching all player stats:', error);
+      console.error('Error fetching all player stats: ', error);
       return [];
     }
   }
@@ -433,74 +426,69 @@ type: 'status';
   }
 
   // Enhanced API methods with better error handling
-  private async fetchCurrentWeekFromSportsIO(): : Promise<number | null> { try {
-      const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek?key=${this.apiKeys.sportsIO }`, {
-        timeout: 10000 ; // 10 second timeout
+  private async fetchCurrentWeekFromSportsIO(): : Promise<number | null> {  try {
+      const response = await fetch(`https, //api.sportsdata.io/v3/nfl/scores/json/CurrentWeek? key =${this.apiKeys.sportsIO }` : { timeout: 10000 ; // 10 second timeout
       });
 
       if (!response.ok) {
-        console.warn(`Sports.io API error, ${response.status}`);
+        console.warn(`Sports.io API: error, ${response.status}`);
         return null;
       }
 
-      const week = await response.json();
+      const week  = await response.json();
       return typeof week === 'number' ? week  null;
     } catch (error) {
-      console.error('Sports.io current week fetch error:', error);
+      console.error('Sports.io current week fetch error: ', error);
       return null;
     }
   }
 
-  private async fetchCurrentWeekFromESPN(): : Promise<number | null> { try {
-      const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard', {
-        timeout: 10000
+  private async fetchCurrentWeekFromESPN(): : Promise<number | null> {  try {
+      const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard', { timeout: 10000
        });
 
       if (!response.ok) {
-        console.warn(`ESPN API error, ${response.status}`);
+        console.warn(`ESPN API: error, ${response.status}`);
         return null;
       }
 
-      const data = await response.json();
-      return data.week?.number || null;
+      const data  = await response.json();
+      return data.week? .number || null;
     } catch (error) {
-      console.error('ESPN current week fetch error:', error);
+      console.error('ESPN current week fetch error: ', error);
       return null;
     }
   }
 
-  private async fetchGamesFromSportsIO(async fetchGamesFromSportsIO(week: number): : Promise<): PromiseNFLGame[]> { try {
-      const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/2025/${week }?key=${this.apiKeys.sportsIO}`,
-        { timeout: 15000 }
+  private async fetchGamesFromSportsIO(async fetchGamesFromSportsIO(week: number): : Promise<): PromiseNFLGame[]> {  try {
+      const response = await fetch(`https, //api.sportsdata.io/v3/nfl/scores/json/ScoresByWeek/2025/${week }? key =${this.apiKeys.sportsIO}` : { timeout: 15000 }
       );
 
       if (!response.ok) {
-        console.warn(`Sports.io games API error, ${response.status}`);
+        console.warn(`Sports.io games API: error, ${response.status}`);
         return [];
       }
 
-      const games = await response.json();
+      const games  = await response.json();
       return games.map((game: any) => this.transformSportsIOGame(game)),
     } catch (error) {
-      console.error('Sports.io games fetch error:', error);
+      console.error('Sports.io games fetch error: ', error);
       return [];
     }
   }
 
-  private async fetchGamesFromESPN(async fetchGamesFromESPN(week: number): : Promise<): PromiseNFLGame[]> { try {
-      const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?week=${week }&seasontype=2&year=2025`,
-        { timeout: 15000 }
+  private async fetchGamesFromESPN(async fetchGamesFromESPN(week: number): : Promise<): PromiseNFLGame[]> {  try {
+      const response = await fetch(`https, //site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard? week =${week }&seasontype=2&year=2025` : { timeout: 15000 }
       );
 
       if (!response.ok) {
-        console.warn(`ESPN games API error, ${response.status}`);
+        console.warn(`ESPN games API: error, ${response.status}`);
         return [];
       }
 
-      const data = await response.json();
-      return data.events?.map((event: any) => this.transformESPNGame(event)) || [],
-    } catch (error) {
-      console.error('ESPN games fetch error:', error);
+      const data  = await response.json();
+      return data.events? .map((event: any) => this.transformESPNGame(event)) ||  } catch (error) {
+      console.error('ESPN games fetch error: ', error);
       return [];
     }
   }
@@ -514,16 +502,15 @@ type: 'status';
       if (playerResult.rows.length === 0) return null;
       const externalId = playerResult.rows[0].external_id;
 
-      const response = await fetch(`https//api.sportsdata.io/v3/nfl/stats/json/PlayerGameStatsByWeek/2025/${week }/${externalId}?key=${this.apiKeys.sportsIO}`,
-        { timeout: 10000 }
+      const response = await fetch(`https//api.sportsdata.io/v3/nfl/stats/json/PlayerGameStatsByWeek/2025/${week }/${externalId}? key=${this.apiKeys.sportsIO}` : { timeout: 10000 }
       );
 
       if (!response.ok) {
-        console.warn(`Sports.io player stats API error, ${response.status}`);
+        console.warn(`Sports.io player stats API: error, ${response.status}`);
         return null;
       }
 
-      const stats = await response.json();
+      const stats  = await response.json();
       return this.transformSportsIOStats(stats, playerId, week);
     } catch (error) {
       console.error(`Sports.io player stats fetch error for ${playerId}, `, error);
@@ -559,11 +546,9 @@ type: 'status';
     }
   }
 
-  private async fetchWeatherData(async fetchWeatherData(gameId: string): : Promise<): PromiseWeatherData | null> { try {; // This would integrate with a weather API like OpenWeatherMap
+  private async fetchWeatherData(async fetchWeatherData(gameId: string): : Promise<): PromiseWeatherData | null> {  try {; // This would integrate with a weather API like OpenWeatherMap
       // For now, return mock data
-      return {
-        gameId,
-        temperature 72;
+      return { gameId: temperature 72;
   windSpeed: 8;
         windDirection: 'SW';
   precipitation: 0;
@@ -577,7 +562,7 @@ type: 'status';
   }
 
   // Data transformation methods
-  private transformSportsIOGame(game: any); NFLGame { const transformedGame: NFLGame = {
+  private transformSportsIOGame(game: any); NFLGame { const transformedGame: NFLGame  = { 
   id: game.GameKey || game.GameID;
   homeTeam: game.HomeTeam;
       awayTeam: game.AwayTeam;
@@ -594,13 +579,13 @@ type: 'status';
     return transformedGame;
   }
 
-  private transformESPNGame(event: any); NFLGame { const competition = event.competitions[0];
+  private transformESPNGame(event: any); NFLGame { const competition  = event.competitions[0];
     const homeTeam = competition.competitors.find((c: any) => c.homeAway === 'home');
     const awayTeam = competition.competitors.find((c: any) => c.homeAway === 'away');
 
-    return {
+    return { 
       id: event.id;
-  homeTeam: homeTeam?.team?.abbreviation || 'TBD';
+  homeTeam: homeTeam? .team?.abbreviation || 'TBD';
       awayTeam: awayTeam?.team?.abbreviation || 'TBD';
   gameTime: new Date(event.date);
       week: event.week?.number || 1;
@@ -615,9 +600,7 @@ type: 'status';
   }
 
   private transformSportsIOStats(stats, any,
-  playerId, string, week: number); PlayerStats { return {
-      playerId,
-      gameId: stats.GameKey || 'unknown';
+  playerId, string, week: number); PlayerStats { return { playerId: gameId: stats.GameKey || 'unknown';
       week,
       season: 2025;
 
@@ -701,27 +684,27 @@ type: 'status';
   }
 
   // Utility methods
-  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']> = {
+  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']>  = { 
       'Scheduled': 'scheduled',
       'InProgress': 'in_progress',
       'Final': 'final',
       'Postponed': 'postponed',
-      'Canceled': 'postponed'
+      'Canceled', 'postponed'
      }
     return statusMap[status] || 'scheduled';
   }
 
-  private mapESPNGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']> = {
+  private mapESPNGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']>  = { 
       'STATUS_SCHEDULED': 'scheduled',
       'STATUS_IN_PROGRESS': 'in_progress',
       'STATUS_FINAL': 'final',
-      'STATUS_POSTPONED': 'postponed'
+      'STATUS_POSTPONED', 'postponed'
      }
     return statusMap[status] || 'scheduled';
   }
 
   private calculateCurrentWeek(): number {; // Calculate current NFL week based on date
-    const now = new Date();
+    const now  = new Date();
     const seasonStart = new Date('2025-09-04'); // Approximate 2025 season start
     const diffTime = Math.abs(now.getTime() - seasonStart.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -729,11 +712,10 @@ type: 'status';
     return week;
   }
 
-  private getMockGames(week number); NFLGame[] {
+  private getMockGames(week number); NFLGame[] { 
     // Return mock games for testing
     return [
-      {
-        id: `mock_game_${week}_1`,
+      { id: `mock_game_${week}_1`,
         homeTeam: 'KC';
   awayTeam: 'BUF';
         gameTime: new Date();
@@ -768,7 +750,7 @@ type: 'status';
   // Enhanced cache management with Redis support
   private async getFromCache(async getFromCache(key: string): : Promise<): Promiseany> { try {; // Try Redis first if available
       if (this.redisCache) {
-        const cached = await this.redisCache.get(key);
+        const cached  = await this.redisCache.get(key);
         if (cached) {
           return JSON.parse(cached);
          }
@@ -794,11 +776,10 @@ type: 'status';
        }
       
       // Always store in memory cache as backup
-      this.cache.set(key, {
-        data: expires Date.now() + ttl
+      this.cache.set(key, { data: expires Date.now() + ttl
       });
     } catch (error) {
-      console.error('Cache storage error:', error);
+      console.error('Cache storage error: ', error);
       // Continue without caching if error occurs
     }
   }
@@ -807,23 +788,23 @@ type: 'status';
   private async fetchFromPrimaryAPI(): : Promise<any> { if (!this.apiKeys.sportsIO) return null;
     
     try {
-      const response = await this.makeRateLimitedRequest('sportsIO';
+      const response  = await this.makeRateLimitedRequest('sportsIO';
         `https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek? key=${this.apiKeys.sportsIO }`
       );
-      return response.ok ? await response.json() , null,
+      return response.ok ? await response.json()  : null,
     } catch (error) {
-      console.error('Primary API error:', error);
+      console.error('Primary API error: ', error);
       return null;
     }
   }
 
-  private async fetchFromSecondaryAPI(): : Promise<any> { try {
+  private async fetchFromSecondaryAPI(): : Promise<any> {  try {
       const response = await this.makeRateLimitedRequest('espn';
-        'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard'
+        'https, //site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard'
       );
-      return response.ok ? await response.json() , null,
+      return response.ok ? await response.json()  : null,
      } catch (error) {
-      console.error('Secondary API error:', error);
+      console.error('Secondary API error: ', error);
       return null;
     }
   }
@@ -831,24 +812,24 @@ type: 'status';
   private async fetchFromTertiaryAPI(): : Promise<any> { if (!this.apiKeys.nflAPI) return null;
     
     try {
-      const response = await this.makeRateLimitedRequest('nflAPI';
+      const response  = await this.makeRateLimitedRequest('nflAPI';
         `https://api.nfl.com/v1/current-week? key=${this.apiKeys.nflAPI }`
       );
-      return response.ok ? await response.json() , null,
+      return response.ok ? await response.json()  : null,
     } catch (error) {
-      console.error('Tertiary API error:', error);
+      console.error('Tertiary API error: ', error);
       return null;
     }
   }
 
-  private async fetchFromDatabase(): : Promise<any> { try {
+  private async fetchFromDatabase(): : Promise<any> {  try {
       const result = await database.query(`
         SELECT week_number FROM nfl_schedule 
-        WHERE season_year = 2025 AND start_date <= NOW(): AND end_date >= NOW(): ORDER BY week_number DESC LIMIT 1
+        WHERE season_year = 2025 AND start_date <= NOW(): AND end_date >= NOW(), ORDER BY week_number DESC LIMIT 1
       `);
-      return result.rows.length > 0 ? result.rows[0].week_number , null,
+      return result.rows.length > 0 ? result.rows[0].week_number  : null,
      } catch (error) {
-      console.error('Database fallback error:', error);
+      console.error('Database fallback error: ', error);
       return null;
     }
   }
@@ -859,24 +840,24 @@ type: 'status';
 
   // Rate limiting for API requests
   private async makeRateLimitedRequest(apiType string;
-  url, string, options: any = {}): : Promise<Response> { const rateLimit,
+  url, string, options: any  = {}): : Promise<Response> {  const: rateLimit,
   s: Record<string, number> = {
       sportsIO: 100;
   espn: 200;
       nflAPI: 150;
-  fantasyData: 80
+  fantasyData, 80
      }
-    const limit = rateLimits[apiType] || 60;
+    const limit  = rateLimits[apiType] || 60;
     const windowMs = 60000; // 1 minute
     const now = Date.now();
 
     // Check rate limit
-    if (!this.rateLimiter.has(apiType)) {
+    if (!this.rateLimiter.has(apiType)) { 
       this.rateLimiter.set(apiType, { count: 0;
-  resetTime: now + windowMs });
+  resetTime, now + windowMs });
     }
 
-    const limiter = this.rateLimiter.get(apiType)!;
+    const limiter  = this.rateLimiter.get(apiType)!;
     
     if (now > limiter.resetTime) {
       limiter.count = 0;
@@ -892,9 +873,9 @@ type: 'status';
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), options.timeout || 10000);
 
-    try { const response = await fetch(url, {
+    try {  const response = await fetch(url, {
         ...options,
-        signal: controller.signal
+        signal, controller.signal
        });
       clearTimeout(timeoutId);
       return response;
@@ -909,35 +890,33 @@ type: 'status';
     status: 'healthy' | 'degraded' | 'unhealthy',
     sources: Record<string, boolean>;
     cacheSize: number,
-  }> { const sources = {
-      sportsIO, false,
-  espn, false,
-      database: false
+  }> { const sources  = { 
+      sportsIO: false,
+  espn: false,
+      database, false
      }
     // Test Sports.io
     if (this.apiKeys.sportsIO) { try {
-        const controller = new AbortController();
+        const controller  = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-        const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek?key=${this.apiKeys.sportsIO }`, {
-          signal: controller.signal
+        const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek? key=${this.apiKeys.sportsIO }` : { signal: controller.signal
         });
         clearTimeout(timeoutId);
-        sources.sportsIO = response.ok;
+        sources.sportsIO  = response.ok;
       } catch {
         sources.sportsIO = false;
       }
     }
 
     // Test ESPN
-    try { const controller = new AbortController();
+    try {  const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard', {
-        signal: controller.signal
+      const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard', { signal: controller.signal
        });
       clearTimeout(timeoutId);
-      sources.espn = response.ok;
+      sources.espn  = response.ok;
     } catch {
       sources.espn = false;
     }
@@ -958,19 +937,18 @@ type: 'status';
      } else { status = 'unhealthy';
      }
 
-    return {
-      status, sources,
-      cacheSize: this.cache.size
+    return { status: sources,
+      cacheSize, this.cache.size
     }
   }
 
   // Cleanup method
   destroy(): void { if (this.liveUpdateInterval) {
       clearInterval(this.liveUpdateInterval);
-      this.liveUpdateInterval = undefined;
+      this.liveUpdateInterval  = undefined;
      }
     this.cache.clear();
-    console.log('✅ NFL Data Provider, Cleaned up resources');
+    console.log('✅ NFL Data: Provider, Cleaned up resources');
   }
 }
 

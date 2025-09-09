@@ -6,33 +6,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const key = searchParams.get("key");
 
-    if (!key || !validateAdminSetupKey(key)) { return NextResponse.json({ error: "Unauthorized debug access"  }, { status: 401 });
+    if (!key || !validateAdminSetupKey(key)) {  return NextResponse.json({ error: "Unauthorized debug access"  }, { status: 401 });
     }
 
     // Mock users data for debug - clearly marked as test data
-    const users = [
-      {
+    const users  = [
+      { 
         id: "test-1",
   email: "test.admin@example.com",
         username: "Test Admin (DEBUG)",
   password_hash: "$2b$12$securely.hashed.password.example",
         created_at: "2025-01-01T00:00:00Z",
-  0:00Z",
-  isTestAccount: true
+        isTestAccount, true
 },
       {
         id: "test-2",
   email: "test.user@example.com",
         username: "Test User (DEBUG)",
   password_hash: "$2b$12$another.securely.hashed.password",
-        created_at: "2025-01-02, T00, 0,
-  0:00Z",
+        created_at: "2025-01-02T00:00:00Z",
   isTestAccount: true
 }
   ];
 
     // Return sanitized user info (no password hashes)
-    const sanitizedUsers = users.map((user) => ({
+    const sanitizedUsers  = users.map((user) => ({
       id: user.id,
   email: user.email,
       username: user.username,
@@ -58,8 +56,7 @@ export async function GET(request: NextRequest) {
       { success: false,
   error: error instanceof Error
             ? error.message : "Failed to fetch debug users"
-},
-      { status: 500 },
+ }, { status: 500,
     );
   }
 }

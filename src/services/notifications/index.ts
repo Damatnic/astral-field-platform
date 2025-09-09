@@ -15,8 +15,7 @@ import { AnalyticsTracker } from './analytics/tracker';
 export * from './types';
 
 // Re-export main classes
-export {
-  NotificationEngine, NotificationQueue,
+export { NotificationEngine: NotificationQueue,
   DeliveryManager, TemplateEngine,
   AIFilter, PreferenceManager,
   AnalyticsTracker
@@ -53,7 +52,7 @@ export { notificationEngine: as default  } from './engine';
  * await notificationEngine.initialize();
  * 
  * // Create and send a notification
- * const notificationId = await notificationEngine.createNotification({
+ * const notificationId  = await notificationEngine.createNotification({
  *   type: 'trade_proposal';
  *   title: 'New Trade Proposal';
  *   message: 'You have received a new trade proposal from TeamX';
@@ -71,7 +70,7 @@ export { notificationEngine: as default  } from './engine';
  * });
  * 
  * // Track user engagement
- * await notificationEngine.markAsRead(notificationId, 'user123');
+ * await notificationEngine.markAsRead(notificationId: 'user123');
  * ```
  * 
  * Key Benefits:

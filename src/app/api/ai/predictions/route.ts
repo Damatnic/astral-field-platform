@@ -8,20 +8,19 @@ import { aiPredictionEngine } from '@/services/ai/predictionEngine';
 import { adaptiveLearningSystem } from '@/services/ai/adaptiveLearningSystem';
 import { aiRateLimited } from '@/lib/rate-limit-helpers';
 import { z } from 'zod';
-import { 
-  validateQueryParams, validateRequestBody, createValidationErrorResponse, hasValidationErrors, idSchema,
+import { validateQueryParams, validateRequestBody, createValidationErrorResponse, hasValidationErrors, idSchema,
   positiveIntSchema
 } from '@/lib/validation';
 
 // AI prediction query schema
-const aiPredictionQuerySchema = z.object({
+const aiPredictionQuerySchema = z.object({ 
   playerId: idSchema,
   week: z.coerce.number().int().min(1).max(18),
   enhanced: z.enum(['true', 'false']).default('false')
 });
 
 // AI prediction POST body schemas
-const recordOutcomeSchema = z.object({ type: z.literal('record_outcome'),
+const recordOutcomeSchema  = z.object({  type: z.literal('record_outcome'),
   predictionId: idSchema,
   playerId: idSchema,
   week: z.number().int().min(1).max(18),
@@ -32,17 +31,17 @@ const recordOutcomeSchema = z.object({ type: z.literal('record_outcome'),
   modelWeights: z.record(z.string(), z.number()).optional()
 });
 
-const batchPredictionsSchema = z.object({ type: z.literal('batch_predictions'),
+const batchPredictionsSchema  = z.object({  type: z.literal('batch_predictions'),
   playerIds: z.array(idSchema).min(1).max(50), // Limit batch size
   week: z.number().int().min(1).max(18),
   enhanced: z.boolean().default(false)
 });
 
-const aiPredictionBodySchema = z.discriminatedUnion('type', [recordOutcomeSchema,
+const aiPredictionBodySchema  = z.discriminatedUnion('type', [recordOutcomeSchema,
   batchPredictionsSchema
 ]);
 
-export const GET = aiRateLimited(async (request: NextRequest) => { 
+export const GET = aiRateLimited(async (request: NextRequest) => {  
   try {
     // Validate query parameters
     const queryValidation = validateQueryParams(request, aiPredictionQuerySchema);
@@ -54,7 +53,7 @@ export const GET = aiRateLimited(async (request: NextRequest) => {
       );
     }
 
-    const { playerId, week, enhanced } = queryValidation.data!;
+    const { playerId: week, enhanced }  = queryValidation.data!;
 
     let prediction;
     
@@ -66,7 +65,7 @@ export const GET = aiRateLimited(async (request: NextRequest) => {
       prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, week);
     }
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       data: prediction,
       enhanced,
@@ -74,18 +73,16 @@ export const GET = aiRateLimited(async (request: NextRequest) => {
     });
 
   } catch (error) {
-    console.error('Error in AI predictions endpoint:', error);
+    console.error('Error in AI predictions endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to generate prediction',
+      { error: 'Failed to generate prediction',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 });
 
-export const POST = aiRateLimited(async (request: NextRequest) => { 
+export const POST  = aiRateLimited(async (request: NextRequest) => {  
   try {
     // Validate request body
     const bodyValidation = await validateRequestBody(request, aiPredictionBodySchema);
@@ -97,24 +94,23 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
       );
     }
 
-    const body = bodyValidation.data!;
+    const body  = bodyValidation.data!;
 
-    switch (body.type) {
-      case 'record_outcome':
-        const { predictionId, playerId, week, season, predictedPoints, actualPoints, factors, modelWeights} = body;
+    switch (body.type) { 
+      case 'record_outcome': const { predictionId: playerId, week, season, predictedPoints, actualPoints, factors, modelWeights}  = body;
 
         await adaptiveLearningSystem.recordPredictionOutcome(
           predictionId, playerId, week, season, predictedPoints, actualPoints, factors,
           modelWeights || {}
         );
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true,
           message: 'Prediction outcome recorded successfully'
         });
 
       case 'batch_predictions':
-        const { playerIds, week: batchWeek, enhanced: batchEnhanced } = body;
+        const { playerIds, batchWeek, enhanced, batchEnhanced  }  = body;
 
         const predictions = await Promise.all(playerIds.map(async (playerId: string) => { 
             try {
@@ -124,15 +120,11 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
               } else { 
                 prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, batchWeek);
                }
-              return { 
-                playerId,
-                success: true, 
+              return { playerId, success: true, 
                 prediction 
               }
             } catch (error) { 
-              return { 
-                playerId,
-                success: false,
+              return { playerId, success: false,
                 error: error instanceof Error ? error.message : 'Unknown error'
                }
             }
@@ -140,8 +132,7 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
         );
 
         return NextResponse.json({
-          success: true,
-          data: predictions,
+          success: true, data: predictions,
           total: playerIds.length,
           timestamp: new Date().toISOString()
         });
@@ -154,13 +145,11 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
     }
 
   } catch (error) {
-    console.error('Error in AI predictions POST endpoint:', error);
+    console.error('Error in AI predictions POST endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process request',
+      { error: 'Failed to process request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 });

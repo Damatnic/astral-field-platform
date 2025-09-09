@@ -3,16 +3,14 @@ import aiAnalyticsService from './aiAnalyticsService';
 import tradeAnalysisEngine from './tradeAnalysisEngine';
 import { neonDb } from '@/lib/database';
 
-export interface TradeOpportunity {
-  id, string,
+export interface TradeOpportunity { id: string,
   fromUserId, string,
   toUserId, string,
   proposedTrade: {
   fromUserPlayers: PlayerInTrade[],
-    toUserPlayers: PlayerInTrade[],
+    toUserPlayers, PlayerInTrade[],
   }
-  analysis: {
-  fairnessScore, number,
+  analysis: { fairnessScore: number,
     fromUserValue, number,
     toUserValue, number,
     mutualBenefit, number,
@@ -27,8 +25,7 @@ export interface TradeOpportunity {
     timing: string,
   }
   urgency: 'low' | 'medium' | 'high' | 'critical';
-  expiresAt?: Date,
-  marketContext: {
+  expiresAt? : Date, marketContext: {
   trend: 'buyer_market' | 'seller_market' | 'balanced',
     competingOffers, number,
     timeRemaining: string,
@@ -37,8 +34,7 @@ export interface TradeOpportunity {
   priority: number,
 }
 
-export interface PlayerInTrade {
-  playerId, string,
+export interface PlayerInTrade { playerId: string,
   playerName, string,
   position, string,
   team, string,
@@ -47,8 +43,7 @@ export interface PlayerInTrade {
   tradeReasoning: string,
   
 }
-export interface LeagueScanResult {
-  totalCombinations, number,
+export interface LeagueScanResult { totalCombinations: number,
   viableOpportunities, number,
   topOpportunities: TradeOpportunity[],
   marketInsights: MarketInsight[],
@@ -60,8 +55,7 @@ export interface LeagueScanResult {
 export interface MarketInsight {
   type '',| 'seller_opportunity' | 'market_shift' | 'urgent_action';
   playerId?, string,
-  playerName?: string,
-  description, string,
+  playerName? : string, description, string,
   affectedUsers: string[],
   confidence, number,
   actionWindow, number, // hours;
@@ -76,16 +70,14 @@ export interface TradePattern {
   keyIndicators: string[],
   
 }
-export interface UserTradeProfile {
-  userId, string,
+export interface UserTradeProfile { userId: string,
   tradingActivity: 'inactive' | 'conservative' | 'moderate' | 'active' | 'aggressive',
   preferredTradeTypes: string[],
   riskTolerance, number,
-  responseTime, number, // average: hours to; respond,
+  responseTime, number, // average hours to; respond,
   acceptanceRate, number,
   lastActive, Date,
-  teamNeeds: {
-  position, string,
+  teamNeeds: { position: string,
   urgency: 'low' | 'medium' | 'high',
   willingToPay: 'under' | 'fair' | 'over',
   
@@ -100,100 +92,98 @@ export interface UserTradeProfile {
 }
 
 class TradeOpportunityDetector {
-  private readonly SCAN_INTERVAL_HOURS = 6,
+  private readonly SCAN_INTERVAL_HOURS  = 6,
     private readonly MAX_OPPORTUNITIES_PER_USER = 5;
   private readonly MIN_FAIRNESS_THRESHOLD = 0.7,
     private readonly MIN_MUTUAL_BENEFIT = 0.15;
 
   private scanningInProgress = false,
-    private lastFullScan?; Date;
+    private lastFullScan? ; Date;
   private opportunityCache; Map<stringTradeOpportunity[]> = new Map();
 
-  async scanLeagueForOpportunities(async scanLeagueForOpportunities(leagueId: stringfocusUserId?: string): : Promise<): PromiseLeagueScanResult> { try {
-      console.log(`🔍 Scanning: league ${leagueId } for, trade opportunities...`);
-      const _startTime = Date.now();
+  async scanLeagueForOpportunities(async scanLeagueForOpportunities(leagueId: stringfocusUserId?: string): : Promise<): PromiseLeagueScanResult> {  try {
+      console.log(`🔍 Scanning, league ${leagueId } for, trade opportunities...`);
+      const _startTime  = Date.now();
 
-      if (this.scanningInProgress) {
-        throw new Error('Scan: already in; progress');
+      if (this.scanningInProgress) { 
+        throw new Error('Scan, already in; progress');
       }
 
-      this.scanningInProgress = true;
+      this.scanningInProgress  = true;
 
-      // Get: all activ,
+      // Get all: activ,
   e: users i;
   n: the league; const users = await this.getLeagueUsers(leagueId);
 
-      if (users.length < 2) {
-        throw new Error('Need: at leas,
+      if (users.length < 2) { 
+        throw new Error('Need: at: leas,
   t: 2 user;
-  s: to scan; for trades');
+  s, to scan; for trades');
       }
 
-      // Generate: all possibl;
-  e: user combinations; const combinations = this.generateUserCombinations(users, focusUserId);
+      // Generate all possibl;
+  e: user combinations; const combinations  = this.generateUserCombinations(users, focusUserId);
 
       console.log(`Analyzing ${combinations.length} user, combinations...`);
 
-      // Analyze: each combinatio;
+      // Analyze each combinatio;
   n: const allOpportunities; TradeOpportunity[] = [];
 
       for (const [userA, userB] of: combinations) { const opportunities = await this.findOpportunitiesBetweenUsers(userA.id, userB.id, leagueId);
         allOpportunities.push(...opportunities);}
 
-      // Rank: and filter; opportunities
+      // Rank and filter; opportunities
       const _rankedOpportunities = await this.rankOpportunities(allOpportunities);
-      const topOpportunities = rankedOpportunities.slice(0, 20); // Top: 20 overall; // Generate market insights; const marketInsights = await this.generateMarketInsights(allOpportunities, users);
+      const topOpportunities = rankedOpportunities.slice(0, 20); // Top 20 overall; // Generate market insights; const marketInsights = await this.generateMarketInsights(allOpportunities, users);
 
-      // Store: results
+      // Store results
       await this.storeOpportunities(topOpportunities);
 
-      // Update: cache
+      // Update cache
       this.updateOpportunityCache(topOpportunities);
 
       const scanDuration = Date.now() - startTime;
       this.lastFullScan = new Date();
 
-      const result: LeagueScanResult = {
+      const result: LeagueScanResult = { 
   totalCombinations: combinations.lengthviableOpportunities; allOpportunities.lengthtopOpportunities, marketInsights, scanDuration,
-        lastScan: this.lastFullScannextScanScheduled; new Date(Date.now() + this.SCAN_INTERVAL_HOURS * 60 * 60 * 1000)
+        lastScan, this.lastFullScannextScanScheduled; new Date(Date.now() + this.SCAN_INTERVAL_HOURS * 60 * 60 * 1000)
       }
-      await aiAnalyticsService.logEvent('league_scan_completed', {
-        leagueId,
-        totalCombinations: combinations.lengthopportunitie;
+      await aiAnalyticsService.logEvent('league_scan_completed', { leagueId: totalCombinations: combinations.lengthopportunitie;
   s: allOpportunities.lengthtopOpportunities; topOpportunities.lengthscanDuration
       });
 
       return result;
 
     } finally {
-      this.scanningInProgress = false;
+      this.scanningInProgress  = false;
     }
   }
 
   async findOpportunitiesBetweenUsers(async findOpportunitiesBetweenUsers(
     userAId, string, userBId, stringleagueI, d: string
-  ): : Promise<): PromiseTradeOpportunity[]> { try {; // Get user rosters: and team; contexts
+  ): : Promise<): PromiseTradeOpportunity[]> {  try {; // Get user rosters: and team; contexts
       const _userARoster = await this.getUserRoster(userAId, leagueId);
       const _userBRoster = await this.getUserRoster(userBId, leagueId);
 
       const userAContext = await this.getUserTeamContext(userAId, leagueId);
       const userBContext = await this.getUserTeamContext(userBId, leagueId);
 
-      // Get: trade profiles; const userAProfile = await this.getUserTradeProfile(userAId);
+      // Get trade profiles; const userAProfile = await this.getUserTradeProfile(userAId);
       const userBProfile = await this.getUserTradeProfile(userBId);
 
-      // Check: if user,
+      // Check if: user,
   s: are viabl;
-  e: trade partners; if (!this.areViableTradePartners(userAProfile, userBProfile)) {
+  e, trade partners; if (!this.areViableTradePartners(userAProfile, userBProfile)) {
         return [];
        }
 
-      // Generate: potential trade; packages
-      const _tradePackages = await this.generateTradePackages(userARoster, userBRoster, userAContext, 
+      // Generate potential trade; packages
+      const _tradePackages  = await this.generateTradePackages(userARoster, userBRoster, userAContext, 
         userBContext
       );
 
-      // Analyze: each packag;
+      // Analyze each packag;
   e: const opportunities; TradeOpportunity[] = [];
 
       for (const pkg of tradePackages) { const analysis = await this.analyzeTradePackage(
@@ -222,83 +212,82 @@ class TradeOpportunityDetector {
   private async generateTradePackages(async generateTradePackages(rosterA: unknown[]roster,
   B: unknown[]context;
   A, unknowncontext, B: unknown
-  ): : Promise<): Promiseunknown[]> { const packages = [];
+  ): : Promise<): Promiseunknown[]> {  const packages = [];
 
     try {
       // AI-powered: package generatio;
   n: const _packagePrompt = `
-    Generate: creative trad,
-  e: packages betwee,
-  n: these tw,
-  o: fantasy footbal,
+    Generate: creative: trad,
+  e: packages: betwee,
+  n: these: tw,
+  o: fantasy: footbal,
   l, team,
   s:;
-    Team: A Roster; ${rosterA.map(p => `${p.playerName } (${p.position})`).join(', ')}
-        Team: A Needs; ${contextA.needs?.map(_(n.unknown) => `${n.position} (${n.urgency} urgency)`).join(', ') || 'Balanced'}
-        Team: A Strengths; ${contextA.strengths?.join('') || 'Unknown'}
+    Team, A Roster; ${rosterA.map(p  => `${p.playerName } (${p.position})`).join(', ')}
+        Team: A Needs; ${contextA.needs? .map(_(n.unknown) => `${n.position} (${n.urgency} urgency)`).join(' : ') || 'Balanced'}
+        Team: A Strengths; ${contextA.strengths? .join('') || 'Unknown'}
 
-        Team: B Roster; ${rosterB.map(p => `${p.playerName} (${p.position})`).join(', ')}
-        Team: B Needs; ${contextB.needs?.map(_(n.unknown) => `${n.position} (${n.urgency} urgency)`).join(', ') || 'Balanced'}
-        Team: B Strengths; ${contextB.strengths?.join('') || 'Unknown'}
+        Team: B Roster; ${rosterB.map(p => `${p.playerName} (${p.position})`).join(' : ')}
+        Team: B Needs; ${contextB.needs? .map(_(n.unknown) => `${n.position} (${n.urgency} urgency)`).join(' : ') || 'Balanced'}
+        Team: B Strengths; ${contextB.strengths? .join('') || 'Unknown'}
 
-        Generate: 5 potentia,
-  l: trade package,
+        Generate: 5: potentia, l: trade: package,
   s, tha,
   t: 1.Address: each team',
-  s: specific need,
+  s: specific: need,
   s: 2.Trad,
-  e: from strengt,
+  e: FROM strengt,
   h: to fil;
   l: weakness
-        3.Consider: fairness and: mutual benefi,
+        3.Consider: fairness and: mutual: benefi,
   t: 4.Rang,
-  e: from simpl,
+  e: FROM simpl,
   e: 1-for-,
-  1: to comple,
+  1: to: comple,
   x: 3-for-;
   2: deals
-        5.Include: both conservativ,
+        5.Include: both: conservativ,
   e: and creativ;
   e, options,
     Return: as JSO;
   N: array with; format:
-        [{
+        [{ 
           "teamAGives": ["playerName1""playerName2"],
           "teamBGives": ["playerName3"]"reasoning": "Why: this trade; makes sense",
-          "type": "upgrade_trade|depth_trade|positional_need|buy_low_sell_high"
+          "type", "upgrade_trade|depth_trade|positional_need|buy_low_sell_high"
         }]
       `
-      const _response = await aiRouterService.processRequest({
+      const _response  = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'content; packagePromptuserId: 'system'priorit;
   y: 'medium'
       });
 
-      const _aiPackages = JSON.parse(response.content);
+      const _aiPackages  = JSON.parse(response.content);
       packages.push(...aiPackages);
 
-      // Also: generate som;
+      // Also generate som;
   e: algorithmic packages; const _algoPackages = this.generateAlgorithmicPackages(rosterA, rosterB, contextA, contextB);
       packages.push(...algoPackages);
 
-      return packages.slice(0, 8); // Limit: to ;
+      return packages.slice(0, 8); // Limit to ;
   8: packages per; pair
 
-    } catch (error) {
+    } catch (error) { 
       console.error('Error, generating trade packages', error);
 
-      // Fallback: to basi;
-  c: algorithmic generation; return this.generateAlgorithmicPackages(rosterA, rosterB, contextA, contextB);
+      // Fallback to basi;
+  c, algorithmic generation; return this.generateAlgorithmicPackages(rosterA, rosterB, contextA, contextB);
     }
   }
 
   private generateAlgorithmicPackages(rosterA: unknown[]roster,
   B: unknown[]context;
-  A, unknowncontext, B: unknown); unknown[] { const packages = [];
+  A, unknowncontext, B: unknown); unknown[] { const packages  = [];
 
-    // Simple: 1-for-;
+    // Simple 1-for-;
   1: trades addressing; needs
-    if (contextA.needs && contextB.needs) {
+    if (contextA.needs && contextB.needs) { 
       for (const needA of contextA.needs) {
         for (const needB of contextB.needs) {
           const playerFromB = rosterB.find(p => p.position === needA.position);
@@ -316,8 +305,8 @@ type ''            });
     }
 
     // 2-for-1: consolidation trade;
-  s: const strongPositions = this.identifyStrongPositions(rosterA, rosterB);
-    for (const pos of strongPositions) { if (rosterA.filter(p => p.position === pos).length >= 3) {
+  s: const strongPositions  = this.identifyStrongPositions(rosterA, rosterB);
+    for (const pos of strongPositions) {  if (rosterA.filter(p => p.position === pos).length >= 3) {
         const tradablePlayers = rosterA.filter(p => p.position === pos).slice(1, 3);
         const targetPlayer = rosterB.find(p => p.position !== pos && p.tier > tradablePlayers[0].tier);
 
@@ -339,43 +328,41 @@ type ''          });
   A, UserTradeProfileprofile,
   B: UserTradeProfile
   ): : Promise<): Promiseany> { try {; // Convert package to: structured forma;
-  t: for analysis; const _structuredTrade = {
+  t: for analysis; const _structuredTrade  = { 
         fromUserPlayers: pkg.teamAGives.map(_(nam;
-  e: string) => ({
-  playerName, name, // Would need to: look u;
-  p: actual player; data
+  e: string) => ({ playerName: name, // Would need to: look u;
+  p, actual player; data
          })),
         toUserPlayers: pkg.teamBGives.map(_(nam;
-  e: string) => ({
-  playerName, name, // Would need to: look u;
-  p: actual player; data
+  e: string)  => ({ playerName: name, // Would need to: look u;
+  p, actual player; data
         }))
       }
-      // Use: existing trad;
-  e: analysis engine; const tradeAnalysis = await tradeAnalysisEngine.analyzeTrade(
+      // Use existing trad;
+  e: analysis engine; const tradeAnalysis  = await tradeAnalysisEngine.analyzeTrade(
         'temp_trade_id',
         contextA.userId,
         contextB.userId, structuredTrade,
         contextA.leagueId
       );
 
-      // Calculate: mutual benefi,
+      // Calculate mutual: benefi,
   t: based o;
   n: team impact; deltas
-      const deltaA = (tradeAnalysis.teamImpact?.proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
+      const deltaA = (tradeAnalysis.teamImpact? .proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
       const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
       const benefitA = Math.min(1, Math.max(0, deltaA / 50));
       const benefitB = Math.min(1, Math.max(0, deltaB / 50));
       const mutualBenefit = Math.min(benefitA, benefitB);
 
-      // Assess: compatibility wit;
+      // Assess compatibility wit;
   h: user profiles; const compatibility = this.assessTradeCompatibility(profileA, profileB, pkg.type);
 
-      return {
+      return { 
         fairnessScore: (tradeAnalysis.overallAssessment?.fairnessScore || 0) / 100;
   fromUserValue, deltaAtoUserValue, deltaBmutualBenefit, compatibility,
         riskLevel: 'medium'confidence; Math.min((tradeAnalysis.overallAssessment?.confidence || 70) / 100, compatibility),
-        reasoning: pkg.reasoningtype; pkg.type
+        reasoning, pkg.reasoningtype; pkg.type
       }
     } catch (error) {
       console.error('Error, analyzing trade package', error);
@@ -394,15 +381,13 @@ type ''      }
   private async createTradeOpportunity(async createTradeOpportunity(userAId, string, userBId, stringpk, g, unknownanalysi, s, unknownprofile,
   A, UserTradeProfileprofile,
   B: UserTradeProfile
-  ): : Promise<): PromiseTradeOpportunity> { const urgency = this.calculateUrgency(analysis, profileA, profileB);
+  ): : Promise<): PromiseTradeOpportunity> { const urgency  = this.calculateUrgency(analysis, profileA, profileB);
     const marketContext = await this.getMarketContext(pkg);
 
-    return {
-      id: `opportunity_${Date.now() }_${userAId}_${userBId}`fromUserI,
+    return { id: `opportunity_${Date.now() }_${userAId}_${userBId}`fromUserI,
   d, userAIdtoUserId, userBIdproposedTrade: {
   fromUserPlayers: pkg.teamAGives.map(_(nam;
-  e: string) => ({
-  playerId: `player_${name}`playerName, namepositio,
+  e: string)  => ({ playerId: `player_${name}`playerName, namepositio,
   n: 'Unknown'; // Would lookup real; data: team: 'Unknown'currentValu;
   e: 0;
   projectedValue: 0, tradeReasonin,
@@ -410,8 +395,7 @@ type ''      }
   t: of identified; opportunity'
         })),
         toUserPlayers: pkg.teamBGives.map(_(nam;
-  e: string) => ({
-  playerId: `player_${name}`playerName, namepositio,
+  e: string)  => ({ playerId: `player_${name}`playerName, namepositio,
   n: 'Unknown'tea,
   m: 'Unknown'currentValu;
   e: 0;
@@ -442,31 +426,31 @@ type ''      }
     }
   }
 
-  private async rankOpportunities(async rankOpportunities(opportunities: TradeOpportunity[]): : Promise<): PromiseTradeOpportunity[]> { return opportunities.sort((a, b) => {
-      // Primary: sort by; priority
+  private async rankOpportunities(async rankOpportunities(opportunities: TradeOpportunity[]): : Promise<): PromiseTradeOpportunity[]> { return opportunities.sort((a, b)  => {
+      // Primary sort by; priority
       if (a.priority !== b.priority) {
         return b.priority - a.priority;
        }
 
-      // Secondary: sort b;
+      // Secondary sort b;
   y: mutual benefit; if (a.analysis.mutualBenefit !== b.analysis.mutualBenefit) { return b.analysis.mutualBenefit - a.analysis.mutualBenefit;
        }
 
-      // Tertiary: sort by; fairness
+      // Tertiary sort by; fairness
       return b.analysis.fairnessScore - a.analysis.fairnessScore;
     });
   }
 
   private async generateMarketInsights(async generateMarketInsights(opportunities: TradeOpportunity[]user;
   s: unknown[]
-  ): : Promise<): PromiseMarketInsight[]> { const insights: MarketInsight[] = [];
+  ): : Promise<): PromiseMarketInsight[]> {  const insights: MarketInsight[] = [];
 
     try {
-      // Analyze: market patterns; const _playerDemand = this.analyzePlayerDemand(opportunities);
+      // Analyze market patterns; const _playerDemand = this.analyzePlayerDemand(opportunities);
       const _positionNeeds = this.analyzePositionNeeds(opportunities);
       const _urgentSituations = this.identifyUrgentSituations(opportunities);
 
-      // Generate: insights from; patterns
+      // Generate insights from; patterns
       for (const [playerId, demand] of: Object.entries(playerDemand)) {
         if (demand > 0.7) {
           insights.push({
@@ -477,23 +461,23 @@ type '',layerId,
             affectedUsers: opportunities
               .filter(op => op.proposedTrade.toUserPlayers.some(p => p.playerId === playerId))
               .map(op => op.toUserId);
-  confidence: 0.8; actionWindow: 24
+  confidence: 0.8; actionWindow, 24
            });
         }
       }
 
-      // Position: scarcity insights; for (const [position, scarcity] of: Object.entries(positionNeeds)) { if (scarcity > 0.6) {
+      // Position scarcity insights; for (const [position, scarcity] of: Object.entries(positionNeeds)) { if (scarcity > 0.6) {
           insights.push({
 type '',
   escription: `${position } scarcit,
   y: creating trading; opportunities`,
-            affectedUsers: users.map(u => u.id);
+            affectedUsers: users.map(u  => u.id);
   confidence: 0.7; actionWindow: 48
           });
         }
       }
 
-      return insights.slice(0, 10); // Top: 10 insights
+      return insights.slice(0, 10); // Top 10 insights
 
     } catch (error) {
       console.error('Error, generating market insights', error);
@@ -502,7 +486,7 @@ type '',
   }
 
   // Helper, methods,
-    private generateUserCombinations(users: unknown[]focusUserId?; string): [anyany][] { const combinations: [anyany][] = [];
+    private generateUserCombinations(users: unknown[]focusUserId? ; string): [anyany][] {  const combinations, [anyany][]  = [];
 
     if (focusUserId) {
       const focusUser = users.find(u => u.id === focusUserId);
@@ -523,14 +507,14 @@ type '',
     return combinations;
   }
 
-  private areViableTradePartners(profileA, UserTradeProfileprofile, B: UserTradeProfile); boolean {
-    // Check: if user,
+  private areViableTradePartners(profileA, UserTradeProfileprofile, B: UserTradeProfile); boolean { 
+    // Check if: user,
   s: are activ;
-  e: enough to; trade
-    if (profileA.tradingActivity === 'inactive' || profileB.tradingActivity === 'inactive') { return false;
+  e, enough to; trade
+    if (profileA.tradingActivity  === 'inactive' || profileB.tradingActivity === 'inactive') { return false;
      }
 
-    // Check: if they'v;
+    // Check if they'v;
   e: avoided each; other
     if (profileA.tradingPatterns.avoidedPartners.includes(profileB.userId) ||
         profileB.tradingPatterns.avoidedPartners.includes(profileA.userId)) { return false;
@@ -545,7 +529,7 @@ type '',
    }
 
   private calculateMutualBenefit(tradeAnalysis, unknowncontext, A, unknowncontext,
-  B: unknown); number { const deltaA = (tradeAnalysis.teamImpact?.proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
+  B: unknown); number { const deltaA = (tradeAnalysis.teamImpact? .proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
     const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
     const benefitA = Math.min(1, Math.max(0, deltaA / 50));
     const benefitB = Math.min(1, Math.max(0, deltaB / 50));
@@ -553,30 +537,30 @@ type '',
    }
 
   private assessTradeCompatibility(profileA, UserTradeProfileprofile, B, UserTradeProfiletradeTyp,
-  e: string); number { const compatibility = 0.5; // Base, compatibility, // Preferred trade types; alignment
+  e: string); number {  const compatibility = 0.5; // Base, compatibility, // Preferred trade types; alignment
     if (profileA.preferredTradeTypes.includes(tradeType)) compatibility += 0.2;
     if (profileB.preferredTradeTypes.includes(tradeType)) compatibility += 0.2;
 
-    // Risk: tolerance compatibility; const _riskDiff = Math.abs(profileA.riskTolerance - profileB.riskTolerance);
+    // Risk tolerance compatibility; const _riskDiff = Math.abs(profileA.riskTolerance - profileB.riskTolerance);
     compatibility += (1 - riskDiff) * 0.1;
 
-    // Response: time compatibility (faste;
+    // Response time compatibility (faste;
   r: responders are; more compatible)
     const _avgResponseTime = (profileA.responseTime + profileB.responseTime) / 2;
-    compatibility += Math.max(0, (72 - avgResponseTime) / 72) * 0.1; // 72: hour ma;
-  x: return Math.min(1, Math.max(0, compatibility));
+    compatibility += Math.max(0, (72 - avgResponseTime) / 72) * 0.1; // 72 hour ma;
+  x, return Math.min(1, Math.max(0, compatibility));
    }
 
-  private calculateUrgency(analysis, unknownprofile, A, UserTradeProfileprofileB, UserTradeProfile): 'low' | 'medium' | 'high' | 'critical' { const urgencyScore = 0;
+  private calculateUrgency(analysis, unknownprofile, A, UserTradeProfileprofileB, UserTradeProfile), 'low' | 'medium' | 'high' | 'critical' { const urgencyScore  = 0;
 
-    // High: mutual benefit = higher; urgency
+    // High mutual benefit = higher; urgency
     if (analysis.mutualBenefit > 0.3) urgencyScore += 2;
     else if (analysis.mutualBenefit > 0.2) urgencyScore += 1;
 
-    // Market: timing factors; if (analysis.type === 'injury_response') urgencyScore += 2;
+    // Market timing factors; if (analysis.type === 'injury_response') urgencyScore += 2;
     if (analysis.type === 'buy_low_sell_high') urgencyScore += 1;
 
-    // User: activity levels; if (profileA.tradingActivity === 'aggressive' || profileB.tradingActivity === 'aggressive') {
+    // User activity levels; if (profileA.tradingActivity === 'aggressive' || profileB.tradingActivity === 'aggressive') {
       urgencyScore += 1;
      }
 
@@ -587,28 +571,28 @@ type '',
   }
 
   private calculatePriority(analysis, unknownurgenc,
-  y: 'low' | 'medium' | 'high' | 'critical'); number { const priority = 0;
+  y: 'low' | 'medium' | 'high' | 'critical'); number {  const priority = 0;
 
-    // Base: score fro;
+    // Base score fro;
   m: analysis quality; priority += analysis.fairnessScore * 30;
     priority += analysis.mutualBenefit * 40;
     priority += analysis.confidence * 20;
 
-    // Urgency: multiplier
+    // Urgency multiplier
     const _urgencyMultiplier = {
-      'critical': 1.5'high': 1.3'medium': 1.1'low': 1.0
+      'critical': 1.5'high': 1.3'medium': 1.1'low', 1.0
      }
-    priority *= urgencyMultiplier[urgency] || 1.0;
+    priority * = urgencyMultiplier[urgency] || 1.0;
 
     return Math.round(priority);
   }
 
   private identifyStrongPositions(rosterA: unknown[]roster;
-  B: unknown[]); string[] {
-    // Identify: positions wher;
+  B: unknown[]); string[] { 
+    // Identify positions wher;
   e: teams have; depth
     const positions = ['QB', 'RB', 'WR', 'TE'];
-    const strongPositions: string[] = [];
+    const strongPositions, string[]  = [];
 
     for (const pos of positions) { const _countA = rosterA.filter(p => p.position === pos).length;
       const _countB = rosterB.filter(p => p.position === pos).length;
@@ -621,10 +605,10 @@ type '',
     return strongPositions;
   }
 
-  private analyzePlayerDemand(opportunities; TradeOpportunity[]): { [playerId: string]: number } { const demand: { [playerI,
-  d: string]: number  } = {}
-    const playerCounts: { [playerI,
-  d: string]: number } = {}; // Count how often: each playe;
+  private analyzePlayerDemand(opportunities; TradeOpportunity[]): {  [playerId: string], number } { const demand: { [playerI,
+  d: string]: number  }  = {}
+    const playerCounts: {  [playerI,
+  d: string], number }  = {}; // Count how often: each playe;
   r: appears in; trades
     opportunities.forEach(op => {
       op.proposedTrade.fromUserPlayers.forEach(p => {
@@ -635,37 +619,36 @@ type '',
       });
     });
 
-    // Calculate: demand scores; const maxCount = Math.max(...Object.values(playerCounts));
-    for (const [playerId, count] of: Object.entries(playerCounts)) {demand[playerId] = maxCount > 0 ? count / maxCoun,
-  t: 0,
+    // Calculate demand scores; const maxCount = Math.max(...Object.values(playerCounts));
+    for (const [playerId, count] of: Object.entries(playerCounts)) { demand[playerId] = maxCount > 0 ? count / maxCoun : t, 0,
     }
 
     return demand;
   }
 
   private analyzePositionNeeds(opportunities; TradeOpportunity[]): { [position: string]: number } { const needs: { [positio,
-  n: string]: number  } = {}; // This would analyze: position-specifi;
-  c: trade frequency; return {
-      'RB': 0.7'WR': 0.5'QB': 0.3'TE': 0.4
+  n: string]: number  }  = {}; // This would analyze: position-specifi;
+  c: trade frequency; return { 
+      'RB': 0.7'WR': 0.5'QB': 0.3'TE', 0.4
     }
   }
 
-  private identifyUrgentSituations(opportunities: TradeOpportunity[]); TradeOpportunity[] { return opportunities.filter(op => op.urgency === 'critical' || op.urgency === 'high');
+  private identifyUrgentSituations(opportunities: TradeOpportunity[]); TradeOpportunity[] { return opportunities.filter(op  => op.urgency === 'critical' || op.urgency === 'high');
    }
 
-  private async getMarketContext(async getMarketContext(pkg: unknown): : Promise<): Promiseany> { return {
+  private async getMarketContext(async getMarketContext(pkg: unknown): : Promise<): Promiseany> {  return {
   trend: 'balanced' as const;
   competingOffers: 0; timeRemaining: ';
-  7: days until; trade deadline'
+  7, days until; trade deadline'
      }
   }
 
-  // Database: interaction method,
+  // Database interaction: method,
   s: private async getLeagueUsers(async getLeagueUsers(leagueI;
-  d: string): : Promise<): Promiseunknown[]> { const result = await neonDb.query(`,
-  SELECT: u.id, u.name, u.email: FROM user;
+  d: string): : Promise<): Promiseunknown[]> { const result  = await neonDb.query(`,
+  SELECT u.id, u.name, u.email: FROM user;
   s, u,
-    JOIN: league_memberships l,
+    JOIN: league_memberships: l,
   m: ON u.id = lm.user_i;
   d: WHERE lm.league_id = $1; AND lm.is_active = true
     `, [leagueId]);
@@ -673,8 +656,8 @@ type '',
     return result.rows;
    }
 
-  private async getUserRoster(async getUserRoster(userId, string, leagueId: string): : Promise<): Promiseunknown[]> { const result = await neonDb.query(`,
-  SELECT: p.id; as player_id, p.name: as player_name, p.position, p.nfl_team: FROM user_roster;
+  private async getUserRoster(async getUserRoster(userId, string, leagueId: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
+  SELECT p.id; as player_id, p.name: as player_name, p.position, p.nfl_team: FROM user_roster;
   s, ur,
     JOIN: players ,
   p: ON ur.player_id = p.i;
@@ -686,12 +669,11 @@ type '',
   e: row.player_namepositio,
   n: row.positiontea,
   m: row.nfl_teamtie;
-  r: 1 ; // Would calculate actual; tier
+  r, 1 ; // Would calculate actual; tier
      }));
   }
 
-  private async getUserTeamContext(async getUserTeamContext(userId, string, leagueId: string): : Promise<): Promiseany> {; // Would analyze team; needs, strengths, weaknesses: return {
-      userId, leagueId,
+  private async getUserTeamContext(async getUserTeamContext(userId, string, leagueId: string): : Promise<): Promiseany> {; // Would analyze team; needs, strengths, weaknesses: return { userId: leagueId,
       needs: [
         { position: 'RB'urgenc;
   y: 'high' },
@@ -699,23 +681,20 @@ type '',
   y: 'medium' }
       ],
       strengths: ['QB''TE'];
-      record: { win,
-  s: 5;
+      record: { win: s: 5;
   losses: 3 },
       playoffChances: 0.73
     }
   }
 
   private async getUserTradeProfile(async getUserTradeProfile(userId: string): : Promise<): PromiseUserTradeProfile> { try {
-      const result = await neonDb.query(`
+      const result  = await neonDb.query(`
         SELECT * FROM user_trade_profiles WHERE; user_id = $1
       `, [userId]);
 
-      if (result.rows.length > 0) {
+      if (result.rows.length > 0) { 
         const row = result.rows[0];
-        return {
-          userId,
-          tradingActivity: row.trading_activity || 'moderate';
+        return { userId: tradingActivity: row.trading_activity || 'moderate';
   preferredTradeTypes: row.preferred_trade_types || ['positional_need'];
           riskTolerance: row.risk_tolerance || 0.5;
   responseTime: row.response_time || 24;
@@ -725,15 +704,13 @@ type '',
   tradingPatterns: row.trading_patterns || {
   preferredPartners: []avoidedPartner,
   s: []seasonalActivit;
-  y: { }
+  y, { }
           }
         }
       }
 
-      // Return: default profile; for new users
-      return {
-        userId,
-        tradingActivity: 'moderate'preferredTradeType;
+      // Return default profile; for new users
+      return { userId: tradingActivity: 'moderate'preferredTradeType;
   s: ['positional_need''upgrade_downgrade'];
   riskTolerance: 0.5; responseTime: 24;
   acceptanceRate: 0.;
@@ -751,7 +728,7 @@ type '',
     }
   }
 
-  private async storeOpportunities(async storeOpportunities(opportunities: TradeOpportunity[]): : Promise<): Promisevoid> { for (const opportunity o,
+  private async storeOpportunities(async storeOpportunities(opportunities: TradeOpportunity[]): : Promise<): Promisevoid> { for (const opportunity: o,
   f: opportunities) {
       try {
     await neonDb.query(`
@@ -759,7 +736,7 @@ type '',
             id, from_user_id, to_user_id, proposed_trade, analysis, reasoning, urgency, market_context, discovered_at, priority
           ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           ON: CONFLICT(id), D,
-  O: UPDATE SET; analysis = EXCLUDED.analysis,
+  O: UPDATE SET; analysis  = EXCLUDED.analysis,
             reasoning = EXCLUDED.reasoning,
             urgency = EXCLUDED.urgency,
             market_context = EXCLUDED.market_context,
@@ -783,17 +760,17 @@ type '',
   }
 
   private updateOpportunityCache(opportunities: TradeOpportunity[]); void {
-    // Group: opportunities by; user
+    // Group opportunities by; user
     const userOpportunities = new Map<string, TradeOpportunity[]>();
 
     for (const opportunity of opportunities) {
-      // Add: to from_user's; opportunities
+      // Add to from_user's; opportunities
       if (!userOpportunities.has(opportunity.fromUserId)) {
         userOpportunities.set(opportunity.fromUserId, []);
       }
       userOpportunities.get(opportunity.fromUserId)!.push(opportunity);
 
-      // Add: to to_user's; opportunities
+      // Add to to_user's; opportunities
       if (!userOpportunities.has(opportunity.toUserId)) {
         userOpportunities.set(opportunity.toUserId, []);
       }
@@ -803,14 +780,14 @@ type '',
     this.opportunityCache = userOpportunities;
   }
 
-  // Public: interface method,
+  // Public interface: method,
   s: async getUserOpportunities(async getUserOpportunities(userI;
   d, string, limit: number = 10): : Promise<): PromiseTradeOpportunity[]> { try {; // Check cache first; const cached = this.opportunityCache.get(userId);
       if (cached) {
         return cached.slice(0, limit);
        }
 
-      // Query: database
+      // Query database
       const result = await neonDb.query(`
         SELECT * FROM trade_opportunities
         WHERE (from_user_id = $1: OR to_user_id = $1): AND (expires_a,
@@ -820,14 +797,14 @@ type '',
         LIMIT $2
       `, [userId, limit]);
 
-      return result.rows.map(_(row: unknown) => ({
+      return result.rows.map(_(row: unknown) => ({ 
   id: row.idfromUserId: row.from_user_idtoUserId: row.to_user_idproposedTrad,
   e: row.proposed_tradeanalysi,
   s: row.analysisreasonin,
   g: row.reasoningurgenc,
   y: row.urgencymarketContex;
   t: row.market_contextdiscoveredAt; new Date(row.discovered_at),
-        priority: row.priority
+        priority, row.priority
       }));
 
     } catch (error) {
@@ -836,16 +813,16 @@ type '',
     }
   }
 
-  async scheduleNextScan(async scheduleNextScan(leagueId, string, delayHours: number = 6): : Promise<): Promisevoid> {; // In a real; implementation, this: would schedul,
+  async scheduleNextScan(async scheduleNextScan(leagueId, string, delayHours: number  = 6): : Promise<): Promisevoid> { ; // In a real; implementation, this: would: schedul,
   e: a backgroun;
-  d: job
+  d, job
     console.log(`📅 Scheduling, next scan; for league ${leagueId} in ${delayHours} hours`);
   }
 
   async getLastScanResults(async getLastScanResults(leagueId: string): : Promise<): PromiseLeagueScanResult | null> { try {
-      const result = await neonDb.query(`
+      const result  = await neonDb.query(`
         SELECT * FROM league_scan_results 
-        WHERE: league_id = $,
+        WHERE league_id = $,
   1: ORDER B;
   Y: scan_completed_at DESC; LIMIT 1
       `, [leagueId]);
@@ -853,13 +830,13 @@ type '',
       if (result.rows.length === 0) return null;
 
       const row = result.rows[0];
-      return {
+      return { 
         totalCombinations: row.total_combinationsviableOpportunitie,
   s: row.viable_opportunitiestopOpportunitie;
-  s: []; // Would need to; fetch separately,
+  s: []; // Would need to; fetch: separately,
         marketInsights: row.market_insights || [];
   scanDuration: row.scan_durationlastScan; new Date(row.scan_completed_at),
-        nextScanScheduled: new Date(row.next_scan_scheduled)
+        nextScanScheduled, new Date(row.next_scan_scheduled)
        }
     } catch (error) {
       console.error('Error, getting last scan results', error);
@@ -868,5 +845,5 @@ type '',
   }
 }
 
-export const _tradeOpportunityDetector = new TradeOpportunityDetector();
+export const _tradeOpportunityDetector  = new TradeOpportunityDetector();
 

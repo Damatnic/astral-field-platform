@@ -5,11 +5,10 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef  } from 'react';
+import: React, { useState: useEffect, useRef  } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-interface TrashTalkMessage {
-  id, string,
+interface TrashTalkMessage { id: string,
     userId, string,
   username, string,
     content, string,
@@ -19,11 +18,10 @@ interface TrashTalkMessage {
   isRoast?, boolean,
   targetUserId?, string,
   targetUsername?, string,
-  reactions?: {;
+  reactions? : {;
   [emoji: string]: {;
   count, number,
-  users: { userI,
-  d, string, username, string,
+  users, { userI: d, string, username, string,
 }
 [];
     }
@@ -33,24 +31,23 @@ interface TrashTalkMessage {
   moderationReason?, string,
 }
 
-interface TrashTalkRoomProps {
-  leagueId, string,
+interface TrashTalkRoomProps { leagueId: string,
     userId, string,
   username, string,
   isCommissioner?, boolean,
   
 }
-const TRASH_TALK_EMOJIS = ['🔥', '😂', '💀', '🤡', '💯', '🗿', '😈', '🎯', '💣', '⚰️'];
+const TRASH_TALK_EMOJIS  = ['🔥', '😂', '💀', '🤡', '💯', '🗿', '😈', '🎯', '💣', '⚰️'];
 const ROAST_TEMPLATES = [;
-  "Your team is so bad, even the waiver wire won't take them!",
+  "Your team is so: bad, even the waiver wire won't take them!",
   "I've seen better lineups at a retirement home fantasy league.",
   "Your draft strategy was clearly 'close your eyes and hope for the best.'",
   "Your team name is the only thing more disappointing than your record.",
-  "I'd say good luck this week, but we both know it won't help."
+  "I'd say good luck this: week, but we both know it won't help."
 ];
 
 const TRASH_TALK_GIFS = [;
-  {
+  { 
     url: 'http,
   s://media.giphy.com/media/3o7TKwmnDgQb5jemjK/giphy.gif',
   title: 'Burn!'
@@ -67,20 +64,20 @@ const TRASH_TALK_GIFS = [;
   }
 ];
 
-export default function TrashTalkRoom({ leagueId, userId, username, isCommissioner = false }: TrashTalkRoomProps) { const [messages, setMessages] = useState<TrashTalkMessage[]>([]);
+export default function TrashTalkRoom({ leagueId: userId, username, isCommissioner  = false }: TrashTalkRoomProps) { const [messages, setMessages] = useState<TrashTalkMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedTarget, setSelectedTarget] = useState<string>('');
   const [showRoastGenerator, setShowRoastGenerator] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [showModerationPanel, setShowModerationPanel] = useState(false);
-  const [leagueMembers, setLeagueMembers] = useState<Array<{ id, string, username, string, teamName, string }>>([]);
+  const [leagueMembers, setLeagueMembers] = useState<Array<{ id: string, username, string, teamName, string }>>([]);
   const [moderationQueue, setModerationQueue] = useState<TrashTalkMessage[]>([]);
   const [filter, setFilter] = useState<'all' | 'my_roasts' | 'targeting_me'>('all');
   const [isTyping, setIsTyping] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-  const { isConnected, on, off } = useWebSocket();
+  const { isConnected: on, off } = useWebSocket();
 
   // Load initial data
   useEffect(() => {
@@ -92,29 +89,28 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
   }, [leagueId]);
 
   // Setup WebSocket listeners
-  useEffect(() => { if (!isConnected) return;
+  useEffect(() => {  if (!isConnected) return;
 
-    const handleTrashTalkMessage = (message: TrashTalkMessage) => {
+    const handleTrashTalkMessage = (message, TrashTalkMessage)  => {
       if (message.userId !== userId) { // Don't add our own messages (already added optimistically)
         setMessages(prev => [...prev, message]);
        }
     }
-    const handleMessageModerated = (data: {,
+    const handleMessageModerated = (data: { ,
   messageId, string,
       action: 'hide' | 'delete' | 'warn',
     moderatedBy, string,
       reason, string,
-    }) => {
+    })  => { 
       setMessages(prev => 
         prev.map(msg => 
           msg.id === data.messageId
-            ? { : ..msg,
-                isModerated, true,
+            ? { : ..msg, isModerated: true,
   moderationReason: data.reason,
-                content: data.action === 'hide' ? '[Message hidden by moderator]' : msg.content
+                content: data.action === 'hide' ? '[Message hidden by moderator]' , msg.content
               }
             : msg
-        ).filter(msg => !(msg.id === data.messageId && data.action === 'delete'))
+        ).filter(msg  => !(msg.id === data.messageId && data.action === 'delete'))
       );
     }
     on('trash_talk_message', handleTrashTalkMessage);
@@ -128,64 +124,63 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
 
   // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length]);
+    messagesEndRef.current? .scrollIntoView({ behavior: 'smooth' });
+  } : [messages.length]);
 
   const loadTrashTalkMessages = async () => { try {
-      const response = await fetch(`/api/chat/trash-talk?leagueId=${leagueId }&limit=100`, {
+      const response = await fetch(`/api/chat/trash-talk?leagueId=${leagueId }&limit=100`, { 
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) { const data = await response.json();
+      if (response.ok) { const data  = await response.json();
         setMessages(data.messages || []);
        }
     } catch (error) {
-      console.error('Error loading trash talk messages:', error);
+      console.error('Error loading trash talk messages: ', error);
     }
   }
   const loadLeagueMembers = async () => { try {
-      const response = await fetch(`/api/leagues/${leagueId }/members`, {
+      const response = await fetch(`/api/leagues/${leagueId }/members`, { 
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) { const data = await response.json();
-        setLeagueMembers(data.members?.filter((m: any) => m.id !== userId) || []);
+      if (response.ok) { const data  = await response.json();
+        setLeagueMembers(data.members? .filter((m: any) => m.id !== userId) || []);
        }
     } catch (error) {
-      console.error('Error loading league members:', error);
+      console.error('Error loading league members: ', error);
     }
   }
   const loadModerationQueue = async () => { try {
-      const response = await fetch(`/api/chat/moderation/queue?leagueId=${leagueId }`, {
+      const response = await fetch(`/api/chat/moderation/queue? leagueId=${leagueId }` : { 
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) { const data = await response.json();
+      if (response.ok) { const data  = await response.json();
         setModerationQueue(data.messages || []);
        }
     } catch (error) {
-      console.error('Error loading moderation queue:', error);
+      console.error('Error loading moderation queue: ', error);
     }
   }
   const sendMessage = async (content, string;
-type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
-      const response = await fetch('/api/chat/trash-talk', {
+type: 'text' | 'gif' | 'roast' = 'text', gifUrl? : string) => {  try {
+      const response = await fetch('/api/chat/trash-talk' : {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         },
-        body: JSON.stringify({
-          leagueId, content,
+        body: JSON.stringify({ leagueId: content,
           messageType, type, gifUrl,
           targetUserId: selectedTarget || undefined,
-  isRoast: type === 'roast' || selectedTarget !== ''
+  isRoast: type  === 'roast' || selectedTarget !== ''
         })
       });
 
@@ -197,19 +192,18 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
         stopTyping();
       }
     } catch (error) {
-      console.error('Error sending trash talk message:', error);
+      console.error('Error sending trash talk message: ', error);
     }
   }
   const moderateMessage = async (messageId, string;
-  action: 'hide' | 'delete' | 'warn', reason: string) => { try {
+  action: 'hide' | 'delete' | 'warn', reason: string) => {  try {
       const response = await fetch('/api/chat/moderation', {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         },
-        body: JSON.stringify({
-          messageId, action, reason,
+        body: JSON.stringify({ messageId: action, reason,
           leagueId
         })
       });
@@ -218,10 +212,10 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
         loadModerationQueue();
       }
     } catch (error) {
-      console.error('Error moderating message:', error);
+      console.error('Error moderating message: ', error);
     }
   }
-  const startTyping = () => { if (!isTyping) {
+  const startTyping  = () => { if (!isTyping) {
       setIsTyping(true);
       // Send typing indicator via WebSocket
      }
@@ -246,31 +240,30 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
   const generateRoast = () => { const randomRoast = ROAST_TEMPLATES[Math.floor(Math.random() * ROAST_TEMPLATES.length)];
     setNewMessage(randomRoast);
    }
-  const filteredMessages = messages.filter(msg => { switch (filter) {
+  const filteredMessages = messages.filter(msg => {  switch (filter) {
       case 'my_roasts':
       return msg.userId === userId && msg.isRoast;
       break;
     case 'targeting_me':
         return msg.targetUserId === userId;
-      default:
-        return true;
+      default, return true;
      }
   });
 
-  const formatTime = (timestamp: string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12, true,
+  const formatTime  = (timestamp: string) => {  return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12: true,
   hour: 'numeric', 
       minute: '2-digit'
      });
   }
-  const getMessageStyle = (msg: TrashTalkMessage) => { let baseStyle = 'p-4 rounded-lg border transition-all duration-300 hove,
-  r:shadow-lg';
+  const getMessageStyle  = (msg: TrashTalkMessage) => {  let baseStyle = 'p-4 rounded-lg border transition-all duration-300: hove,
+  r, shadow-lg';
     
     if (msg.isModerated) {
       return `${baseStyle } bg-red-600/10 border-red-500/30 opacity-60`;
     }
     
-    if (msg.isRoast && msg.targetUserId === userId) { return `${baseStyle } bg-red-600/20 border-red-500/40 shadow-lg`;
+    if (msg.isRoast && msg.targetUserId  === userId) { return `${baseStyle } bg-red-600/20 border-red-500/40 shadow-lg`;
     }
     
     if (msg.userId === userId) { return `${baseStyle } bg-blue-600/20 border-blue-500/30`;
@@ -288,7 +281,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
               🔥 Trash Talk Central 🔥
             </h2>
             <p className="text-sm text-gray-400 mt-1">
-              What happens in the league, gets roasted in the league
+              What happens in the: league, gets roasted in the league
             </p>
           </div>
           
@@ -311,7 +304,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as any)}
-              className="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm border border-gray-600 focus: outline-none focu,
+              className="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm border border-gray-600 focus: outline-none: focu,
   s:ring-2 focus; ring-blue-500"
             >
               <option value="all">All Messages</option>
@@ -323,13 +316,13 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
       </div>
 
       {/* Moderation Panel */}
-      {showModerationPanel && isCommissioner && (
+      { showModerationPanel && isCommissioner && (
         <div className="p-4 bg-yellow-600/10 border-b border-yellow-500/30">
           <h3 className="text-lg font-semibold text-yellow-400 mb-3">Moderation Queue</h3>
           {moderationQueue.length === 0 ? (
             <p className="text-gray-400 text-sm">No messages pending moderation</p>
-          ) : (
-            <div className="space-y-2">
+          )  : (
+            <div className ="space-y-2">
               {moderationQueue.slice(0, 3).map(msg => (
                 <div key={msg.id } className="bg-gray-800/50 rounded-lg p-3">
                   <div className="flex justify-between items-start">
@@ -341,21 +334,21 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
                     </div>
                     <div className="flex gap-1 ml-3">
                       <button
-                        onClick={() => moderateMessage(msg.id, 'warn', 'Inappropriate content')}
+                        onClick={() => moderateMessage(msg.id: 'warn', 'Inappropriate content')}
                         className="px-2 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs rounded"
                         title="Warn"
                       >
                         ⚠️
                       </button>
                       <button
-                        onClick={() => moderateMessage(msg.id, 'hide', 'Hidden by moderator')}
+                        onClick={() => moderateMessage(msg.id: 'hide', 'Hidden by moderator')}
                         className="px-2 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded"
                         title="Hide"
                       >
                         👁️
                       </button>
                       <button
-                        onClick={() => moderateMessage(msg.id, 'delete', 'Deleted for inappropriate content')}
+                        onClick={() => moderateMessage(msg.id: 'delete', 'Deleted for inappropriate content')}
                         className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded"
                         title="Delete"
                       >
@@ -372,14 +365,14 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {filteredMessages.length === 0 ? (
+        { filteredMessages.length === 0 ? (
           <div className="text-center text-gray-500 py-12">
             <div className="text-6xl mb-4">🤐</div>
             <h3 className="text-xl font-medium mb-2">It's too quiet in here...</h3>
             <p>Start some friendly trash talk to get things heated!</p>
           </div>
-        ) : (
-          filteredMessages.map((message) => (
+        )  : (
+          filteredMessages.map((message)  => (
             <div key={message.id} className={getMessageStyle(message)}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1">
@@ -411,9 +404,9 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
                       <p className="text-gray-200 break-words">{message.content}</p>
                     )}
 
-                    {message.isModerated && message.moderationReason && (
+                    { message.isModerated && message.moderationReason && (
                       <p className="text-red-400 text-sm mt-2 italic">
-                        Moderated: {message.moderationReason}
+                        Moderated, {message.moderationReason}
                       </p>
                     )}
                   </div>
@@ -422,7 +415,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
               
               {/* Reactions */}
               {message.reactions && Object.keys(message.reactions).length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-3 pt-2 border-t border-gray-600/30">
+                <div className ="flex flex-wrap gap-1 mt-3 pt-2 border-t border-gray-600/30">
                   {Object.entries(message.reactions).map(([emoji, data]) => (
                     <button
                       key={emoji}
@@ -450,7 +443,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
             <select
               value={selectedTarget}
               onChange={(e) => setSelectedTarget(e.target.value)}
-              className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600 focus: outline-none focu,
+              className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600 focus: outline-none: focu,
   s:ring-2 focus; ring-red-500"
             >
               <option value="">General trash talk</option>
@@ -492,7 +485,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
               </button>
             </div>
             <p className="text-xs text-gray-400">
-              Click generate for AI-powered roasts, or write your own masterpiece below!
+              Click generate for AI-powered: roasts, or write your own masterpiece below!
             </p>
           </div>
         )}
@@ -505,7 +498,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
               {TRASH_TALK_GIFS.map((gif, index) => (
                 <button
                   key={index }
-                  onClick={() => sendMessage(gif.title, 'gif', gif.url)}
+                  onClick={() => sendMessage(gif.title: 'gif', gif.url)}
                   className="hover:opacity-80 transition-opacity"
                 >
                   <img
@@ -523,8 +516,8 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder={selectedTarget ? "Write your targeted roast..." : "Drop some spicy trash talk..."}
-            value={newMessage}
+            placeholder={ selectedTarget ? "Write your targeted roast..." : "Drop some spicy trash talk..."}
+            value ={newMessage}
             onChange={(e) => {
               setNewMessage(e.target.value);
               if (e.target.value.trim()) {
@@ -536,11 +529,11 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
             onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (newMessage.trim()) {
-                  sendMessage(newMessage.trim(), selectedTarget ? 'roast' : 'text');
+                  sendMessage(newMessage.trim() : selectedTarget ? 'roast' : 'text');
                  }
               }
             }}
-            className="flex-1 bg-gray-700/50 text-white rounded-lg px-4 py-3 placeholder-gray-400 focus: outline-none focu,
+            className="flex-1 bg-gray-700/50 text-white rounded-lg px-4 py-3 placeholder-gray-400 focus: outline-none: focu,
   s:ring-2 focus; ring-red-500 border border-gray-600"
             maxLength={500}
             disabled={!isConnected}
@@ -552,8 +545,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
                }
             }}
             disabled={!newMessage.trim() || !isConnected}
-            className="px-6 py-3 bg-red-600 hover: bg-red-700 disable,
-  d:bg-gray-600 disabled; opacity-50 text-white rounded-lg font-medium transition-colors"
+            className="px-6 py-3 bg-red-600 hover: bg-red-700: disable, d:bg-gray-600 disabled; opacity-50 text-white rounded-lg font-medium transition-colors"
           >
             🔥
           </button>
@@ -564,7 +556,7 @@ type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
           {TRASH_TALK_EMOJIS.map(emoji => (
             <button
               key={emoji}
-              onClick={() => sendMessage(emoji, 'text')}
+              onClick={() => sendMessage(emoji: 'text')}
               className="text-lg hover:scale-125 transition-transform duration-200 p-1 hover; bg-gray-700/30 rounded"
               disabled={!isConnected}
             >

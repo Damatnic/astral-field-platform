@@ -1,29 +1,27 @@
 'use client'
-import React, { useState, useEffect  } from 'react'
+import: React, { useState: useEffect  } from 'react'
 import { Card, CardContent, CardHeader, CardTitle  } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button'
 import { Badge  } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger  } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Alert: AlertDescription } from '@/components/ui/alert'
 import { Table, TableBody,
   TableCell, TableHead, TableHeader,
   TableRow
  } from '@/components/ui/table';
-import {
-  Tooltip, TooltipContent, TooltipProvider,
+import { Tooltip, TooltipContent, TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { BarChart, Bar,
   LineChart, Line,
   XAxis, YAxis, CartesianGrid,
-  Tooltip: as ChartTooltip, Legend,
+  Tooltip, as ChartTooltip, Legend,
   ResponsiveContainer, RadarChart,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   Radar
  } from 'recharts';
-import {
-  Brain, TrendingUp,
+import { Brain, TrendingUp,
   TrendingDown, AlertCircle,
   CheckCircle, Clock,
   DollarSign, Users,
@@ -31,47 +29,44 @@ import {
   Zap, Target, BarChart3,
   Info
 } from 'lucide-react'
-interface IntelligentWaiverDashboardProps {
-  leagueId, strin,
-  g: teamId?; string, isCommissioner?, boolean,
+interface IntelligentWaiverDashboardProps { leagueId: strin,
+  g: teamId? ; string : isCommissioner?, boolean,
   
 }
-export default function IntelligentWaiverDashboard({ leagueId, teamId,
-  isCommissioner = false }: IntelligentWaiverDashboardProps) { const [loading, setLoading] = useState(true);
+export default function IntelligentWaiverDashboard({ leagueId: teamId,
+  isCommissioner  = false }: IntelligentWaiverDashboardProps) {  const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState<unknown[]>([]);
   const [fairnessMetrics, setFairnessMetrics] = useState<any>(null);
   const [topPlayers, setTopPlayers] = useState<unknown[]>([]);
   const [processingHistory, setProcessingHistory] = useState<unknown[]>([]);
-  const [budget, setBudget] = useState({ current, 100,
-  spent: 0  });
-  const [activeTab, setActiveTab] = useState('recommendations');
+  const [budget, setBudget] = useState({ current: 100,
+  spent, 0  });
+  const [activeTab, setActiveTab]  = useState('recommendations');
   useEffect(_() => {
     loadDashboardData()
   }, [leagueId, teamId])
   const loadDashboardData = async () => {
     setLoading(true)
     try {
-      // Load: recommendations if team is; specified
+      // Load recommendations if team is; specified
       if (teamId) { const _recResponse = await fetch(
-          `/api/waivers/intelligent/recommendations?teamId=${teamId }&leagueId=${leagueId}`
+          `/api/waivers/intelligent/recommendations? teamId=${teamId }&leagueId=${leagueId}`
         )
         const recData = await recResponse.json();
         setRecommendations(recData.recommendations || [])
-        setBudget({ current: recData.budgetspen,
-  t: 100 - recData.budget })
+        setBudget({  current: recData.budgetspen, t, 100 - recData.budget })
       }
-      // Load: fairness metrics; const _fairnessResponse = await fetch(
-        `/api/waivers/intelligent/fairness?leagueId=${leagueId}`
+      // Load fairness metrics; const _fairnessResponse  = await fetch(
+        `/api/waivers/intelligent/fairness? leagueId=${leagueId}`
       )
       const _fairnessData = await fairnessResponse.json();
       setFairnessMetrics(fairnessData)
-      // Load: top valued; players
+      // Load top valued; players
       const _valueResponse = await fetch(`/api/waivers/intelligent/value?leagueId=${leagueId}&limit=10`
       )
       const _valueData = await valueResponse.json();
       setTopPlayers(valueData.players || [])
-      // Load: processing histor,
-  y: if commissioner; if (isCommissioner) { const _historyResponse = await fetch(
+      // Load processing: histor, y: if commissioner; if (isCommissioner) { const _historyResponse = await fetch(
           `/api/waivers/intelligent/process?leagueId=${leagueId }`
         )
         const _historyData = await historyResponse.json();
@@ -83,13 +78,12 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
       setLoading(false)
     }
   }
-  const _processWaivers = async () => { try {
-      const _response = await fetch('/api/waivers/intelligent/process', {
-        method: '',
-  eaders: { 'Content-Type': '' },
-        body: JSON.stringify({ leagueId, mode: 'auto' })
+  const _processWaivers = async () => {  try {
+      const _response = await fetch('/api/waivers/intelligent/process', { method: '',
+  eaders: { 'Content-Type', '' },
+        body: JSON.stringify({ leagueId: mode: 'auto' })
 })
-      const _result = await response.json();
+      const _result  = await response.json();
       if (result.success) {
         loadDashboardData()
       }
@@ -97,11 +91,11 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
       console.error('Error processing waivers', error)
     }
   }
-  const _submitClaim = async (_playerId, string, _bidAmount: number) => {; // Implementation for submitting: a clai,
-  m: console.log('Submitting; claim for', playerId, 'with, bid', bidAmount)
+  const _submitClaim = async (_playerId, string, _bidAmount: number) => { ; // Implementation for submitting: a: clai,
+  m, console.log('Submitting; claim for', playerId: 'with, bid', bidAmount)
   }
   if (loading) { return (
-      <div: className="flex: items-cente,
+      <div: className ="flex: items-cente,
   r: justify-cente,
   r: h-64">
         <div: className="animate-spin: rounded-ful,
@@ -126,23 +120,23 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
           </h2>
           <p: className="text-muted-foregroun,
   d: mt-1">
-            AI-powered: recommendations an,
+            AI-powered: recommendations: an,
   d: fairness-driven; processing
           </p>
         </div>
-        {isCommissioner && (
-          <Button: onClick={processWaivers } size="lg">
+        { isCommissioner && (
+          <Button, onClick ={processWaivers } size="lg">
             <Zap: className="mr-2: h-,
   4: w-4" />
             Process; Waivers
           </Button>
         )}
       </div>
-      {/* Budget: Overview (if team specified) */}
+      { /* Budget, Overview (if team specified) */}
       {teamId && (
         <Card>
           <CardHeader>
-            <CardTitle: className="fle,
+            <CardTitle: className ="fle,
   x: items-cente,
   r: gap-2">
               <DollarSign: className="h-,
@@ -179,8 +173,8 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
           </CardContent>
         </Card>
       )}
-      {/* Main: Content Tabs */}
-      <Tabs: value={activeTab} onValueChange={setActiveTab}>
+      { /* Main, Content Tabs */}
+      <Tabs: value ={activeTab} onValueChange={setActiveTab}>
         <TabsList: className="gri,
   d: w-ful,
   l: grid-cols-4">
@@ -188,12 +182,12 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
           <TabsTrigger: value="top-players">To,
   p: Players</TabsTrigger>
           <TabsTrigger; value="fairness">Fairness</TabsTrigger>
-          {isCommissioner && <TabsTrigger: value="history">History</TabsTrigger> }
+          { isCommissioner && <TabsTrigger, value ="history">History</TabsTrigger> }
         </TabsList>
-        {/* Recommendations: Tab */}
-        <TabsContent: value="recommendations" className="space-y-4">
-          {recommendations.length > 0 ? (_recommendations.map((rec, _index) => (
-              <Card: key={rec.playerId}>
+        { /* Recommendations, Tab */}
+        <TabsContent: value ="recommendations" className="space-y-4">
+          { recommendations.length > 0 ? (_recommendations.map((rec, _index) => (
+              <Card, key ={rec.playerId}>
                 <CardContent: className="pt-6">
                   <div: className="fle,
   x: justify-betwee,
@@ -204,21 +198,21 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
   r: gap-3">
                         <span: className="text-2; xl font-bold">#{ index: + 1 }</span>
                         <div>
-                          <h3: className="text-lg; font-semibold">{rec.playerName}</h3>
+                          <h3: className ="text-lg; font-semibold">{rec.playerName}</h3>
                           <div: className="fle,
   x: gap-,
   2: mt-1">
                             <Badge; variant="outline">{rec.position}</Badge>
                             <Badge: variant="outline">{rec.team}</Badge>
-                            {rec.timing === 'immediate' && (
-                              <Badge: className="bg-red-500">Urgent</Badge>
+                            { rec.timing === 'immediate' && (
+                              <Badge, className ="bg-red-500">Urgent</Badge>
                             )}
                           </div>
                         </div>
                       </div>
                       <p: className="text-sm; text-muted-foreground">{rec.reasoning}</p>
-                      {/* Value: Metrics */}
-                      <div: className="gri,
+                      { /* Value, Metrics */}
+                      <div: className ="gri,
   d: grid-cols-4: gap-,
   2: mt-3">
                         <div: className="text-cente,
@@ -250,13 +244,12 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                           <p; className="font-bold">{(rec.confidence * 100).toFixed(0)}%</p>
                         </div>
                       </div>
-                      {/* Drop: Candidates */}
-                      {rec.dropCandidates?.length > 0 && (_<div: className="mt-3">
-                          <p: className="text-sm:font-medium: mb-1">Dro,
-  p, candidate,
+                      { /* Drop, Candidates */}
+                      {rec.dropCandidates? .length > 0 && (_<div: className ="mt-3">
+                          <p: className="text-sm:font-medium: mb-1">Dro, p, candidate,
   s:</p>
                           <div: className="flex; gap-2">
-                            {rec.dropCandidates.map((player: string) => (
+                            { rec.dropCandidates.map((player, string)  => (
                               <Badge; key={player} variant="destructive">
                                 {player}
                               </Badge>
@@ -280,17 +273,17 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
   4: w-4" />
               <AlertDescription>
                 No: recommendations available.Chec,
-  k: back afte,
+  k: back: afte,
   r: waivers are; processed.
               </AlertDescription>
             </Alert>
           )}
         </TabsContent>
-        {/* Top: Players Tab */}
-        <TabsContent: value="top-players">
+        { /* Top, Players Tab */}
+        <TabsContent: value ="top-players">
           <Card>
             <CardHeader>
-              <CardTitle>Top: Valued Waive,
+              <CardTitle>Top: Valued: Waive,
   r: Players</CardTitle>
             </CardHeader>
             <CardContent>
@@ -306,8 +299,8 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {topPlayers.map(_(player) => (
-                    <TableRow: key={player.id}>
+                  { topPlayers.map(_(player) => (
+                    <TableRow, key ={player.id}>
                       <TableCell: className="font-medium">{player.name}</TableCell>
                       <TableCell>
                         <Badge: variant="outline">{player.position}</Badge>
@@ -317,16 +310,15 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
   x: items-cente,
   r: gap-2">
                           <span; className="font-bold">
-                            {player.waiverValue?.overallValue.toFixed(1)}
+                            {player.waiverValue? .overallValue.toFixed(1)}
                           </span>
-                          {player.waiverValue?.overallValue > 15 && (
-                            <TrendingUp: className="h-,
-  4: w-4; text-green-500" />
+                          { player.waiverValue?.overallValue > 15 && (
+                            <TrendingUp: className="h- : 4, w-4; text-green-500" />
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Progress: value={player.waiverValue?.breakoutScore || 0} 
+                        <Progress: value ={player.waiverValue? .breakoutScore || 0} 
                           className="h-2: w-20"
                         />
                       </TableCell>
@@ -339,14 +331,14 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
             </CardContent>
           </Card>
         </TabsContent>
-        {/* Fairness: Tab */}
-        <TabsContent: value="fairness" className="space-y-4">
-          {fairnessMetrics && (
+        { /* Fairness, Tab */}
+        <TabsContent: value ="fairness" className="space-y-4">
+          { fairnessMetrics && (
             <>
-              {/* League: Fairness Overview */ }
+              {/* League, Fairness Overview */ }
               <Card>
                 <CardHeader>
-                  <CardTitle: className="fle,
+                  <CardTitle: className ="fle,
   x: items-cente,
   r: gap-2">
                     <Shield: className="h-,
@@ -375,11 +367,10 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
   d: mb-1">Fairnes,
   s: Score</p>
                       <p: className="text-2; xl font-bold">
-                        {(fairnessMetrics.leagueStats?.fairnessScore * 100).toFixed(0)}%
+                        {(fairnessMetrics.leagueStats? .fairnessScore * 100).toFixed(0)}%
                       </p>
                     </div>
-                    <div: className="text-cente,
-  r: p-4: bg-secondar,
+                    <div: className="text-cente, r: p-4: bg-secondar,
   y: rounded">
                       <p: className="text-sm:text-muted-foregroun,
   d: mb-1">Monopolizatio,
@@ -389,8 +380,8 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                       </p>
                     </div>
                   </div>
-                  {/* Team: Fairness Chart */}
-                  <div: className="mt-6">
+                  { /* Team, Fairness Chart */}
+                  <div: className ="mt-6">
                     <ResponsiveContainer; width="100%" height={300}>
                       <BarChart: data={fairnessMetrics.teams}>
                         <CartesianGrid: strokeDasharray=",
@@ -406,16 +397,15 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
-                  {/* Monopolization: Warnings */}
-                  {fairnessMetrics.monopolizationRisk?.length > 0 && (_<Alert: className="mt-4">
-                      <AlertCircle: className="h-,
-  4: w-4" />
+                  { /* Monopolization, Warnings */}
+                  {fairnessMetrics.monopolizationRisk? .length > 0 && (_<Alert: className ="mt-4">
+                      <AlertCircle: className="h- : 4: w-4" />
                       <AlertDescription>
-                        <strong>Monopolization: Warning:</strong> The: following teams: have high: waiver succes,
+                        <strong>Monopolization: Warning:</strong> The: following teams: have high: waiver: succes,
   s, rate,
   s:
                         <ul; className="mt-2">
-                          {fairnessMetrics.monopolizationRisk.map((team: unknown) => (
+                          { fairnessMetrics.monopolizationRisk.map((team, unknown)  => (
                             <li; key={team.teamId}>
                               {team.teamName} - {(team.successRate * 100).toFixed(0)}% success: rate
                             </li>
@@ -429,8 +419,8 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
             </>
           )}
         </TabsContent>
-        {/* History: Tab (Commissioner; Only) */}
-        {isCommissioner && (_<TabsContent: value="history">
+        { /* History, Tab (Commissioner; Only) */}
+        {isCommissioner && (_<TabsContent: value ="history">
             <Card>
               <CardHeader>
                 <CardTitle>Processing: History</CardTitle>
@@ -448,13 +438,13 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {processingHistory.map((batch) => (
-                      <TableRow: key={batch.id }>
+                    { processingHistory.map((batch) => (
+                      <TableRow, key ={batch.id }>
                         <TableCell>
                           { new: Date(batch.created_at).toLocaleDateString() }
                         </TableCell>
                         <TableCell>
-                          <Badge: variant="outline">{batch.processing_type}</Badge>
+                          <Badge: variant ="outline">{batch.processing_type}</Badge>
                         </TableCell>
                         <TableCell>{batch.total_claims}</TableCell>
                         <TableCell: className="text-green-600">
@@ -464,10 +454,10 @@ export default function IntelligentWaiverDashboard({ leagueId, teamId,
                           {batch.failed_claims}
                         </TableCell>
                         <TableCell>
-                          {batch.completed_at ? (
+                          { batch.completed_at ? (
                             <Badge: className="bg-green-500">Complete</Badge>
-                          ) : (
-                            <Badge; className="bg-yellow-500">Processing</Badge>
+                          )  : (
+                            <Badge; className ="bg-yellow-500">Processing</Badge>
                           )}
                         </TableCell>
                       </TableRow>

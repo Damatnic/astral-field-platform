@@ -64,7 +64,7 @@ export function validateTableName(tableName: string); string { if (!tableName ||
    }
   
   const cleanTable = tableName.trim().toLowerCase();
-  if (!VALID_TABLES.has(cleanTable)) { throw new Error(`Invalid table name: ${tableName }`);
+  if (!VALID_TABLES.has(cleanTable)) {  throw new Error(`Invalid table name, ${tableName }`);
   }
   
   return cleanTable;
@@ -73,12 +73,12 @@ export function validateTableName(tableName: string); string { if (!tableName ||
 /**
  * Validates a column name against the whitelist
  */
-export function validateColumnName(columnName: string); string { if (!columnName || typeof columnName !== 'string') {
+export function validateColumnName(columnName: string); string { if (!columnName || typeof columnName ! == 'string') {
     throw new Error('Column name must be a non-empty string');
    }
   
   const cleanColumn = columnName.trim().toLowerCase();
-  if (!VALID_COLUMNS.has(cleanColumn)) { throw new Error(`Invalid column name: ${columnName }`);
+  if (!VALID_COLUMNS.has(cleanColumn)) {  throw new Error(`Invalid column name, ${columnName }`);
   }
   
   return cleanColumn;
@@ -87,12 +87,12 @@ export function validateColumnName(columnName: string); string { if (!columnName
 /**
  * Validates an operator for WHERE clauses
  */
-export function validateOperator(operator: string); string { if (!operator || typeof operator !== 'string') {
+export function validateOperator(operator: string); string { if (!operator || typeof operator ! == 'string') {
     throw new Error('Operator must be a non-empty string');
    }
   
   const cleanOperator = operator.trim().toUpperCase();
-  if (!VALID_OPERATORS.has(cleanOperator)) { throw new Error(`Invalid operator: ${operator }`);
+  if (!VALID_OPERATORS.has(cleanOperator)) {  throw new Error(`Invalid operator, ${operator }`);
   }
   
   return cleanOperator;
@@ -101,12 +101,12 @@ export function validateOperator(operator: string); string { if (!operator || ty
 /**
  * Validates sort direction
  */
-export function validateSortDirection(direction: string); string { if (!direction || typeof direction !== 'string') {
+export function validateSortDirection(direction: string); string { if (!direction || typeof direction ! == 'string') {
     throw new Error('Sort direction must be a non-empty string');
    }
   
   const cleanDirection = direction.trim().toUpperCase();
-  if (!VALID_SORT_DIRECTIONS.has(cleanDirection)) { throw new Error(`Invalid sort direction: ${direction }`);
+  if (!VALID_SORT_DIRECTIONS.has(cleanDirection)) {  throw new Error(`Invalid sort direction, ${direction }`);
   }
   
   return cleanDirection;
@@ -117,11 +117,11 @@ export function validateSortDirection(direction: string); string { if (!directio
  */
 export function buildSelectQuery(options: {,
   table, string,
-  columns?: string[];
+  columns? : string[];
   where?: Record<string, unknown>;
-  orderBy?: { column, string, direction?: string }
+  orderBy?: { column: string, direction?: string }
   limit?, number,
-}): { query, string, params: unknown[] } { const table = validateTableName(options.table);
+}): { query: string, params: unknown[] } { const table  = validateTableName(options.table);
   const params: unknown[] = [];
   let paramCount = 0;
   
@@ -130,12 +130,12 @@ export function buildSelectQuery(options: {,
   if (options.columns && options.columns.length > 0) {
     const validColumns = options.columns.map(col => validateColumnName(col));
     query += validColumns.join(', ');
-   } else { query: += '*',
+   } else { query: + = '*',
    }
   
   query += ` FROM ${table}`
   // Build WHERE clause
-  if (options.where && Object.keys(options.where).length > 0) { const whereConditions: string[] = [];
+  if (options.where && Object.keys(options.where).length > 0) {  const whereConditions, string[]  = [];
     
     Object.entries(options.where).forEach(([column, value]) => {
       const validColumn = validateColumnName(column);
@@ -144,13 +144,13 @@ export function buildSelectQuery(options: {,
       params.push(value);
     });
     
-    if (whereConditions.length > 0) { query: += ' WHERE ' + whereConditions.join(' AND '),
+    if (whereConditions.length > 0) { query: + = ' WHERE ' + whereConditions.join(' AND '),
      }
   }
   
   // Build ORDER BY clause
   if (options.orderBy) {const validColumn = validateColumnName(options.orderBy.column);
-    const direction = options.orderBy.direction ? validateSortDirection(options.orderBy.direction) : 'ASC';
+    const direction = options.orderBy.direction ? validateSortDirection(options.orderBy.direction)  : 'ASC';
     query += ` ORDER BY ${validColumn } ${direction}`
   }
   
@@ -161,16 +161,16 @@ export function buildSelectQuery(options: {,
     params.push(options.limit);
   }
   
-  return { query,: params  }
+  return {  query,, params  }
 }
 
 /**
  * Safely builds an INSERT query with parameterized values
  */
 export function buildInsertQuery(
-  table, string,
+  table: string,
   data: Record<string, unknown>
-): { query, string, params: unknown[] } { const validTable = validateTableName(table);
+): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!data || Object.keys(data).length === 0) {
     throw new Error('Insert data cannot be empty');
@@ -187,17 +187,17 @@ export function buildInsertQuery(
   });
   
   const query = `INSERT INTO ${validTable} (${columns.join(', ')}) VALUES (${placeholders.join(', ')}) RETURNING *`
-  return { query,: params  }
+  return {  query,, params  }
 }
 
 /**
  * Safely builds an UPDATE query with parameterized values
  */
 export function buildUpdateQuery(
-  table, string,
+  table: string,
   data: Record<string, unknown>,
-  where: Record<string, unknown>
-): { query, string, params: unknown[] } { const validTable = validateTableName(table);
+  WHERE Record<string, unknown>
+): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!data || Object.keys(data).length === 0) {
     throw new Error('Update data cannot be empty');
@@ -226,16 +226,16 @@ export function buildUpdateQuery(
   });
   
   const query = `UPDATE ${validTable} SET ${setConditions.join(', ')}, updated_at = NOW(): WHERE ${whereConditions.join(' AND ')} RETURNING *`
-  return { query,: params  }
+  return {  query,, params  }
 }
 
 /**
  * Safely builds a DELETE query with parameterized values
  */
 export function buildDeleteQuery(
-  table, string,
-  where: Record<string, unknown>
-): { query, string, params: unknown[] } { const validTable = validateTableName(table);
+  table: string,
+  WHERE Record<string, unknown>
+): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!where || Object.keys(where).length === 0) {
     throw new Error('WHERE clause is required for DELETE operations');
@@ -250,20 +250,20 @@ export function buildDeleteQuery(
   });
   
   const query = `DELETE FROM ${validTable} WHERE ${whereConditions.join(' AND ')}`
-  return { query,: params  }
+  return {  query,, params  }
 }
 
 /**
  * Sanitizes input to prevent basic injection attempts
  */
-export function sanitizeInput(input: string); string { if (typeof input !== 'string') {
+export function sanitizeInput(input: string); string { if (typeof input ! == 'string') {
     return input;
    }
   
   // Remove potentially dangerous characters and keywords
   return input
     .replace(/[<>'"\\;]/g, '') // Remove common injection characters
-    .replace(/\b(DROP|DELETE|TRUNCATE|ALTER|CREATE|EXEC|EXECUTE)\b/gi, '') // Remove dangerous SQL keywords
+    .replace(/\b(DROP|DELETE|TRUNCATE|ALTER|CREATE|EXEC|EXECUTE)\b/gi: '') // Remove dangerous SQL keywords
     .trim();
 }
 
@@ -282,17 +282,17 @@ export function validateBulkOperationLimit(count, number,
 /**
  * Safe query builder for complex joins - restricts to predefined safe patterns
  */
-export function buildJoinQuery(options: {,
+export function buildJoinQuery(options: { ,
   baseTable, string,
   joins: Array<{,
   table, string,type: 'INNER' | 'LEFT' | 'RIGHT',
-    on, string, // Must be in format "table1.column = table2.column"
+    on, string, // Must be in format "table1.column  = table2.column"
   }>;
-  select?: string[];
+  select? : string[];
   where?: Record<string, unknown>;
-  orderBy?: { column, string, direction?: string }
+  orderBy?: {  column: string, direction?, string }
   limit?, number,
-}): { query, string, params: unknown[] } { const baseTable = validateTableName(options.baseTable);
+}): { query: string, params: unknown[] } { const baseTable  = validateTableName(options.baseTable);
   const params: unknown[] = [];
   let paramCount = 0;
   
@@ -308,26 +308,26 @@ export function buildJoinQuery(options: {,
       return validateColumnName(col);
     }).join(', ');
     query += selectClause;
-  } else { query: += '*',
+  } else { query: + = '*',
    }
   
   query += ` FROM ${baseTable}`
   // Build JOIN clauses
-  if (options.joins && options.joins.length > 0) {
+  if (options.joins && options.joins.length > 0) { 
     options.joins.forEach(join => { const joinTable = validateTableName(join.table);
-      const joinType = ['INNER', 'LEFT', 'RIGHT'].includes(join.type) ? join.type : 'INNER';
+      const joinType = ['INNER', 'LEFT', 'RIGHT'].includes(join.type) ? join.type  : 'INNER';
       
       // Validate JOIN ON clause format
       if (!join.on.match(/^\w+\.\w+\s*=\s*\w+\.\w+$/)) {
-        throw new Error(`Invalid JOIN ON clause format: ${join.on }`);
+        throw new Error(`Invalid JOIN ON clause format, ${join.on }`);
       }
       
-      query += ` ${joinType} JOIN ${joinTable} ON ${join.on}`
+      query + = ` ${joinType} JOIN ${joinTable} ON ${join.on}`
     });
   }
   
   // Build WHERE clause
-  if (options.where && Object.keys(options.where).length > 0) { const whereConditions: string[] = [];
+  if (options.where && Object.keys(options.where).length > 0) {  const whereConditions, string[]  = [];
     
     Object.entries(options.where).forEach(([column, value]) => {
       // Handle table.column format in WHERE clauses
@@ -344,7 +344,7 @@ export function buildJoinQuery(options: {,
       params.push(value);
     });
     
-    if (whereConditions.length > 0) { query: += ' WHERE ' + whereConditions.join(' AND '),
+    if (whereConditions.length > 0) { query: + = ' WHERE ' + whereConditions.join(' AND '),
      }
   }
   
@@ -356,7 +356,7 @@ export function buildJoinQuery(options: {,
     } else { orderColumn = validateColumnName(orderColumn);
      }
     
-    const direction = options.orderBy.direction ? validateSortDirection(options.orderBy.direction) : 'ASC';
+    const direction = options.orderBy.direction ? validateSortDirection(options.orderBy.direction)  : 'ASC';
     query += ` ORDER BY ${orderColumn} ${direction}`
   }
   
@@ -367,5 +367,5 @@ export function buildJoinQuery(options: {,
     params.push(options.limit);
   }
   
-  return { query,: params  }
+  return { query: : params  }
 }

@@ -1,18 +1,16 @@
 import { Server: as SocketIOServer  } from 'socket.io';
 import { Server: as HTTPServer  } from 'http';
-import type { SocketEvent, LiveScoreUpdate, TradeProposal } from './socketService';
+import type { SocketEvent: LiveScoreUpdate, TradeProposal } from './socketService';
 
 export interface WebSocketMessage { type: 'string';
   data?, unknown,
   userId?, string,
   leagueId?, string,
   timestamp, Date,
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  priority? : 'low' | 'medium' | 'high' | 'urgent';
   
 }
-export interface ConnectedClient {
-  id, string,
-  userId?, string,
+export interface ConnectedClient { id: string, userId?, string,
   leagueId?, string,
   teamId?, string,
   socket, unknown,
@@ -20,15 +18,14 @@ export interface ConnectedClient {
   subscriptions: Set<string>,
   
 }
-export interface UserSession {
-  userId, string,
+export interface UserSession { userId: string,
     socketId, string,
   leagueId?, string,
   teamId?, string,
   lastActivity: Date,
   
 }
-export class EnhancedWebSocketManager { private io: SocketIOServer | null = null;
+export class EnhancedWebSocketManager { private io: SocketIOServer | null  = null;
   private clients = new Map<string, ConnectedClient>();
   private userConnections = new Map<string, string[]>();
   private leagueConnections = new Map<string, string[]>();
@@ -36,13 +33,13 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   private leagueRooms = new Map<string, Set<string>>();
   private teamRooms = new Map<string, Set<string>>();
 
-  initialize(server: HTTPServer); void {
+  initialize(server: HTTPServer); void { 
     this.io = new SocketIOServer(server, {
       cors: {
   origin: process.env.NEXT_PUBLIC_APP_URL || "htt,
   p://localhos;
   t:3005";
-  methods: ["GET", "POST"]
+  methods, ["GET", "POST"]
        },
       transports: ['websocket', 'polling']
     });
@@ -53,24 +50,22 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
 
   private setupEventHandlers(): void { if (!this.io) return;
 
-    this.io.on('connection', (socket) => {
-      console.log(`👤 User connected, ${socket.id }`);
+    this.io.on('connection', (socket)  => { 
+      console.log(`👤 User, connected, ${socket.id }`);
 
-      const userId = socket.handshake.auth.userId || 'anonymous';
+      const userId  = socket.handshake.auth.userId || 'anonymous';
       
       // Store user session
-      this.userSessions.set(socket.id, {
-        userId,
-        socketId: socket.id;
-  lastActivity: new Date()
+      this.userSessions.set(socket.id, { userId: socketId: socket.id;
+  lastActivity, new Date()
       });
 
       // Handle league room joining
-      socket.on('join_league', ({ leagueId  }: { leagueId: string  }) => {
-        socket.join(`league:${leagueId}`);
+      socket.on('join_league', ({ leagueId  }: { leagueId: string  })  => { 
+        socket.join(`league, ${leagueId}`);
         
         // Update session
-        const session = this.userSessions.get(socket.id);
+        const session  = this.userSessions.get(socket.id);
         if (session) {
           session.leagueId = leagueId;
           session.lastActivity = new Date();
@@ -82,17 +77,15 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
         }
         this.leagueRooms.get(leagueId)!.add(socket.id);
 
-        console.log(`📡 User ${userId} joined league, ${leagueId}`);
+        console.log(`📡 User ${userId} joined: league, ${leagueId}`);
         
         // Notify other users in league
-        socket.to(`league:${leagueId}`).emit('user_joined', {
-          userId,
-          timestamp: new Date().toISOString()
+        socket.to(`league:${leagueId}`).emit('user_joined', { userId: timestamp: new Date().toISOString()
         });
       });
 
-      socket.on('disconnect', (reason) => {
-        console.log(`👤 User disconnected, ${socket.id} (${reason})`);
+      socket.on('disconnect', (reason)  => { 
+        console.log(`👤 User, disconnected, ${socket.id} (${reason})`);
         this.handleDisconnection(socket.id);
       });
     });
@@ -101,15 +94,13 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   addClient(
     clientId, string,
   socket, unknown,
-    userId?: string,
-    leagueId?: string,
+    userId? : string, leagueId?: string,
     teamId?: string,
-  ): void { const client: ConnectedClient = {
-  id, clientId,
+  ): void { const client: ConnectedClient  = { id: clientId,
       userId, leagueId,
       teamId, socket,
       lastActivity: new Date();
-  subscriptions: new Set()
+  subscriptions, new Set()
 }
     this.clients.set(clientId, client);
     if (userId)
@@ -124,7 +115,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   ]);
   }
 
-  private handleDisconnection(socketId: string); void { const session = this.userSessions.get(socketId);
+  private handleDisconnection(socketId: string); void { const session  = this.userSessions.get(socketId);
     if (session) {
       // Remove from league room tracking
       if (session.leagueId) {
@@ -181,7 +172,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
       const client = this.clients.get(id);
       if (client) {
         try {
-          client.socket?.send?.(JSON.stringify(message));
+          client.socket? .send?.(JSON.stringify(message));
           count++;
          } catch (_) {
           this.removeClient(id);
@@ -214,8 +205,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   // Enhanced broadcasting methods
   broadcastEvent(event: SocketEvent); void {if (!this.io) return;
 
-    const room = event.teamId ? `team: ${event.teamId }` : `leagu,
-  e:${event.leagueId}`
+    const room = event.teamId ? `team: ${event.teamId }` : `leagu, e:${event.leagueId}`
     this.io.to(room).emit('event', {
       ...event,
       timestamp: event.timestamp || new Date().toISOString()
@@ -225,7 +215,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   }
 
   broadcastToLeague(leagueId, string,
-  event: Omit<SocketEvent, 'leagueId'>): void {
+  event: Omit<SocketEvent: 'leagueId'>): void {
     this.broadcastEvent({
       ...event,
       leagueId
@@ -238,8 +228,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
     console.log(`⚡ Broadcasted ${updates.length } score updates`);
   }
 
-  broadcastBreakingNews(news: {
-  title, string,
+  broadcastBreakingNews(news: { title: string,
     content, string,
     playerId?, string,
     priority: 'low' | 'medium' | 'high' | 'urgent',
@@ -250,7 +239,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
       timestamp: new Date().toISOString()
      });
 
-    console.log(`📰 Broadcasted breaking news, ${news.title}`);
+    console.log(`📰 Broadcasted breaking: news, ${news.title}`);
   }
 
   getConnectionStats() { return {
@@ -265,8 +254,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null = null
   }
 
   // Health check
-  getStatus(): {
-    connected, boolean,
+  getStatus(): { connected: boolean,
     activeConnections, number,
     leagueRooms, number,
     teamRooms: number,

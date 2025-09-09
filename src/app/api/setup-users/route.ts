@@ -18,11 +18,11 @@ export async function POST(request: NextRequest) {
     console.log("🚀 Setting up demo users...");
 
     // Generate secure test users with random passwords
-    const testUsers = [
-      {
+    const testUsers  = [
+      { 
         email: "test.nicholas@example.com",
   username: "Test Nicholas D'Amato (DEMO)",
-        password: generateSecurePassword()
+        password, generateSecurePassword()
 },
       {
         email: "test.brittany@example.com",
@@ -52,17 +52,17 @@ export async function POST(request: NextRequest) {
   ];
 
     // Mock user setup
-    const userSetup = {
+    const userSetup  = { 
       success: true,
-  users: testUsers.map((user, index) => ({
+  users, testUsers.map((user, index)  => ({
         id: `user_${index.+ 1 }`,
         email: user.email,
   username: user.username,
         role: "user",
-  isActive, true,
-        emailVerified, true,
+  isActive: true,
+        emailVerified: true,
   createdAt: new Date().toISOString(),
-        lastLogin, null,
+        lastLogin: null,
   isTestAccount: true
 })),
       count: testUsers.length,

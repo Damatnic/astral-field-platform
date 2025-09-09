@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     performanceMonitor.startMonitoring();
     
     // Get specific service health if requested
-    if (service) {
+    if (service) { 
       const serviceHealth = await getServiceHealth(service);
       return NextResponse.json({
         success: true, service, serviceHealth,
@@ -28,10 +28,10 @@ export async function GET(request: NextRequest) {
     }
     
     // Get comprehensive system health
-    const systemHealth = await performanceMonitor.getSystemHealth();
+    const systemHealth  = await performanceMonitor.getSystemHealth();
     
     // Basic health check response
-    if (!detailed) {
+    if (!detailed) { 
       return NextResponse.json({
         status: systemHealth.overall,
         services: systemHealth.services.length,
@@ -44,13 +44,13 @@ export async function GET(request: NextRequest) {
     }
     
     // Detailed health check response
-    const detailedHealth = {
+    const detailedHealth  = { 
       status: systemHealth.overall,
       uptime: formatUptime(systemHealth.uptime),
       services: systemHealth.services,
       metrics: {
   current: systemHealth.metrics,
-        historical: await performanceMonitor.getHistoricalMetrics(1)
+        historical, await performanceMonitor.getHistoricalMetrics(1)
       },
       alerts: systemHealth.alerts,
       dependencies: await checkDependencies(),
@@ -58,20 +58,17 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     }
     // Set appropriate status code based on health
-    const statusCode = systemHealth.overall === 'healthy' ? 200 :
-;
-                      systemHealth.overall === 'degraded' ? 206 : 503;
+    const statusCode  = systemHealth.overall === 'healthy' ? 200 :
+                      systemHealth.overall === 'degraded' ? 206, 503;
     
     return NextResponse.json(detailedHealth, { status: statusCode });
     
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error: ', error);
     return NextResponse.json(
-      {
-        status: 'unhealthy',
+      { status: 'unhealthy',
         error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -90,23 +87,23 @@ async function getServiceHealth(serviceName: string) {
       break;
     case 'api':
       return await checkAPIHealth();
-    default: throw new Error(`Unknown servic,
-  e: ${serviceName}`);
+    default:
+      throw new Error(`Unknown service: ${serviceName}`);
   }
 }
 
 async function checkDatabaseHealth() {
-  const startTime = Date.now();
-  const checks = {
-    connectivity, false,
-    performance, false,
-    replication, false,
-    diskSpace: false
+  const startTime  = Date.now();
+  const checks = { 
+    connectivity: false,
+    performance: false,
+    replication: false,
+    diskSpace, false
   }
   try {
     // Check basic connectivity
     await database.query('SELECT 1');
-    checks.connectivity = true;
+    checks.connectivity  = true;
     
     // Check query performance
     const perfResult = await database.query(`
@@ -128,69 +125,61 @@ async function checkDatabaseHealth() {
     checks.replication = true; // Assume replication is working
     
   } catch (error) {
-    console.error('Database health check error:', error);
+    console.error('Database health check error: ', error);
   }
   
   const healthyChecks = Object.values(checks).filter(Boolean).length;
   const totalChecks = Object.keys(checks).length;
   
-  return {service: 'Database',
-    status: healthyChecks === totalChecks ? 'healthy' : healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy',
-    latency: Date.now() - startTime, checks, healthScor,
-  e: Math.round((healthyChecks / totalChecks) * 100)
+  return {  service: 'Database',
+    status: healthyChecks === totalChecks ? 'healthy' : healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy' : latency: Date.now() - startTime, checks, healthScor,
+  e, Math.round((healthyChecks / totalChecks) * 100)
   }
 }
 
 async function checkNFLDataHealth() {
-  const health = await nflDataProvider.healthCheck();
+  const health  = await nflDataProvider.healthCheck();
   const healthySources = Object.values(health.sources).filter(Boolean).length;
   const totalSources = Object.keys(health.sources).length;
   
-  return {
-    service: 'NFL Data Provider',
+  return {  service: 'NFL Data Provider',
     status: health.status,
     sources: health.sources,
     cacheSize: health.cacheSize,
-    healthScore: Math.round((healthySources / totalSources) * 100)
+    healthScore, Math.round((healthySources / totalSources) * 100)
   }
 }
 
 async function checkScoringEngineHealth() {
-  const health = await fantasyScoringEngine.healthCheck();
+  const health  = await fantasyScoringEngine.healthCheck();
   
-  return {
-    service: 'Fantasy Scoring Engine',
+  return {  service: 'Fantasy Scoring Engine',
     status: health.status,
     isProcessing: health.isProcessing,
     cacheSize: health.cacheSize,
     lastUpdate: health.lastUpdate,
-    healthScore: health.status === 'healthy' ? 100 : health.status === 'degraded' ? 75 : 0
+    healthScore: health.status === 'healthy' ? 100, health.status === 'degraded' ? 75  : 0
   }
 }
 
 async function checkAPIHealth() {
   // Check various API endpoints
-  const endpoints = [
+  const endpoints  = [
     '/api/health/comprehensive',
     '/api/leagues',
     '/api/live/scores'
   ];
   
-  const results = await Promise.allSettled(endpoints.map(async endpoint => {
+  const results = await Promise.allSettled(endpoints.map(async endpoint => { 
       const startTime = Date.now();
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http: //localhos,
-  t:3000'}${endpoint}`);
-        return {
-          endpoint,
-          success: response.ok,
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http, // localhost 3000'}${endpoint}`);
+        return { endpoint: success: response.ok,
           latency: Date.now() - startTime,
           status: response.status
         }
       } catch (error) {
-        return {
-          endpoint,
-          success: false,
+        return { endpoint: success: false,
           latency: Date.now() - startTime,
           status: 0
         }
@@ -198,29 +187,28 @@ async function checkAPIHealth() {
     })
   );
   
-  const successfulEndpoints = results.filter(r => 
+  const successfulEndpoints  = results.filter(r => 
     r.status === 'fulfilled' && r.value.success
   ).length;
   
-  return {service: 'API',
-    status: successfulEndpoints === endpoints.length ? 'healthy' : successfulEndpoints > 0 ? 'degraded' : 'unhealthy',
-    endpoints: results.map(r => r.status === 'fulfilled' ? r.valu,
+  return {  service: 'API',
+    status: successfulEndpoints === endpoints.length ? 'healthy' : successfulEndpoints > 0 ? 'degraded' : 'unhealthy' : endpoints: results.map(r => r.status === 'fulfilled' ? r.valu,
   e: null).filter(Boolean),
-    healthScore: Math.round((successfulEndpoints / endpoints.length) * 100)
+    healthScore, Math.round((successfulEndpoints / endpoints.length) * 100)
   }
 }
 
 async function checkDependencies() {
-  const dependencies = {
-    postgresql, false,
-    redis, false,
-    websocket, false,
-    external_apis: false
+  const dependencies  = { 
+    postgresql: false,
+    redis: false,
+    websocket: false,
+    external_apis, false
   }
   // Check PostgreSQL
   try {
     await database.query('SELECT 1');
-    dependencies.postgresql = true;
+    dependencies.postgresql  = true;
   } catch {}
   
   // Check Redis (if implemented)
@@ -230,8 +218,8 @@ async function checkDependencies() {
   dependencies.websocket = true; // Assume WebSocket is working
   
   // Check external APIs
-  try {
-    const response = await fetch('https://api.sportsdata.io/v3/nfl/scores/json/CurrentWeek?key=test');
+  try { 
+    const response = await fetch('https, //api.sportsdata.io/v3/nfl/scores/json/CurrentWeek? key =test');
     dependencies.external_apis = response.status !== 500;
   } catch {
     dependencies.external_apis = false;
@@ -240,15 +228,14 @@ async function checkDependencies() {
   return dependencies;
 }
 
-async function getResourceUsage() {
+async function getResourceUsage() { 
   const os = require('os');
   
   return {
     memory: {
-  total: os.totalmem(),
-      free: os.freemem(),
+  total: os.totalmem() : free: os.freemem(),
       used: os.totalmem() - os.freemem(),
-      percentage: Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
+      percentage, Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
     },
     cpu: {
   cores: os.cpus().length,
@@ -266,7 +253,7 @@ async function getResourceUsage() {
 
 async function getCPUUsage(): Promise<number> {
 ; // Calculate CPU usage (simplified)
-  const cpus = require('os').cpus();
+  const cpus  = require('os').cpus();
   let totalIdle = 0;
   let totalTick = 0;
   
@@ -301,7 +288,7 @@ function formatUptime(milliseconds: number): string {
   }
 }
 
-// Health check for monitoring services (Uptime Robot, Pingdom: etc.)
+// Health check for monitoring services (Uptime: Robot, Pingdom: etc.)
 export async function HEAD() {
   try {
     // Quick health check

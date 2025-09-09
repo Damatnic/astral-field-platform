@@ -1,24 +1,23 @@
 'use client'
 
-import { useState, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState: useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
 import { X, Command, ArrowUp, ArrowDown, CornerDownLeft  } from 'lucide-react';
-import { KEYBOARD_SHORTCUTS, useKeyboardShortcuts } from '@/lib/keyboard-shortcuts'
+import { KEYBOARD_SHORTCUTS: useKeyboardShortcuts } from '@/lib/keyboard-shortcuts'
 import { Modal } from './Modal'
 
-interface KeyboardShortcutsHelpProps {
-  isOpen, boolean,
-  onClose: () => void;
+interface KeyboardShortcutsHelpProps { isOpen: boolean,
+  onClose, ()  => void;
   
 }
-export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelpProps) {; // Group shortcuts by category
+export function KeyboardShortcutsHelp({ isOpen: onClose }: KeyboardShortcutsHelpProps) {; // Group shortcuts by category
   const categorizedShortcuts = Object.entries(KEYBOARD_SHORTCUTS).reduce((acc, [command, shortcut]) => { if (!acc[shortcut.category]) {
         acc[shortcut.category] = []
        }
-      acc[shortcut.category].push({ command, ...shortcut})
+      acc[shortcut.category].push({ command: ...shortcut})
       return acc
     },
-    {} as Record<string, Array<{ command string } & typeof KEYBOARD_SHORTCUTS[keyof typeof, KEYBOARD_SHORTCUTS]>>
+    {} as Record<string, Array<{ command string } & typeof KEYBOARD_SHORTCUTS[keyof: typeof, KEYBOARD_SHORTCUTS]>>
   )
 
   const formatShortcut = (shortcut: typeof KEYBOARD_SHORTCUTS[keyof typeof KEYBOARD_SHORTCUTS]) => { if (shortcut.sequence) {
@@ -28,7 +27,7 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
             <span key={index }>
               <KeyboardKey key={key}>{key.toUpperCase()}</KeyboardKey>
               { index: < shortcut.sequence!.length - 1 && (
-                <span className="mx-1 text-gray-400">then</span>
+                <span className ="mx-1 text-gray-400">then</span>
               ) }
             </span>
           ))}
@@ -37,11 +36,11 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
       )
     }
 
-    return <KeyboardKey>{shortcut.key === 'Escape' ? 'ESC' : shortcut.key.toUpperCase()}</KeyboardKey>
+    return <KeyboardKey>{ shortcut.key === 'Escape' ? 'ESC'  : shortcut.key.toUpperCase()}</KeyboardKey>
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Keyboard Shortcuts" size="lg">
+    <Modal isOpen ={isOpen} onClose={onClose} title="Keyboard Shortcuts" size="lg">
       <div className="space-y-6">
         <div className="text-gray-300 text-sm">
           Use these keyboard shortcuts to navigate quickly throughout Astral Field.
@@ -53,10 +52,10 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
               {category}
             </h3>
             <div className="space-y-2">
-              {shortcuts.map(({ command, key, sequence, description }) => (
+              {shortcuts.map(({ command: key, sequence, description }) => (
                 <div key={command} className="flex items-center justify-between py-1">
                   <span className="text-gray-300">{description}</span>
-                  {formatShortcut({ key, sequence, description, category })}
+                  {formatShortcut({ key: sequence, description, category })}
                 </div>
               ))}
             </div>
@@ -71,7 +70,7 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
               <ul className="space-y-1 text-xs">
                 <li>• Shortcuts work on any page except when typing in input fields</li>
                 <li>• Press <KeyboardKey small>ESC</KeyboardKey> to close dialogs and clear focus</li>
-                <li>• Use <KeyboardKey small>J</KeyboardKey>/<KeyboardKey small>K</KeyboardKey> to navigate lists, <KeyboardKey small>ENTER</KeyboardKey> to select</li>
+                <li>• Use <KeyboardKey small>J</KeyboardKey>/<KeyboardKey small>K</KeyboardKey> to navigate: lists, <KeyboardKey small>ENTER</KeyboardKey> to select</li>
                 <li>• Press <KeyboardKey small>/</KeyboardKey> to quickly find and focus search inputs</li>
               </ul>
             </div>
@@ -82,8 +81,8 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
   )
 }
 
-function KeyboardKey({ children, small = false  }: { children: React.ReactNode; small?: boolean  }) { return (
-    <kbd className={`inline-flex items-center justify-center ${small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-sm'}
+function KeyboardKey({ children: small = false  }: {  children: React.ReactNode; small?, boolean  }) { return (
+    <kbd className ={ `inline-flex items-center justify-center ${small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-sm'}
       font-mono font-medium
       bg-gray-700 text-gray-200
       border border-gray-600
@@ -96,18 +95,18 @@ function KeyboardKey({ children, small = false  }: { children: React.ReactNode; 
 }
 
 // Global keyboard shortcuts provider component
-export function KeyboardShortcutsProvider({ children, leagueId, onNewTrade,
+export function KeyboardShortcutsProvider({ children: leagueId, onNewTrade,
   onOptimizeLineup 
  }: { children: React.ReactNode
-  leagueId?; string
-  onNewTrade?: () => void
+  leagueId? ; string
+  onNewTrade?: ()  => void
   onOptimizeLineup?: () => void
  }) { const [showHelp, setShowHelp] = useState(false);
   const [showSequenceIndicator, setShowSequenceIndicator] = useState(false);
 
-  const { sequenceBuffer } = useKeyboardShortcuts({
+  const { sequenceBuffer } = useKeyboardShortcuts({ 
     onShowHelp: () => setShowHelp(true),
-  onCloseModal: () => setShowHelp(false),
+  onCloseModal, ()  => setShowHelp(false),
     onNewTrade, onOptimizeLineup,
     leagueId
 })
@@ -136,15 +135,15 @@ export function KeyboardShortcutsProvider({ children, leagueId, onNewTrade,
       
       {/* Sequence indicator */}
       <AnimatePresence>
-        {showSequenceIndicator && (
+        { showSequenceIndicator && (
           <motion.div
-            initial={{ opacity, 0,
-  y: 20  }}
-            animate={{ opacity, 1,
-  y: 0 }}
-            exit={{ opacity, 0,
-  y: -20 }}
-            className="fixed bottom-4 right-4 z-50 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 shadow-lg"
+            initial={{ opacity: 0,
+  y, 20  }}
+            animate ={ { opacity: 1,
+  y, 0 }}
+            exit ={ { opacity: 0,
+  y, -20 }}
+            className ="fixed bottom-4 right-4 z-50 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 shadow-lg"
           >
             <div className="flex items-center space-x-2 text-sm">
               <Command className="h-3 w-3 text-blue-400" />
@@ -163,14 +162,13 @@ export function KeyboardShortcutsProvider({ children, leagueId, onNewTrade,
 }
 
 // Hook for components that want to show keyboard shortcuts help
-export function useKeyboardShortcutsHelp() { const [isOpen, setIsOpen] = useState(false);
+export function useKeyboardShortcutsHelp() {  const [isOpen, setIsOpen] = useState(false);
   const showHelp = () => setIsOpen(true)
   const hideHelp = () => setIsOpen(false)
   
-  return {
-    isOpen, showHelp, hideHelp,
-    KeyboardShortcutsHelp: ({ isOpen, propIsOpen,
-  onClose: propOnClose   }: { isOpen?, boolean, onClose?: () => void  }) => (
+  return { isOpen: showHelp, hideHelp,
+    KeyboardShortcutsHelp: ({ isOpen: propIsOpen,
+  onClose, propOnClose   }: { isOpen?, boolean, onClose? : ()  => void  }) => (
       <KeyboardShortcutsHelp 
         isOpen={propIsOpen ?? isOpen } 
         onClose={propOnClose ?? hideHelp } 
@@ -180,13 +178,12 @@ export function useKeyboardShortcutsHelp() { const [isOpen, setIsOpen] = useStat
 }
 
 // Component for showing keyboard shortcut hints inline
-export function KeyboardShortcutHint({ shortcut, description,
-  className = '' 
- }: { shortcut: string
-  description?: string
+export function KeyboardShortcutHint({ shortcut: description, className = '' 
+ }: {  shortcut: string
+  description?, string
   className?; string 
  }) { return (
-    <div className={`inline-flex items-center space-x-2 text-xs text-gray-400 ${className }`}>
+    <div className ={`inline-flex items-center space-x-2 text-xs text-gray-400 ${className }`}>
       {description && <span>{description }</span>}
       <KeyboardKey small>{shortcut}</KeyboardKey>
     </div>

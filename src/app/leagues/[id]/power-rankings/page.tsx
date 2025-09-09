@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
-import { 
-  TrendingUp, TrendingDown, Minus, Trophy, Crown, MessageSquare, ChevronUp, ChevronDown, Zap, Flame, Snowflake, Target, Shield, AlertTriangle,
+import { TrendingUp, TrendingDown, Minus, Trophy, Crown, MessageSquare, ChevronUp, ChevronDown, Zap, Flame, Snowflake, Target, Shield, AlertTriangle,
   Star, BarChart3, Activity, Send, ThumbsUp
 } from "lucide-react";
 
-interface LeaguePageProps {
-  params: Promise<{ id, string
+interface LeaguePageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -32,7 +30,7 @@ interface TeamRanking {
   recentForm: ('W' | 'L' | 'T')[],
     strengthOfSchedule: number;
   remainingDifficulty: 'Easy' | 'Medium' | 'Hard';
-  comments?: {;
+  comments? : {;
   id: string;
     author: string;
   authorTeam: string;
@@ -43,17 +41,17 @@ interface TeamRanking {
   
 }
 [];
-  analysis?: string;
+  analysis? : string;
 }
 
 export default function PowerRankingsPage({ params }: LeaguePageProps) {
-  const router = useRouter();
+  const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [rankings, setRankings] = useState<TeamRanking[]>([]);
   const [selectedWeek, setSelectedWeek] = useState<number>(10);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
-  const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
-  const [viewMode, setViewMode] = useState<'standard' | 'detailed' | 'compact'>('standard');
+  const [newComment, setNewComment] = useState<{  [key: string], string }>({});
+  const [viewMode, setViewMode]  = useState<'standard' | 'detailed' | 'compact'>('standard');
   const [sortBy, setSortBy] = useState<'power' | 'record' | 'points' | 'recent'>('power');
 
   useEffect(() => {
@@ -68,13 +66,13 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
      }
   }, [leagueId, selectedWeek]);
 
-  const loadRankings = () => {
-    // Mock data - in production, fetch from API
+  const loadRankings = () => { 
+    // Mock data - in: production, fetch from API
     const mockRankings: TeamRanking[] = [
       {
         id: '1',
-  rank, 1,
-        previousRank, 2,
+  rank: 1,
+        previousRank: 2,
   teamName: 'Thunder Strikes',
         teamAbbr: 'TS',
   ownerName: 'Marcus Johnson',
@@ -82,7 +80,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1245.6,
         pointsAgainst: 1098.3,
   streak: 'W5',
-        lastWeekScore: 142.5, projectedFinish, 1,
+        lastWeekScore: 142.5, projectedFinish: 1,
         powerScore: 95.2,
   trend: 'up',
         recentForm: ['W', 'W', 'W', 'W', 'W'],
@@ -96,8 +94,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Beer Bellies',
   text: 'Lucky schedule.Wait until playoffs!',
             timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-  likes, 3,
-            hasLiked: false
+  likes: 3,
+            hasLiked, false
           },
           {
             id: 'c2',
@@ -105,15 +103,15 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Thunder Strikes',
   text: 'Keep doubting us.We\'ll keep winning.',
             timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
-  likes, 8,
+  likes: 8,
             hasLiked: true
           }
         ]
       },
       {
         id: '2',
-  rank, 2,
-        previousRank, 1,
+  rank: 2,
+        previousRank: 1,
   teamName: 'Space Cowboys',
         teamAbbr: 'SC',
   ownerName: 'Nicholas D\'Amato',
@@ -121,7 +119,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1198.4,
         pointsAgainst: 1134.2,
   streak: 'L1',
-        lastWeekScore: 98.3, projectedFinish, 3,
+        lastWeekScore: 98.3, projectedFinish: 3,
         powerScore: 88.7,
   trend: 'down',
         recentForm: ['W', 'W', 'L', 'W', 'L'],
@@ -135,15 +133,15 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Glitter Bombers',
   text: 'Commissioner curse strikes again!',
             timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
-  likes, 12,
+  likes: 12,
             hasLiked: true
           }
         ]
       },
       {
         id: '3',
-  rank, 3,
-        previousRank, 4,
+  rank: 3,
+        previousRank: 4,
   teamName: 'Tech Titans',
         teamAbbr: 'TT',
   ownerName: 'Raj Patel',
@@ -151,7 +149,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1176.9,
         pointsAgainst: 1089.5,
   streak: 'W2',
-        lastWeekScore: 128.7, projectedFinish, 2,
+        lastWeekScore: 128.7, projectedFinish: 2,
         powerScore: 86.3,
   trend: 'up',
         recentForm: ['L', 'W', 'L', 'W', 'W'],
@@ -161,8 +159,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       },
       {
         id: '4',
-  rank, 4,
-        previousRank, 3,
+  rank: 4,
+        previousRank: 3,
   teamName: 'Dragon Dynasty',
         teamAbbr: 'DD',
   ownerName: 'Matt Chen',
@@ -170,18 +168,18 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1154.2,
         pointsAgainst: 1123.8,
   streak: 'W1',
-        lastWeekScore: 115.4, projectedFinish, 5,
+        lastWeekScore: 115.4, projectedFinish: 5,
         powerScore: 82.1,
   trend: 'down',
         recentForm: ['L', 'L', 'W', 'L', 'W'],
         strengthOfSchedule: 0.55,
   remainingDifficulty: 'Medium',
-        analysis: 'Inconsistent but dangerous.When their stars align, they can beat anyone.The question is which version shows up in the playoffs.'
+        analysis: 'Inconsistent but dangerous.When their stars: align, they can beat anyone.The question is which version shows up in the playoffs.'
       },
       {
         id: '5',
-  rank, 5,
-        previousRank, 6,
+  rank: 5,
+        previousRank: 6,
   teamName: 'Glitter Bombers',
         teamAbbr: 'GB',
   ownerName: 'Kaity Lorbecki',
@@ -189,7 +187,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1142.7,
         pointsAgainst: 1108.9,
   streak: 'W3',
-        lastWeekScore: 134.2, projectedFinish, 4,
+        lastWeekScore: 134.2, projectedFinish: 4,
         powerScore: 79.8,
   trend: 'up',
         recentForm: ['L', 'L', 'W', 'W', 'W'],
@@ -203,15 +201,15 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Glitter Bombers',
   text: 'Told y\'all we were just getting started!',
             timestamp: new Date(Date.now() - 30 * 60 * 1000),
-  likes, 6,
+  likes: 6,
             hasLiked: false
           }
         ]
       },
       {
         id: '6',
-  rank, 6,
-        previousRank, 5,
+  rank: 6,
+        previousRank: 5,
   teamName: 'Crypto Kings',
         teamAbbr: 'CK',
   ownerName: 'Alex Rivera',
@@ -219,7 +217,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1098.3,
         pointsAgainst: 1087.6,
   streak: 'L2',
-        lastWeekScore: 102.1, projectedFinish, 7,
+        lastWeekScore: 102.1, projectedFinish: 7,
         powerScore: 74.2,
   trend: 'down',
         recentForm: ['W', 'W', 'L', 'L', 'L'],
@@ -229,8 +227,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       },
       {
         id: '7',
-  rank, 7,
-        previousRank, 8,
+  rank: 7,
+        previousRank: 8,
   teamName: 'Samba Squad',
         teamAbbr: 'SS',
   ownerName: 'Jorge Silva',
@@ -238,7 +236,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1076.5,
         pointsAgainst: 1094.3,
   streak: 'W1',
-        lastWeekScore: 119.8, projectedFinish, 6,
+        lastWeekScore: 119.8, projectedFinish: 6,
         powerScore: 71.5,
   trend: 'up',
         recentForm: ['L', 'W', 'L', 'W', 'W'],
@@ -248,8 +246,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       },
       {
         id: '8',
-  rank, 8,
-        previousRank, 7,
+  rank: 8,
+        previousRank: 7,
   teamName: 'Beer Bellies',
         teamAbbr: 'BB',
   ownerName: 'Tommy Thompson',
@@ -257,7 +255,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1089.7,
         pointsAgainst: 1156.2,
   streak: 'L3',
-        lastWeekScore: 94.3, projectedFinish, 8,
+        lastWeekScore: 94.3, projectedFinish: 8,
         powerScore: 68.9,
   trend: 'down',
         recentForm: ['W', 'L', 'L', 'L', 'L'],
@@ -269,9 +267,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             id: 'c5',
   author: 'Jorge Silva',
             authorTeam: 'Samba Squad',
-  text: 'Remember all that trash talk earlier? How\'s that working out?',
-            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
-  likes, 15,
+  text: 'Remember all that trash talk earlier? How\'s that working out?' : timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+  likes: 15,
             hasLiked: true
           },
           {
@@ -280,15 +277,15 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Beer Bellies',
   text: 'Just wait until next year...',
             timestamp: new Date(Date.now() - 3.5 * 60 * 60 * 1000),
-  likes, 1,
+  likes: 1,
             hasLiked: false
           }
         ]
       },
       {
         id: '9',
-  rank, 9,
-        previousRank, 9,
+  rank: 9,
+        previousRank: 9,
   teamName: 'Neon Wolves',
         teamAbbr: 'NW',
   ownerName: 'Emily Chang',
@@ -296,7 +293,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 1034.6,
         pointsAgainst: 1178.4,
   streak: 'L1',
-        lastWeekScore: 108.2, projectedFinish, 9,
+        lastWeekScore: 108.2, projectedFinish: 9,
         powerScore: 62.3,
   trend: 'same',
         recentForm: ['L', 'W', 'L', 'L', 'L'],
@@ -306,8 +303,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       },
       {
         id: '10',
-  rank, 10,
-        previousRank, 10,
+  rank: 10,
+        previousRank: 10,
   teamName: 'Lightning Legends',
         teamAbbr: 'LL',
   ownerName: 'Sarah Martinez',
@@ -315,7 +312,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
   pointsFor: 987.3,
         pointsAgainst: 1203.7,
   streak: 'L4',
-        lastWeekScore: 89.6, projectedFinish, 10,
+        lastWeekScore: 89.6, projectedFinish: 10,
         powerScore: 54.7,
   trend: 'same',
         recentForm: ['L', 'L', 'L', 'L', 'L'],
@@ -329,7 +326,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             authorTeam: 'Lightning Legends',
   text: 'Tank commander reporting for duty!',
             timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-  likes, 7,
+  likes: 7,
             hasLiked: false
           }
         ]
@@ -337,7 +334,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
     ];
 
     // Apply sorting
-    const sortedRankings = [...mockRankings];
+    const sortedRankings  = [...mockRankings];
     if (sortBy === 'record') {
       sortedRankings.sort((a, b) => {
         const [aWins] = a.record.split('-').map(Number);
@@ -352,19 +349,17 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
 
     setRankings(sortedRankings);
   }
-  const handleAddComment = (teamId: string) => {
+  const handleAddComment = (teamId: string) => { 
     const comment = newComment[teamId];
-    if (!comment?.trim()) return;
+    if (!comment? .trim()) return;
 
     setRankings(rankings.map(team => {
       if (team.id === teamId) {
-        const newCommentObj = {
-          id: `comment-${Date.now()}`,
-          author: 'Current User',
+        const newCommentObj = { id: `comment-${Date.now()}` : author: 'Current User',
   authorTeam: 'My Team',
           text, comment,
   timestamp: new Date(),
-          likes, 0,
+          likes: 0,
   hasLiked: false
         }
         return {
@@ -375,19 +370,18 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       return team;
     }));
 
-    setNewComment({ ...newComment, [teamId]: '' });
+    setNewComment({ ...newComment, [teamId], '' });
   }
-  const handleLikeComment = (teamId, string;
-  commentId: string) => {
+  const handleLikeComment  = (teamId, string;
+  commentId: string) => { 
     setRankings(rankings.map(team => {
       if (team.id === teamId) {
         return {
           ...team,
           comments: team.comments? .map(comment => {
             if (comment.id === commentId) {
-              return { : ..comment,
-                likes: comment.hasLiked ? comment.likes - 1 : comment.likes + 1,
-                hasLiked: !comment.hasLiked
+              return { : ..comment, likes: comment.hasLiked ? comment.likes - 1 : comment.likes + 1,
+                hasLiked, !comment.hasLiked
                }
             }
             return comment;
@@ -397,31 +391,31 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
       return team;
     }));
   }
-  const getTrendIcon = (trend: 'up' | 'down' | 'same', change: number) => {
+  const getTrendIcon  = (trend: 'up' | 'down' | 'same', change: number) => {
     if (trend === 'up') return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (trend === 'down') return <TrendingDown className="h-4 w-4 text-red-500" />;
     return <Minus className="h-4 w-4 text-gray-500" />;
    }
-  const getStreakColor = (streak: string) => {
+  const getStreakColor = (streak: string) => { 
     if (streak.startsWith('W')) return 'text-green-600 dark:text-green-400';
     if (streak.startsWith('L')) return 'text-red-600 dark:text-red-400';
-    return 'text-gray-600 dark:text-gray-400';
+    return 'text-gray-600 dark, text-gray-400';
    }
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor  = (difficulty: string) => { 
     const colors = {
-      Easy: 'bg-green-100 text-green-800 dar,
-  k:bg-green-900 dar,
+      Easy: 'bg-green-100 text-green-800: dar,
+  k:bg-green-900: dar,
   k:text-green-300',
-      Medium: 'bg-yellow-100 text-yellow-800 dar,
-  k:bg-yellow-900 dar,
+      Medium: 'bg-yellow-100 text-yellow-800: dar,
+  k:bg-yellow-900: dar,
   k:text-yellow-300',
-      Hard: 'bg-red-100 text-red-800 dar,
-  k:bg-red-900 dar,
-  k:text-red-300'
+      Hard: 'bg-red-100 text-red-800: dar,
+  k:bg-red-900: dar,
+  k, text-red-300'
      }
     return colors[difficulty as keyof typeof colors];
   }
-  const getRankBadge = (rank: number) => {
+  const getRankBadge  = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-yellow-500" />;
     if (rank === 2) return <Trophy className="h-5 w-5 text-gray-400" />;
     if (rank === 3) return <Trophy className="h-5 w-5 text-orange-600" />;
@@ -449,8 +443,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
               <select
                 value={selectedWeek}
                 onChange={(e) => setSelectedWeek(Number(e.target.value))}
-                className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
-  k:bg-gray-700 text-gray-900 dar,
+                className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
+  k:bg-gray-700 text-gray-900: dar,
   k:text-white"
               >
                 {[...Array(17)].map((_, i) => (
@@ -461,8 +455,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
-  k:bg-gray-700 text-gray-900 dar,
+                className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
+  k:bg-gray-700 text-gray-900: dar,
   k:text-white"
               >
                 <option value="power">Power Score</option>
@@ -475,27 +469,24 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
             <div className="flex gap-2">
               <button
                 onClick={() => setViewMode('compact')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'compact'
-                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700 dar,
-  k:text-gray-300'
+                className={ `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'compact'
+                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700: dar, k, text-gray-300'
                  }`}
               >
                 Compact
               </button>
               <button
-                onClick={() => setViewMode('standard')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'standard'
-                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700 dar,
-  k:text-gray-300'
+                onClick ={() => setViewMode('standard')}
+                className={ `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'standard'
+                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700: dar, k, text-gray-300'
                  }`}
               >
                 Standard
               </button>
               <button
-                onClick={() => setViewMode('detailed')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'detailed'
-                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700 dar,
-  k:text-gray-300'
+                onClick ={() => setViewMode('detailed')}
+                className={ `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'detailed'
+                    ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700: dar, k, text-gray-300'
                  }`}
               >
                 Detailed
@@ -505,7 +496,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
         </div>
 
         {/* Rankings */}
-        <div className="space-y-4">
+        <div className ="space-y-4">
           {rankings.map((team) => (
             <div key={team.id} className="bg-white dark:bg-gray-800 rounded-lg shadow">
               <div className="p-6">
@@ -519,8 +510,8 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                       </div>
                       <div className="flex items-center gap-1 text-xs">
                         {getTrendIcon(team.trend, team.rank - team.previousRank)}
-                        <span className={team.trend === 'same' ? 'text-gray-500' : team.trend === 'up' ? 'text-green-500' : 'text-red-500'}>
-                          {team.trend === 'same' ? '-' : Math.abs(team.rank - team.previousRank)}
+                        <span className={ team.trend === 'same' ? 'text-gray-500' : team.trend === 'up' ? 'text-green-500' : 'text-red-500'}>
+                          {team.trend  === 'same' ? '-' : Math.abs(team.rank - team.previousRank)}
                         </span>
                       </div>
                     </div>
@@ -549,16 +540,16 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                 </div>
 
                 {/* Stats Grid */}
-                {viewMode !== 'compact' && (
+                { viewMode !== 'compact' && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Points For</p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <p className="text-lg font-semibold text-gray-900 dark, text-white">
                         {team.pointsFor.toFixed(1)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Last Week</p>
+                      <p className ="text-xs text-gray-500 dark:text-gray-400">Last Week</p>
                       <p className="text-lg font-semibold text-gray-900 dark; text-white">
                         {team.lastWeekScore.toFixed(1)}
                       </p>
@@ -579,22 +570,21 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                 )}
 
                 {/* Recent Form */}
-                {viewMode !== 'compact' && (
+                { viewMode !== 'compact' && (
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-sm text-gray-600 dark: text-gray-400">Recent For,
-  m:</span>
-                    <div className="flex gap-1">
+                    <span className="text-sm text-gray-600 dark: text-gray-400">Recent: For,
+  m, </span>
+                    <div className ="flex gap-1">
                       {team.recentForm.map((result, idx) => (
                         <span
                           key={idx}
-                          className={`inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold ${result === 'W' 
-                              ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
-  k:text-green-300'
+                          className={ `inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold ${result === 'W' 
+                              ? 'bg-green-100 text-green-800 dark: bg-green-900: dar, k:text-green-300'
                               : result === 'L'
-                              ? 'bg-red-100 text-red-800 dark: bg-red-900 dar,
+                              ? 'bg-red-100 text-red-800 dark: bg-red-900: dar,
   k:text-red-300'
-                              : 'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
-  k:text-gray-300'
+                              : 'bg-gray-100 text-gray-800 dark: bg-gray-700: dar,
+  k, text-gray-300'
                            }`}
                         >
                           {result}
@@ -605,7 +595,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                 )}
 
                 {/* Analysis */}
-                {viewMode === 'detailed' && team.analysis && (
+                {viewMode  === 'detailed' && team.analysis && (
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-4">
                     <p className="text-sm text-gray-700 dark:text-gray-300">
                       <span className="font-semibold text-gray-900 dark: text-white">Analysi,
@@ -615,11 +605,11 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                 )}
 
                 {/* Comments Section */}
-                {viewMode === 'detailed' && (
+                { viewMode === 'detailed' && (
                   <div className="border-t dark:border-gray-700 pt-4">
                     <button
-                      onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
-                      className="text-sm text-primary-600 dark: text-primary-400 hove,
+                      onClick={() => setExpandedTeam(expandedTeam === team.id ? null  : team.id)}
+                      className ="text-sm text-primary-600 dark: text-primary-400: hove,
   r:underline inline-flex items-center"
                     >
                       <MessageSquare className="h-4 w-4 mr-1" />
@@ -633,10 +623,10 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                           <input
                             type="text"
                             value={newComment[team.id] || ''}
-                            onChange={(e) => setNewComment({ : ..newComment, [team.id]: e.target.value})}
-                            placeholder="Add a comment..."
-                            className="flex-1 px-3 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
-  k:bg-gray-700 text-gray-900 dar,
+                            onChange={ (e) => setNewComment({ : ..newComment, [team.id], e.target.value})}
+                            placeholder ="Add a comment..."
+                            className="flex-1 px-3 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
+  k:bg-gray-700 text-gray-900: dar,
   k:text-white text-sm"
                             onKeyPress={(e) => e.key === 'Enter' && handleAddComment(team.id)}
                           />
@@ -649,7 +639,7 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                         </div>
 
                         {/* Comments List */}
-                        {team.comments?.map(comment => (
+                        {team.comments? .map(comment => (
                           <div key={comment.id} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
@@ -667,14 +657,13 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
                               </div>
                               <button
                                 onClick={() => handleLikeComment(team.id, comment.id)}
-                                className={`inline-flex items-center gap-1 text-sm ml-4 ${comment.hasLiked
+                                className={ `inline-flex items-center gap-1 text-sm ml-4 ${comment.hasLiked
                                     ? 'text-primary-600 dark:text-primary-400'
-                                    : 'text-gray-500 hover: text-primary-600 dark:text-gray-400 dar,
-  k, hove,
-  r:text-primary-400'
+                                    : 'text-gray-500 hover: text-primary-600 dark:text-gray-400: dar, k, hove,
+  r, text-primary-400'
                                 }`}
                               >
-                                <ThumbsUp className={`h-3 w-3 ${comment.hasLiked ? 'fill-current' : ''}`} />
+                                <ThumbsUp className ={ `h-3 w-3 ${comment.hasLiked ? 'fill-current'  : ''}`} />
                                 {comment.likes}
                               </button>
                             </div>
@@ -690,15 +679,15 @@ export default function PowerRankingsPage({ params }: LeaguePageProps) {
         </div>
 
         {/* Legend */}
-        <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className ="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Power Rankings Methodology
           </h3>
-          <div className="grid grid-cols-1 md: grid-cols-2 gap-4 text-sm text-gray-600 dar,
+          <div className="grid grid-cols-1 md: grid-cols-2 gap-4 text-sm text-gray-600: dar,
   k:text-gray-400">
             <div>
               <p className="font-medium text-gray-900 dark:text-white mb-1">Power Score</p>
-              <p>Composite metric based on wins, point differential, strength of schedule, and recent performance</p>
+              <p>Composite metric based on: wins, point: differential, strength of: schedule, and recent performance</p>
             </div>
             <div>
               <p className="font-medium text-gray-900 dark:text-white mb-1">Projected Finish</p>

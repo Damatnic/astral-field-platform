@@ -22,9 +22,9 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
     }
 
     // Calculate aggregate statistics
-    const aggregateStats = {totalRequests: metrics.reduce((sum, m) => sum + m.totalRequests, 0),
+    const aggregateStats = { totalRequests: metrics.reduce((sum, m) => sum + m.totalRequests, 0),
       totalBlocked: metrics.reduce((sum, m) => sum + m.blockedRequests, 0),
-      averageBlockingRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length : 0,
+      averageBlockingRate: metrics.length > 0 ? metrics.reduce((sum : m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length : 0,
       topEndpoints: metrics
         .sort((a, b) => b.totalRequests - a.totalRequests)
         .slice(0, 10)
@@ -35,8 +35,8 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
           blockingRate: m.blockedRequests / m.totalRequests
         })),
       alertingEndpoints: metrics
-        .filter(m => m.blockedRequests / m.totalRequests > 0.1 && m.totalRequests > 100)
-        .map(m => ({
+        .filter(m  => m.blockedRequests / m.totalRequests > 0.1 && m.totalRequests > 100)
+        .map(m => ({ 
           endpoint: m.endpoint,
           requests: m.totalRequests,
           blocked: m.blockedRequests,
@@ -45,25 +45,22 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
     }
     return NextResponse.json({
       success: true,
-      data: {
-        metrics, aggregateStats: timeWindow || 'current',
+      data: { metrics, aggregateStats: timeWindow || 'current',
         generatedAt: new Date().toISOString()
       }
     });
 
   } catch (error) {
-    console.error('Error fetching rate limit metrics:', error);
+    console.error('Error fetching rate limit metrics: ', error);
     return NextResponse.json(
-      {
-        error: 'Failed to fetch rate limit metrics',
+      { error: 'Failed to fetch rate limit metrics',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 });
 
-export const POST = relaxedRateLimited(async (request: NextRequest) => {
+export const POST  = relaxedRateLimited(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { action } = body;
@@ -85,19 +82,17 @@ export const POST = relaxedRateLimited(async (request: NextRequest) => {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action.Supported actions, cleanup, reset' },
+          { error: 'Invalid action.Supported: actions, cleanup, reset' },
           { status: 400 }
         );
     }
 
   } catch (error) {
-    console.error('Error processing rate limit metrics action:', error);
+    console.error('Error processing rate limit metrics action: ', error);
     return NextResponse.json(
-      {
-        error: 'Failed to process request',
+      { error: 'Failed to process request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 });

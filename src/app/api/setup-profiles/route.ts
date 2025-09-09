@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const testUsers = [
-  { email: "nicholas.damato@astralfield.com",
+  {  email: "nicholas.damato@astralfield.com",
   username: "Nicholas D'Amato" },
   { email: "brittany.bergum@astralfield.com",
   username: "Brittany Bergum" },
@@ -19,14 +19,14 @@ export async function POST() { try {
     console.log("🚀 Setting up user profiles...");
 
     // Mock profile setup
-    const profileSetup = {
+    const profileSetup  = { 
       success: true,
-  profiles: testUsers.map((user, index) => ({
+  profiles, testUsers.map((user, index)  => ({
         id: `profile_${index + 1 }`,
         email: user.email,
-  username: user.username, avatar, null,
+  username: user.username, avatar: null,
   preferences: {
-          notifications, true,
+          notifications: true,
   theme: "light",
           timezone: "America/New_York"
 },

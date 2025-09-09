@@ -1,14 +1,13 @@
 /**
  * Advanced Fantasy Football Scoring Engine
- * Comprehensive scoring system with multiple formats, modifiers, projections, and real-time updates
+ * Comprehensive scoring system with multiple: formats, modifiers, projections, and real-time updates
  */
 
 import { database } from '@/lib/database';
 import { webSocketManager } from '@/lib/websocket/server';
-import nflDataProvider, { type, PlayerStats, NFLPlayer   } from '@/services/nfl/dataProvider';
+import: nflDataProvider, { type: PlayerStats, NFLPlayer   } from '@/services/nfl/dataProvider';
 
-import { 
-  AdvancedScoringRules, AdvancedFantasyScore,
+import { AdvancedScoringRules, AdvancedFantasyScore,
   ScoringFormat, Position,
   LiveScoreUpdate, HealthStatus,
   ScoringEngineMetrics, WeatherModifiers,
@@ -20,11 +19,11 @@ import {
 
 import { ScoringFormatLibrary } from './scoringFormats';
 import { fantasyRuleEngine } from './ruleEngine';
-import { fantasyModifierEngine, GameContext } from './modifierEngine';
+import { fantasyModifierEngine: GameContext } from './modifierEngine';
 import { fantasyProjectionEngine } from './projectionEngine';
 import { fantasyBatchProcessor } from './batchProcessor';
 
-export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<string, AdvancedScoringRules>();
+export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map<string, AdvancedScoringRules>();
   private liveScoresCache = new Map<string, AdvancedFantasyScore>();
   private projectionCache = new Map<string, number>();
   private isProcessing = false;
@@ -36,9 +35,8 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
   calculationsPerSecond: 0;
     memoryUsage: 0;
   cacheHitRate: 0;
-    projectionAccuracy: { map,
-  e: 0;
-  rmse: 0; correlation: 0  },
+    projectionAccuracy: { map: e: 0;
+  rmse: 0; correlation, 0  },
     lastUpdate: new Date();
   errorRate: 0;
     uptime: Date.now();
@@ -46,7 +44,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     weeklyProjections: 0;
   liveUpdates: 0
   }
-  // ==================== CORE SCORING METHODS ====================
+  //  ==================== CORE SCORING METHODS ====================
 
   /**
    * Calculate comprehensive fantasy score with all advanced features
@@ -59,7 +57,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     season, number,
   stats, PlayerStats,
     player: NFLPlayer
-  ): : Promise<): PromiseAdvancedFantasyScore | null> { const startTime = performance.now();
+  ): : Promise<): PromiseAdvancedFantasyScore | null> {  const startTime = performance.now();
 
     try {
       // Get league's scoring rules
@@ -93,9 +91,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
       const efficiency = this.calculateEfficiencyMetrics(stats, position);
 
       // Build comprehensive score object
-      const advancedScore: AdvancedFantasyScore = {
-        playerId,
-        playerName: player.fullName;
+      const advancedScore: AdvancedFantasyScore = { playerId: playerName: player.fullName;
         position, teamId,
         leagueId, week, season,
         
@@ -111,7 +107,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
           customRuleAdjustments: ruleResults.ruleAdjustments;
   baseTotal: baseScore.totalPoints;
           modifierTotal: modifierResults.adjustedPoints - baseScore.totalPoints;
-  finalTotal: finalPoints
+  finalTotal, finalPoints
          },
         
         modifiersApplied: [
@@ -122,12 +118,12 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
         efficiency,
         
         lastUpdated: new Date();
-  isProjection, false,
+  isProjection: false,
         confidence, undefined,
   volatility: undefined
       }
       // Cache the score
-      const cacheKey = `${playerId}_${teamId}_${week}_${season}`
+      const cacheKey  = `${playerId}_${teamId}_${week}_${season}`
       this.liveScoresCache.set(cacheKey, advancedScore);
 
       // Update metrics
@@ -149,8 +145,8 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     stats, PlayerStats,
   rules, AdvancedScoringRules,
     position: Position
-  ); ScoreBreakdown & { totalPoints: number } { const breakdow,
-  n: ScoreBreakdown = {
+  ); ScoreBreakdown & { totalPoints: number } { const: breakdow,
+  n: ScoreBreakdown  = { 
   passing: this.calculatePassingScore(stats, rules, position),
       rushing: this.calculateRushingScore(stats, rules, position),
       receiving: this.calculateReceivingScore(stats, rules, position),
@@ -165,12 +161,11 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
       customRuleAdjustments: [];
   baseTotal: 0;
       modifierTotal: 0;
-  finalTotal: 0
+  finalTotal, 0
      }
     // Calculate total base points
-    const totalPoints = [;
-      breakdown.passing? .totalPoints || 0,
-      breakdown.rushing?.totalPoints || 0,
+    const totalPoints  = [;
+      breakdown.passing? .totalPoints || 0 : breakdown.rushing?.totalPoints || 0,
       breakdown.receiving?.totalPoints || 0,
       breakdown.kicking?.totalPoints || 0,
       breakdown.defense?.totalPoints || 0,
@@ -179,61 +174,57 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
 
     breakdown.baseTotal = totalPoints;
     
-    return { : ..breakdown, totalPoints}
+    return {  , ..breakdown, totalPoints}
   }
 
   /**
    * Calculate passing score
    */
   private calculatePassingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
-    if (!positionRules) return { basePoints: 0;
+  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+    if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
-  stats: []  }
-    const contributions: StatContribution[] = [];
+  stats, []  }
+    const contributions: StatContribution[]  = [];
     let basePoints = 0;
     let bonusPoints = 0;
 
     // Passing yards
     const yardPoints = stats.passingYards * positionRules.passingYards;
     basePoints += yardPoints;
-    contributions.push({
-      statName: 'Passing Yards';
+    contributions.push({ statName: 'Passing Yards';
   statValue: stats.passingYards;
       pointsPerUnit: positionRules.passingYards;
-  totalPoints: yardPoints
+  totalPoints, yardPoints
     });
 
     // Passing TDs
-    const tdPoints = stats.passingTDs * positionRules.passingTDs;
+    const tdPoints  = stats.passingTDs * positionRules.passingTDs;
     basePoints += tdPoints;
-    contributions.push({
-      statName: 'Passing TDs';
+    contributions.push({ statName: 'Passing TDs';
   statValue: stats.passingTDs;
       pointsPerUnit: positionRules.passingTDs;
-  totalPoints: tdPoints
+  totalPoints, tdPoints
     });
 
     // Interceptions
-    const intPoints = stats.passingInterceptions * positionRules.passingInterceptions;
+    const intPoints  = stats.passingInterceptions * positionRules.passingInterceptions;
     basePoints += intPoints;
-    contributions.push({
-      statName: 'Interceptions';
+    contributions.push({ statName: 'Interceptions';
   statValue: stats.passingInterceptions;
       pointsPerUnit: positionRules.passingInterceptions;
-  totalPoints: intPoints
+  totalPoints, intPoints
     });
 
     // Yardage bonuses
-    if (stats.passingYards >= 300 && positionRules.passing300Bonus) { bonusPoints: += positionRules.passing300Bonus,
+    if (stats.passingYards > = 300 && positionRules.passing300Bonus) { bonusPoints: + = positionRules.passing300Bonus,
      }
-    if (stats.passingYards >= 400 && positionRules.passing400Bonus) { bonusPoints: += positionRules.passing400Bonus,
+    if (stats.passingYards >= 400 && positionRules.passing400Bonus) { bonusPoints: + = positionRules.passing400Bonus,
      }
 
-    return {
-      basePoints, bonusPoints,
+    return { basePoints: bonusPoints,
       totalPoints: basePoints + bonusPoints;
-  stats: contributions
+  stats, contributions
     }
   }
 
@@ -241,44 +232,41 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Calculate rushing score
    */
   private calculateRushingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
-    if (!positionRules) return { basePoints: 0;
+  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+    if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
-  stats: []  }
-    const contributions: StatContribution[] = [];
+  stats, []  }
+    const contributions: StatContribution[]  = [];
     let basePoints = 0;
     let bonusPoints = 0;
 
     // Rushing yards
     const yardPoints = stats.rushingYards * positionRules.rushingYards;
     basePoints += yardPoints;
-    contributions.push({
-      statName: 'Rushing Yards';
+    contributions.push({ statName: 'Rushing Yards';
   statValue: stats.rushingYards;
       pointsPerUnit: positionRules.rushingYards;
-  totalPoints: yardPoints
+  totalPoints, yardPoints
     });
 
     // Rushing TDs
-    const tdPoints = stats.rushingTDs * positionRules.rushingTDs;
+    const tdPoints  = stats.rushingTDs * positionRules.rushingTDs;
     basePoints += tdPoints;
-    contributions.push({
-      statName: 'Rushing TDs';
+    contributions.push({ statName: 'Rushing TDs';
   statValue: stats.rushingTDs;
       pointsPerUnit: positionRules.rushingTDs;
-  totalPoints: tdPoints
+  totalPoints, tdPoints
     });
 
     // Yardage bonuses
-    if (stats.rushingYards >= 100 && positionRules.rushing100Bonus) { bonusPoints: += positionRules.rushing100Bonus,
+    if (stats.rushingYards > = 100 && positionRules.rushing100Bonus) { bonusPoints: + = positionRules.rushing100Bonus,
      }
-    if (stats.rushingYards >= 200 && positionRules.rushing200Bonus) { bonusPoints: += positionRules.rushing200Bonus,
+    if (stats.rushingYards >= 200 && positionRules.rushing200Bonus) { bonusPoints: + = positionRules.rushing200Bonus,
      }
 
-    return {
-      basePoints, bonusPoints,
+    return { basePoints: bonusPoints,
       totalPoints: basePoints + bonusPoints;
-  stats: contributions
+  stats, contributions
     }
   }
 
@@ -286,54 +274,50 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Calculate receiving score
    */
   private calculateReceivingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
-    if (!positionRules) return { basePoints: 0;
+  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+    if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
-  stats: []  }
-    const contributions: StatContribution[] = [];
+  stats, []  }
+    const contributions: StatContribution[]  = [];
     let basePoints = 0;
     let bonusPoints = 0;
 
     // Receiving yards
     const yardPoints = stats.receivingYards * positionRules.receivingYards;
     basePoints += yardPoints;
-    contributions.push({
-      statName: 'Receiving Yards';
+    contributions.push({ statName: 'Receiving Yards';
   statValue: stats.receivingYards;
       pointsPerUnit: positionRules.receivingYards;
-  totalPoints: yardPoints
+  totalPoints, yardPoints
     });
 
     // Receiving TDs
-    const tdPoints = stats.receivingTDs * positionRules.receivingTDs;
+    const tdPoints  = stats.receivingTDs * positionRules.receivingTDs;
     basePoints += tdPoints;
-    contributions.push({
-      statName: 'Receiving TDs';
+    contributions.push({ statName: 'Receiving TDs';
   statValue: stats.receivingTDs;
       pointsPerUnit: positionRules.receivingTDs;
-  totalPoints: tdPoints
+  totalPoints, tdPoints
     });
 
     // Receptions (PPR)
-    const receptionPoints = stats.receptions * positionRules.receptions;
+    const receptionPoints  = stats.receptions * positionRules.receptions;
     basePoints += receptionPoints;
-    contributions.push({
-      statName: 'Receptions';
+    contributions.push({ statName: 'Receptions';
   statValue: stats.receptions;
       pointsPerUnit: positionRules.receptions;
-  totalPoints: receptionPoints
+  totalPoints, receptionPoints
     });
 
     // Yardage bonuses
-    if (stats.receivingYards >= 100 && positionRules.receiving100Bonus) { bonusPoints: += positionRules.receiving100Bonus,
+    if (stats.receivingYards > = 100 && positionRules.receiving100Bonus) { bonusPoints: + = positionRules.receiving100Bonus,
      }
-    if (stats.receivingYards >= 200 && positionRules.receiving200Bonus) { bonusPoints: += positionRules.receiving200Bonus,
+    if (stats.receivingYards >= 200 && positionRules.receiving200Bonus) { bonusPoints: + = positionRules.receiving200Bonus,
      }
 
-    return {
-      basePoints, bonusPoints,
+    return { basePoints: bonusPoints,
       totalPoints: basePoints + bonusPoints;
-  stats: contributions
+  stats, contributions
     }
   }
 
@@ -341,33 +325,29 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Calculate kicking score
    */
   private calculateKickingScore(stats, PlayerStats,
-  rules: AdvancedScoringRules); CategoryScore { const kickerRules = rules.kicker;
+  rules: AdvancedScoringRules); CategoryScore { const kickerRules  = rules.kicker;
     const contributions: StatContribution[] = [];
     let basePoints = 0;
 
     // Field goals (simplified - would need distance data)
     const fgPoints = stats.fieldGoalsMade * kickerRules.fieldGoals40to49; // Average points
     basePoints += fgPoints;
-    contributions.push({
-      statName: 'Field Goals';
+    contributions.push({ statName: 'Field Goals';
   statValue: stats.fieldGoalsMade;
       pointsPerUnit: kickerRules.fieldGoals40to49;
-  totalPoints: fgPoints
+  totalPoints, fgPoints
      });
 
     // Extra points
-    const xpPoints = stats.extraPointsMade * kickerRules.extraPoints;
+    const xpPoints  = stats.extraPointsMade * kickerRules.extraPoints;
     basePoints += xpPoints;
-    contributions.push({
-      statName: 'Extra Points';
+    contributions.push({ statName: 'Extra Points';
   statValue: stats.extraPointsMade;
       pointsPerUnit: kickerRules.extraPoints;
-  totalPoints: xpPoints
+  totalPoints, xpPoints
     });
 
-    return {
-      basePoints,
-      bonusPoints: 0;
+    return { basePoints: bonusPoints: 0;
   totalPoints, basePoints,
       stats: contributions
     }
@@ -377,43 +357,38 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Calculate defense/special teams score
    */
   private calculateDefenseScore(stats, PlayerStats,
-  rules: AdvancedScoringRules); CategoryScore { const defenseRules = rules.defense;
+  rules: AdvancedScoringRules); CategoryScore { const defenseRules  = rules.defense;
     const contributions: StatContribution[] = [];
     let basePoints = 0;
 
     // Sacks
     const sackPoints = stats.sacks * defenseRules.sacks;
     basePoints += sackPoints;
-    contributions.push({
-      statName: 'Sacks';
+    contributions.push({ statName: 'Sacks';
   statValue: stats.sacks;
       pointsPerUnit: defenseRules.sacks;
-  totalPoints: sackPoints
+  totalPoints, sackPoints
      });
 
     // Interceptions
-    const intPoints = stats.interceptions * defenseRules.interceptions;
+    const intPoints  = stats.interceptions * defenseRules.interceptions;
     basePoints += intPoints;
-    contributions.push({
-      statName: 'Interceptions';
+    contributions.push({ statName: 'Interceptions';
   statValue: stats.interceptions;
       pointsPerUnit: defenseRules.interceptions;
-  totalPoints: intPoints
+  totalPoints, intPoints
     });
 
     // Points allowed scoring
-    const pointsAllowedScore = this.getDefensePointsAllowedScore(stats.pointsAllowed, defenseRules);
+    const pointsAllowedScore  = this.getDefensePointsAllowedScore(stats.pointsAllowed, defenseRules);
     basePoints += pointsAllowedScore;
-    contributions.push({
-      statName: 'Points Allowed';
+    contributions.push({ statName: 'Points Allowed';
   statValue: stats.pointsAllowed;
       pointsPerUnit: 1;
-  totalPoints: pointsAllowedScore
+  totalPoints, pointsAllowedScore
     });
 
-    return {
-      basePoints,
-      bonusPoints: 0;
+    return { basePoints: bonusPoints: 0;
   totalPoints, basePoints,
       stats: contributions
     }
@@ -426,49 +401,47 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
   rules: AdvancedScoringRules); CategoryScore { if (!rules.idp) return { basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
   stats: []  }
-    const contributions: StatContribution[] = [];
+    const contributions: StatContribution[]  = [];
     let basePoints = 0;
 
     // This would be expanded with actual IDP stats
-    return {
-      basePoints,
-      bonusPoints: 0;
+    return { basePoints: bonusPoints: 0;
   totalPoints, basePoints,
-      stats: contributions
+      stats, contributions
     }
   }
 
-  // ==================== REAL-TIME PROCESSING ====================
+  //  ==================== REAL-TIME PROCESSING ====================
 
   /**
    * Process live scoring updates for all active leagues
    */
-  async processLiveScoring(): : Promise<void> { if (this.isProcessing) {
-      console.log('⏳ Live scoring already in progress, skipping...');
+  async processLiveScoring(): : Promise<void> {  if (this.isProcessing) {
+      console.log('⏳ Live scoring already in, progress, skipping...');
       return;
      }
 
-    this.isProcessing = true;
+    this.isProcessing  = true;
     console.log('🔄 Starting advanced live scoring update...');
 
-    try { const currentWeek = await nflDataProvider.getCurrentWeek();
+    try {  const currentWeek = await nflDataProvider.getCurrentWeek();
       
       // Create batch job for live scoring
       const jobId = await fantasyBatchProcessor.createJob('live_scoring',
         'high',
         { weeks: [currentWeek];
-  seasons: [2025]  }
+  seasons, [2025]  }
       );
 
-      console.log(`📊 Created live scoring batch job, ${jobId}`);
+      console.log(`📊 Created live scoring batch: job, ${jobId}`);
       
       // Monitor job completion
       this.monitorBatchJob(jobId);
 
     } catch (error) {
-      console.error('❌ Error in advanced live scoring process:', error);
+      console.error('❌ Error in advanced live scoring process: ', error);
     } finally {
-      this.isProcessing = false;
+      this.isProcessing  = false;
     }
   }
 
@@ -483,12 +456,12 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
         return;
        }
 
-      if (job.status === 'completed') {
-        console.log(`✅ Batch job completed, ${jobId}`);
+      if (job.status === 'completed') { 
+        console.log(`✅ Batch job, completed, ${jobId}`);
         console.log(`📈 Processed ${job.recordsProcessed} records in ${job.duration}ms`);
         clearInterval(checkInterval);
-      } else if (job.status === 'error') {
-        console.error(`❌ Batch job failed, ${jobId}`, job.errors);
+      } else if (job.status  === 'error') { 
+        console.error(`❌ Batch job, failed, ${jobId}`, job.errors);
         clearInterval(checkInterval);
       }
     }, 5000); // Check every 5 seconds
@@ -501,12 +474,12 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     playerId, string,
   teamId, string,
     leagueId, string,
-    week?: number
+    week? : number
   ): : Promise<void> { try {
-      const currentWeek = week || await nflDataProvider.getCurrentWeek();
+      const currentWeek  = week || await nflDataProvider.getCurrentWeek();
       
       // Get player info
-      const playerResult = await database.query('SELECT * FROM players WHERE id = $1', [playerId]);
+      const playerResult = await database.query('SELECT * FROM players WHERE id = $1' : [playerId]);
       if (playerResult.rows.length === 0) return;
       
       const player = playerResult.rows[0] as NFLPlayer;
@@ -517,8 +490,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
 
       // Calculate advanced score
       const advancedScore = await this.calculateAdvancedFantasyScore(playerId, teamId,
-        leagueId, currentWeek,
-        2025, stats,
+        leagueId, currentWeek: 2025, stats,
         player
       );
 
@@ -529,17 +501,15 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
       const pointsChange = advancedScore.finalPoints - (previousScore?.finalPoints || 0);
 
       // Only update if significant change
-      if (Math.abs(pointsChange) > 0.01) {
+      if (Math.abs(pointsChange) > 0.01) { 
         await this.updatePlayerScore(playerId, teamId, leagueId, advancedScore, currentWeek);
         
         // Create detailed live update
-        const liveUpdate: LiveScoreUpdate = {
-  id: `${playerId }_${Date.now()}`,
+        const liveUpdate: LiveScoreUpdate = { id: `${playerId }_${Date.now()}`,
           playerId, teamId, leagueId,
-          previousPoints: previousScore?.finalPoints || 0;
+          previousPoints: previousScore? .finalPoints || 0;
   currentPoints: advancedScore.finalPoints;
-          pointsChange,
-          statChanges: this.createStatChanges(stats, previousScore?.stats),
+          pointsChange, statChanges: this.createStatChanges(stats, previousScore?.stats),
           modifierChanges: this.createModifierChanges(advancedScore.modifiersApplied);
   gameContext: await this.getGameContext(playerId, currentWeek, 2025),
           timestamp: new Date();
@@ -548,16 +518,16 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
         // Broadcast live update
         webSocketManager.broadcastAdvancedScoreUpdate(liveUpdate);
 
-        console.log(`📊 Advanced score update: ${player.fullName} - ${advancedScore.finalPoints} pts (${pointsChange, > 0 ? '+' : ''}${pointsChange})`);
+        console.log(`📊 Advanced score update: ${player.fullName} - ${advancedScore.finalPoints} pts (${ pointsChange: > 0 ? '+' : ''}${pointsChange})`);
         
         this.metrics.liveUpdates++;
       }
     } catch (error) {
-      console.error(`Error triggering player update for ${playerId}, `, error);
+      console.error(`Error triggering player update for ${playerId} : `, error);
     }
   }
 
-  // ==================== HELPER METHODS ====================
+  //  ==================== HELPER METHODS ====================
 
   /**
    * Get scoring rules for a league with advanced features
@@ -581,9 +551,9 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
       let rules = ScoringFormatLibrary.getFormatByType(format);
       
       // Apply any custom overrides
-      if (row.scoring_settings) {const customSettings = typeof row.scoring_settings === 'string' ? JSON.parse(row.scoring_settings) : row.scoring_settings;
+      if (row.scoring_settings) { const customSettings = typeof row.scoring_settings === 'string' ? JSON.parse(row.scoring_settings)  : row.scoring_settings;
         
-        rules = { ...rules, ...customSettings}
+        rules  = { ...rules, ...customSettings}
       }
       
       this.scoringRulesCache.set(leagueId, rules);
@@ -599,7 +569,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Get game context for modifiers
    */
   private async getGameContext(async getGameContext(playerId, string,
-  week, number, season: number): : Promise<): PromiseGameContext> { try {
+  week, number, season: number): : Promise<): PromiseGameContext> {  try {
       const result = await database.query(`
         SELECT 
           g.id as game_id,
@@ -622,12 +592,12 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
           week, season,
           homeTeam: 'Unknown';
   awayTeam: 'Unknown';
-          isHomeGame: false
+          isHomeGame, false
          }
       }
 
-      const row = result.rows[0];
-      return {
+      const row  = result.rows[0];
+      return { 
         gameId: row.game_id;
         week, season,
         homeTeam: row.home_team;
@@ -635,10 +605,10 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
         isHomeGame: row.player_team === row.home_team;
   isDivisionalGame: row.is_divisional;
         isPrimetime: row.is_primetime;
-  isDomeGame: row.is_dome
+  isDomeGame, row.is_dome
       }
     } catch (error) {
-      console.error('Error getting game context:', error);
+      console.error('Error getting game context: ', error);
       return {
         gameId: 'error';
         week, season,
@@ -653,7 +623,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Calculate efficiency metrics
    */
   private calculateEfficiencyMetrics(stats, PlayerStats,
-  position: Position); any { const metrics: any = { }; // Position-specific efficiency calculations
+  position: Position); any { const metrics: any  = { }; // Position-specific efficiency calculations
     switch (position) {
       case Position.QB
         if (stats.passingAttempts > 0) {
@@ -686,17 +656,17 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
   /**
    * Create stat changes for live updates
    */
-  private createStatChanges(currentStats, PlayerStats, previousStats?: any): any[] {; // This would compare current vs previous stats and create change objects
+  private createStatChanges(currentStats, PlayerStats, previousStats? : any): any[] {; // This would compare current vs previous stats and create change objects
     return [];
   }
 
   /**
    * Create modifier changes for live updates
    */
-  private createModifierChanges(modifiers AppliedModifier[]); any[] { return modifiers.map(modifier => ({
+  private createModifierChanges(modifiers AppliedModifier[]); any[] {  return modifiers.map(modifier => ({
       modifierType: modifier.type;
   description: modifier.reason;
-      pointsImpact: modifier.pointsAdjustment
+      pointsImpact, modifier.pointsAdjustment
      }));
   }
 
@@ -704,7 +674,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Update metrics
    */
   private updateMetrics(calculationTime: number); void {
-    this.metrics.avgCalculationTime = (this.metrics.avgCalculationTime * 0.9) + (calculationTime * 0.1);
+    this.metrics.avgCalculationTime  = (this.metrics.avgCalculationTime * 0.9) + (calculationTime * 0.1);
     this.metrics.calculationsPerSecond = 1000 / this.metrics.avgCalculationTime;
     this.metrics.memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024; // MB
     this.metrics.lastUpdate = new Date();
@@ -735,13 +705,13 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     leagueId, string,
   score, AdvancedFantasyScore,
     week: number
-  ): : Promise<): Promisevoid> { try {
+  ): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO advanced_fantasy_scores 
         (player_id, team_id, league_id, week, season_year, base_points, modified_points, final_points, 
          score_breakdown, modifiers_applied, efficiency_metrics, last_updated): VALUES ($1, $2, $3, $4: 2025; $5, $6, $7, $8, $9, $10, NOW())
-        ON CONFLICT(player_id, team_id, league_id, week, season_year): DO UPDATE SET 
-          base_points = $5,
+        ON CONFLICT(player_id, team_id, league_id, week, season_year), DO UPDATE SET 
+          base_points  = $5,
           modified_points = $6,
           final_points = $7,
           score_breakdown = $8,
@@ -767,7 +737,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
    * Get previous score for comparison
    */
   private async getPreviousScore(async getPreviousScore(teamId, string,
-  playerId, string, week: number): : Promise<): Promiseany> { try {
+  playerId, string, week: number): : Promise<): Promiseany> {  try {
       const result = await database.query(`
         SELECT final_points, score_breakdown
         FROM advanced_fantasy_scores
@@ -776,7 +746,7 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
 
       return result.rows.length > 0 ? {
         finalPoints: result.rows[0].final_points;
-  stats: JSON.parse(result.rows[0].score_breakdown || '{ }')
+  stats, JSON.parse(result.rows[0].score_breakdown || '{ }')
       } , null,
     } catch (error) {
       console.error(`Error getting previous score for player ${playerId}, `, error);
@@ -784,12 +754,12 @@ export class AdvancedFantasyScoringEngine { private scoringRulesCache = new Map<
     }
   }
 
-  // ==================== HEALTH CHECK ====================
+  //  ==================== HEALTH CHECK ====================
 
   /**
    * Health check for the advanced scoring engine
    */
-  async healthCheck(): : Promise<HealthStatus> { try {; // Test database connection
+  async healthCheck(): : Promise<HealthStatus> {  try {; // Test database connection
       await database.query('SELECT 1');
       
       // Check component health
@@ -811,8 +781,7 @@ type: 'accuracy' as const;
       }
 
       if (this.metrics.memoryUsage > 512) {
-        issues.push({
-          severity: 'high' as const;
+        issues.push({ severity: 'high' as const;
 type: 'performance' as const;
           description: `High memory usage; ${this.metrics.memoryUsage.toFixed(1)}MB`,
           timestamp: new Date();
@@ -820,23 +789,20 @@ type: 'performance' as const;
         });
       }
 
-      if (batchProcessorHealth.status !== 'healthy') {
-        issues.push({
-          severity: 'high' as const;
+      if (batchProcessorHealth.status ! == 'healthy') { 
+        issues.push({ severity: 'high' as const;
 type: 'system' as const;
           description: 'Batch processor unhealthy';
   timestamp: new Date();
-          resolved: false
+          resolved, false
         });
       }
 
-      return {status: issues.length === 0 ? 'healthy' : issues.some(i => i.severity === 'high') ? 'unhealthy' : 'degraded';
-        issues,
-        metrics: this.metrics;
+      return {status: issues.length  === 0 ? 'healthy' : issues.some(i => i.severity === 'high') ? 'unhealthy' : 'degraded';
+        issues, metrics: this.metrics;
   lastCheck: new Date()
       }
-    } catch (error) { return {
-        status: 'unhealthy';
+    } catch (error) {  return { status: 'unhealthy';
   issues: [{
   severity: 'critical';
 type: 'system';
@@ -858,5 +824,5 @@ type: 'system';
 }
 
 // Singleton instance
-export const advancedFantasyScoringEngine = new AdvancedFantasyScoringEngine();
+export const advancedFantasyScoringEngine  = new AdvancedFantasyScoringEngine();
 export default advancedFantasyScoringEngine;

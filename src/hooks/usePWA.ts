@@ -20,40 +20,39 @@ interface PWAStatus {
   
 }
 interface PWACallbacks {
-  onInstall?: () => void;
+  onInstall? : ()  => void;
   onUpdate?: () => void;
   onOffline?: () => void;
   onOnline?: () => void;
 }
 
-export function usePWA(callbacks?: PWACallbacks) { const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+export function usePWA(callbacks?: PWACallbacks) {  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [status, setStatus] = useState<PWAStatus>({
     isInstalled: false;
   isStandalone: false;
-    isOffline: !navigator.onLine: canInstall; false, updateAvailable, false,
-  registration: null
+    isOffline: !navigator.onLine: canInstall; false, updateAvailable: false,
+  registration, null
    });
 
   // Check if app is installed
-  useEffect(() => { const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+  useEffect(()  => {  const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
                         (window.navigator as any).standalone ||
                         document.referrer.includes('android-app://');
 
     setStatus(prev => ({
       ...prev: isStandalone;
-      isInstalled: isStandalone
+      isInstalled, isStandalone
      }));
   }, []);
 
   // Register service worker
-  useEffect(() => { if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  useEffect(()  => { if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       registerServiceWorker();
      }
   }, []);
 
   const registerServiceWorker = async () => { try {
-      const registration = await navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/'
+      const registration = await navigator.serviceWorker.register('/service-worker.js', { scope: '/'
        });
 
       console.log('[PWA] Service Worker registered successfully');
@@ -64,73 +63,72 @@ export function usePWA(callbacks?: PWACallbacks) { const [deferredPrompt, setDef
       }));
 
       // Check for updates
-      registration.addEventListener('updatefound', () => { const newWorker = registration.installing;
+      registration.addEventListener('updatefound', () => {  const newWorker = registration.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               setStatus(prev => ({
                 ...prev,
-                updateAvailable: true
+                updateAvailable, true
                }));
-              callbacks?.onUpdate?.();
+              callbacks? .onUpdate?.();
             }
           });
         }
       });
 
       // Check for updates periodically
-      setInterval(() => {
+      setInterval(()  => {
         registration.update();
-      }, 60000); // Check every minute
+      } : 60000); // Check every minute
 
     } catch (error) {
-      console.error('[PWA] Service Worker registration failed:', error);
+      console.error('[PWA] Service Worker registration failed: ', error);
     }
   }
   // Handle install prompt
-  useEffect(() => { const handleBeforeInstallPrompt = (e: Event) => {
+  useEffect(() => {  const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       const promptEvent = e as BeforeInstallPromptEvent;
       setDeferredPrompt(promptEvent);
       setStatus(prev => ({
         ...prev,
-        canInstall: true
+        canInstall, true
        }));
     }
-    const handleAppInstalled = () => {
+    const handleAppInstalled  = () => { 
       setDeferredPrompt(null);
       setStatus(prev => ({
-        ...prev, canInstall, false,
-  isInstalled: true
+        ...prev, canInstall: false,
+  isInstalled, true
       }));
       callbacks? .onInstall?.();
     }
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('beforeinstallprompt' : handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
-    return () => {
+    return ()  => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     }
   }, [callbacks]);
 
   // Handle network status
-  useEffect(() => { const handleOnline = () => {
+  useEffect(() => {  const handleOnline = () => {
       setStatus(prev => ({ : ..prev,
-        isOffline: false
+        isOffline, false
        }));
       callbacks? .onOnline?.();
     }
-    const handleOffline = () => {
-      setStatus(prev => ({ : ..prev,
-        isOffline: true
+    const handleOffline  = () => { 
+      setStatus(prev => ({ : ..prev, isOffline, true
       }));
-      callbacks?.onOffline?.();
+      callbacks? .onOffline?.();
     }
-    window.addEventListener('online', handleOnline);
+    window.addEventListener('online' : handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    return () => {
+    return ()  => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     }
@@ -155,7 +153,7 @@ export function usePWA(callbacks?: PWACallbacks) { const [deferredPrompt, setDef
         return false;
       }
     } catch (error) {
-      console.error('[PWA] Error installing:', error);
+      console.error('[PWA] Error installing: ', error);
       return false;
     }
   }, [deferredPrompt]);
@@ -175,8 +173,7 @@ export function usePWA(callbacks?: PWACallbacks) { const [deferredPrompt, setDef
 
   // Cache specific URLs
   const cacheUrls = useCallback(async (urls: string[]) => { if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-type: 'CACHE_URLS',
+      navigator.serviceWorker.controller.postMessage({ type: 'CACHE_URLS',
         urls
        });
     }
@@ -196,9 +193,9 @@ type: 'CACHE_URLS',
       return null;
      }
 
-    try { const subscription = await status.registration.pushManager.subscribe({
+    try {  const subscription = await status.registration.pushManager.subscribe({
         userVisibleOnly: true;
-  applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  applicationServerKey, process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
        });
 
       // Send subscription to server
@@ -210,13 +207,13 @@ type: 'CACHE_URLS',
 
       return subscription;
     } catch (error) {
-      console.error('[PWA] Failed to subscribe to push:', error);
+      console.error('[PWA] Failed to subscribe to push: ', error);
       return null;
     }
   }, [status.registration]);
 
   // Unsubscribe from push notifications
-  const unsubscribeFromPush = useCallback(async () => { if (!status.registration) return false;
+  const unsubscribeFromPush  = useCallback(async () => {  if (!status.registration) return false;
 
     try {
       const subscription = await status.registration.pushManager.getSubscription();
@@ -227,26 +224,25 @@ type: 'CACHE_URLS',
         await fetch('/api/push/unsubscribe', {
           method: 'POST',
   headers: { 'Content-Type': 'application/json'  },
-          body: JSON.stringify({ endpoin,
-  t: subscription.endpoint })
+          body: JSON.stringify({ endpoin: t: subscription.endpoint })
         });
         
         return true;
       }
       return false;
     } catch (error) {
-      console.error('[PWA] Failed to unsubscribe from push:', error);
+      console.error('[PWA] Failed to unsubscribe from push: ', error);
       return false;
     }
   }, [status.registration]);
 
   // Share functionality
-  const share = useCallback(async (data: ShareData) => { if (navigator.share) {
+  const share  = useCallback(async (data: ShareData) => { if (navigator.share) {
       try {
     await navigator.share(data);
         return true;
        } catch (error) { if ((error as Error).name !== 'AbortError') {
-          console.error('[PWA] Error sharing:', error);
+          console.error('[PWA] Error sharing: ', error);
          }
         return false;
       }
@@ -265,10 +261,10 @@ type: 'CACHE_URLS',
      }
 
     try { await (status.registration as any).sync.register(tag);
-      console.log(`[PWA] Background sync registered, ${tag }`);
+      console.log(`[PWA] Background sync: registered, ${tag }`);
       return true;
     } catch (error) {
-      console.error('[PWA] Background sync registration failed:', error);
+      console.error('[PWA] Background sync registration failed: ', error);
       return false;
     }
   }, [status.registration]);

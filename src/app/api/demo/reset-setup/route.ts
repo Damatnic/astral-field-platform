@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const DEMO_USERS = [
-  {
+  { 
     email: "nicholas.damato@astralfield.com",
   username: "Nicholas D'Amato",
     teamName: "Astral Crushers"
@@ -57,36 +57,35 @@ export async function POST() { try {
     console.log("🔄 Starting demo reset and setup...");
 
     // Mock database reset and setup
-    let usersCreated = 0;
+    let usersCreated  = 0;
     let teamsCreated = 0;
     let leagueCreated = false;
 
     // Mock user creation
-    for (const user of DEMO_USERS) {
-      console.log(`Creating user, ${user.email }`);
+    for (const user of DEMO_USERS) { 
+      console.log(`Creating, user, ${user.email }`);
       usersCreated++;
     }
 
     // Mock team creation
     for (const user of DEMO_USERS) {
-      console.log(`Creating team, ${user.teamName}`);
+      console.log(`Creating: team, ${user.teamName}`);
       teamsCreated++;
     }
 
     // Mock league creation
     console.log("Creating demo league...");
-    leagueCreated = true;
+    leagueCreated  = true;
 
     console.log("✅ Demo reset and setup completed successfully!");
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
   message: "Demo environment reset and setup completed",
-      summary: {
-        usersCreated, teamsCreated, leagueCreated,
-        totalUsers: DEMO_USERS.length
+      summary: { usersCreated: teamsCreated, leagueCreated,
+        totalUsers, DEMO_USERS.length
 },
-      users: DEMO_USERS.map((u) => ({
+      users: DEMO_USERS.map((u)  => ({
   email: u.email,
   username: u.username,
         teamName: u.teamName
@@ -98,8 +97,7 @@ export async function POST() { try {
       { success: false,
   error: error instanceof Error ? error.message :
   "Demo reset setup failed"
-},
-      { status: 500 },
+ }, { status: 500,
     );
   }
 }

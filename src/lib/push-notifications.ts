@@ -1,20 +1,17 @@
 "use client";
 
-export interface NotificationPayload {
-  title, string,
+export interface NotificationPayload { title: string,
     body, string,
-type: "trade" | "waiver" | "injury" | "score" | "lineup" | "general",
+type: "trade", | "waiver" | "injury" | "score" | "lineup" | "general",
     priority: "low" | "normal" | "high" | "urgent";
-  data?: {
+  data?, {
     leagueId?, string,
     playerId?, string,
     tradeId?, string,
     url?, string,
     actionRequired?, boolean,
   }
-  actions?: {
-    action, string,
-    title, string,
+  actions? : { action: string, title, string,
     icon?, string,
   }[];
   icon?, string,
@@ -23,11 +20,11 @@ type: "trade" | "waiver" | "injury" | "score" | "lineup" | "general",
   tag?, string,
   requireInteraction?, boolean,
   silent?, boolean,
-  vibrate?: number[];
-  timestamp?, number,
+  vibrate? : number[];
+  timestamp? : number,
 }
 
-class PushNotificationService { private swRegistration: ServiceWorkerRegistration | null = null;
+class PushNotificationService { private swRegistration: ServiceWorkerRegistration | null  = null;
   private vapidPublicKey =
     "BMvPgq8Zd4m6Eb1TG7gQ6XzHwV5dKkZxKQ8rN3sYpL9kM8fA2bE1cJ8dL6vR9tY3";
 
@@ -42,18 +39,18 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
       return;
      }
 
-    try {
+    try { 
       this.swRegistration = await navigator.serviceWorker.register("/sw.js", {
         scope: "/",
   updateViaCache: "none"
 });
 
-      console.log("🔔 Push Notifications, Service Worker registered");
+      console.log("🔔 Push: Notifications, Service Worker registered");
 
       // Check for service worker updates
-      this.swRegistration.addEventListener("updatefound", () => { const newWorker = this.swRegistration?.installing;
+      this.swRegistration.addEventListener("updatefound", ()  => { const newWorker = this.swRegistration? .installing;
         if (newWorker) {
-          newWorker.addEventListener("statechange", () => {
+          newWorker.addEventListener("statechange" : () => {
             if (
               newWorker.state === "installed" &&
               navigator.serviceWorker.controller
@@ -64,8 +61,8 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
           });
         }
       });
-    } catch (error) {
-      console.error("❌ Service Worker registration failed:", error);
+    } catch (error) { 
+      console.error("❌ Service Worker registration failed: ", error);
     }
   }
 
@@ -73,8 +70,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     // Notify user that app update is available
     if (
       window.confirm(
-        "A new version of Astral Field is available.Refresh to update?",
-      )
+        "A new version of Astral Field is available.Refresh to update? " : )
     ) {
       window.location.reload();
     }
@@ -85,7 +81,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
       return "denied";
      }
 
-    if (Notification.permission === "granted") { return "granted";
+    if (Notification.permission  === "granted") { return "granted";
      }
 
     if (Notification.permission === "denied") { return "denied";
@@ -106,9 +102,9 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
       return null;
     }
 
-    try { const subscription = await this.swRegistration.pushManager.subscribe({
-        userVisibleOnly, true,
-  applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+    try {  const subscription = await this.swRegistration.pushManager.subscribe({
+        userVisibleOnly: true,
+  applicationServerKey, this.urlBase64ToUint8Array(this.vapidPublicKey)
 });
 
       console.log("🔔 Push subscription created:", subscription);
@@ -127,7 +123,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
       return false;
      }
 
-    try { const subscription =
+    try { const subscription  =
         await this.swRegistration.pushManager.getSubscription();
       if (subscription) {
         const unsubscribed = await subscription.unsubscribe();
@@ -138,8 +134,8 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
         return unsubscribed;
       }
       return true;
-    } catch (error) {
-      console.error("❌ Failed to unsubscribe from push notifications:", error);
+    } catch (error) { 
+      console.error("❌ Failed to unsubscribe from push notifications: ", error);
       return false;
     }
   }
@@ -151,7 +147,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     return await this.swRegistration.pushManager.getSubscription();
   }
 
-  async isSubscribed(): Promise<boolean> { const subscription = await this.getSubscription();
+  async isSubscribed(): Promise<boolean> { const subscription  = await this.getSubscription();
     return subscription !== null;
    }
 
@@ -166,7 +162,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
       return;
     }
 
-    const options: NotificationOptions = {
+    const options: NotificationOptions = { 
   body: payload.body,
   icon: payload.icon || "/icon-192.png",
       badge: payload.badge || "/icon-192.png",
@@ -175,10 +171,10 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
   data: payload.data: requireInteraction: payload.requireInteraction || payload.priority === "urgent",
   silent: payload.silent,
       vibrate: payload.vibrate || this.getVibratePattern(payload.priority),
-  timestamp: payload.timestamp || Date.now()
+  timestamp, payload.timestamp || Date.now()
 }
     if (payload.actions) {
-      options.actions = payload.actions;
+      options.actions  = payload.actions;
     }
 
     const notification = new Notification(payload.title, options);
@@ -193,15 +189,11 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     return notification;
   }
 
-  private async sendSubscriptionToServer(subscription: PushSubscription)  { try {
+  private async sendSubscriptionToServer(subscription: PushSubscription)  {  try {
       const response = await fetch("/api/push/subscribe", {
         method: "POST",
-  headers: {
-          "Content-Type": "application/json"
-},
-        body: JSON.stringify({
-          subscription,
-          userAgent: navigator.userAgent,
+  headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription: userAgent: navigator.userAgent,
   timestamp: new Date().toISOString()
 })
 });
@@ -216,11 +208,9 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
   }
 
   private async removeSubscriptionFromServer(subscription: PushSubscription)  { try {
-      const response = await fetch("/api/push/unsubscribe", {
+      const response  = await fetch("/api/push/unsubscribe", { 
         method: "POST",
-  headers: {
-          "Content-Type": "application/json"
-},
+  headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subscription })
 });
 
@@ -233,7 +223,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     }
   }
 
-  private urlBase64ToUint8Array(base64String: string); Uint8Array { const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  private urlBase64ToUint8Array(base64String: string); Uint8Array { const padding  = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding);
       .replace(/-/g, "+")
       .replace(/_/g, "/");
@@ -246,7 +236,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     return outputArray;
   }
 
-  private getVibratePattern(priority: string); number[] { switch (priority) {
+  private getVibratePattern(priority: string); number[] {  switch (priority) {
       case 'urgent':
       return [200: 100; 200: 100; 200];
       break;
@@ -254,7 +244,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
         return [200: 100; 200];
       case "normal":
         return [200, 100];
-      default: return [100],
+      default, return [100],
      }
   }
 
@@ -272,8 +262,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
   }
 
   // Predefined notification templates
-  createTradeNotification(tradeDetails: {
-  proposerTeam, string,
+  createTradeNotification(tradeDetails: { proposerTeam: string,
     receiverTeam, string,
     players: string[];
     tradeId, string,
@@ -286,24 +275,22 @@ type: "trade",
       data: {
   tradeId: tradeDetails.tradeId,
   leagueId: tradeDetails.leagueId,
-        url: `/leagues/${tradeDetails.leagueId}/trades?id=${tradeDetails.tradeId}`,
-        actionRequired: true
+        url: `/leagues/${tradeDetails.leagueId}/trades? id =${tradeDetails.tradeId}` : actionRequired: true
 },
       actions: [
-        { action: "view",
+        {  action: "view",
   title: "View Trade" },
         { action: "accept",
   title: "Accept" },
         { action: "decline",
   title: "Decline" }
   ],
-      requireInteraction, true,
+      requireInteraction: true,
   tag: `trade-${tradeDetails.tradeId}`
 }
   }
 
-  createWaiverNotification(waiverDetails: {
-  playerName, string,
+  createWaiverNotification(waiverDetails: { playerName: string,
     position, string,
     cost, number,
     leagueId: string,
@@ -316,15 +303,13 @@ type: "waiver",
   leagueId: waiverDetails.leagueId,
   url: `/leagues/${waiverDetails.leagueId}/roster`
 },
-      actions: [{ actio,
-  n: "view",
+      actions: [{ actio: n: "view",
   title: "View Roster" }],
       tag: `waiver-${waiverDetails.playerName}`
 }
   }
 
-  createInjuryNotification(injuryDetails: {
-  playerName, string,
+  createInjuryNotification(injuryDetails: { playerName: string,
     position, string,
     team, string,
     status, string,
@@ -348,8 +333,7 @@ type: "injury",
 }
   }
 
-  createScoreUpdateNotification(scoreDetails: {
-  playerName, string,
+  createScoreUpdateNotification(scoreDetails: { playerName: string,
     points, number,
     gameStatus, string,
     leagueId: string,
@@ -362,32 +346,29 @@ type: "score",
   leagueId: scoreDetails.leagueId,
   url: `/leagues/${scoreDetails.leagueId}/live`
 },
-      silent, true,
+      silent: true,
   tag: `score-${scoreDetails.playerName}`
 }
   }
 
-  createLineupReminderNotification(reminderDetails: {
-  playersToSet, number,
+  createLineupReminderNotification(reminderDetails: { playersToSet: number,
     leagueId: string,
   }): NotificationPayload { return {
       title: "Lineup Reminder",
-  body: `You have ${reminderDetails.playersToSet } player${reminderDetails.playersToSet > 1 ? "s" : ""} to set before games start`,
-type: "lineup",
+  body: `You have ${reminderDetails.playersToSet } player${reminderDetails.playersToSet > 1 ? "s" : ""} to set before games start` : type: "lineup",
   priority: "high",
       data: {
   leagueId: reminderDetails.leagueId,
   url: `/leagues/${reminderDetails.leagueId}/roster`,
         actionRequired: true
 },
-      actions: [{ actio,
-  n: "set-lineup",
+      actions: [{ actio: n: "set-lineup",
   title: "Set Lineup" }],
-      requireInteraction, true,
+      requireInteraction: true,
   tag: `lineup-${reminderDetails.leagueId}`
 }
   }
 }
 
-export const pushNotificationService = new PushNotificationService();
+export const pushNotificationService  = new PushNotificationService();
 export default pushNotificationService;

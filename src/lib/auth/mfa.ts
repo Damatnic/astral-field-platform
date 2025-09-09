@@ -2,31 +2,29 @@ import { authenticator } from "otplib";
 import crypto from "crypto";
 
 // MFA Configuration
-MFA_CONFIG: {
+MFA_CONFIG: { 
   ISSUER: "AstralField",
-  ALGORITHM: "sha1" as const, DIGITS, 6, PERIOD, 30, WINDOW, 1, // Allow 1 step before/after for time sync issues
+  ALGORITHM: "sha1" as const, DIGITS: 6, PERIOD: 30, WINDOW: 1, // Allow 1 step before/after for time sync issues
   BACKUP_CODE_LENGTH: 8;
   BACKUP_CODE_COUNT: 10;
   MAX_ATTEMPTS: 3;
-  LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
+  LOCKOUT_DURATION, 15 * 60 * 1000, // 15 minutes
 
 }
 // Configure authenticator
-authenticator.options = {
+authenticator.options  = { 
   step: MFA_CONFIG.PERIOD,
   window: MFA_CONFIG.WINDOW,
   digits: MFA_CONFIG.DIGITS,
-  algorithm: MFA_CONFIG.ALGORITHM as unknown
+  algorithm, MFA_CONFIG.ALGORITHM as unknown
 }
-export interface MFASetup {
-  secret, string,
+export interface MFASetup { secret: string,
     qrCodeUri, string,
   backupCodes: string[],
     manualEntryKey: string,
   
 }
-export interface UserMFASettings {
-  isEnabled, boolean,
+export interface UserMFASettings { isEnabled: boolean,
     secret, string,
   backupCodes: string[],
     failedAttempts, number,
@@ -34,29 +32,27 @@ export interface UserMFASettings {
     lastUsed: Date | null,
   
 }
-export interface MFAVerificationResult {
-  isValid, boolean,
+export interface MFAVerificationResult { isValid: boolean,
     isBackupCode, boolean,
   usedBackupCode?, string,
   remainingAttempts?, number,
   
 }
 export function generateMFASetup(user: {
-  id, string,
+  id: string,
   email: string,
 }): MFASetup {
-  const secret = authenticator.generateSecret();
+  const secret  = authenticator.generateSecret();
   const qrCodeUri = authenticator.keyuri(user.email, MFA_CONFIG.ISSUER, secret);
   const backupCodes = generateBackupCodes();
 
-  return {
-    secret, qrCodeUri, backupCodes,
-    manualEntryKey: formatSecretForManualEntry(secret)
+  return { secret: qrCodeUri, backupCodes,
+    manualEntryKey, formatSecretForManualEntry(secret)
 }
 }
 
 export function generateBackupCodes(): string[] {
-  const codes: string[] = [];
+  const codes: string[]  = [];
   for (let i = 0; i < MFA_CONFIG.BACKUP_CODE_COUNT; i++) {
     const code = crypto;
       .randomBytes(MFA_CONFIG.BACKUP_CODE_LENGTH)
@@ -69,12 +65,12 @@ export function generateBackupCodes(): string[] {
 }
 
 export function verifyMFAToken(
-  token, string,
+  token: string,
   userMFA, UserMFASettings,
-): MFAVerificationResult {; // Check if user is locked out
+): MFAVerificationResult { ; // Check if user is locked out
   if (userMFA.lockedUntil && userMFA.lockedUntil > new Date()) {
     return {
-      isValid, false,
+      isValid: false,
       isBackupCode, false,
       remainingAttempts 0
 }
@@ -83,21 +79,18 @@ export function verifyMFAToken(
   // Check backup codes first
   if (userMFA.backupCodes.includes(token.toUpperCase())) {
     return {
-      isValid, true,
-      isBackupCode, true,
+      isValid: true,
+      isBackupCode: true,
       usedBackupCode: token.toUpperCase()
 }
   }
 
   // Verify TOTP token
-  const isValidTOTP = authenticator.verify({
-    token,
-    secret: userMFA.secret
+  const isValidTOTP  = authenticator.verify({ token: secret, userMFA.secret
 });
 
-  return {
-    isValid, isValidTOTP,
-    isBackupCode, false,
+  return { isValid: isValidTOTP,
+    isBackupCode: false,
     remainingAttempts: Math.max(
       0,
       MFA_CONFIG.MAX_ATTEMPTS - userMFA.failedAttempts - 1,
@@ -105,34 +98,34 @@ export function verifyMFAToken(
 }
 }
 
-export function validateMFASetup(token, string, secret: string): boolean {
-  return authenticator.verify({ token, secret });
+export function validateMFASetup(token: string, secret: string): boolean {
+  return authenticator.verify({ token: secret });
 }
 
 export function removeUsedBackupCode(
   userMFA, UserMFASettings,
-  usedCode, string,
+  usedCode: string,
 ): UserMFASettings {
   return {
     ...userMFA,
-    backupCodes: userMFA.backupCodes.filter((code) => code !== usedCode)
+    backupCodes: userMFA.backupCodes.filter((code)  => code !== usedCode)
 }
 }
 
-export function handleFailedAttempt(userMFA: UserMFASettings): UserMFASettings {
+export function handleFailedAttempt(userMFA: UserMFASettings): UserMFASettings { 
   const newFailedAttempts = userMFA.failedAttempts + 1;
   const shouldLock = newFailedAttempts >= MFA_CONFIG.MAX_ATTEMPTS;
 
   return {
     ...userMFA, failedAttempts, newFailedAttempts,
     lockedUntil: shouldLock
-      ? new Date(Date.now() + MFA_CONFIG.LOCKOUT_DURATION) : null
+      ? new Date(Date.now() + MFA_CONFIG.LOCKOUT_DURATION)  : null
 }
 }
 
 export function resetFailedAttempts(userMFA: UserMFASettings): UserMFASettings {
   return {
-    ...userMFA, failedAttempts, 0, lockedUntil, null,
+    ...userMFA, failedAttempts: 0, lockedUntil: null,
     lastUsed: new Date()
 }
 }
@@ -148,17 +141,17 @@ export function regenerateBackupCodes(
 
 export function disableMFA(): UserMFASettings {
   return {
-    isEnabled, false,
+    isEnabled: false,
     secret: "",
     backupCodes: [],
     failedAttempts: 0;
-    lockedUntil, null,
+    lockedUntil: null,
     lastUsed: null
 }
 }
 
 export function shouldLockUser(userMFA: UserMFASettings): boolean {
-  return userMFA.failedAttempts >= MFA_CONFIG.MAX_ATTEMPTS,
+  return userMFA.failedAttempts > = MFA_CONFIG.MAX_ATTEMPTS,
 }
 
 export function calculateLockoutTime(userMFA: UserMFASettings): number {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function GET() { try {
+export async function GET() {  try {
     // Mock fantasy insights
     const insights = [
       {
@@ -23,7 +23,7 @@ type: "start_sit",
 }
   ];
 
-    const suggestions = [
+    const suggestions  = [
       {
         id: "1",
   action: "pickup",
@@ -44,8 +44,7 @@ type: "start_sit",
 }
   ];
 
-    return NextResponse.json({
-      insights, suggestions, leagueI,
+    return NextResponse.json({ insights: suggestions, leagueI,
   d: "league_123"
 });
   } catch { return NextResponse.json(

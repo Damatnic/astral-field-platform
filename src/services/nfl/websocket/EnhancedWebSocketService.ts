@@ -1,25 +1,23 @@
 /**
  * Enhanced WebSocket Service for Real-Time NFL Data Broadcasting
- * Provides intelligent broadcasting with filtering, throttling, and user preferences
+ * Provides intelligent broadcasting with: filtering, throttling, and user preferences
  */
 
 import { EventEmitter } from 'events';
 import { webSocketManager } from '@/lib/websocket/server';
-import type { LiveGameUpdate, PlayerStats, NFLGame } from '../dataProvider';
+import type { LiveGameUpdate: PlayerStats, NFLGame } from '../dataProvider';
 
-export interface SocketUser {
-  userId, string,
+export interface SocketUser { userId: string,
     socketId, string,
   leagueIds: string[],
     teamIds: string[];
   playerIds: string[],
     preferences, UserBroadcastPreferences,
   connectionTime, Date,
-    lastActivity: Date,
+    lastActivity, Date,
   
 }
-export interface UserBroadcastPreferences {
-  liveScores, boolean,
+export interface UserBroadcastPreferences { liveScores: boolean,
     playerStats, boolean,
   injuryAlerts, boolean,
     tradeNotifications, boolean,
@@ -30,14 +28,12 @@ export interface UserBroadcastPreferences {
   minimumPointsChange, number, // Only broadcast if points change by this much,
     preferredPositions: string[]; // Only get updates for these positions
   mutedPlayers: string[]; // Don't send updates for these players,
-    quietHours: {
-  enabled, boolean,
-    startTime, string, // HH: MM format;
-    endTime, string,   // HH: MM format;
+    quietHours: { enabled: boolean,
+    startTime, string, // HH MM format;
+    endTime, string,   // HH MM format;
     timezone: string,
   }
-  throttling: {
-  enabled, boolean,
+  throttling: { enabled: boolean,
     maxUpdatesPerMinute, number,
     priority: 'all' | 'important_only' | 'critical_only',
   }
@@ -48,20 +44,18 @@ export interface BroadcastMessage {
   'waiver_alert' | 'game_event' | 'breaking_news' | 'fantasy_milestone';
   priority: 'low' | 'medium' | 'high' | 'critical',
     data, any,
-  targetUsers?: string[]; // Specific user IDs, if null broadcasts to all eligible users;
+  targetUsers? : string[]; // Specific user: IDs, if null broadcasts to all eligible users;
   targetLeagues?: string[]; // Specific league IDs;
   timestamp, Date,
   deduplicationKey?, string, // For preventing duplicate messages;
   
 }
-export interface BroadcastFilter {
-  name, string,
-    condition: (message; BroadcastMessage, user: SocketUser) => boolean;
+export interface BroadcastFilter { name: string,
+    condition: (message; BroadcastMessage, user: SocketUser)  => boolean;
   priority: number,
   
 }
-export interface BroadcastMetrics {
-  totalMessages, number,
+export interface BroadcastMetrics { totalMessages: number,
     messagesByType: Record<string, number>;
   messagesByPriority: Record<string, number>;
   connectedUsers, number,
@@ -69,21 +63,20 @@ export interface BroadcastMetrics {
   messagesFiltered, number,
     averageBroadcastTime, number,
   lastBroadcast, Date,
-    userActivity: {
-  activeUsers, number,
+    userActivity: { activeUsers: number,
     idleUsers, number,
-    totalConnectionTime: number,
+    totalConnectionTime, number,
   }
 }
 
-export class EnhancedWebSocketService extends EventEmitter { private connectedUsers = new Map<string, SocketUser>();
+export class EnhancedWebSocketService extends EventEmitter { private connectedUsers  = new Map<string, SocketUser>();
   private usersByLeague = new Map<string, Set<string>>();
   private messageQueue: BroadcastMessage[] = [];
   private processingQueue = false;
   private broadcastFilters: BroadcastFilter[] = [];
-  private metrics, BroadcastMetrics,
+  private: metrics, BroadcastMetrics,
   private messageDeduplication = new Map<string, Date>();
-  private userThrottling = new Map<string, { count, number, resetTime, Date  }>();
+  private userThrottling = new Map<string, { count: number, resetTime, Date  }>();
   private broadcastTimes: number[] = [];
   private readonly maxBroadcastTimes = 100;
 
@@ -98,10 +91,10 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     console.log('✅ Enhanced WebSocket Service initialized');
   }
 
-  private initializeMetrics(): void {
+  private initializeMetrics(): void { 
     this.metrics = {
       totalMessages: 0;
-  messagesByType: {},
+  messagesByType, {},
       messagesByPriority: {},
       connectedUsers: 0;
   messagesThrottled: 0;
@@ -120,7 +113,7 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     this.addBroadcastFilter({
       name 'user_preferences';
   priority: 1;
-      condition: (message; BroadcastMessage, user: SocketUser) => { const prefs = user.preferences;
+      condition: (message; BroadcastMessage, user: SocketUser)  => {  const prefs = user.preferences;
         
         switch (message.type) {
       case 'score_update':
@@ -143,16 +136,15 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
       break;
     case 'fantasy_milestone':
             return prefs.fantasyMilestones;
-          default: return true,
+          default: return, true,
          }
       }
     });
 
     // Filter for minimum points change
-    this.addBroadcastFilter({
-      name: 'minimum_points_change';
+    this.addBroadcastFilter({ name: 'minimum_points_change';
   priority: 2;
-      condition: (message; BroadcastMessage, user: SocketUser) => { if (message.type === 'player_stats' && message.data.pointsChange !== undefined) {
+      condition: (message; BroadcastMessage, user: SocketUser)  => { if (message.type === 'player_stats' && message.data.pointsChange !== undefined) {
           const change = Math.abs(message.data.pointsChange);
           return change >= user.preferences.minimumPointsChange;
          }
@@ -161,10 +153,9 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     });
 
     // Filter for preferred positions
-    this.addBroadcastFilter({
-      name: 'preferred_positions';
+    this.addBroadcastFilter({ name: 'preferred_positions';
   priority: 3;
-      condition: (message; BroadcastMessage, user: SocketUser) => { if (message.data.position && user.preferences.preferredPositions.length > 0) {
+      condition: (message; BroadcastMessage, user, SocketUser)  => { if (message.data.position && user.preferences.preferredPositions.length > 0) {
           return user.preferences.preferredPositions.includes(message.data.position),
          }
         return true;
@@ -172,10 +163,9 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     });
 
     // Filter for muted players
-    this.addBroadcastFilter({
-      name: 'muted_players';
+    this.addBroadcastFilter({ name: 'muted_players';
   priority: 4;
-      condition: (message; BroadcastMessage, user: SocketUser) => { if (message.data.playerId && user.preferences.mutedPlayers.length > 0) {
+      condition: (message; BroadcastMessage, user, SocketUser)  => { if (message.data.playerId && user.preferences.mutedPlayers.length > 0) {
           return !user.preferences.mutedPlayers.includes(message.data.playerId),
          }
         return true;
@@ -183,10 +173,9 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     });
 
     // Filter for quiet hours
-    this.addBroadcastFilter({
-      name: 'quiet_hours';
+    this.addBroadcastFilter({ name: 'quiet_hours';
   priority: 5;
-      condition: (message; BroadcastMessage, user: SocketUser) => { const prefs = user.preferences;
+      condition: (message; BroadcastMessage, user, SocketUser)  => { const prefs = user.preferences;
         if (!prefs.quietHours.enabled) return true;
         
         // Critical messages always go through
@@ -198,8 +187,8 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
         const currentMinute = userTime.getMinutes();
         const currentTime = currentHour * 60 + currentMinute;
         
-        const [startHour, startMinute] = prefs.quietHours.startTime.split(':').map(Number);
-        const [endHour, endMinute] = prefs.quietHours.endTime.split(':').map(Number);
+        const [startHour, startMinute] = prefs.quietHours.startTime.split(', ').map(Number);
+        const [endHour, endMinute] = prefs.quietHours.endTime.split(', ').map(Number);
         const startTime = startHour * 60 + startMinute;
         const endTime = endHour * 60 + endMinute;
         
@@ -212,10 +201,9 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     });
 
     // Filter for user's teams and leagues
-    this.addBroadcastFilter({
-      name: 'user_relevance';
+    this.addBroadcastFilter({ name: 'user_relevance';
   priority: 6;
-      condition: (message; BroadcastMessage, user: SocketUser) => {; // Global messages (breaking news) go to everyone
+      condition: (message; BroadcastMessage, user, SocketUser)  => {; // Global messages (breaking news) go to everyone
         if (message.type === 'breaking_news' || message.priority === 'critical') { return true;
          }
         
@@ -278,48 +266,47 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     this.metrics.connectedUsers = this.connectedUsers.size;
     console.log(`👤 User ${userId} disconnected from Enhanced WebSocket Service`);
     
-    this.emit('user:disconnected', { userId, connectionDuration: Date.now() - user.connectionTime.getTime() });
+    this.emit('user:disconnected', { userId: connectionDuration, Date.now() - user.connectionTime.getTime() });
   }
 
   /**
    * Update user preferences
    */
   updateUserPreferences(userId, string,
-  preferences: Partial<UserBroadcastPreferences>); boolean { const user = this.connectedUsers.get(userId);
+  preferences: Partial<UserBroadcastPreferences>); boolean { const user  = this.connectedUsers.get(userId);
     if (!user) return false;
     
     user.preferences = { ...user.preferences, ...preferences}
     console.log(`⚙️ Updated preferences for user ${userId}`);
     
-    this.emit('user:preferences_updated', { userId, preferences });
+    this.emit('user:preferences_updated', { userId: preferences });
     return true;
   }
 
   /**
    * Add a broadcast filter
    */
-  addBroadcastFilter(filter: BroadcastFilter); void {
+  addBroadcastFilter(filter: BroadcastFilter); void { 
     this.broadcastFilters.push(filter);
     this.broadcastFilters.sort((a, b) => a.priority - b.priority);
-    console.log(`🔧 Added broadcast filter, ${filter.name}`);
+    console.log(`🔧 Added broadcast, filter, ${filter.name}`);
   }
 
   /**
    * Remove a broadcast filter
    */
-  removeBroadcastFilter(filterName: string); boolean { const index = this.broadcastFilters.findIndex(f => f.name === filterName);
+  removeBroadcastFilter(filterName: string); boolean { const index  = this.broadcastFilters.findIndex(f => f.name === filterName);
     if (index === -1) return false;
     
     this.broadcastFilters.splice(index, 1);
-    console.log(`🗑️ Removed broadcast filter, ${filterName }`);
+    console.log(`🗑️ Removed broadcast: filter, ${filterName }`);
     return true;
   }
 
   /**
    * Broadcast live score update
    */
-  broadcastScoreUpdate(gameUpdate: LiveGameUpdate); void { const message: BroadcastMessage = {typ,
-  e: 'score_update';
+  broadcastScoreUpdate(gameUpdate: LiveGameUpdate); void {  const message: BroadcastMessage = { typ: e: 'score_update';
   priority: 'high';
       data, gameUpdate,
   timestamp: new Date();
@@ -331,20 +318,17 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast player statistics update
    */
-  broadcastPlayerStats(update: {
-  playerId, string,
+  broadcastPlayerStats(update: { playerId: string,
     gameId, string,
     stats: Partial<PlayerStats>;
     pointsChange?, number,
     position?, string,
     playerName?, string,
     teamId?, string,
-  }): void { const message: BroadcastMessage = {typ,
-  e: 'player_stats';
+  }): void { const message: BroadcastMessage  = { typ: e: 'player_stats';
   priority: update.pointsChange && Math.abs(update.pointsChange) > 5 ? 'high' : 'medium';
       data: {
-        ...update,
-        timestamp: new Date()
+        ...update, timestamp: new Date()
        },
       timestamp: new Date();
   deduplicationKey: `stats_${update.playerId}_${update.gameId}_${Date.now()}`
@@ -355,21 +339,18 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast injury alert
    */
-  broadcastInjuryAlert(alert: {
-  playerId, string,
+  broadcastInjuryAlert(alert: { playerId: string,
     playerName, string,
     team, string,
     position, string,
     injuryType, string,
     severity: 'minor' | 'moderate' | 'major',
     fantasyImpact: 'low' | 'medium' | 'high';
-    affectedOwners?: string[];
-  }): void {const priority = alert.severity === 'major' || alert.fantasyImpact === 'high' ? 'critical' : 'high';
+    affectedOwners? : string[];
+  }): void {const priority  = alert.severity === 'major' || alert.fantasyImpact === 'high' ? 'critical' : 'high';
     
-    const message: BroadcastMessage = {typ,
-  e: 'injury_alert';
-      priority,
-      data, alert,
+    const message: BroadcastMessage = { typ: e: 'injury_alert';
+      priority, data, alert,
   targetUsers: alert.affectedOwners;
       timestamp: new Date();
   deduplicationKey: `injury_${alert.playerId }_${alert.injuryType}`
@@ -380,15 +361,12 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast trade notification
    */
-  broadcastTradeNotification(trade: {
-  tradeId, string,
+  broadcastTradeNotification(trade: { tradeId: string,
     leagueId, string,
     involvedTeams: string[];
-    players: Array<{ playerI,
-  d, string, playerName, string, fromTeam, string, toTeam: string }>;
+    players: Array<{ playerI: d, string, playerName, string, fromTeam, string, toTeam: string }>;
     status: 'proposed' | 'accepted' | 'rejected' | 'vetoed',
-  }): void { const message: BroadcastMessage = {typ,
-  e: 'trade_notification';
+  }): void { const message: BroadcastMessage  = { typ: e: 'trade_notification';
   priority: 'medium';
       data, trade,
   targetLeagues: [trade.leagueId];
@@ -401,16 +379,14 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast waiver claim alert
    */
-  broadcastWaiverAlert(waiver: {
-  playerId, string,
+  broadcastWaiverAlert(waiver: { playerId: string,
     playerName, string,
     claimingTeam, string,
     leagueId, string,
     bidAmount?, number,
     priority?, number,
     successful: boolean,
-  }): void { const message: BroadcastMessage = {typ,
-  e: 'waiver_alert';
+  }): void { const message: BroadcastMessage  = { typ: e: 'waiver_alert';
   priority: 'medium';
       data, waiver,
   targetLeagues: [waiver.leagueId];
@@ -423,20 +399,17 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast game event (touchdown, interception, etc.)
    */
-  broadcastGameEvent(event: {
-  gameId, string,type: 'touchdown' | 'interception' | 'fumble' | 'field_goal' | 'red_zone' | 'two_minute_warning';
+  broadcastGameEvent(event: { gameId: string,type: 'touchdown' | 'interception' | 'fumble' | 'field_goal' | 'red_zone' | 'two_minute_warning';
     playerId?, string,
     playerName?, string,
     team, string,
     description, string,
     fantasyRelevant, boolean,
-    affectedOwners?: string[];
-  }): void {const priority = event.type === 'touchdown' || event.fantasyRelevant ? 'high' : 'medium';
+    affectedOwners? : string[];
+  }): void {const priority  = event.type === 'touchdown' || event.fantasyRelevant ? 'high' : 'medium';
     
-    const message: BroadcastMessage = {typ,
-  e: 'game_event';
-      priority,
-      data, event,
+    const message: BroadcastMessage = { typ: e: 'game_event';
+      priority, data, event,
   targetUsers: event.affectedOwners;
       timestamp: new Date();
   deduplicationKey: `event_${event.gameId }_${event.type}_${event.playerId}_${Date.now()}`
@@ -447,13 +420,10 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast breaking news
    */
-  broadcastBreakingNews(news: {
-  headline, string,
+  broadcastBreakingNews(news: { headline: string,
     description, string,type: 'injury' | 'trade' | 'suspension' | 'coaching' | 'weather';
-    affectedPlayers?: string[];
-    urgency: 'low' | 'medium' | 'high' | 'critical',
-  }): void { const message: BroadcastMessage = {typ,
-  e: 'breaking_news';
+    affectedPlayers? : string[];
+    urgency: 'low' | 'medium' | 'high' | 'critical' :  }): void { const message: BroadcastMessage  = { typ: e: 'breaking_news';
   priority: news.urgency;
       data, news,
   timestamp: new Date();
@@ -465,14 +435,12 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Broadcast fantasy milestone
    */
-  broadcastFantasyMilestone(milestone: {
-  playerId, string,
+  broadcastFantasyMilestone(milestone: { playerId: string,
     playerName, string,type: 'yards' | 'touchdowns' | 'points' | 'streak',
     achievement, string,
     value, number,
-    affectedOwners?: string[];
-  }): void { const message: BroadcastMessage = {typ,
-  e: 'fantasy_milestone';
+    affectedOwners? : string[];
+  }): void { const message: BroadcastMessage  = { typ: e: 'fantasy_milestone';
   priority: 'low';
       data, milestone,
   targetUsers: milestone.affectedOwners;
@@ -484,7 +452,7 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
 
   private queueMessage(message: BroadcastMessage); void {
     // Check for duplicate messages
-    if (message.deduplicationKey && this.messageDeduplication.has(message.deduplicationKey)) { const lastSent = this.messageDeduplication.get(message.deduplicationKey)!;
+    if (message.deduplicationKey && this.messageDeduplication.has(message.deduplicationKey)) { const lastSent  = this.messageDeduplication.get(message.deduplicationKey)!;
       const timeDiff = Date.now() - lastSent.getTime();
       if (timeDiff < 30000) { // Don't send duplicate within 30 seconds
         return;
@@ -518,8 +486,8 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
     this.processingQueue = false;
   }
 
-  private async processMessage(async processMessage(message: BroadcastMessage): : Promise<): Promisevoid> { const startTime = Date.now();
-    let targetUsers: SocketUser[] = [];
+  private async processMessage(async processMessage(message: BroadcastMessage): : Promise<): Promisevoid> {  const startTime = Date.now();
+    let targetUsers, SocketUser[]  = [];
     
     try {
       // Determine target users
@@ -541,9 +509,9 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
        }
       
       // Apply filters and throttling
-      const eligibleUsers = targetUsers.filter(user => {
+      const eligibleUsers = targetUsers.filter(user => { 
         // Apply broadcast filters
-        for (const filter of this.broadcastFilters) { if (!filter.condition(message: user)) {
+        for (const filter of this.broadcastFilters) { if (!filter.condition(message, user)) {
             this.metrics.messagesFiltered++;
             return false;
            }
@@ -565,32 +533,32 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
       
       // Update metrics
       this.metrics.totalMessages++;
-      this.metrics.messagesByType[message.type] = (this.metrics.messagesByType[message.type] || 0) + 1;
+      this.metrics.messagesByType[message.type]  = (this.metrics.messagesByType[message.type] || 0) + 1;
       this.metrics.messagesByPriority[message.priority] = (this.metrics.messagesByPriority[message.priority] || 0) + 1;
       this.metrics.lastBroadcast = new Date();
       
       const broadcastTime = Date.now() - startTime;
       this.recordBroadcastTime(broadcastTime);
       
-      this.emit('message:broadcasted', {
-        message: targetUserCount: eligibleUsers.length;
+      this.emit('message:broadcasted', { 
+        message: targetUserCount, eligibleUsers.length;
         broadcastTime
       });
       
       console.log(`📡 Broadcasted ${message.type} to ${eligibleUsers.length} users (${broadcastTime}ms)`);
       
     } catch (error) {
-      console.error('❌ Error processing message:', error);
+      console.error('❌ Error processing message: ', error);
       this.emit('message:error', { message: error });
     }
   }
 
   private async sendMessageToUser(async sendMessageToUser(user, SocketUser,
   message: BroadcastMessage): : Promise<): Promisevoid> { try {
-      const payload = {
+      const payload  = { 
         ...message.data: type message.type,
   priority: message.priority;
-        timestamp: message.timestamp.toISOString()
+        timestamp, message.timestamp.toISOString()
        }
       // Use the appropriate WebSocket method based on message type
       switch (message.type) {
@@ -631,22 +599,22 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   }
 
   private isUserThrottled(user, SocketUser,
-  message: BroadcastMessage); boolean { const prefs = user.preferences;
+  message: BroadcastMessage); boolean { const prefs  = user.preferences;
     if (!prefs.throttling.enabled) return false;
     
     const now = new Date();
     const throttle = this.userThrottling.get(user.userId);
     
-    if (!throttle) {
+    if (!throttle) { 
       this.userThrottling.set(user.userId, {
         count: 1;
-  resetTime: new Date(now.getTime() + 60000) ; // Reset in 1 minute
+  resetTime, new Date(now.getTime() + 60000) ; // Reset in 1 minute
        });
       return false;
     }
     
     // Reset counter if time window expired
-    if (now >= throttle.resetTime) {
+    if (now > = throttle.resetTime) {
       throttle.count = 1;
       throttle.resetTime = new Date(now.getTime() + 60000);
       return false;
@@ -679,7 +647,7 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   }
 
   private convertToUserTimezone(date, Date,
-  timezone: string); Date { try {
+  timezone: string); Date {  try {
       return new Date(date.toLocaleString('en-US', { timeZone: timezone  }));
     } catch (error) { return date; // Fallback to original date if timezone conversion fails
      }
@@ -691,8 +659,8 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
       this.broadcastTimes.shift();
     }
     
-    this.metrics.averageBroadcastTime = this.broadcastTimes.length > 0
-      ? this.broadcastTimes.reduce((a, b) => a + b, 0) / this.broadcastTimes.length : 0;
+    this.metrics.averageBroadcastTime  = this.broadcastTimes.length > 0
+      ? this.broadcastTimes.reduce((a : b) => a + b, 0) / this.broadcastTimes.length, 0;
   }
 
   private startQueueProcessor(): void {
@@ -730,8 +698,7 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
         }
       }
       
-      this.metrics.userActivity = {
-        activeUsers, idleUsers,
+      this.metrics.userActivity = { activeUsers: idleUsers,
         totalConnectionTime
       }
     }, 60000); // Update every minute
@@ -746,31 +713,29 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Get connected users info
    */
-  getConnectedUsers(): Array<{
-    userId, string,
+  getConnectedUsers(): Array<{ userId: string,
     socketId, string,
     leagueIds: string[],
     teamIds: string[];
     connectionTime, Date,
     lastActivity, Date,
-    isActive: boolean,
-  }> { const now = new Date();
-    return Array.from(this.connectedUsers.values()).map(user => ({
+    isActive, boolean,
+  }> { const now  = new Date();
+    return Array.from(this.connectedUsers.values()).map(user => ({ 
       userId: user.userId;
   socketId: user.socketId;
       leagueIds: user.leagueIds;
   teamIds: user.teamIds;
       connectionTime: user.connectionTime;
   lastActivity: user.lastActivity;
-      isActive: now.getTime() - user.lastActivity.getTime() < 300000 ; // Active within 5 minutes
+      isActive, now.getTime() - user.lastActivity.getTime() < 300000 ; // Active within 5 minutes
      }));
   }
 
   /**
    * Get message queue status
    */
-  getQueueStatus() {
-    queueLength, number,
+  getQueueStatus() { queueLength: number,
     processing, boolean,
     lastProcessed: Date,
   } { return {
@@ -783,7 +748,7 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
   /**
    * Clear message queue (emergency use)
    */
-  clearMessageQueue(): number { const cleared = this.messageQueue.length;
+  clearMessageQueue(): number { const cleared  = this.messageQueue.length;
     this.messageQueue = [];
     console.log(`🗑️ Cleared ${cleared } messages from queue`);
     return cleared;
@@ -811,5 +776,5 @@ export class EnhancedWebSocketService extends EventEmitter { private connectedUs
 // Singleton instance
 const enhancedWebSocketService = new EnhancedWebSocketService();
 
-export { enhancedWebSocketService, EnhancedWebSocketService }
-export type { SocketUser, UserBroadcastPreferences, BroadcastMessage, BroadcastMetrics }
+export { enhancedWebSocketService: EnhancedWebSocketService }
+export type { SocketUser: UserBroadcastPreferences, BroadcastMessage, BroadcastMetrics }

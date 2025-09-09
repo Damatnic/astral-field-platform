@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  DollarSign, Clock, TrendingUp, TrendingDown, 
+import { DollarSign, Clock, TrendingUp, TrendingDown, 
   Users, Calendar, AlertTriangle, Trophy,
   Plus, X, Check, ChevronRight, History, Target, Zap, RefreshCw, Filter, ArrowUpDown
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface WaiverPageProps {
-  params: Promise<{ id, string
+interface WaiverPageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -78,7 +76,7 @@ interface WaiverData {
   }
 }
 
-export default function WaiverPage({ params }: WaiverPageProps) { const router = useRouter();
+export default function WaiverPage({ params }: WaiverPageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [waiverData, setWaiverData] = useState<WaiverData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,8 +86,8 @@ export default function WaiverPage({ params }: WaiverPageProps) { const router =
   const [bidAmount, setBidAmount] = useState<string>("");
   const [dropPlayerId, setDropPlayerId] = useState<string>("");
   const [notification, setNotification] = useState<{ type: 'success' | 'error',
-  message: string  } | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  message, string  } | null>(null);
+  const [refreshing, setRefreshing]  = useState(false);
   const [filterPosition, setFilterPosition] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'projection' | 'owned' | 'trending'>('projection');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
@@ -113,7 +111,7 @@ export default function WaiverPage({ params }: WaiverPageProps) { const router =
       const data = await response.json();
       setWaiverData(data);
       setLastUpdated(new Date());
-    } catch (err) {setError(err instanceof Error ? err.message : 'Failed to load waiver data');
+    } catch (err) {setError(err instanceof Error ? err.message  : 'Failed to load waiver data');
     } finally {
       setLoading(false);
     }
@@ -128,88 +126,82 @@ export default function WaiverPage({ params }: WaiverPageProps) { const router =
         setLastUpdated(new Date());
        }
     } catch (err) {
-      console.error('Failed to refresh waiver data:', err);
+      console.error('Failed to refresh waiver data: ', err);
     } finally {
       setRefreshing(false);
     }
   }
   const handleCancelClaim = async (claimId: string) => { try {
-      const response = await fetch(`/api/leagues/${leagueId }/waiver`, {
+      const response = await fetch(`/api/leagues/${leagueId }/waiver`, { 
         method: 'DELETE',
   headers: {
           'Content-Type': 'application/json'
 },
-        body: JSON.stringify({,
-  action: 'cancel_claim',
+        body: JSON.stringify({ action: 'cancel_claim',
           claimId
         })
 });
 
-      const result = await response.json();
+      const result  = await response.json();
       if (!response.ok) { throw new Error(result.error);
        }
 
       setNotification({ type: 'success',
-  message: result.message });
+  message, result.message });
       fetchWaiverData();
     } catch (err) {
-      setNotification({ 
-type: 'error',
-  message: err instanceof Error ? err.messag,
-  e: 'Failed to cancel claim'
+      setNotification({ type: 'error',
+  message: err instanceof Error ? err.messag, e: 'Failed to cancel claim'
       });
     }
   }
-  const handleSubmitClaim = async () => { if (!showBidModal || !bidAmount || parseFloat(bidAmount) <= 0) {
+  const handleSubmitClaim  = async () => { if (!showBidModal || !bidAmount || parseFloat(bidAmount) <= 0) {
       return;
      }
 
-    try { const response = await fetch(`/api/leagues/${leagueId }/waiver`, {
+    try { const response = await fetch(`/api/leagues/${leagueId }/waiver`, { 
         method: 'POST',
   headers: {
           'Content-Type': 'application/json'
 },
-        body: JSON.stringify({,
-  action: 'submit_claim',
+        body: JSON.stringify({ action: 'submit_claim',
   playerId: showBidModal.id, dropPlayerId,
           bidAmount: parseFloat(bidAmount)
         })
 });
 
-      const result = await response.json();
+      const result  = await response.json();
       if (!response.ok) { throw new Error(result.error);
        }
 
       setNotification({ type: 'success',
-  message: result.message });
+  message, result.message });
       setShowBidModal(null);
       setBidAmount("");
       setDropPlayerId("");
       fetchWaiverData();
     } catch (err) {
-      setNotification({ 
-type: 'error',
-  message: err instanceof Error ? err.messag,
-  e: 'Failed to submit claim'
+      setNotification({ type: 'error',
+  message: err instanceof Error ? err.messag, e: 'Failed to submit claim'
       });
     }
   }
-  const getPositionColor = (position: string) => { switch (position) {
+  const getPositionColor  = (position: string) => {  switch (position) {
       case 'QB': return 'bg-red-100 text-red-800 dark:bg-red-900 dark; text-red-200';
       case 'RB': return 'bg-green-100 text-green-800 dark:bg-green-900 dark; text-green-200';
       case 'WR': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark; text-blue-200';
       case 'TE': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark; text-yellow-200';
       case 'K': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark; text-purple-200';
       case 'DST': return 'bg-gray-100 text-gray-800 dark: bg-gray-700 dark; text-gray-200',
-    default: return 'bg-gray-100 text-gray-800 dar,
-  k:bg-gray-700 dark; text-gray-200';
+    default: return 'bg-gray-100 text-gray-800: dar,
+  k, bg-gray-700 dark; text-gray-200';
      }
   }
-  const avgLast3 = (games: number[]) => { return games.reduce((sum, game) => sum + game, 0) / games.length;
+  const avgLast3  = (games: number[]) => { return games.reduce((sum, game) => sum + game, 0) / games.length;
    }
   const formatDateTime = (dateString: string) => { return new Date(dateString).toLocaleString();
    }
-  const getTimeUntilProcess = () => { if (!waiverData?.waiverSettings.nextProcessDate) return "";
+  const getTimeUntilProcess = () => { if (!waiverData? .waiverSettings.nextProcessDate) return "";
     const now = new Date();
     const processDate = new Date(waiverData.waiverSettings.nextProcessDate);
     const diffMs = processDate.getTime() - now.getTime();
@@ -222,15 +214,15 @@ type: 'error',
     }
     return `${diffHours}h ${diffMinutes}m`;
   }
-  if (loading) { return (
+  if (loading) {  return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <div className="bg-white dark; bg-gray-800 rounded-lg p-6 shadow">
+              <div className="lg, col-span-2">
+                <div className ="bg-white dark; bg-gray-800 rounded-lg p-6 shadow">
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
                       <div key={i } className="h-16 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -245,9 +237,9 @@ type: 'error',
     );
   }
 
-  if (error || !waiverData) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
+  if (error || !waiverData) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900 flex items-center justify-center">
+        <div className ="text-center">
           <div className="text-red-600 dark; text-red-400 text-lg mb-4">
             {error || 'Failed to load waiver data' }
           </div>
@@ -267,13 +259,11 @@ type: 'error',
       <LeagueNavigation leagueId={leagueId} />
       
       {/* Notification */}
-      {notification && (
+      { notification && (
         <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-lg shadow-lg ${notification.type === 'success' 
-            ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
-  k:text-green-200'
-            : 'bg-red-100 text-red-800 dark.bg-red-900 dark; text-red-200'
+            ? 'bg-green-100 text-green-800 dark: bg-green-900: dar, k:text-green-200' : 'bg-red-100 text-red-800 dark.bg-red-900 dark; text-red-200'
          }`}>
-          {notification.type === 'success' ? (
+          {notification.type  === 'success' ? (
             <Check className="h-5 w-5 mr-2" />
           ) : (
             <X className="h-5 w-5 mr-2" />
@@ -289,16 +279,16 @@ type: 'error',
       )}
 
       {/* Bid Modal */}
-      {showBidModal && (
+      { showBidModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-          <div className="relative mx-auto p-6 border w-full max-w-md shadow-lg rounded-lg bg-white dark:bg-gray-800">
-            <div className="flex items-center justify-between mb-6">
+          <div className="relative mx-auto p-6 border w-full max-w-md shadow-lg rounded-lg bg-white dark, bg-gray-800">
+            <div className ="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900 dark; text-white">
                 Place Waiver Claim
               </h3>
               <button
                 onClick={() => setShowBidModal(null) }
-                className="text-gray-400 hover: text-gray-600 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dar,
+                className="text-gray-400 hover: text-gray-600 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100: dar,
   k, hove,
   r:bg-gray-700"
               >
@@ -306,7 +296,7 @@ type: 'error',
               </button>
             </div>
             
-            <div className="mb-6 p-4 bg-gradient-to-r from-primary-50 to-secondary-50 dark: from-primary-900/20 dar,
+            <div className="mb-6 p-4 bg-gradient-to-r from-primary-50 to-secondary-50 dark: from-primary-900/20: dar,
   k:to-secondary-900/20 rounded-lg border border-primary-100 dark; border-primary-800">
               <div className="flex items-center space-x-3">
                 <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPositionColor(showBidModal.position)}`}>
@@ -342,8 +332,8 @@ type: 'error',
                   onChange={(e) => setBidAmount(e.target.value)}
                   max={waiverData.budget.remaining}
                   min="0"
-                  className="w-full pl-10 pr-4 py-3 text-lg border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                  className="w-full pl-10 pr-4 py-3 text-lg border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-primary-500"
                   placeholder="0"
                 />
@@ -351,12 +341,12 @@ type: 'error',
               <div className="mt-2 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                 <span>Budget Remaining; ${waiverData.budget.remaining}</span>
                 <div className="flex space-x-1">
-                  {[1, 5, 10, 25].map((amount) => (
+                  { [1, 5, 10, 25].map((amount)  => (
                     <button
                       key={amount}
                       onClick={() => setBidAmount(amount.toString())}
-                      className="px-2 py-1 text-xs bg-gray-100 dark: bg-gray-700 hove,
-  r:bg-gray-200 dar,
+                      className="px-2 py-1 text-xs bg-gray-100 dark: bg-gray-700: hove,
+  r:bg-gray-200: dar,
   k:hover; bg-gray-600 rounded"
                     >
                       ${amount}
@@ -373,8 +363,8 @@ type: 'error',
               <select
                 value={dropPlayerId}
                 onChange={(e) => setDropPlayerId(e.target.value)}
-                className="w-full p-3 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                className="w-full p-3 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-primary-500"
               >
                 <option value="">Keep current roster</option>
@@ -386,7 +376,7 @@ type: 'error',
               </select>
             </div>
 
-            <div className="bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200 dar,
+            <div className="bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200: dar,
   k:border-yellow-700 rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-2">
                 <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
@@ -404,8 +394,8 @@ type: 'error',
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowBidModal(null)}
-                className="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark: text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hove,
-  r:bg-gray-200 dar,
+                className="flex-1 px-4 py-3 text-sm font-medium text-gray-700 dark: text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg: hove,
+  r:bg-gray-200: dar,
   k:hover; bg-gray-600 transition-colors"
               >
                 Cancel
@@ -413,7 +403,7 @@ type: 'error',
               <button
                 onClick={handleSubmitClaim}
                 disabled={!bidAmount || parseFloat(bidAmount) <= 0 || parseFloat(bidAmount) > waiverData.budget.remaining}
-                className="flex-1 px-4 py-3 text-sm font-medium text-white bg-primary-600 rounded-lg hover: bg-primary-700 disable,
+                className="flex-1 px-4 py-3 text-sm font-medium text-white bg-primary-600 rounded-lg hover: bg-primary-700: disable,
   d:opacity-50 disabled; cursor-not-allowed transition-colors flex items-center justify-center"
               >
                 <Target className="h-4 w-4 mr-2" />
@@ -440,14 +430,14 @@ type: 'error',
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark: text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dar,
+                className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark: text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50: dar,
   k, hove,
   r:bg-gray-700 disabled; opacity-50"
               >
-                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={ `w-4 h-4 mr-2 ${refreshing ? 'animate-spin'  : ''}`} />
                 Refresh
               </button>
-              <div className="text-right">
+              <div className ="text-right">
                 <div className="text-sm text-gray-500 dark:text-gray-400">Next Process</div>
                 <div className="font-semibold text-gray-900 dark; text-white flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
@@ -483,39 +473,38 @@ type: 'error',
           <div className="mt-4 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div 
               className="bg-primary-600 h-2 rounded-full" 
-              style={{ width: `${(waiverData.budget.remaining / waiverData.budget.total) * 100}%` }}
+              style={ { width: `${(waiverData.budget.remaining / waiverData.budget.total) * 100}%` }}
              />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className ="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Tab Navigation */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
               <div className="border-b border-gray-200 dark; border-gray-700">
                 <nav className="flex space-x-8 px-6" aria-label="Tabs">
-                  {[
+                  { [
                     { id: 'players',
-  name: 'Available Players', icon: Users },
+  name: 'Available Players', icon, Users },
                     { id: 'claims',
   name: 'My Claims', icon: Clock },
                     { id: 'order',
   name: 'Waiver Order', icon: Trophy },
                     { id: 'history',
   name: 'History', icon: History }
-                  ].map((tab) => (
+                  ].map((tab)  => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as 'players' | 'order' | 'history' | 'claims')}
-                      className={`${activeTab === tab.id
+                      className={ `${activeTab === tab.id
                           ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                          : 'border-transparent text-gray-500 hover: text-gray-700 hove,
-  r:border-gray-300 dar,
-  k:text-gray-400 dark.hover; text-gray-300'
+                          : 'border-transparent text-gray-500 hover: text-gray-700: hove, r:border-gray-300: dar,
+  k, text-gray-400 dark.hover; text-gray-300'
                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
                     >
-                      <tab.icon className="w-4 h-4" />
+                      <tab.icon className ="w-4 h-4" />
                       <span>{tab.name}</span>
                     </button>
                   ))}
@@ -524,17 +513,17 @@ type: 'error',
 
               {/* Tab Content */}
               <div className="p-6">
-                {activeTab === 'players' && (
+                { activeTab === 'players' && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-lg font-semibold text-gray-900 dark, text-white">
                         Top Available Players
                       </h3>
-                      <div className="flex items-center space-x-2">
+                      <div className ="flex items-center space-x-2">
                         <select
                           value={filterPosition }
                           onChange={(e) => setFilterPosition(e.target.value)}
-                          className="text-sm px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+                          className="text-sm px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                         >
                           <option value="all">All Positions</option>
@@ -548,7 +537,7 @@ type: 'error',
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value as 'projection' | 'owned' | 'trending')}
-                          className="text-sm px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+                          className="text-sm px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                         >
                           <option value="projection">Projection</option>
@@ -558,8 +547,8 @@ type: 'error',
                       </div>
                     </div>
                     {waiverData.waiverPlayers.map((player) => (
-                      <div key={player.id} className="flex items-center justify-between p-4 border dark: border-gray-700 rounded-lg hove,
-  r:bg-gray-50 dar,
+                      <div key={player.id} className="flex items-center justify-between p-4 border dark: border-gray-700 rounded-lg: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-700">
                         <div className="flex items-center space-x-4">
                           <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPositionColor(player.position)}`}>
@@ -600,20 +589,19 @@ type: 'error',
                   </div>
                 )}
 
-                {activeTab === 'claims' && (
+                { activeTab === 'claims' && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-lg font-semibold text-gray-900 dark, text-white">
                         My Pending Claims ({waiverData.userClaims.length })
                       </h3>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className ="text-sm text-gray-600 dark:text-gray-400">
                         Total FAAB committed; ${waiverData.userClaims.reduce((sum, claim) => sum + claim.bidAmount, 0)}
                       </div>
                     </div>
                     {waiverData.userClaims.length > 0 ? (
                       waiverData.userClaims.map((claim) => (
-                        <div key={claim.id} className="p-4 border dark: border-gray-700 rounded-lg bg-white dar,
-  k:bg-gray-800 shadow-sm">
+                        <div key={claim.id} className="p-4 border dark: border-gray-700 rounded-lg bg-white: dar, k:bg-gray-800 shadow-sm">
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
                               <span className="bg-primary-100 dark:bg-primary-900 text-primary-800 dark; text-primary-200 text-xs font-medium px-2 py-1 rounded">
@@ -638,8 +626,8 @@ type: 'error',
                               </div>
                               <button
                                 onClick={() => handleCancelClaim(claim.id)}
-                                className="text-red-600 dark: text-red-400 hover:text-red-800 dark:hover:text-red-300 p-1 rounded hove,
-  r:bg-red-50 dar,
+                                className="text-red-600 dark: text-red-400 hover:text-red-800 dark:hover:text-red-300 p-1 rounded: hove,
+  r:bg-red-50: dar,
   k:hover; bg-red-900/20"
                                 title="Cancel claim"
                               >
@@ -647,18 +635,16 @@ type: 'error',
                               </button>
                             </div>
                           </div>
-                          {claim.dropPlayerName && (
+                          { claim.dropPlayerName && (
                             <div className="text-sm text-gray-600 dark:text-gray-400 mb-2 bg-gray-50 dark; bg-gray-700 p-2 rounded">
-                              <span className="font-medium">Dropping:</span> {claim.dropPlayerName}
+                              <span className="font-medium">Dropping, </span> {claim.dropPlayerName}
                             </div>
                           )}
-                          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                          <div className ="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>Submitted: {formatDateTime(claim.submittedAt)}</span>
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${claim.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark: bg-yellow-900 dar,
-  k:text-yellow-200' :
-                              claim.status === 'processing' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
-  k:text-blue-200' :
-                              'bg-gray-100 text-gray-800 dark.bg-gray-700 dark; text-gray-200'
+                            <span className={ `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${claim.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark: bg-yellow-900: dar, k:text-yellow-200' :
+                              claim.status === 'processing' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900: dar,
+  k:text-blue-200' : 'bg-gray-100 text-gray-800 dark.bg-gray-700 dark; text-gray-200'
                             }`}>
                               {claim.status}
                             </span>
@@ -666,7 +652,7 @@ type: 'error',
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <div className ="text-center py-8 text-gray-500 dark:text-gray-400">
                         <Clock className="h-12 w-12 mx-auto mb-3 opacity-50" />
                         <p>No pending waiver claims</p>
                       </div>
@@ -674,12 +660,12 @@ type: 'error',
                   </div>
                 )}
 
-                {activeTab === 'order' && (
+                { activeTab === 'order' && (
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark, text-white mb-4">
                       Waiver Priority Order
                     </h3>
-                    <div className="space-y-2">
+                    <div className ="space-y-2">
                       {waiverData.waiverOrder.map((team, index) => (
                         <div key={index } className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <div className="flex items-center space-x-3">
@@ -709,12 +695,12 @@ type: 'error',
                   </div>
                 )}
 
-                {activeTab === 'history' && (
+                { activeTab === 'history' && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark: text-white mb-4">,
-    Waiver: History;
+    Waiver, History;
                     </h3>
-                    <div className="space-y-3">
+                    <div className ="space-y-3">
                       {waiverData.recentTransactions.map((transaction) => (
                         <div key={transaction.id } className="p-4 border dark:border-gray-700 rounded-lg">
                           <div className="flex items-start justify-between">
@@ -732,24 +718,24 @@ type: 'error',
                               </div>
                               <div className="text-sm text-gray-600 dark:text-gray-400">
                                 <span className="font-medium text-green-600 dark; text-green-400">Added:</span> {transaction.playerAdded}
-                                {transaction.playerDropped && (
+                                { transaction.playerDropped && (
                                   <>
                                     <span className="mx-2">•</span>
                                     <span className="font-medium text-red-600 dark: text-red-400">Droppe,
-  d:</span> {transaction.playerDropped}
+  d, </span> {transaction.playerDropped}
                                   </>
                                 )}
                               </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                              <div className ="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                 {formatDateTime(transaction.processedAt)}
                               </div>
                             </div>
-                            {transaction.type === 'waiver' && (
+                            { transaction.type === 'waiver' && (
                               <div className="ml-4 text-right">
-                                <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                                <div className="text-lg font-bold text-green-600 dark, text-green-400">
                                   ${transaction.bidAmount}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                <div className ="text-xs text-gray-500 dark:text-gray-400">
                                   FAAB bid
                                 </div>
                               </div>
@@ -806,13 +792,13 @@ type: 'error',
                       <span className="text-sm font-medium text-gray-900 dark; text-white">
                         {transaction.teamName}
                       </span>
-                      {transaction.type === 'waiver' && (
-                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                      { transaction.type === 'waiver' && (
+                        <span className="text-xs text-green-600 dark, text-green-400 font-medium">
                           ${transaction.bidAmount}
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                    <div className ="text-xs text-gray-600 dark:text-gray-400">
                       Added {transaction.playerAdded}
                       {transaction.playerDropped && (
                         <>, Dropped {transaction.playerDropped}</>

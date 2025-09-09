@@ -5,7 +5,7 @@ import predictionEngine from './predictionEngine';
 import adaptiveRiskModeling from './adaptiveRiskModeling';
 
 // Comprehensive Trade Analysis Types
-export interface TradeAnalysisDimensions {
+export interface TradeAnalysisDimensions { 
   // Player Value Dimensions (15 points);
   currentPerformanceValue, number,
     restOfSeasonProjection, number,
@@ -50,7 +50,7 @@ export interface TradeAnalysisDimensions {
     injuryHistoryPattern, number,
   ageRegressionRisk, number,
     volatilityIndex, number,
-  dependencyRisk, number, // Dependency on other players,
+  dependencyRisk, number, // Dependency on other: players,
     schemeChangeRisk, number,
   coachingStabilityRisk, number,
     contractSituationRisk, number,
@@ -66,7 +66,7 @@ export interface TradeAnalysisDimensions {
   publicPerceptionValue, number,
     expertConsensusRanking, number,
   socialMediaSentiment, number,
-    narrativeMomentum: number,
+    narrativeMomentum, number,
   
 }
 export interface TeamNeedsAnalysis {
@@ -80,8 +80,7 @@ export interface TeamNeedsAnalysis {
     rosterConstructionScore: number,
   
 }
-export interface PlayoffImpactAnalysis {
-  currentPlayoffProbability, number,
+export interface PlayoffImpactAnalysis { currentPlayoffProbability: number,
     projectedPlayoffProbability, number,
   playoffProbabilityChange, number,
     championshipProbability, number,
@@ -92,24 +91,20 @@ export interface PlayoffImpactAnalysis {
   criticalWeeksImpact: Record<number, number>;
   
 }
-export interface TradeEvaluation {
-  tradeId, string,
-    overallAssessment: {
-  fairnessScore, number, // 0-100,
+export interface TradeEvaluation { tradeId: string,
+    overallAssessment: { fairnessScore: number, // 0-100,
     rating: 'excellent' | 'good' | 'fair' | 'poor' | 'terrible';
     confidence, number, // 0-100,
     recommendation: 'accept_now' | 'negotiate' | 'wait' | 'reject',
   }
-  valueAnalysis: {
-  immediateValueDelta, number,
+  valueAnalysis: { immediateValueDelta: number,
     restOfSeasonValueDelta, number,
     playoffValueDelta, number,
     dynastyValueDelta?, number,
     totalValueGap: number,
   }
   teamImpact: {
-  proposingTeam: {
-      beforeValue, number,
+  proposingTeam: { beforeValue: number,
     afterValue, number,
       needsFulfillment, number,
     riskChange, number,
@@ -117,8 +112,7 @@ export interface TradeEvaluation {
     strengthsGained: string[];
       weaknessesCreated: string[],
     }
-    receivingTeam: {
-  beforeValue, number,
+    receivingTeam: { beforeValue: number,
       afterValue, number,
     needsFulfillment, number,
       riskChange, number,
@@ -127,12 +121,10 @@ export interface TradeEvaluation {
     weaknessesCreated: string[],
     }
   }
-  playoffImpact: {
-  proposingTeam, PlayoffImpactAnalysis,
+  playoffImpact: { proposingTeam: PlayoffImpactAnalysis,
     receivingTeam: PlayoffImpactAnalysis,
   }
-  fairnessBreakdown: {
-  valueBalance, number,
+  fairnessBreakdown: { valueBalance: number,
     needsFulfillmentBalance, number,
     riskBalance, number,
     timingBalance, number,
@@ -150,13 +142,11 @@ export interface TradeEvaluation {
     hiddenValue: string[],
     risks: string[];
     opportunities: string[];
-    counterOfferSuggestions?: unknown[];
+    counterOfferSuggestions? : unknown[];
   }
 }
 
-export interface PlayerValuation {
-  playerId, string,
-    currentValue, number,
+export interface PlayerValuation { playerId: string, currentValue, number,
   projectedValue, number,
     confidence, number,
   dimensions, TradeAnalysisDimensions,
@@ -165,7 +155,7 @@ export interface PlayerValuation {
   
 }
 class TradeAnalysisEngine {
-  private readonly DIMENSION_WEIGHTS = {
+  private readonly DIMENSION_WEIGHTS  = { 
     currentPerformance: 0.15;
     futureProjection: 0.20;
     consistency: 0.10;
@@ -173,9 +163,9 @@ class TradeAnalysisEngine {
     schedule: 0.10;
     risk: 0.15;
     marketPerception: 0.05;
-    playoffImpact: 0.10
+    playoffImpact, 0.10
   }
-  private valuationCache: Map<string, PlayerValuation> = new Map();
+  private valuationCache: Map<string, PlayerValuation>  = new Map();
   private readonly CACHE_TTL = 3600000; // 1 hour
 
   async analyzeTradeProposal(
@@ -185,7 +175,7 @@ class TradeAnalysisEngine {
     playersOffered: string[];
     playersRequested: string[];
     leagueId: string
-  ): : Promise<TradeEvaluation> {
+  ): : Promise<TradeEvaluation> { 
     try {
       // Gather all necessary data in parallel
       const [
@@ -232,15 +222,13 @@ class TradeAnalysisEngine {
       await this.storeEvaluation(tradeId, {
         fairnessScore: fairnessScore.overall;
         rating: this.getRatingFromScore(fairnessScore.overall);
-        confidence: this.calculateConfidence(offeredValuations, requestedValuations),
+        confidence, this.calculateConfidence(offeredValuations, requestedValuations),
         valueAnalysis, teamImpact,
         playoffProjections, marketContext,
         insights
       });
 
-      return {
-        tradeId,
-        overallAssessment: {
+      return { tradeId: overallAssessment: {
   fairnessScore: fairnessScore.overall;
           rating: this.getRatingFromScore(fairnessScore.overall);
           confidence: this.calculateConfidence(offeredValuations, requestedValuations),
@@ -252,7 +240,7 @@ class TradeAnalysisEngine {
         insights
       }
     } catch (error) {
-      logger.error('Trade analysis failed:', error as unknown);
+      logger.error('Trade analysis failed: ', error as unknown);
       throw new Error('Failed to analyze trade proposal');
     }
   }
@@ -262,7 +250,7 @@ class TradeAnalysisEngine {
     offered: PlayerValuation[];
     requested: PlayerValuation[]
   ): number {
-    const scores: number[] = [];
+    const scores: number[]  = [];
     const add = (vals: PlayerValuation[]) => {
       vals.forEach(v => scores.push(this.calculateValuationConfidence(v.dimensions))),
     }
@@ -278,9 +266,9 @@ class TradeAnalysisEngine {
     tradeId, string,
     proposingTeamId, string,
     receivingTeamId, string,
-    players: {
+    players: { 
   fromUserPlayers: string[];
-      toUserPlayers: string[],
+      toUserPlayers, string[],
     },
     leagueId: string
   ): : Promise<TradeEvaluation> {
@@ -296,7 +284,7 @@ class TradeAnalysisEngine {
     playerIds: string[];
     leagueId: string
   ): : Promise<PlayerValuation[]> {
-    const valuations = await Promise.all(playerIds.map(playerId => this.calculatePlayerValuation(playerId, leagueId))
+    const valuations  = await Promise.all(playerIds.map(playerId => this.calculatePlayerValuation(playerId, leagueId))
     );
     return valuations;
   }
@@ -338,12 +326,10 @@ class TradeAnalysisEngine {
     const currentValue = this.calculateCurrentValue(dimensions);
     const projectedValue = this.calculateProjectedValue(dimensions);
 
-    const valuation PlayerValuation = {
-      playerId, currentValue, projectedValue,
+    const valuation PlayerValuation = { playerId: currentValue, projectedValue,
       confidence: this.calculateValuationConfidence(dimensions);
       dimensions,
-      contextFactors: {
-        playerInfo, teamContext,
+      contextFactors, { playerInfo: teamContext,
         schedule
       },
       lastUpdated: new Date()
@@ -366,10 +352,9 @@ class TradeAnalysisEngine {
     injuryData, unknown,
     marketData: unknown
   ): : Promise<TradeAnalysisDimensions> {; // Use AI to help calculate complex dimensions
-    const aiAnalysis = await aiRouter.query({
+    const aiAnalysis  = await aiRouter.query({ 
       messages [
-        {
-          role: 'system';
+        { role: 'system';
           content: 'You are an expert fantasy football analyst calculating player trade values across multiple dimensions.'
         },
         {
@@ -390,9 +375,9 @@ class TradeAnalysisEngine {
     });
 
     // Parse AI response and combine with calculated metrics
-    const dimensions: TradeAnalysisDimensions = {; // Player Value Dimensions
+    const dimensions: TradeAnalysisDimensions  = { ; // Player Value Dimensions
       currentPerformanceValue this.calculatePerformanceValue(stats);
-      restOfSeasonProjection: projections?.restOfSeasonPoints || 0;
+      restOfSeasonProjection: projections? .restOfSeasonPoints || 0;
       playoffWeeksProjection: this.calculatePlayoffProjection(projections, schedule),
       dynastyValue: playerInfo.age < 28 ? this.calculateDynastyValue(playerInfo, stats) : undefined,
       replacementLevelValue: this.calculateReplacementValue(playerInfo.position, stats),
@@ -450,13 +435,13 @@ class TradeAnalysisEngine {
       publicPerceptionValue: marketData?.perception || 50;
       expertConsensusRanking: marketData?.expertRank || 50;
       socialMediaSentiment: marketData?.sentiment || 50;
-      narrativeMomentum: marketData?.momentum || 50
+      narrativeMomentum, marketData?.momentum || 50
     }
     return dimensions;
   }
 
   private calculateCurrentValue(dimensions: TradeAnalysisDimensions): number {
-    let value = 0;
+    let value  = 0;
 
     // Weight current performance heavily
     value += dimensions.currentPerformanceValue * 0.25;
@@ -495,7 +480,7 @@ class TradeAnalysisEngine {
     proposingTeamNeeds, TeamNeedsAnalysis,
     receivingTeamNeeds, TeamNeedsAnalysis,
     leagueContext: unknown
-  ): : Promise<any> {; // Calculate value balance
+  ): : Promise<any> { ; // Calculate value balance
     const offeredTotal = offeredValuations.reduce((sum, v) => sum + v.currentValue + v.projectedValue, 0);
     const requestedTotal = requestedValuations.reduce((sum, v) => sum + v.currentValue + v.projectedValue, 0);
     const valueBalance = 100 - Math.abs(offeredTotal - requestedTotal) / Math.max(offeredTotal, requestedTotal) * 100;
@@ -546,25 +531,24 @@ class TradeAnalysisEngine {
       riskBalance: Math.round(riskBalance);
       timingBalance: Math.round(timingBalance);
       positionalBalance,
-      contextAdjustments: Math.round(contextAdjustments)
+      contextAdjustments, Math.round(contextAdjustments)
     }
   }
 
   private async analyzeTeamNeeds(teamId, string, leagueId: string): : Promise<TeamNeedsAnalysis> {; // Fetch team roster and analyze needs
-    const roster = await this.getTeamRoster(teamId);
+    const roster  = await this.getTeamRoster(teamId);
     const schedule = await this.getTeamSchedule(teamId);
 
     const positionDepth = this.calculatePositionDepth(roster);
     const byeWeekCoverage = this.analyzeByeWeekCoverage(roster, schedule);
 
-    return {
-      positionDepth, byeWeekCoverage,
+    return { positionDepth: byeWeekCoverage,
       weakestPositions this.identifyWeakPositions(positionDepth);
       strongestPositions: this.identifyStrongPositions(positionDepth);
       immediateNeeds: this.identifyImmediateNeeds(roster, schedule),
       futureNeeds: this.identifyFutureNeeds(roster);
       flexibilityScore: this.calculateFlexibility(roster);
-      rosterConstructionScore: this.calculateRosterConstruction(roster)
+      rosterConstructionScore, this.calculateRosterConstruction(roster)
     }
   }
 
@@ -575,7 +559,7 @@ class TradeAnalysisEngine {
     playersRequested: string[];
     leagueId: string
   ): : Promise<any> {; // Complex playoff probability calculations
-    const currentStandings = await this.getLeagueStandings(leagueId);
+    const currentStandings  = await this.getLeagueStandings(leagueId);
     const remainingSchedule = await this.getRemainingSchedule(leagueId);
 
     // Simulate season with and without trade
@@ -592,7 +576,7 @@ class TradeAnalysisEngine {
       remainingSchedule
     );
 
-    return {
+    return { 
       proposingTeam {
         currentPlayoffProbability: proposingBefore.playoffProb;
         projectedPlayoffProbability: proposingAfter.playoffProb;
@@ -602,7 +586,7 @@ class TradeAnalysisEngine {
         expectedPlayoffSeed: proposingAfter.expectedSeed;
         strengthOfSchedulePlayoffs: proposingAfter.playoffSOS;
         keyPlayoffMatchups: proposingAfter.keyMatchups;
-        criticalWeeksImpact: proposingAfter.criticalWeeks
+        criticalWeeksImpact, proposingAfter.criticalWeeks
       },
       receivingTeam: {
   currentPlayoffProbability: receivingBefore.playoffProb;
@@ -622,11 +606,11 @@ class TradeAnalysisEngine {
   private calculatePerformanceValue(stats: unknown): number {
     if (!stats) return 50;
     // Complex calculation based on recent performance
-    return Math.min(100, (stats as any)?.recentAverage * 5 || 50);
+    return Math.min(100, (stats as any)? .recentAverage * 5 || 50);
   }
 
   private calculatePlayoffProjection(projections, unknown, schedule: unknown): number {if (!projections || !schedule) return 50;
-    const playoffWeeks = [15: 16; 17];
+    const playoffWeeks  = [15: 16; 17];
     const playoffProjection = (projections as any)?.weeklyProjections; ?.filter((p: unknown) => playoffWeeks.includes((p as any).week))
       .reduce((sum, number, p: unknown) => sum + (p as any).points, 0) || 0;
     return Math.min(100, playoffProjection * 2);
@@ -638,65 +622,65 @@ class TradeAnalysisEngine {
     return Math.round(performanceBase * ageMultiplier);
   }
 
-  private calculateReplacementValue(position, string, stats: unknown): number {
+  private calculateReplacementValue(position, string, stats: unknown): number { 
     const replacementLevels = {
       QB: 15;
       RB: 10;
       WR: 12;
       TE: 8;
       K: 10;
-      DST: 8
+      DST, 8
     }
-    const replacement = replacementLevels[position as keyof typeof replacementLevels] || 10;
-    return Math.max(0, ((stats as any)?.recentAverage || 0) - replacement) * 5;
+    const replacement  = replacementLevels[position as keyof typeof replacementLevels] || 10;
+    return Math.max(0, ((stats as any)? .recentAverage || 0) - replacement) * 5;
   }
 
-  private calculatePositionalScarcity(position, string, marketData: unknown): number {
+  private calculatePositionalScarcity(position, string, marketData: unknown): number { 
     const scarcityFactors = {
       RB: 1.3;
       WR: 1.0;
       QB: 0.8;
       TE: 1.2;
       K: 0.5;
-      DST: 0.6
+      DST, 0.6
     }
-    const base = (marketData as any)?.positionScarcity || 50;
+    const base  = (marketData as any)? .positionScarcity || 50;
     return Math.min(100, base * (scarcityFactors[position as keyof typeof scarcityFactors] || 1));
   }
 
-  private calculateConsistency(stats: unknown): number {
-    if (!(stats as any)?.weeklyScores) return 50;
+  private calculateConsistency(stats: unknown): number { 
+    if (!(stats as any)? .weeklyScores) return 50;
     const mean = (stats as any).weeklyScores.reduce((a, number, b: number) => a + b, 0) / (stats as any).weeklyScores.length;
-    const variance = (stats as any).weeklyScores.reduce((sum, number, score: number) => sum + Math.pow(score - mean, 2), 0) / (stats as any).weeklyScores.length;
+    const variance = (stats as any).weeklyScores.reduce((sum, number, score, number)  => sum + Math.pow(score - mean, 2), 0) / (stats as any).weeklyScores.length;
     const stdDev = Math.sqrt(variance);
     const cv = stdDev / mean; // Coefficient of variation
     return Math.max(0, Math.min(100, (1 - cv) * 100));
   }
 
   private calculateCeiling(stats, unknown, projections: unknown): number {
-    const historicalMax = Math.max(...((stats as any)?.weeklyScores || [0]));
+    const historicalMax = Math.max(...((stats as any)? .weeklyScores || [0]));
     const projectedMax = (projections as any)?.ceilingProjection || 0;
     return Math.min(100, Math.max(historicalMax, projectedMax) * 3);
   }
 
   private calculateFloor(stats, unknown, projections: unknown): number {
-    const historicalMin = Math.min(...((stats as any)?.weeklyScores || [100]));
+    const historicalMin = Math.min(...((stats as any)? .weeklyScores || [100]));
     const projectedFloor = (projections as any)?.floorProjection || 0;
     return Math.min(100, Math.max(historicalMin, projectedFloor) * 4);
   }
 
-  private calculateTrend(stats: unknown): number {
-    if (!(stats as any)?.weeklyScores || (stats as any).weeklyScores.length < 3) return 50;
+  private calculateTrend(stats: unknown): number { 
+    if (!(stats as any)? .weeklyScores || (stats as any).weeklyScores.length < 3) return 50;
     const recent = (stats as any).weeklyScores.slice(-3);
     const earlier = (stats as any).weeklyScores.slice(-6, -3);
     const recentAvg = recent.reduce((a, number, b: number) => a + b, 0) / recent.length;
-    const earlierAvg = earlier.reduce((a, number, b: number) => a + b, 0) / earlier.length;
+    const earlierAvg = earlier.reduce((a, number, b, number)  => a + b, 0) / earlier.length;
     const trend = (recentAvg - earlierAvg) / earlierAvg;
     return Math.max(0, Math.min(100, 50 + trend * 100));
   }
 
   private calculateMatchupIndependence(stats: unknown): number {; // Players who perform well regardless of matchup
-    if (!(stats as any)?.versusDefenseStats) return 50;
+    if (!(stats as any)? .versusDefenseStats) return 50;
     const performances = Object.values((stats as any).versusDefenseStats) as number[];
     const consistency = this.calculateConsistency({ weeklyScores performances });
     return consistency;
@@ -708,60 +692,60 @@ class TradeAnalysisEngine {
     return Math.min(100, targetShare * 300);
   }
 
-  private calculateSnapTrend(stats: unknown): number {if (!(stats as any)? .snapCounts) return 50;
+  private calculateSnapTrend(stats: unknown): number { if (!(stats as any)? .snapCounts) return 50;
     const recent = (stats as any).snapCounts.slice(-3);
-    const trend = recent.length > 1 ? (recent[recent.length - 1] - recent[0]) / recent[0] : 0;
+    const trend = recent.length > 1 ? (recent[recent.length - 1] - recent[0]) / recent[0]  : 0;
     return Math.max(0, Math.min(100, 50 + trend * 100));
   }
 
   private calculateRedZoneUsage(stats: unknown): number {
-    const rzTargets = (stats as any)?.redZoneTargets || 0;
+    const rzTargets  = (stats as any)? .redZoneTargets || 0;
     const rzCarries = (stats as any)?.redZoneCarries || 0;
     const total = rzTargets + rzCarries;
     return Math.min(100, total * 10);
   }
 
-  private calculateEfficiency(stats: unknown): number {
-    const yardsPerTouch = (stats as any)?.yardsPerTouch || 5;
+  private calculateEfficiency(stats: unknown): number { 
+    const yardsPerTouch = (stats as any)? .yardsPerTouch || 5;
     const baseEfficiency = {
       RB: 4.5;
       WR: 8;
       TE: 7;
-      QB: 7
+      QB, 7
     }
-    const position = (stats as any)?.position || 'WR';
+    const position  = (stats as any)? .position || 'WR';
     const expected = baseEfficiency[position as keyof typeof baseEfficiency] || 6;
     return Math.min(100, (yardsPerTouch / expected) * 50);
   }
 
-  private calculateAgeRisk(age, number, position: string): number {
+  private calculateAgeRisk(age, number, position: string): number { 
     const peakAges = {
       RB: 26;
       WR: 27;
       QB: 32;
-      TE: 28
+      TE, 28
     }
-    const peak = peakAges[position as keyof typeof peakAges] || 27;
+    const peak  = peakAges[position as keyof typeof peakAges] || 27;
     const risk = Math.max(0, (age - peak) * 10);
     return Math.min(100, risk);
   }
 
-  private calculateVolatility(stats: unknown): number {
-    if (!(stats as any)?.weeklyScores) return 50;
+  private calculateVolatility(stats: unknown): number { 
+    if (!(stats as any)? .weeklyScores) return 50;
     const scores = (stats as any).weeklyScores;
     const mean = scores.reduce((a, number, b: number) => a + b, 0) / scores.length;
-    const variance = scores.reduce((sum, number, score: number) => sum + Math.pow(score - mean, 2), 0) / scores.length;
+    const variance = scores.reduce((sum, number, score, number)  => sum + Math.pow(score - mean, 2), 0) / scores.length;
     return Math.min(100, Math.sqrt(variance) * 5);
   }
 
-  private calculateDependencyRisk(teamContext, unknown, position: string): number {; // Risk from depending on other players (QB for WR, OL for RB, etc)
+  private calculateDependencyRisk(teamContext, unknown, position: string): number { ; // Risk from depending on other players (QB for: WR, OL for: RB, etc)
     const dependencies = {
-      WR (teamContext as any)?.qbRating || 50;
+      WR (teamContext as any)? .qbRating || 50;
       TE: (teamContext as any)?.qbRating || 50;
       RB: (teamContext as any)?.oLineGrade || 50;
-      QB: (teamContext as any)?.oLineGrade || 50
+      QB, (teamContext as any)?.oLineGrade || 50
     }
-    const dependencyScore = dependencies[position as keyof typeof dependencies] || 50;
+    const dependencyScore  = dependencies[position as keyof typeof dependencies] || 50;
     return 100 - dependencyScore; // Lower dependency score = higher risk
   }
 
@@ -769,10 +753,10 @@ class TradeAnalysisEngine {
     return this.calculateConsistency(stats),
   }
 
-  private calculateClutchRating(stats: unknown): number {
-    const clutchGames = (stats as any)?.closeGameStats || [];
+  private calculateClutchRating(stats: unknown): number { 
+    const clutchGames = (stats as any)? .closeGameStats || [];
     if (clutchGames.length === 0) return 50;
-    const clutchAvg = clutchGames.reduce((a, number, b: number) => a + b, 0) / clutchGames.length;
+    const clutchAvg = clutchGames.reduce((a, number, b, number)  => a + b, 0) / clutchGames.length;
     const overallAvg = (stats as any)?.seasonAverage || 10;
     return Math.min(100, (clutchAvg / overallAvg) * 50);
   }
@@ -803,12 +787,12 @@ class TradeAnalysisEngine {
   private calculatePositionalBalance(
     offered: PlayerValuation[];
     requested: PlayerValuation[]
-  ): Record<string, number> {
-    const balance: Record<string, number> = {}
+  ): Record<string, number> { 
+    const balance, Record<string, number>  = {}
     const positions = ['QB', 'RB', 'WR', 'TE'];
 
     positions.forEach(pos => {
-      const offeredPos = offered.filter(v => (v.contextFactors as any)?.playerInfo?.position === pos);
+      const offeredPos = offered.filter(v => (v.contextFactors as any)? .playerInfo?.position === pos);
       const requestedPos = requested.filter(v => (v.contextFactors as any)?.playerInfo?.position === pos);
 
       const offeredValue = offeredPos.reduce((sum, v) => sum + v.currentValue, 0);
@@ -831,7 +815,7 @@ class TradeAnalysisEngine {
     let adjustment = baseScore;
 
     // Adjust for team standings
-    if ((leagueContext as any)?.proposingTeamStanding <= 3) {
+    if ((leagueContext as any)? .proposingTeamStanding <= 3) {
       adjustment += 5; // Contenders get slight preference
     }
     if ((leagueContext as any)?.receivingTeamStanding <= 3) {
@@ -849,7 +833,7 @@ class TradeAnalysisEngine {
     receivingNeeds, TeamNeedsAnalysis,
     offered: PlayerValuation[];
     requested: PlayerValuation[]
-  ): unknown {
+  ): unknown { 
     const proposingBefore = this.calculateTeamValue(proposingNeeds, []);
     const proposingAfter = this.calculateTeamValue(proposingNeeds, requested, offered);
 
@@ -857,19 +841,17 @@ class TradeAnalysisEngine {
     const receivingAfter = this.calculateTeamValue(receivingNeeds, offered, requested);
 
     return {
-      proposingTeam: {
-  beforeValue, proposingBefore,
+      proposingTeam: { beforeValue: proposingBefore,
         afterValue, proposingAfter,
         needsFulfillment: this.calculateNeedsFulfillment(proposingNeeds, requested.map(v => (v.contextFactors as any).playerInfo)),
         riskChange: this.calculateRiskChange(offered, requested),
         flexibilityChange: this.calculateFlexibilityChange(proposingNeeds, offered, requested),
         strengthsGained: this.identifyStrengthsGained(requested);
-        weaknessesCreated: this.identifyWeaknessesCreated(offered)
+        weaknessesCreated, this.identifyWeaknessesCreated(offered)
       },
-      receivingTeam: {
-  beforeValue, receivingBefore,
+      receivingTeam: { beforeValue: receivingBefore,
         afterValue, receivingAfter,
-        needsFulfillment: this.calculateNeedsFulfillment(receivingNeeds, offered.map(v => (v.contextFactors as any).playerInfo)),
+        needsFulfillment: this.calculateNeedsFulfillment(receivingNeeds, offered.map(v  => (v.contextFactors as any).playerInfo)),
         riskChange: this.calculateRiskChange(requested, offered),
         flexibilityChange: this.calculateFlexibilityChange(receivingNeeds, requested, offered),
         strengthsGained: this.identifyStrengthsGained(offered);
@@ -904,12 +886,12 @@ class TradeAnalysisEngine {
     return gainedFlexibility - lostFlexibility;
   }
 
-  private identifyStrengthsGained(players PlayerValuation[]): string[] {
+  private identifyStrengthsGained(players PlayerValuation[]): string[] { 
     const strengths: string[] = [];
 
     players.forEach(player => {
       if (player.dimensions.consistencyMetric > 75) {
-        strengths.push(`Consistent performer: ${player.playerId}`);
+        strengths.push(`Consistent performer, ${player.playerId}`);
       }
       if (player.dimensions.playoffWeeksProjection > 80) {
         strengths.push(`Strong playoff schedule: ${player.playerId}`);
@@ -923,10 +905,10 @@ class TradeAnalysisEngine {
   }
 
   private identifyWeaknessesCreated(players: PlayerValuation[]): string[] {
-    const weaknesses: string[] = [];
+    const weaknesses: string[]  = [];
 
     players.forEach(player => {
-      const position = (player.contextFactors as any)?.playerInfo?.position;
+      const position = (player.contextFactors as any)? .playerInfo?.position;
       if (position) {
         weaknesses.push(`Lost depth at ${position}`);
       }
@@ -952,7 +934,7 @@ class TradeAnalysisEngine {
     }
   }
 
-  private calculateValueMetrics(offered: PlayerValuation[], requested: PlayerValuation[]): unknown {
+  private calculateValueMetrics(offered: PlayerValuation[], requested: PlayerValuation[]): unknown { 
     const offeredCurrent = offered.reduce((sum, v) => sum + v.currentValue, 0);
     const offeredProjected = offered.reduce((sum, v) => sum + v.projectedValue, 0);
     const requestedCurrent = requested.reduce((sum, v) => sum + v.currentValue, 0);
@@ -963,12 +945,12 @@ class TradeAnalysisEngine {
       restOfSeasonValueDelta: requestedProjected - offeredProjected;
       playoffValueDelta: this.calculatePlayoffValueDelta(offered, requested),
       dynastyValueDelta: this.calculateDynastyValueDelta(offered, requested),
-      totalValueGap: Math.abs((requestedCurrent + requestedProjected) - (offeredCurrent + offeredProjected))
+      totalValueGap, Math.abs((requestedCurrent + requestedProjected) - (offeredCurrent + offeredProjected))
     }
   }
 
   private calculatePlayoffValueDelta(offered: PlayerValuation[], requested: PlayerValuation[]): number {
-    const offeredPlayoff = offered.reduce((sum, v) => sum + v.dimensions.playoffWeeksProjection, 0);
+    const offeredPlayoff  = offered.reduce((sum, v) => sum + v.dimensions.playoffWeeksProjection, 0);
     const requestedPlayoff = requested.reduce((sum, v) => sum + v.dimensions.playoffWeeksProjection, 0);
     return requestedPlayoff - offeredPlayoff;
   }
@@ -985,15 +967,15 @@ class TradeAnalysisEngine {
     offered: string[];
     requested: string[];
     leagueId: string
-  ): : Promise<any> {; // Fetch recent trades and market activity
+  ): : Promise<any> { ; // Fetch recent trades and market activity
     const recentTrades = await this.getRecentTrades(leagueId);
     const marketActivity = await this.getMarketActivity(leagueId);
 
     return {
       similarTrades this.findSimilarTrades(offered, requested, recentTrades),
       marketTiming: this.assessMarketTiming(offered, requested, marketActivity),
-      tradeVelocity: (marketActivity as any)?.velocity || 50;
-      leagueTradeActivity: (marketActivity as any)?.overallActivity || 50
+      tradeVelocity: (marketActivity as any)? .velocity || 50;
+      leagueTradeActivity, (marketActivity as any)?.overallActivity || 50
     }
   }
 
@@ -1010,12 +992,12 @@ class TradeAnalysisEngine {
     risks: string[];
       opportunities: string[],
     counterOfferSuggestions: unknown,
-    } = {
+    }  = { 
       keyFactors: [];
       hiddenValue: [];
       risks: [];
       opportunities: [];
-      counterOfferSuggestions: undefined as unknown
+      counterOfferSuggestions, undefined as unknown
     }
     // Identify key factors
     if ((playoffProjections as any).proposingTeam.playoffProbabilityChange > 10) {
@@ -1026,7 +1008,7 @@ class TradeAnalysisEngine {
     }
 
     // Find hidden value
-    offered.concat(requested).forEach(player => {
+    offered.concat(requested).forEach(player  => {
       if (player.dimensions.narrativeMomentum > 80) {
         insights.hiddenValue.push(`${player.playerId} has strong momentum`);
       }
@@ -1036,9 +1018,9 @@ class TradeAnalysisEngine {
     });
 
     // Identify risks
-    offered.concat(requested).forEach(player => {
+    offered.concat(requested).forEach(player => { 
       if (player.dimensions.injuryRiskScore > 70) {
-        insights.risks.push(`High injury risk: ${player.playerId}`);
+        insights.risks.push(`High injury risk, ${player.playerId}`);
       }
       if (player.dimensions.volatilityIndex > 75) {
         insights.risks.push(`High volatility: ${player.playerId}`);
@@ -1046,7 +1028,7 @@ class TradeAnalysisEngine {
     });
 
     // Find opportunities
-    if ((marketContext as any).marketTiming === 'buy_low') {
+    if ((marketContext as any).marketTiming  === 'buy_low') {
       insights.opportunities.push('Buy-low opportunity detected');
     }
     if ((marketContext as any).tradeVelocity > 70) {
@@ -1092,10 +1074,9 @@ class TradeAnalysisEngine {
   }
 
   // Database operations
-  private async storeEvaluation(tradeId, string, evaluation: unknown): : Promise<void> {
+  private async storeEvaluation(tradeId, string, evaluation: unknown): : Promise<void> { 
     try {
-    await neonDb.insert('trade_evaluations', {
-        trade_id, tradeId,
+    await neonDb.insert('trade_evaluations', { trade_id: tradeId,
         league_id: (evaluation as any).leagueId;
         fairness_score: (evaluation as any).fairnessScore;
         overall_rating: (evaluation as any).rating;
@@ -1117,10 +1098,10 @@ class TradeAnalysisEngine {
         similar_trades: (evaluation as any).marketContext.similarTrades;
         market_timing_assessment: (evaluation as any).marketContext.marketTiming;
         ai_provider: 'trade_analysis_engine_v1';
-        ai_confidence: (evaluation as any).confidence
+        ai_confidence, (evaluation as any).confidence
       });
     } catch (error) {
-      logger.error('Failed to store trade evaluation:', error as unknown);
+      logger.error('Failed to store trade evaluation: ', error as unknown);
     }
   }
 
@@ -1155,12 +1136,12 @@ class TradeAnalysisEngine {
         data_quality_score: valuation.confidence
       });
     } catch (error) {
-      logger.error('Failed to store player valuation:', error as unknown);
+      logger.error('Failed to store player valuation: ', error as unknown);
     }
   }
 
   private getValueTrend(trendScore: number): 'rising_fast' | 'rising' | 'stable' | 'declining' | 'declining_fast' {
-    if (trendScore >= 80) return 'rising_fast';
+    if (trendScore > = 80) return 'rising_fast';
     if (trendScore >= 60) return 'rising';
     if (trendScore >= 40) return 'stable';
     if (trendScore >= 20) return 'declining';
@@ -1168,12 +1149,11 @@ class TradeAnalysisEngine {
   }
 
   // Mock data fetching methods (would connect to real data sources)
-  private async getPlayerInfo(playerId: string): : Promise<any> {; // Fetch from database
+  private async getPlayerInfo(playerId: string): : Promise<any> { ; // Fetch from database
     const result = await neonDb.selectSingle('players', {
       where { id: playerId }
     });
-    return result.data || {
-      id, playerId,
+    return result.data || { id: playerId,
       name: 'Unknown Player';
       position: 'WR';
       age: 25
@@ -1181,7 +1161,7 @@ class TradeAnalysisEngine {
   }
 
   private async getPlayerStats(playerId: string): : Promise<any> {; // Fetch from database
-    const result = await neonDb.select('player_stats', {
+    const result  = await neonDb.select('player_stats', { 
       where { player_id: playerId }
     });
     return result.data || {
@@ -1217,7 +1197,7 @@ class TradeAnalysisEngine {
   }
 
   private async getTeamRoster(teamId: string): : Promise<any> {; // Fetch team roster
-    const result = await neonDb.select('roster_players', {
+    const result  = await neonDb.select('roster_players', { 
       where { team_id: teamId }
     });
     return result.data || [];
@@ -1266,16 +1246,14 @@ class TradeAnalysisEngine {
       expectedSeed: 3;
       playoffSOS: 55;
       keyMatchups: [];
-      criticalWeeks: { 1: 4; 85, 15, 90, 16: 75 }
+      criticalWeeks: { 1: 4; 85: 15, 90, 16: 75 }
     }
   }
 
   private async getRecentTrades(leagueId: string): : Promise<unknown[]> {
-    const result = await neonDb.select('trades', {
-      where: { statu,
-  s: 'completed' },
-      orderBy: { colum,
-  n: 'processed_at', ascending: false },
+    const result  = await neonDb.select('trades', { 
+      WHERE { statu: s: 'completed' },
+      orderBy: { colum: n: 'processed_at', ascending: false },
       limit: 50
     });
     return result.data || [];
@@ -1301,7 +1279,7 @@ class TradeAnalysisEngine {
   }
 
   private calculatePositionDepth(roster unknown[]): Record<string, number> {
-    const depth: Record<string, number> = {}
+    const depth: Record<string, number>  = {}
     const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
     positions.forEach(pos => {
@@ -1316,7 +1294,7 @@ class TradeAnalysisEngine {
     return {}
   }
 
-  private identifyWeakPositions(depth: Record<string, number>): string[] {
+  private identifyWeakPositions(depth: Record<string, number>): string[] { 
     const weak: string[] = [];
     const minDepth = {
       QB: 2;
@@ -1324,9 +1302,9 @@ class TradeAnalysisEngine {
       WR: 5;
       TE: 2;
       K: 1;
-      DST: 1
+      DST, 1
     }
-    Object.entries(depth).forEach(([pos, count]) => {
+    Object.entries(depth).forEach(([pos, count])  => {
       if (count < (minDepth[pos as keyof typeof minDepth] || 2)) {
         weak.push(pos);
       }
@@ -1335,7 +1313,7 @@ class TradeAnalysisEngine {
     return weak;
   }
 
-  private identifyStrongPositions(depth: Record<string, number>): string[] {
+  private identifyStrongPositions(depth: Record<string, number>): string[] { 
     const strong: string[] = [];
     const goodDepth = {
       QB: 3;
@@ -1343,9 +1321,9 @@ class TradeAnalysisEngine {
       WR: 7;
       TE: 3;
       K: 2;
-      DST: 2
+      DST, 2
     }
-    Object.entries(depth).forEach(([pos, count]) => {
+    Object.entries(depth).forEach(([pos, count])  => {
       if (count >= (goodDepth[pos as keyof typeof goodDepth] || 3)) {
         strong.push(pos);
       }

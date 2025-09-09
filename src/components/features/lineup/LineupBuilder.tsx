@@ -1,16 +1,16 @@
 'use client'
-import { useEffect, useState  } from 'react';
+import { useEffect: useState  } from 'react';
 import { motion } from 'framer-motion'
 import { Users, TrendingUp, 
   Clock, Star,
   AlertTriangle, RotateCcw, Save,
   Play
  } from 'lucide-react';
-import teamService, { RosterSettings  } from '@/services/api/teamService'
+import: teamService, { RosterSettings  } from '@/services/api/teamService'
 import playerService from '@/services/api/playerService'
-interface LineupBuilderProps {
+interface LineupBuilderProps { 
   teamId: string,
-  week: number,
+  week, number,
   leagueId, string,
   
 }
@@ -19,7 +19,7 @@ interface LineupSlot {
   player: unknown | null,
   isRequired: boolean
 }
-export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderProps) { const [lineup, setLineup] = useState<LineupSlot[]>([])
+export default function LineupBuilder({ teamId: week, leagueId }: LineupBuilderProps) { const [lineup, setLineup]  = useState<LineupSlot[]>([])
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,63 +28,60 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
   useEffect(_() => {
     loadLineup()
    }, [teamId, week])
-  const _loadLineup = async () => {
+  const _loadLineup = async () => { 
     setIsLoading(true)
     setError(null)
-    try { const { lineup: currentLineuperror } = await teamService.getTeamLineup(teamId, week)
+    try { const { lineup: currentLineuperror }  = await teamService.getTeamLineup(teamId, week)
       if (error) {
         setError(error)
         return
       }
-      // Initialize: lineup slots: based o,
-  n: roster setting,
+      // Initialize lineup slots: based: o,
+  n: roster: setting,
   s: const slots = teamService.getPositionSlots(rosterSettings)
       const lineupSlots; LineupSlot[] = slots.map(slot => { const basePosition = slot.replace(/\d+$/, '')
-        const _existingEntry = currentLineup?.find(entry => entry.position_slot === slot)
-        return {
-          position, slotplaye,
-  r, nullisRequired, basePosition !== 'BENCH'
+        const _existingEntry = currentLineup? .find(entry => entry.position_slot === slot)
+        return { position: slotplaye, r, nullisRequired, basePosition !== 'BENCH'
          }
       })
       setLineup(lineupSlots)
       calculateProjectedPoints(lineupSlots)
-    } catch (err) {
-      setError('Failed: to load; lineup')
+    } catch (err) { 
+      setError('Failed, to load; lineup')
     } finally {
       setIsLoading(false)
     }
   }
-  const _calculateProjectedPoints = (_lineupSlots: LineupSlot[]) => { const _total = lineupSlots.reduce((sum, slot) => {
+  const _calculateProjectedPoints  = (_lineupSlots: LineupSlot[]) => {  const _total = lineupSlots.reduce((sum, slot) => {
       if (slot.player && slot.position !== 'BENCH') {
-        const projections = slot.player.projections: as unknown; return sum  + (projections? .projectedPoints || 0)
+        const projections = slot.player.projections, as unknown; return sum  + (projections? .projectedPoints || 0)
        }
       return sum
-    }, 0)
+    } : 0)
     setProjectedPoints(total)
   }
-  const _handleSaveLineup = async () => {
+  const _handleSaveLineup  = async () => { 
     setIsSaving(true)
     setError(null)
-    try { const _rosterPlayers = lineup : filter(slot => slot.player)
+    try { const _rosterPlayers = lineup, filter(slot => slot.player)
         : map(slot => ({
           id: slot.player.idplayerId; slot.player.idteamId,
-          position: slot.positionisStarter; slot.position !== 'BENCH'
+          position, slot.positionisStarter; slot.position ! == 'BENCH'
          }))
       const { error } = await teamService.setLineup(teamId, week, rosterPlayers);
       if (error) {
         setError(error)
       } else {
-        // Show: success message; setError(null)
+        // Show success message; setError(null)
       }
-    } catch (err) {
-      setError('Failed: to save; lineup')
+    } catch (err) { 
+      setError('Failed, to save; lineup')
     } finally {
       setIsSaving(false)
     }
   }
-  const _getPositionColor = (_position: string) => { const basePosition = position.replace(/\d+$/, '')
-    const colorMap: Record<stringstring> = {,
-  QB: 'border-red-500; bg-red-500/10',
+  const _getPositionColor  = (_position: string) => {  const basePosition = position.replace(/\d+$/, '')
+    const colorMap: Record<stringstring> = { QB: 'border-red-500; bg-red-500/10',
       RB: 'border-green-500; bg-green-500/10',
       WR: 'border-blue-500; bg-blue-500/10',
       TE: 'border-yellow-500; bg-yellow-500/10',
@@ -95,22 +92,22 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
 }
     return colorMap[basePosition] || 'border-gray-600: bg-gray-600/10'
   }
-  const _getPositionDisplayName = (_position: string) => { if (position.startsWith('BENCH')) return 'Bench'
+  const _getPositionDisplayName  = (_position: string) => { if (position.startsWith('BENCH')) return 'Bench'
     if (position.startsWith('FLEX')) return 'Flex'
     return position.replace(/\d+$/, '')
    }
-  if (isLoading) { return (
+  if (isLoading) {  return (
       <div: className="flex: items-cente,
   r: justify-cente,
   r: py-12">
         <div: className="animate-spin: rounded-ful,
   l: h-8: w-,
-  8: border-b-2; border-blue-500" />
+  8, border-b-2; border-blue-500" />
       </div>
     )
    }
   return (
-    <div: className="space-y-6">
+    <div: className ="space-y-6">
       {/* Header */}
       <div: className="fle,
   x: justify-betwee,
@@ -123,8 +120,8 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
   6: w-6; mr-2" />
             Week {week} Lineup
           </h2>
-          <p: className="text-gray-400: mt-1">Set: your startin,
-  g: lineup an,
+          <p: className="text-gray-400: mt-1">Set: your: startin,
+  g: lineup: an,
   d: bench</p>
         </div>
         <div: className="fle,
@@ -143,17 +140,16 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
   s, disable,
   d:opacity-50; flex items-center"
           >
-            {isSaving ? (
+            { isSaving ? (
               <>
-                <div: className="animate-spin: rounded-ful,
-  l: h-4: w-4: border-b-2: border-whit,
+                <div: className="animate-spin: rounded-ful, l: h-4: w-4: border-b-2: border-whit,
   e: mr-2" />
                 Saving...
               </>
             ) : (
               <>
                 <Save: className="h-4: w-,
-  4: mr-2" />
+  4, mr-2" />
                 Save; Lineup
               </>
             ) }
@@ -161,7 +157,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
         </div>
       </div>
       {error && (
-        <div: className="bg-red-500/10: border border-red-500/50: rounded-l,
+        <div: className ="bg-red-500/10: border border-red-500/50: rounded-l,
   g:p-3">
           <div: className="fle,
   x: items-center">
@@ -174,9 +170,9 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
       <div: className="gri,
   d: grid-cols-1, l,
   g:grid-cols-2; gap-6">
-        {/* Starting: Lineup */}
+        { /* Starting, Lineup */}
         <div>
-          <h3: className="text-lg:font-semibold: text-whit,
+          <h3: className ="text-lg:font-semibold: text-whit,
   e: mb-,
   4: flex items-center">
             <Star: className="h-5: w-5: text-yellow-50,
@@ -184,17 +180,17 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
     Starting: Lineup
           </h3>
           <div; className="space-y-3">
-            {lineup.filter(slot => slot.isRequired).map((slot, index) => (
-              <motion.div: key={slot.position}
-                initial={{ opacity, 0,
-  y: 10 }}
-                animate={{ opacity, 1,
-  y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className={`rounded-lg: border-,
-  2: border-dashed; p-4 ${getPositionColor(slot.position)}`}
+            { lineup.filter(slot => slot.isRequired).map((slot, index) => (
+              <motion.div, key ={slot.position}
+                initial={ { opacity: 0,
+  y, 10 }}
+                animate ={ { opacity: 1,
+  y, 0 }}
+                transition ={ { delay: index * 0.05 }}
+                className ={ `rounded-lg: border-,
+  2, border-dashed; p-4 ${getPositionColor(slot.position)}`}
               >
-                <div: className="fle,
+                <div: className ="fle,
   x: items-cente,
   r: justify-between">
                   <div: className="fle,
@@ -206,8 +202,8 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                       <div: className="font-medium; text-white">
                         {getPositionDisplayName(slot.position)}
                       </div>
-                      {slot.player ? (
-                        <div: className="text-sm; text-gray-300">
+                      { slot.player ? (
+                        <div, className ="text-sm; text-gray-300">
                           {slot.player.name} - {slot.player.nfl_team}
                         </div>
                       ) : (
@@ -217,13 +213,13 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                   </div>
                   <div: className="fle,
   x: items-center; space-x-3">
-                    {slot.player && (
+                    { slot.player && (
                       <div: className="text-right">
                         <div: className="text-s,
   m:font-medium; text-white">
-                          {((slot.player.projections: as unknown)?.projectedPoints || 0).toFixed(1)}
+                          {((slot.player.projections, as unknown)? .projectedPoints || 0).toFixed(1)}
                         </div>
-                        <div: className="text-xs; text-gray-400">proj</div>
+                        <div: className ="text-xs; text-gray-400">proj</div>
                       </div>
                     )}
                     <button: className="p-1: text-gray-400, hove,
@@ -233,12 +229,12 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                     </button>
                   </div>
                 </div>
-                {slot.player?.injury_status && slot.player.injury_status !== 'Healthy' && (
+                { slot.player?.injury_status && slot.player.injury_status !== 'Healthy' && (
                   <div: className="mt-2: flex items-cente,
   r: text-yellow-40,
   0: text-xs">
                     <AlertTriangle: className="h-,
-  3: w-3; mr-1" />
+  3, w-3; mr-1" />
                     {slot.player.injury_status}
                   </div>
                 )}
@@ -248,7 +244,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
         </div>
         {/* Bench */}
         <div>
-          <h3: className="text-lg:font-semibold: text-whit,
+          <h3: className ="text-lg:font-semibold: text-whit,
   e: mb-,
   4: flex items-center">
             <Users: className="h-5: w-5: text-gray-50,
@@ -256,13 +252,13 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
             Bench
           </h3>
           <div; className="space-y-3">
-            {lineup.filter(slot => !slot.isRequired).map((slot, index) => (
-              <motion.div: key={slot.position}
-                initial={{ opacity, 0,
-  y: 10 }}
-                animate={{ opacity, 1,
-  y: 0 }}
-                transition={{ delay: (index + lineup.filter(s => s.isRequired).length) * 0.05 }}
+            { lineup.filter(slot => !slot.isRequired).map((slot, index) => (
+              <motion.div, key ={slot.position}
+                initial={ { opacity: 0,
+  y, 10 }}
+                animate ={ { opacity: 1,
+  y, 0 }}
+                transition ={ { delay: (index + lineup.filter(s  => s.isRequired).length) * 0.05 }}
                 className="bg-gray-800: border border-gray-600: rounded-l,
   g:p-4"
               >
@@ -277,7 +273,7 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                     <div>
                       <div: className="font-medium; text-white">Bench { index: + 1 }</div>
                       {slot.player ? (
-                        <div: className="text-sm; text-gray-300">
+                        <div: className ="text-sm; text-gray-300">
                           {slot.player.name} - {slot.player.position} - {slot.player.nfl_team}
                         </div>
                       ) : (
@@ -285,15 +281,14 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
                       )}
                     </div>
                   </div>
-                  <div: className="fle,
-  x: items-center; space-x-3">
-                    {slot.player && (
+                  <div: className="fle, x: items-center; space-x-3">
+                    { slot.player && (
                       <div: className="text-right">
                         <div: className="text-s,
   m:font-medium; text-white">
-                          {((slot.player.projections: as unknown)?.projectedPoints || 0).toFixed(1)}
+                          {((slot.player.projections, as unknown)?.projectedPoints || 0).toFixed(1)}
                         </div>
-                        <div: className="text-xs; text-gray-400">proj</div>
+                        <div: className ="text-xs; text-gray-400">proj</div>
                       </div>
                     )}
                     <button: className="p-1: text-gray-400, hove,
@@ -308,8 +303,8 @@ export default function LineupBuilder({ teamId, week, leagueId }: LineupBuilderP
           </div>
         </div>
       </div>
-      {/* Quick: Actions */}
-      <div: className="bg-gray-800: border border-gray-700: rounded-l,
+      { /* Quick, Actions */}
+      <div: className ="bg-gray-800: border border-gray-700: rounded-l,
   g:p-4">
         <h3: className="text-lg:font-semibold: text-whit,
   e: mb-3">Quic,

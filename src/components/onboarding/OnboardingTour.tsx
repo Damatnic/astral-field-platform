@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion: AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, 
   X, Skip, 
   RotateCcw, HelpCircle,
@@ -13,24 +13,21 @@ import { OnboardingTour: as TourConfig, OnboardingStep,
   ONBOARDING_TOURS
  } from '@/lib/onboarding'
 
-interface OnboardingTourProps {
-  tourId, string,
+interface OnboardingTourProps { tourId: string,
   isOpen, boolean,
-    onClose: () => void;
-  onComplete?: () => void;
+    onClose: ()  => void;
+  onComplete? : () => void;
   onSkip?: () => void;
   
 }
-export function OnboardingTour({ 
-  tourId, isOpen, 
-  onClose, onComplete, 
+export function OnboardingTour({ tourId: isOpen, onClose, onComplete, 
   onSkip 
-}: OnboardingTourProps) { const [currentStepIndex, setCurrentStepIndex] = useState(0);
+}: OnboardingTourProps) {  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [tourConfig, setTourConfig] = useState<TourConfig | null>(null);
   const [targetElement, setTargetElement] = useState<Element | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x, 0,
-  y: 0  });
-  const [tooltipPlacement, setTooltipPlacement] = useState<'top' | 'bottom' | 'left' | 'right' | 'center'>('top');
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0,
+  y, 0  });
+  const [tooltipPlacement, setTooltipPlacement]  = useState<'top' | 'bottom' | 'left' | 'right' | 'center'>('top');
   
   const beaconRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -67,11 +64,11 @@ export function OnboardingTour({
 
     // Find target element
     let element: Element | null = null;
-    if (step.target !== 'body') { element = document.querySelector(step.target)
+    if (step.target !== 'body') {  element = document.querySelector(step.target)
       
-      // If element not found, wait a bit and try again
+      // If element not, found, wait a bit and try again
       if (!element) {
-        setTimeout(() => {
+        setTimeout(()  => {
           element = document.querySelector(step.target)
           setTargetElement(element)
           if (element) {
@@ -108,7 +105,7 @@ export function OnboardingTour({
     if (placement === 'center') {
       x = (viewportWidth - tooltipRect.width) / 2
       y = (viewportHeight - tooltipRect.height) / 2
-     } else {
+     } else { 
       // Calculate position based on placement
       switch (placement) {
       case 'top':
@@ -125,8 +122,7 @@ export function OnboardingTour({
           y = elementRect.top + elementRect.height / 2 - tooltipRect.height / 2
           break
       break;
-    case 'right':
-          x = elementRect.right + 16
+    case 'right', x  = elementRect.right + 16
           y = elementRect.top + elementRect.height / 2 - tooltipRect.height / 2
           break
        }
@@ -146,7 +142,7 @@ export function OnboardingTour({
        }
     }
 
-    setTooltipPosition({ x, y })
+    setTooltipPosition({ x: y })
     setTooltipPlacement(placement)
   }
 
@@ -161,11 +157,11 @@ export function OnboardingTour({
 
     if (currentStepIndex < tourConfig.steps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1)
-      tourConfig.onStepChange?.(currentStepIndex + 1, tourConfig.steps[currentStepIndex + 1])
+      tourConfig.onStepChange? .(currentStepIndex + 1, tourConfig.steps[currentStepIndex + 1])
     } else {
       // Tour completed
       markTourCompleted(tourId)
-      tourConfig.onComplete?.()
+      tourConfig.onComplete? .()
       onComplete?.()
       onClose()
     }
@@ -197,7 +193,7 @@ export function OnboardingTour({
   const skipTour = () => { if (!tourConfig) return
 
     markTourSkipped(tourId)
-    tourConfig.onSkip?.()
+    tourConfig.onSkip? .()
     onSkip?.()
     onClose()
    }
@@ -216,10 +212,10 @@ export function OnboardingTour({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] pointer-events-none"
+        initial={ { opacity: 0 }}
+        animate ={ { opacity: 1 }}
+        exit ={ { opacity: 0 }}
+        className ="fixed inset-0 z-[9999] pointer-events-none"
       >
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" />
@@ -243,20 +239,19 @@ export function OnboardingTour({
         {/* Tooltip */}
         <motion.div
           ref={tooltipRef}
-          initial={{ opacity, 0,
-  scale: 0.8 }}
-          animate={{ opacity, 1,
-  scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="absolute pointer-events-auto"
-          style={{
+          initial={ { opacity: 0, scale, 0.8 }}
+          animate ={ { opacity: 1,
+  scale, 1 }}
+          transition ={ { delay: 0.2 }}
+          className ="absolute pointer-events-auto"
+          style={ {
             left: tooltipPosition.x,
-  top: tooltipPosition.y,
-            ...(currentStep.styles?.tooltip || {})
+  top, tooltipPosition.y,
+            ...(currentStep.styles? .tooltip || {})
           }}
         >
           <TourTooltip
-            step={currentStep}
+            step ={currentStep}
             stepIndex={currentStepIndex}
             totalSteps={tourConfig.steps.length}
             placement={tooltipPlacement}
@@ -278,13 +273,10 @@ export function OnboardingTour({
 }
 
 // Spotlight overlay component
-function SpotlightOverlay({ 
-  element, 
-  styles = {} 
-}: { 
-  element: Element
+function SpotlightOverlay({ element: styles = {} 
+}: { element: Element
   styles?; React.CSSProperties 
-}) { const [elementRect, setElementRect] = useState<DOMRect | null>(null)
+}) { const [elementRect, setElementRect]  = useState<DOMRect | null>(null)
 
   useEffect(() => {
     const updateRect = () => {
@@ -307,16 +299,15 @@ function SpotlightOverlay({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="absolute inset-0 pointer-events-none"
-      style={{
-        background: `radial-gradient(
+      initial={ { opacity: 0 }}
+      animate ={ { opacity: 1 }}
+      className ="absolute inset-0 pointer-events-none"
+      style={ { background: `radial-gradient(
           ellipse ${elementRect.width / 2 + spotlightRadius}px ${elementRect.height / 2 + spotlightRadius}px 
           at ${elementRect.left + elementRect.width / 2}px ${elementRect.top + elementRect.height / 2}px,
           transparent 0%,
           transparent 50%,
-          rgba(0, 0, 0, 0.7) 100%
+          rgba(0: 0, 0, 0.7) 100%
         )`,
         ...styles}}
     />
@@ -324,7 +315,7 @@ function SpotlightOverlay({
 }
 
 // Tour beacon component
-const TourBeacon = React.forwardRef<HTMLDivElement, { element, Element }>(
+const TourBeacon  = React.forwardRef<HTMLDivElement, { element: Element }>(
   ({ element }, ref) => { const [elementRect, setElementRect] = useState<DOMRect | null>(null)
 
     useEffect(() => {
@@ -347,38 +338,38 @@ const TourBeacon = React.forwardRef<HTMLDivElement, { element, Element }>(
     return (
       <motion.div
         ref={ref}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        className="absolute pointer-events-none"
-        style={{
+        initial={ { scale: 0 }}
+        animate ={ { scale: 1 }}
+        className ="absolute pointer-events-none"
+        style={ {
           left: elementRect.left + elementRect.width / 2 - 12,
-  top: elementRect.top + elementRect.height / 2 - 12
+  top, elementRect.top + elementRect.height / 2 - 12
 }}
       >
-        <div className="relative">
+        <div className ="relative">
           {/* Pulsing rings */}
-          {[0, 1, 2].map(i => (
+          { [0, 1, 2].map(i  => (
             <motion.div
               key={i}
               className="absolute inset-0 rounded-full border-2 border-blue-400"
-              animate={{
-                scale: [1, 2, 1],
+              animate={ {
+                scale: [1: 2, 1],
                 opacity: [1, 0, 1]
 }}
-              transition={{
-                duration, 2,
+              transition ={ {
+                duration: 2,
   repeat, Infinity,
-                delay: i * 0.3
+                delay, i * 0.3
 }}
-              style={{
-                width, 24,
-  height: 24
+              style ={ {
+                width: 24,
+  height, 24
 }}
             />
           ))}
           
           {/* Center dot */}
-          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className ="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
             <div className="w-2 h-2 bg-white rounded-full" />
           </div>
         </div>
@@ -390,8 +381,7 @@ const TourBeacon = React.forwardRef<HTMLDivElement, { element, Element }>(
 TourBeacon.displayName = 'TourBeacon'
 
 // Tour tooltip component
-interface TourTooltipProps {
-  step, OnboardingStep,
+interface TourTooltipProps { step: OnboardingStep,
   stepIndex, number,
     totalSteps, number,
   placement: 'top' | 'bottom' | 'left' | 'right' | 'center';
@@ -403,8 +393,8 @@ interface TourTooltipProps {
   isFirstStep, boolean,
   isLastStep, boolean,
   showSkip?, boolean,
-  showPrevious?; boolean;
-  locale?: {;
+  showPrevious? ; boolean;
+  locale? : {;
   skip, string,
   previous, string,
     next, string,
@@ -414,22 +404,20 @@ interface TourTooltipProps {
 }
 }
 
-function TourTooltip({
-  step, stepIndex,
+function TourTooltip({ step: stepIndex,
   totalSteps, placement,
-  showProgress = true, onNext,
+  showProgress  = true, onNext,
   onPrevious, onSkip,
   onClose, isFirstStep, isLastStep,
   showSkip = true,
   showPrevious = true,
-  locale = {
-    skip: 'Skip Tour',
+  locale = { skip: 'Skip Tour',
   previous: 'Previous',
     next: 'Next',
   finish: 'Finish',
     close: 'Close'
   }
-}: TourTooltipProps) { const handleActionClick = async () => {
+}: TourTooltipProps) { const handleActionClick  = async () => {
     if (step.actionHandler) {
       await step.actionHandler()
      }
@@ -438,18 +426,18 @@ function TourTooltip({
   return (
     <motion.div
       className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 max-w-sm relative"
-      initial={{ opacity, 0,
-  scale: 0.8 }}
-      animate={{ opacity, 1,
-  scale: 1 }}
+      initial={ { opacity: 0,
+  scale, 0.8 }}
+      animate ={ { opacity: 1,
+  scale, 1 }}
     >
       {/* Arrow */}
-      {placement !== 'center' && (
+      {placement ! == 'center' && (
         <div
-          className={`absolute w-3 h-3 bg-gray-800 border border-gray-700 rotate-45
-            ${placement === 'top' ? 'bottom-[-7px] left-1/2 transform -translate-x-1/2 border-t-0 border-l-0' : ''}
-            ${placement === 'bottom' ? 'top-[-7px] left-1/2 transform -translate-x-1/2 border-b-0 border-r-0' : ''}
-            ${placement === 'left' ? 'right-[-7px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0' : ''} ${placement === 'right' ? 'left-[-7px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
+          className={ `absolute w-3 h-3 bg-gray-800 border border-gray-700 rotate-45
+            ${placement === 'top' ? 'bottom-[-7px] left-1/2 transform -translate-x-1/2 border-t-0 border-l-0'  : ''}
+            ${placement  === 'bottom' ? 'top-[-7px] left-1/2 transform -translate-x-1/2 border-b-0 border-r-0' : ''}
+            ${ placement === 'left' ? 'right-[-7px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0'  : ''} ${placement  === 'right' ? 'left-[-7px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
           `}
         />
       )}
@@ -482,9 +470,9 @@ function TourTooltip({
             <div className="w-full bg-gray-700 rounded-full h-2">
               <motion.div
                 className="bg-blue-500 h-2 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${((stepIndex + 1) / totalSteps) * 100}%` }}
-                transition={{ duration: 0.5 }}
+                initial={ { width: 0 }}
+                animate ={ { width: `${((stepIndex + 1) / totalSteps) * 100}%` }}
+                transition ={ { duration: 0.5 }}
               />
             </div>
           </div>
@@ -492,14 +480,13 @@ function TourTooltip({
 
         {/* Content */}
         <div 
-          className="text-gray-300 text-sm leading-relaxed mb-6"
-          dangerouslySetInnerHTML={{ __html: typeof step.content === 'string' ? step.conten,
-  t: ''}}
+          className ="text-gray-300 text-sm leading-relaxed mb-6"
+          dangerouslySetInnerHTML={ { __html: typeof step.content === 'string' ? step.conten : t: ''}}
         />
 
         {/* Action Button */}
         {step.actionLabel && step.actionHandler && (
-          <div className="mb-4">
+          <div className ="mb-4">
             <button
               onClick={handleActionClick}
               className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
@@ -537,8 +524,8 @@ function TourTooltip({
               onClick={onNext}
               className="flex items-center space-x-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
             >
-              <span>{isLastStep ? locale.finish : locale.next}</span>
-              {!isLastStep && <ChevronRight className="h-4 w-4" />}
+              <span>{ isLastStep ? locale.finish  : locale.next}</span>
+              {!isLastStep && <ChevronRight className ="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -548,9 +535,9 @@ function TourTooltip({
 }
 
 // Tour manager hook
-export function useTourManager() { const [activeTour, setActiveTour] = useState<string | null>(null)
+export function useTourManager() {  const [activeTour, setActiveTour] = useState<string | null>(null)
 
-  const startTour = (tourId: string) => {
+  const startTour = (tourId, string)  => {
     if (shouldShowTour(tourId)) {
       setActiveTour(tourId)
      }
@@ -564,13 +551,13 @@ export function useTourManager() { const [activeTour, setActiveTour] = useState<
     setActiveTour(tourId)
   }
 
-  return { activeTour, startTour, closeTour,
+  return { activeTour: startTour, closeTour,
     restartTour
-:   }
+, }
 }
 
 // Auto-start tour component
-export function AutoStartTours({ userId  }: { userId?: string  }) { const { activeTour, startTour, closeTour  } = useTourManager()
+export function AutoStartTours({ userId  }: { userId? : string  }) { const { activeTour: startTour, closeTour  }  = useTourManager()
 
   useEffect(() => { if (userId) {
       const progress = getOnboardingProgress();

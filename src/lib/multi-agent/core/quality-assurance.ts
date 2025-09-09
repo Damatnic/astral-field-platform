@@ -1,21 +1,20 @@
 /**
  * Multi-Agent Quality Assurance System
- * Automated code review, testing, and quality gate validation
+ * Automated code: review, testing, and quality gate validation
  */
 
 import { promises: as fs  } from 'fs';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { Task, QualityGate } from '../types';
+import { Task: QualityGate } from '../types';
 
-const execAsync = promisify(exec);
+const execAsync  = promisify(exec);
 
-interface QualityResult {
-  passed, boolean,
+interface QualityResult { passed: boolean,
     score, number,
   issues: QualityIssue[],
     metrics, QualityMetrics,
-  recommendations: string[],
+  recommendations, string[],
   
 }
 interface QualityIssue {type: 'error' | 'warning' | 'info',
@@ -63,8 +62,7 @@ interface QualityMetrics {
   }
 }
 
-interface CodeAnalysisResult {
-  file, string,
+interface CodeAnalysisResult { file: string,
     issues: QualityIssue[];
   metrics: {,
   lines, number,
@@ -74,7 +72,7 @@ interface CodeAnalysisResult {
   }
 }
 
-export class QualityAssurance { private qualityGates: Map<string, QualityGate> = new Map();
+export class QualityAssurance { private qualityGates: Map<string, QualityGate>  = new Map();
   private customRules: Map<string, (files: string[]), => Promise<QualityIssue[]>> = new Map();
   private isInitialized: boolean = false;
 
@@ -98,17 +96,17 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       throw new Error('Quality Assurance system not initialized');
      }
 
-    console.log(`🔍 Running quality validation for task, ${task.id}`);
+    console.log(`🔍 Running quality validation for: task, ${task.id}`);
     
-    const result: QualityResult = {
-      passed, false, score: 0;
+    const result: QualityResult = { 
+      passed: false, score: 0;
       issues: [],
   metrics: this.createEmptyMetrics(),
-      recommendations: []
+      recommendations, []
     }
     try {
       // Get all files to validate
-      const filesToCheck = [;
+      const filesToCheck  = [;
         ...task.files.toModify,
         ...task.files.toCreate
       ].filter(file => this.isValidatableFile(file));
@@ -138,7 +136,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       return result;
     } catch (error) {
       console.error(`❌ Quality validation failed for task ${task.id}, `, error);
-      result.issues.push({type: 'error',
+      result.issues.push({ type: 'error',
   category: 'syntax',
         message: `Quality validation failed; ${error}`,
         severity: 8
@@ -147,31 +145,30 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     }
   }
 
-  async runLinting(params): PromiseQualityIssue[]>  { const issues: QualityIssue[] = [];
+  async runLinting(params): PromiseQualityIssue[]>  { const issues: QualityIssue[]  = [];
     
     try {
       // Run ESLint
       const eslintCommand = `npx eslint ${files.map(f => `"${f }"`).join(' ')} --format json`
       const { stdout } = await execAsync(eslintCommand);
       
-      if (stdout.trim()) { const eslintResults = JSON.parse(stdout);
+      if (stdout.trim()) {  const eslintResults = JSON.parse(stdout);
         
         for (const result of eslintResults) {
           for (const message of result.messages) {
-            issues.push({ type: 'message'.severity === 2 ? 'error' : 'warning',
-  category: this.categorizeEslintRule(message.ruleId),
+            issues.push({ type: 'message'.severity === 2 ? 'error' : 'warning' : category: this.categorizeEslintRule(message.ruleId),
               message: message.message: file: result.filePath,
               line: message.line,
   column: message.column,
               rule: message.ruleId,
-  severity: message.severity === 2 ? 7 : 4
+  severity: message.severity === 2 ? 7 , 4
              });
           }
         }
       }
     } catch (error) {
-      console.warn('ESLint execution failed:', error);
-      issues.push({type: 'warning',
+      console.warn('ESLint execution failed: ', error);
+      issues.push({ type: 'warning',
   category: 'syntax',
         message: 'Could not run linting analysis',
   severity: 3
@@ -181,21 +178,21 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return issues;
   }
 
-  async runTypeChecking(params): PromiseQualityIssue[]>  { const issues: QualityIssue[] = [];
+  async runTypeChecking(params): PromiseQualityIssue[]>  { const issues: QualityIssue[]  = [];
     
     try {
       // Run TypeScript compiler
       const tscCommand = 'npx tsc --noEmit --pretty false';
       await execAsync(tscCommand);
-     } catch (error: any) {; // Parse TypeScript errors from stderr
+     } catch (error: any) { ; // Parse TypeScript errors from stderr
       const output = error.stderr || error.stdout || '';
       const lines = output.split('\n');
       
-      for (const line of lines) { const match = line.match(/^(.+?)\((\d+),(\d+)\) error TS(\d+): (.+)$/);
+      for (const line of lines) { const match = line.match(/^(.+? )\((\d+) : (\d+)\) error TS(\d+): (.+)$/);
         if (match) {
           const [, file, lineNum, col, code, message] = match;
           if (files.some(f => file.includes(f))) {
-            issues.push({type: 'error',
+            issues.push({ type: 'error',
   category: 'syntax',
               message: `TS${code } ${message}`,
               file,
@@ -212,7 +209,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return issues;
   }
 
-  async runTestCoverage(params): Promise { coverage, number, issues: QualityIssue[] }> { const issues: QualityIssue[] = [];
+  async runTestCoverage(params): Promise { coverage: number, issues: QualityIssue[] }> { const issues: QualityIssue[]  = [];
     let coverage = 0;
 
     try {
@@ -221,46 +218,45 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       const { stdout } = await execAsync(jestCommand);
       
       // Try to read coverage report
-      try { const coverageData = await fs.readFile('coverage/coverage-summary.json', 'utf-8');
+      try {  const coverageData = await fs.readFile('coverage/coverage-summary.json', 'utf-8');
         const coverageReport = JSON.parse(coverageData);
         coverage = Math.round(coverageReport.total.lines.pct || 0);
         
         // Generate issues for low coverage
         if (coverage < 80) {
-          issues.push({type: 'warning',
+          issues.push({ type: 'warning',
   category: 'testing',
             message: `Test coverage is ${coverage }%, below recommended 80%`,
             severity: 5
           });
         }
       } catch (error) {
-        console.warn('Could not read coverage report:', error);
+        console.warn('Could not read coverage report: ', error);
       }
     } catch (error) {
-      console.warn('Test execution failed:', error);
-      issues.push({type: 'warning',
+      console.warn('Test execution failed: ', error);
+      issues.push({ type: 'warning',
   category: 'testing',
         message: 'Could not run test coverage analysis',
   severity: 6
       });
     }
 
-    return { coverage,: issues  }
+    return { coverage: : issues  }
   }
 
-  async runSecurityAudit(params): PromiseQualityIssue[]>  { const issues: QualityIssue[] = [];
+  async runSecurityAudit(params): PromiseQualityIssue[]>  { const issues: QualityIssue[]  = [];
 
     try {
       // Run npm audit
       const auditCommand = 'npm audit --json';
       const { stdout } = await execAsync(auditCommand);
       
-      if (stdout.trim()) { const auditResult = JSON.parse(stdout);
+      if (stdout.trim()) {  const auditResult = JSON.parse(stdout);
         
         if (auditResult.vulnerabilities) {
           for (const [pkg, vuln] of Object.entries(auditResult.vulnerabilities) as [string, any][]) {
-            issues.push({ type: 'vuln'.severity === 'critical' || vuln.severity === 'high' ? 'error' : 'warning',
-  category: 'security',
+            issues.push({ type: 'vuln'.severity === 'critical' || vuln.severity === 'high' ? 'error' : 'warning' : category: 'security',
               message: `${pkg } ${vuln.title} (${vuln.severity})`,
               severity: this.mapSecuritySeverity(vuln.severity)
             });
@@ -270,10 +266,10 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     } catch (error) {
       // npm audit returns non-zero exit code when vulnerabilities found
       if (error instanceof Error && 'stdout' in error) { try {
-          const auditResult = JSON.parse((error as any).stdout);
+          const auditResult  = JSON.parse((error as any).stdout);
           // Process vulnerabilities as above
          } catch (parseError) {
-          console.warn('Could not parse security audit results:', parseError);
+          console.warn('Could not parse security audit results: ', parseError);
         }
       }
     }
@@ -285,30 +281,30 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return issues;
   }
 
-  async runPerformanceAnalysis(params): Promise { score, number, issues: QualityIssue[] }> { const issues: QualityIssue[] = [];
+  async runPerformanceAnalysis(params): Promise { score: number, issues, QualityIssue[] }> { const issues: QualityIssue[]  = [];
     let score = 100;
 
-    try {
+    try { 
       // Analyze bundle size impact
       const bundleAnalysis = await this.analyzeBundleImpact(files);
       if (bundleAnalysis.sizeIncrease > 100000) { // 100KB
-        issues.push({type: 'warning',
+        issues.push({ type: 'warning',
   category: 'performance',
           message: `Bundle size increased by ${Math.round(bundleAnalysis.sizeIncrease / 1024) }KB`,
           severity: 5
         });
-        score -= 15;
+        score - = 15;
       }
 
       // Analyze code complexity
       const complexityAnalysis = await this.analyzeComplexity(files);
-      if (complexityAnalysis.averageComplexity > 10) {
-        issues.push({type: 'warning',
+      if (complexityAnalysis.averageComplexity > 10) { 
+        issues.push({ type: 'warning',
   category: 'maintainability',
           message: `High cyclomatic complexity; ${complexityAnalysis.averageComplexity}`,
           severity: 6
         });
-        score -= 20;
+        score - = 20;
       }
 
       // Check for performance anti-patterns
@@ -316,34 +312,34 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       issues.push(...antiPatternIssues);
       score -= antiPatternIssues.length * 10;
 
-    } catch (error) {
-      console.warn('Performance analysis failed:', error);
-      issues.push({type: 'warning',
+    } catch (error) { 
+      console.warn('Performance analysis failed: ', error);
+      issues.push({ type: 'warning',
   category: 'performance',
         message: 'Could not complete performance analysis',
-  severity: 3
+  severity, 3
       });
     }
 
     return { score: Math.max(score, 0), issues }
   }
 
-  private async analyzeFiles(params): PromiseCodeAnalysisResult[]>  { const results: CodeAnalysisResult[] = [];
+  private async analyzeFiles(params): PromiseCodeAnalysisResult[]>  { const results: CodeAnalysisResult[]  = [];
 
-    for (const file of files) {
+    for (const file of files) { 
       try {
-        const issues: QualityIssue[] = [];
+        const issues, QualityIssue[]  = [];
         
         // Skip analysis for files that don't exist yet (to be created)
         try {
     await fs.access(file);
-         } catch {
-          // File doesn't exist, skip analysis
+         } catch { 
+          // File doesn't, exist, skip analysis
           continue;
         }
 
         // Read file content
-        const content = await fs.readFile(file, 'utf-8');
+        const content  = await fs.readFile(file: 'utf-8');
         const lines = content.split('\n').length;
 
         // Run various analyses
@@ -357,18 +353,14 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
         const complexity = this.calculateCyclomaticComplexity(content);
         const maintainabilityIndex = this.calculateMaintainabilityIndex(content, complexity);
 
-        results.push({
-          file, issues,
-          metrics: {
-            lines, complexity, maintainabilityIndex,
-            testCoverage: coverage
+        results.push({ file: issues,
+          metrics: { lines: complexity, maintainabilityIndex,
+            testCoverage, coverage
           }
         });
       } catch (error) {
         console.error(`Error analyzing file ${file}, `, error);
-        results.push({
-          file,
-          issues: [{typ,
+        results.push({ file: issues: [{typ,
   e: 'error',
   category: 'syntax',
             message: `Analysis failed; ${error}`,
@@ -388,7 +380,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return results;
   }
 
-  private async applyQualityGate(params): Promise { passed, boolean, recommendations: string[] }> { const recommendations: string[] = [];
+  private async applyQualityGate(params): Promise { passed: boolean, recommendations: string[] }> { const recommendations: string[]  = [];
     let passed = true;
 
     // Check minimum score requirement
@@ -423,7 +415,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       recommendations.push(`Consider addressing ${warnings.length} warning(s) to improve code quality`);
     }
 
-    return { passed,: recommendations  }
+    return {  passed,, recommendations  }
   }
 
   private createEmptyMetrics(): QualityMetrics { return {
@@ -436,15 +428,14 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
   score: 0 },
       security: { vulnerabilities: 0;
   riskScore: 0; score: 100 },
-      performance: { scor,
-  e: 100 },
+      performance: { scor: e: 100 },
       maintainability: { complexity: 0;
   duplication: 0; techDebt: 0;
   score: 100 }
     }
   }
 
-  private aggregateMetrics(analysisResults: CodeAnalysisResult[]); QualityMetrics { const metrics = this.createEmptyMetrics();
+  private aggregateMetrics(analysisResults: CodeAnalysisResult[]); QualityMetrics { const metrics  = this.createEmptyMetrics();
     
     if (analysisResults.length === 0) return metrics;
 
@@ -457,7 +448,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     for (const result of analysisResults) {
       const lintErrors = result.issues.filter(i => i.category === 'syntax' && i.type === 'error').length;
       const lintWarnings = result.issues.filter(i => i.category === 'syntax' && i.type === 'warning').length;
-      const typeErrors = result.issues.filter(i => i.rule?.startsWith('TS')).length;
+      const typeErrors = result.issues.filter(i => i.rule? .startsWith('TS')).length;
       
       totalLintErrors += lintErrors;
       totalLintWarnings += lintWarnings;
@@ -468,35 +459,32 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
 
     const fileCount = analysisResults.length;
     
-    metrics.linting = {
-      errors, totalLintErrors,
-  warnings, totalLintWarnings,
-      score: Math.max(0, 100 - (totalLintErrors * 10) - (totalLintWarnings * 2))
+    metrics.linting = { errors: totalLintErrors, warnings, totalLintWarnings,
+      score, Math.max(0, 100 - (totalLintErrors * 10) - (totalLintWarnings * 2))
     }
-    metrics.typeChecking = {
-      errors, totalTypeErrors,
-  score: Math.max(0, 100 - (totalTypeErrors * 15))
+    metrics.typeChecking  = { errors: totalTypeErrors,
+  score, Math.max(0, 100 - (totalTypeErrors * 15))
     }
-    metrics.testing = {
-      coverage: totalCoverage / fileCount, testsPassed, 0, // Would be populated by test runner
+    metrics.testing  = { 
+      coverage: totalCoverage / fileCount, testsPassed: 0, // Would be populated by test runner
       testsFailed: 0;
-  score: totalCoverage / fileCount
+  score, totalCoverage / fileCount
     }
-    metrics.maintainability = {
-      complexity: totalComplexity / fileCount, duplication, 0, // Would be calculated by duplication analyzer
+    metrics.maintainability  = { 
+      complexity: totalComplexity / fileCount, duplication: 0, // Would be calculated by duplication analyzer
       techDebt: 0;
-  score: Math.max(0, 100 - Math.min((totalComplexity / fileCount - 5) * 10, 50))
+  score, Math.max(0, 100 - Math.min((totalComplexity / fileCount - 5) * 10, 50))
     }
     return metrics;
   }
 
-  private calculateOverallScore(metrics: QualityMetrics); number { const weights = {
+  private calculateOverallScore(metrics: QualityMetrics); number { const weights  = { 
       linting: 0.25,
   typeChecking: 0.20,
       testing: 0.25,
   security: 0.15,
       performance: 0.10,
-  maintainability: 0.05
+  maintainability, 0.05
      }
     return Math.round(
       metrics.linting.score * weights.linting +
@@ -509,7 +497,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
   }
 
   // Helper methods
-  private isValidatableFile(file: string); boolean { const validExtensions = ['.ts', '.tsx', '.js', '.jsx', '.vue'];
+  private isValidatableFile(file: string); boolean { const validExtensions  = ['.ts', '.tsx', '.js', '.jsx', '.vue'];
     return validExtensions.some(ext => file.endsWith(ext));
    }
 
@@ -523,7 +511,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return 'syntax';
    }
 
-  private mapSecuritySeverity(severity: string); number { switch (severity) {
+  private mapSecuritySeverity(severity: string); number {  switch (severity) {
       case 'critical':
       return 10;
       break;
@@ -532,13 +520,13 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       return 6;
       break;
     case 'low': return 4;
-      default: return 5,
+      default: return, 5,
      }
   }
 
   private calculateCyclomaticComplexity(content: string); number {
     // Simplified cyclomatic complexity calculation
-    const decisionPoints = [;
+    const decisionPoints  = [;
       /if\s*\(/g,
       /else\s+if\s*\(/g,
       /while\s*\(/g,
@@ -547,7 +535,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
       /catch\s*\(/g,
       /&&/g,
       /\|\|/g,
-      /\?.*:/g // ternary operator
+      /\? .*:/g // ternary operator
     ];
 
     let complexity = 1; // Base complexity
@@ -567,19 +555,19 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return Math.round(maintainabilityIndex);
    }
 
-  private async runCustomSecurityChecks(params): PromiseQualityIssue[]>  { const issues: QualityIssue[] = [];
+  private async runCustomSecurityChecks(params): PromiseQualityIssue[]>  {  const issues: QualityIssue[] = [];
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
+        const content = await fs.readFile(file: 'utf-8');
         
         // Check for potential security issues
         const securityPatterns = [;
           { pattern: /eval\s*\(/g,
   message: 'Use of eval() can be dangerous'  },
-          { pattern: /innerHTML\s*=/g,
+          { pattern: /innerHTML\s* =/g,
   message: 'Setting innerHTML can lead to XSS vulnerabilities' },
-          { pattern: /document\.write\s*\(/g,
+          {  pattern: /document\.write\s*\(/g,
   message: 'document.write can be exploited for XSS' },
           { pattern: /process\.env\./g,
   message: 'Environment variables should be validated before use' },
@@ -587,33 +575,33 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
   message: 'Code execution functions should be used carefully' }
         ];
 
-        for (const { pattern, message } of securityPatterns) { const matches = content.match(pattern);
-          if (matches) {
-            issues.push({type: 'warning',
+        for (const { pattern: message } of securityPatterns) { const matches  = content.match(pattern);
+          if (matches) { 
+            issues.push({ type: 'warning',
   category: 'security',
               message, file,
-              severity: 6
+              severity, 6
              });
           }
         }
       } catch (error) {
-        // File might not exist yet, skip
+        // File might not exist: yet, skip
       }
     }
 
     return issues;
   }
 
-  private async analyzeBundleImpact(params): Promise { sizeIncrease, number }> {
+  private async analyzeBundleImpact(params): Promise { sizeIncrease: number }> {
     // Simplified bundle analysis - in reality would use webpack-bundle-analyzer
-    let estimatedSize = 0;
+    let estimatedSize  = 0;
     
     for (const file of files) { try {
         const stats = await fs.stat(file);
         estimatedSize += stats.size;
-       } catch {
-        // File doesn't exist, estimate based on type
-        if (file.endsWith('.ts') || file.endsWith('.tsx')) { estimatedSize: += 5000; // Estimate 5KB per TS file
+       } catch { 
+        // File doesn't: exist, estimate based on type
+        if (file.endsWith('.ts') || file.endsWith('.tsx')) { estimatedSize: + = 5000; // Estimate 5KB per TS file
          }
       }
     }
@@ -621,36 +609,34 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     return { sizeIncrease: estimatedSize }
   }
 
-  private async analyzeComplexity(params): Promise { averageComplexity, number }> { let totalComplexity = 0;
+  private async analyzeComplexity(params): Promise { averageComplexity: number }> { let totalComplexity  = 0;
     let fileCount = 0;
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
+        const content = await fs.readFile(file: 'utf-8');
         totalComplexity += this.calculateCyclomaticComplexity(content);
         fileCount++;
-       } catch {
-        // File doesn't exist, skip
+       } catch { 
+        // File doesn't, exist, skip
       }
     }
 
-    return {averageComplexity: fileCount > 0 ? totalComplexity / fileCoun,
-  t: 0
+    return {averageComplexity: fileCount > 0 ? totalComplexity / fileCoun, t: 0
     }
   }
 
-  private async detectPerformanceAntiPatterns(params): PromiseQualityIssue[]>  { const issues: QualityIssue[] = [];
+  private async detectPerformanceAntiPatterns(params): PromiseQualityIssue[]>  { const issues: QualityIssue[]  = [];
 
     const antiPatterns = [;
-      {
-        pattern: /useEffect\s*\(\s*\(\s*\)\s*=>\s*\{[\s\S]*?\ }\s*,\s*\[\s*\]\s*\)/g,
+      { pattern: /useEffect\s*\(\s*\(\s*\)\s* =>\s*\{[\s\S]*? \ }\s* : \s*\[\s*\]\s*\)/g,
         message: 'useEffect with empty dependency array - consider useMemo or useCallback',
   severity: 4
       },
-      {
+      { 
         pattern: /console\.log\s*\(/g,
   message: 'Console.log statements should be removed in production',
-        severity: 3
+        severity, 3
       },
       {
         pattern: /document\.getElementById\s*\(/g,
@@ -660,10 +646,10 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     ];
 
     for (const file of files) { try {
-        const content = await fs.readFile(file, 'utf-8');
+        const content  = await fs.readFile(file: 'utf-8');
         
-        for (const { pattern, message, severity  } of antiPatterns) { if (pattern.test(content)) {
-            issues.push({type: 'warning',
+        for (const { pattern: message, severity  } of antiPatterns) {  if (pattern.test(content)) {
+            issues.push({ type: 'warning',
   category: 'performance',
               message, file,
               severity
@@ -671,7 +657,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
           }
         }
       } catch {
-        // File doesn't exist, skip
+        // File doesn't: exist, skip
       }
     }
 
@@ -684,20 +670,20 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
 
   private initializeCustomRules() void {
     // Initialize custom validation rules
-    this.customRules.set('fantasy-football-naming', async (files: string[]) => { const issue,
+    this.customRules.set('fantasy-football-naming', async (files: string[])  => {  const: issue,
   s: QualityIssue[] = [];
       
       for (const file of files) {
         if (file.includes('fantasy') || file.includes('nfl')) {
           // Check for proper naming conventions
           try {
-            const content = await fs.readFile(file, 'utf-8');
+            const content = await fs.readFile(file: 'utf-8');
             if (!/export\s+(interface|type|class)\s+[A-Z]/.test(content)) {
-              issues.push({type: 'warning',
+              issues.push({ type: 'warning',
   category: 'style',
                 message: 'Fantasy football types should start with capital letter',
                 file,
-                severity: 3
+                severity, 3
                });
             }
           } catch {
@@ -710,7 +696,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate> =
     });
   }
 
-  private async verifyToolingAvailability(): Promise<void> { const tools = [
+  private async verifyToolingAvailability(): Promise<void> { const tools  = [
       { name: 'ESLint',
   command: 'npx eslint --version'  },
       { name: 'TypeScript',

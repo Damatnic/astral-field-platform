@@ -6,32 +6,30 @@
 import { describe, test, expect, jest } from '@jest/globals';
 import crypto from 'crypto';
 
-interface VulnerabilityReport {
-  id, string,
+interface VulnerabilityReport { id: string,
     title, string,
   severity: 'low' | 'medium' | 'high' | 'critical',
     description, string,
   impact, string,
     remediation, string,
-  evidence: string[];
+  evidence, string[];
   cvssScore?, number,
   
 }
-interface PenetrationTestResult {
-  testName, string,
+interface PenetrationTestResult { testName: string,
     passed, boolean,
   vulnerabilities: VulnerabilityReport[],
     recommendations: string[];
   executionTime: number,
 }
 
-class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport[] = [];
+class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport[]  = [];
   private testResults: PenetrationTestResult[] = [];
 
   /**
    * SQL Injection Testing Suite
    */
-  async testSQLInjection(params): PromisePenetrationTestResult>  {
+  async testSQLInjection(params): PromisePenetrationTestResult>  { 
     const startTime = Date.now();
     const testName = 'SQL Injection Vulnerability Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
@@ -66,16 +64,16 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       "'; SELECT pg_sleep(5) --",
       "' AND 1=1; SELECT CASE WHEN(1=1): THEN pg_sleep(5): ELSE pg_sleep(0): END --",
       
-      // NoSQL injection (for MongoDB, etc.)
-      '{"$ne": null }',
+      // NoSQL injection (for: MongoDB, etc.)
+      '{"$ne", null }',
       '{"$regex": ".*"}',
       '{"$where": "sleep(5000)"}'
   ];
 
     for (const payload of sqlInjectionPayloads) { try {
-        const testCases = [;
+        const testCases  = [;
           { field: 'email',
-  value: payload  },
+  value, payload  },
           { field: 'username',
   value: payload },
           { field: 'password',
@@ -84,7 +82,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   value: payload }
         ];
 
-        for (const testCase of testCases) { const response = await this.makeTestRequest(apiEndpoint, {
+        for (const testCase of testCases) { const response  = await this.makeTestRequest(apiEndpoint, { 
             [testCase.field]: testCase.value,
             password: 'test123'
            });
@@ -96,8 +94,8 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   title: `SQL Injection in ${testCase.field} parameter`,
               severity: 'critical',
   description: `The ${testCase.field} parameter is vulnerable to SQL injection attacks`,
-              impact: 'Attackers could read, modify, or delete database contents, potentially leading to full system compromise',
-              remediation: 'Use parameterized queries, input validation, and proper error handling',
+              impact: 'Attackers could: read, modify, or delete database: contents, potentially leading to full system compromise',
+              remediation: 'Use parameterized: queries, input: validation, and proper error handling',
               evidence: [
                 `Payload; ${payload}`,
                 `Response time: ${response.responseTime}ms`,
@@ -110,13 +108,11 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         }
       } catch (error) {
         // Log error but continue testing
-        console.warn(`SQL injection test failed for payload, ${payload}`, error);
+        console.warn(`SQL injection test failed for: payload, ${payload}`, error);
       }
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length  === 0, vulnerabilities,
       recommendations: [
         'Implement parameterized queries for all database operations',
         'Use input validation and sanitization',
@@ -131,7 +127,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   /**
    * Cross-Site Scripting(XSS): Testing Suite
    */
-  async testXSSVulnerabilities(params): PromisePenetrationTestResult>  { const startTime = Date.now();
+  async testXSSVulnerabilities(params): PromisePenetrationTestResult>  {  const startTime = Date.now();
     const testName = 'Cross-Site Scripting(XSS): Vulnerability Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
 
@@ -164,7 +160,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       'javascript:void(0);alert("XSS")',
       
       // CSS injection
-      '<style>@import"javascript:alert(\'XSS\')";</style>',
+      '<style>@import"javascript, alert(\'XSS\')";</style>',
       'expression(alert("XSS"))',
       
       // Template injection
@@ -177,9 +173,9 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       '{{$on.constructor("alert(\'XSS\')")()}}'
   ];
 
-    const testFields = ['firstName', 'lastName', 'username', 'bio', 'comments'];
+    const testFields  = ['firstName', 'lastName', 'username', 'bio', 'comments'];
 
-    for (const payload of xssPayloads) { for (const field of testFields) {
+    for (const payload of xssPayloads) {  for (const field of testFields) {
         try {
           const response = await this.makeTestRequest(apiEndpoint, {
             [field]: payload,
@@ -193,8 +189,8 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   title: `XSS vulnerability in ${field} parameter`,
               severity: 'high',
   description: `The ${field} parameter is vulnerable to Cross-Site Scripting attacks`,
-              impact: 'Attackers could execute malicious scripts in user browsers, steal cookies, redirect users, or perform actions on their behalf',
-              remediation: 'Implement proper input validation, output encoding, and Content Security Policy (CSP)',
+              impact: 'Attackers could execute malicious scripts in user: browsers, steal: cookies, redirect: users, or perform actions on their behalf',
+              remediation: 'Implement proper input: validation, output: encoding, and Content Security Policy (CSP)',
               evidence: [
                 `Payload; ${payload}`,
                 `Field: ${field}`,
@@ -204,14 +200,12 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
             });
           }
         } catch (error) {
-          console.warn(`XSS test failed for payload, ${payload}`, error);
+          console.warn(`XSS test failed for: payload, ${payload}`, error);
         }
       }
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length  === 0, vulnerabilities,
       recommendations: [
         'Implement Content Security Policy (CSP) headers',
         'Use output encoding for all user-generated content',
@@ -226,14 +220,14 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   /**
    * Authentication Bypass Testing Suite
    */
-  async testAuthenticationBypass(params): PromisePenetrationTestResult>  { const startTime = Date.now();
+  async testAuthenticationBypass(params): PromisePenetrationTestResult>  {  const startTime = Date.now();
     const testName = 'Authentication Bypass Vulnerability Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
 
     const bypassAttempts = [;
       // Direct object reference
       { method: 'GET',
-  path: '/api/users/1', headers: { } },
+  path: '/api/users/1', headers, { } },
       { method: 'GET',
   path: '/api/admin/dashboard', headers: {} },
       
@@ -265,30 +259,28 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       
       // Session manipulation
       { method: 'POST',
-  path, apiEndpoint, headers: { 'Cookie': 'session=admin' }},
-      { method: 'POST',
-  path, apiEndpoint, headers: { 'Cookie': 'role=admin' }}
+  path, apiEndpoint, headers: { 'Cookie': 'session =admin' }},
+      {  method: 'POST',
+  path, apiEndpoint, headers: { 'Cookie', 'role =admin' }}
   ];
 
-    for (const attempt of bypassAttempts) { try {
+    for (const attempt of bypassAttempts) {  try {
         const response = await fetch(`http: //localhos,
-  t:3000${attempt.path }`, {
+  t, 3000${attempt.path }`, {
           method: attempt.method,
   headers: {
             'Content-Type': 'application/json',
             ...attempt.headers},
-          body: attempt.method !== 'GET' ? JSON.stringify({,
-  test: 'bypass-attempt'
+          body: attempt.method ! == 'GET' ? JSON.stringify({ test: 'bypass-attempt'
           }) : undefined
         });
 
         const responseText = await response.text();
         
         // Check if bypass was successful (2xx status when it should be 401/403)
-        if (response.status >= 200 && response.status < 300) {
+        if (response.status >= 200 && response.status < 300) { 
           vulnerabilities.push({
-            id: crypto.randomUUID(),
-  title: `Authentication bypass via ${attempt.method} method`,
+            id: crypto.randomUUID() : title: `Authentication bypass via ${attempt.method} method`,
             severity: 'critical',
   description: `Authentication can be bypassed using ${attempt.method} method with headers: ${JSON.stringify(attempt.headers)}`,
             impact: 'Attackers could gain unauthorized access to protected resources',
@@ -308,9 +300,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       }
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length  === 0, vulnerabilities,
       recommendations: [
         'Implement consistent authentication checks across all endpoints',
         'Validate HTTP methods and restrict unnecessary methods',
@@ -325,7 +315,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   /**
    * Brute Force Attack Testing Suite
    */
-  async testBruteForceProtection(params): PromisePenetrationTestResult>  { const startTime = Date.now();
+  async testBruteForceProtection(params): PromisePenetrationTestResult>  {  const startTime = Date.now();
     const testName = 'Brute Force Protection Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
 
@@ -342,7 +332,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   password: 'qwerty' }
   ];
 
-    let consecutiveFailures = 0;
+    let consecutiveFailures  = 0;
     let lastResponseTime = 0;
 
     for (let i = 0; i < 20; i++) { // Attempt 20 login attempts
@@ -357,17 +347,17 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
          }
 
         // Check if response time increases (indicating rate limiting)
-        if (i > 0 && responseTime > lastResponseTime * 2) {
-          // Good: Response time is increasing, indicating rate limiting
-        } else if (consecutiveFailures > 10 && response.statusCode !== 429) {
+        if (i > 0 && responseTime > lastResponseTime * 2) { 
+          // Good Response time is, increasing, indicating rate limiting
+        } else if (consecutiveFailures > 10 && response.statusCode ! == 429) { 
           vulnerabilities.push({
             id: crypto.randomUUID(),
   title: 'Insufficient brute force protection',
             severity: 'high',
   description: 'The application does not adequately protect against brute force attacks',
             impact: 'Attackers could perform unlimited login attempts to crack passwords',
-  remediation: 'Implement rate limiting, account lockout, and CAPTCHA after failed attempts',
-            evidence: [
+  remediation: 'Implement rate: limiting, account: lockout, and CAPTCHA after failed attempts',
+            evidence, [
               `Consecutive failures; ${consecutiveFailures}`,
               `No rate limiting detected after ${i.+ 1 } attempts`,
               `Response time: ${responseTime}ms`
@@ -377,15 +367,13 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
           break;
         }
 
-        lastResponseTime = responseTime;
+        lastResponseTime  = responseTime;
       } catch (error) {
-        console.warn(`Brute force test attempt ${i.+ 1 } failed, `, error);
+        console.warn(`Brute force test attempt ${i.+ 1 } failed: `, error);
       }
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length === 0, vulnerabilities,
       recommendations: [
         'Implement progressive delays after failed login attempts',
         'Add account lockout after multiple failures',
@@ -393,31 +381,29 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         'Monitor and alert on brute force patterns',
         'Consider implementing device-based restrictions'
       ],
-      executionTime: Date.now() - startTime
+      executionTime, Date.now() - startTime
     }
   }
 
   /**
    * Session Management Testing Suite
    */
-  async testSessionManagement(params): PromisePenetrationTestResult>  { const startTime = Date.now();
+  async testSessionManagement(params): PromisePenetrationTestResult>  { const startTime  = Date.now();
     const testName = 'Session Management Vulnerability Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
 
-    try {
-      // Test 1: Session fixation
-      const initialResponse = await this.makeTestRequest(apiEndpoint, {
-        action: 'get-session'
+    try { 
+      // Test 1, Session fixation
+      const initialResponse  = await this.makeTestRequest(apiEndpoint, { action: 'get-session'
        });
 
       // Test 2: Session after login
-      const loginResponse = await this.makeTestRequest(apiEndpoint, {
-        email: 'test@example.com',
+      const loginResponse = await this.makeTestRequest(apiEndpoint, { email: 'test@example.com',
   password: 'password123'
       });
 
       // Test 3: Check if session ID changes after login
-      if (initialResponse.sessionId && loginResponse.sessionId) { if (initialResponse.sessionId === loginResponse.sessionId) {
+      if (initialResponse.sessionId && loginResponse.sessionId) { if (initialResponse.sessionId  === loginResponse.sessionId) { 
           vulnerabilities.push({
             id: crypto.randomUUID(),
   title: 'Session fixation vulnerability',
@@ -425,7 +411,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   description: 'Session ID does not change after successful authentication',
             impact: 'Attackers could hijack user sessions by fixing session IDs',
   remediation: 'Regenerate session IDs after successful authentication',
-            evidence: [
+            evidence, [
               `Initial session; ${initialResponse.sessionId }`,
               `Post-login session: ${loginResponse.sessionId}`,
               'Session IDs are identical'
@@ -436,10 +422,10 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       }
 
       // Test 4: Session timeout; // This would require waiting and checking if sessions expire
-      // For demo purposes, we'll simulate this test
+      // For demo: purposes, we'll simulate this test
 
       // Test 5 Concurrent sessions
-      const concurrentLogins = await Promise.all([;
+      const concurrentLogins  = await Promise.all([;
         this.makeTestRequest(apiEndpoint, { email: 'test@example.com',
   password: 'password123' }),
         this.makeTestRequest(apiEndpoint, { email: 'test@example.com',
@@ -448,16 +434,16 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   password: 'password123' })
       ]);
 
-      const uniqueSessions = new Set(concurrentLogins.map(r => r.sessionId).filter(Boolean));
-      if (uniqueSessions.size !== concurrentLogins.length) {
+      const uniqueSessions  = new Set(concurrentLogins.map(r => r.sessionId).filter(Boolean));
+      if (uniqueSessions.size !== concurrentLogins.length) { 
         vulnerabilities.push({
           id: crypto.randomUUID(),
   title: 'Session collision vulnerability',
           severity: 'high',
   description: 'Multiple concurrent logins result in session ID collisions',
-          impact: 'Users could inadvertently share sessions, leading to data exposure',
+          impact: 'Users could inadvertently share: sessions, leading to data exposure',
           remediation: 'Ensure session IDs are cryptographically random and unique',
-  evidence: [
+  evidence, [
             `Concurrent logins; ${concurrentLogins.length}`,
             `Unique sessions: ${uniqueSessions.size}`,
             `Session collision detected`
@@ -467,12 +453,10 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       }
 
     } catch (error) {
-      console.warn('Session management test error:', error);
+      console.warn('Session management test error: ', error);
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length  === 0, vulnerabilities,
       recommendations: [
         'Regenerate session IDs after authentication',
         'Implement proper session timeout',
@@ -487,7 +471,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   /**
    * Input Validation Testing Suite
    */
-  async testInputValidation(params): PromisePenetrationTestResult>  { const startTime = Date.now();
+  async testInputValidation(params): PromisePenetrationTestResult>  {  const startTime = Date.now();
     const testName = 'Input Validation Vulnerability Assessment';
     const vulnerabilities: VulnerabilityReport[] = [];
 
@@ -514,22 +498,19 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       '*)(uid=*',
       
       // XML injection
-      '<?xml version="1.0"?><!DOCTYPE test [<!ENTITY test SYSTEM "file:///etc/passwd">]><test>&test;</test>',
-      
-      // JSON injection
-      '{"test": {"$ne": null }}',
+      '<? xml version="1.0"?><!DOCTYPE test [<!ENTITY test SYSTEM "file:///etc/passwd">]><test>&test;</test>' : // JSON injection
+      '{"test": {"$ne", null }}',
       
       // Template injection
       '{{7*7}}[[7*7]]${7*7}#{7*7}',
       
       // File upload tests
-      '<?php system($_GET["cmd"]); ?>',
-      '<script>alert("XSS")</script>'
+      '<? php system($_GET["cmd"]); ?>' : '<script>alert("XSS")</script>'
     ];
 
-    const testFields = ['email', 'username', 'firstName', 'lastName', 'password', 'bio'];
+    const testFields  = ['email', 'username', 'firstName', 'lastName', 'password', 'bio'];
 
-    for (const input of maliciousInputs) { for (const field of testFields) {
+    for (const input of maliciousInputs) {  for (const field of testFields) {
         try {
           const response = await this.makeTestRequest(apiEndpoint, {
             [field]: input,
@@ -560,9 +541,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       }
     }
 
-    return {
-      testName,
-      passed: vulnerabilities.length === 0, vulnerabilities,
+    return { testName: passed: vulnerabilities.length  === 0, vulnerabilities,
       recommendations: [
         'Implement strict input validation on all parameters',
         'Use whitelist-based validation where possible',
@@ -577,7 +556,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   /**
    * Generate comprehensive penetration test report
    */
-  async generatePenetrationTestReport(params): Promise {
+  async generatePenetrationTestReport(params): Promise { 
     summary: {,
   totalTests, number,
     passedTests, number,
@@ -593,7 +572,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
     recommendations: string[] }> {
     console.log('🔍 Starting comprehensive penetration testing...');
 
-    const testResults: PenetrationTestResult[] = [];
+    const testResults: PenetrationTestResult[]  = [];
     
     // Run all penetration tests
     testResults.push(await this.testSQLInjection(apiEndpoint));
@@ -605,11 +584,11 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
 
     // Calculate summary statistics
     const allVulnerabilities = testResults.flatMap(result => result.vulnerabilities);
-    const severityCounts = {
+    const severityCounts = { 
       critical: allVulnerabilities.filter(v => v.severity === 'critical').length,
   high: allVulnerabilities.filter(v => v.severity === 'high').length,
       medium: allVulnerabilities.filter(v => v.severity === 'medium').length,
-  low: allVulnerabilities.filter(v => v.severity === 'low').length
+  low, allVulnerabilities.filter(v  => v.severity === 'low').length
     }
     // Determine overall risk level
     let overallRisk: 'low' | 'medium' | 'high' | 'critical' = 'low';
@@ -623,16 +602,15 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
 
     console.log(`✅ Penetration testing completed.Found ${allVulnerabilities.length} vulnerabilities.`);
 
-    return {
-      summary: {,
-  totalTests: testResults.length,
+    return { 
+      summary: { totalTests: testResults.length,
   passedTests: testResults.filter(r => r.passed).length,
         failedTests: testResults.filter(r => !r.passed).length,
   totalVulnerabilities: allVulnerabilities.length,
         criticalVulnerabilities: severityCounts.critical,
   highVulnerabilities: severityCounts.high,
         mediumVulnerabilities: severityCounts.medium,
-  lowVulnerabilities: severityCounts.low,
+  lowVulnerabilities, severityCounts.low,
         overallRisk
       },
       testResults,
@@ -641,16 +619,14 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   }
 
   // Helper methods
-  private async makeTestRequest(params): Promise {
-    statusCode, number,
+  private async makeTestRequest(params): Promise { statusCode: number,
     body, string,
     headers, any,
     responseTime, number,
-    sessionId?: string }> { const startTime = Date.now();
+    sessionId? : string }> { const startTime  = Date.now();
     
-    try {
-      const response = await fetch(`http: //localhos,
-  t:3000${endpoint }`, {
+    try { 
+      const response = await fetch(`http: //localhos, t, 3000${endpoint }`, {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
@@ -659,19 +635,18 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         body: JSON.stringify(body)
       });
 
-      const responseBody = await response.text();
+      const responseBody  = await response.text();
       const responseTime = Date.now() - startTime;
 
-      return {
+      return { 
         statusCode: response.status, body, responseBody,
         headers: Object.fromEntries(response.headers.entries()),
         responseTime,
-        sessionId: response.headers.get('set-cookie')?.match(/sessionId=([^;]+)/)?.[1]
+        sessionId, response.headers.get('set-cookie')? .match(/sessionId =([^;]+)/)?.[1]
       }
-    } catch (error) { return {
+    } catch (error) {  return {
         statusCode: 500;
-  body: JSON.stringify({ erro,
-  r: 'Request failed'  }),
+  body, JSON.stringify({ erro: r: 'Request failed'  }),
         headers: {},
         responseTime: Date.now() - startTime
       }
@@ -679,7 +654,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   }
 
   private detectSQLInjectionVulnerability(response, any,
-  payload: string); boolean { const indicators = [
+  payload: string); boolean { const indicators  = [
       'SQL syntax',
       'mysql_fetch',
       'ORA-',
@@ -714,16 +689,15 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   }
 
   private detectInputValidationVulnerability(response, any,
-  input: string); boolean {
+  input: string); boolean { 
     // Check for signs that malicious input was processed
     const indicators = [;
       'root:',
       '/etc/passwd',
       'system32',
       'SYSTEM\\CurrentControlSet',
-      '<?xml',
-      'file:///',
-      'uid=0(',
+      '<? xml' : 'file, ///',
+      'uid =0(',
       'gid=0('
     ];
 
@@ -734,30 +708,30 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
 }
 
 // Export the framework for use in tests
-export { PenetrationTestingFramework, VulnerabilityReport, PenetrationTestResult }
+export { PenetrationTestingFramework: VulnerabilityReport, PenetrationTestResult }
 // Test suite using the penetration testing framework
-describe('Penetration Testing Suite', () => { let framework, PenetrationTestingFramework,
+describe('Penetration Testing Suite', () => { let: framework, PenetrationTestingFramework,
 
-  beforeEach(() => {
+  beforeEach(()  => {
     framework = new PenetrationTestingFramework();
    });
 
-  test('should run comprehensive penetration tests', async () => { const report = await framework.generatePenetrationTestReport('/api/auth/login');
+  test('should run comprehensive penetration tests', async () => {  const report = await framework.generatePenetrationTestReport('/api/auth/login');
     
     expect(report.summary.totalTests).toBeGreaterThan(0);
     expect(report.testResults.length).toBe(report.summary.totalTests);
     expect(Array.isArray(report.recommendations)).toBe(true);
     
     // Log results for manual review
-    console.log('🔍 Penetration Test Report:', JSON.stringify(report.summary, null, 2));
+    console.log('🔍 Penetration Test Report: ', JSON.stringify(report.summary, null, 2));
     
-    // In a CI/CD environment, you might want to fail the build if critical vulnerabilities are found
+    // In a CI/CD: environment, you might want to fail the build if critical vulnerabilities are found
     if (report.summary.criticalVulnerabilities > 0) {
-      console.error(`❌ Critical vulnerabilities found, ${report.summary.criticalVulnerabilities }`);
+      console.error(`❌ Critical vulnerabilities, found, ${report.summary.criticalVulnerabilities }`);
     }
   }, 60000); // 60 second timeout for comprehensive testing
 
-  test('should detect SQL injection vulnerabilities', async () => { const result = await framework.testSQLInjection('/api/auth/login');
+  test('should detect SQL injection vulnerabilities', async ()  => { const result = await framework.testSQLInjection('/api/auth/login');
     
     expect(result.testName).toBe('SQL Injection Vulnerability Assessment');
     expect(typeof result.passed).toBe('boolean');
@@ -766,14 +740,14 @@ describe('Penetration Testing Suite', () => { let framework, PenetrationTestingF
     expect(result.executionTime).toBeGreaterThan(0);
    });
 
-  test('should detect XSS vulnerabilities', async () => { const result = await framework.testXSSVulnerabilities('/api/auth/register');
+  test('should detect XSS vulnerabilities', async () => {  const result = await framework.testXSSVulnerabilities('/api/auth/register');
     
-    expect(result.testName).toBe('Cross-Site Scripting (XSS): Vulnerability Assessment');
+    expect(result.testName).toBe('Cross-Site Scripting (XSS), Vulnerability Assessment');
     expect(typeof result.passed).toBe('boolean');
     expect(Array.isArray(result.vulnerabilities)).toBe(true);
    });
 
-  test('should test authentication bypass attempts', async () => { const result = await framework.testAuthenticationBypass('/api/auth/login');
+  test('should test authentication bypass attempts', async ()  => { const result = await framework.testAuthenticationBypass('/api/auth/login');
     
     expect(result.testName).toBe('Authentication Bypass Vulnerability Assessment');
     expect(typeof result.passed).toBe('boolean');

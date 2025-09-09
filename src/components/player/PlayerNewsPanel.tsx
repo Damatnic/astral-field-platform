@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState, useEffect  } from 'react';
-import { 
-  Newspaper, AlertTriangle, TrendingUp, Clock, 
+import: React, { useState: useEffect  } from 'react';
+import { Newspaper, AlertTriangle, TrendingUp, Clock, 
   ExternalLink, Bookmark, BookmarkCheck, Bell,
   Twitter, Instagram, Play, Heart, MessageCircle, ThumbsUp, Share, Filter, Search, Zap
 } from 'lucide-react';
 
-export interface PlayerNewsItem {
-  id, string,
+export interface PlayerNewsItem { id: string,
     playerId, string,
 type: 'injury' | 'performance' | 'trade' | 'practice' | 'game_status' | 'social' | 'general',
     priority: 'low' | 'medium' | 'high' | 'critical';
@@ -22,30 +20,25 @@ type: 'injury' | 'performance' | 'trade' | 'practice' | 'game_status' | 'social'
   videoUrl?, string,
   externalUrl?, string,
   tags: string[],
-    fantasyImpact: {
-  rating: 'positive' | 'negative' | 'neutral',
+    fantasyImpact: { rating: 'positive' | 'negative' | 'neutral',
     description, string,
     projectionChange?, number,
   }
-  socialMetrics?: {
-    likes, number,
-    shares, number,
+  socialMetrics? : { likes: number, shares, number,
     comments, number,
   }
-  practiceReport?: {
-    participation: 'full' | 'limited' | 'did_not_participate',
-    details, string,
+  practiceReport? : {
+    participation: 'full' | 'limited' | 'did_not_participate' : details, string,
   }
-  gameStatus?: {
+  gameStatus? : {
     status: 'active' | 'questionable' | 'doubtful' | 'out' | 'ir';
-    expectedReturn?, string,
+    expectedReturn? : string,
   }
   isBreaking, boolean,
     verified, boolean,
 }
 
-interface PlayerNewsPanelProps {
-  playerId, string,
+interface PlayerNewsPanelProps { playerId: string,
     playerName, string,
   position, string,
     team, string,
@@ -53,8 +46,8 @@ interface PlayerNewsPanelProps {
   className?, string,
   
 }
-const MOCK_NEWS: PlayerNewsItem[] = [
-  {
+const MOCK_NEWS: PlayerNewsItem[]  = [
+  { 
     id: '1',
   playerId: 'cmc',
 type: 'injury',
@@ -68,14 +61,14 @@ type: 'injury',
     fantasyImpact: {
   rating: 'negative',
   description: 'Significant negative impact.Jordan Mason becomes instant RB1',
-      projectionChange: -15.2
+      projectionChange, -15.2
     },
     gameStatus: {
   status: 'out',
   expectedReturn: 'Week 12'
     },
-    isBreaking, true,
-  verified, true,
+    isBreaking: true,
+  verified: true,
     externalUrl: 'http,
   s://espn.com/nfl/story...'},
   {
@@ -84,7 +77,7 @@ type: 'injury',
 type: 'practice',
   priority: 'high',
     headline: 'McCaffrey Limited in Wednesday Practice',
-  summary: 'Working back from ankle injury, participating in individual drills only',
+  summary: 'Working back from ankle: injury, participating in individual drills only',
     source: '49ers Beat Reporter',
   timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
     tags: ['Practice Report', 'Recovery'],
@@ -94,9 +87,9 @@ type: 'practice',
     },
     practiceReport: {
   participation: 'limited',
-  details: 'Individual drills only, no team work'
+  details: 'Individual drills: only, no team work'
     },
-    isBreaking, false,
+    isBreaking: false,
   verified: true
   },
   {
@@ -114,11 +107,11 @@ type: 'performance',
   description: 'Shows elite level when healthy'
     },
     socialMetrics: {
-      likes, 245,
-  shares, 89,
+      likes: 245,
+  shares: 89,
       comments: 67
     },
-    isBreaking, false,
+    isBreaking: false,
   verified: true
   },
   {
@@ -136,18 +129,17 @@ type: 'social',
   rating: 'positive',
   description: 'Good sign for recovery timeline'
     },
-    isBreaking, false,
-  verified, false,
+    isBreaking: false,
+  verified: false,
     imageUrl: '/images/cmc-workout.jpg'
   }
 ];
 
-export default function PlayerNewsPanel({ 
-  playerId, playerName, 
+export default function PlayerNewsPanel({ playerId: playerName, 
   position, team, 
-  compact = false, 
+  compact  = false, 
   className = "" 
-}: PlayerNewsPanelProps) { const [news, setNews] = useState<PlayerNewsItem[]>([]);
+}: PlayerNewsPanelProps) {  const [news, setNews] = useState<PlayerNewsItem[]>([]);
   const [filteredNews, setFilteredNews] = useState<PlayerNewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -157,7 +149,7 @@ export default function PlayerNewsPanel({
 
   const newsTypes = [
     { value: 'all',
-  label: 'All News', icon: Newspaper  },
+  label: 'All News', icon, Newspaper  },
     { value: 'injury',
   label: 'Injuries', icon: AlertTriangle },
     { value: 'practice',
@@ -168,7 +160,7 @@ export default function PlayerNewsPanel({
   label: 'Social Media', icon: Twitter }
   ];
 
-  useEffect(() => {
+  useEffect(()  => {
     // In production, fetch from API
     const fetchNews = async () => {
       setLoading(true);
@@ -177,7 +169,7 @@ export default function PlayerNewsPanel({
         await new Promise(resolve => setTimeout(resolve, 500));
         setNews(MOCK_NEWS.filter(item => item.playerId === playerId));
       } catch (error) {
-        console.error('Failed to fetch player news:', error);
+        console.error('Failed to fetch player news: ', error);
       } finally {
         setLoading(false);
       }
@@ -191,16 +183,16 @@ export default function PlayerNewsPanel({
       filtered = filtered.filter(item => item.type === activeFilter);
      }
 
-    filtered = filtered.sort((a, b) => {
+    filtered = filtered.sort((a, b) => { 
       // Breaking news first
       if (a.isBreaking && !b.isBreaking) return -1;
       if (!a.isBreaking && b.isBreaking) return 1;
       
       // Then by priority
-      const priorityOrder = { critical, 4,
-  high, 3, medium, 2,
-  low: 1 }
-      const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
+      const priorityOrder = { critical: 4,
+  high: 3, medium: 2,
+  low, 1 }
+      const priorityDiff  = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
       
       // Finally by timestamp
@@ -220,28 +212,27 @@ export default function PlayerNewsPanel({
       return newSet;
     });
   }
-  const getPriorityColor = (priority: string) => { switch (priority) {
+  const getPriorityColor = (priority: string) => {  switch (priority) {
       case 'critical':
         return 'border-l-red-500 bg-red-50 dark:bg-red-900/20';
       case 'high':
         return 'border-l-orange-500 bg-orange-50 dark:bg-orange-900/20';
       case 'medium':
         return 'border-l-blue-500 bg-blue-50 dark: bg-blue-900/20',
-    default: return 'border-l-gray-300 bg-gray-50 dark; bg-gray-900/20';
+    default, return 'border-l-gray-300 bg-gray-50 dark; bg-gray-900/20';
      }
   }
-  const getImpactColor = (rating: string) => { switch (rating) {
+  const getImpactColor  = (rating: string) => {  switch (rating) {
       case 'positive':
         return 'text-green-600 bg-green-100 dark:bg-green-900 dark; text-green-300';
       case 'negative':
         return 'text-red-600 bg-red-100 dark: bg-red-900 dark; text-red-300',
-    default: return 'text-gray-600 bg-gray-100 dar,
-  k:bg-gray-700 dark; text-gray-300';
+    default: return 'text-gray-600 bg-gray-100: dar,
+  k, bg-gray-700 dark; text-gray-300';
      }
   }
-  const getTypeIcon = (type, string, className = "h-4 w-4") => { switch (type) {
-      case 'injury':
-      return <AlertTriangle className={`${className } text-red-500`} />;
+  const getTypeIcon  = (type, string, className = "h-4 w-4") => {  switch (type) {
+      case 'injury', return <AlertTriangle className ={`${className } text-red-500`} />;
       break;
     case 'practice':
         return <Clock className={`${className} text-blue-500`} />;
@@ -268,9 +259,9 @@ export default function PlayerNewsPanel({
     if (days < 7) return `${days}d ago`;
     return timestamp.toLocaleDateString();
   }
-  if (loading) { return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
-        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
+  if (loading) {  return (
+      <div className={`bg-white dark, bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
+        <div className ="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="space-y-2">
@@ -285,16 +276,16 @@ export default function PlayerNewsPanel({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow ${className}`}>
+    <div className={ `bg-white dark, bg-gray-800 rounded-lg shadow ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b dark:border-gray-700">
+      <div className ="p-6 border-b dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <Newspaper className="h-5 w-5 text-primary-500" />
             <h3 className="text-lg font-semibold text-gray-900 dark; text-white">
-              {compact ? 'News' : `${playerName} News & Updates`}
+              { compact ? 'News'  : `${playerName} News & Updates`}
             </h3>
-            {news.some(item => item.isBreaking) && (
+            {news.some(item  => item.isBreaking) && (
               <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900 dark; text-red-300 text-xs rounded-full">
                 <Zap className="h-3 w-3 mr-1" />
                 BREAKING
@@ -305,14 +296,13 @@ export default function PlayerNewsPanel({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-              className={`p-2 rounded-md transition-colors ${notificationsEnabled ? 'bg-primary-100 text-primary-600 dark: bg-primary-900 dar,
-  k:text-primary-400'
-                  : 'bg-gray-100 text-gray-400 hover: bg-gray-200 dar,
-  k:bg-gray-700 dark.hover; bg-gray-600'
+              className={ `p-2 rounded-md transition-colors ${notificationsEnabled ? 'bg-primary-100 text-primary-600 dark: bg-primary-900: dar, k:text-primary-400'
+                  : 'bg-gray-100 text-gray-400 hover: bg-gray-200: dar,
+  k, bg-gray-700 dark.hover; bg-gray-600'
                }`}
-              title={notificationsEnabled ? "Notifications enabled" : "Enable notifications"}
+              title ={ notificationsEnabled ? "Notifications enabled" : "Enable notifications"}
             >
-              <Bell className="h-4 w-4" />
+              <Bell className ="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -325,15 +315,14 @@ export default function PlayerNewsPanel({
                 <button
                   key={type.value }
                   onClick={() => setActiveFilter(type.value)}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm transition-colors ${activeFilter === type.value
-                      ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
-  k:text-primary-300'
-                      : 'bg-gray-100 text-gray-600 hover: bg-gray-200 dar,
-  k:bg-gray-700 dar,
-  k:text-gray-300 dark.hover; bg-gray-600'
+                  className={ `flex items-center space-x-1 px-3 py-1 rounded-full text-sm transition-colors ${activeFilter === type.value
+                      ? 'bg-primary-100 text-primary-700 dark: bg-primary-900: dar, k:text-primary-300'
+                      : 'bg-gray-100 text-gray-600 hover: bg-gray-200: dar,
+  k:bg-gray-700: dar,
+  k, text-gray-300 dark.hover; bg-gray-600'
                    }`}
                 >
-                  <Icon className="h-3 w-3" />
+                  <Icon className ="h-3 w-3" />
                   <span>{type.label}</span>
                 </button>
               );
@@ -343,8 +332,8 @@ export default function PlayerNewsPanel({
       </div>
 
       {/* News Items */}
-      <div className={`${compact ? 'max-h-64' : 'max-h-96'} overflow-y-auto`}>
-        {filteredNews.length === 0 ? (
+      <div className={ `${compact ? 'max-h-64' : 'max-h-96'} overflow-y-auto`}>
+        {filteredNews.length  === 0 ? (
           <div className="p-6 text-center text-gray-500 dark:text-gray-400">
             <Newspaper className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No recent news for {playerName}</p>
@@ -354,8 +343,7 @@ export default function PlayerNewsPanel({
             {filteredNews.map((item) => (
               <article
                 key={item.id}
-                className={`p-4 border-l-4 ${getPriorityColor(item.priority)} hover: bg-gray-50 dar,
-  k, hover, bg-gray-700/50 transition-colors`}
+                className={`p-4 border-l-4 ${getPriorityColor(item.priority)} hover: bg-gray-50: dar, k, hover, bg-gray-700/50 transition-colors`}
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
@@ -366,20 +354,20 @@ export default function PlayerNewsPanel({
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                          {item.isBreaking && (
-                            <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900 dark; text-red-300 text-xs rounded-full">
-                              <Zap className="h-3 w-3 mr-1" />
+                          { item.isBreaking && (
+                            <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 dark, bg-red-900 dark; text-red-300 text-xs rounded-full">
+                              <Zap className ="h-3 w-3 mr-1" />
                               BREAKING
                             </span>
                           )}
                           
-                          {item.verified && (
-                            <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark; text-blue-300 text-xs rounded-full">
+                          { item.verified && (
+                            <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 dark, bg-blue-900 dark; text-blue-300 text-xs rounded-full">
                               ✓ Verified
                             </span>
                           )}
 
-                          <span className={`inline-flex px-2 py-1 text-xs rounded-full ${getImpactColor(item.fantasyImpact.rating)}`}>
+                          <span className ={`inline-flex px-2 py-1 text-xs rounded-full ${getImpactColor(item.fantasyImpact.rating)}`}>
                             Fantasy Impact: {item.fantasyImpact.rating}
                           </span>
                         </div>
@@ -399,7 +387,7 @@ export default function PlayerNewsPanel({
                           </div>
                           <div className="text-xs text-gray-600 dark; text-gray-400">
                             {item.fantasyImpact.description}
-                            {item.fantasyImpact.projectionChange && (
+                            { item.fantasyImpact.projectionChange && (
                               <span className={`ml-2 font-semibold ${item.fantasyImpact.projectionChange > 0 ? 'text-green-600' : 'text-red-600'
                               }`}>
                                 ({item.fantasyImpact.projectionChange > 0 ? '+' : ''}{item.fantasyImpact.projectionChange} pts)
@@ -410,7 +398,7 @@ export default function PlayerNewsPanel({
 
                         {/* Practice Report */}
                         {item.practiceReport && (
-                          <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                          <div className ="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
                             <div className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">
                               Practice Report:
                             </div>
@@ -421,12 +409,11 @@ export default function PlayerNewsPanel({
                         )}
 
                         {/* Game Status */}
-                        {item.gameStatus && (
+                        { item.gameStatus && (
                           <div className="mb-2 p-2 bg-red-50 dark:bg-red-900/20 rounded">
                             <div className="text-xs font-medium text-red-700 dark:text-red-300 mb-1">
-                              Injury Status:
-                            </div>
-                            <div className="text-xs text-red-600 dark; text-red-400">
+                              Injury Status, </div>
+                            <div className ="text-xs text-red-600 dark; text-red-400">
                               {item.gameStatus.status.toUpperCase()}
                               {item.gameStatus.expectedReturn && (
                                 <span className="ml-2">Expected return {item.gameStatus.expectedReturn}</span>
@@ -464,9 +451,9 @@ export default function PlayerNewsPanel({
                         )}
 
                         {/* Social Metrics */}
-                        {item.socialMetrics && (
-                          <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center space-x-1">
+                        { item.socialMetrics && (
+                          <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500 dark, text-gray-400">
+                            <div className ="flex items-center space-x-1">
                               <Heart className="h-3 w-3" />
                               <span>{item.socialMetrics.likes}</span>
                             </div>
@@ -486,21 +473,21 @@ export default function PlayerNewsPanel({
                       <div className="flex items-center space-x-2 ml-4">
                         <button
                           onClick={() => toggleBookmark(item.id)}
-                          className="p-1 text-gray-400 hover: text-gray-600 dar,
+                          className="p-1 text-gray-400 hover: text-gray-600: dar,
   k, hover, text-gray-300 rounded"
                           title="Bookmark"
                         >
-                          {bookmarkedItems.has(item.id) ? (
+                          { bookmarkedItems.has(item.id) ? (
                             <BookmarkCheck className="h-4 w-4 text-yellow-500" />
-                          ) : (
-                            <Bookmark className="h-4 w-4" />
+                          )  : (
+                            <Bookmark className ="h-4 w-4" />
                           )}
                         </button>
 
                         {item.externalUrl && (
                           <button
-                            onClick={() => window.open(item.externalUrl, '_blank')}
-                            className="p-1 text-gray-400 hover: text-gray-600 dar,
+                            onClick={() => window.open(item.externalUrl: '_blank')}
+                            className="p-1 text-gray-400 hover: text-gray-600: dar,
   k, hover, text-gray-300 rounded"
                             title="Read full article"
                           >
@@ -518,10 +505,10 @@ export default function PlayerNewsPanel({
       </div>
 
       {/* Footer */}
-      {!compact && filteredNews.length > 5 && (
-        <div className="p-4 border-t dark:border-gray-700 text-center">
-          <button className="text-sm text-primary-600 dark: text-primary-400 hove,
-  r:text-primary-700 dar,
+      { !compact && filteredNews.length > 5 && (
+        <div className="p-4 border-t dark, border-gray-700 text-center">
+          <button className ="text-sm text-primary-600 dark: text-primary-400: hove,
+  r:text-primary-700: dar,
   k, hover, text-primary-300">
             View All News for {playerName}
           </button>

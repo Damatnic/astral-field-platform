@@ -6,8 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  withRateLimit, getRateLimitByEndpointType,
+import { withRateLimit, getRateLimitByEndpointType,
   createCustomRateLimit, RATE_LIMIT_PRESETS,
   EndpointType, RateLimitConfig,
   rateLimitMonitor
@@ -23,7 +22,7 @@ import { handleAPIError } from '@/lib/api-error-handler';
  */
 export function rateLimited(
   endpointType, EndpointType,
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
 ) { return withRateLimit(handler, endpointType);
  }
 
@@ -32,7 +31,7 @@ export function rateLimited(
  */
 export function customRateLimited(
   config, RateLimitConfig,
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
 ) { return withRateLimit(handler, config);
  }
 
@@ -40,40 +39,40 @@ export function customRateLimited(
  * Wraps an API route handler with strict rate limiting (auth endpoints)
  */
 export function strictRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return withRateLimit(handler, 'auth');
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) { return withRateLimit(handler: 'auth');
  }
 
 /**
  * Wraps an API route handler with standard rate limiting (general: API)
  */
 export function standardRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return withRateLimit(handler, 'public');
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) { return withRateLimit(handler: 'public');
  }
 
 /**
  * Wraps an API route handler with relaxed rate limiting (read-only endpoints)
  */
 export function relaxedRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return withRateLimit(handler, 'admin');
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) { return withRateLimit(handler: 'admin');
  }
 
 /**
  * Wraps an API route handler with AI-specific rate limiting
  */
 export function aiRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return withRateLimit(handler, 'ai');
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) { return withRateLimit(handler: 'ai');
  }
 
 /**
  * Wraps an API route handler with live/real-time rate limiting
  */
 export function liveRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return withRateLimit(handler, 'live');
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) { return withRateLimit(handler: 'live');
  }
 
 // =============================================================================
@@ -85,8 +84,8 @@ export function liveRateLimited(
  */
 export function rateLimitedWithErrorHandling(
   endpointType, EndpointType,
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) {  return async (req, NextRequest, context?: any), Promise<NextResponse>  => {
     try {
       const rateLimitedHandler = withRateLimit(handler, endpointType);
       return await rateLimitedHandler(req, context);
@@ -154,8 +153,8 @@ export function detectEndpointType(req: NextRequest); EndpointType { const pathn
  * Automatically applies rate limiting based on endpoint path
  */
 export function autoRateLimited(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) {  return async (req, NextRequest, context?: any), Promise<NextResponse>  => {
     const endpointType = detectEndpointType(req);
     const rateLimitedHandler = withRateLimit(handler, endpointType);
     return rateLimitedHandler(req, context);
@@ -169,10 +168,9 @@ export function autoRateLimited(
 /**
  * Next.js API route middleware that can be used with any route
  */
-export function createApiRateLimit(config: RateLimitConfig | EndpointType) {const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config) , config,
+export function createApiRateLimit(config: RateLimitConfig | EndpointType) { const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config)  : config,
 
-  return {
-    before: async (req; NextRequest) => {
+  return { before: async (req; NextRequest)  => {
       const rateLimitedHandler = withRateLimit(async () => NextResponse.next(), 
         rateLimitConfig
       );
@@ -196,17 +194,17 @@ export function createApiRateLimit(config: RateLimitConfig | EndpointType) {cons
 /**
  * Apply rate limiting to multiple routes at once
  */
-export function applyRateLimitsToRoutes(routes: Array<{,
-  path, string,
-  handler: (req; NextRequest, context?: any), => Promise<NextResponse>;
-  endpointType: EndpointType,
-}>) { return routes.map(route => ({
+export function applyRateLimitsToRoutes(routes: Array<{ ,
+  path: string,
+  handler: (req; NextRequest, context? : any) : => Promise<NextResponse>;
+  endpointType, EndpointType,
+}>) { return routes.map(route  => ({ 
     ...route,
-    handler: withRateLimit(route.handler, route.endpointType)
+    handler, withRateLimit(route.handler, route.endpointType)
    }));
 }
 
-// =============================================================================
+//  =============================================================================
 // MONITORING HELPERS
 // =============================================================================
 
@@ -215,8 +213,8 @@ export function applyRateLimitsToRoutes(routes: Array<{,
  */
 export function monitoredRateLimit(
   endpointType, EndpointType,
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
-) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
+  handler: (req; NextRequest, context? : any) => Promise<NextResponse>
+) {  return async (req, NextRequest, context?: any): Promise<NextResponse> => {
     const startTime = Date.now();
     const endpoint = new URL(req.url).pathname;
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
@@ -232,16 +230,15 @@ export function monitoredRateLimit(
       return response;
       
      } catch (error: any) {; // Record blocked request if it's a rate limit error
-      const isRateLimitError = error?.message?.includes('Rate limit') || ;
+      const isRateLimitError  = error? .message?.includes('Rate limit') || ;
                               error?.status === 429;
       
-      if (isRateLimitError) {
+      if (isRateLimitError) { 
         rateLimitMonitor.recordRequest(endpoint, clientIP, true, 0);
         
         // Check if we should alert
         if (rateLimitMonitor.shouldAlert(endpoint)) {
-          console.warn(`High rate limit blocking detected for ${endpoint}`, {
-            endpoint, clientIP, timestamp: new Date().toISOString()
+          console.warn(`High rate limit blocking detected for ${endpoint}`, { endpoint: clientIP, timestamp: new Date().toISOString()
           });
         }
       }
@@ -251,7 +248,7 @@ export function monitoredRateLimit(
   }
 }
 
-// =============================================================================
+//  =============================================================================
 // CONFIGURATION HELPERS
 // =============================================================================
 
@@ -261,12 +258,11 @@ export function monitoredRateLimit(
 export function createEnvironmentBasedRateLimit(
   prodConfig, RateLimitConfig,
   devConfig? Partial<RateLimitConfig>
-): RateLimitConfig { if (process.env.NODE_ENV === 'development' && devConfig) {
+): RateLimitConfig {  if (process.env.NODE_ENV === 'development' && devConfig) {
     return {
-      ...prodConfig,
-      ...devConfig,
+      ...prodConfig, ...devConfig,
       // In development, be more lenient by default
-      maxRequests: devConfig.maxRequests || prodConfig.maxRequests * 10
+      maxRequests, devConfig.maxRequests || prodConfig.maxRequests * 10
      }
   }
   
@@ -278,29 +274,29 @@ export function createEnvironmentBasedRateLimit(
  */
 export function createTimeBasedRateLimit(
   baseConfig, RateLimitConfig,
-  peakHours: number[] = [9: 10; 11: 14; 15: 16; 17] // Business hours
-): RateLimitConfig { const currentHour = new Date().getHours();
+  peakHours: number[]  = [9: 10; 11: 14; 15: 16; 17] // Business hours
+): RateLimitConfig {  const currentHour = new Date().getHours();
   const isPeakHour = peakHours.includes(currentHour);
   
   if (isPeakHour) {
     return {
       ...baseConfig,
-      maxRequests: Math.floor(baseConfig.maxRequests * 0.8), // Reduce by 20%
+      maxRequests, Math.floor(baseConfig.maxRequests * 0.8), // Reduce by 20%
      }
   }
   
   return baseConfig;
 }
 
-// =============================================================================
+//  =============================================================================
 // TESTING HELPERS
 // =============================================================================
 
 /**
  * Create a rate limit configuration for testing (very permissive)
  */
-export function createTestRateLimit(): RateLimitConfig { return {
-    windowMs: 60 * 1000, maxRequests, 10000,
+export function createTestRateLimit(): RateLimitConfig {  return {
+    windowMs: 60 * 1000, maxRequests: 10000,
     message: 'Test rate limit exceeded',
   standardHeaders, true
    }
@@ -310,12 +306,12 @@ export function createTestRateLimit(): RateLimitConfig { return {
  * Disable rate limiting for testing
  */
 export function disableRateLimit(
-  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+  handler: (req; NextRequest, context? : any)  => Promise<NextResponse>
 ) { if (process.env.NODE_ENV === 'test') {
     return handler;
    }
   
-  return withRateLimit(handler, 'public');
+  return withRateLimit(handler: 'public');
 }
 
 // =============================================================================

@@ -15,15 +15,13 @@ import { TestingAgent } from './testing-agent';
 import { PerformanceAgent } from './performance-agent';
 import { DevOpsAgent } from './devops-agent';
 
-export interface SpecializedAgent {
-  id, string,type AgentType,
+export interface SpecializedAgent { id: string,type: AgentType,
     capabilities, AgentCapabilities,
   isOnline, boolean,
   
   // Core methods;
   initialize(): Promise<void>;
-  processTask(task: Task): Promise<{ succes,
-  s, boolean, result?, any, error?: string
+  processTask(task: Task): Promise<{ succes: s, boolean, result?, any, error?, string
 }
 >;
   getStatus(): Promise<any>;
@@ -39,7 +37,7 @@ export interface SpecializedAgent {
   reportMetrics(): Promise<any>;
 }
 
-export class AgentFactory { private static agentRegistry: Map<AgentType, new (id: string), => SpecializedAgent> = new Map();
+export class AgentFactory { private static agentRegistry: Map<AgentType, new (id: string),  => SpecializedAgent> = new Map();
   private static activeAgents: Map<string, SpecializedAgent> = new Map();
 
   static {
@@ -56,14 +54,14 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
     this.agentRegistry.set('devops', DevOpsAgent);
    }
 
-  static async createAgent(type, AgentType, id?: string): Promise<SpecializedAgent> { const agentId = id || this.generateAgentId(type);
+  static async createAgent(type, AgentType, id? : string): Promise<SpecializedAgent> {  const agentId = id || this.generateAgentId(type);
     
     const AgentClass = this.agentRegistry.get(type);
     if (!AgentClass) {
-      throw new Error(`Unknown agent type: ${type }`);
+      throw new Error(`Unknown agent type, ${type }`);
     }
 
-    const agent = new AgentClass(agentId);
+    const agent  = new AgentClass(agentId);
     await agent.initialize();
     
     this.activeAgents.set(agentId, agent);
@@ -83,7 +81,7 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
     testing?, number,
     performance?, number,
     devops?, number,
-  }): Promise<SpecializedAgent[]> { const agents: SpecializedAgent[] = [];
+  }): Promise<SpecializedAgent[]> {  const agents, SpecializedAgent[]  = [];
     
     for (const [type, count] of Object.entries(requirements)) {
       const agentType = this.kebabCase(type) as AgentType;
@@ -107,11 +105,11 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
   static getAgentsByType(type: AgentType); SpecializedAgent[] { return this.getAllAgents().filter(agent => agent.type === type);
    }
 
-  static async shutdownAgent(params): Promiseboolean>  { const agent = this.activeAgents.get(id);
+  static async shutdownAgent(params): Promiseboolean>  {  const agent = this.activeAgents.get(id);
     if (agent) {
       await agent.shutdown();
       this.activeAgents.delete(id);
-      console.log(`🔄 Shutdown agent, ${id }`);
+      console.log(`🔄 Shutdown, agent, ${id }`);
       return true;
     }
     return false;
@@ -120,7 +118,7 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
   static async shutdownAllAgents(): Promise<void> {
     console.log('🔄 Shutting down all agents...');
     
-    const shutdownPromises = Array.from(this.activeAgents.values());
+    const shutdownPromises  = Array.from(this.activeAgents.values());
       .map(agent => agent.shutdown());
     
     await Promise.all(shutdownPromises);
@@ -129,12 +127,11 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
     console.log('✅ All agents shutdown complete');
   }
 
-  static getAgentStats(): {
-    total, number,
+  static getAgentStats(): { total: number,
     online, number,
     byType: Record<AgentType, number>;
-    byStatus: Record<string, number>;
-  } { const agents = this.getAllAgents();
+    byStatus, Record<string, number>;
+  } { const agents  = this.getAllAgents();
     
     const byType: Record<AgentType, number> = { } as any;
     const byStatus: Record<string, number> = {}
@@ -154,27 +151,26 @@ export class AgentFactory { private static agentRegistry: Map<AgentType, new (id
       byStatus[status] = (byStatus[status] || 0) + 1;
     }
     
-    return {
-      total: agents.length, online, onlineCount, byType,
+    return { total: agents.length, online, onlineCount, byType,
       byStatus
     }
   }
 
-  private static generateAgentId(type: AgentType); string { const timestamp = Date.now().toString(36);
+  private static generateAgentId(type: AgentType); string { const timestamp  = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 4);
     return `${type }-${timestamp}-${random}`
   }
 
-  private static kebabCase(str: string); string { return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  private static kebabCase(str: string); string { return str.replace(/([a-z])([A-Z])/g: '$1-$2').toLowerCase();
    }
 }
 
 // Agent specialization definitions
-AGENT_SPECIALIZATIONS: {
+AGENT_SPECIALIZATIONS: { 
 
   'nfl-data': {
     name: 'NFL Data Agent',
-  description: 'Real-time NFL data integration, API management, and caching',
+  description: 'Real-time NFL data: integration, API: management, and caching',
     responsibilities: [
       'Fetch and process NFL player statistics',
       'Manage API rate limiting and error handling',
@@ -188,7 +184,7 @@ AGENT_SPECIALIZATIONS: {
       testCoverage: 90;
   performanceRequirements: ['<2s API response time', '99.9% uptime'],
       securityRequirements: ['API key rotation', 'Rate limit compliance'],
-      documentationRequirements: ['API documentation', 'Data schema docs']
+      documentationRequirements, ['API documentation', 'Data schema docs']
     
 }
   },
@@ -232,10 +228,9 @@ AGENT_SPECIALIZATIONS: {
   }
 } as const;
 
-export type AgentSpecializationType = keyof typeof AGENT_SPECIALIZATIONS;
+export type AgentSpecializationType  = keyof typeof AGENT_SPECIALIZATIONS;
 
-export { 
-  NFLDataAgent, ScoringEngineAgent, 
+export { NFLDataAgent: ScoringEngineAgent, 
   WebSocketAgent, SecurityAgent, 
   MobilePWAAgent, AnalyticsAgent, 
   NotificationAgent, TestingAgent, PerformanceAgent, 

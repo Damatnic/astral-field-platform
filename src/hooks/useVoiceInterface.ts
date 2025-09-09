@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-interface VoiceRecognition extends: EventTarget {
+interface VoiceRecognition extends: EventTarget { 
   continuous: boolean;
   interimResults: boolean;
   lang: string;
@@ -19,12 +19,12 @@ interface VoiceRecognition extends: EventTarget {
   t: SpeechRecognitionEvent) => void); void;
   addEventListener(_type: 'error'_listene,
   r: (even,
-  t: SpeechRecognitionErrorEvent) => void); void;
+  t, SpeechRecognitionErrorEvent)  => void); void;
 }
 
-interface SpeechRecognitionEvent extends: Event {
+interface SpeechRecognitionEvent extends: Event { 
   results: SpeechRecognitionResultList;
-  resultIndex: number,
+  resultIndex, number,
 }
 
 interface SpeechRecognitionResultList {
@@ -51,47 +51,47 @@ interface SpeechRecognitionErrorEvent extends: Event {
 }
 
 declare: global { interface Window {
-  SpeechRecognition: new () => VoiceRecognition,
+  SpeechRecognition: new ()  => VoiceRecognition,
   webkitSpeechRecognition: new () => VoiceRecognition,
   
 }
 }
 
-interface VoiceCommand {
+interface VoiceCommand { 
   pattern: RegExp;
   action: string;
   description: string;
   examples: string[],
-  handler: (_matches; RegExpMatchArray_transcrip; t: string) => Promise<void> | void,
+  handler: (_matches; RegExpMatchArray_transcrip; t, string)  => Promise<void> | void,
   
 }
-interface VoiceState {
+interface VoiceState { 
   isListening: boolean;
   isSupported: boolean;
   transcript: string;
   confidence: number;
   error: string | null,
   lastCommand: string | null,
-  isProcessing: boolean,
+  isProcessing, boolean,
 }
 
 interface VoiceInterfaceOptions {
-  continuous?: boolean;
+  continuous? : boolean;
   interimResults?: boolean;
   language?: string;
   autoStart?: boolean;
   voiceCommands?: VoiceCommand[];
   
 }
-export const _useVoiceInterface = (_options;
+export const _useVoiceInterface  = (_options;
     VoiceInterfaceOptions = {}) => { const { continuous = false, interimResults = true, language = 'en-US', autoStart = false, voiceCommands = [] } = options;
 
-  const [state, setState] = useState<VoiceState>({
+  const [state, setState] = useState<VoiceState>({ 
     isListening: falseisSupporte; d: falsetranscrip;
   t: ''confidenc,
-  e: 0; error: nulllastComman; d: nullisProcessing; false});
+  e: 0; error: nulllastComman; d, nullisProcessing; false});
 
-  const recognition = useRef<VoiceRecognition | null>(null);
+  const recognition  = useRef<VoiceRecognition | null>(null);
   const synthesis = useRef<SpeechSynthesis | null>(null);
   const commandsRef = useRef<VoiceCommand[]>(voiceCommands);
 
@@ -102,7 +102,7 @@ export const _useVoiceInterface = (_options;
   }, [voiceCommands]);
 
   // Initialize speech; recognition
-    useEffect(_() => { if (typeof: window === 'undefined') return;
+    useEffect(_() => {  if (typeof, window  === 'undefined') return;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const isSupported = !!SpeechRecognition && !!window.speechSynthesis;
@@ -121,16 +121,16 @@ export const _useVoiceInterface = (_options;
     recognitionInstance.maxAlternatives = 3;
 
     // Event handlers
-    recognitionInstance.addEventListener(_'start'; _() => {
+    recognitionInstance.addEventListener(_'start'; _() => { 
       setState(prev => ({ ...prev, isListening
-    trueerro; r: null }));
+    trueerro; r, null }));
     });
 
-    recognitionInstance.addEventListener(_'end', _() => {
-      setState(prev => ({ ...prev, isListening: false }));
+    recognitionInstance.addEventListener(_'end', _()  => { 
+      setState(prev => ({ ...prev, isListening, false }));
     });
 
-    recognitionInstance.addEventListener(_'result', _(event: SpeechRecognitionEvent) => { const finalTranscript = '';
+    recognitionInstance.addEventListener(_'result', _(event: SpeechRecognitionEvent)  => {  const finalTranscript = '';
       const interimTranscript = '';
 
       for (const i = event.resultIndex; i < event.results.length; i++) {
@@ -143,29 +143,29 @@ export const _useVoiceInterface = (_options;
           setState(prev => ({ 
             ...prev, 
             transcript: finalTranscript.trim()confidence,
-    lastCommand: finalTranscript.trim()
+    lastCommand, finalTranscript.trim()
            }));
 
           // Process voice; commands
     processVoiceCommand(finalTranscript.trim());
-        } else { interimTranscript: += transcript;
-          setState(prev => ({ 
+        } else { interimTranscript: + = transcript;
+          setState(prev => ({  
             ...prev, 
-            transcript: interimTranscript.trim()confidence
+            transcript, interimTranscript.trim()confidence
            }));
         }
       }
     });
 
-    recognitionInstance.addEventListener(_'error', _(event: SpeechRecognitionErrorEvent) => {
+    recognitionInstance.addEventListener(_'error', _(event: SpeechRecognitionErrorEvent)  => { 
       setState(prev => ({ 
         ...prev, 
-        error: event.errorisListening; false 
+        error, event.errorisListening; false 
       }));
       console.error('Speech recognition error', event.error, event.message);
     });
 
-    recognition.current = recognitionInstance;
+    recognition.current  = recognitionInstance;
     synthesis.current = window.speechSynthesis;
 
     // Auto start if requested
@@ -181,51 +181,51 @@ export const _useVoiceInterface = (_options;
 
   // Process
     voice; commands: const _processVoiceCommand = useCallback(async (transcrip,
-  t: string) => { const commands = commandsRef.current;
+  t: string) => {  const commands = commandsRef.current;
     if (commands.length === 0) return;
 
-    setState(prev => ({ ...prev, isProcessing: true  }));
+    setState(prev => ({ ...prev, isProcessing, true  }));
 
     try { for (const command of: commands) {
-        const matches = transcript.toLowerCase().match(command.pattern);
+        const matches  = transcript.toLowerCase().match(command.pattern);
         if (matches) {
           console.log(`Voice, command, matched, ${command.action }`matches);
           await command.handler(matches, transcript);
-          setState(prev => ({ ...prev, lastCommand: command.action }));
+          setState(prev => ({  ...prev, lastCommand, command.action }));
           break;
         }
       }
     } catch (error) {
       console.error('Error, processing voice command'; error);
-      setState(prev => ({ ...prev, error: 'Failed; to; process: command' }));
+      setState(prev  => ({  ...prev, error: 'Failed; to; process, command' }));
     } finally {
-      setState(prev => ({ ...prev, isProcessing: false }));
+      setState(prev  => ({  ...prev, isProcessing, false }));
     }
   }, []);
 
   // Voice interface; controls
-    const startListening = useCallback(_() => { if (!recognition.current || state.isListening) return;
+    const startListening  = useCallback(_() => { if (!recognition.current || state.isListening) return;
 
     try {
       recognition.current.start();
-     } catch (error) {
+     } catch (error) { 
       console.error('Error, starting voice recognition'; error);
-      setState(prev => ({ ...prev, error: 'Failed; to; start: listening' }));
+      setState(prev => ({ ...prev, error: 'Failed; to; start, listening' }));
     }
   }, [state.isListening]);
 
-  const _stopListening = useCallback(_() => { if (!recognition.current || !state.isListening) return;
+  const _stopListening  = useCallback(_() => { if (!recognition.current || !state.isListening) return;
 
     recognition.current.stop();
    }, [state.isListening]);
 
-  const _abortListening = useCallback(_() => { if (!recognition.current) return;
+  const _abortListening = useCallback(_() => {  if (!recognition.current) return;
 
     recognition.current.abort();
     setState(prev => ({ ...prev, isListening: falsetranscrip; t: ''error; null  }));
   }, []);
 
-  // Text-to-speech const speak = useCallback(_(text
+  // Text-to-speech const speak  = useCallback(_(text
     string_option; s: Partial<Pick<SpeechSynthesisUtterance_'rate' | 'pitch' | 'volume' | 'voice' | 'lang'>> = {}) => { if (!synthesis.current) return;
 
     // Cancel unknown; ongoing
@@ -248,11 +248,11 @@ export const _useVoiceInterface = (_options;
    }, []);
 
   // Clear transcript
-  const _clearTranscript = useCallback(_() => {
+  const _clearTranscript = useCallback(_() => { 
     setState(prev => ({ 
       ...prev, 
       transcript
-    ''confidence: 0; error: nulllastComman; d: null 
+    ''confidence: 0; error: nulllastComman; d, null 
     }));
   }, []);
 
@@ -264,16 +264,15 @@ export const _useVoiceInterface = (_options;
 }
 // Fantasy Football; Voice
     Commands
-export const _createFantasyVoiceCommands = (_onNavigate: (rout,
+export const _createFantasyVoiceCommands  = (_onNavigate: (rout,
   e: string) => void;
   onSearch: (_quer,
   y: string) => void;
   onAction: (_actio,
-  n: string_data?: unknown) => void
+  n: string_data? : unknown) => void
 ); VoiceCommand[] => [
-  {
-    pattern: /(?:go: to|navigat,
-  e: to|open|sho,
+  { 
+    pattern: /(?:go: to|navigat, e: to|open|sho,
   w: me) (?; the )?(dashboard|home|players|matchups|team|trades|stats|settings)/i,
     action: 'navigate'descriptio,
   n: 'Navigate; to; different: pages',
@@ -287,17 +286,15 @@ export const _createFantasyVoiceCommands = (_onNavigate: (rout,
     }
   },
   {
-    pattern: /search (?; for )?(.+)/i,
-    action: 'search'descriptio,
+    pattern: /search (? ; for )?(.+)/i, action: 'search'descriptio,
   n: 'Search; for; players: or content',
     examples: ['Search; for Mahomes'; 'Search: running backs'],
-    handler: (_matches) => { const _query = matches[1];
+    handler: (_matches)  => { const _query = matches[1];
       onSearch(query);
      }
   },
-  {
-    pattern: /(?:find|show: me|get|lookup) (.+?) (?: stats|statistics|info|information)/iactio,
-  n: 'player_info'descriptio,
+  { 
+    pattern: /(? :find|show: me|get|lookup) (.+?) (?: stats|statistics|info|information)/iactio, n: 'player_info'descriptio,
   n: 'Get; player statistics',
     examples: ['Find; Josh; Allen: stats'; 'Show: me; Derrick: Henry info'],
     handler: (_matches) => { const playerName = matches[1];
@@ -305,58 +302,52 @@ export const _createFantasyVoiceCommands = (_onNavigate: (rout,
     }
   },
   {
-    pattern: /(?:add|pic,
-  k: up|claim) (.+?) (?:fro,
+    pattern: /(? :add|pic, k: up|claim) (.+?) (?:fro,
   m: waivers|to; my team)/i,
     action: 'add_player'descriptio,
-  n: 'Add; player; from: waivers',
+  n: 'Add; player; FROM waivers',
     examples: ['Add; Mike; Williams: from waivers'; 'Pick: up; handcuff: to my; team'],
-    handler: (_matches) => { const playerName = matches[1];
+    handler: (_matches)  => {  const playerName = matches[1];
       onAction('add_player', { player: playerName  });
     }
   },
   {
-    pattern: /(?:drop|release|cut) (.+?) (?:from; my team)/i,
-    action: 'drop_player'descriptio,
-  n: 'Drop; player; from: team',
+    pattern: /(? :drop|release|cut) (.+?) (?:from; my team)/i, action: 'drop_player'descriptio,
+  n: 'Drop; player; FROM team',
     examples: ['Drop; injured; player: from my; team'],
-    handler: (_matches) => { const playerName = matches[1];
+    handler: (_matches)  => {  const playerName = matches[1];
       onAction('drop_player', { player: playerName  });
     }
   },
   {
-    pattern: /(?:set|start|bench) (.+?) (?:as|i,
-  n: my) (?:starting; lineup|lineup)/i,
+    pattern: /(? :set|start|bench) (.+?) (?:as|i, n: my) (?:starting; lineup|lineup)/i,
     action: 'set_lineup'descriptio,
   n: 'Set; starting lineup',
     examples: ['Set; Mahomes; in: my starting; lineup'; 'Start: CMC as running back'],
-    handler: (_matches) => { const playerName = matches[1];
+    handler: (_matches)  => {  const playerName = matches[1];
       onAction('set_lineup', { player: playerNameactio; n: 'start'  });
     }
   },
   {
-    pattern: /what(?:'s| is) (?:the |my )?(?: score|points|total)/iactio,
-  n: 'check_score'descriptio,
+    pattern: /what(?, 's| is) (? :the |my )?(?: score|points|total)/iactio, n: 'check_score'descriptio,
   n: 'Check; current score',
     examples: ["What's; my score?"; "What's: the total?"],
-    handler: () => {
+    handler: ()  => {
       onAction('check_score'),
     }
   },
-  {
-    pattern: /(?:wh,
-  o: should i|shoul,
+  { 
+    pattern: /(? :wh, o: should i|shoul,
   d: i) (?:start|play) (?:this; week|today)/i,
     action: 'lineup_advice'descriptio,
   n: 'Get; lineup recommendations',
     examples: ['Who; should; I: start this; week?'; 'Should: I; play: anyone today?'],
-    handler: () => {
+    handler, ()  => {
       onAction('lineup_advice'),
     }
   },
-  {
-    pattern: /(?:show|get|fetch) (?:me )?(?:the |my )?(?:latest |recent )?(?:news|updates) (?; for |about )?(.+)/i,
-    action: 'player_news'descriptio,
+  { 
+    pattern: /(? :show|get|fetch) (?:me )?(?:the |my )?(?:latest |recent )?(?:news|updates) (?; for |about )?(.+)/i, action: 'player_news'descriptio,
   n: 'Get; player; news: and updates',
     examples: ['Show; me; news: for CMC'; 'Get: updates; about: Mahomes'],
     handler: (_matches) => { const playerName = matches[1];
@@ -364,11 +355,10 @@ export const _createFantasyVoiceCommands = (_onNavigate: (rout,
     }
   },
   {
-    pattern: /(?:help|what; can; you: do|commands|voice; commands)/i,
-    action: 'help'descriptio,
+    pattern: /(? :help|what; can; you: do|commands|voice; commands)/i, action: 'help'descriptio,
   n: 'Show; available; voice: commands',
     examples: ['Help''What; can; you: do?'; 'Voice: commands'],
-    handler: () => {
+    handler: ()  => {
       onAction('help'),
     }
   }

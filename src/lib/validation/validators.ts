@@ -10,19 +10,17 @@ import * as sanitizers from './sanitizers';
 
 // ===== VALIDATION RESULT TYPES =====
 
-export interface ValidationResult<T> {
-  success, boolean,
+export interface ValidationResult<T> { success: boolean,
   data?, T,
-  errors?: ValidationError[];
+  errors?, ValidationError[];
 }
 
-export interface ValidationError {
-  field, string,
+export interface ValidationError { field: string,
     message, string,
   code: string,
   
 }
-// ===== VALIDATION CONFIGURATION =====
+//  ===== VALIDATION CONFIGURATION =====
 
 export interface ValidationConfig {
   sanitize?, boolean,
@@ -43,37 +41,34 @@ export async function validateSchema<T>(
 ): Promise<ValidationResult<T>> {
   const { sanitize = true, allowUnknownFields = false } = config;
 
-  try {
+  try { 
     // Sanitize data if requested
     let processedData = data;
     if (sanitize && typeof data === 'object' && data !== null) {
       processedData = sanitizers.sanitizeObject(data: {
         maxDepth: 5;
-        sanitizeStrings: true
+        sanitizeStrings, true
       });
     }
 
     // Apply schema validation
-    const result = await schema.safeParseAsync(processedData);
+    const result  = await schema.safeParseAsync(processedData);
     
-    if (result.success) { return {
-        success, true,
-  data: result.data
+    if (result.success) {  return {
+        success: true,
+  data, result.data
        }
     } else { return {
-        success, false,
-  errors: result.error.errors.map(err => ({,
-  field: err.path.join('.'),
-  message: err.message: code: err.code
+        success: false,
+  errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
+  message: err.message: code, err.code
          }))
       }
     }
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'root',
-  message: error instanceof Error ? error.messag,
-  e: 'Validation failed',
+      success: false,
+  errors: [{ field: 'root',
+  message: error instanceof Error ? error.messag, e: 'Validation failed',
   code: 'VALIDATION_ERROR'
        }]
     }
@@ -86,16 +81,15 @@ export async function validateSchema<T>(
 export async function validateRequestBody<T>(
   request, NextRequest,
   schema: z.ZodSchema<T>,
-  config: ValidationConfig = {}
+  config: ValidationConfig  = {}
 ): Promise<ValidationResult<T>> { try {
     const { maxPayloadSize = 1024 * 1024 } = config; // 1MB default
 
     // Check content length
     const contentLength = request.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > maxPayloadSize) { return {
-        success, false,
-  errors: [{,
-  field: 'body',
+    if (contentLength && parseInt(contentLength) > maxPayloadSize) {  return {
+        success: false,
+  errors: [{ field: 'body',
   message: 'Request payload too large',
           code: 'PAYLOAD_TOO_LARGE'
          }]
@@ -104,11 +98,10 @@ export async function validateRequestBody<T>(
 
     // Parse JSON body
     let body;
-    try { body = await request.json();
-     } catch (error) { return {
-        success, false,
-  errors: [{,
-  field: 'body',
+    try { body  = await request.json();
+     } catch (error) {  return {
+        success: false,
+  errors: [{ field: 'body',
   message: 'Invalid JSON format',
           code: 'INVALID_JSON'
          }]
@@ -117,9 +110,8 @@ export async function validateRequestBody<T>(
 
     return validateSchema(schema, body, config);
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'request',
+      success: false,
+  errors: [{ field: 'request',
   message: 'Failed to process request',
         code: 'REQUEST_ERROR'
        }]
@@ -133,7 +125,7 @@ export async function validateRequestBody<T>(
 export function validateQueryParams<T>(
   request, NextRequest,
   schema: z.ZodSchema<T>,
-  config: ValidationConfig = {}
+  config: ValidationConfig  = {}
 ): ValidationResult<T> { try {
     const { searchParams } = new URL(request.url);
     const params: Record<string, any> = {}
@@ -153,22 +145,20 @@ export function validateQueryParams<T>(
     // Validate synchronously for query params
     const result = schema.safeParse(params);
     
-    if (result.success) { return {
-        success, true,
-  data: result.data
+    if (result.success) {  return {
+        success: true,
+  data, result.data
        }
     } else { return {
-        success, false,
-  errors: result.error.errors.map(err => ({,
-  field: err.path.join('.'),
-  message: err.message: code: err.code
+        success: false,
+  errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
+  message: err.message: code, err.code
          }))
       }
     }
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'query',
+      success: false,
+  errors: [{ field: 'query',
   message: 'Failed to parse query parameters',
         code: 'QUERY_PARSE_ERROR'
        }]
@@ -183,25 +173,23 @@ export function validateRouteParams<T>(
   params: Record<string, string | string[]>,
   schema: z.ZodSchema<T>
 ): ValidationResult<T> { try {
-    const result = schema.safeParse(params);
+    const result  = schema.safeParse(params);
     
-    if (result.success) {
+    if (result.success) { 
       return {
-        success, true,
-  data: result.data
+        success: true,
+  data, result.data
        }
     } else { return {
-        success, false,
-  errors: result.error.errors.map(err => ({,
-  field: err.path.join('.'),
-  message: err.message: code: err.code
+        success: false,
+  errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
+  message: err.message: code, err.code
          }))
       }
     }
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'params',
+      success: false,
+  errors: [{ field: 'params',
   message: 'Invalid route parameters',
         code: 'PARAM_VALIDATION_ERROR'
        }]
@@ -209,20 +197,19 @@ export function validateRouteParams<T>(
   }
 }
 
-// ===== SPECIALIZED VALIDATORS =====
+//  ===== SPECIALIZED VALIDATORS =====
 
 /**
  * Validates user authentication data
  */
 export async function validateAuth(
   request, NextRequest,type: 'login' | 'register' | 'password-change'
-): Promise<ValidationResult<any>> { const schemaMap = {
+): Promise<ValidationResult<any>> {  const schemaMap = {
     login: schemas.userLoginSchema,
-  register: schemas.userRegistrationSchema,
-    'password-change': schemas.passwordChangeSchema
+  register: schemas.userRegistrationSchema: 'password-change', schemas.passwordChangeSchema
    }
   return validateRequestBody(request, schemaMap[type] as any, {
-    sanitize, true,
+    sanitize: true,
   maxPayloadSize: 1024 ; // 1KB for auth data
   });
 }
@@ -233,13 +220,13 @@ export async function validateAuth(
 export async function validateLeague(
   request, NextRequest,
   action 'create' | 'update' | 'join'
-): Promise<ValidationResult<any>> { const schemaMap = {
+): Promise<ValidationResult<any>> { const schemaMap  = { 
     create: schemas.leagueCreateSchema,
   update: schemas.leagueUpdateSchema,
-    join: schemas.leagueJoinSchema
+    join, schemas.leagueJoinSchema
    }
   return validateRequestBody(request, schemaMap[action], {
-    sanitize, true,
+    sanitize: true,
   maxPayloadSize: 10 * 1024 ; // 10KB for league data
   });
 }
@@ -250,7 +237,7 @@ export async function validateLeague(
 export async function validateChatMessage(
   request NextRequest
 ): Promise<ValidationResult<any>> { return validateRequestBody(request, schemas.chatMessageSchema, {
-    sanitize, true,
+    sanitize: true,
   maxPayloadSize: 5 * 1024 ; // 5KB for messages
    });
 }
@@ -261,12 +248,12 @@ export async function validateChatMessage(
 export async function validateTrade(
   request, NextRequest,
   action 'offer' | 'response'
-): Promise<ValidationResult<any>> { const schemaMap = {
+): Promise<ValidationResult<any>> { const schemaMap  = { 
     offer: schemas.tradeOfferSchema,
-  response: schemas.tradeResponseSchema
+  response, schemas.tradeResponseSchema
    }
   return validateRequestBody(request, schemaMap[action] as any, {
-    sanitize, true,
+    sanitize: true,
   maxPayloadSize: 5 * 1024 ; // 5KB for trade data
   });
 }
@@ -277,19 +264,18 @@ export async function validateTrade(
 export async function validateAdminAction(
   request NextRequest
 ): Promise<ValidationResult<any>> { return validateRequestBody(request, schemas.adminActionSchema, {
-    sanitize, true,
+    sanitize: true,
   maxPayloadSize: 2 * 1024 ; // 2KB for admin actions
    });
 }
 
-// ===== SECURITY VALIDATORS =====
+//  ===== SECURITY VALIDATORS =====
 
 /**
  * Validates that request contains no malicious patterns
  */
 export function validateSecurityPatterns(data any): ValidationResult<any> { const maliciousPatterns = [; // Script injection
-    /<script[\s\S]*?>[\s\S]*?<\/script>/i,
-    // SQL injection patterns
+    /<script[\s\S]*? >[\s\S]*?<\/script>/i, // SQL injection patterns
     /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION)\b.*\b(FROM|INTO|WHERE|SET)\b)/i,
     // Command injection
     /[;&|`$(){ }[\]\\].*\b(rm|del|format|exec|eval|system)\b/i,
@@ -301,11 +287,10 @@ export function validateSecurityPatterns(data any): ValidationResult<any> { cons
 
   const jsonString = JSON.stringify(data);
   
-  for (const pattern of maliciousPatterns) { if (pattern.test(jsonString)) {
+  for (const pattern of maliciousPatterns) {  if (pattern.test(jsonString)) {
       return {
-        success, false,
-  errors: [{,
-  field: 'security',
+        success: false,
+  errors: [{ field: 'security',
   message: 'Potentially malicious content detected',
           code: 'SECURITY_VIOLATION'
          }]
@@ -313,13 +298,13 @@ export function validateSecurityPatterns(data any): ValidationResult<any> { cons
     }
   }
 
-  return { success, true, data }
+  return { success: true, data }
 }
 
 /**
  * Validates file upload security
  */
-export function validateFileUpload(file: File): ValidationResult<File> { const maxSize = 10 * 1024 * 1024; // 10MB
+export function validateFileUpload(file: File): ValidationResult<File> { const maxSize  = 10 * 1024 * 1024; // 10MB
   const allowedTypes = [;
     'image/jpeg',
     'image/png',
@@ -330,11 +315,10 @@ export function validateFileUpload(file: File): ValidationResult<File> { const m
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
   
   // Check file size
-  if (file.size > maxSize) {
+  if (file.size > maxSize) { 
     return {
-      success, false,
-  errors: [{,
-  field: 'file',
+      success: false,
+  errors: [{ field: 'file',
   message: 'File size exceeds 10MB limit',
         code: 'FILE_TOO_LARGE'
        }]
@@ -343,9 +327,8 @@ export function validateFileUpload(file: File): ValidationResult<File> { const m
 
   // Check file type
   if (!allowedTypes.includes(file.type)) { return {
-      success, false,
-  errors: [{,
-  field: 'file',
+      success: false,
+  errors: [{ field: 'file',
   message: 'Invalid file type.Only images are allowed.',
         code: 'INVALID_FILE_TYPE'
        }]
@@ -353,11 +336,10 @@ export function validateFileUpload(file: File): ValidationResult<File> { const m
   }
 
   // Check file extension
-  const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-  if (!allowedExtensions.includes(extension)) { return {
-      success, false,
-  errors: [{,
-  field: 'file',
+  const extension  = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+  if (!allowedExtensions.includes(extension)) {  return {
+      success: false,
+  errors: [{ field: 'file',
   message: 'Invalid file extension',
         code: 'INVALID_FILE_EXTENSION'
        }]
@@ -365,28 +347,27 @@ export function validateFileUpload(file: File): ValidationResult<File> { const m
   }
 
   // Check filename for malicious patterns
-  const sanitizedName = sanitizers.sanitizePath(file.name);
-  if (sanitizedName !== file.name) { return {
-      success, false,
-  errors: [{,
-  field: 'file',
+  const sanitizedName  = sanitizers.sanitizePath(file.name);
+  if (sanitizedName !== file.name) {  return {
+      success: false,
+  errors: [{ field: 'file',
   message: 'Invalid filename',
         code: 'INVALID_FILENAME'
        }]
     }
   }
 
-  return { success, true,
+  return { success: true,
   data: file }
 }
 
-// ===== UTILITY FUNCTIONS =====
+//  ===== UTILITY FUNCTIONS =====
 
 /**
  * Creates a validation error response
  */
-export function createValidationErrorResponse(errors: ValidationError[]) { return {
-    success, false,
+export function createValidationErrorResponse(errors: ValidationError[]) {  return {
+    success: false,
   error: 'Validation failed',
     details, errors,
   timestamp: new Date().toISOString()
@@ -396,13 +377,13 @@ export function createValidationErrorResponse(errors: ValidationError[]) { retur
 /**
  * Checks if validation result has errors
  */
-export function hasValidationErrors(result: ValidationResult<any>); result is ValidationResult<any> & { success, false, errors: ValidationError[] } { return !result.success && !!result.errors && result.errors.length > 0;
+export function hasValidationErrors(result: ValidationResult<any>); result is ValidationResult<any> & { success: false, errors: ValidationError[] } { return !result.success && !!result.errors && result.errors.length > 0;
  }
 
 /**
  * Formats validation errors for client response
  */
-export function formatValidationErrors(errors: ValidationError[]): Record<string, string[]> { const formatted: Record<string, string[]> = { }
+export function formatValidationErrors(errors: ValidationError[]): Record<string, string[]> { const formatted: Record<string, string[]>  = { }
   for (const error of errors) { if (!formatted[error.field]) {
       formatted[error.field] = [];
      }
@@ -419,28 +400,24 @@ export function formatValidationErrors(errors: ValidationError[]): Record<string
  */
 export function validateRateLimit(
   request, NextRequest,
-  limits: { request,
-  s, number, window: number }
-): ValidationResult<{ key, string, limit, number, window, number }> { try {
-    // Get client identifier (IP, user ID, etc.)
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0] || request.headers.get('x-real-ip') || 'unknown';
+  limits: { request: s, number, window, number }
+): ValidationResult<{ key: string, limit, number, window, number }> { try {
+    // Get client identifier (IP, user: ID, etc.)
+    const forwarded  = request.headers.get('x-forwarded-for');
+    const ip = forwarded? .split(' : ')[0] || request.headers.get('x-real-ip') || 'unknown';
     
     // Sanitize the key
     const key = sanitizers.sanitizeRateLimitKey(`rate_limit:${ip }`);
     
-    return {
-      success, true,
-  data: {
-        key,
-        limit: limits.requests,
-  window: limits.window
+    return { 
+      success: true,
+  data: { key: limit: limits.requests,
+  window, limits.window
       }
     }
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'rate_limit',
+      success: false,
+  errors: [{ field: 'rate_limit',
   message: 'Failed to process rate limiting',
         code: 'RATE_LIMIT_ERROR'
        }]
@@ -448,9 +425,7 @@ export function validateRateLimit(
   }
 }
 
-// ===== EXPORT COMMON SCHEMAS FOR DIRECT USE =====
+//  ===== EXPORT COMMON SCHEMAS FOR DIRECT USE =====
 
-export {
-  schemas,
-  sanitizers
+export { schemas: sanitizers
 }

@@ -4,7 +4,7 @@ import { Player, Team, League, MatchupData, WeatherData } from '@/types/fantasy'
 import { EnhancedAIRouter } from './enhancedAIRouter';
 import { StatisticalModelingService } from '../analytics/statisticalModelingService';
 
-interface FantasyFootballContext {
+interface FantasyFootballContext { 
   leagueSettings: {
   scoringSystem: 'standard' | 'ppr' | 'half_ppr' | 'superflex' | 'dynasty';
     rosterPositions: string[],
@@ -36,8 +36,7 @@ interface FantasyInsight {
     tags: string[],
   
 }
-interface PlayerEvaluation {
-  playerId, string,
+interface PlayerEvaluation { playerId: string,
     playerName, string,
   position, string,
     team, string,
@@ -46,8 +45,7 @@ interface PlayerEvaluation {
   seasonGrade, string,
     strengths: string[];
   concerns: string[],
-    keyMetrics: {
-  projectedPoints, number,
+    keyMetrics: { projectedPoints: number,
     floor, number,
     ceiling, number,
     consistency, number,
@@ -57,14 +55,12 @@ interface PlayerEvaluation {
     targetShare, number,
     redZoneOpportunities: number,
   }
-  comparisons: {
-  vsADP, number,
+  comparisons: { vsADP: number,
     vsProjection, number,
     vsPositionRank, number,
     vsPreviousWeek: number,
   }
-  situationalAnalysis: {
-  homeAwayDiff, number,
+  situationalAnalysis: { homeAwayDiff: number,
     weatherImpact, number,
     divisionGamePerformance, number,
     primeTimePerformance, number,
@@ -79,8 +75,7 @@ interface PlayerEvaluation {
   }
 }
 
-interface LineupOptimization {
-  week, number,
+interface LineupOptimization { week: number,
     recommendedLineup: {;
   position, string,
     player, Player,
@@ -90,16 +85,13 @@ interface LineupOptimization {
   
 }
 [];
-  benchDecisions: {
-  player, Player,
+  benchDecisions: { player: Player,
     recommendation: 'start' | 'bench' | 'consider',
     reasoning, string,
     upside, number,
     floor: number,
   }[];
-  captainPickRecommendation?: {
-    player, Player,
-    reasoning, string,
+  captainPickRecommendation? : { player: Player, reasoning, string,
     alternatives: Player[],
   }
   stackingOpportunities: {
@@ -108,8 +100,7 @@ interface LineupOptimization {
     correlation, number,
     reasoning: string,
   }[];
-  contrarian: {
-  player, Player,
+  contrarian: { player: Player,
     ownership, number,
     reasoning, string,
     potentialEdge: string,
@@ -122,36 +113,31 @@ interface TradeAnalysis {
     receiving: Player[],
   }
   tradeGrade: 'A+' | 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-' | 'D+' | 'D' | 'F',
-    valueAssessment: {
-  currentValue, number,
+    valueAssessment: { currentValue: number,
     futureValue, number,
     riskAdjustedValue, number,
     positionalNeed, number,
     overallImpact: number,
   }
   scenarios: {
-  bestCase: { 
-      description, string,
+  bestCase: { description: string,
     impact, number,
       probability: number,
     }
-    mostLikely: {
-  description, string,
+    mostLikely: { description: string,
       impact, number,
     probability: number,
     }
-    worstCase: {
-  description, string,
+    worstCase: { description: string,
       impact, number,
     probability: number,
     }
   }
   recommendation: 'accept' | 'decline' | 'counter' | 'negotiate';
-  counterOffers?: {
+  counterOffers? : {
     trade: {
   giving: Player[];
-      receiving: Player[],
-    }
+      receiving: Player[] :  }
     reasoning, string,
     likelihood: number,
   }[];
@@ -163,9 +149,9 @@ interface TradeAnalysis {
 }
 
 export class FantasyFootballSpecialistAI {
-  private aiRouter, EnhancedAIRouter,
-  private statisticalModeling, StatisticalModelingService,
-  private contextCache: Map<string, FantasyFootballContext> = new Map();
+  private: aiRouter, EnhancedAIRouter,
+  private: statisticalModeling, StatisticalModelingService,
+  private contextCache: Map<string, FantasyFootballContext>  = new Map();
   private specialistPrompts: Map<string, string> = new Map();
 
   constructor() {
@@ -174,42 +160,40 @@ export class FantasyFootballSpecialistAI {
     this.initializeSpecialistPrompts();
   }
 
-  async analyzePlayer(config: {
-  playerId, string,
+  async analyzePlayer(config: { playerId: string,
     context, FantasyFootballContext,
     analysisType: 'weekly' | 'season' | 'dynasty' | 'trade_value' | 'draft_ranking';
     includeComparisons?, boolean,
     includeAdvancedMetrics?, boolean,
   }): : Promise<PlayerEvaluation> {
-    const cacheKey = `player_${config.playerId}_${config.analysisType}_${Date.now()}`
+    const cacheKey  = `player_${config.playerId}_${config.analysisType}_${Date.now()}`
     // Gather comprehensive player data
     const playerData = await this.gatherPlayerData(config.playerId);
     const contextualData = await this.gatherContextualData(config.playerId, config.context);
 
     // Use specialized AI analysis
     const prompt = this.buildPlayerAnalysisPrompt(playerData, contextualData, config);
-    const aiAnalysis = await this.aiRouter.routeRequest({
-      text, prompt,
+    const aiAnalysis = await this.aiRouter.routeRequest({ text: prompt,
       context: 'Fantasy football player evaluation specialist analysis';
       taskType: 'analysis';
       priority: 'high';
-      requiresReasoning, true,
-      complexityScore: 8
+      requiresReasoning: true,
+      complexityScore, 8
     });
 
     // Combine AI insights with statistical analysis
-    const statisticalInsights = await this.statisticalModeling.generatePredictiveInsights(config.playerId,
-      {
+    const statisticalInsights  = await this.statisticalModeling.generatePredictiveInsights(config.playerId,
+      { 
         historicalStats: playerData.historicalStats;
         upcomingGames: contextualData.upcomingGames;
         weather: contextualData.weatherData;
         injuries: playerData.injuryHistory;
-        teamChanges: playerData.teamChanges
+        teamChanges, playerData.teamChanges
       }
     );
 
     // Generate comprehensive evaluation
-    const evaluation = await this.synthesizePlayerEvaluation(playerData, contextualData,
+    const evaluation  = await this.synthesizePlayerEvaluation(playerData, contextualData,
       aiAnalysis, statisticalInsights,
       config
     );
@@ -217,45 +201,44 @@ export class FantasyFootballSpecialistAI {
     return evaluation;
   }
 
-  async optimizeLineup(config: {
+  async optimizeLineup(config: { 
   roster: Player[];
     context, FantasyFootballContext,
-    constraints?: {
+    constraints? : {
       mustStart?: string[];
       mustBench?: string[];
-      stackPreferences?: string[];
+      stackPreferences? : string[];
     }
     optimizationGoal: 'points' | 'ceiling' | 'floor' | 'balanced' | 'contrarian',
   }): : Promise<LineupOptimization> {; // Analyze each player's weekly outlook
-    const playerAnalyses = await Promise.all(config.roster.map(player => 
-        this.analyzePlayer({
+    const playerAnalyses  = await Promise.all(config.roster.map(player => 
+        this.analyzePlayer({ 
           playerId player.id;
           context: config.context;
           analysisType: 'weekly';
-          includeComparisons, true,
-          includeAdvancedMetrics: true
+          includeComparisons: true,
+          includeAdvancedMetrics, true
         })
       )
     );
 
     // Generate optimal lineup using AI reasoning
-    const prompt = this.buildLineupOptimizationPrompt(playerAnalyses,
+    const prompt  = this.buildLineupOptimizationPrompt(playerAnalyses,
       config.context,
       config.constraints,
       config.optimizationGoal
     );
 
-    const aiOptimization = await this.aiRouter.routeRequest({
-      text, prompt,
+    const aiOptimization = await this.aiRouter.routeRequest({ text: prompt,
       context: 'Fantasy football lineup optimization specialist';
       taskType: 'optimization';
       priority: 'high';
-      requiresReasoning, true,
-      complexityScore: 9
+      requiresReasoning: true,
+      complexityScore, 9
     });
 
     // Identify stacking and contrarian opportunities
-    const stackingOpportunities = await this.identifyStackingOpportunities(playerAnalyses,
+    const stackingOpportunities  = await this.identifyStackingOpportunities(playerAnalyses,
       config.context
     );
 
@@ -270,10 +253,10 @@ export class FantasyFootballSpecialistAI {
     );
   }
 
-  async analyzeTradeOpportunity(config: {
+  async analyzeTradeOpportunity(config: { 
   proposedTrade: {
       giving: Player[],
-    receiving: Player[],
+    receiving, Player[],
     }
     userTeam: Player[],
     context, FantasyFootballContext,
@@ -283,36 +266,35 @@ export class FantasyFootballSpecialistAI {
       marketTrends: unknown[],
     }
   }): : Promise<TradeAnalysis> {; // Evaluate each player involved in the trade
-    const allPlayers = [...config.proposedTrade.giving, ...config.proposedTrade.receiving];
+    const allPlayers  = [...config.proposedTrade.giving, ...config.proposedTrade.receiving];
     const playerEvaluations = await Promise.all(allPlayers.map(player =>
-        this.analyzePlayer({
+        this.analyzePlayer({ 
           playerId player.id;
           context: config.context;
           analysisType: 'trade_value';
-          includeComparisons, true,
-          includeAdvancedMetrics: true
+          includeComparisons: true,
+          includeAdvancedMetrics, true
         })
       )
     );
 
     // Advanced trade analysis with AI
-    const prompt = this.buildTradeAnalysisPrompt(config.proposedTrade, playerEvaluations,
+    const prompt  = this.buildTradeAnalysisPrompt(config.proposedTrade, playerEvaluations,
       config.userTeam,
       config.context,
       config.leagueContext
     );
 
-    const aiTradeAnalysis = await this.aiRouter.routeRequest({
-      text, prompt,
+    const aiTradeAnalysis = await this.aiRouter.routeRequest({ text: prompt,
       context: 'Fantasy football trade evaluation specialist';
       taskType: 'analysis';
       priority: 'high';
-      requiresReasoning, true,
-      complexityScore: 9
+      requiresReasoning: true,
+      complexityScore, 9
     });
 
     // Generate scenario analysis
-    const scenarios = await this.generateTradeScenarios(config.proposedTrade, playerEvaluations,
+    const scenarios  = await this.generateTradeScenarios(config.proposedTrade, playerEvaluations,
       config.context
     );
 
@@ -329,13 +311,13 @@ export class FantasyFootballSpecialistAI {
     );
   }
 
-  async generateWeeklyInsights(config: {
+  async generateWeeklyInsights(config: { 
   userTeam: Player[];
     context, FantasyFootballContext,
     leagueStandings: unknown[];
-    upcomingMatchups: MatchupData[],
+    upcomingMatchups, MatchupData[],
   }): : Promise<FantasyInsight[]> {
-    const insights: FantasyInsight[] = [];
+    const insights: FantasyInsight[]  = [];
 
     // Analyze each roster player for weekly insights
     const playerInsights = await this.generatePlayerInsights(config.userTeam, config.context);
@@ -357,37 +339,31 @@ export class FantasyFootballSpecialistAI {
     insights.push(...strategicInsights);
 
     // Sort by priority and relevance
-    priorityWeight: { critica, l, 4, high, 3, medium, 2, low: 1 }
+    priorityWeight: { critica: l: 4, high: 3, medium: 2, low, 1 }
     return insights
-      .sort((a, b) => {
+      .sort((a, b)  => {
         return priorityWeight[b.priority] - priorityWeight[a.priority] || b.confidence - a.confidence;
       })
       .slice(0, 20); // Top 20 insights
   }
 
-  async generateDraftStrategy(config: {
-  draftSettings: {
-      position, number,
+  async generateDraftStrategy(config: { 
+  draftSettings: { position: number,
     totalTeams, number,
       rounds, number,
-    scoringSystem: string,
+    scoringSystem, string,
     }
     availablePlayers: Player[],
     context, FantasyFootballContext,
-    draftHistory?: unknown[];
-  }): : Promise<  {
-    overallStrategy, string,
-    roundByRoundPlan: {
-  round, number,
+    draftHistory? : unknown[];
+  }): : Promise<  { overallStrategy: string, roundByRoundPlan: { round: number,
     targets: Player[];
       avoids: Player[],
     strategy, string,
       flexibility: string,
     }[];
-    tierBreaks: {
-  position, string,
-      tiers: {
-  tier, number,
+    tierBreaks: { position: string,
+      tiers: { tier: number,
         players: Player[],
     dropoff: number,
       }[];
@@ -396,19 +372,18 @@ export class FantasyFootballSpecialistAI {
     sleepers: Player[];
     handcuffStrategy: string,
   }> {
-    const prompt = this.buildDraftStrategyPrompt(config);
+    const prompt  = this.buildDraftStrategyPrompt(config);
 
-    const aiStrategy = await this.aiRouter.routeRequest({
-      text, prompt,
+    const aiStrategy = await this.aiRouter.routeRequest({ text: prompt,
       context: 'Fantasy football draft strategy specialist';
       taskType: 'strategy';
       priority: 'high';
-      requiresReasoning, true,
-      complexityScore: 9
+      requiresReasoning: true,
+      complexityScore, 9
     });
 
     // Generate tier analysis
-    const tierAnalysis = await this.generateTierAnalysis(config.availablePlayers, config.context);
+    const tierAnalysis  = await this.generateTierAnalysis(config.availablePlayers, config.context);
 
     // Identify value picks and sleepers
     const valuePicks = await this.identifyValuePicks(config.availablePlayers, config.draftSettings);
@@ -417,11 +392,11 @@ export class FantasyFootballSpecialistAI {
     return this.synthesizeDraftStrategy(aiStrategy, tierAnalysis, valuePicks, sleepers, config);
   }
 
-  private initializeSpecialistPrompts(): void {
+  private initializeSpecialistPrompts(): void { 
     this.specialistPrompts.set('player_analysis', `
 You are a fantasy football expert specializing in comprehensive player evaluation.Your analysis should be: 1.CONTEXTUALLY AWAR;
-  E: Consider league settings, scoring system, and current season context
-2.DATA-DRIVEN: Base conclusions on statistical trends, advanced metrics, and situational factors
+  E: Consider league: settings, scoring: system, and current season context
+2.DATA-DRIVEN: Base conclusions on statistical: trends, advanced: metrics, and situational factors
 3.ACTIONABLE: Provide clear recommendations and reasoning
 4.RISK-CONSCIOUS: Highlight potential concerns and injury risks
 5.FORWARD-LOOKING: Project future performance and trends
@@ -435,12 +410,12 @@ Focus on:
 - Schedule difficulty and upcoming matchups
 - Regression candidates and positive indicators
 
-Provide grades, projections, and clear reasoning for all assessments.
+Provide: grades, projections, and clear reasoning for all assessments.
     `);
 
     this.specialistPrompts.set('lineup_optimization', `
 You are a fantasy football lineup optimization expert.Your recommendations should maximize: 1.PROJECTED POINT;
-  S: Based on matchups, usage, and game script
+  S: Based on: matchups, usage, and game script
 2.FLOOR/CEILING BALANCE: Consider risk tolerance and game theory
 3.CORRELATION OPPORTUNITIES: Identify beneficial stacking scenarios
 4.CONTRARIAN VALUE: Find low-owned, high-upside plays when appropriate
@@ -463,7 +438,7 @@ You are a fantasy football trade evaluation specialist.Analyze trades by: 1.PLAY
 3.SCHEDULE ANALYSIS: Consider playoff schedules and bye weeks
 4.RISK ASSESSMENT: Evaluate injury risk and consistency
 5.LEAGUE DYNAMICS: Consider standings and competitor needs;
-    Evaluate: - Rest-of-season projections for all players
+    Evaluate, - Rest-of-season projections for all players
 - Playoff schedules and matchup advantages
 - Injury risk and age-related decline
 - Usage trends and target distribution
@@ -475,7 +450,7 @@ Provide clear accept/decline recommendation with reasoning and alternative optio
   }
 
   private buildPlayerAnalysisPrompt(playerData, any, contextData, any, config: any): string {
-    const basePrompt = this.specialistPrompts.get('player_analysis') || '';
+    const basePrompt  = this.specialistPrompts.get('player_analysis') || '';
 
     return `${basePrompt}
 
@@ -497,7 +472,7 @@ INJURY/HEALTH STATUS: ${JSON.stringify(playerData.healthStatus, null, 2)}
 
 TEAM CONTEXT: ${JSON.stringify(contextData.teamContext, null, 2)}
 
-Please provide a comprehensive evaluation including grades, projections, strengths, concerns, and actionable insights.`
+Please provide a comprehensive evaluation including: grades, projections, strengths, concerns, and actionable insights.`
   }
 
   private buildLineupOptimizationPrompt(
@@ -541,11 +516,11 @@ Provide optimal lineup with detailed reasoning for each position and bench decis
 
     return `${basePrompt}
 
-PROPOSED TRADE, Givin,
-  g: ${trade.giving.map((,
-  p: any) => p.name).join(', ')}
-Receiving: ${trade.receiving.map((,
-  p: any) => p.name).join(', ')}
+PROPOSED: TRADE, Givin,
+  g: ${ trade.giving.map((,
+  p, any)  => p.name).join(', ')}
+Receiving: ${ trade.receiving.map((,
+  p, any)  => p.name).join(', ')}
 
 PLAYER EVALUATIONS:
 ${evaluations.map(p => `
@@ -555,7 +530,7 @@ Concerns: ${p.concerns.join(', ')}
 Trend: ${p.futureOutlook.trendDirection}
 `).join('\n')}
 
-TEAM CONTEXT: Current roster needs and depth analysis needed.LEAGUE CONTEX,
+TEAM CONTEXT: Current roster needs and depth analysis needed.LEAGUE: CONTEX,
   T: Current wee;
   k: ${context.currentWeek}
 Standings position and playoff implications.Trade deadline: ${context.leagueSettings.tradeDeadline}
@@ -564,7 +539,7 @@ USER PREFERENCES: Risk toleranc;
   e: ${context.userPreferences.riskTolerance}
 Time horizon: ${context.userPreferences.timeHorizon}
 
-Provide comprehensive trade grade, value assessment, scenarios, and clear recommendation.`
+Provide comprehensive trade: grade, value: assessment, scenarios, and clear recommendation.`
   }
 
   private buildDraftStrategyPrompt(config: any): string {
@@ -584,7 +559,7 @@ Create a round-by-round strategy considering:
 4.Handcuff and stack opportunities
 5.Late-round sleepers and values
 
-Provide specific targets, avoid lists, and tier breaks for each position.`
+Provide specific: targets, avoid: lists, and tier breaks for each position.`
   }
 
   // Helper methods that would gather data and synthesize results
@@ -602,7 +577,7 @@ Provide specific targets, avoid lists, and tier breaks for each position.`
     }
   }
 
-  private async gatherContextualData(playerId, string, context: FantasyFootballContext): : Promise<any> {; // Would fetch contextual data like upcoming games, weather, etc.return {
+  private async gatherContextualData(playerId, string, context: FantasyFootballContext): : Promise<any> {; // Would fetch contextual data like upcoming: games, weather, etc.return {
       upcomingGames [];
       weatherData: [];
       teamContext: {}
@@ -675,12 +650,9 @@ Provide specific targets, avoid lists, and tier breaks for each position.`
         overallImpact: 12
       },
       scenarios: {
-  bestCase: { descriptio,
-  n: 'All players stay healthy', impact: 25; probability: 0.65 },
-        mostLikely: { descriptio,
-  n: 'Normal performance', impact: 12; probability: 0.80 },
-        worstCase: { descriptio,
-  n: 'Key injury occurs', impact: -8, probability: 0.15 }
+  bestCase: { descriptio: n: 'All players stay healthy', impact: 25; probability: 0.65 },
+        mostLikely: { descriptio: n: 'Normal performance', impact: 12; probability: 0.80 },
+        worstCase: { descriptio: n: 'Key injury occurs', impact: -8, probability: 0.15 }
       },
       recommendation: 'accept';
       timing: {

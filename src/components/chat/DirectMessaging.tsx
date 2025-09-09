@@ -5,11 +5,10 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef  } from 'react';
+import: React, { useState: useEffect, useRef  } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-interface DirectMessage {
-  id, string,
+interface DirectMessage { id: string,
     senderId, string,
   senderUsername, string,
     recipientId, string,
@@ -22,8 +21,8 @@ interface DirectMessage {
   isRead, boolean,
     createdAt, string,
   editedAt?, string,
-  reactions?: {;
-  [emoji: string]: {;
+  reactions? : {;
+  [emoji: string] : {;
   userId, string,
   username, string,
   
@@ -32,8 +31,7 @@ interface DirectMessage {
   }
 }
 
-interface Conversation {
-  id, string,
+interface Conversation { id: string,
     participantId, string,
   participantUsername, string,
   participantAvatar?, string,
@@ -43,12 +41,11 @@ interface Conversation {
   lastSeen?, string,
   
 }
-interface DirectMessagingProps {
-  userId, string,
+interface DirectMessagingProps { userId: string,
     username, string,
   leagueId, string,
     isOpen, boolean,
-  onClose: () => void;
+  onClose: ()  => void;
 }
 
 const COMMON_EMOJIS = ['👍', '👎', '😂', '❤️', '😮', '😢', '🔥', '💯', '🎉', '🏈'];
@@ -59,24 +56,24 @@ const TRASH_TALK_GIFS = [;
   'https://media.giphy.com/media/3o84sw9CmwYpAnRRni/giphy.gif'
 ];
 
-export default function DirectMessaging({ userId, username, leagueId, isOpen, onClose }: DirectMessagingProps) { const [conversations, setConversations] = useState<Conversation[]>([]);
+export default function DirectMessaging({ userId: username, leagueId, isOpen, onClose }: DirectMessagingProps) {  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<string | null>(null);
-  const [messages, setMessages] = useState<{ [conversationId: string]; DirectMessage[]  }>({});
-  const [newMessage, setNewMessage] = useState('');
+  const [messages, setMessages] = useState<{ [conversationId, string]; DirectMessage[]  }>({});
+  const [newMessage, setNewMessage]  = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [typingUsers, setTypingUsers] = useState<{ [conversationId: string]: string[] }>({});
-  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [typingUsers, setTypingUsers] = useState<{  [conversationId: string], string[] }>({});
+  const [showGifPicker, setShowGifPicker]  = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState<{ messageId: string | null; isOpen, boolean }>({
-    messageId, null,
+    messageId: null,
   isOpen: false
   });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [leagueMembers, setLeagueMembers] = useState<Array<{ id, string, username, string, avatar?: string }>>([]);
-  const [showNewMessageModal, setShowNewMessageModal] = useState(false);
+  const [searchQuery, setSearchQuery]  = useState('');
+  const [leagueMembers, setLeagueMembers] = useState<Array<{ id: string, username, string, avatar?, string }>>([]);
+  const [showNewMessageModal, setShowNewMessageModal]  = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-  const { isConnected, on, off } = useWebSocket();
+  const { isConnected: on, off } = useWebSocket();
 
   // Load conversations and league members
   useEffect(() => { if (isOpen) {
@@ -86,22 +83,21 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
   }, [isOpen, userId]);
 
   // Setup WebSocket listeners
-  useEffect(() => { if (!isConnected || !isOpen) return;
+  useEffect(() => {  if (!isConnected || !isOpen) return;
 
     const handleDirectMessage = (message: DirectMessage) => {
       if (message.senderId === userId || message.recipientId === userId) {
-        const conversationId = message.senderId === userId ? message.recipientId : message.senderId;
+        const conversationId = message.senderId === userId ? message.recipientId, message.senderId;
         
         setMessages(prev => ({
-          ...prev,
-          [conversationId]: [...(prev[conversationId] || []), message]
+          ...prev, [conversationId], [...(prev[conversationId] || []), message]
          }));
 
         // Update conversation list
         updateConversationLastMessage(conversationId, message);
         
         // Mark as read if conversation is active
-        if (activeConversation === conversationId) {
+        if (activeConversation  === conversationId) {
           markAsRead(message.id);
         }
       }
@@ -111,7 +107,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
       senderUsername, string,
     recipientId, string,
       isTyping, boolean,
-    }) => { if (data.recipientId === userId) {
+    }) => {  if (data.recipientId === userId) {
         const conversationId = data.senderId;
         setTypingUsers(prev => {
           const current = prev[conversationId] || [];
@@ -119,25 +115,25 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
             if (!current.includes(data.senderUsername)) {
               return {
                 ...prev,
-                [conversationId]: [...current, data.senderUsername]
+                [conversationId], [...current, data.senderUsername]
                }
             }
           } else { return {
               ...prev,
-              [conversationId]: current.filter(name => name !== data.senderUsername)
+              [conversationId]: current.filter(name  => name !== data.senderUsername)
              }
           }
           return prev;
         });
       }
     }
-    const handleMessageReaction = (data: {,
+    const handleMessageReaction = (data: { ,
   messageId, string,
       emoji, string,
     userId, string,
       username, string,
     action: 'add' | 'remove';
-    }) => {
+    })  => {
       setMessages(prev => { const updated = { ...prev}
         Object.keys(updated).forEach(conversationId => {
           updated[conversationId] = updated[conversationId].map(msg => { if (msg.id === data.messageId) {
@@ -146,20 +142,20 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                 reactions[data.emoji] = [];
               }
               
-              if (data.action === 'add') { const exists = reactions[data.emoji].find(r => r.userId === data.userId);
+              if (data.action === 'add') {  const exists = reactions[data.emoji].find(r => r.userId === data.userId);
                 if (!exists) {
                   reactions[data.emoji].push({
                     userId: data.userId,
-  username: data.username
+  username, data.username
                    });
                 }
               } else {
-                reactions[data.emoji] = reactions[data.emoji].filter(r => r.userId !== data.userId);
+                reactions[data.emoji]  = reactions[data.emoji].filter(r => r.userId !== data.userId);
                 if (reactions[data.emoji].length === 0) { delete: reactions[data.emoji];
                  }
               }
               
-              return { ...msg,: reactions  }
+              return { ...msg: : reactions  }
             }
             return msg;
           });
@@ -171,7 +167,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
     on('dm_typing', handleTypingIndicator);
     on('dm_reaction', handleMessageReaction);
 
-    return () => {
+    return ()  => {
       off('direct_message', handleDirectMessage);
       off('dm_typing', handleTypingIndicator);
       off('dm_reaction', handleMessageReaction);
@@ -180,64 +176,63 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
 
   // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages[activeConversation || '']]);
+    messagesEndRef.current? .scrollIntoView({ behavior: 'smooth' });
+  } : [messages[activeConversation || '']]);
 
-  const loadConversations = async () => { try {
+  const loadConversations = async () => {  try {
       const response = await fetch('/api/chat/direct-messages/conversations', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         }
       });
 
-      if (response.ok) { const data = await response.json();
+      if (response.ok) { const data  = await response.json();
         setConversations(data.conversations || []);
        }
     } catch (error) {
-      console.error('Error loading conversations:', error);
+      console.error('Error loading conversations: ', error);
     }
   }
   const loadLeagueMembers = async () => { try {
-      const response = await fetch(`/api/leagues/${leagueId }/members`, {
+      const response = await fetch(`/api/leagues/${leagueId }/members`, { 
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) { const data = await response.json();
-        setLeagueMembers(data.members?.filter((m: any) => m.id !== userId) || []);
+      if (response.ok) { const data  = await response.json();
+        setLeagueMembers(data.members? .filter((m: any) => m.id !== userId) || []);
        }
     } catch (error) {
-      console.error('Error loading league members:', error);
+      console.error('Error loading league members: ', error);
     }
   }
   const loadMessages = async (conversationId: string) => { try {
-      const response = await fetch(`/api/chat/direct-messages/${conversationId }?limit=50`, {
+      const response = await fetch(`/api/chat/direct-messages/${conversationId }? limit=50` : { 
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) { const data = await response.json();
-        setMessages(prev => ({
+      if (response.ok) { const data  = await response.json();
+        setMessages(prev => ({ 
           ...prev,
-          [conversationId]: data.messages || []
+          [conversationId], data.messages || []
          }));
       }
     } catch (error) {
-      console.error('Error loading messages:', error);
+      console.error('Error loading messages: ', error);
     }
   }
-  const sendMessage = async (recipientId, string;
-  content, string, type: 'text' | 'gif' = 'text', gifUrl?: string) => { try {
-      const response = await fetch('/api/chat/direct-messages', {
+  const sendMessage  = async (recipientId, string;
+  content, string, type: 'text' | 'gif' = 'text', gifUrl? : string) => {  try {
+      const response = await fetch('/api/chat/direct-messages' : {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         },
-        body: JSON.stringify({
-          recipientId, content,
+        body: JSON.stringify({ recipientId: content,
           messageType, type,
           gifUrl
         })
@@ -249,23 +244,22 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
         stopTyping();
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending message: ', error);
     }
   }
-  const startConversation = async (recipientId: string) => { const existing = conversations.find(c => c.participantId === recipientId);
+  const startConversation  = async (recipientId: string) => { const existing = conversations.find(c => c.participantId === recipientId);
     if (existing) {
       setActiveConversation(recipientId);
-     } else {
+     } else { 
       // Create new conversation
       const recipient = leagueMembers.find(m => m.id === recipientId);
-      if (recipient) { const newConversation: Conversation = {
-          id, recipientId,
+      if (recipient) { const newConversation: Conversation = { id: recipientId,
   participantId, recipientId,
           participantUsername: recipient.username,
-  participantAvatar: recipient.avatar, unreadCount, 0,
-  isOnline: false
+  participantAvatar: recipient.avatar, unreadCount: 0,
+  isOnline, false
          }
-        setConversations(prev => [newConversation, ...prev]);
+        setConversations(prev  => [newConversation, ...prev]);
         setActiveConversation(recipientId);
       }
     }
@@ -274,29 +268,27 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
     loadMessages(recipientId);
   }
   const addReaction = async (messageId, string;
-  emoji: string) => { try {
+  emoji: string) => {  try {
       const response = await fetch('/api/chat/direct-messages/reactions', {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         },
-        body: JSON.stringify({
-          messageId,
-          emoji
+        body: JSON.stringify({ messageId: emoji
         })
       });
 
       if (!response.ok) { throw new Error('Failed to add reaction');
        }
 
-      setShowEmojiPicker({ messageId, null,
+      setShowEmojiPicker({ messageId: null,
   isOpen: false });
     } catch (error) {
-      console.error('Error adding reaction:', error);
+      console.error('Error adding reaction: ', error);
     }
   }
-  const startTyping = () => { if (!isTyping && activeConversation) {
+  const startTyping  = () => { if (!isTyping && activeConversation) {
       setIsTyping(true);
       // Send typing indicator via WebSocket
      }
@@ -319,40 +311,40 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
     }
   }
   const markAsRead = async (messageId: string) => { try {
-    await fetch(`/api/chat/direct-messages/${messageId }/read`, {
+    await fetch(`/api/chat/direct-messages/${messageId }/read`, { 
         method: 'POST',
   headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      console.error('Error marking message as read: ', error);
     }
   }
-  const updateConversationLastMessage = (conversationId, string;
-  message: DirectMessage) => {
+  const updateConversationLastMessage  = (conversationId, string;
+  message: DirectMessage) => { 
     setConversations(prev => 
       prev.map(conv => { if (conv.participantId === conversationId) {
           return {
-            ...conv, lastMessage, message: unreadCount: activeConversation === conversationId ? 0 : conv.unreadCount + 1
+            ...conv, lastMessage, message: unreadCount: activeConversation === conversationId ? 0  : conv.unreadCount + 1
            }
         }
         return conv;
       })
     );
   }
-  const formatTime = (timestamp: string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12, true,
+  const formatTime  = (timestamp: string) => {  return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12: true,
   hour: 'numeric', 
       minute: '2-digit'
      });
   }
-  const filteredMembers = leagueMembers.filter(member => 
+  const filteredMembers  = leagueMembers.filter(member => 
     member.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const activeMessages = activeConversation ? messages[activeConversation] || [] : [];
-  const activeTyping = activeConversation ? typingUsers[activeConversation] || [] : [];
+  const activeMessages = activeConversation ? messages[activeConversation] || [];
+  const activeTyping = activeConversation ? typingUsers[activeConversation] || [];
 
   if (!isOpen) return null;
 
@@ -383,14 +375,14 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
             </div>
             
             <div className="flex-1 overflow-y-auto">
-              {conversations.length === 0 ? (
+              { conversations.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">
                   <div className="text-4xl mb-2">💬</div>
                   <p>No conversations yet</p>
                   <p className="text-sm">Start a conversation with your league mates!</p>
                 </div>
-              ) : (
-                <div className="space-y-1 p-2">
+              )  : (
+                <div className ="space-y-1 p-2">
                   {conversations.map(conversation => (
                     <button
                       key={conversation.id}
@@ -421,9 +413,9 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                               </span>
                             )}
                           </div>
-                          {conversation.lastMessage && (
+                          { conversation.lastMessage && (
                             <p className="text-sm opacity-75 truncate">
-                              {conversation.lastMessage.messageType === 'gif' ? '🎬 GIF' : conversation.lastMessage.content}
+                              {conversation.lastMessage.messageType === 'gif' ? '🎬 GIF'  : conversation.lastMessage.content}
                             </p>
                           )}
                         </div>
@@ -436,7 +428,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 flex flex-col">
+          <div className ="flex-1 flex flex-col">
             {activeConversation ? (
               <>
                 {/* Chat Header */ }
@@ -463,10 +455,10 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                       key={message.id}
                       className={`flex ${message.senderId === userId ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-xs lg:max-w-md p-3 rounded-2xl ${message.senderId === userId
+                      <div className={ `max-w-xs lg:max-w-md p-3 rounded-2xl ${message.senderId === userId
                           ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'
                       }`}>
-                        {message.messageType === 'gif' && message.gifUrl ? (
+                        {message.messageType  === 'gif' && message.gifUrl ? (
                           <img
                             src={message.gifUrl}
                             alt="GIF"
@@ -481,11 +473,10 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                             {formatTime(message.createdAt)}
                           </span>
                           
-                          {message.senderId !== userId && (
+                          { message.senderId !== userId && (
                             <button
                               onClick={() => setShowEmojiPicker({ 
-                                messageId: message.id,
-  isOpen: !showEmojiPicker.isOpen || showEmojiPicker.messageId !== message.id 
+                                messageId: message.id, isOpen, !showEmojiPicker.isOpen || showEmojiPicker.messageId ! == message.id 
                               })}
                               className="text-xs opacity-75 hover:opacity-100 transition-opacity ml-2"
                             >
@@ -532,16 +523,16 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                   ))}
 
                   {/* Typing Indicator */}
-                  {activeTyping.length > 0 && (
+                  { activeTyping.length > 0 && (
                     <div className="flex justify-start">
                       <div className="bg-gray-700 text-gray-300 p-3 rounded-2xl max-w-xs">
                         <div className="flex items-center gap-2">
                           <div className="flex space-x-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                            <div className ="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={ { animationDelay: '0.2s' }} />
                           </div>
-                          <span className="text-xs">
+                          <span className ="text-xs">
                             {activeTyping.join(', ')} {activeTyping.length === 1 ? 'is' : 'are'} typing...
                           </span>
                         </div>
@@ -582,7 +573,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                            }
                         }
                       }}
-                      className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus: outline-none focu,
+                      className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus: outline-none: focu,
   s:ring-2 focus; ring-blue-500"
                       disabled={!isConnected}
                     />
@@ -593,7 +584,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                          }
                       }}
                       disabled={!newMessage.trim() || !isConnected}
-                      className="px-4 py-2 bg-blue-600 hover: bg-blue-700 disable,
+                      className="px-4 py-2 bg-blue-600 hover: bg-blue-700: disable,
   d:bg-gray-600 disabled; opacity-50 text-white rounded-lg transition-colors"
                     >
                       Send
@@ -601,15 +592,15 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
                   </div>
 
                   {/* GIF Picker */}
-                  {showGifPicker && (
+                  { showGifPicker && (
                     <div className="mt-2 p-3 bg-gray-800 rounded-lg">
-                      <div className="text-sm text-gray-400 mb-2">Trash Talk GIFs:</div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="text-sm text-gray-400 mb-2">Trash Talk GIFs, </div>
+                      <div className ="grid grid-cols-2 gap-2">
                         {TRASH_TALK_GIFS.map((gif, index) => (
                           <button
                             key={index }
                             onClick={() => { if (activeConversation) {
-                                sendMessage(activeConversation, '', 'gif', gif);
+                                sendMessage(activeConversation: '', 'gif', gif);
                                }
                             }}
                             className="hover:opacity-80 transition-opacity"
@@ -658,7 +649,7 @@ export default function DirectMessaging({ userId, username, leagueId, isOpen, on
               placeholder="Search league members..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus: outline-none focu,
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus: outline-none: focu,
   s:ring-2 focus; ring-blue-500 mb-4"
             />
 

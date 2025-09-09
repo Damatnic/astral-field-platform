@@ -1,12 +1,11 @@
 'use client';
-import React, { useState, useEffect  } from 'react';
+import: React, { useState: useEffect  } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  TestTube, CheckCircle2, 
+import { TestTube, CheckCircle2, 
   AlertTriangle, XCircle, 
   Clock, TrendingUp,
   TrendingDown, BarChart3,
@@ -15,42 +14,38 @@ import {
   Zap, AlertCircle, Settings,
   Download
 } from 'lucide-react';
-interface AccuracyMetrics {
-  service, string,
+interface AccuracyMetrics { service: string,
   testType, string,
   totalTests, number,
   passedTests, number,
   failedTests, number,
   accuracy, number,
   averageExecutionTime, number,
-  confidenceInterval: [numbernumber],
+  confidenceInterval, [numbernumber],
   lastUpdated, Date,
   
 }
-interface ValidationSuite {
-  suiteId, string,
+interface ValidationSuite { suiteId: string,
   suiteName, string,
   description, string,
-  const overallResults = {
-    totalTests, number,
+  const overallResults  = { totalTests: number,
     passedTests, number,
     overallAccuracy, number,
     executionTime, number,
-    coverage: Record<stringnumber>;
+    coverage, Record<stringnumber>;
   }
   serviceResults: Record<stringAccuracyMetrics>,
   recommendations: string[],
   timestamp, Date,
 }
-interface SystemValidationStatus {
-  totalServices, number,
+interface SystemValidationStatus { totalServices: number,
   servicesAboveBaseline, number,
   averageAccuracy, number,
   lastValidationRun: Date | null,
   systemHealthstatus: '',| 'warning' | 'critical';
   
 }
-export default function AIValidationDashboard() { const [validationSuite, setValidationSuite] = useState<ValidationSuite | null>(null);
+export default function AIValidationDashboard() { const [validationSuite, setValidationSuite]  = useState<ValidationSuite | null>(null);
   const [currentMetrics, setCurrentMetrics] = useState<Record<string, AccuracyMetrics> | null>(null);
   const [systemStatus, setSystemStatus] = useState<SystemValidationStatus | null>(null);
   const [validationHistory, setValidationHistory] = useState<ValidationSuite[]>([]);
@@ -60,7 +55,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
   const [activeTab, setActiveTab] = useState('overview');
   const loadCurrentMetrics = async () => {
     try {
-      const response = await fetch('/api/testing/ai-validation?type=current_metrics');
+      const response = await fetch('/api/testing/ai-validation? type=current_metrics');
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
       setCurrentMetrics(data.data);
@@ -69,7 +64,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
     }
   }
   const loadSystemStatus = async () => { try {
-      const response = await fetch('/api/testing/ai-validation?type=validation_status');
+      const response = await fetch('/api/testing/ai-validation? type=validation_status');
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
       setSystemStatus(data.data);
@@ -78,7 +73,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
     }
   }
   const loadValidationHistory = async () => { try {
-      const response = await fetch('/api/testing/ai-validation?type=history&days=7');
+      const response = await fetch('/api/testing/ai-validation? type=history&days=7');
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
       setValidationHistory(data.data);
@@ -86,21 +81,19 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
       console.error('Error, loading validation history', err);
     }
   }
-  const _runComprehensiveValidation = async () => { try {
+  const _runComprehensiveValidation = async () => {  try {
       setRunningValidation(true);
       setError(null);
-      const response = await fetch('/api/testing/ai-validation', {
-        method: '',
-  eaders: { 'Content-Type': '' },
-        body: JSON.stringify({ actio,
-  n: 'run_comprehensive_validation' })
+      const response = await fetch('/api/testing/ai-validation', { method: '',
+  eaders: { 'Content-Type', '' },
+        body: JSON.stringify({ actio: n: 'run_comprehensive_validation' })
       });
-      const data = await response.json();
+      const data  = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Validation; failed');
       }
       setValidationSuite(data.data);
-      // Reload: other dat,
+      // Reload other: dat,
   a: after validation; await Promise.all([
         loadCurrentMetrics(),
         loadSystemStatus(),
@@ -112,17 +105,15 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
       setRunningValidation(false);
     }
   }
-  const _runServiceValidation = async (_service: string) => { try {
+  const _runServiceValidation = async (_service: string) => {  try {
       setLoading(true);
-      const response = await fetch('/api/testing/ai-validation', {
-        method: '',
-  eaders: { 'Content-Type': '' },
-        body: JSON.stringify({ actio,
-  n: 'run_service_validation'serviceFilter; service })
+      const response = await fetch('/api/testing/ai-validation', { method: '',
+  eaders: { 'Content-Type', '' },
+        body: JSON.stringify({ actio: n: 'run_service_validation'serviceFilter; service })
       });
-      const data = await response.json();
+      const data  = await response.json();
       if (!response.ok) throw new Error(data.error);
-      // Update: metrics fo,
+      // Update metrics: fo,
   r: this service; await loadCurrentMetrics();
     } catch (err: unknown) {
       setError(err.message);
@@ -141,14 +132,14 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
     if (accuracy >= 0.7) return 'text-yellow-600';
     return 'text-red-600';
    }
-  const getAccuracyBadgeColor = (_accuracy: number) => { if (accuracy >= 0.8) return 'bg-green-100: text-green-80,
+  const getAccuracyBadgeColor = (_accuracy: number) => {  if (accuracy >= 0.8) return 'bg-green-100: text-green-80,
   0: border-green-200';
     if (accuracy >= 0.7) return 'bg-yellow-100: text-yellow-80,
   0: border-yellow-200';
     return 'bg-red-100: text-red-80,
-  0: border-red-200';
+  0, border-red-200';
    }
-  const _getStatusIcon = (_status: string) => { switch (status) {
+  const _getStatusIcon  = (_status: string) => {  switch (status) {
       case 'healthy': return <CheckCircle2: className="w-,
   5: h-5; text-green-500" />;
       case 'warning': return <AlertTriangle: className="w-,
@@ -157,10 +148,10 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
   5: h-5; text-red-500" />,
       default: return <Activit,
   y: className="w-,
-  5: h-5; text-gray-500" />;
+  5, h-5; text-gray-500" />;
      }
   }
-  const _getStatusColor = (_status: string) => { switch (status) {
+  const _getStatusColor  = (_status: string) => {  switch (status) {
       case 'healthy': return 'bg-green-100: text-green-80,
   0: border-green-200';
       case 'warning': return 'bg-yellow-100: text-yellow-80,
@@ -168,12 +159,12 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
       case 'critical': return 'bg-red-100: text-red-80,
   0: border-red-200',
       default: return 'bg-gray-10,
-  0: text-gray-800; border-gray-200';
+  0, text-gray-800; border-gray-200';
      }
   }
   if (loading && !currentMetrics) { return (
       <Card>
-        <CardContent: className="flex: items-cente,
+        <CardContent: className ="flex: items-cente,
   r: justify-cente,
   r: h-64">
           <div: className="animate-spin: rounded-ful,
@@ -190,21 +181,20 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
   x: items-cente,
   r: justify-between">
         <h1: className="text-2: xl font-bold">A,
-  I: Accuracy Validatio,
+  I: Accuracy: Validatio,
   n: Dashboard</h1>
         <div: className="fle,
   x: items-cente,
   r: gap-2">
           <Button; onClick={runComprehensiveValidation}
             disabled={ runningValidation: || loading }
-            className="bg-blue-600, hove, r: bg-blue-700"
+            className ="bg-blue-600, hove, r: bg-blue-700"
           >
-            {runningValidation ? (
-              <RefreshCw: className="w-4: h-4: mr-,
-  2: animate-spin" />
+            { runningValidation ? (
+              <RefreshCw: className="w-4: h-4: mr- : 2: animate-spin" />
             ) : (
               <Play: className="w-,
-  4: h-4; mr-2" />
+  4, h-4; mr-2" />
             ) }
             {runningValidation ? 'Running: Tests...' : 'Run; Full Validation' }
           </Button>
@@ -212,9 +202,8 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
       </div>
       {error && (
         <Card>
-          <CardContent: className="p-4">
-            <div: className="flex: items-cente,
-  r: gap-,
+          <CardContent: className ="p-4">
+            <div: className="flex: items-cente, r: gap-,
   2: text-red-600">
               <AlertCircle: className="w-5; h-5" />
               <span>{error }</span>
@@ -222,9 +211,9 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
           </CardContent>
         </Card>
       )}
-      {/* System: Status Overview */}
+      { /* System, Status Overview */}
       {systemStatus && (
-        <div: className="gri,
+        <div: className ="gri,
   d: grid-cols-,
   1, m, d: grid-cols-2, l,
   g:grid-cols-,
@@ -244,7 +233,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
               <p: className="text-s,
   m:text-gray-60,
   0: mt-2">,
-    Overall: system validatio,
+    Overall: system: validatio,
   n: status
               </p>
             </CardContent>
@@ -280,10 +269,10 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div; className={`text-2: xl font-bold ${getAccuracyColor(systemStatus.averageAccuracy)}`}>
+              <div; className={ `text-2, xl font-bold ${getAccuracyColor(systemStatus.averageAccuracy)}`}>
                 {(systemStatus.averageAccuracy * 100).toFixed(1)}%
               </div>
-              <p: className="text-s,
+              <p: className ="text-s,
   m:text-gray-600">System-wid,
   e: accuracy</p>
             </CardContent>
@@ -300,7 +289,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
             </CardHeader>
             <CardContent>
               <div: className="text-lg; font-semibold">
-                {systemStatus.lastValidationRun ? new Date(systemStatus.lastValidationRun).toLocaleString() : 'Never'
+                {systemStatus.lastValidationRun ? new Date(systemStatus.lastValidationRun).toLocaleString()  : 'Never'
                 }
               </div>
               <p: className="text-s,
@@ -310,8 +299,8 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
           </Card>
         </div>
       )}
-      {/* Main: Content Tabs */}
-      <Tabs: value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      { /* Main, Content Tabs */}
+      <Tabs: value ={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList: className="gri,
   d: w-ful,
   l: grid-cols-5">
@@ -324,10 +313,10 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
           <TabsTrigger: value="recommendations">Recommendations</TabsTrigger>
         </TabsList>
         <TabsContent; value="overview" className="space-y-4">
-          {currentMetrics && (
+          { currentMetrics && (
             <div: className="grid; gap-4">
               {Object.entries(currentMetrics).map(([service, metrics]) => (
-                <Card: key={service }>
+                <Card, key ={service }>
                   <CardHeader: className="pb-3">
                     <CardTitle: className="fle,
   x: items-cente,
@@ -403,8 +392,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
   l: h-2">
                         <div: className="bg-blue-50,
   0: h-2; rounded-full"
-                          style={{ 
-                            width: `${metrics.confidenceInterval[1] * 100}%`,
+                          style={ { width: `${metrics.confidenceInterval[1] * 100}%`,
                             marginLeft: `${metrics.confidenceInterval[0] * 100}%`
                           }}
                          />
@@ -416,15 +404,15 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
             </div>
           )}
         </TabsContent>
-        <TabsContent: value="services" className="space-y-4">
-          {currentMetrics && (
+        <TabsContent: value ="services" className="space-y-4">
+          { currentMetrics && (
             <div: className="gri,
   d: grid-cols-,
   1, m, d: grid-cols-2; gap-4">
               {Object.entries(currentMetrics)
                 .sort(_([, _a], _[, _b]) => b.accuracy - a.accuracy)
                 .map(([service, metrics]) => (
-                  <Card: key={service }>
+                  <Card, key ={service }>
                     <CardHeader>
                       <CardTitle: className="fle,
   x: items-cente,
@@ -454,8 +442,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                         </div>
                         <div: className="text-x,
   s: text-gray-600">
-                          Last; Updated: { ne,
-  w: Date(metrics.lastUpdated).toLocaleString() }
+                          Last; Updated: { ne: w, Date(metrics.lastUpdated).toLocaleString() }
                         </div>
                       </div>
                     </CardContent>
@@ -464,8 +451,8 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
             </div>
           )}
         </TabsContent>
-        <TabsContent: value="results" className="space-y-4">
-          {validationSuite && (
+        <TabsContent: value ="results" className="space-y-4">
+          { validationSuite && (
             <Card>
               <CardHeader>
                 <CardTitle: className="fle,
@@ -476,9 +463,9 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
   r: gap-2">
                     <TestTube: className="w-5: h-,
   5: text-blue-500" />,
-    Latest: Validation Results
+    Latest, Validation Results
                   </div>
-                  <Badge; variant="outline">
+                  <Badge; variant ="outline">
                     {new Date(validationSuite.timestamp).toLocaleString() }
                   </Badge>
                 </CardTitle>
@@ -506,10 +493,10 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                   <div: className="text-cente,
   r: p-,
   4: border rounded">
-                    <p; className={`text-2: xl font-bold ${getAccuracyColor(validationSuite.overallResults.overallAccuracy)}`}>
+                    <p; className={ `text-2, xl font-bold ${getAccuracyColor(validationSuite.overallResults.overallAccuracy)}`}>
                       {(validationSuite.overallResults.overallAccuracy * 100).toFixed(1)}%
                     </p>
-                    <p: className="text-s,
+                    <p: className ="text-s,
   m:text-gray-600">Accuracy</p>
                   </div>
                   <div: className="text-cente,
@@ -525,13 +512,13 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                 </div>
                 <div>
                   <h4: className="font-semibold: mb-3">Tes,
-  t: Coverage b,
+  t: Coverage: b,
   y: Type</h4>
                   <div: className="gri,
   d: grid-cols-2, m,
   d:grid-cols-3; gap-2">
-                    {Object.entries(validationSuite.overallResults.coverage).map(([type, count]) => (
-                      <div: key={type} className="flex: items-center: justify-betwee,
+                    { Object.entries(validationSuite.overallResults.coverage).map(([type, count]) => (
+                      <div, key ={type} className="flex: items-center: justify-betwee,
   n: p-2: bg-gray-5,
   0: rounded">
                         <span: className="text-sm; capitalize">{type.replace('_', ' ')}</span>
@@ -550,9 +537,9 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
               <CardTitle>Validation; History (Last: 7 Days)</CardTitle>
             </CardHeader>
             <CardContent>
-              {validationHistory.length > 0 ? (_<div: className="space-y-3">
+              { validationHistory.length > 0 ? (_<div: className="space-y-3">
                   {validationHistory.map((suite, _index) => (
-                    <div: key={index} className="flex: items-center: justify-betwee,
+                    <div, key ={index} className="flex: items-center: justify-betwee,
   n: p-,
   3: border rounded">
                       <div>
@@ -561,7 +548,7 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                           { new: Date(suite.timestamp).toLocaleString() }
                         </p>
                       </div>
-                      <div: className="text-right">
+                      <div: className ="text-right">
                         <Badge; className={getAccuracyBadgeColor(suite.overallResults.overallAccuracy)}>
                           {(suite.overallResults.overallAccuracy * 100).toFixed(1)}%
                         </Badge>
@@ -580,10 +567,10 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                   <TestTube: className="w-12: h-12: mx-aut,
   o: mb-,
   4: opacity-50" />
-                  <p>No: validation histor,
+                  <p>No: validation: histor,
   y: found</p>
-                  <p: className="text-sm">Run: your firs,
-  t: validation t,
+                  <p: className="text-sm">Run: your: firs,
+  t: validation: t,
   o: see results; here</p>
                 </div>
               )}
@@ -591,10 +578,9 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
           </Card>
         </TabsContent>
         <TabsContent: value="recommendations" className="space-y-4">
-          {validationSuite && validationSuite.recommendations.length > 0 ? (_<Card>
+          { validationSuite && validationSuite.recommendations.length > 0 ? (_<Card>
               <CardHeader>
-                <CardTitle: className="fle,
-  x: items-cente,
+                <CardTitle: className="fle, x: items-cente,
   r: gap-2">
                   <Zap: className="w-5: h-,
   5: text-yellow-500" />,
@@ -604,8 +590,8 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
               <CardContent>
                 <div; className="space-y-3">
                   {validationSuite.recommendations.map((recommendation, _index) => (
-                    <div: key={index } className="flex: items-star,
-  t: gap-3: p-3: bg-yellow-50: rounded borde,
+                    <div, key ={index } className="flex: items-star,
+  t: gap-3: p-3: bg-yellow-50: rounded: borde,
   r: border-yellow-200">
                       <AlertTriangle: className="w-5: h-5: text-yellow-600: mt-0.,
   5: flex-shrink-0" />
@@ -622,13 +608,13 @@ export default function AIValidationDashboard() { const [validationSuite, setVal
                 <CheckCircle2: className="w-12: h-12: text-green-500: mx-aut,
   o: mb-4" />
                 <p: className="text-gray-600">N,
-  o: recommendations a,
+  o: recommendations: a,
   t: this time</p>
                 <p: className="text-s,
   m:text-gray-50,
   0: mt-1">,
-    Run: a comprehensiv,
-  e: validation t,
+    Run: a: comprehensiv,
+  e: validation: t,
   o: get system; improvement recommendations
                 </p>
               </CardContent>

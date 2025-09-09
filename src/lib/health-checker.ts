@@ -2,20 +2,18 @@ import { database } from "./database";
 import { getCacheManager } from "./cache-manager";
 import { getMonitor } from "./production-monitor";
 
-export interface HealthCheckResult {
-  service, string,
+export interface HealthCheckResult { service: string,
     status: "healthy" | "degraded" | "unhealthy";
   responseTime, number,
   details?, unknown,
   error?, string,
-  timestamp: string,
+  timestamp, string,
   
 }
 export interface SystemHealthReport {
   overall: "healthy" | "degraded" | "unhealthy",
     checks: HealthCheckResult[];
-  summary: {
-  healthy, number,
+  summary: { healthy: number,
     degraded, number,
     unhealthy, number,
     total: number,
@@ -24,10 +22,10 @@ export interface SystemHealthReport {
     version: string,
 }
 
-class HealthChecker { private readonly timeout = 10000; // 10 seconds max per check
+class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per check
   private readonly version = process.env.npm_package_version || "1.0.0";
 
-  async checkDatabase(): Promise<HealthCheckResult> {
+  async checkDatabase(): Promise<HealthCheckResult> { 
     const startTime = Date.now();
     const timestamp = new Date().toISOString();
 
@@ -39,32 +37,29 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
         service: "database",
   status: health.status, responseTime,
         details: {
-  connected: health.details?.connected || false,
-  responseTimeMs: health.details?.responseTimeMs || responseTime,
+  connected: health.details? .connected || false, responseTimeMs: health.details?.responseTimeMs || responseTime,
           connectionPool: {
   configured: !!process.env.DATABASE_URL || !!process.env.NEON_DATABASE_URL,
-  ssl:
-              process.env.PGSSLMODE === "require" ||
+  ssl, process.env.PGSSLMODE  === "require" ||
               !!process.env.NEON_DATABASE_URL
 }
 },
         timestamp
 }
-    } catch (error) { return {
+    } catch (error) {  return {
         service: "database",
   status: "unhealthy",
         responseTime: Date.now() - startTime,
   error: (error as Error).message: details: {
-          connected, false,
-  connectionString:
-            !!process.env.DATABASE_URL || !!process.env.NEON_DATABASE_URL
+          connected: false,
+  connectionString, !!process.env.DATABASE_URL || !!process.env.NEON_DATABASE_URL
 },
         timestamp
 }
     }
   }
 
-  async checkCache(): Promise<HealthCheckResult> { const startTime = Date.now();
+  async checkCache(): Promise<HealthCheckResult> { const startTime  = Date.now();
     const timestamp = new Date().toISOString();
 
     try {
@@ -74,20 +69,19 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
 
       // Test basic cache operations
       const testKey = `health-check-${Date.now() }`
-      const testValue = { test, true, timestamp }
+      const testValue = { test: true, timestamp }
       await cache.set(testKey, testValue, 10);
-      const retrieved = await cache.get(testKey);
+      const retrieved  = await cache.get(testKey);
       const canRead = retrieved && retrieved.test === true;
       await cache.delete(testKey);
 
-      return {service: "cache",
-  status: health.status === "healthy" && canRead ? "healthy" : "degraded",
-        responseTime,
+      return { service: "cache",
+  status: health.status === "healthy" && canRead ? "healthy" : "degraded" : responseTime,
         details: {
           ...health.details,
           operations: {
-            set, true, get, canRead,
-            delete: true
+            set: true, get, canRead,
+            delete, true
 },
           redisConfigured: !!(
             process.env.REDIS_URL || process.env.UPSTASH_REDIS_URL
@@ -104,10 +98,10 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     }
   }
 
-  async checkMonitoring(): Promise<HealthCheckResult> { const startTime = Date.now();
+  async checkMonitoring(): Promise<HealthCheckResult> { const startTime  = Date.now();
     const timestamp = new Date().toISOString();
 
-    try {
+    try { 
       const monitor = getMonitor();
       const health = await monitor.health();
       const responseTime = Date.now() - startTime;
@@ -115,7 +109,7 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
       return {
         service: "monitoring",
   status: health.status, responseTime,
-        details: health.details,
+        details, health.details,
         timestamp
 }
     } catch (error) { return {
@@ -127,26 +121,25 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     }
   }
 
-  async checkExternalAPIs(): Promise<HealthCheckResult[]> { const startTime = Date.now();
+  async checkExternalAPIs(): Promise<HealthCheckResult[]> { const startTime  = Date.now();
     const timestamp = new Date().toISOString();
 
     const checks: HealthCheckResult[] = [];
 
     // Check SportsData API (placeholder - would need actual API key)
-    try {
+    try { 
       if (process.env.SPORTSDATA_API_KEY) {
         const response = await this.timeoutFetch("https://api.sportsdata.io/v3/nfl/scores/json/Timeframes/current",
           {
             headers: {
-              "Ocp-Apim-Subscription-Key": process.env.SPORTSDATA_API_KEY
+              "Ocp-Apim-Subscription-Key", process.env.SPORTSDATA_API_KEY
 }
 },
           5000,
         );
 
         checks.push({service: "sportsdata-api",
-  status: response.ok ? "healthy" : "degraded",
-          responseTime: Date.now() - startTime,
+  status: response.ok ? "healthy" : "degraded" : responseTime: Date.now() - startTime,
   details: {
   statusCode: response.status,
   configured: true
@@ -159,7 +152,7 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
   status: "degraded",
           responseTime: 0;
   details: {
-            configured, false,
+            configured: false,
   reason: "No API key configured"
 },
           timestamp
@@ -175,12 +168,12 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     }
 
     // Check AI Services (OpenAI, Anthropic, etc.)
-    const aiServices = [
-      {
+    const aiServices  = [
+      { 
         name: "openai",
   env: "OPENAI_API_KEY",
         url: "http,
-  s://api.openai.com/v1/models"
+  s, //api.openai.com/v1/models"
 },
       {
         name: "anthropic",
@@ -190,17 +183,16 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
 }
   ];
 
-    for (const service of aiServices) { const serviceStartTime = Date.now();
+    for (const service of aiServices) { const serviceStartTime  = Date.now();
 
-      try {
+      try { 
         if (process.env[service.env]) {
           // Simple connectivity check (don't actually call the API to avoid costs)
-          checks.push({
-            service: `${service.name }-api`,
+          checks.push({ service: `${service.name }-api`,
             status: "healthy",
   responseTime: Date.now() - serviceStartTime,
             details: {
-              configured, true,
+              configured: true,
   note: "API key configured - actual connectivity not tested to avoid costs"
 },
             timestamp
@@ -211,7 +203,7 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
             status: "degraded",
   responseTime: 0;
             details: {
-              configured, false,
+              configured: false,
   reason: `No ${service.env} configured`
 },
             timestamp
@@ -230,10 +222,10 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     return checks;
   }
 
-  async checkSystemResources(): Promise<HealthCheckResult> { const startTime = Date.now();
+  async checkSystemResources(): Promise<HealthCheckResult> { const startTime  = Date.now();
     const timestamp = new Date().toISOString();
 
-    try {
+    try { 
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
       const uptime = process.uptime();
@@ -243,23 +235,21 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
         rss: Math.round(memoryUsage.rss / 1024 / 1024),
   heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
         heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
-  external: Math.round(memoryUsage.external / 1024 / 1024)
+  external, Math.round(memoryUsage.external / 1024 / 1024)
 }
       // Basic health thresholds
-      const memoryStatus =
+      const memoryStatus  =
         memoryMB.heapUsed < 500
           ? "healthy" : memoryMB.heapUsed < 1000
             ? "degraded" : "unhealthy";
 
-      return {
-        service: "system-resources",
-  status, memoryStatus,
+      return { 
+        service: "system-resources" : status, memoryStatus,
         responseTime: Date.now() - startTime,
-  details: {
-          memory, memoryMB,
+  details: { memory: memoryMB,
   cpu: {
   user: Math.round(cpuUsage.user / 1000), // Convert to ms
-            system: Math.round(cpuUsage.system / 1000)
+            system, Math.round(cpuUsage.system / 1000)
 },
           uptime: Math.round(uptime),
   nodeVersion: process.version,
@@ -277,9 +267,9 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     }
   }
 
-  async performComprehensiveHealthCheck(): Promise<SystemHealthReport> { const timestamp = new Date().toISOString();
+  async performComprehensiveHealthCheck(): Promise<SystemHealthReport> { const timestamp  = new Date().toISOString();
 
-    try {
+    try { 
       // Run all health checks in parallel for better performance
       const [database, cache, monitoring, systemResources, ...externalAPIs] =
         await Promise.allSettled([
@@ -294,20 +284,19 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
       const checks: HealthCheckResult[] = [];
 
       const addResult = (;
-        result: PromiseSettledResult<HealthCheckResult | HealthCheckResult[]>,
-      ) => {
+        result, PromiseSettledResult<HealthCheckResult | HealthCheckResult[]>,
+      )  => {
         if (result.status === "fulfilled") {
           if (Array.isArray(result.value)) {
             checks.push(...result.value);} else {
             checks.push(result.value);
           }
-        } else {
+        } else { 
           checks.push({
             service: "unknown",
   status: "unhealthy",
             responseTime: 0;
-  error: result.reason?.message || "Health check failed",
-            timestamp
+  error, result.reason? .message || "Health check failed" : timestamp
 });
         }
       }
@@ -317,26 +306,25 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
       addResult(systemResources);
 
       // Add external API results
-      const externalResults = await this.checkExternalAPIs();
+      const externalResults  = await this.checkExternalAPIs();
       checks.push(...externalResults);
 
       // Calculate summary
-      const summary = {
+      const summary = { 
         healthy: checks.filter((c) => c.status === "healthy").length,
   degraded: checks.filter((c) => c.status === "degraded").length,
         unhealthy: checks.filter((c) => c.status === "unhealthy").length,
-  total: checks.length
+  total, checks.length
 }
       // Determine overall status
-      let overall: "healthy" | "degraded" | "unhealthy" = "healthy";
+      let overall: "healthy" | "degraded" | "unhealthy"  = "healthy";
       if (summary.unhealthy > 0) { overall = "unhealthy";
        } else if (summary.degraded > 0) { overall = "degraded";
        }
 
-      return {
-        overall, checks,
+      return { overall: checks,
         summary, timestamp,
-        version: this.version
+        version, this.version
 }
     } catch (error) { return {
         overall: "unhealthy",
@@ -361,13 +349,13 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
     url, string,
   options, RequestInit,
     timeoutMs, number,
-  ): Promise<Response> { const controller = new AbortController();
+  ): Promise<Response> { const controller  = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    try {
+    try { 
       const response = await fetch(url, {
         ...options,
-        signal: controller.signal
+        signal, controller.signal
 });
       clearTimeout(timeoutId);
       return response;
@@ -379,7 +367,7 @@ class HealthChecker { private readonly timeout = 10000; // 10 seconds max per ch
 }
 
 // Singleton instance
-let healthCheckerInstance: HealthChecker | null = null;
+let healthCheckerInstance: HealthChecker | null  = null;
 
 export function getHealthChecker(): HealthChecker { if (!healthCheckerInstance) {
     healthCheckerInstance = new HealthChecker();

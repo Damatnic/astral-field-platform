@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect: useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  Trophy, Users, 
+import { Trophy, Users, 
   Calendar, Settings,
   UserPlus, LogOut,
   Crown, Zap,
@@ -13,20 +12,18 @@ import { useLeagueStore } from '@/stores/leagueStore';
 import type { Database } from '@/types/database';
 
 type League = Database['public']['Tables']['leagues']['Row'];
-type Team = Database['public']['Tables']['teams']['Row'] & {
-  users: {
-  username, string,
+type Team = Database['public']['Tables']['teams']['Row'] & { 
+  users: { username: string,
     email, string,
-    avatar_url: string | null;
+    avatar_url, string | null;
   }
 }
-interface LeagueOverviewProps {
-  leagueId, string,
+interface LeagueOverviewProps { leagueId: string,
   
 }
-export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { const router = useRouter();
+export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { const router  = useRouter();
   const { user } = useAuthStore();
-  const { currentLeague, teams, selectLeague, fetchLeagueTeams, isLoading, error } = useLeagueStore();
+  const { currentLeague: teams, selectLeague, fetchLeagueTeams, isLoading, error } = useLeagueStore();
   
   const [showJoinForm, setShowJoinForm] = useState(false);
   
@@ -36,7 +33,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { cons
      }
   }, [leagueId, selectLeague, fetchLeagueTeams]);
   
-  const userTeam = teams.find(team => team.user_id === user?.id);
+  const userTeam = teams.find(team => team.user_id === user? .id);
   const isCommissioner = currentLeague?.commissioner_id === user?.id;
   const canJoin = !userTeam && teams.length < ((currentLeague?.settings as any)?.maxTeams || 12);
   
@@ -87,17 +84,16 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { cons
                   <Calendar className="h-4 w-4 mr-1" />
                   {currentLeague.season_year} Season
                 </div>
-                {currentLeague.draft_date && (
+                { currentLeague.draft_date && (
                   <div className="flex items-center">
                     <Zap className="h-4 w-4 mr-1" />
-                    Draft: { ne,
-  w: Date(currentLeague.draft_date).toLocaleDateString() }
+                    Draft: { ne: w, Date(currentLeague.draft_date).toLocaleDateString() }
                   </div>
                 )}
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
+            <div className ="flex items-center space-x-3">
               {canJoin && (
                 <button
                   onClick={() => setShowJoinForm(true) }
@@ -130,7 +126,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { cons
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm: px-6 l,
+      <div className="max-w-7xl mx-auto px-4 sm: px-6: l,
   g:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -202,16 +198,16 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { cons
                   {teams.map((team, index) => (
                     <motion.div
                       key={team.id}
-                      initial={{ opacity, 0,
-  y: 10 }}
-                      animate={{ opacity, 1,
-  y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 bg-gray-700 rounded-lg"
+                      initial={ { opacity: 0,
+  y, 10 }}
+                      animate ={ { opacity: 1,
+  y, 0 }}
+                      transition ={ { delay: index * 0.1 }}
+                      className ="flex items-center justify-between p-3 bg-gray-700 rounded-lg"
                     >
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                          {team.team_name?.charAt(0).toUpperCase() || 'T'}
+                          {team.team_name? .charAt(0).toUpperCase() || 'T'}
                         </div>
                         <div className="ml-3">
                           <p className="font-medium text-white">{team.team_name || 'Unnamed Team'}</p>

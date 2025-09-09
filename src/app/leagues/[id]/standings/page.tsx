@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Trophy, Target, TrendingUp, TrendingDown, 
+import { Trophy, Target, TrendingUp, TrendingDown, 
   Crown, Medal, Award, BarChart3, Calendar, Users, Zap, ArrowUp, ArrowDown, Minus,
   ChevronRight, Star, AlertCircle, Settings
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface StandingsPageProps {
-  params: Promise<{ id, string
+interface StandingsPageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -38,9 +36,8 @@ interface Team {
     projected_wins: number;
   projected_losses: number;
     head_to_head: { [teamI,
-  d: string]: { win,
-  s: number; losses: number; ties: number } }
-  division?: string;
+  d: string]: { win: s: number; losses: number; ties: number } }
+  division? : string;
   clinched_playoff?: boolean;
   eliminated?: boolean;
 }
@@ -49,10 +46,8 @@ interface PlayoffBracket {
   round: string;
     matchups: {
   id: string;
-    team1: { i,
-  d: string; name: string; seed: number }
-    team2: { i,
-  d: string; name: string; seed: number }
+    team1: { i: d: string; name: string; seed: number }
+    team2: { i: d: string; name: string; seed: number }
     winner?: string;
     score1?: number;
     score2?: number;
@@ -69,7 +64,7 @@ interface WeeklyRecord {
   points_against: number;
   
 }
-export default function StandingsPage({ params }: StandingsPageProps) { const router = useRouter();
+export default function StandingsPage({ params }: StandingsPageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'standings' | 'power-rankings' | 'playoff-picture' | 'head-to-head'>('standings');
@@ -80,22 +75,21 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
 
   // Mock standings data
   const [standings, setStandings] = useState<Team[]>([;
-    {
+    { 
       id: "1",
-  rank, 1,
+  rank: 1,
       team_name: "Gridiron Gladiators",
   team_abbreviation: "GG",
       owner_name: "Nicholas D'Amato",
-  wins, 9,
-      losses, 3,
-  ties, 0,
+  wins: 9,
+      losses: 3,
+  ties: 0,
       points_for: 1547.2,
   points_against: 1398.5,
-      streak: { typ,
-  e: 'W',
-  count: 3  },
-      power_rank, 2,
-  power_rank_change, 1,
+      streak: { typ: e: 'W',
+  count, 3  },
+      power_rank: 2,
+  power_rank_change: 1,
       playoff_probability: 95.2,
   championship_probability: 18.7,
       remaining_schedule_strength: 0.52,
@@ -106,19 +100,18 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "2",
-  rank, 2,
+  rank: 2,
       team_name: "Touchdown Titans",
   team_abbreviation: "TT",
       owner_name: "Sarah Johnson",
-  wins, 8,
-      losses, 4,
-  ties, 0,
+  wins: 8,
+      losses: 4,
+  ties: 0,
       points_for: 1523.8,
   points_against: 1425.1,
-      streak: { typ,
-  e: 'L',
+      streak: { typ: e: 'L',
   count: 1 },
-      power_rank, 1,
+      power_rank: 1,
   power_rank_change: -1,
       playoff_probability: 87.3,
   championship_probability: 22.1,
@@ -129,20 +122,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "3",
-  rank, 3,
+  rank: 3,
       team_name: "Field Goal Phantoms",
   team_abbreviation: "FGP",
       owner_name: "Mike Chen",
-  wins, 8,
-      losses, 4,
-  ties, 0,
+  wins: 8,
+      losses: 4,
+  ties: 0,
       points_for: 1489.3,
   points_against: 1456.2,
-      streak: { typ,
-  e: 'W',
+      streak: { typ: e: 'W',
   count: 2 },
-      power_rank, 3,
-  power_rank_change, 0,
+      power_rank: 3,
+  power_rank_change: 0,
       playoff_probability: 84.1,
   championship_probability: 16.3,
       remaining_schedule_strength: 0.55,
@@ -152,20 +144,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "4",
-  rank, 4,
+  rank: 4,
       team_name: "End Zone Eagles",
   team_abbreviation: "EZE",
       owner_name: "Jessica Williams",
-  wins, 7,
-      losses, 5,
-  ties, 0,
+  wins: 7,
+      losses: 5,
+  ties: 0,
       points_for: 1456.7,
   points_against: 1467.3,
-      streak: { typ,
-  e: 'W',
+      streak: { typ: e: 'W',
   count: 1 },
-      power_rank, 4,
-  power_rank_change, 1,
+      power_rank: 4,
+  power_rank_change: 1,
       playoff_probability: 72.5,
   championship_probability: 11.8,
       remaining_schedule_strength: 0.49,
@@ -175,19 +166,18 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "5",
-  rank, 5,
+  rank: 5,
       team_name: "Red Zone Raiders",
   team_abbreviation: "RZR",
       owner_name: "David Brown",
-  wins, 7,
-      losses, 5,
-  ties, 0,
+  wins: 7,
+      losses: 5,
+  ties: 0,
       points_for: 1423.9,
   points_against: 1478.4,
-      streak: { typ,
-  e: 'L',
+      streak: { typ: e: 'L',
   count: 2 },
-      power_rank, 6,
+      power_rank: 6,
   power_rank_change: -1,
       playoff_probability: 68.2,
   championship_probability: 8.9,
@@ -198,20 +188,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "6",
-  rank, 6,
+  rank: 6,
       team_name: "Pocket Passers",
   team_abbreviation: "PP",
       owner_name: "Amanda Davis",
-  wins, 6,
-      losses, 6,
-  ties, 0,
+  wins: 6,
+      losses: 6,
+  ties: 0,
       points_for: 1398.2,
   points_against: 1456.8,
-      streak: { typ,
-  e: 'T',
+      streak: { typ: e: 'T',
   count: 1 },
-      power_rank, 5,
-  power_rank_change, 2,
+      power_rank: 5,
+  power_rank_change: 2,
       playoff_probability: 45.7,
   championship_probability: 4.2,
       remaining_schedule_strength: 0.47,
@@ -221,20 +210,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "7",
-  rank, 7,
+  rank: 7,
       team_name: "Blitz Brothers",
   team_abbreviation: "BB",
       owner_name: "Chris Wilson",
-  wins, 5,
-      losses, 7,
-  ties, 0,
+  wins: 5,
+      losses: 7,
+  ties: 0,
       points_for: 1367.5,
   points_against: 1487.9,
-      streak: { typ,
-  e: 'L',
+      streak: { typ: e: 'L',
   count: 3 },
-      power_rank, 7,
-  power_rank_change, 0,
+      power_rank: 7,
+  power_rank_change: 0,
       playoff_probability: 28.3,
   championship_probability: 1.8,
       remaining_schedule_strength: 0.53,
@@ -244,20 +232,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "8",
-  rank, 8,
+  rank: 8,
       team_name: "Hail Mary Heroes",
   team_abbreviation: "HMH",
       owner_name: "Lisa Garcia",
-  wins, 4,
-      losses, 8,
-  ties, 0,
+  wins: 4,
+      losses: 8,
+  ties: 0,
       points_for: 1334.1,
   points_against: 1523.7,
-      streak: { typ,
-  e: 'W',
+      streak: { typ: e: 'W',
   count: 1 },
-      power_rank, 8,
-  power_rank_change, 1,
+      power_rank: 8,
+  power_rank_change: 1,
       playoff_probability: 15.2,
   championship_probability: 0.6,
       remaining_schedule_strength: 0.46,
@@ -267,19 +254,18 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "9",
-  rank, 9,
+  rank: 9,
       team_name: "Fantasy Footballers",
   team_abbreviation: "FF",
       owner_name: "Ryan Martinez",
-  wins, 3,
-      losses, 9,
-  ties, 0,
+  wins: 3,
+      losses: 9,
+  ties: 0,
       points_for: 1289.6,
   points_against: 1567.2,
-      streak: { typ,
-  e: 'L',
+      streak: { typ: e: 'L',
   count: 5 },
-      power_rank, 9,
+      power_rank: 9,
   power_rank_change: -1,
       playoff_probability: 5.1,
   championship_probability: 0.2,
@@ -291,20 +277,19 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     },
     {
       id: "10",
-  rank, 10,
+  rank: 10,
       team_name: "Championship Chasers",
   team_abbreviation: "CC",
       owner_name: "Kaity Lorbecki",
-  wins, 2,
-      losses, 10,
-  ties, 0,
+  wins: 2,
+      losses: 10,
+  ties: 0,
       points_for: 1245.3,
   points_against: 1634.8,
-      streak: { typ,
-  e: 'L',
+      streak: { typ: e: 'L',
   count: 7 },
-      power_rank, 10,
-  power_rank_change, 0,
+      power_rank: 10,
+  power_rank_change: 0,
       playoff_probability: 0.8,
   championship_probability: 0.1,
       remaining_schedule_strength: 0.49,
@@ -315,26 +300,22 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     }
   ]);
 
-  const [playoffBracket, setPlayoffBracket] = useState<PlayoffBracket[]>([;
-    {
+  const [playoffBracket, setPlayoffBracket]  = useState<PlayoffBracket[]>([;
+    { 
       round: "Wild Card",
   matchups: [
         {
           id: "wc1",
-  team1: { i,
-  d: "3",
-  name: "Field Goal Phantoms", seed: 3 },
-          team2: { i,
-  d: "6",
+  team1: { i: d: "3",
+  name: "Field Goal Phantoms", seed, 3 },
+          team2: { i: d: "6",
   name: "Pocket Passers", seed: 6 }
 },
         {
           id: "wc2",
-  team1: { i,
-  d: "4",
+  team1: { i: d: "4",
   name: "End Zone Eagles", seed: 4 },
-          team2: { i,
-  d: "5",
+          team2: { i: d: "5",
   name: "Red Zone Raiders", seed: 5 }
 }
       ]
@@ -344,20 +325,16 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
   matchups: [
         {
           id: "sf1",
-  team1: { i,
-  d: "1",
+  team1: { i: d: "1",
   name: "Gridiron Gladiators", seed: 1 },
-          team2: { i,
-  d: "0",
+          team2: { i: d: "0",
   name: "WC Winner", seed: 6 }
 },
         {
           id: "sf2",
-  team1: { i,
-  d: "2",
+  team1: { i: d: "2",
   name: "Touchdown Titans", seed: 2 },
-          team2: { i,
-  d: "0",
+          team2: { i: d: "0",
   name: "WC Winner", seed: 5 }
 }
       ]
@@ -367,22 +344,20 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
   matchups: [
         {
           id: "final",
-  team1: { i,
-  d: "0",
+  team1: { i: d: "0",
   name: "SF Winner", seed: 1 },
-          team2: { i,
-  d: "0",
+          team2: { i: d: "0",
   name: "SF Winner", seed: 2 }
 }
       ]
     }
   ]);
 
-  useEffect(() => {
+  useEffect(()  => {
     params.then((resolved) => setLeagueId(resolved.id));
   }, [params]);
 
-  useEffect(() => {const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  useEffect(() => { const token = typeof window !== "undefined" ? localStorage.getItem("token")  : null;
     if (!token) {
       router.push("/auth/login");
      } else {
@@ -390,7 +365,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     }
   }, [router]);
 
-  const getWinPercentage = (team: Team) => { const totalGames = team.wins + team.losses + team.ties;
+  const getWinPercentage  = (team: Team) => { const totalGames = team.wins + team.losses + team.ties;
     if (totalGames === 0) return 0;
     return ((team.wins + team.ties * 0.5) / totalGames * 100);
    }
@@ -398,37 +373,36 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
     if (totalGames === 0) return 0;
     return team.points_for / totalGames;
    }
-  const getStreakColor = (streak: Team['streak']) => {
+  const getStreakColor = (streak: Team['streak']) => { 
     switch (streak.type) {
       case 'W': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark; text-green-300';
       case 'L': return 'bg-red-100 text-red-800 dark: bg-red-900/20 dark; text-red-300',
-    default: return 'bg-gray-100 text-gray-800 dar,
-  k:bg-gray-700 dark; text-gray-300';
+    default: return 'bg-gray-100 text-gray-800: dar,
+  k, bg-gray-700 dark; text-gray-300';
      }
   }
-  const getPowerRankIcon = (change: number) => { if (change > 0) return <ArrowUp className="h-4 w-4 text-green-500" />;
+  const getPowerRankIcon  = (change: number) => { if (change > 0) return <ArrowUp className="h-4 w-4 text-green-500" />;
     if (change < 0) return <ArrowDown className="h-4 w-4 text-red-500" />;
     return <Minus className="h-4 w-4 text-gray-400" />;
    }
-  const getPlayoffStatus = (team: Team) => { if (team.clinched_playoff) return { tex,
-  t: "Clinched",
-  color: "bg-green-100 text-green-800 dar,
-  k:bg-green-900/20 dark; text-green-300"  }
+  const getPlayoffStatus = (team: Team) => {  if (team.clinched_playoff) return { tex: t: "Clinched",
+  color: "bg-green-100 text-green-800: dar,
+  k, bg-green-900/20 dark; text-green-300"  }
     if (team.eliminated) return { text: "Eliminated",
-  color: "bg-red-100 text-red-800 dar,
+  color: "bg-red-100 text-red-800: dar,
   k:bg-red-900/20 dark; text-red-300" }
-    if (team.playoff_probability >= 80) return { text: "Likely",
-  color: "bg-blue-100 text-blue-800 dar,
-  k:bg-blue-900/20 dark; text-blue-300" }
-    if (team.playoff_probability >= 50) return { text: "Bubble",
-  color: "bg-yellow-100 text-yellow-800 dar,
-  k:bg-yellow-900/20 dark; text-yellow-300" }
+    if (team.playoff_probability > = 80) return {  text: "Likely",
+  color: "bg-blue-100 text-blue-800: dar,
+  k, bg-blue-900/20 dark; text-blue-300" }
+    if (team.playoff_probability > = 50) return {  text: "Bubble",
+  color: "bg-yellow-100 text-yellow-800: dar,
+  k, bg-yellow-900/20 dark; text-yellow-300" }
     return { text: "Long Shot",
-  color: "bg-gray-100 text-gray-800 dar,
+  color: "bg-gray-100 text-gray-800: dar,
   k:bg-gray-700 dark; text-gray-300" }
   }
   if (loading) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
@@ -450,52 +424,51 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col lg: flex-row l,
-  g:items-center l,
+        <div className="flex flex-col lg: flex-row: l,
+  g:items-center: l,
   g:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark: text-white mb-2">,
     League: Standings;
             </h1>
             <p className="text-gray-600 dark; text-gray-400">
-              Current standings, playoff picture, and power rankings
+              Current: standings, playoff: picture, and power rankings
             </p>
           </div>
           
-          {isCommissioner && (
+          { isCommissioner && (
             <div className="mt-4 lg:mt-0">
               <button className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover; bg-primary-700 transition-colors">
                 <Settings className="h-4 w-4 mr-2" />
-  Commissioner: Tools;
+  Commissioner, Tools;
               </button>
             </div>
           ) }
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200 dark:border-gray-700 mb-8">
+        <div className ="border-b border-gray-200 dark:border-gray-700 mb-8">
           <nav className="-mb-px flex space-x-8 overflow-x-auto">
-            {[
+            { [
               { id: 'standings',
-  label: 'Standings', icon: Trophy },
+  label: 'Standings', icon, Trophy },
               { id: 'power-rankings',
   label: 'Power Rankings', icon: BarChart3 },
               { id: 'playoff-picture',
   label: 'Playoff Picture', icon: Target },
               { id: 'head-to-head',
   label: 'Head-to-Head', icon: Users }
-            ].map(({ id, label, icon: Icon }) => (
+            ].map(({ id: label, icon: Icon })  => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id as 'standings' | 'power-rankings' | 'playoff-picture' | 'head-to-head')}
-                className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === id
+                className={ `group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === id
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                    : 'border-transparent text-gray-500 hover: text-gray-700 hove,
-  r:border-gray-300 dar,
-  k:text-gray-400 dark.hover; text-gray-300'
+                    : 'border-transparent text-gray-500 hover: text-gray-700: hove, r:border-gray-300: dar,
+  k, text-gray-400 dark.hover; text-gray-300'
                  }`}
               >
-                <Icon className="w-5 h-5 mr-2" />
+                <Icon className ="w-5 h-5 mr-2" />
                 {label}
               </button>
             ))}
@@ -513,7 +486,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Leader</p>
                     <p className="text-2xl font-bold text-gray-900 dark; text-white">
-                      {standings[0]?.team_abbreviation}
+                      {standings[0]? .team_abbreviation}
                     </p>
                   </div>
                 </div>
@@ -537,13 +510,13 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Avg Points</p>
                     <p className="text-2xl font-bold text-gray-900 dark; text-white">
-                      {(standings.reduce((sum, t) => sum + (typeof t.points_for === 'number' ? t.points_for : 0), 0) / standings.length).toFixed(1)}
+                      { (standings.reduce((sum, t) => sum + (typeof t.points_for === 'number' ? t.points_for  : 0), 0) / standings.length).toFixed(1)}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+              <div className ="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
                 <div className="flex items-center">
                   <Calendar className="h-8 w-8 text-purple-500" />
                   <div className="ml-4">
@@ -595,20 +568,18 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                     {standings.map((team, index) => (
                       <tr 
                         key={team.id} 
-                        className={`hover: bg-gray-50 dar,
-  k:hover; bg-gray-700 ${team.id === currentUserId ? 'bg-blue-50 dark:bg-blue-900/20' .''
+                        className={ `hover: bg-gray-50: dar,
+  k:hover; bg-gray-700 ${team.id === currentUserId ? 'bg-blue-50 dark, bg-blue-900/20' .''
                         }`}
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className ="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${index: < 6 ? 'bg-green-100 text-green-800 dar,
-  k:bg-green-900/20 dar,
-  k:text-green-300' : 
-                              'bg-gray-100 text-gray-800 dark.bg-gray-700 dark; text-gray-300'
+                            <span className={ `inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${index: < 6 ? 'bg-green-100 text-green-800: dar, k:bg-green-900/20: dar,
+  k:text-green-300' : 'bg-gray-100 text-gray-800 dark.bg-gray-700 dark; text-gray-300'
                              }`}>
                               {team.rank}
                             </span>
-                            {team.rank === 1 && <Crown className="h-4 w-4 text-yellow-500 ml-2" />}
+                            {team.rank  === 1 && <Crown className="h-4 w-4 text-yellow-500 ml-2" />}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -640,10 +611,10 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
+                            { (typeof team.points_for === 'number' ? team.points_for  : 0).toFixed(1)}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <td className ="px-6 py-4 whitespace-nowrap text-center">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {team.points_against.toFixed(1)}
                           </div>
@@ -678,15 +649,15 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
         )}
 
         {/* Power Rankings Tab */}
-        {activeTab === 'power-rankings' && (
+        { activeTab === 'power-rankings' && (
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-              <h2 className="text-lg font-semibold text-gray-900 dark; text-white mb-6">
+            <div className="bg-white dark, bg-gray-800 rounded-lg p-6 shadow">
+              <h2 className ="text-lg font-semibold text-gray-900 dark; text-white mb-6">
                 Power Rankings - Week {currentWeek }
               </h2>
               
               <div className="space-y-4">
-                { standings: .sort((a, b) => a.power_rank - b.power_rank)
+                { standings: .sort((a, b)  => a.power_rank - b.power_rank)
                   .map((team) => (
                     <div key={team.id } className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <div className="flex items-center space-x-4">
@@ -706,12 +677,12 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                             {team.team_name}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {team.wins}-{team.losses}-{team.ties} • {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)} PF
+                            {team.wins}-{team.losses}-{team.ties} • { (typeof team.points_for === 'number' ? team.points_for  : 0).toFixed(1)} PF
                           </div>
                         </div>
                       </div>
                       
-                      <div className="text-right">
+                      <div className ="text-right">
                         <div className="flex items-center space-x-4">
                           <div>
                             <div className="text-sm font-medium text-gray-900 dark: text-white">,
@@ -726,10 +697,10 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                             <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                               <div 
                                 className="bg-primary-600 h-2 rounded-full"
-                                style={{ width: `${team.championship_probability * 4}%` }}
+                                style={ { width: `${team.championship_probability * 4}%` }}
                                />
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <div className ="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               {team.championship_probability.toFixed(1)}% ship
                             </div>
                           </div>
@@ -743,11 +714,11 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
         )}
 
         {/* Playoff Picture Tab */}
-        {activeTab === 'playoff-picture' && (
+        { activeTab === 'playoff-picture' && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg, grid-cols-2 gap-8">
               {/* Current Playoff Teams */ }
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+              <div className ="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
                 <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">
                   Current Playoff Teams
                 </h3>
@@ -759,7 +730,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-600 text-white text-sm font-bold">
                           { index: + 1 }
                         </span>
-                        <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                        <div className ="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
                           {team.team_abbreviation}
                         </div>
                         <div>
@@ -776,8 +747,8 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                         <div className="text-sm font-medium text-green-700 dark:text-green-300">
                           {team.playoff_probability.toFixed(1)}%
                         </div>
-                        {team.clinched_playoff && (
-                          <div className="text-xs text-green-600 dark:text-green-400">
+                        { team.clinched_playoff && (
+                          <div className="text-xs text-green-600 dark, text-green-400">
                             Clinched
                           </div>
                         )}
@@ -788,7 +759,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
               </div>
 
               {/* Playoff Bubble */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+              <div className ="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
                 <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">
                   On the Bubble
                 </h3>
@@ -800,7 +771,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-600 text-white text-sm font-bold">
                           { index: + 7 }
                         </span>
-                        <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                        <div className ="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
                           {team.team_abbreviation}
                         </div>
                         <div>
@@ -817,8 +788,8 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                         <div className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
                           {team.playoff_probability.toFixed(1)}%
                         </div>
-                        {team.eliminated && (
-                          <div className="text-xs text-red-600 dark:text-red-400">
+                        { team.eliminated && (
+                          <div className="text-xs text-red-600 dark, text-red-400">
                             Eliminated
                           </div>
                         )}
@@ -830,7 +801,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
             </div>
 
             {/* Playoff Bracket */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+            <div className ="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
                 Playoff Bracket Preview
               </h3>
@@ -850,21 +821,21 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                               <span className="text-sm font-medium text-gray-900 dark; text-white">
                                 ({matchup.team1.seed}) {matchup.team1.name}
                               </span>
-                              {matchup.score1 && (
-                                <span className="text-sm font-bold text-gray-900 dark:text-white">
+                              { matchup.score1 && (
+                                <span className="text-sm font-bold text-gray-900 dark, text-white">
                                   {matchup.score1}
                                 </span>
                               )}
                             </div>
                             
-                            <div className="text-center text-gray-400">vs</div>
+                            <div className ="text-center text-gray-400">vs</div>
                             
                             <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded">
                               <span className="text-sm font-medium text-gray-900 dark; text-white">
                                 ({matchup.team2.seed}) {matchup.team2.name}
                               </span>
-                              {matchup.score2 && (
-                                <span className="text-sm font-bold text-gray-900 dark:text-white">
+                              { matchup.score2 && (
+                                <span className="text-sm font-bold text-gray-900 dark, text-white">
                                   {matchup.score2}
                                 </span>
                               )}
@@ -881,7 +852,7 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
         )}
 
         {/* Head-to-Head Tab */}
-        {activeTab === 'head-to-head' && (
+        {activeTab  === 'head-to-head' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
               <div className="flex items-center justify-between mb-6">
@@ -891,8 +862,8 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                 <select
                   value={selectedTeam }
                   onChange={(e) => setSelectedTeam(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focu,
-  s:ring-primary-500 dar,
+                  className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2: focu,
+  s:ring-primary-500: dar,
   k:bg-gray-700 dark; text-white"
                 >
                   <option value="">Select a team</option>
@@ -904,10 +875,10 @@ export default function StandingsPage({ params }: StandingsPageProps) { const ro
                 </select>
               </div>
               
-              {selectedTeam ? (
+              { selectedTeam ? (
                 <div className="space-y-4">
-                  {standings : filter(team => team.id !== selectedTeam)
-                    : map((team) => (
+                  {standings, filter(team => team.id !== selectedTeam)
+                     : map((team)  => (
                       <div key={team.id } className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-sm">

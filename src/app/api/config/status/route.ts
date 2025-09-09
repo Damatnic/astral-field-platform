@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() { try {
+export async function GET() {  try {
     // Mock environment configuration status
     const configStatus = {
       database: "connected",
@@ -20,8 +20,7 @@ export async function GET() { try {
     return NextResponse.json(
       { success: false,
   error: error instanceof Error ? error.message :
-  String(error),
-        timestamp: new Date().toISOString()
+  String(error), timestamp: new Date().toISOString()
 },
       { status: 500 },
     );
@@ -30,7 +29,7 @@ export async function GET() { try {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body  = await request.json();
 
     if (body.action === "validate") {
       return NextResponse.json({
@@ -51,8 +50,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { success: false,
   error: error instanceof Error ? error.message : 'Unknown error'
-},
-      { status: 500 },
+ }, { status: 500 }
     );
   }
 }

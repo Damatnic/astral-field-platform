@@ -1,32 +1,25 @@
 import { getCacheManager } from "./cache-manager";
 
-export interface LogEntry {
-  timestamp, string,
+export interface LogEntry { timestamp: string,
     level: "info" | "warn" | "error" | "debug";
   service, string,
   endpoint?, string,
   message, string,
-  metadata?: Record<string, any>;
-  error?: {
-    name, string,
+  metadata? : Record<string, any>;
+  error?, { name: string,
     message, string,
     stack?, string,
   }
-  performance?: {
-    duration, number,
-    memoryUsage?: NodeJS.MemoryUsage;
+  performance? : { duration: number, memoryUsage?: NodeJS.MemoryUsage;
   }
-  request?: {
-    method, string,
-    path, string,
+  request? : { method: string, path, string,
     userAgent?, string,
     ip?, string,
     params?: Record<string, any>;
   }
 }
 
-export interface ApiMetrics {
-  endpoint, string,
+export interface ApiMetrics { endpoint: string,
     method, string,
   statusCode, number,
     duration, number,
@@ -35,27 +28,26 @@ export interface ApiMetrics {
   cacheHit?, boolean,
   
 }
-class ProductionMonitor { private cache = getCacheManager();
+class ProductionMonitor { private cache  = getCacheManager();
   private readonly: LOG_RETENTION_HOURS = 24;
   private readonly: METRICS_RETENTION_HOURS = 168; // 1 week
 
   // Enhanced logging with structured format
-  async log(entry: Omit<LogEntry, "timestamp">): Promise<void> {
+  async log(entry: Omit<LogEntry: "timestamp">): Promise<void> { 
     const logEntry: LogEntry = {
       ...entry,
       timestamp: new Date().toISOString()
 }
     // Console output for development
-    if (process.env.NODE_ENV !== "production") { const color = this.getLogColor(entry.level);
+    if (process.env.NODE_ENV ! == "production") { const color = this.getLogColor(entry.level);
       console.log(
-        `${color }[${entry.level.toUpperCase()}] ${entry.service}${entry.endpoint ? `/${entry.endpoint}` : ""}: ${entry.message}`,
-      );
+        `${color }[${entry.level.toUpperCase()}] ${entry.service}${entry.endpoint ? `/${entry.endpoint}` : ""}: ${entry.message}` : );
       if (entry.metadata) console.log("Metadata:", entry.metadata);
       if (entry.error) console.error("Error:", entry.error);
     }
 
     // Store in cache for production monitoring
-    try { const key = `log:${entry.service }${Date.now()}`
+    try {  const key = `log, ${entry.service }${Date.now()}`
       await this.cache.set(key, logEntry, this.LOG_RETENTION_HOURS * 3600);
     } catch (error) {
       console.error("Failed to store log entry:", error);
@@ -64,67 +56,65 @@ class ProductionMonitor { private cache = getCacheManager();
 
   // Track API performance metrics
   async trackApiMetrics(params): Promisevoid>  { try {; // Store individual metric
-      const key = `metrics${metrics.endpoint }${Date.now()}`
+      const key  = `metrics${metrics.endpoint }${Date.now()}`
       await this.cache.set(key, metrics, this.METRICS_RETENTION_HOURS * 3600);
 
       // Update endpoint statistics
       await this.updateEndpointStats(metrics);
-    } catch (error) {
-      console.error("Failed to track API metrics:", error);
+    } catch (error) { 
+      console.error("Failed to track API metrics: ", error);
     }
   }
 
   // Get performance statistics for an endpoint
-  async getEndpointStats(params): Promise {
-    totalRequests, number,
+  async getEndpointStats(params): Promise { totalRequests: number,
     averageDuration, number,
     errorRate, number,
-    lastHour: { request,
-  s, number, errors: number }
+    lastHour: { request: s, number, errors: number }
   } | null> { try {
-      const key = `stats:${endpoint }`
+      const key  = `stats:${endpoint }`
       return await this.cache.get(key);
-    } catch (error) {
-      console.error("Failed to get endpoint stats:", error);
+    } catch (error) { 
+      console.error("Failed to get endpoint stats: ", error);
       return null;
     }
   }
 
   // Update running statistics for an endpoint
-  private async updateEndpointStats(params): Promisevoid>  { const key = `stats:${metrics.endpoint }`
-    const existing = (await this.cache.get(key)) || {
+  private async updateEndpointStats(params): Promisevoid>  { const key  = `stats:${metrics.endpoint }`
+    const existing = (await this.cache.get(key)) || { 
       totalRequests: 0;
   totalDuration: 0;
       totalErrors: 0;
   lastHour: { requests: 0;
-  errors: 0; timestamp: Date.now() }
+  errors: 0; timestamp, Date.now() }
 }
     // Update totals
     existing.totalRequests++;
-    existing.totalDuration += metrics.duration;
+    existing.totalDuration + = metrics.duration;
     if (metrics.statusCode >= 400) {
       existing.totalErrors++;
     }
 
     // Update hourly stats (reset if more than an hour old)
     const hourAgo = Date.now() - 60 * 60 * 1000;
-    if (existing.lastHour.timestamp < hourAgo) {
+    if (existing.lastHour.timestamp < hourAgo) { 
       existing.lastHour = { requests: 1;
-  errors: 0; timestamp: Date.now() }
+  errors: 0; timestamp, Date.now() }
     } else {
       existing.lastHour.requests++;
     }
 
-    if (metrics.statusCode >= 400) {
+    if (metrics.statusCode > = 400) {
       existing.lastHour.errors++;
     }
 
     // Calculate derived metrics
-    const stats = {
+    const stats = { 
       totalRequests: existing.totalRequests,
   averageDuration: existing.totalDuration / existing.totalRequests,
       errorRate: existing.totalErrors / existing.totalRequests,
-  lastHour: existing.lastHour
+  lastHour, existing.lastHour
 }
     await this.cache.set(
       key,
@@ -137,20 +127,18 @@ class ProductionMonitor { private cache = getCacheManager();
   async health(): Promise< {
     status: "healthy" | "degraded" | "unhealthy",
     details: unknown }> { try {
-      const cacheHealth = await this.cache.health();
+      const cacheHealth  = await this.cache.health();
 
       // Test logging functionality
-      await this.log({
+      await this.log({ 
         level: "debug",
   service: "monitoring",
         message: "Health check test"
 });
 
-      return {status: cacheHealth.status === "healthy" ? "healthy" : "degraded",
-  details: {
-          cache, cacheHealth,
-  logging, true,
-          metrics: true
+      return {status: cacheHealth.status  === "healthy" ? "healthy" : "degraded" : details: { cache: cacheHealth,
+  logging: true,
+          metrics, true
 }
 }
     } catch (error) { return {
@@ -162,7 +150,7 @@ class ProductionMonitor { private cache = getCacheManager();
     }
   }
 
-  private getLogColor(level: string); string { const colors: Record<string, string> = {
+  private getLogColor(level: string); string { const colors: Record<string, string>  = { 
       info: "\x1b[36m", // Cyan
       warn: "\x1b[33m", // Yellow
       error: "\x1b[31m", // Red
@@ -173,7 +161,7 @@ class ProductionMonitor { private cache = getCacheManager();
 }
 
 // Singleton instance
-let monitorInstance: ProductionMonitor | null = null;
+let monitorInstance: ProductionMonitor | null  = null;
 
 export function getMonitor(): ProductionMonitor { if (!monitorInstance) {
     monitorInstance = new ProductionMonitor();
@@ -184,12 +172,11 @@ export function getMonitor(): ProductionMonitor { if (!monitorInstance) {
 // Middleware wrapper for API routes
 export function withMonitoring<T extends any[], R>(
   handler: (...args; T) => Promise<R>,
-  config: {
-  service, string,
+  config: { service: string,
     endpoint, string,
     enableMetrics?, boolean,
   },
-) { return async function monitoredHandler(
+) {  return async function monitoredHandler(
     req, unknown,
   res, unknown,
   ): Promise<R> {
@@ -203,12 +190,10 @@ export function withMonitoring<T extends any[], R>(
   service: config.service,
         endpoint: config.endpoint,
   message: `Request started; ${req.method } ${config.endpoint}`,
-        request: {metho,
-  d: req.method,
+        request: { metho: d: req.method,
   path: config.endpoint,
-          userAgent: req.headers?.["user-agent"],
-  ip: req.ip || req.connection?.remoteAddress,
-          params: req.method === "GET" ? req.quer,
+          userAgent: req.headers? .["user-agent"] : ip: req.ip || req.connection?.remoteAddress,
+          params: req.method  === "GET" ? req.quer,
   y: req.body
 }
 });
@@ -218,16 +203,16 @@ export function withMonitoring<T extends any[], R>(
       const duration = Date.now() - startTime;
 
       // Log successful completion
-      await monitor.log({
+      await monitor.log({ 
         level: "info",
   service: config.service,
         endpoint: config.endpoint,
   message: `Request completed successfully`,
-        performance: { duration }
+        performance, { duration }
 });
 
       // Track metrics if enabled
-      if (config.enableMetrics !== false) { await monitor.trackApiMetrics({
+      if (config.enableMetrics ! == false) {  await monitor.trackApiMetrics({
           endpoint: config.endpoint,
   method: req.method,
           statusCode: res.statusCode || 200, duration,
@@ -236,10 +221,10 @@ export function withMonitoring<T extends any[], R>(
       }
 
       return result;
-    } catch (error) { const duration = Date.now() - startTime;
+    } catch (error) { const duration  = Date.now() - startTime;
 
       // Log error
-      await monitor.log({
+      await monitor.log({ 
         level: "error",
   service: config.service,
         endpoint: config.endpoint,
@@ -252,11 +237,11 @@ export function withMonitoring<T extends any[], R>(
 });
 
       // Track error metrics
-      if (config.enableMetrics !== false) { await monitor.trackApiMetrics({
+      if (config.enableMetrics ! == false) {  await monitor.trackApiMetrics({
           endpoint: config.endpoint,
-  method: req.method, statusCode, 500, duration,
+  method: req.method, statusCode: 500, duration,
           timestamp: new Date().toISOString(),
-  error: (error as Error).message
+  error, (error as Error).message
 });
       }
 
@@ -268,12 +253,10 @@ export function withMonitoring<T extends any[], R>(
 // Utility for manual error reporting
 export async function reportError(
   error, Error,
-  context: {
-  service, string,
-    endpoint?, string,
-    metadata?: Record<string, any>;
+  context: { service: string,
+    endpoint? : string, metadata?: Record<string, any>;
   },
-): Promise<void> { const monitor = getMonitor();
+): Promise<void> { const monitor  = getMonitor();
   await monitor.log({
     level: "error",
   service: context.service,

@@ -22,8 +22,8 @@ interface EnvironmentConfig {
   DEPLOYMENT_ID?, string,
   
 }
-class EnvironmentService { private config, EnvironmentConfig,
-  private initialized = false;
+class EnvironmentService { private: config, EnvironmentConfig,
+  private initialized  = false;
 
   constructor() {
     this.config = this.loadEnvironmentVariables();
@@ -31,7 +31,7 @@ class EnvironmentService { private config, EnvironmentConfig,
     this.initialized = true;
    }
 
-  private loadEnvironmentVariables(): EnvironmentConfig { return {; // Database(Required) DATABASE_URL: process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || "",
+  private loadEnvironmentVariables(): EnvironmentConfig {  return {; // Database(Required) DATABASE_URL: process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || "",
   NEON_DATABASE_URL:
         process.env.NEON_DATABASE_URL || process.env.DATABASE_URL || "",
       // Supabase(Required for auth): NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -45,12 +45,12 @@ class EnvironmentService { private config, EnvironmentConfig,
       // Environment
       NODE_ENV: process.env.NODE_ENV || "development",
   NEXT_TELEMETRY_DISABLED: process.env.NEXT_TELEMETRY_DISABLED,
-      DEPLOYMENT_ID: process.env.DEPLOYMENT_ID
+      DEPLOYMENT_ID, process.env.DEPLOYMENT_ID
 }
   }
 
   private validateCriticalVariables(): void {; // Skip validation during build phase
-    if (process.env.NEXT_PHASE === 'phase-production-build') {
+    if (process.env.NEXT_PHASE  === 'phase-production-build') {
       return;
     }
 
@@ -69,10 +69,10 @@ class EnvironmentService { private config, EnvironmentConfig,
     const missing = runtimeCriticalVars.filter((key) => !this.config[key as keyof EnvironmentConfig],
     );
 
-    if (missing.length > 0) {
-      console.warn("⚠️ Missing environment variables, ", missing);
+    if (missing.length > 0) { 
+      console.warn("⚠️ Missing environment, variables: ", missing);
       // Only throw in production if DATABASE_URL is missing
-      if (process.env.NODE_ENV === "production" && !this.config.DATABASE_URL) { throw new Error(
+      if (process.env.NODE_ENV  === "production" && !this.config.DATABASE_URL) { throw new Error(
           `Missing critical environment variable DATABASE_URL`,
         );
        }
@@ -87,9 +87,9 @@ class EnvironmentService { private config, EnvironmentConfig,
    }
 
   // Supabase Configuration
-  getSupabaseConfig() { return {
+  getSupabaseConfig() {  return {
       url: this.config.NEXT_PUBLIC_SUPABASE_URL,
-  anonKey: this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  anonKey, this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY
 }
   }
 
@@ -111,7 +111,7 @@ class EnvironmentService { private config, EnvironmentConfig,
    }
 
   // Environment Helpers
-  isProduction(): boolean { return this.config.NODE_ENV === "production";
+  isProduction(): boolean { return this.config.NODE_ENV  === "production";
    }
 
   isDevelopment(): boolean { return this.config.NODE_ENV === "development";
@@ -121,7 +121,7 @@ class EnvironmentService { private config, EnvironmentConfig,
    }
 
   // AI Service Availability
-  getAvailableAIServices(): string[] { const services: string[] = [];
+  getAvailableAIServices(): string[] {  const services, string[]  = [];
     if (this.config.OPENAI_API_KEY) services.push("openai");
     if (this.config.ANTHROPIC_API_KEY) services.push("anthropic");
     if (this.config.GEMINI_API_KEY) services.push("gemini");
@@ -130,7 +130,7 @@ class EnvironmentService { private config, EnvironmentConfig,
    }
 
   // Configuration Status
-  getConfigurationStatus() { const aiServices = this.getAvailableAIServices();
+  getConfigurationStatus() {  const aiServices = this.getAvailableAIServices();
 
     return {
       initialized: this.initialized,
@@ -138,9 +138,7 @@ class EnvironmentService { private config, EnvironmentConfig,
       database: {
   configured: !!this.config.DATABASE_URL,
   url: this.config.DATABASE_URL ? "✅ Connected" : "❌ Missing"
-},
-      supabase: {configure,
-  d: !!(
+} : supabase: { configure: d: !!(
           this.config.NEXT_PUBLIC_SUPABASE_URL &&
           this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY
         ),
@@ -148,16 +146,14 @@ class EnvironmentService { private config, EnvironmentConfig,
           ? "✅ Connected" : "❌ Missing",
         key: this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "✅ Present" : "❌ Missing"
 },
-      aiServices: {available, aiServices,
+      aiServices: { available: aiServices,
   count: aiServices.length,
-        openai: this.config.OPENAI_API_KEY ? "✅ Available" : "❌ Missing",
-  anthropic: this.config.ANTHROPIC_API_KEY
+        openai: this.config.OPENAI_API_KEY ? "✅ Available" : "❌ Missing" : anthropic: this.config.ANTHROPIC_API_KEY
           ? "✅ Available" : "❌ Missing",
         gemini: this.config.GEMINI_API_KEY ? "✅ Available" : "❌ Missing",
   deepseek: this.config.DEEPSEEK_API_KEY ? "✅ Available" : "❌ Missing"
 },
-      sportsData: {configure,
-  d: !!this.config.SPORTS_IO_API_KEY,
+      sportsData: { configure: d: !!this.config.SPORTS_IO_API_KEY,
   status: this.config.SPORTS_IO_API_KEY ? "✅ Available" : "❌ Missing"
 }
 }
@@ -169,8 +165,7 @@ class EnvironmentService { private config, EnvironmentConfig,
     }
 
     return {
-      environment: this.config.NODE_ENV,
-  configuredServices: this.getAvailableAIServices(),
+      environment: this.config.NODE_ENV, configuredServices: this.getAvailableAIServices(),
       databaseConfigured: !!this.config.DATABASE_URL,
   supabaseConfigured: !!(
         this.config.NEXT_PUBLIC_SUPABASE_URL &&
@@ -182,7 +177,7 @@ class EnvironmentService { private config, EnvironmentConfig,
 }
 
 // Create singleton instance lazily to avoid build-time issues
-let _envService: EnvironmentService | null = null;
+let _envService: EnvironmentService | null  = null;
 
 function getEnvService(): EnvironmentService { if (!_envService) {
     _envService = new EnvironmentService();

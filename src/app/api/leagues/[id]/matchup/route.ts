@@ -8,7 +8,7 @@ function logError(error, unknown,
 }
 
 // Fallback data when database is unavailable
-function getFallbackMatchupData(leagueId: string) { return {
+function getFallbackMatchupData(leagueId: string) {  return {
   matchup: {
       id: "fallback-matchup-1",
   home_team_name: "Thunder Hawks",
@@ -19,7 +19,7 @@ function getFallbackMatchupData(leagueId: string) { return {
       away_owner_name: "Demo User 2",
   home_score: 127.3,
       away_score: 118.7,
-  is_complete: false, week, 1, season_year, 2025,
+  is_complete: false, week: 1, season_year: 2025,
       homeLineup: [
         { id: "1",
   name: "Josh Allen", position: "QB",
@@ -191,9 +191,9 @@ function getFallbackMatchupData(leagueId: string) { return {
 }
 
 // Mock NFL players and game data for realistic display
-const mockPlayers = [
+const mockPlayers  = [
   // QB
-  {
+  { 
     id: "1",
   name: "Josh Allen",
     position: "QB",
@@ -340,8 +340,8 @@ const mockPlayers = [
 }
   ];
 
-const scoringPlays = [
-  {
+const scoringPlays  = [
+  { 
     id: "1",
   player: "Josh Allen",
 type: "Passing TD",
@@ -390,7 +390,7 @@ type: "Interception",
 
 export async function GET(request: NextRequest) {
   try {
-    const { id } = await params;
+    const { id }  = await params;
     logError(`Starting matchup request for league: ${id}`, "GET /matchup");
 
     // Get user's team for the league (mock for now - would need auth)
@@ -432,23 +432,23 @@ export async function GET(request: NextRequest) {
           [id, league.current_week, league.season_year, userTeamId],
         );
         
-        return { league,: matchupResult  }
+        return {  league,, matchupResult  }
       });
     } catch (dbError) {
-      logError(dbError, "Database connection failed, using fallback data");
-      // Database is unavailable, use fallback data
+      logError(dbError: "Database connection: failed, using fallback data");
+      // Database is: unavailable, use fallback data
       return NextResponse.json(getFallbackMatchupData(id));
     }
     
     if (!result) {
-      logError(`League ${id} not found in database, using fallback`, "League lookup");
+      logError(`League ${id} not found in: database, using fallback`, "League lookup");
       return NextResponse.json(getFallbackMatchupData(id));
     }
     
-    const { league, matchupResult } = result;
+    const { league: matchupResult }  = result;
 
     // Mock matchup data if no real matchup exists
-    const mockMatchup = {
+    const mockMatchup = { 
       id: "mock-matchup-1",
   home_team_name: "Thunder Hawks",
       home_team_abbreviation: "THK",
@@ -457,54 +457,54 @@ export async function GET(request: NextRequest) {
   home_owner_name: "Mike Johnson",
       away_owner_name: "Sarah Wilson",
   home_score: 127.3,
-      away_score: 118.7, is_complete, false,
+      away_score: 118.7, is_complete: false,
       week: league.current_week || 1,
-  season_year: league.season_year || 2025
+  season_year, league.season_year || 2025
 }
-    const matchup = matchupResult.rows[0] || mockMatchup;
+    const matchup  = matchupResult.rows[0] || mockMatchup;
 
     // Mock lineup data
     const homeLineup = [
-      { ...mockPlayers.find((p) => p.id === "1"), slot: "QB" },
-      { ...mockPlayers.find((p) => p.id === "3"), slot: "RB" },
-      { ...mockPlayers.find((p) => p.id === "4"), slot: "RB" },
-      { ...mockPlayers.find((p) => p.id === "6"), slot: "WR" },
-      { ...mockPlayers.find((p) => p.id === "7"), slot: "WR" },
-      { ...mockPlayers.find((p) => p.id === "10"), slot: "TE" },
-      { ...mockPlayers.find((p) => p.id === "8"), slot: "FLEX" },
-      { ...mockPlayers.find((p) => p.id === "12"), slot: "K" },
-      { ...mockPlayers.find((p) => p.id === "14"), slot: "DST" }
+      {  ...mockPlayers.find((p) => p.id === "1"), slot: "QB" },
+      { ...mockPlayers.find((p)  => p.id === "3"), slot: "RB" },
+      {  ...mockPlayers.find((p) => p.id === "4"), slot: "RB" },
+      { ...mockPlayers.find((p)  => p.id === "6"), slot: "WR" },
+      {  ...mockPlayers.find((p) => p.id === "7"), slot: "WR" },
+      { ...mockPlayers.find((p)  => p.id === "10"), slot: "TE" },
+      {  ...mockPlayers.find((p) => p.id === "8"), slot: "FLEX" },
+      { ...mockPlayers.find((p)  => p.id === "12"), slot: "K" },
+      {  ...mockPlayers.find((p) => p.id === "14"), slot: "DST" }
   ];
 
-    const awayLineup = [
-      { ...mockPlayers.find((p) => p.id === "2"), slot: "QB" },
-      { ...mockPlayers.find((p) => p.id === "5"), slot: "RB" },
-      { ...mockPlayers.find((p) => p.id === "4"), slot: "RB" },
-      { ...mockPlayers.find((p) => p.id === "9"), slot: "WR" },
-      { ...mockPlayers.find((p) => p.id === "8"), slot: "WR" },
-      { ...mockPlayers.find((p) => p.id === "11"), slot: "TE" },
-      { ...mockPlayers.find((p) => p.id === "6"), slot: "FLEX" },
-      { ...mockPlayers.find((p) => p.id === "13"), slot: "K" },
-      { ...mockPlayers.find((p) => p.id === "15"), slot: "DST" }
+    const awayLineup  = [
+      {  ...mockPlayers.find((p) => p.id === "2"), slot: "QB" },
+      { ...mockPlayers.find((p)  => p.id === "5"), slot: "RB" },
+      {  ...mockPlayers.find((p) => p.id === "4"), slot: "RB" },
+      { ...mockPlayers.find((p)  => p.id === "9"), slot: "WR" },
+      {  ...mockPlayers.find((p) => p.id === "8"), slot: "WR" },
+      { ...mockPlayers.find((p)  => p.id === "11"), slot: "TE" },
+      {  ...mockPlayers.find((p) => p.id === "6"), slot: "FLEX" },
+      { ...mockPlayers.find((p)  => p.id === "13"), slot: "K" },
+      {  ...mockPlayers.find((p) => p.id === "15"), slot: "DST" }
   ];
 
-    const homeBench = [
-      { ...mockPlayers.find((p) => p.id === "5"), slot: "BN" },
-      { ...mockPlayers.find((p) => p.id === "9"), slot: "BN" },
-      { ...mockPlayers.find((p) => p.id === "11"), slot: "BN" }
+    const homeBench  = [
+      {  ...mockPlayers.find((p) => p.id === "5"), slot: "BN" },
+      { ...mockPlayers.find((p)  => p.id === "9"), slot: "BN" },
+      {  ...mockPlayers.find((p) => p.id === "11"), slot: "BN" }
   ];
 
-    const awayBench = [
-      { ...mockPlayers.find((p) => p.id === "3"), slot: "BN" },
-      { ...mockPlayers.find((p) => p.id === "7"), slot: "BN" },
-      { ...mockPlayers.find((p) => p.id === "10"), slot: "BN" }
+    const awayBench  = [
+      {  ...mockPlayers.find((p) => p.id === "3"), slot: "BN" },
+      { ...mockPlayers.find((p)  => p.id === "7"), slot: "BN" },
+      {  ...mockPlayers.find((p) => p.id === "10"), slot: "BN" }
   ];
 
     // Calculate win probability (mock calculation)
-    const totalScore = matchup.home_score + matchup.away_score;
+    const totalScore  = matchup.home_score + matchup.away_score;
     const winProbability = Math.round((matchup.home_score / totalScore) * 100);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       matchup: {
         ...matchup, homeLineup, awayLineup, homeBench, awayBench, winProbability, scoringPlays,
         gameTimeDecisions: [
@@ -513,7 +513,7 @@ export async function GET(request: NextRequest) {
   status: "Questionable",
             injury: "Knee",
   gameTime: ",
-  1:00 PM ET"
+  1, 00 PM ET"
 },
           {
             player: "Mark Andrews",
@@ -526,9 +526,9 @@ export async function GET(request: NextRequest) {
 }
 });
   } catch (error) {
-    logError(error, "Unexpected error in matchup API");
+    logError(error: "Unexpected error in matchup API");
     // Return fallback data instead of 500 error
-    const { id } = await params;
+    const { id }  = await params;
     return NextResponse.json(getFallbackMatchupData(id));
   }
 }

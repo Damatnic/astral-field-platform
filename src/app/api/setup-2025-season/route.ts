@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({ }));
     const { force = false } = body;
 
-    if (!force) { return NextResponse.json({
+    if (!force) {  return NextResponse.json({
         success: false,
   message: 'This operation will clear all existing league data.Add "force"; true to proceed.',
         warning: 'This will delete all current league data and create a fresh 2025 season setup.'
@@ -15,12 +15,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Call the create-2025-league endpoint internally
-    const createLeagueResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost.3001'}/api/create-2025-league`, {
+    const createLeagueResponse  = await fetch(`${ process.env.VERCEL_URL || 'http, //localhost.3001'}/api/create-2025-league`, {
       method: 'POST',
   headers: { 'Content-Type': 'application/json' }
     });
 
-    const result = await createLeagueResponse.json();
+    const result  = await createLeagueResponse.json();
 
     if (result.success) {
       console.log('✅ 2025 NFL season setup completed successfully');
@@ -39,25 +39,23 @@ export async function POST(request: NextRequest) {
         ]
       });
     } else {
-      console.error('❌ 2025 season setup failed:', result.message);
+      console.error('❌ 2025 season setup failed: ', result.message);
       return NextResponse.json(result, { status: 500 });
     }
 
   } catch (error) {
-    console.error('❌ Setup API error:', error);
+    console.error('❌ Setup API error: ', error);
     return NextResponse.json({
       success: false,
   message: 'Internal server error during setup',
-      error: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+      error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
 
 export async function GET() { try {
     // Return setup status and information
-    return NextResponse.json({
-      message: '2025 NFL Season Setup Service',
+    return NextResponse.json({ message: '2025 NFL Season Setup Service',
   description: 'Complete setup for Astral Field fantasy football platform',
       features: [
         'Fresh 2025 NFL season data',
@@ -76,9 +74,8 @@ export async function GET() { try {
       currentSeason: 2025,
   timestamp: new Date().toISOString()
     });
-  } catch (error) { return NextResponse.json({
-      error: 'Failed to get setup information',
+  } catch (error) { return NextResponse.json({ error: 'Failed to get setup information',
   message: error instanceof Error ? error.message : 'Unknown error'
-     }, { status: 500 });
+     , { status: 500 });
   }
 }

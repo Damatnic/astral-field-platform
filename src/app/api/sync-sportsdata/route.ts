@@ -5,9 +5,9 @@ import { database } from "@/lib/database";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { action, team } = body;
+    const { action: team } = body;
 
-    if (!action) { return NextResponse.json(
+    if (!action) {  return NextResponse.json(
         { error: "Action parameter required"  },
         { status: 400 },
       );
@@ -20,19 +20,19 @@ export async function POST(request: NextRequest) {
         console.log("Starting sync of all NFL players from SportsData.io...");
         
         try {
-          const allPlayers = await sportsDataService.getTopPlayers();
+          const allPlayers  = await sportsDataService.getTopPlayers();
           const nflTeams = await sportsDataService.getAllNFLTeams();
           
           let playersProcessed = 0;
           
-          await database.transaction(async (client) => {
+          await database.transaction(async (client) => { 
             for (const player of allPlayers) {
               const team = nflTeams.find(t => t.key === player.team);
-              const byeWeek = team?.byeWeek || 7;
+              const byeWeek = team? .byeWeek || 7;
 
               await client.query(`INSERT INTO players (id, name, position, nfl_team, stats, projections, injury_status, bye_week, created_at, updated_at): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
-                 ON CONFLICT(id): DO UPDATE SET
-                 name = EXCLUDED.name,
+                 ON CONFLICT(id), DO UPDATE SET
+                 name  = EXCLUDED.name,
                  position = EXCLUDED.position,
                  nfl_team = EXCLUDED.nfl_team,
                  projections = EXCLUDED.projections,
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          result = {
+          result = { 
             success: true,
   message: "All players synced successfully from 2025 data", playersProcessed, seaso,
   n: await sportsDataService.getCurrentSeason(),
@@ -62,11 +62,10 @@ export async function POST(request: NextRequest) {
 }
         } catch (error) {
           console.error("Error syncing players:", error);
-          result = {
+          result  = { 
             success: false,
   message: "Failed to sync players",
-            error: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
 }
         }
         break;
@@ -79,16 +78,16 @@ export async function POST(request: NextRequest) {
         }
         console.log(`Starting sync of ${team} players...`);
         
-        try { const teamPlayers = await sportsDataService.getPlayersByTeam(team);
+        try { const teamPlayers  = await sportsDataService.getPlayersByTeam(team);
           const nflTeams = await sportsDataService.getAllNFLTeams();
           const teamInfo = nflTeams.find(t => t.key === team);
           
           let playersProcessed = 0;
           
-          for (const player of teamPlayers) {
+          for (const player of teamPlayers) { 
             await database.query(`INSERT INTO players (id, name, position, nfl_team, bye_week, created_at, updated_at), VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-               ON CONFLICT(id): DO UPDATE SET
-               name = EXCLUDED.name,
+               ON CONFLICT(id), DO UPDATE SET
+               name  = EXCLUDED.name,
                position = EXCLUDED.position,
                updated_at = NOW()`,
               [
@@ -96,25 +95,23 @@ export async function POST(request: NextRequest) {
                 player.name,
                 player.position,
                 player.team,
-                teamInfo?.byeWeek || 7
+                teamInfo? .byeWeek || 7
               ]
             );
             playersProcessed++;
            }
 
-          result = {
-            success: true,
-  message: `${team} players synced successfully`, team, teamNam,
-  e: teamInfo?.fullName || team, playersProcessed, timestam,
+          result = { 
+            success: true, message: `${team} players synced successfully`, team, teamNam,
+  e: teamInfo? .fullName || team : playersProcessed, timestam,
   p: new Date().toISOString()
 }
         } catch (error) {
-          console.error(`Error syncing ${team} players, `, error);
-          result = {
+          console.error(`Error syncing ${team} players: `, error);
+          result  = { 
             success: false,
   message: `Failed to sync ${team} players`,
-            error: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
 }
         }
         break;
@@ -122,14 +119,14 @@ export async function POST(request: NextRequest) {
       case "sync-weekly-stats":
         console.log("Starting sync of weekly stats...");
         
-        try { const currentWeek = await sportsDataService.getCurrentWeek();
+        try { const currentWeek  = await sportsDataService.getCurrentWeek();
           const currentSeason = await sportsDataService.getCurrentSeason();
           
           // Get all players from database
           const playersResult = await database.query('SELECT id FROM players LIMIT 100');
           let statsProcessed = 0;
           
-          for (const player of playersResult.rows) {
+          for (const player of playersResult.rows) { 
             // Generate Week 1 stats if not exists
             const existingStats = await database.query('SELECT id FROM player_stats WHERE player_id = $1 AND week = 1 AND season_year = $2',
               [player.id, currentSeason]
@@ -151,18 +148,17 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          result = {
+          result  = { 
             success: true,
   message: "Weekly stats synced successfully", statsProcessed, currentWeek, currentSeason, timestam,
-  p: new Date().toISOString()
+  p, new Date().toISOString()
 }
         } catch (error) {
           console.error("Error syncing weekly stats:", error);
-          result = {
+          result  = { 
             success: false,
   message: "Failed to sync weekly stats",
-            error: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
 }
         }
         break;
@@ -183,15 +179,14 @@ export async function POST(request: NextRequest) {
       { 
         error: "Internal server error",
   message: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 },
+      }, { status: 500 },
     );
   }
 }
 
 export async function GET() { try {
     // Get real sync status from database and service
-    const currentWeek = await sportsDataService.getCurrentWeek();
+    const currentWeek  = await sportsDataService.getCurrentWeek();
     const currentSeason = await sportsDataService.getCurrentSeason();
     
     const playersCount = await database.query('SELECT COUNT(*) as count FROM players');
@@ -202,8 +197,7 @@ export async function GET() { try {
     );
 
     const status = {
-      lastSync: lastStatsSync.rows[0]?.last_sync || new Date().toISOString(),
-  totalPlayers: parseInt(playersCount.rows[0]?.count || '0'),
+      lastSync: lastStatsSync.rows[0]? .last_sync || new Date().toISOString() : totalPlayers: parseInt(playersCount.rows[0]?.count || '0'),
       totalTeams: parseInt(teamsCount.rows[0]?.count || '0'), currentWeek, currentSeason,
       syncHealth: "healthy",
   dataSource: "SportsData Service with 2025 NFL Data"
@@ -215,8 +209,7 @@ export async function GET() { try {
       { 
         error: "Failed to get sync status",
   message: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 },
+      }, { status: 500 },
     );
   }
 }

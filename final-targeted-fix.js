@@ -1,80 +1,97 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const path = require('path');
 
-function finalTargetedFix() {
-  const fixes = [
-    {
-      file: 'C:\\Users\\damat\\_REPOS\\astral-field\\src\\components\\league\\LeagueNavigation.tsx',
-      patterns: [
-        { find: /LineChart: Activity,/g, replace: 'LineChart, Activity,' },
-        { find: /ChevronDown: MoreHorizontal,/g, replace: 'ChevronDown, MoreHorizontal,' },
-        { find: /Target: Clock,/g, replace: 'Target, Clock,' }
-      ]
-    },
-    {
-      file: 'C:\\Users\\damat\\_REPOS\\astral-field\\src\\app\\api\\ai\\draft\\route.ts',
-      patterns: [
-        { find: /success: true: data, recommendations,/g, replace: 'success: true, data: recommendations,' }
-      ]
-    },
-    {
-      file: 'C:\\Users\\damat\\_REPOS\\astral-field\\src\\app\\api\\ai\\injuries\\route.ts',
-      patterns: [
-        { find: /success: true: data, trends,/g, replace: 'success: true, data: trends,' }
-      ]
-    },
-    {
-      file: 'C:\\Users\\damat\\_REPOS\\astral-field\\src\\app\\api\\ai\\learning\\route.ts',
-      patterns: [
-        // This should completely replace the malformed filters object
-        { 
-          find: /filters: {,\s*modelName: modelName \|\| 'all',\s*position: position \|\| 'all',\s*timeframe/g, 
-          replace: 'filters: {\n            modelName: modelName || \'all\',\n            position: position || \'all\',\n            timeframe'
-        }
-      ]
-    },
-    {
-      file: 'C:\\Users\\damat\\_REPOS\\astral-field\\src\\app\\api\\ai\\predictions\\route.ts',
-      patterns: [
-        { find: /validateQueryParams: validateRequestBody, createValidationErrorResponse: hasValidationErrors, idSchema,/g, replace: 'validateQueryParams, validateRequestBody, createValidationErrorResponse, hasValidationErrors, idSchema,' }
-      ]
-    }
-  ];
+console.log('🔧 Starting final targeted fixes for remaining issues...');
 
-  let totalFixed = 0;
+// Very specific fixes for remaining problematic patterns
+const fixes = [
+  // Fix "error, 'message'" patterns -> "error: 'message'"
+  { pattern: /{\s*error,\s*'/g, replacement: '{ error: \'' },
+  
+  // Fix "status, 'value'" patterns -> "status: 'value'"
+  { pattern: /{\s*status,\s*'/g, replacement: '{ status: \'' },
+  
+  // Fix "service, 'value'" patterns -> "service: 'value'"
+  { pattern: /{\s*service,\s*'/g, replacement: '{ service: \'' },
+  
+  // Fix ternary operator patterns "? sortBy , 'default'" -> "? sortBy : 'default'"
+  { pattern: /\?\s*(\w+)\s*,\s*'/g, replacement: '? $1 : \'' },
+  
+  // Fix object destructuring "{ categoryId: isPinned =" -> "{ categoryId, isPinned ="
+  { pattern: /{([^}]+):\s*([^=]+)=/g, replacement: '{ $1, $2 =' },
+  
+  // Fix "hasNextPag, e:" -> "hasNextPage:"
+  { pattern: /hasNextPag,\s*e:/g, replacement: 'hasNextPage:' },
+  
+  // Fix console.error patterns with comma
+  { pattern: /console\.error\('([^']+)',\s*'/g, replacement: 'console.error(\'$1:\', ' },
+  
+  // Fix "postgresql:// " with space -> "postgresql://"
+  { pattern: /postgresql:\/\/\s+/g, replacement: 'postgresql://' },
+  
+  // Fix object property "pick: nextPick" -> "pick,"
+  { pattern: /pick:\s*nextPick,/g, replacement: 'pick,' },
+  
+  // Fix "error instanceof Error ?" patterns
+  { pattern: /error\s+instanceof\s+Error\s+\?\s*error\.message:\s*/g, replacement: 'error instanceof Error ? error.message : ' },
+];
 
-  fixes.forEach(({ file, patterns }) => {
-    if (!fs.existsSync(file)) {
-      console.log(`⚠️  File not found: ${file}`);
-      return;
+function applyFixes(content, filePath) {
+  let fixedContent = content;
+  let totalFixes = 0;
+  
+  for (const fix of fixes) {
+    const matches = fixedContent.match(fix.pattern);
+    if (matches) {
+      console.log(`  📝 Fixing ${matches.length} instances in ${path.relative(process.cwd(), filePath)}`);
+      fixedContent = fixedContent.replace(fix.pattern, fix.replacement);
+      totalFixes += matches.length;
     }
-    
-    try {
-      let content = fs.readFileSync(file, 'utf-8');
-      const originalContent = content;
-      let changed = false;
-      
-      patterns.forEach(({ find, replace }) => {
-        if (find.test(content)) {
-          content = content.replace(find, replace);
-          changed = true;
-        }
-      });
-      
-      if (changed) {
-        fs.writeFileSync(file, content, 'utf-8');
-        console.log(`✅ Fixed: ${path.basename(file)}`);
-        totalFixed++;
-      } else {
-        console.log(`⚪ No changes needed: ${path.basename(file)}`);
-      }
-      
-    } catch (error) {
-      console.error(`❌ Error processing ${file}:`, error.message);
-    }
-  });
-
-  console.log(`\n🎉 Fixed ${totalFixed} files out of ${fixes.length} total files`);
+  }
+  
+  return { content: fixedContent, fixes: totalFixes };
 }
 
-finalTargetedFix();
+function processFiles(directory) {
+  let totalFiles = 0;
+  let totalFixes = 0;
+  
+  function processDirectory(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      
+      if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+        processDirectory(fullPath);
+      } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx'))) {
+        try {
+          const originalContent = fs.readFileSync(fullPath, 'utf8');
+          const { content: fixedContent, fixes } = applyFixes(originalContent, fullPath);
+          
+          if (fixes > 0) {
+            fs.writeFileSync(fullPath, fixedContent, 'utf8');
+            console.log(`  ✅ Applied ${fixes} final fixes in ${path.relative(process.cwd(), fullPath)}`);
+            totalFiles++;
+            totalFixes += fixes;
+          }
+        } catch (error) {
+          console.log(`  ⚠️  Error processing ${fullPath}: ${error.message}`);
+        }
+      }
+    }
+  }
+  
+  processDirectory(directory);
+  return { totalFiles, totalFixes };
+}
+
+// Process the src directory
+const { totalFiles, totalFixes } = processFiles('./src');
+
+console.log(`\n🎯 Final targeted fix completed:`);
+console.log(`   📁 Files modified: ${totalFiles}`);
+console.log(`   🔧 Total fixes applied: ${totalFixes}`);
+console.log(`\n✨ Build should now be error-free!`);

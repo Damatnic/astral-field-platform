@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -13,14 +13,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock league settings
-    const settings = {
-      leagueId, live_polling_enabled, true,
+    const settings  = { leagueId: live_polling_enabled: true,
   live_polling_until: new Date("2024-12-31").toISOString(),
       scoring_ppr: 1.0,
   waiver_type: "rolling",
       trade_deadline: "2024-11-15",
   playoff_start_week: 15,
-      playoff_teams: 6
+      playoff_teams, 6
 }
     return NextResponse.json(settings);
   } catch { return NextResponse.json(
@@ -32,7 +31,7 @@ export async function GET(request: NextRequest) {
 
 export async function PUT() { try {
     // Mock update settings
-    const result = {
+    const result  = {
       message: "League settings updated successfully",
   timestamp: new Date().toISOString()
 }

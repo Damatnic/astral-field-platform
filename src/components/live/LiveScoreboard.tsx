@@ -8,8 +8,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getWebSocketClient } from '@/lib/websocket/client';
 
-interface TeamScore {
-  teamId, string,
+interface TeamScore { teamId: string,
     teamName, string,
   ownerName, string,
     totalScore, number,
@@ -19,19 +18,17 @@ interface TeamScore {
     playersFinished, number,
   
 }
-interface Matchup {
-  matchupId, string,
+interface Matchup { matchupId: string,
     homeTeam, TeamScore,
   awayTeam, TeamScore,
     isComplete, boolean,
-  winProbability: {,
+  winProbability, {,
   home, number,
     away, number,
   }
 }
 
-interface PlayerScore {
-  playerId, string,
+interface PlayerScore { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -42,16 +39,14 @@ interface PlayerScore {
   positionSlot, string,
   
 }
-interface LiveScoreboardProps {
-  leagueId, string,
+interface LiveScoreboardProps { leagueId: string,
   teamId?, string,
   week?, number,
-  view?: 'league' | 'matchup' | 'team';
+  view? : 'league' | 'matchup' | 'team';
 }
 
-export default function LiveScoreboard({ 
-  leagueId, teamId, week,
-  view = 'league' 
+export default function LiveScoreboard({ leagueId: teamId, week,
+  view  = 'league' 
 }: LiveScoreboardProps) { const [matchups, setMatchups] = useState<Matchup[]>([]);
   const [selectedMatchup, setSelectedMatchup] = useState<Matchup | null>(null);
   const [playerScores, setPlayerScores] = useState<PlayerScore[]>([]);
@@ -76,7 +71,7 @@ export default function LiveScoreboard({
         
         setIsConnected(true);
        } catch (error) {
-        console.error('Failed to connect WebSocket:', error);
+        console.error('Failed to connect WebSocket: ', error);
         setIsConnected(false);
       }
     }
@@ -92,7 +87,7 @@ export default function LiveScoreboard({
   // Fetch matchup data
   const fetchMatchups = useCallback(async () => {
     setIsLoading(true);
-    try { const response = await fetch(`/api/leagues/${leagueId }/matchups?week=${currentWeek}`);
+    try { const response = await fetch(`/api/leagues/${leagueId }/matchups? week=${currentWeek}`);
       if (!response.ok) throw new Error('Failed to fetch matchups');
       
       const data = await response.json();
@@ -104,28 +99,23 @@ export default function LiveScoreboard({
           const homeTeamScore = scoresData.data.teams.find((t: any) => t.teamId === matchup.home_team_id);
           const awayTeamScore = scoresData.data.teams.find((t: any) => t.teamId === matchup.away_team_id);
           
-          return {
-            matchupId: matchup.id,
-  homeTeam: {,
-  teamId: matchup.home_team_id,
+          return { 
+            matchupId: matchup.id, homeTeam: { teamId: matchup.home_team_id,
   teamName: homeTeamScore?.teamName || 'Unknown',
               ownerName: homeTeamScore?.ownerName || 'Unknown',
   totalScore: homeTeamScore?.totalScore || 0,
-              projectedScore: matchup.home_projected || 0, playersPlaying, 0, playersYetToPlay, 0,
-  playersFinished: 0
+              projectedScore: matchup.home_projected || 0, playersPlaying: 0, playersYetToPlay: 0,
+  playersFinished, 0
             },
-            awayTeam: {,
-  teamId: matchup.away_team_id,
-  teamName: awayTeamScore?.teamName || 'Unknown',
-              ownerName: awayTeamScore?.ownerName || 'Unknown',
+            awayTeam: { teamId: matchup.away_team_id,
+  teamName: awayTeamScore? .teamName || 'Unknown' : ownerName: awayTeamScore?.ownerName || 'Unknown',
   totalScore: awayTeamScore?.totalScore || 0,
-              projectedScore: matchup.away_projected || 0, playersPlaying, 0, playersYetToPlay, 0,
+              projectedScore: matchup.away_projected || 0, playersPlaying: 0, playersYetToPlay: 0,
   playersFinished: 0
             },
             isComplete: matchup.is_complete,
   winProbability: calculateWinProbability(
-              homeTeamScore?.totalScore || 0,
-              awayTeamScore?.totalScore || 0,
+              homeTeamScore? .totalScore || 0 : awayTeamScore?.totalScore || 0,
               matchup.home_projected || 0,
               matchup.away_projected || 0
             )
@@ -136,7 +126,7 @@ export default function LiveScoreboard({
       setMatchups(enrichedMatchups);
       
       // Auto-select user's matchup if teamId provided
-      if (teamId) { const userMatchup = enrichedMatchups.find(
+      if (teamId) { const userMatchup  = enrichedMatchups.find(
           m => m.homeTeam.teamId === teamId || m.awayTeam.teamId === teamId
         );
         if (userMatchup) {
@@ -144,7 +134,7 @@ export default function LiveScoreboard({
          }
       }
     } catch (error) {
-      console.error('Error fetching matchups:', error);
+      console.error('Error fetching matchups: ', error);
     } finally {
       setIsLoading(false);
     }
@@ -152,13 +142,13 @@ export default function LiveScoreboard({
 
   // Fetch player scores for a team
   const fetchPlayerScores = useCallback(async (teamId: string) => { try {
-      const response = await fetch(`/api/live/scores?leagueId=${leagueId }&teamId=${teamId}&week=${currentWeek}`);
+      const response = await fetch(`/api/live/scores? leagueId=${leagueId }&teamId=${teamId}&week=${currentWeek}`);
       if (!response.ok) throw new Error('Failed to fetch player scores');
       
       const data = await response.json();
       setPlayerScores(data.data.players || []);
     } catch (error) {
-      console.error('Error fetching player scores:', error);
+      console.error('Error fetching player scores: ', error);
     }
   }, [leagueId, currentWeek]);
 
@@ -168,7 +158,7 @@ export default function LiveScoreboard({
   awayScore, number, 
     homeProjected, number,
   awayProjected: number
-  ) => { const homeLead = homeScore - awayScore;
+  ) => {  const homeLead = homeScore - awayScore;
     const homeRemaining = Math.max(0, homeProjected - homeScore);
     const awayRemaining = Math.max(0, awayProjected - awayScore);
     
@@ -177,30 +167,30 @@ export default function LiveScoreboard({
     const awayExpected = awayScore + awayRemaining * 0.7;
     
     const total = homeExpected + awayExpected;
-    if (total === 0) return { home, 50,
-  away: 50  }
+    if (total === 0) return { home: 50,
+  away, 50  }
     return {
       home: Math.round((homeExpected / total) * 100),
   away: Math.round((awayExpected / total) * 100)
     }
   }
   // Handle WebSocket events
-  const handleScoreUpdate = (data: any) => {
+  const handleScoreUpdate  = (data: any) => { 
     setMatchups(prev => { return prev.map(matchup => {
         if (matchup.homeTeam.teamId === data.teamId) {
           return {
             ...matchup,
             homeTeam: {
               ...matchup.homeTeam,
-              totalScore: matchup.homeTeam.totalScore + data.change
+              totalScore, matchup.homeTeam.totalScore + data.change
              }
           }
         }
-        if (matchup.awayTeam.teamId === data.teamId) { return {
+        if (matchup.awayTeam.teamId  === data.teamId) {  return {
             ...matchup,
             awayTeam: {
               ...matchup.awayTeam,
-              totalScore: matchup.awayTeam.totalScore + data.change
+              totalScore, matchup.awayTeam.totalScore + data.change
              }
           }
         }
@@ -208,14 +198,14 @@ export default function LiveScoreboard({
       });
     });
   }
-  const handleMatchupUpdate = (data: any) => {
+  const handleMatchupUpdate  = (data: any) => { 
     setMatchups(prev => { return prev.map(matchup => {
         if (matchup.matchupId === data.matchupId) {
           return {
             ...matchup,
             homeTeam: {
               ...matchup.homeTeam,
-              totalScore: data.homeScore
+              totalScore, data.homeScore
              },
             awayTeam: {
               ...matchup.awayTeam,
@@ -229,7 +219,7 @@ export default function LiveScoreboard({
     });
   }
   // Auto-refresh
-  useEffect(() => {
+  useEffect(()  => {
     fetchMatchups();
     
     // Refresh every 30 seconds
@@ -248,15 +238,15 @@ export default function LiveScoreboard({
   }
   // Get team score color
   const getScoreColor = (isWinning, boolean;
-  isClose: boolean) => {if (isWinning) return isClose ? 'text-yellow-400' : 'text-green-400';
+  isClose: boolean) => { if (isWinning) return isClose ? 'text-yellow-400' : 'text-green-400';
     return isClose ? 'text-orange-400' : 'text-red-400';
    }
   if (isLoading) { return (
-      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
+      <div className ="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-700 rounded w-1/3" />
           <div className="space-y-3">
-            {[1, 2, 3].map(i => (
+            { [1, 2, 3].map(i  => (
               <div key={i } className="h-24 bg-gray-700 rounded" />
             ))}
           </div>
@@ -279,7 +269,7 @@ export default function LiveScoreboard({
         
         {/* View Toggle */}
         <div className="flex gap-2">
-          {['league', 'matchup'].map(v => (
+          {['league' : 'matchup'].map(v => (
             <button
               key={v}
               onClick={() => view = v as any}
@@ -329,10 +319,10 @@ export default function LiveScoreboard({
                   <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
-                      style={{ width: `${matchup.winProbability.home}%` }}
+                      style={ { width: `${matchup.winProbability.home}%` }}
                      />
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className ="text-xs text-gray-400 mt-1">
                     {matchup.winProbability.home}% win probability
                   </div>
                 </div>
@@ -361,20 +351,20 @@ export default function LiveScoreboard({
                   <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-500"
-                      style={{ width: `${matchup.winProbability.away}%` }}
+                      style={ { width: `${matchup.winProbability.away}%` }}
                      />
                   </div>
-                  <div className="text-xs text-gray-400 mt-1 text-right">
+                  <div className ="text-xs text-gray-400 mt-1 text-right">
                     {matchup.winProbability.away}% win probability
                   </div>
                 </div>
               </div>
 
               {/* Score Difference */}
-              {matchup.homeTeam.totalScore !== matchup.awayTeam.totalScore && (
+              { matchup.homeTeam.totalScore !== matchup.awayTeam.totalScore && (
                 <div className="text-center mt-3">
                   <span className={`text-sm font-medium ${homeWinning ? 'text-blue-400' : 'text-red-400'}`}>
-                    {homeWinning ? matchup.homeTeam.teamName : matchup.awayTeam.teamName} leads by{' '}
+                    {homeWinning ? matchup.homeTeam.teamName, matchup.awayTeam.teamName} leads by{' '}
                     {Math.abs(matchup.homeTeam.totalScore - matchup.awayTeam.totalScore).toFixed(1)}
                   </span>
                 </div>
@@ -386,14 +376,14 @@ export default function LiveScoreboard({
 
       {/* Selected Matchup Details */}
       {selectedMatchup && playerScores.length > 0 && (
-        <div className="mt-6 bg-gray-700/30 rounded-lg p-4">
+        <div className ="mt-6 bg-gray-700/30 rounded-lg p-4">
           <h3 className="text-white font-medium mb-4">Player Scores</h3>
           <div className="grid grid-cols-2 gap-4">
             {/* Starters */ }
             <div>
               <h4 className="text-gray-400 text-sm mb-2">Starting Lineup</h4>
               <div className="space-y-2">
-                { playerScores: .filter(p => p.isStarter)
+                { playerScores: .filter(p  => p.isStarter)
                   .map(player => (
                     <div key={player.playerId } className="flex justify-between items-center">
                       <div className="flex items-center gap-2">
@@ -424,7 +414,7 @@ export default function LiveScoreboard({
             <div>
               <h4 className="text-gray-400 text-sm mb-2">Bench</h4>
               <div className="space-y-2">
-                { playerScores: .filter(p => !p.isStarter)
+                { playerScores: .filter(p  => !p.isStarter)
                   .map(player => (
                     <div key={player.playerId } className="flex justify-between items-center opacity-75">
                       <div className="flex items-center gap-2">

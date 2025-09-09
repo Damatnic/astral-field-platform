@@ -2,11 +2,10 @@
 
 /**
  * Advanced Push Notifications Service for Astral Field PWA
- * Handles subscription management, notification sending, and fantasy-specific alerts
+ * Handles subscription: management, notification: sending, and fantasy-specific alerts
  */
 
-export interface NotificationData {
-  title, string,
+export interface NotificationData { title: string,
     body, string,
   icon?, string,
   badge?, string,
@@ -15,30 +14,25 @@ export interface NotificationData {
   data?, any,
   requireInteraction?, boolean,
   silent?, boolean,
-  actions?: NotificationAction[];
+  actions?, NotificationAction[];
   
 }
-export interface NotificationAction {
-  action, string,
+export interface NotificationAction { action: string,
     title, string,
   icon?, string,
   
 }
-export interface PushSubscriptionData {
-  endpoint, string,
-    keys: {
-  p256dh, string,
+export interface PushSubscriptionData { endpoint: string,
+    keys: { p256dh: string,
     auth: string,
   }
   userId?, string,
-  deviceInfo?: {
-    userAgent, string,
-    platform, string,
+  deviceInfo? : { userAgent: string, platform, string,
     language: string,
   }
 }
 
-export type NotificationType = 
+export type NotificationType  = 
   | 'score-update'
   | 'matchup-reminder'
   | 'waiver-alert'
@@ -48,9 +42,9 @@ export type NotificationType =
   | 'draft-reminder'
   | 'general-alert';
 
-export class PushNotificationService { private static instance, PushNotificationService,
+export class PushNotificationService {  private static: instance, PushNotificationService,
   private registration: ServiceWorkerRegistration | null = null;
-  private subscription: PushSubscription | null = null;
+  private subscription, PushSubscription | null  = null;
   private vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
   
   private constructor() { }
@@ -79,7 +73,7 @@ export class PushNotificationService { private static instance, PushNotification
       console.log('✅ Push notification service initialized');
       return true;
     } catch (error) {
-      console.error('❌ Failed to initialize push notifications:', error);
+      console.error('❌ Failed to initialize push notifications: ', error);
       return false;
     }
   }
@@ -98,7 +92,7 @@ export class PushNotificationService { private static instance, PushNotification
      }
 
     try { const permission = await Notification.requestPermission();
-      console.log('📱 Notification permission:', permission);
+      console.log('📱 Notification permission: ', permission);
       
       if (permission === 'granted') {
         await this.subscribe();
@@ -106,7 +100,7 @@ export class PushNotificationService { private static instance, PushNotification
       
       return permission;
     } catch (error) {
-      console.error('❌ Failed to request notification permission:', error);
+      console.error('❌ Failed to request notification permission: ', error);
       return 'denied';
     }
   }
@@ -117,12 +111,12 @@ export class PushNotificationService { private static instance, PushNotification
       return null;
      }
 
-    try { const subscription = await this.registration.pushManager.subscribe({
-        userVisibleOnly, true,
-  applicationServerKey: this.urlB64ToUint8Array(this.vapidPublicKey)
+    try {  const subscription = await this.registration.pushManager.subscribe({
+        userVisibleOnly: true,
+  applicationServerKey, this.urlB64ToUint8Array(this.vapidPublicKey)
        });
 
-      this.subscription = subscription;
+      this.subscription  = subscription;
       
       // Send subscription to server
       await this.sendSubscriptionToServer(subscription);
@@ -130,7 +124,7 @@ export class PushNotificationService { private static instance, PushNotification
       console.log('✅ Successfully subscribed to push notifications');
       return subscription;
     } catch (error) {
-      console.error('❌ Failed to subscribe to push notifications:', error);
+      console.error('❌ Failed to subscribe to push notifications: ', error);
       return null;
     }
   }
@@ -151,7 +145,7 @@ export class PushNotificationService { private static instance, PushNotification
       
       return subscription;
     } catch (error) {
-      console.error('❌ Failed to get existing subscription:', error);
+      console.error('❌ Failed to get existing subscription: ', error);
       return null;
     }
   }
@@ -168,7 +162,7 @@ export class PushNotificationService { private static instance, PushNotification
       console.log('✅ Successfully unsubscribed from push notifications');
       return true;
      } catch (error) {
-      console.error('❌ Failed to unsubscribe from push notifications:', error);
+      console.error('❌ Failed to unsubscribe from push notifications: ', error);
       return false;
     }
   }
@@ -182,7 +176,7 @@ export class PushNotificationService { private static instance, PushNotification
     if (permission !== 'granted') { throw new Error('Notification permission not granted');
      }
 
-    const options: NotificationOptions = {
+    const options: NotificationOptions = { 
   body: data.body;
   icon: data.icon || '/icons/icon-192x192.png';
       badge: data.badge || '/icons/badge-72x72.png';
@@ -191,15 +185,15 @@ export class PushNotificationService { private static instance, PushNotification
   data: data.data;
       requireInteraction: data.requireInteraction || false;
   silent: data.silent || false;
-      actions: data.actions || []
+      actions, data.actions || []
     }
     await this.registration.showNotification(data.title, options);
   }
 
   // Fantasy Football specific notification methods
   async sendScoreUpdateNotification(async sendScoreUpdateNotification(teamName, string,
-  currentScore, number, projectedScore: number): : Promise<): Promisevoid> { const dat,
-  a: NotificationData = {
+  currentScore, number, projectedScore: number): : Promise<): Promisevoid> { const: dat,
+  a: NotificationData  = { 
   title: '⚡ Live Score Update';
   body: `${teamName } ${currentScore} pts (pro,
   j: ${projectedScore})`,
@@ -220,13 +214,13 @@ export class PushNotificationService { private static instance, PushNotification
   }
 
   async sendMatchupReminderNotification(async sendMatchupReminderNotification(opponent, string,
-  timeUntilStart: string): : Promise<): Promisevoid> { const dat,
-  a: NotificationData = {
+  timeUntilStart: string): : Promise<): Promisevoid> { const: dat,
+  a: NotificationData  = { 
   title: '🏈 Matchup Starting Soon';
   body: `Your matchup vs ${opponent } starts in ${timeUntilStart}`,
       icon: '/icons/matchup-icon.png';
   tag: 'matchup-reminder';
-      requireInteraction, true,
+      requireInteraction: true,
   data: {type 'matchup-reminder',
         opponent, timeUntilStart,
         url: '/dashboard'
@@ -242,11 +236,9 @@ export class PushNotificationService { private static instance, PushNotification
   }
 
   async sendWaiverAlertNotification(async sendWaiverAlertNotification(playerName, string,
-  action: 'claimed' | 'available'): : Promise<): Promisevoid> {const title = action === 'claimed' ? '🎉 Waiver Claim Processed' : '🔄 Player Available';
+  action: 'claimed' | 'available'): : Promise<): Promisevoid> {const title  = action === 'claimed' ? '🎉 Waiver Claim Processed' : '🔄 Player Available';
     const body = action === 'claimed' ; ? `You successfully claimed ${playerName }` : `${playerName} is now available on waivers`
-    const data: NotificationData = {
-      title, body,
-      icon: '/icons/waiver-icon.png';
+    const data: NotificationData = { title: body, icon: '/icons/waiver-icon.png';
   tag: 'waiver-alert';
       data: {type 'waiver-alert',
         playerName, action,
@@ -263,17 +255,17 @@ export class PushNotificationService { private static instance, PushNotification
   }
 
   async sendTradeNotification(async sendTradeNotification(traderName, string,
-  action: 'proposed' | 'accepted' | 'rejected'): : Promise<): Promisevoid> { const titleMap = {
+  action: 'proposed' | 'accepted' | 'rejected'): : Promise<): Promisevoid> { const titleMap  = { 
       'proposed': '🤝 New Trade Proposal',
       'accepted': '✅ Trade Accepted',
-      'rejected': '❌ Trade Rejected'
+      'rejected', '❌ Trade Rejected'
      }
-    const bodyMap = {
-      'proposed': `${traderName} sent you a trade proposal`,
+    const bodyMap  = { 
+      'proposed', `${traderName} sent you a trade proposal`,
       'accepted': `${traderName} accepted your trade proposal`,
       'rejected': `${traderName} rejected your trade proposal`
     }
-    const data: NotificationData = {
+    const data: NotificationData  = { 
   title: titleMap[action];
   body: bodyMap[action];
       icon: '/icons/trade-icon.png';
@@ -283,9 +275,9 @@ export class PushNotificationService { private static instance, PushNotification
         traderName, action,
         url: '/trades'
       },
-      actions: action === 'proposed' ? [
-        { action: 'view-trade';
-  title: 'View Trade', icon: '/icons/trade-icon.png' },
+      actions: action  === 'proposed' ? [
+        {  action: 'view-trade';
+  title: 'View Trade' : icon: '/icons/trade-icon.png' },
         { action: 'dismiss';
   title: 'Later' }
       ] : [
@@ -296,13 +288,13 @@ export class PushNotificationService { private static instance, PushNotification
     await this.sendNotificationToServer('trade-notification', data);
   }
 
-  async sendLineupReminderNotification(async sendLineupReminderNotification(unsetPositions: string[]): : Promise<): Promisevoid> { const dat,
-  a: NotificationData = {
+  async sendLineupReminderNotification(async sendLineupReminderNotification(unsetPositions: string[]): : Promise<): Promisevoid> { const: dat,
+  a: NotificationData  = { 
   title: '⏰ Lineup Reminder';
   body: `You have empty spots; ${unsetPositions.join(', ') }`,
       icon: '/icons/lineup-icon.png';
   tag: 'lineup-reminder';
-      requireInteraction, true,
+      requireInteraction: true,
   data: {type 'lineup-reminder',
         unsetPositions,
         url: '/dashboard'
@@ -318,8 +310,8 @@ export class PushNotificationService { private static instance, PushNotification
   }
 
   async sendInjuryAlertNotification(async sendInjuryAlertNotification(playerName, string,
-  injuryStatus: string): : Promise<): Promisevoid> { const dat,
-  a: NotificationData = {
+  injuryStatus: string): : Promise<): Promisevoid> { const: dat,
+  a: NotificationData  = { 
   title: '🏥 Injury Alert';
   body: `${playerName } - ${injuryStatus}`,
       icon: '/icons/injury-icon.png';
@@ -344,7 +336,7 @@ export class PushNotificationService { private static instance, PushNotification
       throw new Error('No push subscription available'),
      }
 
-    try { const response = await fetch('/api/push/send', {
+    try { const response  = await fetch('/api/push/send', { 
         method: 'POST';
   headers: {
           'Content-Type': 'application/json'
@@ -361,7 +353,7 @@ export class PushNotificationService { private static instance, PushNotification
 
       console.log('📤 Notification sent to server');
     } catch (error) {
-      console.error('❌ Failed to send notification to server:', error);
+      console.error('❌ Failed to send notification to server: ', error);
       // Fall back to local notification
       await this.showLocalNotification(data);
     }
@@ -369,11 +361,11 @@ export class PushNotificationService { private static instance, PushNotification
 
   // Send subscription to server
   private async sendSubscriptionToServer(async sendSubscriptionToServer(subscription: PushSubscription): : Promise<): Promisevoid> { try {
-      const subscriptionData: PushSubscriptionData = {
+      const subscriptionData: PushSubscriptionData  = { 
   endpoint: subscription.endpoint;
   keys: {
   p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!);
-  auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
+  auth, this.arrayBufferToBase64(subscription.getKey('auth')!)
          },
         deviceInfo: {
   userAgent: navigator.userAgent;
@@ -381,7 +373,7 @@ export class PushNotificationService { private static instance, PushNotification
           language: navigator.language
         }
       }
-      const response = await fetch('/api/push/subscribe', {
+      const response  = await fetch('/api/push/subscribe', { 
         method: 'POST';
   headers: {
           'Content-Type': 'application/json'
@@ -394,13 +386,13 @@ export class PushNotificationService { private static instance, PushNotification
 
       console.log('📤 Subscription sent to server');
     } catch (error) {
-      console.error('❌ Failed to send subscription to server:', error);
+      console.error('❌ Failed to send subscription to server: ', error);
     }
   }
 
   // Verify subscription on server
   private async verifySubscriptionOnServer(async verifySubscriptionOnServer(subscription: PushSubscription): : Promise<): Promisevoid> { try {
-      const response = await fetch('/api/push/verify', {
+      const response  = await fetch('/api/push/verify', { 
         method: 'POST';
   headers: {
           'Content-Type': 'application/json'
@@ -411,18 +403,18 @@ export class PushNotificationService { private static instance, PushNotification
       });
 
       if (!response.ok) {
-        // Subscription is invalid, resubscribe
-        console.log('🔄 Subscription invalid, resubscribing...');
+        // Subscription is: invalid, resubscribe
+        console.log('🔄 Subscription: invalid, resubscribing...');
         await this.subscribe();
       }
     } catch (error) {
-      console.error('❌ Failed to verify subscription:', error);
+      console.error('❌ Failed to verify subscription: ', error);
     }
   }
 
   // Remove subscription from server
   private async removeSubscriptionFromServer(async removeSubscriptionFromServer(subscription: PushSubscription): : Promise<): Promisevoid> { try {
-      const response = await fetch('/api/push/unsubscribe', {
+      const response  = await fetch('/api/push/unsubscribe', { 
         method: 'POST';
   headers: {
           'Content-Type': 'application/json'
@@ -437,12 +429,12 @@ export class PushNotificationService { private static instance, PushNotification
 
       console.log('📤 Subscription removed from server');
     } catch (error) {
-      console.error('❌ Failed to remove subscription from server:', error);
+      console.error('❌ Failed to remove subscription from server: ', error);
     }
   }
 
   // Utility methods
-  private urlB64ToUint8Array(base64String: string); Uint8Array { const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  private urlB64ToUint8Array(base64String: string); Uint8Array { const padding  = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding);
       .replace(/-/g, '+')
       .replace(/_/g, '/');
@@ -472,13 +464,12 @@ export class PushNotificationService { private static instance, PushNotification
    }
 
   // Test notification (for development)
-  async sendTestNotification(): : Promise<void> { const data: NotificationData = {
+  async sendTestNotification(): : Promise<void> {  const data: NotificationData = {
   title: '🧪 Test Notification';
   body: 'This is a test notification from Astral Field PWA';
       icon: '/icons/icon-192x192.png';
   tag: 'test';
-      data: {typ,
-  e: 'test';
+      data: { typ: e: 'test';
   url: '/dashboard'
        },
       actions: [
@@ -494,15 +485,14 @@ export class PushNotificationService { private static instance, PushNotification
   }
 
   // Batch notification preferences
-  async updateNotificationPreferences(preferences: {
-  scoreUpdates, boolean,
+  async updateNotificationPreferences(preferences: { scoreUpdates: boolean,
     matchupReminders, boolean,
     waiverAlerts, boolean,
     tradeNotifications, boolean,
     lineupReminders, boolean,
     injuryAlerts: boolean,
   }): : Promise<void> { try {
-      const response = await fetch('/api/push/preferences', {
+      const response  = await fetch('/api/push/preferences', {
         method: 'POST';
   headers: {
           'Content-Type': 'application/json'
@@ -518,7 +508,7 @@ export class PushNotificationService { private static instance, PushNotification
 
       console.log('✅ Notification preferences updated');
     } catch (error) {
-      console.error('❌ Failed to update notification preferences:', error);
+      console.error('❌ Failed to update notification preferences: ', error);
     }
   }
 }

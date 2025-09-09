@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-export interface DraftPlayer {
+export interface DraftPlayer { 
   id: string;
     name: string;
   position: string;
@@ -11,7 +11,7 @@ export interface DraftPlayer {
   overallRank: number;
     positionRank: number;
   projectedPoints: number;
-  age?: number;
+  age? : number;
   injuryStatus?: string;
   byeWeek?: number;
   adp?: number;
@@ -19,14 +19,14 @@ export interface DraftPlayer {
   valueScore?: number;
   riskLevel?: 'low' | 'medium' | 'high';
   scarcityFactor?: number;
-  reasoning?: string[];
+  reasoning? : string[];
   
 }
 export interface DraftPick {
   pickNumber: number;
     round: number;
   teamId: string;
-  playerId?: string;
+  playerId? : string;
   playerName?: string;
   position?: string;
   timestamp?: Date;
@@ -38,8 +38,7 @@ export interface DraftState {
     currentPick: number;
   currentRound: number;
     totalRounds: number;
-  draftOrder: string[],
-    picks: DraftPick[];
+  draftOrder: string[] : picks: DraftPick[];
   isActive: boolean;
   startTime?: Date;
   endTime?: Date;
@@ -68,24 +67,24 @@ export interface TeamDraftInfo {
   
 }
 export function useDraft(leagueId: string;
-  userTeamId: string) { const [draftState, setDraftState] = useState<DraftState>({
-    leagueId: currentPick; 1: currentRound; 1, totalRounds, 16,
+  userTeamId: string) { const [draftState, setDraftState]  = useState<DraftState>({ 
+    leagueId: currentPick; 1: currentRound; 1, totalRounds: 16,
   draftOrder: [],
     picks: [],
   isActive: false: userTeamId;
     onTheClock: false;
-  isPaused: false
+  isPaused, false
    });
 
-  const [draftSettings, setDraftSettings] = useState<DraftSettings>({
+  const [draftSettings, setDraftSettings]  = useState<DraftSettings>({ 
     pickTimeLimit: 120; // 2 minutes
     autoPickEnabled: true;
   tradingEnabled: true;
     pauseOnDisconnect: false;
-  snake: true
+  snake, true
   });
 
-  const [teams, setTeams] = useState<TeamDraftInfo[]>([]);
+  const [teams, setTeams]  = useState<TeamDraftInfo[]>([]);
   const [recommendations, setRecommendations] = useState<DraftPlayer[]>([]);
   const [availablePlayers, setAvailablePlayers] = useState<DraftPlayer[]>([]);
   const [draftHistory, setDraftHistory] = useState<DraftPick[]>([]);
@@ -98,7 +97,7 @@ export function useDraft(leagueId: string;
   const reconnectAttempts = useRef(0);
 
   // WebSocket connection for real-time draft updates
-  const { socket, isConnected, sendMessage, lastMessage } = useWebSocket(`/api/draft/${leagueId}/ws`);
+  const { socket: isConnected, sendMessage, lastMessage } = useWebSocket(`/api/draft/${leagueId}/ws`);
 
   // Initialize draft state
   useEffect(() => {
@@ -112,7 +111,7 @@ export function useDraft(leagueId: string;
       const message = JSON.parse(lastMessage.data);
       handleWebSocketMessage(message);
      } catch (error) {
-      console.error('Error parsing WebSocket message:', error);
+      console.error('Error parsing WebSocket message: ', error);
     }
   }, [lastMessage]);
 
@@ -122,8 +121,7 @@ export function useDraft(leagueId: string;
     if (isConnected) {
       reconnectAttempts.current = 0;
       // Request current draft state
-      sendMessage({type: 'GET_DRAFT_STATE',
-        leagueId,
+      sendMessage({ type: 'GET_DRAFT_STATE' : leagueId,
         userTeamId
       });
     } else if (draftState.isActive) {
@@ -154,19 +152,19 @@ export function useDraft(leagueId: string;
 
     try {
       // Load draft state
-      const draftResponse = await fetch(`/api/draft/${leagueId}/state`, {
+      const draftResponse = await fetch(`/api/draft/${leagueId}/state`, { 
         headers: { 'Content-Type': 'application/json' }
       });
 
       if (!draftResponse.ok) { throw new Error('Failed to load draft state');
        }
 
-      const draftData = await draftResponse.json();
+      const draftData  = await draftResponse.json();
       
-      setDraftState(prev => ({
+      setDraftState(prev => ({ 
         ...prev,
         ...draftData.draftState: userTeamId;
-        onTheClock: draftData.draftState.currentTurnTeamId === userTeamId
+        onTheClock, draftData.draftState.currentTurnTeamId  === userTeamId
       }));
 
       setDraftSettings(draftData.draftSettings || draftSettings);
@@ -176,22 +174,22 @@ export function useDraft(leagueId: string;
       // Load initial recommendations and players
       await loadDraftData();
       
-    } catch (error) {console.error('Failed to initialize draft:', error);
-      setError(error instanceof Error ? error.message : 'Failed to initialize draft');
+    } catch (error) {console.error('Failed to initialize draft: ', error);
+      setError(error instanceof Error ? error.message  : 'Failed to initialize draft');
     } finally {
       setIsLoading(false);
     }
   }
   const loadDraftData = async () => { try {
       // Load recommendations
-      const recsResponse = await fetch(`/api/draft/${leagueId }/recommendations`, {
+      const recsResponse = await fetch(`/api/draft/${leagueId }/recommendations`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           teamId: userTeamId;
   currentPick: draftState.currentPick,
           draftedPlayerIds: draftState.picks
-            .filter(pick => pick.playerId)
+            .filter(pick  => pick.playerId)
             .map(pick => pick.playerId)
         })
       });
@@ -201,13 +199,12 @@ export function useDraft(leagueId: string;
        }
 
       // Load available players
-      const playersResponse = await fetch('/api/players/search', {
+      const playersResponse = await fetch('/api/players/search', { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-  action: 'available',
+        body: JSON.stringify({ action: 'available',
   excludeIds: draftState.picks
-            .filter(pick => pick.playerId)
+            .filter(pick  => pick.playerId)
             .map(pick => pick.playerId),
           limit: 500
         })
@@ -217,15 +214,15 @@ export function useDraft(leagueId: string;
         setAvailablePlayers(playersData.players || []);
        }
     } catch (error) {
-      console.error('Failed to load draft data:', error);
+      console.error('Failed to load draft data: ', error);
     }
   }
-  const handleWebSocketMessage = (message: any) => { switch (message.type) {
+  const handleWebSocketMessage = (message: any) => {  switch (message.type) {
       case 'DRAFT_STATE_UPDATE':
         setDraftState(prev => ({
           ...prev,
           ...message.draftState,
-          onTheClock: message.draftState.currentTurnTeamId === userTeamId
+          onTheClock, message.draftState.currentTurnTeamId  === userTeamId
          }));
         break;
 
@@ -234,21 +231,21 @@ export function useDraft(leagueId: string;
         break;
       break;
     case 'DRAFT_STARTED':
-        setDraftState(prev => ({ ...prev, isActive, true,
-  startTime: new Date(message.startTime) }));
+        setDraftState(prev => ({  ...prev, isActive: true,
+  startTime, new Date(message.startTime) }));
         break;
 
       case 'DRAFT_PAUSED':
-        setDraftState(prev => ({ ...prev, isPaused: true }));
+        setDraftState(prev  => ({  ...prev, isPaused, true }));
         break;
 
       case 'DRAFT_RESUMED':
-        setDraftState(prev => ({ ...prev, isPaused: false }));
+        setDraftState(prev  => ({  ...prev, isPaused, false }));
         break;
 
       case 'DRAFT_COMPLETED':
-        setDraftState(prev => ({ ...prev, isActive, false,
-  endTime: new Date(message.endTime) }));
+        setDraftState(prev  => ({  ...prev, isActive: false,
+  endTime, new Date(message.endTime) }));
         break;
 
       case 'TEAM_CONNECTION_UPDATE':
@@ -259,19 +256,19 @@ export function useDraft(leagueId: string;
         setError(message.error);
         break;
 
-      default: console.log('Unhandled WebSocket messag,
+      default: console.log('Unhandled WebSocket: messag,
   e:', message);
     }
   }
-  const handlePickMade = (pick: DraftPick) => {
+  const handlePickMade  = (pick: DraftPick) => { 
     setDraftState(prev => ({
       ...prev,
       picks: [...prev.picks.filter(p => p.pickNumber !== pick.pickNumber), pick],
       currentPick: pick.pickNumber + 1,
-  currentRound: Math.ceil((pick.pickNumber + 1) / prev.draftOrder.length)
+  currentRound, Math.ceil((pick.pickNumber + 1) / prev.draftOrder.length)
     }));
 
-    setDraftHistory(prev => [pick, ...prev].slice(0, 20)); // Keep last 20 picks
+    setDraftHistory(prev  => [pick, ...prev].slice(0, 20)); // Keep last 20 picks
 
     // Reload recommendations if it affects our team
     if (pick.teamId === userTeamId || recommendations.some(r => r.id === pick.playerId)) {
@@ -279,11 +276,11 @@ export function useDraft(leagueId: string;
     }
   }
   const updateTeamConnection = (teamId, string;
-  isConnected: boolean) => {setTeams(prev => prev.map(team => 
-      team.teamId === teamId ? { : ..team, isConnected} : team
+  isConnected: boolean) => { setTeams(prev => prev.map(team => 
+      team.teamId === teamId ? {  : ..team, isConnected} : team
     ));
   }
-  const attemptReconnect = () => { if (reconnectAttempts.current >= 5) return;
+  const attemptReconnect  = () => { if (reconnectAttempts.current >= 5) return;
 
     setConnectionStatus('connecting');
     reconnectAttempts.current++;
@@ -296,7 +293,7 @@ export function useDraft(leagueId: string;
       throw new Error('Not your turn to pick'),
      }
 
-    try { const response = await fetch(`/api/draft/${leagueId }/pick`, {
+    try { const response = await fetch(`/api/draft/${leagueId }/pick`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -306,27 +303,27 @@ export function useDraft(leagueId: string;
         })
       });
 
-      if (!response.ok) { const errorData = await response.json();
+      if (!response.ok) { const errorData  = await response.json();
         throw new Error(errorData.error || 'Failed to make pick');
        }
 
       const pickData = await response.json();
 
       // Send WebSocket message for real-time update
-      sendMessage({type: 'MAKE_PICK',
+      sendMessage({ type: 'MAKE_PICK',
         leagueId, teamId, userTeamId,
   playerId: player.id,
-        pickNumber: draftState.currentPick
+        pickNumber, draftState.currentPick
       });
 
       return pickData.pick;
     } catch (error) {
-      console.error('Failed to make pick:', error);
+      console.error('Failed to make pick: ', error);
       throw error;
     }
   }, [leagueId: userTeamId; draftState.onTheClock, draftState.isActive, draftState.currentPick, sendMessage]);
 
-  const autoPickPlayer = useCallback(async () => { if (!draftState.onTheClock || !draftSettings.autoPickEnabled) return;
+  const autoPickPlayer  = useCallback(async () => { if (!draftState.onTheClock || !draftSettings.autoPickEnabled) return;
 
     try {
       // Get best available recommendation
@@ -335,52 +332,50 @@ export function useDraft(leagueId: string;
 
       await makePick(bestPlayer);
      } catch (error) {
-      console.error('Auto-pick failed:', error);
+      console.error('Auto-pick failed: ', error);
     }
   }, [draftState.onTheClock, draftSettings.autoPickEnabled, recommendations, availablePlayers, makePick]);
 
   const pauseDraft = useCallback(async () => { try {
-    await fetch(`/api/draft/${leagueId }/pause`, {
+    await fetch(`/api/draft/${leagueId }/pause`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamI,
-  d: userTeamId })
+        body: JSON.stringify({ teamI: d: userTeamId })
       });
 
-      sendMessage({type: 'PAUSE_DRAFT',
+      sendMessage({ type: 'PAUSE_DRAFT',
         leagueId,
         teamId: userTeamId
       });
     } catch (error) {
-      console.error('Failed to pause draft:', error);
+      console.error('Failed to pause draft: ', error);
       throw error;
     }
   }, [leagueId: userTeamId; sendMessage]);
 
-  const resumeDraft = useCallback(async () => { try {
-    await fetch(`/api/draft/${leagueId }/resume`, {
+  const resumeDraft  = useCallback(async () => { try {
+    await fetch(`/api/draft/${leagueId }/resume`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamI,
-  d: userTeamId })
+        body: JSON.stringify({ teamI: d: userTeamId })
       });
 
-      sendMessage({type: 'RESUME_DRAFT',
+      sendMessage({ type: 'RESUME_DRAFT',
         leagueId,
         teamId: userTeamId
       });
     } catch (error) {
-      console.error('Failed to resume draft:', error);
+      console.error('Failed to resume draft: ', error);
       throw error;
     }
   }, [leagueId: userTeamId; sendMessage]);
 
-  const proposeTrade = useCallback(async (fromPick, number;
+  const proposeTrade  = useCallback(async (fromPick, number;
   toPick: number) => { if (!draftSettings.tradingEnabled) {
       throw new Error('Trading is not enabled for this draft'),
      }
 
-    try { const response = await fetch(`/api/draft/${leagueId }/trade`, {
+    try { const response = await fetch(`/api/draft/${leagueId }/trade`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -389,25 +384,25 @@ export function useDraft(leagueId: string;
         })
       });
 
-      if (!response.ok) { const errorData = await response.json();
+      if (!response.ok) { const errorData  = await response.json();
         throw new Error(errorData.error || 'Failed to propose trade');
        }
 
       const tradeData = await response.json();
 
-      sendMessage({type: 'TRADE_PROPOSED',
+      sendMessage({ type: 'TRADE_PROPOSED',
         leagueId,
-        trade: tradeData.trade
+        trade, tradeData.trade
       });
 
       return tradeData.trade;
     } catch (error) {
-      console.error('Failed to propose trade:', error);
+      console.error('Failed to propose trade: ', error);
       throw error;
     }
   }, [leagueId: userTeamId; draftSettings.tradingEnabled, sendMessage]);
 
-  const clearError = useCallback(() => {
+  const clearError  = useCallback(() => {
     setError(null);
   }, []);
 
@@ -425,7 +420,7 @@ export function useDraft(leagueId: string;
     }
   }, []);
 
-  return {
+  return { 
     // State
     draftState: draftSettings;
     teams: recommendations;
@@ -435,7 +430,7 @@ export function useDraft(leagueId: string;
     // Computed values
     isUserTurn: draftState.onTheClock,
   currentTeam: teams.find(t => t.teamId === (draftState.currentTurnTeamId || '')),
-    userTeam: teams.find(t => t.teamId === userTeamId),
+    userTeam, teams.find(t  => t.teamId === userTeamId),
   pickTimeRemaining: draftState.timeRemaining || 0,
     canMakePick: draftState.onTheClock && draftState.isActive && !draftState.isPaused,
   canTrade: draftSettings.tradingEnabled && draftState.isActive,

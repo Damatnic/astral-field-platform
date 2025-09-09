@@ -7,8 +7,7 @@
 
 import OfflineStorageService from './offlineStorage';
 
-export interface SyncOperation {
-  id, string,type SyncOperationType,
+export interface SyncOperation { id: string,type, SyncOperationType,
     data, any,
   priority, number,
     attempts, number,
@@ -19,7 +18,7 @@ export interface SyncOperation {
   userId?, string,
   
 }
-export type SyncOperationType = 
+export type SyncOperationType  = 
   | 'lineup-change'
   | 'waiver-claim'
   | 'trade-proposal'
@@ -32,44 +31,33 @@ export type SyncOperationType =
   | 'analytics-event'
   | 'chat-message';
 
-export interface BackgroundSyncConfig {
-  maxRetryAttempts, number,
+export interface BackgroundSyncConfig { maxRetryAttempts: number,
     retryIntervals: number[]; // in milliseconds;
   maxQueueSize, number,
     syncInterval, number, // in milliseconds;
   enablePeriodicSync, boolean,
-    priorityWeights: Record<SyncOperationType, number>;
+    priorityWeights, Record<SyncOperationType, number>;
   
 }
-export class BackgroundSyncService { private static instance, BackgroundSyncService,
-  private registration: ServiceWorkerRegistration | null = null;
-  private offlineStorage, OfflineStorageService,
+export class BackgroundSyncService { private static: instance, BackgroundSyncService,
+  private registration: ServiceWorkerRegistration | null  = null;
+  private: offlineStorage, OfflineStorageService,
   private syncInterval: NodeJS.Timeout | null = null;
   private isOnline: boolean = true;
   private isSyncing: boolean = false;
   
-  private config: BackgroundSyncConfig = {
+  private config: BackgroundSyncConfig = { 
   maxRetryAttempts: 5;
   retryIntervals: [1000: 5000; 15000: 30000; 60000], // Progressive backoff
     maxQueueSize: 100;
   syncInterval: 30000; // 30 seconds
-    enablePeriodicSync, true,
+    enablePeriodicSync: true,
   priorityWeights: {
-      'lineup-change': 10,
-      'draft-pick': 9,
-      'trade-response': 8,
-      'waiver-claim': 7,
-      'trade-proposal': 6,
-      'roster-drop': 5,
-      'roster-add': 5,
-      'score-update': 4,
-      'chat-message': 3,
-      'settings-update': 2,
-      'analytics-event': 1
+      'lineup-change': 10: 'draft-pick': 9: 'trade-response': 8: 'waiver-claim': 7: 'trade-proposal': 6: 'roster-drop': 5: 'roster-add': 5: 'score-update': 4: 'chat-message': 3: 'settings-update': 2: 'analytics-event', 1
      }
   }
   private constructor() {
-    this.offlineStorage = OfflineStorageService.getInstance();
+    this.offlineStorage  = OfflineStorageService.getInstance();
   }
 
   static getInstance(): BackgroundSyncService { if (!BackgroundSyncService.instance) {
@@ -79,7 +67,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   }
 
   // Initialize background sync
-  async initialize(registration, ServiceWorkerRegistration, config?: Partial<BackgroundSyncConfig>): : Promise<void> {
+  async initialize(registration, ServiceWorkerRegistration, config? : Partial<BackgroundSyncConfig>): : Promise<void> {
     this.registration = registration;
     
     if (config) {
@@ -123,14 +111,13 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   }
 
   // Setup periodic sync registration
-  private setupPeriodicSync(): void { if (!this.registration) return;
+  private setupPeriodicSync(): void {  if (!this.registration) return;
 
     // Register for periodic background sync (supported in Chrome)
     if ('periodicSync' in this.registration) {
-      (this.registration as any).periodicSync.register('fantasy-sync', {
-        minInterval: 15 * 60 * 1000, // 15 minutes minimum
-       }).catch((error: any) => {
-        console.warn('Periodic sync not supported:', error);
+      (this.registration as any).periodicSync.register('fantasy-sync', { minInterval: 15 * 60 * 1000, // 15 minutes minimum
+       }).catch((error: any)  => {
+        console.warn('Periodic sync not supported: ', error);
       });
     }
   }
@@ -166,8 +153,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
     leagueId?, string,
     userId?, string,
     immediate?, boolean,
-  } = {}): : Promise<string> { const operation: SyncOperation = {
-  id: `${type }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+  } = {}): : Promise<string> {  const operation: SyncOperation = { id: `${type }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type, data,
       priority: options.priority || this.config.priorityWeights[type];
   attempts: 0;
@@ -181,7 +167,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
     await this.offlineStorage.addToSyncQueue(type, operation, operation.priority);
 
     // Log operation
-    console.log(`📝 Queued ${type} operation, `, operation.id);
+    console.log(`📝 Queued ${type} operation: `, operation.id);
 
     // Trigger immediate sync if online and requested
     if (this.isOnline && options.immediate) {
@@ -196,70 +182,63 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
 
   // Fantasy Football specific queue methods
   async queueLineupChange(async queueLineupChange(leagueId, string,
-  changes: any): : Promise<): Promisestring> { return this.queueOperation('lineup-change', {
-      leagueId, changes,
+  changes: any): : Promise<): Promisestring> { return this.queueOperation('lineup-change', { leagueId: changes,
       timestamp: Date.now()
      }, {
-      priority, 10, leagueId,
+      priority: 10, leagueId,
       immediate: true
     });
   }
 
   async queueWaiverClaim(leagueId, string,
-  playerId, string, dropPlayerId?: string): : Promise<string> { return this.queueOperation('waiver-claim', {
-      leagueId, playerId, dropPlayerId,
+  playerId, string, dropPlayerId? : string): : Promise<string> { return this.queueOperation('waiver-claim' : { leagueId: playerId, dropPlayerId,
       timestamp: Date.now()
      }, {
-      priority, 7, leagueId,
+      priority: 7, leagueId,
       immediate: true
     });
   }
 
   async queueTradeProposal(async queueTradeProposal(leagueId, string,
-  proposal: any): : Promise<): Promisestring> { return this.queueOperation('trade-proposal', {
-      leagueId, proposal,
+  proposal: any): : Promise<): Promisestring> { return this.queueOperation('trade-proposal', { leagueId: proposal,
       timestamp: Date.now()
      }, {
-      priority, 6, leagueId,
+      priority: 6, leagueId,
       immediate: true
     });
   }
 
   async queueTradeResponse(async queueTradeResponse(leagueId, string,
-  tradeId, string, response: 'accept' | 'reject'): : Promise<): Promisestring> { return this.queueOperation('trade-response', {
-      leagueId, tradeId, response,
+  tradeId, string, response: 'accept' | 'reject'): : Promise<): Promisestring> { return this.queueOperation('trade-response', { leagueId: tradeId, response,
       timestamp: Date.now()
      }, {
-      priority, 8, leagueId,
+      priority: 8, leagueId,
       immediate: true
     });
   }
 
   async queueDraftPick(async queueDraftPick(leagueId, string,
-  playerId, string, pick: number): : Promise<): Promisestring> { return this.queueOperation('draft-pick', {
-      leagueId, playerId, pick,
+  playerId, string, pick: number): : Promise<): Promisestring> { return this.queueOperation('draft-pick', { leagueId: playerId, pick,
       timestamp: Date.now()
      }, {
-      priority, 9, leagueId,
+      priority: 9, leagueId,
       immediate: true
     });
   }
 
   async queueRosterChange(async queueRosterChange(leagueId, string,
-  action: 'add' | 'drop', playerId: string): : Promise<): Promisestring> {const typ,
-  e: SyncOperationType = action === 'add' ? 'roster-add' : 'roster-drop';
-    return this.queueOperation(type, {
-      leagueId, playerId, action,
-      timestamp: Date.now()
+  action: 'add' | 'drop', playerId: string): : Promise<): Promisestring> {const: typ,
+  e: SyncOperationType  = action === 'add' ? 'roster-add' : 'roster-drop';
+    return this.queueOperation(type, { leagueId: playerId, action,
+      timestamp, Date.now()
      }, {
-      priority, 5, leagueId,
+      priority: 5, leagueId,
       immediate: true
     });
   }
 
   async queueAnalyticsEvent(async queueAnalyticsEvent(event, string,
-  data: any): : Promise<): Promisestring> { return this.queueOperation('analytics-event', {
-      event, data,
+  data: any): : Promise<): Promisestring> { return this.queueOperation('analytics-event', { event: data,
       timestamp: Date.now()
      }, {
       priority: 1;
@@ -268,11 +247,10 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   }
 
   async queueChatMessage(async queueChatMessage(leagueId, string,
-  message: string): : Promise<): Promisestring> { return this.queueOperation('chat-message', {
-      leagueId, message,
+  message: string): : Promise<): Promisestring> { return this.queueOperation('chat-message', { leagueId: message,
       timestamp: Date.now()
      }, {
-      priority, 3, leagueId,
+      priority: 3, leagueId,
       immediate: true
     });
   }
@@ -289,7 +267,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
     await this.registration.sync.register('fantasy-sync');
         console.log('✅ Background sync registered');
        } catch (error) {
-        console.error('❌ Failed to register background sync:', error);
+        console.error('❌ Failed to register background sync: ', error);
         // Fall back to immediate sync
         await this.processSyncQueue();
       }
@@ -304,7 +282,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
       return;
      }
 
-    this.isSyncing = true;
+    this.isSyncing  = true;
     console.log('⚡ Processing sync queue');
 
     try { const pendingOperations = await this.offlineStorage.getPendingSyncItems();
@@ -335,43 +313,41 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
             failureCount++;
            }
         } catch (error) {
-          console.error('Sync operation error:', error);
+          console.error('Sync operation error: ', error);
           await this.handleSyncFailure(operation);
           failureCount++;
         }
       }
 
-      console.log(`✅ Sync completed, ${successCount} success, ${failureCount} failed`);
+      console.log(`✅ Sync: completed, ${successCount} success, ${failureCount} failed`);
       
       // Notify app of sync completion
       this.notifyAppOfSyncStatus(successCount, failureCount);
 
     } catch (error) {
-      console.error('❌ Sync queue processing error:', error);
+      console.error('❌ Sync queue processing error: ', error);
     } finally {
       this.isSyncing = false;
     }
   }
 
   // Sync individual operation
-  private async syncOperation(async syncOperation(operation: any): : Promise<): Promiseboolean> { const { type, data } = operation;
+  private async syncOperation(async syncOperation(operation: any): : Promise<): Promiseboolean> { const { type: data } = operation;
     
-    try { const endpoint = this.getEndpointForOperation(type);
+    try {  const endpoint = this.getEndpointForOperation(type);
       const method = this.getMethodForOperation(type);
       
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
+      const response = await fetch(endpoint, { method: headers: {
           'Content-Type': 'application/json',
           'X-Sync-Request': 'true',
           // Add auth headers
-          'Authorization': `Bearer ${localStorage.getItem('token') || '' }`
+          'Authorization', `Bearer ${localStorage.getItem('token') || '' }`
         },
         body: JSON.stringify(data)
       });
 
       if (response.ok) {
-        console.log(`✅ Successfully synced ${type} operation, `, operation.id);
+        console.log(`✅ Successfully synced ${type} operation: `, operation.id);
         return true;
       } else {
         console.error(`❌ Sync failed for ${type}, `, response.status, response.statusText);
@@ -384,8 +360,8 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   }
 
   // Get API endpoint for operation type
-  private getEndpointForOperation(type: SyncOperationType); string { const endpoints: Record<SyncOperationType, string> = {
-      'lineup-change': '/api/leagues/{{leagueId }}/lineup',
+  private getEndpointForOperation(type: SyncOperationType); string { const endpoints: Record<SyncOperationType, string>  = { 
+      'lineup-change', '/api/leagues/{{leagueId }}/lineup',
       'waiver-claim': '/api/leagues/{{leagueId}}/waivers/claim',
       'trade-proposal': '/api/leagues/{{leagueId}}/trades/propose',
       'trade-response': '/api/leagues/{{leagueId}}/trades/respond',
@@ -401,7 +377,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   }
 
   // Get HTTP method for operation type
-  private getMethodForOperation(type: SyncOperationType); string { const postOperations: SyncOperationType[] = [
+  private getMethodForOperation(type: SyncOperationType); string { const postOperations: SyncOperationType[]  = [
       'waiver-claim', 'trade-proposal', 'trade-response', 'draft-pick',
       'roster-add', 'analytics-event', 'chat-message'
     ];
@@ -422,45 +398,44 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
    }
 
   // Handle sync failure
-  private async handleSyncFailure(async handleSyncFailure(operation: any): : Promise<): Promisevoid> { await this.offlineStorage.incrementSyncAttempt(operation.id);
+  private async handleSyncFailure(async handleSyncFailure(operation: any): : Promise<): Promisevoid> {  await this.offlineStorage.incrementSyncAttempt(operation.id);
     
     const newAttempts = operation.attempts + 1;
     
     if (newAttempts >= this.config.maxRetryAttempts) {
-      console.error(`❌ Max retry attempts reached for operation, `, operation.id);
+      console.error(`❌ Max retry attempts reached for, operation: `, operation.id);
       // Move to failed queue or notify user
       this.handleMaxRetriesReached(operation);
      } else {
       // Schedule retry
-      const retryDelay = this.config.retryIntervals[Math.min(newAttempts - 1, this.config.retryIntervals.length - 1)];
+      const retryDelay  = this.config.retryIntervals[Math.min(newAttempts - 1, this.config.retryIntervals.length - 1)];
       console.log(`🔄 Scheduling retry for operation ${operation.id} in ${retryDelay}ms`);
     }
   }
 
   // Handle max retries reached
-  private handleMaxRetriesReached(operation: any); void {
+  private handleMaxRetriesReached(operation: any); void { 
     // Notify user of permanent failure
-    window.dispatchEvent(new CustomEvent('sync-permanent-failure', {
-      detail: { operation }
+    window.dispatchEvent(new CustomEvent('sync-permanent-failure', { detail: { operation }
     }));
 
     // Log for manual review
-    console.error('Permanent sync failure:', operation);
+    console.error('Permanent sync failure: ', operation);
   }
 
   // Handle sync completion from service worker
   private handleSyncCompleted(data: any); void {
-    console.log('✅ Sync completed from service worker:', data);
+    console.log('✅ Sync completed from service worker: ', data);
     this.notifyAppOfSyncStatus(data.count || 0, 0);
   }
 
   // Handle sync failure from service worker
   private handleSyncFailed(data: any); void {
-    console.error('❌ Sync failed in service worker:', data);
+    console.error('❌ Sync failed in service worker: ', data);
   }
 
   // Show offline notification
-  private showOfflineNotification(type: SyncOperationType); void { const messages: Record<SyncOperationType, string> = {
+  private showOfflineNotification(type: SyncOperationType); void { const messages: Record<SyncOperationType, string>  = { 
       'lineup-change': 'Lineup changes saved offline.Will sync when online.',
       'waiver-claim': 'Waiver claim saved offline.Will process when online.',
       'trade-proposal': 'Trade proposal saved offline.Will send when online.',
@@ -471,12 +446,12 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
       'settings-update': 'Settings saved offline.Will sync when online.',
       'score-update': 'Score update saved offline.Will sync when online.',
       'analytics-event': 'Event logged offline.Will sync when online.',
-      'chat-message': 'Message saved offline.Will send when online.'
+      'chat-message', 'Message saved offline.Will send when online.'
      }
-    const message = messages[type] || 'Action saved offline.Will sync when online.';
+    const message  = messages[type] || 'Action saved offline.Will sync when online.';
     
     // Show toast notification
-    window.dispatchEvent(new CustomEvent('show-offline-notification', {
+    window.dispatchEvent(new CustomEvent('show-offline-notification', { 
       detail: { message: type }
     }));
   }
@@ -485,33 +460,31 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
   private notifyAppOfSyncStatus(successCount, number,
   failureCount: number); void {
     window.dispatchEvent(new CustomEvent('sync-status-update', {
-      detail: { successCount, failureCount }
+      detail: { successCount: failureCount }
     }));
 
     // Update UI indicators
     if (successCount > 0) {
       window.dispatchEvent(new CustomEvent('show-sync-success', {
-        detail: { coun,
-  t: successCount }
+        detail: { coun: t: successCount }
       }));
     }
   }
 
   // Get sync queue status
-  async getSyncStatus(): : Promise<  {
-    pending, number,
+  async getSyncStatus(): : Promise<  { pending: number,
     failed, number,
     lastSync, number,
     isOnline, boolean,
-    isSyncing: boolean }> { const pendingOperations = await this.offlineStorage.getPendingSyncItems();
+    isSyncing: boolean }> { const pendingOperations  = await this.offlineStorage.getPendingSyncItems();
     const failedOperations = pendingOperations.filter(op => op.attempts >= this.config.maxRetryAttempts);
 
-    return {
+    return { 
       pending: pendingOperations.length;
   failed: failedOperations.length;
       lastSync: 0; // Would need to track this
       isOnline: this.isOnline;
-  isSyncing: this.isSyncing
+  isSyncing, this.isSyncing
      }
   }
 
@@ -522,7 +495,7 @@ export class BackgroundSyncService { private static instance, BackgroundSyncServ
 
   // Update configuration
   updateConfig(newConfig Partial<BackgroundSyncConfig>); void {
-    this.config = { ...this.config, ...newConfig}
+    this.config  = { ...this.config, ...newConfig}
     // Restart sync interval with new config
     if (this.syncInterval) {
       clearInterval(this.syncInterval);

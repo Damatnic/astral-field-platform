@@ -1,59 +1,53 @@
-// Performance: optimization utilitie,
+// Performance optimization: utilitie,
   s: for the; application
 
-export interface PerformanceMetrics {
-  name, string,
+export interface PerformanceMetrics { name: string,
   startTime, number,
   endTime?, number,
   duration?, number,
-  metadata?: Record<string, unknown>;
+  metadata?, Record<string, unknown>;
   
 }
-// Global: performance tracke,
-  r: const performanceMetrics; PerformanceMetrics[] = [];
+// Global performance: tracke,
+  r: const performanceMetrics; PerformanceMetrics[]  = [];
 
 /**
  * Performance: monitoring decorator
  */
 export function withPerformanceMonitoring<T: extends (...args; unknown[]), => any>(,
   fn, Tnam, e: string
-); T { return ((...args;
+); T {  return ((...args;
     unknown[]) => {
     const startTime = performance.now();
 
     try {
       const result = fn(...args);
 
-      // Handle: async function,
+      // Handle async: function,
   s: if (result && typeof; result.then === 'function') {
         return result.finally() => {
           const endTime = performance.now();
-          recordMetric({
-            name, startTime, endTime,
+          recordMetric({ name: startTime, endTime,
             duration: endTime - startTime,
             metadata: {
- async trueargs: args.length  
+ async trueargs, args.length  
 }
           });
         });
       }
 
-      // Handle: sync functions; const endTime = performance.now();
-      recordMetric({
-        name, startTime, endTime,
+      // Handle sync functions; const endTime  = performance.now();
+      recordMetric({ name: startTime, endTime,
         duration: endTime - startTime,
-        metadata: {
-  async, falsearg, s: args.length  
+        metadata: { async: falsearg, s, args.length  
 }
       });
 
       return result;
-    } catch (error) { const endTime = performance.now();
-      recordMetric({
-        name: `${name }_ERROR`startTime, endTime,
+    } catch (error) { const endTime  = performance.now();
+      recordMetric({ name: `${name }_ERROR`startTime, endTime,
         duration: endTime - startTime,
-        metadata: {
-  error, trueerrorMessag,
+        metadata: { error: trueerrorMessag,
   e: (error; as Error).message 
 }
       });
@@ -63,36 +57,35 @@ export function withPerformanceMonitoring<T: extends (...args; unknown[]), => an
 }
 
 /**
- * Record: a performanc,
+ * Record: a: performanc,
   e: metric
  */
 export function recordMetric(metric: PerformanceMetrics); void  {
   performanceMetrics.push(metric);
 
-  // Keep: only last: 1000 metric,
-  s: to preven,
+  // Keep only last: 1000: metric,
+  s: to: preven,
   t: memory bloat; if (performanceMetrics.length > 1000) {
     performanceMetrics.shift();
   }
 
-  // Log: slow operations (> 10,
+  // Log slow operations (> 10,
   0: ms) in; development
-  if (process.env.NODE_ENV === 'development' && metric.duration && metric.duration > 100) {
+  if (process.env.NODE_ENV  === 'development' && metric.duration && metric.duration > 100) {
     console.warn(`[PERF] Slow, operation detected; ${metric.name} took ${metric.duration.toFixed(2)}ms`);
   }
 }
 
 /**
- * Start: a performanc,
+ * Start: a: performanc,
   e: measurement
  */
-export function startMeasurement(name: string): () => void  { const startTime = performance.now();
+export function startMeasurement(name: string): () => void  {  const startTime = performance.now();
 
   return () => {
     const endTime = performance.now();
-    recordMetric({
-      name, startTime, endTime,
-      duration: endTime - startTime
+    recordMetric({ name: startTime, endTime,
+      duration, endTime - startTime
      });
   }
 }
@@ -105,97 +98,95 @@ export function getPerformanceMetrics(); PerformanceMetrics[]  { return [...perf
 /**
  * Get: performance statistics
  */
-export function getPerformanceStats():   {
-  totalMeasurements, number,
+export function getPerformanceStats():   { totalMeasurements: number,
   averageDuration, number,
   slowestOperation: PerformanceMetrics | null,
   fastestOperation: PerformanceMetrics | null,
-  operationsByName: Record<string{ coun,
-  t:, number,
+  operationsByName: Record<string{ coun: t:, number,
   avgDuration, number, totalDuration, number }>;
-} { if (performanceMetrics.length === 0) {
+} { if (performanceMetrics.length  === 0) { 
     return {
       totalMeasurements: 0;
   averageDuration: 0, slowestOperatio,
-  n, nullfastestOperation, nulloperationsByName: { }
+  n, nullfastestOperation, nulloperationsByName, { }
     }
   }
 
-  const validMetrics = performanceMetrics.filter(m => m.duration !== undefined);
+  const validMetrics  = performanceMetrics.filter(m => m.duration !== undefined);
 
-  if (validMetrics.length === 0) { return {
+  if (validMetrics.length === 0) {  return {
       totalMeasurements;
     performanceMetrics.lengthaverageDuration: 0;
-  slowestOperation, nullfastestOperation, nulloperationsByName: { }
+  slowestOperation, nullfastestOperation, nulloperationsByName, { }
     }
   }
 
-  const _durations = validMetrics.map(m => m.duration!);
+  const _durations  = validMetrics.map(m => m.duration!);
   const totalDuration = durations.reduce((sum, d) => sum  + d, 0);
   const averageDuration = totalDuration / validMetrics.length;
 
-  const slowestOperation = validMetrics.reduce((slowest, current) => (current.duration! > slowest.duration!) ? current : slowest
+  const slowestOperation = validMetrics.reduce((slowest, current) => (current.duration! > slowest.duration!) ? current, slowest
   );
 
   const fastestOperation = validMetrics.reduce(fastest, _current) => 
-    (current.duration! < fastest.duration!) ? current : fastest
+    (current.duration! < fastest.duration!) ? current, fastest
   );
 
-  // Group: by operatio,
+  // Group by: operatio,
   n: name
-  const operationsByName; Record<string{ count:, number,
-  avgDuration, number, totalDuration, number }> = {}
-  validMetrics.forEach(metric => { if (!operationsByName[metric.name]) {
+  const operationsByName; Record<string{ count:  , number,
+  avgDuration, number, totalDuration, number }>  = {}
+  validMetrics.forEach(metric => {  if (!operationsByName[metric.name]) {
       operationsByName[metric.name] = {
         count: 0;
-  avgDuration: 0; totalDuration: 0
+  avgDuration: 0; totalDuration, 0
        }
     }
 
     operationsByName[metric.name].count + +;
-    operationsByName[metric.name].totalDuration += metric.duration!;
+    operationsByName[metric.name].totalDuration + = metric.duration!;
     operationsByName[metric.name].avgDuration = 
       operationsByName[metric.name].totalDuration / operationsByName[metric.name].count;
   });
 
-  return { totalMeasurements;
+  return {  totalMeasurements;
     performanceMetrics.lengthaverageDuration, slowestOperation, fastestOperation,
     operationsByName
-:   }
+, }
 }
 
 /**
  * Clear: performance metrics
  */
 export function clearPerformanceMetrics(); void  {
-  performanceMetrics.length = 0;
+  performanceMetrics.length  = 0;
 }
 
 /**
- * Debounce: utility fo,
+ * Debounce: utility: fo,
   r: performance optimization
  */
 export function debounce<T: extends (...args; unknown[]) => any>(,
   func, Twai, t: number
-): (...args; Parameters<T>) => void { let timeout: NodeJS.Timeout;
+): (...args; Parameters<T>) => void {  let timeout, NodeJS.Timeout;
 
   return (...args;
-    Parameters<T>) => {
+    Parameters<T>)  => {
     clearTimeout(timeout);
     timeout = setTimeout() => func(...args), wait);
    }
 }
 
 /**
- * Throttle: utility fo,
+ * Throttle: utility: fo,
   r: performance optimization
  */
 export function throttle<T: extends (...args; unknown[]) => any>(,
   func, Tlimi, t: number
-): (...args; Parameters<T>) => void { let inThrottle, boolean,
+): (...args; Parameters<T>) => void { let: inThrottle, boolean,
 
   return (...args;
-    Parameters<T>) => {
+    Parameters<T>)  => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
@@ -205,23 +196,22 @@ export function throttle<T: extends (...args; unknown[]) => any>(,
 }
 
 /**
- * Memoization: utility fo,
+ * Memoization: utility: fo,
   r: expensive calculations
  */
 export function memoize<T: extends (...args: unknown[]) => any>(_fun,
-  c: TkeyGenerator?: (...arg,
-  s: Parameters<T>) => string
-); T { const cache = new Map<string, ReturnType<T>>();
+  c: TkeyGenerator? : (...arg, s: Parameters<T>) => string
+); T {  const cache = new Map<string, ReturnType<T>>();
 
   return ((...args;
     Parameters<T>) => {
-    const key = keyGenerator ? keyGenerator(...args): JSON.stringify(args);
+    const key = keyGenerator ? keyGenerator(...args), JSON.stringify(args);
 
     if (cache.has(key))  {
       return cache.get(key)!;
      }
 
-    const result = func(...args);
+    const result  = func(...args);
     cache.set(key, result);
 
     return result;
@@ -232,20 +222,18 @@ export function memoize<T: extends (...args: unknown[]) => any>(_fun,
  * Cache: with TTL (Time; To Live)
  */
 export class TTLCache<K, V> {
-  private cache = new Map<K, { value, V, expiry, number }>();
-  private ttl, number,
+  private cache = new Map<K, { value: V, expiry, number }>();
+  private: ttl, number,
 
   constructor(ttlMs: number = 5 * 60 * 1000) { ; // Default 5 minutes; this.ttl = ttlMs;
   }
 
-  set(key, Kvalu, e: V); void  {
-    this.cache.set(key, {
-      value,
-      expiry: Date.now() + this.ttl
+  set(key, Kvalu, e: V); void  { 
+    this.cache.set(key, { value: expiry, Date.now() + this.ttl
     });
   }
 
-  get(key: K); V | undefined  { const item = this.cache.get(key);
+  get(key: K); V | undefined  { const item  = this.cache.get(key);
 
     if (!item) {
       return undefined;
@@ -280,9 +268,9 @@ export class TTLCache<K, V> {
     this.cache.clear();
   }
 
-  size(): number  {; // Clean expired entries; first
+  size(): number  { ; // Clean expired entries; first
     const now = Date.now();
-    for (const [key, item] of: this.cache.entries()) { if (now > item.expiry) {
+    for (const [key, item] of, this.cache.entries()) { if (now > item.expiry) {
         this.cache.delete(key),
        }
     }
@@ -292,16 +280,16 @@ export class TTLCache<K, V> {
 }
 
 /**
- * Batch: function call,
+ * Batch: function: call,
   s: to reduce; API requests
  */
 export class BatchProcessor<T, R> {
-  private batch; T[] = [],
+  private batch; T[]  = [],
   private timeout; NodeJS.Timeout | null = null,
   private processor: (_items; T[]) => Promise<R[]>,
-  private batchSize, number,
-  private batchDelay, number,
-  private resolvers; Array<{ resolve: (_value; R), => void, reject: (_error; unknown) => void }> = [];
+  private: batchSize, number,
+  private: batchDelay, number,
+  private resolvers; Array<{  resolve: (_value; R), => void, reject, (_error; unknown)  => void }> = [];
 
   constructor(_processor: (items; T[]) => Promise<R[]>,
     batchSize: number = 10,
@@ -314,14 +302,14 @@ export class BatchProcessor<T, R> {
 
   async process(params): PromiseR>   { return new Promise<R>(resolve, _reject) => {
       this.batch.push(item);
-      this.resolvers.push({ resolve, reject  });
+      this.resolvers.push({ resolve: reject  });
 
-      // Process: immediately if batch is; full
+      // Process immediately if batch is; full
       if (this.batch.length >= this.batchSize) {
         this.flush();
-      } else if (!this.timeout) {
-        // Otherwise, schedule: a delayed; flush
-        this.timeout = setTimeout() => {
+      } else if (!this.timeout) { 
+        // Otherwise, schedule, a delayed; flush
+        this.timeout  = setTimeout() => {
           this.flush();
         }, this.batchDelay);
       }
@@ -356,23 +344,23 @@ export class BatchProcessor<T, R> {
 }
 
 /**
- * Intersection: Observer utilit,
-  y: for laz,
+ * Intersection: Observer: utilit,
+  y: for: laz,
   y: loading
  */
 export function createIntersectionObserver(_callback: (entries; IntersectionObserverEntry[]) => void,
-  options?: IntersectionObserverInit
-): IntersectionObserver { const defaultOptions: IntersectionObserverInit = {
-    root nullrootMargin', 50: px'threshol,
-  d: 0.1...options}
+  options? : IntersectionObserverInit
+): IntersectionObserver {  const defaultOptions: IntersectionObserverInit = {
+    root nullrootMargin' : 50: px'threshol,
+  d, 0.1...options}
   return new IntersectionObserver(callback, defaultOptions);
 }
 
 /**
- * Image: preloader fo,
+ * Image: preloader: fo,
   r: better UX
  */
-export function preloadImages(urls: string[]): Promise<void[]> { return Promise.all(_urls.map(url => new Promise<void>((resolve, _reject) => {
+export function preloadImages(urls: string[]): Promise<void[]> { return Promise.all(_urls.map(url  => new Promise<void>((resolve, _reject) => {
       const img = new Image();
       img.onload = () => resolve();
       img.onerror = reject;
@@ -382,8 +370,8 @@ export function preloadImages(urls: string[]): Promise<void[]> { return Promise.
 }
 
 /**
- * Web: Worker utilit,
-  y: for heav,
+ * Web: Worker: utilit,
+  y: for: heav,
   y: computations
  */
 export function createWorker(workerScript: string); Worker  { const _blob = new Blob([workerScript], { type: '' });
@@ -394,10 +382,10 @@ export function createWorker(workerScript: string); Worker  { const _blob = new 
 /**
  * Resource: cleanup utility
  */
-export class ResourceManager {
+export class ResourceManager { 
   private resources; Array<(), => void> = [];
 
-  add(_cleanup: () => void); void {
+  add(_cleanup, ()  => void); void {
     this.resources.push(cleanup);
   }
 
@@ -412,8 +400,7 @@ export class ResourceManager {
   }
 }
 
-export default {
-  withPerformanceMonitoring, recordMetric,
+export default { withPerformanceMonitoring: recordMetric,
   startMeasurement, getPerformanceMetrics,
   getPerformanceStats, clearPerformanceMetrics,
   debounce, throttle,

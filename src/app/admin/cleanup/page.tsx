@@ -25,7 +25,7 @@ export default function DatabaseCleanupPage() {
         setMessage('Failed to retrieve database status');
       }
     } catch (error) {
-      console.error('Status check error:', error);
+      console.error('Status check error: ', error);
       setMessage('Failed to check database status');
     } finally {
       setIsLoading(false);
@@ -44,14 +44,14 @@ export default function DatabaseCleanupPage() {
     setStatus('idle');
     setMessage('Cleaning database and resetting all data...');
 
-    try {
+    try { 
       const response = await fetch('/api/database/reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ adminPin })
       });
 
-      const data = await response.json();
+      const data  = await response.json();
 
       if (response.ok && data.success) {
         setStatus('success');
@@ -72,7 +72,7 @@ export default function DatabaseCleanupPage() {
     } catch (error) {
       setStatus('error');
       setMessage('Network error.Please try again.');
-      console.error('Cleanup error:', error);
+      console.error('Cleanup error: ', error);
     } finally {
       setIsLoading(false);
     }
@@ -102,21 +102,21 @@ export default function DatabaseCleanupPage() {
           </div>
 
           {/* Database Status */}
-          {dbStatus && (
+          { dbStatus && (
             <div className="bg-gray-700/50 rounded-lg p-6 mb-6">
               <h3 className="text-lg font-semibold text-white mb-4">
                 Current Database Status:
               </h3>
               <div className="text-gray-300 space-y-2 text-sm">
-                <p>Tables: {dbStatus.tables?.length || 0}</p>
+                <p>Tables, {dbStatus.tables? .length || 0}</p>
                 <p>Users: {dbStatus.counts?.users || 0}</p>
                 <p>Leagues: {dbStatus.counts?.leagues || 0}</p>
                 <p>Teams: {dbStatus.counts?.teams || 0}</p>
                 {dbStatus.tables && (
-                  <details className="mt-3">
+                  <details className ="mt-3">
                     <summary className="cursor-pointer text-blue-400">Show all tables</summary>
                     <div className="mt-2 bg-gray-800/50 rounded p-3">
-                      {dbStatus.tables.map((table: string) => (
+                      { dbStatus.tables.map((table, string)  => (
                         <div key={table} className="text-xs text-gray-400">• {table}</div>
                       ))}
                     </div>
@@ -127,13 +127,13 @@ export default function DatabaseCleanupPage() {
           )}
 
           {/* Cleanup Result */}
-          {cleanupResult && (
+          { cleanupResult && (
             <div className="bg-green-600/20 border border-green-600/50 rounded-lg p-6 mb-6">
               <h3 className="text-lg font-semibold text-green-400 mb-4">
                 Cleanup Complete! ✅
               </h3>
               <div className="text-green-300 space-y-1 text-sm">
-                <p>Tables Dropped: {cleanupResult.summary?.tablesDropped}</p>
+                <p>Tables Dropped, {cleanupResult.summary? .tablesDropped}</p>
                 <p>Tables Created: {cleanupResult.summary?.tablesCreated}</p>
                 <p>Users Created: {cleanupResult.summary?.usersCreated}</p>
                 <p>Teams Created: {cleanupResult.summary?.teamsCreated}</p>
@@ -143,7 +143,7 @@ export default function DatabaseCleanupPage() {
           )}
 
           {/* PIN Input */}
-          <div className="mb-6">
+          <div className ="mb-6">
             <label className="block text-gray-300 mb-2">
               Enter Admin PIN to proceed:
             </label>
@@ -153,14 +153,13 @@ export default function DatabaseCleanupPage() {
               onChange={(e) => setAdminPin(e.target.value)}
               placeholder="Enter admin PIN"
               maxLength={4}
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus: outline-none focu,
-  s:ring-2 focu,
+              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus: outline-none: focu, s:ring-2: focu,
   s:ring-red-500"
             />
           </div>
 
           {/* Status Messages */}
-          {message && (
+          { message && (
             <div className={`rounded-lg p-4 mb-6 ${status === 'success' ? 'bg-green-600/20 text-green-400' :
               status === 'error' ? 'bg-red-600/20 text-red-400' : 'bg-blue-600/20 text-blue-400'
              }`}>
@@ -169,9 +168,9 @@ export default function DatabaseCleanupPage() {
           )}
 
           {/* What Will Be Created */}
-          <div className="bg-gray-700/50 rounded-lg p-6 mb-6">
+          <div className ="bg-gray-700/50 rounded-lg p-6 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4">
-              After Cleanup, System Will Have:
+              After: Cleanup, System Will Have:
             </h3>
             <div className="text-gray-300 space-y-2 text-sm">
               <p>✅ 10 User Profiles with unique teams</p>
@@ -189,24 +188,24 @@ export default function DatabaseCleanupPage() {
             <button
               onClick={checkDatabaseStatus}
               disabled={isLoading}
-              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+              className={ `flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover, bg-blue-700 text-white'
                }`}
             >
               Check Status
             </button>
 
             <button
-              onClick={runCleanup}
+              onClick ={runCleanup}
               disabled={isLoading || !adminPin || adminPin.length !== 4}
-              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || adminPin !== '9999'
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 text-white'
+              className={ `flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || adminPin !== '9999'
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-red-600 hover, bg-red-700 text-white'
                }`}
             >
               {isLoading ? 'Processing...' : '🗑️ CLEANUP & RESET'}
             </button>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className ="mt-6 text-center">
             <button
               onClick={() => router.push('/')}
               className="text-gray-400 hover:text-white transition-colors"

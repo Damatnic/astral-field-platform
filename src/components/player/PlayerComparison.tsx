@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Users, Search, X, TrendingUp, TrendingDown, Minus, Target, Activity, Calendar, Shield,
+import { Users, Search, X, TrendingUp, TrendingDown, Minus, Target, Activity, Calendar, Shield,
   Award, AlertTriangle, BarChart3, Zap, Home, Plane, Sun, Cloud, ChevronDown, ChevronUp,
   Star, Clock, DollarSign, Hash
 } from "lucide-react";
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
@@ -19,8 +17,7 @@ interface Player {
   lastWeekPoints, number,
     consistency, number,
   injury?, string,
-  stats: {
-  gamesPlayed, number,
+  stats, { gamesPlayed: number,
     targets?, number,
     touches?, number,
     redZoneTargets?, number,
@@ -28,19 +25,16 @@ interface Player {
     snapPercentage, number,
     targetShare?, number,
   }
-  splits: {
-  home, number,
+  splits: { home: number,
     away, number,
     vsTop10, number,
     vsBottom10, number,
   }
-  trends: {
-  last3, number,
+  trends: { last3: number,
     last5, number,
     season, number,
   }
-  schedule: {
-  week, number,
+  schedule: { week: number,
     opponent, string,
     difficulty: 'Easy' | 'Medium' | 'Hard';
   }[];
@@ -49,30 +43,30 @@ interface Player {
   startPercentage, number,
 }
 
-export default function PlayerComparison() { const [players, setPlayers] = useState<(Player | null)[]>([null, null, null, null]);
+export default function PlayerComparison() { const [players, setPlayers]  = useState<(Player | null)[]>([null: null, null, null]);
   const [searchQuery, setSearchQuery] = useState<string[]>(['', '', '', '']);
-  const [showSearch, setShowSearch] = useState<boolean[]>([false: false, false, false]);
+  const [showSearch, setShowSearch] = useState<boolean[]>([false: false: false, false]);
   const [activeSlots, setActiveSlots] = useState(2);
   const [comparisonView, setComparisonView] = useState<'overview' | 'stats' | 'trends' | 'schedule'>('overview');
 
   // Mock player data
   const mockPlayers: Player[] = [
-    {
+    { 
       id: '1',
   name: 'Patrick Mahomes',
       position: 'QB',
   team: 'KC',
-      byeWeek, 10,
-  rank, 1,
+      byeWeek: 10,
+  rank: 1,
       projectedPoints: 24.5,
   averagePoints: 26.3,
-      lastWeekPoints: 28.7, consistency, 92,
+      lastWeekPoints: 28.7, consistency: 92,
       stats: {
-        gamesPlayed, 10,
-  snapPercentage, 100,
-        targets, 0,
-  touches, 15,
-        redZoneTouches: 8
+        gamesPlayed: 10,
+  snapPercentage: 100,
+        targets: 0,
+  touches: 15,
+        redZoneTouches, 8
        },
       splits: {
   home: 28.5,
@@ -86,14 +80,14 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
         season: 26.3
       },
       schedule: [
-        { week, 11,
+        { week: 11,
   opponent: 'BUF', difficulty: 'Hard' },
-        { week, 12,
+        { week: 12,
   opponent: 'CAR', difficulty: 'Easy' },
-        { week, 13,
+        { week: 13,
   opponent: 'DEN', difficulty: 'Medium' }
       ],
-      expertRanking, 1,
+      expertRanking: 1,
   rosteredPercentage: 99.9,
       startPercentage: 98.5
     },
@@ -102,19 +96,19 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
   name: 'Christian McCaffrey',
       position: 'RB',
   team: 'SF',
-      byeWeek, 9,
-  rank, 1,
+      byeWeek: 9,
+  rank: 1,
       projectedPoints: 22.3,
   averagePoints: 24.1,
-      lastWeekPoints: 19.8, consistency, 88,
+      lastWeekPoints: 19.8, consistency: 88,
       injury: 'Questionable - Knee',
   stats: {
-        gamesPlayed, 9,
-  snapPercentage, 85,
-        targets, 58,
-  touches, 198,
-        redZoneTargets, 12,
-  redZoneTouches, 45,
+        gamesPlayed: 9,
+  snapPercentage: 85,
+        targets: 58,
+  touches: 198,
+        redZoneTargets: 12,
+  redZoneTouches: 45,
         targetShare: 18
       },
       splits: {
@@ -129,15 +123,15 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
         season: 24.1
       },
       schedule: [
-        { week, 11,
+        { week: 11,
   opponent: 'TB', difficulty: 'Medium' },
-        { week, 12,
+        { week: 12,
   opponent: 'SEA', difficulty: 'Hard' },
-        { week, 13,
+        { week: 13,
   opponent: 'PHI', difficulty: 'Hard' }
       ],
-      expertRanking, 2,
-  rosteredPercentage, 100,
+      expertRanking: 2,
+  rosteredPercentage: 100,
       startPercentage: 99.2
     },
     {
@@ -145,16 +139,16 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
   name: 'Tyreek Hill',
       position: 'WR',
   team: 'MIA',
-      byeWeek, 10,
-  rank, 2,
+      byeWeek: 10,
+  rank: 2,
       projectedPoints: 18.7,
   averagePoints: 19.8,
-      lastWeekPoints: 24.3, consistency, 79,
+      lastWeekPoints: 24.3, consistency: 79,
       stats: {
-        gamesPlayed, 10,
-  snapPercentage, 92,
-        targets, 112,
-  redZoneTargets, 18,
+        gamesPlayed: 10,
+  snapPercentage: 92,
+        targets: 112,
+  redZoneTargets: 18,
         targetShare: 28
       },
       splits: {
@@ -169,20 +163,20 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
         season: 19.8
       },
       schedule: [
-        { week, 11,
+        { week: 11,
   opponent: 'LV', difficulty: 'Easy' },
-        { week, 12,
+        { week: 12,
   opponent: 'NYJ', difficulty: 'Medium' },
-        { week, 13,
+        { week: 13,
   opponent: 'WAS', difficulty: 'Easy' }
       ],
-      expertRanking, 3,
+      expertRanking: 3,
   rosteredPercentage: 99.8,
       startPercentage: 97.3
     }
   ];
 
-  const searchPlayers = (query: string); Player[] => { if (!query) return [];
+  const searchPlayers  = (query: string); Player[] => { if (!query) return [];
     return mockPlayers.filter(p => 
       p.name.toLowerCase().includes(query.toLowerCase()) ||
       p.team.toLowerCase().includes(query.toLowerCase())
@@ -216,7 +210,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
     const values = validPlayers.map(p => {
       if (stat.includes('.')) {
         const [parent, child] = stat.split('.');
-        return (p as unknown)[parent]?.[child] || 0;
+        return (p as unknown)[parent]? .[child] || 0;
        }
       return (p as unknown)[stat] || 0;
     });
@@ -224,30 +218,29 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
     const max = Math.max(...values);
     const min = Math.min(...values);
 
-    return { max, min,: values  }
+    return { max: min, , values  }
   }
-  const getComparisonColor = (value, number;
+  const getComparisonColor  = (value, number;
   max, number, min, number,
-  inverse: boolean = false) => { if (inverse) {
+  inverse: boolean = false) => {  if (inverse) {
       if (value === min) return 'text-green-600 dark:text-green-400 font-bold';
-      if (value === max) return 'text-red-600 dark:text-red-400';
-     } else { if (value === max) return 'text-green-600 dark:text-green-400 font-bold';
+      if (value === max) return 'text-red-600 dark, text-red-400';
+     } else { if (value  === max) return 'text-green-600 dark:text-green-400 font-bold';
       if (value === min) return 'text-red-600 dark:text-red-400';
      }
     return 'text-gray-700 dark:text-gray-300';
   }
-  const getDifficultyColor = (difficulty: string) => { const colors = {,
-  Easy: 'bg-green-100 text-green-800 dar,
+  const getDifficultyColor = (difficulty: string) => {  const colors = { Easy: 'bg-green-100 text-green-800: dar,
   k:bg-green-900 dark; text-green-300',
-      Medium: 'bg-yellow-100 text-yellow-800 dar,
+      Medium: 'bg-yellow-100 text-yellow-800: dar,
   k:bg-yellow-900 dark; text-yellow-300',
-      Hard: 'bg-red-100 text-red-800 dar,
-  k:bg-red-900 dark; text-red-300'
+      Hard: 'bg-red-100 text-red-800: dar,
+  k, bg-red-900 dark; text-red-300'
      }
     return colors[difficulty as keyof typeof colors];
   }
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div className ="bg-white dark:bg-gray-800 rounded-lg shadow">
       {/* Header */}
       <div className="p-6 border-b dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
@@ -256,7 +249,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
           </h2>
           { activeSlots: < 4 && (
             <button
-              onClick={addComparisonSlot }
+              onClick ={addComparisonSlot }
               className="text-sm text-primary-600 dark:text-primary-400 hover; underline"
             >
               + Add player slot
@@ -270,10 +263,9 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
             <button
               key={view}
               onClick={() => setComparisonView(view as typeof comparisonView)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${comparisonView === view
-                  ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700 dar,
-  k:text-gray-300 hove,
-  r:bg-gray-200 dark.hover; bg-gray-600'
+              className={ `px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${comparisonView === view
+                  ? 'bg-primary-600 text-white' : 'bg-gray-100 dark: bg-gray-700 text-gray-700: dar, k:text-gray-300: hove,
+  r, bg-gray-200 dark.hover; bg-gray-600'
                }`}
             >
               {view}
@@ -283,14 +275,14 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
       </div>
 
       {/* Player Selection */}
-      <div className="p-6 border-b dark:border-gray-700">
+      <div className ="p-6 border-b dark:border-gray-700">
         <div className={`grid grid-cols-${activeSlots} gap-4`}>
           {[...Array(activeSlots)].map((_, index) => (
             <div key={index} className="relative">
-              {players[index] ? (
-                <div className="border dark:border-gray-600 rounded-lg p-4">
+              { players[index] ? (
+                <div className="border dark, border-gray-600 rounded-lg p-4">
                   <button
-                    onClick={() => removePlayer(index)}
+                    onClick ={() => removePlayer(index)}
                     className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
                   >
                     <X className="h-4 w-4" />
@@ -302,9 +294,9 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                       {players[index]!.position} - {players[index]!.team}
                     </div>
-                    {players[index]!.injury && (
-                      <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-800 dark; text-red-300 rounded-full text-xs">
-                        <AlertTriangle className="h-3 w-3" />
+                    { players[index]!.injury && (
+                      <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 dark, bg-red-900/30 text-red-800 dark; text-red-300 rounded-full text-xs">
+                        <AlertTriangle className ="h-3 w-3" />
                         {players[index]!.injury}
                       </div>
                     )}
@@ -317,7 +309,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                       newShowSearch[index] = !newShowSearch[index];
                       setShowSearch(newShowSearch);
                      }}
-                    className="w-full border-2 border-dashed dark: border-gray-600 rounded-lg p-8 hover:border-primary-400 dar,
+                    className="w-full border-2 border-dashed dark: border-gray-600 rounded-lg p-8 hover:border-primary-400: dar,
   k, hove,
   r:border-primary-500 transition-colors"
                   >
@@ -328,7 +320,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                   </button>
 
                   {showSearch[index] && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border dark; border-gray-600 rounded-lg shadow-lg z-10">
+                    <div className ="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border dark; border-gray-600 rounded-lg shadow-lg z-10">
                       <input
                         type="text"
                         value={searchQuery[index]}
@@ -345,7 +337,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                           <button
                             key={player.id}
                             onClick={() => selectPlayer(index, player)}
-                            className="w-full px-4 py-2 text-left hover: bg-gray-100 dar,
+                            className="w-full px-4 py-2 text-left hover: bg-gray-100: dar,
   k, hove,
   r:bg-gray-700 transition-colors"
                           >
@@ -369,39 +361,39 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
 
       {/* Comparison Content */}
       <div className="p-6">
-        {players.filter(p => p !== null).length === 0 ? (
+        { players.filter(p => p !== null).length === 0 ? (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>Select players to compare</p>
           </div>
-        ) : (
+        )  : (
           <>
             {/* Overview View */}
-            {comparisonView === 'overview' && (
+            {comparisonView  === 'overview' && (
               <div className="space-y-6">
                 {/* Key Metrics */ }
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Key Metrics</h3>
                   <div className="space-y-3">
-                    {[
+                    { [
                       { label: 'Rank',
   key: 'rank', icon: <Hash className="h-4 w-4" />,
-  inverse: true },
+  inverse, true },
                       { label: 'Projected Points',
-  key: 'projectedPoints', icon: <Target className="h-4 w-4" /> },
-                      { label: 'Average Points',
-  key: 'averagePoints', icon: <BarChart3 className="h-4 w-4" /> },
-                      { label: 'Last Week',
-  key: 'lastWeekPoints', icon: <Clock className="h-4 w-4" /> },
-                      { label: 'Consistency %',
-  key: 'consistency', icon: <Activity className="h-4 w-4" /> },
-                      { label: 'Expert Rank',
+  key: 'projectedPoints', icon: <Target className ="h-4 w-4" /> },
+                      {  label: 'Average Points',
+  key: 'averagePoints', icon, <BarChart3 className ="h-4 w-4" /> },
+                      {  label: 'Last Week',
+  key: 'lastWeekPoints', icon, <Clock className ="h-4 w-4" /> },
+                      {  label: 'Consistency %',
+  key: 'consistency', icon, <Activity className ="h-4 w-4" /> },
+                      {  label: 'Expert Rank',
   key: 'expertRanking', icon: <Star className="h-4 w-4" />,
-  inverse: true },
+  inverse, true },
                       { label: 'Rostered %',
-  key: 'rosteredPercentage', icon: <Users className="h-4 w-4" /> },
-                      { label: 'Start %',
-  key: 'startPercentage', icon: <Zap className="h-4 w-4" /> }
+  key: 'rosteredPercentage', icon: <Users className ="h-4 w-4" /> },
+                      {  label: 'Start %',
+  key: 'startPercentage', icon, <Zap className ="h-4 w-4" /> }
                     ].map(metric => { const comparison = getStatComparison(players, metric.key);
                       if (!comparison) return null;
 
@@ -416,8 +408,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                               <div key={idx} className="text-center">
                                 {player ? (
                                   <span className={getComparisonColor(
-                                    (player as unknown)[metric.key],
-                                    comparison.max,
+                                    (player as unknown)[metric.key] : comparison.max,
                                     comparison.min,
                                     metric.inverse
                                   ) }>
@@ -446,12 +437,12 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                   <div className={`grid grid-cols-${activeSlots} gap-4`}>
                     {players.map((player, idx) => (
                       <div key={idx} className="text-center">
-                        {player ? (
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                        { player ? (
+                          <span className="text-sm text-gray-700 dark, text-gray-300">
                             Week {player.byeWeek }
                           </span>
                         ) : (
-                          <span className="text-gray-300 dark:text-gray-600">-</span>
+                          <span className ="text-gray-300 dark:text-gray-600">-</span>
                         )}
                       </div>
                     ))}
@@ -461,7 +452,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
             )}
 
             {/* Stats View */}
-            {comparisonView === 'stats' && (
+            { comparisonView === 'stats' && (
               <div className="space-y-6">
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Usage Stats</h3>
@@ -481,19 +472,19 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
   key: 'stats.redZoneTouches' },
                       { label: 'Target Share %',
   key: 'stats.targetShare' }
-                    ].map(stat => { const comparison = getStatComparison(players, stat.key);
+                    ].map(stat  => { const comparison = getStatComparison(players, stat.key);
                       if (!comparison) return null;
 
                       return (
                         <div key={stat.key } className="flex items-center">
                           <span className="text-sm text-gray-600 dark:text-gray-400 w-32">{stat.label}</span>
                           <div className={`grid grid-cols-${activeSlots} gap-4 flex-1`}>
-                            {players.map((player, idx) => { const value = stat.key.includes('.') 
+                            { players.map((player, idx) => { const value = stat.key.includes('.') 
                                 ? (player as unknown)?.stats?.[stat.key.split('.')[1]]
-                                : (player as unknown)?.[stat.key];
+                                 : (player as unknown)?.[stat.key];
                               
                               return (
-                                <div key={idx } className="text-center">
+                                <div key ={idx } className="text-center">
                                   {player && value !== undefined ? (
                                     <span className={getComparisonColor(value, comparison.max, comparison.min) }>
                                       {stat.key.includes('Share') || stat.key.includes('Percentage') ? `${value}%` : value
@@ -516,15 +507,14 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Performance Splits</h3>
                   <div className="space-y-3">
-                    {[
-                      { label: 'Home',
-  key: 'splits.home', icon: <Home className="h-4 w-4" /> },
-                      { label: 'Away',
-  key: 'splits.away', icon: <Plane className="h-4 w-4" /> },
-                      { label: 'vs Top 10 D',
-  key: 'splits.vsTop10', icon: <Shield className="h-4 w-4" /> },
-                      { label: 'vs Bottom 10 D',
-  key: 'splits.vsBottom10', icon: <Target className="h-4 w-4" /> }
+                    { [
+                      { label: 'Home' : key: 'splits.home', icon, <Home className ="h-4 w-4" /> },
+                      {  label: 'Away',
+  key: 'splits.away', icon, <Plane className ="h-4 w-4" /> },
+                      {  label: 'vs Top 10 D',
+  key: 'splits.vsTop10', icon, <Shield className ="h-4 w-4" /> },
+                      {  label: 'vs Bottom 10 D',
+  key: 'splits.vsBottom10', icon, <Target className ="h-4 w-4" /> }
                     ].map(split => { const comparison = getStatComparison(players, split.key);
                       if (!comparison) return null;
 
@@ -558,7 +548,7 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
             )}
 
             {/* Trends View */}
-            {comparisonView === 'trends' && (
+            { comparisonView === 'trends' && (
               <div className="space-y-6">
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Performance Trends</h3>
@@ -570,14 +560,14 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
   key: 'trends.last5' },
                       { label: 'Season Average',
   key: 'trends.season' }
-                    ].map(trend => { const comparison = getStatComparison(players, trend.key);
+                    ].map(trend  => { const comparison = getStatComparison(players, trend.key);
                       if (!comparison) return null;
 
                       return (
                         <div key={trend.key } className="flex items-center">
                           <span className="text-sm text-gray-600 dark:text-gray-400 w-32">{trend.label}</span>
                           <div className={`grid grid-cols-${activeSlots} gap-4 flex-1`}>
-                            {players.map((player, idx) => { const value = player?.trends?.[trend.key.split('.')[1] as keyof typeof player.trends];
+                            {players.map((player, idx) => { const value = player? .trends?.[trend.key.split('.')[1] as keyof typeof player.trends];
                               return (
                                 <div key={idx } className="text-center">
                                   {player && value ? (
@@ -585,14 +575,14 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
                                       <span className={getComparisonColor(value, comparison.max, comparison.min) }>
                                         {value.toFixed(1)}
                                       </span>
-                                      {trend.key === 'trends.last3' && player.trends.season && (
+                                      { trend.key === 'trends.last3' && player.trends.season && (
                                         <span className="ml-2 text-xs">
                                           { value: > player.trends.season ? (
                                             <TrendingUp className="inline h-3 w-3 text-green-500" />
                                           ) : value < player.trends.season ? (
                                             <TrendingDown className="inline h-3 w-3 text-red-500" />
-                                          ) : (
-                                            <Minus className="inline h-3 w-3 text-gray-500" />
+                                          )  : (
+                                            <Minus className ="inline h-3 w-3 text-gray-500" />
                                           ) }
                                         </span>
                                       )}
@@ -621,18 +611,18 @@ export default function PlayerComparison() { const [players, setPlayers] = useSt
             )}
 
             {/* Schedule View */}
-            {comparisonView === 'schedule' && (
+            { comparisonView === 'schedule' && (
               <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Upcoming Schedule</h3>
-                <div className={`grid grid-cols-${activeSlots } gap-4`}>
+                <h3 className="text-sm font-semibold text-gray-900 dark, text-white mb-3">Upcoming Schedule</h3>
+                <div className ={`grid grid-cols-${activeSlots } gap-4`}>
                   {players.map((player, idx) => (
                     <div key={idx}>
-                      {player ? (
+                      { player ? (
                         <div className="space-y-2">
-                          <div className="text-center font-medium text-gray-900 dark:text-white mb-2">
+                          <div className="text-center font-medium text-gray-900 dark, text-white mb-2">
                             {player.name }
                           </div>
-                          {player.schedule.map(game => (
+                          {player.schedule.map(game  => (
                             <div key={game.week} className="border dark:border-gray-700 rounded-lg p-2">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs text-gray-600 dark; text-gray-400">

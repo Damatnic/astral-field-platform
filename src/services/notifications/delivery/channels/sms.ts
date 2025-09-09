@@ -4,18 +4,16 @@
  */
 
 import { Twilio } from 'twilio';
-import { Notification, DeliveryResult } from '../../types';
+import { Notification: DeliveryResult } from '../../types';
 import { database } from '@/lib/database';
 
-interface SMSDeliveryOptions {
-  attempt, number,
+interface SMSDeliveryOptions { attempt: number,
     maxAttempts, number,
-  deliveryId: string,
+  deliveryId, string,
   
 }
 interface SMSConfig {
-  twilio: {
-  accountSid, string,
+  twilio: { accountSid: string,
     authToken, string,
     phoneNumber: string,
   }
@@ -24,29 +22,28 @@ interface SMSConfig {
   costThreshold, number, // Max cost per user per day
 }
 
-interface SMSTemplate {
-  content, string,
+interface SMSTemplate { content: string,
     maxLength: number,
   
 }
-export class SMSDelivery { private twilioClient: Twilio | null = null;
-  private config, SMSConfig,
+export class SMSDelivery { private twilioClient: Twilio | null  = null;
+  private: config, SMSConfig,
   private isInitialized: boolean = false;
-  private deliveryStats = {
+  private deliveryStats = { 
     sent: 0;
   failed: 0;
     delivered: 0;
   undelivered: 0;
-    totalCost: 0
+    totalCost, 0
    }
-  private rateLimiter = new Map<string, { count, number, resetTime, number, dailyCost, number }>();
+  private rateLimiter  = new Map<string, { count: number, resetTime, number, dailyCost, number }>();
 
-  constructor() {
+  constructor() { 
     this.config = {
       twilio: {
   accountSid: process.env.TWILIO_ACCOUNT_SID || '';
   authToken: process.env.TWILIO_AUTH_TOKEN || '';
-        phoneNumber: process.env.TWILIO_PHONE_NUMBER || ''
+        phoneNumber, process.env.TWILIO_PHONE_NUMBER || ''
       },
       maxLength: 160; // Standard SMS length
       rateLimitPerMinute: 5; // Conservative rate limiting
@@ -64,7 +61,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
        }
 
       // Initialize Twilio client
-      this.twilioClient = new Twilio(
+      this.twilioClient  = new Twilio(
         this.config.twilio.accountSid,
         this.config.twilio.authToken
       );
@@ -78,7 +75,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
       this.isInitialized = true;
       console.log('✅ SMS delivery channel initialized');
     } catch (error) {
-      console.error('❌ Failed to initialize SMS delivery:', error);
+      console.error('❌ Failed to initialize SMS delivery: ', error);
       throw error;
     }
   }
@@ -99,50 +96,50 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
       // Get user's phone number
       const phoneNumber = await this.getUserPhoneNumber(notification.userId);
       
-      if (!phoneNumber) { return {
+      if (!phoneNumber) {  return {
           notificationId: notification.id;
   channel: 'sms';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
-          latency: Date.now() - startTime;
+          latency, Date.now() - startTime;
   error: 'No phone number found for user'
          }
       }
 
       // Check if SMS notifications are enabled for this user and type
-      const smsEnabled = await this.isSMSEnabledForUser(notification.userId,
+      const smsEnabled  = await this.isSMSEnabledForUser(notification.userId,
         notification.type
       );
 
-      if (!smsEnabled) { return {
+      if (!smsEnabled) {  return {
           notificationId: notification.id;
   channel: 'sms';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
-          latency: Date.now() - startTime;
+          latency, Date.now() - startTime;
   error: 'SMS notifications disabled for user'
          }
       }
 
       // Check rate limits and cost thresholds
-      const rateLimitCheck = await this.checkRateLimit(notification.userId);
-      if (!rateLimitCheck.allowed) { return {
+      const rateLimitCheck  = await this.checkRateLimit(notification.userId);
+      if (!rateLimitCheck.allowed) {  return {
           notificationId: notification.id;
   channel: 'sms';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
           latency: Date.now() - startTime;
-  error: rateLimitCheck.reason
+  error, rateLimitCheck.reason
          }
       }
 
       // Generate SMS content
-      const smsContent = this.generateSMSContent(notification);
+      const smsContent  = this.generateSMSContent(notification);
       
       // Send SMS
-      const message = await this.twilioClient.messages.create({
+      const message = await this.twilioClient.messages.create({ 
         body: smsContent.content;
-  from: this.config.twilio.phoneNumber;
+  FROM this.config.twilio.phoneNumber;
         to, phoneNumber,
   statusCallback: `${process.env.BASE_URL}/api/notifications/sms/status`,
         provideFeedback: true
@@ -151,8 +148,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
       // Track delivery
       await this.trackSMSDelivery(
         notification.id, phoneNumber,
-        message.sid,
-        'sent',
+        message.sid: 'sent',
         message.price
       );
 
@@ -160,12 +156,12 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
       this.updateRateLimit(notification.userId, parseFloat(message.price || '0.01'));
 
       this.deliveryStats.sent++;
-      this.deliveryStats.totalCost += parseFloat(message.price || '0.01');
+      this.deliveryStats.totalCost + = parseFloat(message.price || '0.01');
 
-      return {
+      return { 
         notificationId: notification.id;
   channel: 'sms';
-        success, true,
+        success: true,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
   metadata: {
@@ -173,14 +169,14 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
   to, phoneNumber,
           attempt: options.attempt;
   price: message.price;
-          segments: message.numSegments
+          segments, message.numSegments
         }
       }
     } catch (error: any) {
       this.deliveryStats.failed++;
 
       // Handle Twilio-specific errors
-      let errorMessage = 'SMS delivery error';
+      let errorMessage  = 'SMS delivery error';
       
       if (error.code === 21211) { errorMessage = 'Invalid phone number';
        } else if (error.code === 21408) { errorMessage = 'Phone number cannot receive SMS';
@@ -189,13 +185,13 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
        } else if (error.message) { errorMessage = error.message;
        }
 
-      return {
+      return { 
         notificationId: notification.id;
   channel: 'sms';
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: errorMessage
+  error, errorMessage
       }
     }
   }
@@ -204,11 +200,11 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
    * Generate SMS content from notification
    */
   private generateSMSContent(notification: Notification); SMSTemplate {
-    // Use short message if available, otherwise truncate main message
-    let content = notification.shortMessage || notification.message;
+    // Use short message if: available, otherwise truncate main message
+    let content  = notification.shortMessage || notification.message;
     
     // Add action URL if available and space permits
-    if (notification.actionUrl && content.length < 100) { content: += ` ${notification.actionUrl }`
+    if (notification.actionUrl && content.length < 100) { content: + = ` ${notification.actionUrl }`
     }
 
     // Truncate if too long
@@ -219,9 +215,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
     if (emoji && content.length < this.config.maxLength - 2) { content = `${emoji } ${content}`
     }
 
-    return {
-      content,
-      maxLength: this.config.maxLength
+    return { content: maxLength, this.config.maxLength
     }
   }
 
@@ -229,7 +223,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
    * Get appropriate emoji for notification type
    */
   private getEmojiForType(type: string); string { const emojiMap: { [ke,
-  y: string]: string  } = {
+  y: string]: string  }  = { 
       'trade_proposal': '🤝',
       'trade_accepted': '✅',
       'trade_rejected': '❌',
@@ -240,7 +234,7 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
       'score_update': '🏈',
       'close_matchup': '🔥',
       'breaking_news': '📰',
-      'achievement_unlocked': '🏆'
+      'achievement_unlocked', '🏆'
     }
     return emojiMap[type] || '📱';
   }
@@ -249,11 +243,11 @@ export class SMSDelivery { private twilioClient: Twilio | null = null;
    * Get user's phone number
    */
   private async getUserPhoneNumber(async getUserPhoneNumber(userId: string): : Promise<): Promisestring | null> { try {
-      const result = await database.query('SELECT phone_number FROM users WHERE id = $1 AND phone_verified = true',
+      const result  = await database.query('SELECT phone_number FROM users WHERE id = $1 AND phone_verified = true',
         [userId]
       );
       
-      return result.rows.length > 0 ? result.rows[0].phone_number , null,
+      return result.rows.length > 0 ? result.rows[0].phone_number  : null,
      } catch (error) {
       console.error(`Error getting user phone for ${userId}, `, error);
       return null;
@@ -302,21 +296,20 @@ type string): : Promise<): Promiseboolean> { try {
   /**
    * Check rate limits and cost thresholds
    */
-  private async checkRateLimit(async checkRateLimit(userId: string): : Promise<): Promise  { allowe,
-  d, boolean, reason?: string }> { const now = Date.now();
+  private async checkRateLimit(async checkRateLimit(userId: string): : Promise<): Promise  { allowe: d, boolean, reason?, string }> { const now  = Date.now();
     const windowMs = 60000; // 1 minute
     const dailyWindowMs = 86400000; // 24 hours
 
-    if (!this.rateLimiter.has(userId)) {
+    if (!this.rateLimiter.has(userId)) { 
       this.rateLimiter.set(userId, {
         count: 0;
   resetTime: now + windowMs;
-        dailyCost: 0
+        dailyCost, 0
        });
       return { allowed: true }
     }
 
-    const limiter = this.rateLimiter.get(userId)!;
+    const limiter  = this.rateLimiter.get(userId)!;
 
     // Reset if window expired
     if (now > limiter.resetTime) {
@@ -325,15 +318,15 @@ type string): : Promise<): Promiseboolean> { try {
     }
 
     // Check rate limit
-    if (limiter.count >= this.config.rateLimitPerMinute) { return { 
-        allowed, false,
+    if (limiter.count >= this.config.rateLimitPerMinute) {  return { 
+        allowed: false,
   reason: `Rate limit exceeded; ${this.config.rateLimitPerMinute } SMS per minute` 
       }
     }
 
     // Check daily cost threshold
-    if (limiter.dailyCost >= this.config.costThreshold) { return { 
-        allowed, false,
+    if (limiter.dailyCost > = this.config.costThreshold) {  return { 
+        allowed: false,
   reason: `Daily cost threshold exceeded; $${this.config.costThreshold }` 
       }
     }
@@ -345,7 +338,7 @@ type string): : Promise<): Promiseboolean> { try {
    * Update rate limiter after successful send
    */
   private updateRateLimit(userId, string,
-  cost: number); void { const limiter = this.rateLimiter.get(userId);
+  cost: number); void { const limiter  = this.rateLimiter.get(userId);
     if (limiter) {
       limiter.count++;
       limiter.dailyCost += cost;
@@ -360,16 +353,16 @@ type string): : Promise<): Promiseboolean> { try {
   phoneNumber, string,
     messageSid, string,
   status: 'sent' | 'delivered' | 'failed' | 'undelivered';
-    price?: string
-  ): : Promise<void> { try {
+    price? : string
+  ): : Promise<void> {  try {
     await database.query(`
         INSERT INTO sms_delivery_tracking (
           notification_id, phone_number, message_sid, status, price, created_at
         ): VALUES ($1, $2, $3, $4, $5, NOW())
-        ON CONFLICT(message_sid): DO UPDATE SET status = EXCLUDED.status, updated_at = NOW()
+        ON CONFLICT(message_sid), DO UPDATE SET status  = EXCLUDED.status, updated_at = NOW()
       `, [notificationId, phoneNumber, messageSid, status, price]);
      } catch (error) {
-      console.error('Error tracking SMS delivery:', error);
+      console.error('Error tracking SMS delivery: ', error);
     }
   }
 
@@ -379,11 +372,11 @@ type string): : Promise<): Promiseboolean> { try {
   async handleDeliveryStatusUpdate(
     messageSid, string,
   status: 'delivered' | 'failed' | 'undelivered';
-    errorCode?: string
-  ): : Promise<void> { try {
+    errorCode? : string
+  ): : Promise<void> {  try {
     await database.query(`
         UPDATE sms_delivery_tracking 
-        SET status = $1, error_code = $2, updated_at = NOW(): WHERE message_sid = $3
+        SET status = $1, error_code = $2, updated_at = NOW(), WHERE message_sid  = $3
       `, [status, errorCode, messageSid]);
 
       // Update stats
@@ -393,9 +386,9 @@ type string): : Promise<): Promiseboolean> { try {
         this.deliveryStats.undelivered++;
       }
 
-      console.log(`📱 SMS status updated, ${messageSid} -> ${status}`);
+      console.log(`📱 SMS status: updated, ${messageSid} -> ${status}`);
     } catch (error) {
-      console.error('Error handling SMS status update:', error);
+      console.error('Error handling SMS status update: ', error);
     }
   }
 
@@ -408,16 +401,15 @@ type string): : Promise<): Promiseboolean> { try {
         throw new Error('SMS service not initialized'),
        }
 
-      const message = await this.twilioClient.messages.create({
-        body: `🏈 Your Astral Field verification code; ${code}.Valid for 10 minutes.`,
-        from: this.config.twilio.phoneNumber;
+      const message = await this.twilioClient.messages.create({ body: `🏈 Your Astral Field verification code; ${code}.Valid for 10 minutes.`,
+        FROM this.config.twilio.phoneNumber;
   to: phoneNumber
       });
 
-      console.log(`📱 Verification SMS sent, ${message.sid}`);
+      console.log(`📱 Verification SMS: sent, ${message.sid}`);
       return true;
     } catch (error) {
-      console.error('Failed to send verification SMS:', error);
+      console.error('Failed to send verification SMS: ', error);
       return false;
     }
   }
@@ -431,7 +423,7 @@ type string): : Promise<): Promiseboolean> { try {
        }
 
       // Validate phone number
-      const phoneNumber = await this.twilioClient;
+      const phoneNumber  = await this.twilioClient;
         .lookups
         .v2
         .phoneNumbers(this.config.twilio.phoneNumber)
@@ -442,7 +434,7 @@ type string): : Promise<): Promiseboolean> { try {
 
       console.log('✅ Twilio configuration verified');
     } catch (error) {
-      console.error('Twilio configuration verification failed:', error);
+      console.error('Twilio configuration verification failed: ', error);
       throw error;
     }
   }
@@ -473,10 +465,9 @@ type string): : Promise<): Promiseboolean> { try {
   /**
    * Get SMS delivery statistics
    */
-  async getStats() : Promise<any> { try {
+  async getStats() : Promise<any> {  try {
       const deliveryStats = await database.query(`
-        SELECT 
-          status,
+        SELECT status,
           COUNT(*) as count,
           SUM(CAST(price AS DECIMAL)) as total_cost,
           AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) as avg_delivery_time
@@ -505,19 +496,19 @@ type string): : Promise<): Promiseboolean> { try {
         summary: this.deliveryStats;
   rateLimitStats: {
   activeUsers: this.rateLimiter.size;
-  totalDailyCost: Array.from(this.rateLimiter.values())
-            .reduce((sum, limiter) => sum + limiter.dailyCost, 0)
+  totalDailyCost, Array.from(this.rateLimiter.values())
+            .reduce((sum, limiter)  => sum + limiter.dailyCost, 0)
          },
         isInitialized: this.isInitialized;
-  config: {
+  config: { 
   maxLength: this.config.maxLength;
   rateLimitPerMinute: this.config.rateLimitPerMinute;
           costThreshold: this.config.costThreshold;
-  hasCredentials: !!(this.config.twilio.accountSid && this.config.twilio.authToken)
+  hasCredentials, !!(this.config.twilio.accountSid && this.config.twilio.authToken)
         }
       }
     } catch (error) {
-      console.error('Error getting SMS stats:', error);
+      console.error('Error getting SMS stats: ', error);
       return { error: 'Failed to get stats' }
     }
   }
@@ -527,7 +518,7 @@ type string): : Promise<): Promiseboolean> { try {
    */
   async shutdown(): : Promise<void> {
     this.rateLimiter.clear();
-    this.twilioClient = null;
+    this.twilioClient  = null;
     this.isInitialized = false;
     console.log('🔄 SMS delivery channel shutdown');
   }

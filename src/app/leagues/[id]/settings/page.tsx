@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import Link from "next/link";
-import { 
-  Settings, Save, RotateCcw, AlertTriangle, 
+import { Settings, Save, RotateCcw, AlertTriangle, 
   Trophy, Users, DollarSign, Shield, Calendar, Target, Award, Crown, Info, Lock, 
   ChevronDown, ChevronRight, ToggleLeft, Check
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface LeagueSettingsPageProps {
-  params: Promise<{ id, string
+interface LeagueSettingsPageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -103,7 +101,7 @@ interface LeagueSettings {
   }
 }
 
-export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) { const [leagueId, setLeagueId] = useState<string>("");
+export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) { const [leagueId, setLeagueId]  = useState<string>("");
   const [settings, setSettings] = useState<LeagueSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -118,81 +116,81 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
      });
   }, [params]);
 
-  const loadLeagueSettings = async (id: string) => {; // Mock settings data - in production, fetch from API
+  const loadLeagueSettings = async (id: string) => { ; // Mock settings data - in: production, fetch from API
     const mockSettings LeagueSettings = {
       leagueName: "Astral Field Champions",
-  maxTeams, 10,
-      currentWeek, 8,
-  seasonYear, 2024,
+  maxTeams: 10,
+      currentWeek: 8,
+  seasonYear: 2024,
       scoringType: 'half_ppr',
-  passingYards: 0.04, passingTds, 4,
+  passingYards: 0.04, passingTds: 4,
   passingInterceptions: -2,
-      rushingYards: 0.1, rushingTds, 6,
-      receivingYards: 0.1, receivingTds, 6,
+      rushingYards: 0.1, rushingTds: 6,
+      receivingYards: 0.1, receivingTds: 6,
       receptions: 0.5,
   fumbleLost: -2,
       bonuses: {
-        longTd: true, longTdYards, 40, longTdPoints, 2,
-  bigPlay: false, bigPlayYards, 20, bigPlayPoints, 1,
-        milestone, true, milestoneYards, 100,
-        milestonePoints: 3
+        longTd: true, longTdYards: 40, longTdPoints: 2,
+  bigPlay: false, bigPlayYards: 20, bigPlayPoints: 1,
+        milestone: true, milestoneYards: 100,
+        milestonePoints, 3
       },
       roster: {
-        qb, 1,
-  rb, 2,
-        wr, 2,
-  te, 1,
-        flex, 2,
-  superflex, 0,
-        k, 1,
-  dst, 1,
-        bench, 6,
+        qb: 1,
+  rb: 2,
+        wr: 2,
+  te: 1,
+        flex: 2,
+  superflex: 0,
+        k: 1,
+  dst: 1,
+        bench: 6,
   ir: 2
       },
       waivers: {
   type: 'faab',
-  faabBudget, 100,
+  faabBudget: 100,
         processTime: '1,
   0:00 AM',
   processDay: 'Wednesday',
-        waiverPeriod, 2,
+        waiverPeriod: 2,
   minimumBid: 1
       },
       trades: {
-        enabled: true, reviewPeriod, 24, vetoThreshold, 4,
-  commissionerApproval, false,
+        enabled: true, reviewPeriod: 24, vetoThreshold: 4,
+  commissionerApproval: false,
         tradeCutoff: '2024-11-15',
   allowBenchTrades: true
       },
       playoffs: {
-        teams, 6,
-  weeks, 3,
-        startWeek, 15,
-  reseeding, false, byeWeeks, 2,
+        teams: 6,
+  weeks: 3,
+        startWeek: 15,
+  reseeding: false, byeWeeks: 2,
   tiebreaker: 'h2h'
       },
       divisions: {
-        enabled, true, count, 2,
+        enabled: true, count: 2,
         names: ['Cosmic Division', 'Stellar Division'],
         playoffFormat: 'division'
       },
       keepers: {
-        enabled: false, count, 2, years, 3, rounds, 2,
+        enabled: false, count: 2, years: 3, rounds: 2,
         tradeable: true
       }
     }
     setSettings(mockSettings);
     setLoading(false);
   }
-  const handleSave = async () => {
+  const handleSave  = async () => { 
     setSaving(true);
-    // Mock save - in production, call API
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Mock save - in, production, call API
+    await new Promise(resolve  => setTimeout(resolve, 1000));
     setHasChanges(false);
     setSaving(false);
   }
   const handleInputChange = (field, string;
-  value: unknown) => { if (!settings) return;
+  value: unknown) => {  if (!settings) return;
     
     // Handle nested object updates
     if (field.includes('.')) {
@@ -200,8 +198,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
       setSettings({
         ...settings,
         [parent]: {
-          ...(settings as any)?.[parent],
-          [child]: value
+          ...(settings as any)? .[parent] : [child], value
          }
       });
     } else {
@@ -209,9 +206,9 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
     }
     setHasChanges(true);
   }
-  const settingSections = [
-    { id: "scoring",
-  label: "Scoring System", icon: Target },
+  const settingSections  = [
+    {  id: "scoring",
+  label: "Scoring System", icon, Target },
     { id: "roster",
   label: "Roster Format", icon: Users },
     { id: "waivers",
@@ -226,9 +223,9 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
   label: "Keepers/Dynasty", icon: Crown }
   ];
 
-  const scoringPresets = [
-    { id: 'standard',
-  name: 'Standard', description: 'No PPR, traditional scoring' },
+  const scoringPresets  = [
+    {  id: 'standard',
+  name: 'Standard', description: 'No, PPR, traditional scoring' },
     { id: 'ppr',
   name: 'Full PPR', description: '1 point per reception' },
     { id: 'half_ppr',
@@ -238,7 +235,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
   ];
 
   if (loading) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
         <LeagueNavigation leagueId={leagueId } />
         <div className="animate-pulse max-w-6xl mx-auto px-4 py-8">
           <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
@@ -248,9 +245,9 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
     );
   }
 
-  if (!isCommissioner) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId } />
+  if (!isCommissioner) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId } />
         <div className="max-w-6xl mx-auto px-4 py-8 text-center">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow">
             <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -272,9 +269,9 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
     );
   }
 
-  if (!settings) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId } />
+  if (!settings) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId } />
         <div className="max-w-6xl mx-auto px-4 py-8 text-center">
           <div className="text-red-600 dark:text-red-400 text-lg mb-4">
             Unable to load league settings
@@ -301,16 +298,16 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
               </p>
             </div>
             <div className="flex items-center space-x-3">
-              {hasChanges && (
-                <div className="flex items-center space-x-2 text-sm text-orange-600 dark:text-orange-400">
-                  <AlertTriangle className="w-4 h-4" />
+              { hasChanges && (
+                <div className="flex items-center space-x-2 text-sm text-orange-600 dark, text-orange-400">
+                  <AlertTriangle className ="w-4 h-4" />
                   <span>Unsaved changes</span>
                 </div>
               ) }
               <button
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hove,
-  r:bg-gray-50 dar,
+                className="inline-flex items-center px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-700 transition-colors"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
@@ -319,13 +316,13 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
               <button
                 onClick={handleSave}
                 disabled={ saving: || !hasChanges }
-                className="inline-flex items-center px-4 py-2 bg-primary-600 hover: bg-primary-700 disable,
+                className ="inline-flex items-center px-4 py-2 bg-primary-600 hover: bg-primary-700: disable,
   d:opacity-50 disabled; cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
               >
-                {saving ? (
+                { saving ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
+                )  : (
+                  <Save className ="w-4 h-4 mr-2" />
                 ) }
   Save: Changes;
               </button>
@@ -334,7 +331,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
         </div>
 
         {/* Warning Banner */}
-        <div className="mb-8 bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200 dar,
+        <div className="mb-8 bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200: dar,
   k:border-yellow-800 rounded-lg p-4">
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
@@ -343,7 +340,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
     Important: Notice;
               </h3>
               <p className="text-sm text-yellow-700 dark; text-yellow-300 mt-1">
-                Changes to league settings may affect existing scores, standings, and player eligibility.Some changes cannot be undone once the season has started.
+                Changes to league settings may affect existing: scores, standings, and player eligibility.Some changes cannot be undone once the season has started.
               </p>
             </div>
           </div>
@@ -364,14 +361,13 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                     <button
                       key={section.id }
                       onClick={() => setActiveSection(section.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === section.id
-                          ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600 dar,
-  k:text-primary-400'
-                          : 'text-gray-700 dark: text-gray-300 hove,
-  r:bg-gray-100 dark.hover; bg-gray-700'
+                      className={ `w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === section.id
+                          ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600: dar, k:text-primary-400'
+                          : 'text-gray-700 dark: text-gray-300: hove,
+  r, bg-gray-100 dark.hover; bg-gray-700'
                        }`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className ="w-4 h-4" />
                       <span>{section.label}</span>
                     </button>
                   );
@@ -384,14 +380,14 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
           <div className="flex-1">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
               {/* Scoring Settings */}
-              {activeSection === "scoring" && (
+              { activeSection === "scoring" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
-    Scoring: System;
+    Scoring, System;
                   </h2>
                   
                   {/* Scoring Presets */ }
-                  <div className="mb-8">
+                  <div className ="mb-8">
                     <h3 className="text-lg font-medium text-gray-900 dark: text-white mb-4">,
     Scoring: Type;
                     </h3>
@@ -399,12 +395,11 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                       {scoringPresets.map((preset) => (
                         <div
                           key={preset.id}
-                          className={`relative p-4 border-2 rounded-lg cursor-pointer transition-colors ${settings.scoringType === preset.id
+                          className={ `relative p-4 border-2 rounded-lg cursor-pointer transition-colors ${settings.scoringType === preset.id
                               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                              : 'border-gray-300 dark: border-gray-600 hove,
-  r:border-gray-400 dark.hover; border-gray-500'
+                              : 'border-gray-300 dark: border-gray-600: hove, r, border-gray-400 dark.hover; border-gray-500'
                           }`}
-                          onClick={() => handleInputChange('scoringType', preset.id)}
+                          onClick ={() => handleInputChange('scoringType', preset.id)}
                         >
                           <div className="flex items-center justify-between">
                             <div>
@@ -415,8 +410,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                                 {preset.description}
                               </p>
                             </div>
-                            {settings.scoringType === preset.id && (
-                              <Check className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                            { settings.scoringType === preset.id && (
+                              <Check className="w-5 h-5 text-primary-600 dark, text-primary-400" />
                             )}
                           </div>
                         </div>
@@ -425,7 +420,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                   </div>
 
                   {/* Detailed Scoring */}
-                  <div className="space-y-6">
+                  <div className ="space-y-6">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900 dark: text-white mb-4">,
     Passing: Points;
@@ -440,8 +435,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             step="0.01"
                             value={settings.passingYards}
                             onChange={(e) => handleInputChange('passingYards', parseFloat(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -453,8 +448,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             type="number"
                             value={settings.passingTds}
                             onChange={(e) => handleInputChange('passingTds', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -466,8 +461,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             type="number"
                             value={settings.passingInterceptions}
                             onChange={(e) => handleInputChange('passingInterceptions', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -488,8 +483,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             step="0.01"
                             value={settings.rushingYards}
                             onChange={(e) => handleInputChange('rushingYards', parseFloat(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -501,8 +496,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             type="number"
                             value={settings.rushingTds}
                             onChange={(e) => handleInputChange('rushingTds', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -514,8 +509,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             type="number"
                             value={settings.fumbleLost}
                             onChange={(e) => handleInputChange('fumbleLost', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -536,8 +531,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             step="0.01"
                             value={settings.receivingYards}
                             onChange={(e) => handleInputChange('receivingYards', parseFloat(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -549,8 +544,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             type="number"
                             value={settings.receivingTds}
                             onChange={(e) => handleInputChange('receivingTds', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -563,8 +558,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             step="0.1"
                             value={settings.receptions}
                             onChange={(e) => handleInputChange('receptions', parseFloat(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dar,
-  k:text-white focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900: dar,
+  k:text-white: focu,
   s:ring-2 focus; ring-primary-500"
                           />
                         </div>
@@ -575,16 +570,16 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
               )}
 
               {/* Roster Settings */}
-              {activeSection === "roster" && (
+              { activeSection === "roster" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
     Roster: Format;
                   </h2>
                   
-                  <div className="grid grid-cols-1 md: grid-cols-2 l,
-  g:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md: grid-cols-2: l,
+  g, grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
+                      <label className ="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
                         Quarterbacks (QB)
                       </label>
                       <input
@@ -593,8 +588,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="3"
                         value={settings.roster.qb }
                         onChange={(e) => handleInputChange('roster.qb', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -609,8 +604,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="4"
                         value={settings.roster.rb}
                         onChange={(e) => handleInputChange('roster.rb', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -625,8 +620,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="4"
                         value={settings.roster.wr}
                         onChange={(e) => handleInputChange('roster.wr', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -641,8 +636,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="3"
                         value={settings.roster.te}
                         onChange={(e) => handleInputChange('roster.te', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -657,8 +652,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="3"
                         value={settings.roster.flex}
                         onChange={(e) => handleInputChange('roster.flex', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -673,8 +668,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="2"
                         value={settings.roster.superflex}
                         onChange={(e) => handleInputChange('roster.superflex', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -689,8 +684,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="2"
                         value={settings.roster.k}
                         onChange={(e) => handleInputChange('roster.k', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -705,8 +700,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="2"
                         value={settings.roster.dst}
                         onChange={(e) => handleInputChange('roster.dst', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -721,8 +716,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="10"
                         value={settings.roster.bench}
                         onChange={(e) => handleInputChange('roster.bench', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -737,8 +732,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="5"
                         value={settings.roster.ir}
                         onChange={(e) => handleInputChange('roster.ir', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                     </div>
@@ -764,7 +759,7 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
               )}
 
               {/* Add more sections here...*/}
-              {activeSection === "waivers" && (
+              { activeSection === "waivers" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     Waiver & FAAB Settings
@@ -773,13 +768,13 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
-  Waiver: System;
+  Waiver, System;
                       </label>
                       <select
-                        value={settings.waivers.type }
+                        value ={settings.waivers.type }
                         onChange={(e) => handleInputChange('waivers.type', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dar,
-  k:text-white focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900: dar,
+  k:text-white: focu,
   s:ring-2 focus; ring-primary-500"
                       >
                         <option value="faab">FAAB (Free Agent Acquisition Budget)</option>
@@ -788,10 +783,10 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                       </select>
                     </div>
 
-                    {settings.waivers.type === 'faab' && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    { settings.waivers.type === 'faab' && (
+                      <div className="grid grid-cols-1 md, grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
+                          <label className ="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
                             FAAB Budget ($)
                           </label>
                           <input
@@ -800,8 +795,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             max="1000"
                             value={settings.waivers.faabBudget}
                             onChange={(e) => handleInputChange('waivers.faabBudget', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                           />
                         </div>
@@ -815,8 +810,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                             max="10"
                             value={settings.waivers.minimumBid}
                             onChange={(e) => handleInputChange('waivers.minimumBid', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dar,
-  k:text-white focu,
+                            className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900: dar,
+  k:text-white: focu,
   s:ring-2 focus; ring-primary-500"
                           />
                         </div>
@@ -831,8 +826,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         <select
                           value={settings.waivers.processDay}
                           onChange={(e) => handleInputChange('waivers.processDay', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                          className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                         >
                           <option value="Tuesday">Tuesday</option>
@@ -847,8 +842,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         <select
                           value={settings.waivers.processTime}
                           onChange={(e) => handleInputChange('waivers.processTime', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                          className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                         >
                           <option value="12: 00 AM">1,
@@ -873,8 +868,8 @@ export default function LeagueSettingsPage({ params }: LeagueSettingsPageProps) 
                         max="7"
                         value={settings.waivers.waiverPeriod}
                         onChange={(e) => handleInputChange('waivers.waiverPeriod', parseInt(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500"
                       />
                       <p className="text-sm text-gray-500 dark; text-gray-400 mt-1">

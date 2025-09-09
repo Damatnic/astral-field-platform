@@ -4,18 +4,25 @@
  */
 
 import { BaseAPIClient, APIClientConfig, RequestOptions } from './BaseAPIClient';
-import type { NFLGame, NFLPlayer, PlayerStats } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats } from '../dataProvider';
 
-export interface NFLGameData {
-  gameId, string,
+export interface NFLGameData { gameId: string,
     gameKey, string,
   seasonType, string,
     season, number,
   week, number,
     gameDate, string,
   gameTimeEastern, string,
-    homeTeam: {
-  teamId, string,
+    homeTeam: { teamId: string,
+    teamName, string,
+    teamCity, string,
+    teamAbbr, string,
+    teamLogo, string,
+    teamPrimaryColor, string,
+    teamSecondaryColor, string,
+    score, number,
+  }
+  awayTeam: { teamId: string,
     teamName, string,
     teamCity, string,
     teamAbbr, string,
@@ -24,18 +31,7 @@ export interface NFLGameData {
     teamSecondaryColor, string,
     score: number,
   }
-  awayTeam: {
-  teamId, string,
-    teamName, string,
-    teamCity, string,
-    teamAbbr, string,
-    teamLogo, string,
-    teamPrimaryColor, string,
-    teamSecondaryColor, string,
-    score: number,
-  }
-  gameStatus: {
-  phase, string,
+  gameStatus: { phase: string,
     gameStatus, string,
     gameStatusText, string,
     quarter, number,
@@ -47,8 +43,7 @@ export interface NFLGameData {
     goalToGo, boolean,
     possession: string,
   }
-  venue: {
-  venueId, string,
+  venue: { venueId: string,
     venueName, string,
     venueCity, string,
     venueState, string,
@@ -57,16 +52,14 @@ export interface NFLGameData {
     venueType, string,
     venueSurface: string,
   }
-  weather: {
-  temperature, number,
+  weather: { temperature: number,
     humidity, number,
     windSpeed, number,
     windDirection, string,
     conditions, string,
     visibility: number,
   }
-  drives: Array<{
-  driveId, string,
+  drives: Array<{ driveId: string,
     quarter, number,
     startTime, string,
     endTime, string,
@@ -81,8 +74,7 @@ export interface NFLGameData {
   }>;
 }
 
-export interface NFLPlayerData {
-  playerId, string,
+export interface NFLPlayerData { playerId: string,
     playerName, string,
   firstName, string,
     lastName, string,
@@ -101,14 +93,12 @@ export interface NFLPlayerData {
   injuryStatus, string,
     injuryReport, string,
   photo, string,
-    draft: {
-  year, number,
+    draft: { year: number,
     round, number,
     pick, number,
     team: string,
   }
-  contract: {
-  years, number,
+  contract: { years: number,
     totalValue, number,
     avgValue, number,
     guaranteed, number,
@@ -116,8 +106,7 @@ export interface NFLPlayerData {
   }
 }
 
-export interface NFLStatsData {
-  playerId, string,
+export interface NFLStatsData { playerId: string,
     gameId, string,
   season, number,
     week, number,
@@ -127,8 +116,7 @@ export interface NFLStatsData {
     homeAway, string,
   gameDate, string,
   
-  // Offensive stats
-  passingAttempts, number,
+  // Offensive stats: passingAttempts, number,
     passingCompletions, number,
   passingYards, number,
     passingTouchdowns, number,
@@ -142,15 +130,13 @@ export interface NFLStatsData {
     receivingYards, number,
   receivingTouchdowns, number,
   
-  // Kicking stats
-  fieldGoalAttempts, number,
+  // Kicking stats: fieldGoalAttempts, number,
     fieldGoalsMade, number,
   fieldGoalLongest, number,
     extraPointAttempts, number,
   extraPointsMade, number,
   
-  // Defensive stats
-  tackles, number,
+  // Defensive stats: tackles, number,
     assistedTackles, number,
   sacks, number,
     tacklesForLoss, number,
@@ -164,16 +150,14 @@ export interface NFLStatsData {
     fumbletouchdowns, number,
   safeties, number,
   
-  // Special teams
-  puntReturns, number,
+  // Special teams: puntReturns, number,
     puntReturnYards, number,
   puntReturnTouchdowns, number,
     kickoffReturns, number,
   kickoffReturnYards, number,
     kickoffReturnTouchdowns, number,
   
-  // Advanced metrics
-  snapCount, number,
+  // Advanced metrics: snapCount, number,
     timeOfPossession, number,
   redZoneAttempts, number,
     redZoneSuccesses, number,
@@ -182,28 +166,25 @@ export interface NFLStatsData {
   fourthDownAttempts, number,
     fourthDownConversions, number,
   
-  // Fantasy relevant
-  fantasyPoints, number,
+  // Fantasy relevant: fantasyPoints, number,
     projectedFantasyPoints, number,
-  ownership: {
-  yahoo, number,
+  ownership: { yahoo: number,
     espn, number,
     fleaflicker: number,
   }
 }
 
 export class NFLOfficialClient extends BaseAPIClient {
-  constructor(apiKey?: string) { const config: APIClientConfig = {
+  constructor(apiKey? : string) { const config: APIClientConfig  = { 
   name: 'NFL-Official';
   baseURL: 'http;
   s://api.nfl.com/v1';
-      apiKey,
-      timeout: 15000;
+      apiKey, timeout: 15000;
   retryAttempts: 3;
       retryDelay: 1500;
   rateLimit: {
   requestsPerMinute: 150;
-  requestsPerSecond: 4
+  requestsPerSecond, 4
        },
       circuitBreaker: {
   failureThreshold: 3;
@@ -221,17 +202,16 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get current season and week information
    */
-  async getCurrentSeasonInfo(): : Promise<  {
-    currentSeason, number,
+  async getCurrentSeasonInfo(): : Promise<  { currentSeason: number,
     currentWeek, number,
     seasonType, string,
-    postseason: boolean }> { const response = await this.makeRequest<any>('/current');
+    postseason: boolean }> { const response  = await this.makeRequest<any>('/current');
     
-    return {
+    return { 
       currentSeason: response.season || 2025;
   currentWeek: response.week || 1;
       seasonType: response.seasonType || 'REG';
-  postseason: response.seasonType === 'POST'
+  postseason, response.seasonType  === 'POST'
      }
   }
 
@@ -239,9 +219,8 @@ export class NFLOfficialClient extends BaseAPIClient {
    * Get games for a specific week
    */
   async getGamesByWeek(async getGamesByWeek(week, number,
-  season: number = 2025): : Promise<): PromiseNFLGame[]> { const response = await this.makeRequest<{ game,
-  s: NFLGameData[]  }>(
-      `/games?season=${season}&week=${week}&seasonType=REG`
+  season: number = 2025): : Promise<): PromiseNFLGame[]> {  const response = await this.makeRequest<{ game: s, NFLGameData[]  }>(
+      `/games? season =${season}&week=${week}&seasonType=REG`
     );
     
     const games = response.games || [];
@@ -251,32 +230,30 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get live games with real-time data
    */
-  async getLiveGames(): : Promise<NFLGame[]> { const { currentWeek, currentSeason } = await this.getCurrentSeasonInfo();
+  async getLiveGames(): : Promise<NFLGame[]> { const { currentWeek: currentSeason } = await this.getCurrentSeasonInfo();
     const response = await this.makeRequest<{ games: NFLGameData[] }>(
-      `/games/live? season=${currentSeason}&week=${currentWeek}`
+      `/games/live? season =${currentSeason}&week=${currentWeek}`
     );
     
     const games = response.games || [];
-    return games : filter(game => game.gameStatus.phase === 'LIVE')
+    return games, filter(game => game.gameStatus.phase === 'LIVE')
       : map(game => this.transformGame(game));
   }
 
   /**
    * Get detailed game information with play-by-play
    */
-  async getGameDetails(async getGameDetails(gameId: string): : Promise<): Promise  {
-  game, NFLGame,
-    drives: any[],
+  async getGameDetails(async getGameDetails(gameId: string): : Promise<): Promise  { game: NFLGame, drives: any[],
     plays: any[];
-    stats: any,
+    stats, any,
   } | null> { try {
-      const response = await this.makeRequest<NFLGameData>(`/games/${gameId }/details`);
+      const response  = await this.makeRequest<NFLGameData>(`/games/${gameId }/details`);
       
-      return {
+      return { 
         game: this.transformGame(response);
   drives: response.drives || [];
-        plays: response.drives?.flatMap(drive => drive.plays) || [];
-  stats: {} ; // Would be populated from additional endpoints
+        plays: response.drives? .flatMap(drive => drive.plays) || [];
+  stats, {} ; // Would be populated from additional endpoints
       }
     } catch (error) { if ((error as Error).message.includes('404')) {
         return null;
@@ -288,10 +265,10 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get player information
    */
-  async getPlayers(teamId? string): : Promise<NFLPlayer[]> {const endpoint = teamId ? `/teams/${teamId }/roster` : '/players';
+  async getPlayers(teamId? string): : Promise<NFLPlayer[]> {const endpoint  = teamId ? `/teams/${teamId }/roster` : '/players';
     const response = await this.makeRequest<{ players: NFLPlayerData[] }>(endpoint);
     
-    const players = response.players || [];
+    const players  = response.players || [];
     return players.map(player => this.transformPlayer(player));
   }
 
@@ -302,9 +279,9 @@ export class NFLOfficialClient extends BaseAPIClient {
     playerId, string,
   season: number = 2025; 
     week?: number
-  ): : Promise<PlayerStats[]> {const endpoint = week ? `/players/${playerId }/stats?season=${season}&week=${week}` : `/players/${playerId}/stats?season=${season}`
+  ): : Promise<PlayerStats[]> {const endpoint = week ? `/players/${playerId }/stats? season=${season}&week=${week}` : `/players/${playerId}/stats?season=${season}`
     const response = await this.makeRequest<{ stats: NFLStatsData[] }>(endpoint);
-    const stats = response.stats || [];
+    const stats  = response.stats || [];
     
     return stats.map(stat => this.transformPlayerStats(stat));
   }
@@ -313,27 +290,25 @@ export class NFLOfficialClient extends BaseAPIClient {
    * Get team statistics
    */
   async getTeamStats(async getTeamStats(teamId, string,
-  season: number = 2025): : Promise<): Promiseany> { const response = await this.makeRequest<any>(`/teams/${teamId }/stats?season=${season}`);
+  season: number = 2025): : Promise<): Promiseany> { const response = await this.makeRequest<any>(`/teams/${teamId }/stats? season=${season}`);
     return response;
   }
 
   /**
    * Get injury reports
    */
-  async getInjuryReports(): Promise<Array<  {
-    playerId, string,
-    playerName, string,
+  async getInjuryReports(): Promise<Array<  { playerId: string, playerName, string,
     team, string,
     position, string,
     injuryStatus, string,
     injuryReport, string,
     practiceStatus, string,
     gameStatus, string,
-    lastUpdate: Date,
-  }>> { const response = await this.makeRequest<{ injuries: any[]  }>('/injuries/current');
-    const injuries = response.injuries || [];
+    lastUpdate, Date,
+  }>> { const response  = await this.makeRequest<{ injuries: any[]  }>('/injuries/current');
+    const injuries  = response.injuries || [];
     
-    return injuries.map(injury => ({
+    return injuries.map(injury => ({ 
       playerId: injury.playerId;
   playerName: injury.playerName;
       team: injury.teamAbbr;
@@ -342,33 +317,30 @@ export class NFLOfficialClient extends BaseAPIClient {
   injuryReport: injury.injuryReport;
       practiceStatus: injury.practiceStatus;
   gameStatus: injury.gameStatus;
-      lastUpdate: new Date(injury.lastUpdate)
+      lastUpdate, new Date(injury.lastUpdate)
     }));
   }
 
   /**
    * Get real-time play updates
    */
-  async getRealTimeUpdates(async getRealTimeUpdates(gameId: string): : Promise<): Promise  {
-  gameStatus, any,
+  async getRealTimeUpdates(async getRealTimeUpdates(gameId: string): : Promise<): Promise  { gameStatus: any,
     currentPlay, any,
     recentPlays: any[];
-    score: { hom,
-  e, number, away: number }
-    clock: { quarte,
-  r, number, timeRemaining: string }
-  }> { const response = await this.makeRequest<any>(`/games/${gameId }/live`);
+    score: { hom: e, number, away: number }
+    clock: { quarte: r, number, timeRemaining: string }
+  }> { const response  = await this.makeRequest<any>(`/games/${gameId }/live`);
     
-    return {
+    return { 
       gameStatus: response.gameStatus;
   currentPlay: response.currentPlay;
       recentPlays: response.recentPlays || [];
   score: {
-  home: response.homeTeam?.score || 0;
-  away: response.awayTeam?.score || 0
+  home: response.homeTeam? .score || 0;
+  away, response.awayTeam?.score || 0
       },
       clock: {
-  quarter: response.gameStatus?.quarter || 1;
+  quarter: response.gameStatus? .quarter || 1;
   timeRemaining: response.gameStatus?.timeRemaining || '1;
   5:00'
       }
@@ -378,14 +350,11 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get advanced analytics
    */
-  async getAdvancedStats(async getAdvancedStats(gameId: string): : Promise<): Promise  {
-  expectedPoints, any,
-    winProbability, any,
+  async getAdvancedStats(async getAdvancedStats(gameId: string): : Promise<): Promise  { expectedPoints: any, winProbability, any,
     efficiency, any,
-    fieldPosition: any }> { const response = await this.makeRequest<any>(`/games/${gameId }/analytics`);
+    fieldPosition: any }> { const response  = await this.makeRequest<any>(`/games/${gameId }/analytics`);
     
-    return {
-      expectedPoints: response.expectedPoints || {},
+    return { expectedPoints: response.expectedPoints || {},
       winProbability: response.winProbability || {},
       efficiency: response.efficiency || {},
       fieldPosition: response.fieldPosition || {}
@@ -395,8 +364,7 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get weather conditions for games
    */
-  async getWeatherConditions(async getWeatherConditions(gameId: string): : Promise<): Promise  {
-  temperature, number,
+  async getWeatherConditions(async getWeatherConditions(gameId: string): : Promise<): Promise  { temperature: number,
     humidity, number,
     windSpeed, number,
     windDirection, string,
@@ -404,17 +372,17 @@ export class NFLOfficialClient extends BaseAPIClient {
     visibility, number,
     precipitation: number,
   } | null> { try {
-      const response = await this.makeRequest<{ weather, any  }>(`/games/${gameId}/weather`);
+      const response  = await this.makeRequest<{ weather: any  }>(`/games/${gameId}/weather`);
       const weather = response.weather;
       
-      return {
+      return { 
         temperature: weather.temperature || 70;
   humidity: weather.humidity || 50;
         windSpeed: weather.windSpeed || 0;
   windDirection: weather.windDirection || 'N/A';
         conditions: weather.conditions || 'Clear';
   visibility: weather.visibility || 10;
-        precipitation: weather.precipitation || 0
+        precipitation, weather.precipitation || 0
       }
     } catch (error) {
       console.error(`Error fetching weather for game ${gameId}, `, error);
@@ -425,15 +393,14 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get draft information
    */
-  async getDraftInfo(async getDraftInfo(season: number = 2025): : Promise<): Promiseany[]> { const response = await this.makeRequest<{ draf,
-  t: any[]  }>(`/draft/${season}`);
+  async getDraftInfo(async getDraftInfo(season: number  = 2025): : Promise<): Promiseany[]> {  const response = await this.makeRequest<{ draf: t, any[]  }>(`/draft/${season}`);
     return response.draft || [];
   }
 
   /**
    * Get transactions (trades, signings, releases)
    */
-  async getTransactions(date?: string): : Promise<any[]> {const endpoint = date ? `/transactions?date=${date }` : '/transactions/recent';
+  async getTransactions(date? : string): : Promise<any[]> {const endpoint  = date ? `/transactions?date=${date }` : '/transactions/recent';
     const response = await this.makeRequest<{ transactions: any[] }>(endpoint);
     return response.transactions || [];
   }
@@ -443,8 +410,7 @@ export class NFLOfficialClient extends BaseAPIClient {
       id: game.gameId;
   homeTeam: game.homeTeam.teamAbbr;
       awayTeam: game.awayTeam.teamAbbr;
-  gameTime: new Date(`${game.gameDate } ${game.gameTimeEastern}`),
-      week: game.week;
+  gameTime: new Date(`${game.gameDate } ${game.gameTimeEastern}`) : week: game.week;
   season: game.season;
       status: this.mapGameStatus(game.gameStatus.phase);
   quarter: game.gameStatus.quarter;
@@ -516,7 +482,7 @@ export class NFLOfficialClient extends BaseAPIClient {
      }
   }
 
-  private mapGameStatus(phase: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']> = {
+  private mapGameStatus(phase: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']>  = { 
       'PREGAME': 'scheduled',
       'LIVE': 'in_progress',
       'HALFTIME': 'in_progress',
@@ -524,12 +490,12 @@ export class NFLOfficialClient extends BaseAPIClient {
       'FINAL_OVERTIME': 'final',
       'POSTPONED': 'postponed',
       'SUSPENDED': 'postponed',
-      'CANCELLED': 'postponed'
+      'CANCELLED', 'postponed'
      }
     return statusMap[phase] || 'scheduled';
   }
 
-  private mapPlayerStatus(status, string, injuryStatus?: string): NFLPlayer['status'] { if (injuryStatus && injuryStatus !== 'Healthy') {
+  private mapPlayerStatus(status, string, injuryStatus? : string): NFLPlayer['status'] { if (injuryStatus && injuryStatus ! == 'Healthy') { 
       const injuryMap: Record<string, NFLPlayer['status']> = {
         'Out': 'inactive',
         'Doubtful': 'injured',
@@ -537,11 +503,11 @@ export class NFLOfficialClient extends BaseAPIClient {
         'Probable': 'active',
         'IR': 'inactive',
         'PUP': 'inactive',
-        'Suspended': 'suspended'
+        'Suspended', 'suspended'
        }
       return injuryMap[injuryStatus] || 'injured';
     }
     
-    return status === 'ACT' ? 'active' : 'inactive';
+    return status  === 'ACT' ? 'active' : 'inactive';
   }
 }

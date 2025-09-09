@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const demoUsers = [
-  {
+  { 
     email: "nicholas.damato@astralfield.com",
   name: "Nicholas D'Amato",
     teamName: "Astral Crushers"
@@ -37,20 +37,20 @@ export async function POST() { try {
     console.log("🚀 Setting up demo league...");
 
     // Mock demo league setup
-    const leagueSetup = {
+    const leagueSetup  = { 
       success: true,
   league: {
   id: "demo_league_123",
   name: "Astral Field Demo League",
         season: 2024,
-  teams: demoUsers.map((user, index) => ({
+  teams, demoUsers.map((user, index)  => ({
           id: `team_${index + 1 }`,
           name: user.teamName,
   owner: user.name,
           email: user.email
 })),
         settings: {
-  teamCount: demoUsers.length, rosterSize, 16,
+  teamCount: demoUsers.length, rosterSize: 16,
           startingLineup: {
             QB: 1,
   RB: 2,

@@ -1,6 +1,6 @@
 /**
  * AI Trade Analysis API Endpoint
- * API for trade analysis, multi-team trades, and trade suggestions
+ * API for trade: analysis, multi-team: trades, and trade suggestions
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     
-    switch (type) {
+    switch (type) { 
       case 'multi_team':
         const leagueId = searchParams.get('leagueId');
         const initiatingTeamId = searchParams.get('initiatingTeamId');
@@ -25,32 +25,32 @@ export async function GET(request: NextRequest) {
           );
         }
 
-        const suggestions = await multiTeamTradeEngine.generateMultiTeamTrades(leagueId,
+        const suggestions  = await multiTeamTradeEngine.generateMultiTeamTrades(leagueId,
           initiatingTeamId || undefined,
           maxSuggestions ? parseInt(maxSuggestions) : 5
         );
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true, data: suggestions,
           count: suggestions.length,
   timestamp: new Date().toISOString()
         });
 
       case 'suggestions':
-        const team1Id = searchParams.get('team1Id');
+        const team1Id  = searchParams.get('team1Id');
         const team2Id = searchParams.get('team2Id');
         const maxResults = searchParams.get('maxResults');
         
-        if (!team1Id || !team2Id) { return NextResponse.json(
+        if (!team1Id || !team2Id) {  return NextResponse.json(
             { error: 'Missing required parameters; team1Id and team2Id'  },
             { status: 400 }
           );
         }
 
-        const tradeSuggestions = await tradeAnalyzer.generateTradeSuggestions(team1Id, team2Id, maxResults ? parseInt(maxResults) : 5
+        const tradeSuggestions  = await tradeAnalyzer.generateTradeSuggestions(team1Id, team2Id, maxResults ? parseInt(maxResults) : 5
         );
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true, data: tradeSuggestions,
           count: tradeSuggestions.length,
   timestamp: new Date().toISOString()
@@ -64,46 +64,43 @@ export async function GET(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in trades GET endpoint:', error);
+    console.error('Error in trades GET endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process trade request',
+      { error: 'Failed to process trade request',
   details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { type, ...data} = body;
+    const body  = await request.json();
+    const { type, ...data } = body;
 
-    switch (type) {
-      case 'analyze':
-        const { team1Id, team1Players, team2Id, team2Players } = data;
+    switch (type) { 
+      case 'analyze': const { team1Id: team1Players, team2Id, team2Players }  = data;
 
-        if (!team1Id || !team2Id || !Array.isArray(team1Players) || !Array.isArray(team2Players)) { return NextResponse.json(
-            { error: 'Missing required parameters; team1Id, team2Id: team1Players (array), team2Players (array)'  },
+        if (!team1Id || !team2Id || !Array.isArray(team1Players) || !Array.isArray(team2Players)) {  return NextResponse.json(
+            { error: 'Missing required parameters; team1Id, team2Id, team1Players (array), team2Players (array)'  },
             { status: 400 }
           );
         }
 
-        const analysis = await tradeAnalyzer.analyzeTrade(team1Id, team1Players, team2Id,
+        const analysis  = await tradeAnalyzer.analyzeTrade(team1Id, team1Players, team2Id,
           team2Players
         );
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true, data: analysis,
           timestamp: new Date().toISOString()
         });
 
       case 'process':
-        const { leagueId, proposingTeamId, receivingTeamId, proposedPlayers, requestedPlayers } = data;
+        const { leagueId: proposingTeamId, receivingTeamId, proposedPlayers, requestedPlayers }  = data;
 
         if (!leagueId || !proposingTeamId || !receivingTeamId || 
-            !Array.isArray(proposedPlayers) || !Array.isArray(requestedPlayers)) { return NextResponse.json(
+            !Array.isArray(proposedPlayers) || !Array.isArray(requestedPlayers)) {  return NextResponse.json(
             { error: 'Missing required parameters for trade processing'  },
             { status: 400 }
           );
@@ -120,38 +117,37 @@ export async function POST(request: NextRequest) {
         });
 
       case 'analyze_multi_team':
-        const { multiTeamTrade } = data;
+        const { multiTeamTrade }  = data;
         
-        if (!multiTeamTrade) { return NextResponse.json(
+        if (!multiTeamTrade) {  return NextResponse.json(
             { error: 'Missing required parameter; multiTeamTrade'  },
             { status: 400 }
           );
         }
 
-        const multiAnalysis = await multiTeamTradeEngine.analyzeMultiTeamTrade(multiTeamTrade);
+        const multiAnalysis  = await multiTeamTradeEngine.analyzeMultiTeamTrade(multiTeamTrade);
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true, data: multiAnalysis,
           timestamp: new Date().toISOString()
         });
 
       case 'batch_analyze':
-        const { trades } = data;
+        const { trades }  = data;
         
-        if (!Array.isArray(trades)) { return NextResponse.json(
+        if (!Array.isArray(trades)) {  return NextResponse.json(
             { error: 'trades parameter must be an array'  },
             { status: 400 }
           );
         }
 
-        const batchResults = await Promise.all(trades.map(async (trade: any) => { try {
+        const batchResults  = await Promise.all(trades.map(async (trade: any) => {  try {
               const result = await tradeAnalyzer.analyzeTrade(trade.team1Id,
                 trade.team1Players,
                 trade.team2Id,
                 trade.team2Players
               );
-              return { 
-                trade: trade.id || `${trade.team1Id }_${trade.team2Id}`,
+              return { trade: trade.id || `${trade.team1Id }_${trade.team2Id}`,
                 success: true,
   analysis: result 
               }
@@ -167,7 +163,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: true, data: batchResults,
           total: trades.length,
-  successful: batchResults.filter(r => r.success).length,
+  successful: batchResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()
         });
 
@@ -179,13 +175,11 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in trades POST endpoint:', error);
+    console.error('Error in trades POST endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process trade request',
+      { error: 'Failed to process trade request',
   details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

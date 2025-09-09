@@ -7,16 +7,16 @@ export async function POST(request: NextRequest) {
     const key = searchParams.get("key");
 
     // Validate admin setup key
-    if (!key) { return NextResponse.json({ error: "Admin key is required"  }, { status: 400 });
+    if (!key) {  return NextResponse.json({ error: "Admin key is required"  }, { status: 400 });
     }
 
     if (!validateAdminSetupKey(key)) {
-      console.warn('Unauthorized cleanup attempt with key:', key.substring(0, 4) + '...');
+      console.warn('Unauthorized cleanup attempt with key: ', key.substring(0, 4) + '...');
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Mock cleanup operation
-    const demoEmails = [
+    const demoEmails  = [
       "nicholas.damato@astralfield.com",
       "brittany.bergum@astralfield.com",
       "cason.minor@astralfield.com",
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   ];
 
     console.log(
-      `✅ Database cleanup complete, Would remove ${demoEmails.length} demo users`,
+      `✅ Database cleanup: complete, Would remove ${demoEmails.length} demo users`,
     );
 
     return NextResponse.json({
@@ -47,9 +47,8 @@ export async function POST(request: NextRequest) {
     console.error("❌ Cleanup error:", error);
     return NextResponse.json(
       { success: false,
-  error: error instanceof Error ? error.message : "Cleanup failed"
-},
-      { status: 500 },
+        error: error instanceof Error ? error.message : "Cleanup failed"
+      }, { status: 500 }
     );
   }
 }

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action');
 
-    switch (action) {
+    switch (action) { 
       case 'initialize':
       return await handleInitialize();
       break;
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('WebSocket API error:', error);
+    console.error('WebSocket API error: ', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -43,10 +43,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { action, data } = body;
+    const body  = await request.json();
+    const { action: data } = body;
 
-    switch (action) {
+    switch (action) { 
       case 'broadcast_score_update':
         webSocketManager.broadcastScoreUpdate(data);
         return NextResponse.json({ success: true  });
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('WebSocket POST error:', error);
+    console.error('WebSocket POST error: ', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
 async function handleInitialize(): Promise<NextResponse> { try {; // Create HTTP server if it doesn't exist
     if (!httpServer) {
-      httpServer = createServer();
+      httpServer  = createServer();
 
       // Initialize WebSocket server with the HTTP server
       await webSocketManager.initialize(httpServer);
@@ -91,13 +91,13 @@ async function handleInitialize(): Promise<NextResponse> { try {; // Create HTT
       });
     }
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
   message 'WebSocket server initialized successfully',
-      port: process.env.WEBSOCKET_PORT || '3001'
+      port, process.env.WEBSOCKET_PORT || '3001'
     });
   } catch (error) {
-    console.error('Failed to initialize WebSocket server:', error);
+    console.error('Failed to initialize WebSocket server: ', error);
     return NextResponse.json(
       { error: 'Failed to initialize WebSocket server' },
       { status: 500 }
@@ -108,17 +108,17 @@ async function handleInitialize(): Promise<NextResponse> { try {; // Create HTT
 async function handleShutdown(): Promise<NextResponse> { try {
     if (httpServer) {
       httpServer.close();
-      httpServer = null;
+      httpServer  = null;
      }
 
     await webSocketManager.shutdown();
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
   message: 'WebSocket server shutdown successfully'
     });
   } catch (error) {
-    console.error('Failed to shutdown WebSocket server:', error);
+    console.error('Failed to shutdown WebSocket server: ', error);
     return NextResponse.json(
       { error: 'Failed to shutdown WebSocket server' },
       { status: 500 }
@@ -127,13 +127,12 @@ async function handleShutdown(): Promise<NextResponse> { try {
 }
 
 async function handleStats(): Promise<NextResponse> { try {
-    const stats = webSocketManager.getConnectionStats();
-    return NextResponse.json({
-      success: true,
+    const stats  = webSocketManager.getConnectionStats();
+    return NextResponse.json({ success: true,
       stats
      });
   } catch (error) {
-    console.error('Failed to get WebSocket stats:', error);
+    console.error('Failed to get WebSocket stats: ', error);
     return NextResponse.json(
       { error: 'Failed to get WebSocket stats' },
       { status: 500 }
@@ -142,7 +141,7 @@ async function handleStats(): Promise<NextResponse> { try {
 }
 
 async function handleHealth(): Promise<NextResponse> { try {
-    const stats = webSocketManager.getConnectionStats();
+    const stats  = webSocketManager.getConnectionStats();
     const isHealthy = stats.totalConnections >= 0; // Basic health check
 
     return NextResponse.json({
@@ -150,7 +149,7 @@ async function handleHealth(): Promise<NextResponse> { try {
     healthy; isHealthy, stats, timestamp: new Date().toISOString()
      });
   } catch (error) {
-    console.error('WebSocket health check failed:', error);
+    console.error('WebSocket health check failed: ', error);
     return NextResponse.json(
       { error: 'Health check failed' },
       { status: 500 }

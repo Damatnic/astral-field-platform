@@ -4,47 +4,41 @@
  */
 
 import { EventEmitter } from 'events';
-import type { NFLGame, NFLPlayer, PlayerStats, WeatherData } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats, WeatherData } from '../dataProvider';
 
-export const interface ValidationRule<T =, any> {
-  name, string,
+export const interface ValidationRule<T =, any> { name: string,
     description, string,
   severity: 'error' | 'warning' | 'info',
-    validate: (data; T, context?: any) => ValidationResult;
+    validate: (data; T, context?, any)  => ValidationResult;
 }
 
-export interface ValidationResult {
-  isValid, boolean,
+export interface ValidationResult { isValid: boolean,
     errors: ValidationError[];
   warnings: ValidationWarning[],
-    info: ValidationInfo[],
+    info, ValidationInfo[],
   
 }
-export interface ValidationError {
-  field, string,
+export interface ValidationError { field: string,
     message, string,
   value, any,
   expectedType?, string,
   code: string,
   
 }
-export interface ValidationWarning {
-  field, string,
+export interface ValidationWarning { field: string,
     message, string,
   value, any,
   suggestion?, string,
   code: string,
   
 }
-export interface ValidationInfo {
-  field, string,
+export interface ValidationInfo { field: string,
     message, string,
   value, any,
     code: string,
   
 }
-export interface ValidationMetrics {
-  totalValidations, number,
+export interface ValidationMetrics { totalValidations: number,
     successfulValidations, number,
   errorCount, number,
     warningCount, number,
@@ -56,10 +50,8 @@ export interface ValidationMetrics {
   warningsByType: Record<string, number>;
   
 }
-export interface ConsistencyCheckResult {
-  isConsistent, boolean,
-    inconsistencies: Array<{typ,
-  e: 'data_mismatch' | 'temporal_inconsistency' | 'logical_error' | 'cross_reference_failure',
+export interface ConsistencyCheckResult { isConsistent: boolean,
+    inconsistencies: Array<{ typ: e: 'data_mismatch' | 'temporal_inconsistency' | 'logical_error' | 'cross_reference_failure',
     description, string,
   severity: 'high' | 'medium' | 'low',
     affectedFields: string[];
@@ -70,11 +62,11 @@ export interface ConsistencyCheckResult {
     checkTime: Date,
 }
 
-export class DataValidator extends EventEmitter { private gameValidationRules: ValidationRule<NFLGame>[] = [];
+export class DataValidator extends EventEmitter { private gameValidationRules: ValidationRule<NFLGame>[]  = [];
   private playerValidationRules: ValidationRule<NFLPlayer>[] = [];
   private statsValidationRules: ValidationRule<PlayerStats>[] = [];
   private weatherValidationRules: ValidationRule<WeatherData>[] = [];
-  private metrics, ValidationMetrics,
+  private: metrics, ValidationMetrics,
   private validationTimes: number[] = [];
   private readonly maxValidationTimes = 100;
 
@@ -88,7 +80,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     console.log('✅ Data Validator initialized with comprehensive rule sets');
    }
 
-  private initializeMetrics(): void {
+  private initializeMetrics(): void { 
     this.metrics = {
       totalValidations: 0;
   successfulValidations: 0;
@@ -98,7 +90,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   validationRate: 0;
       averageValidationTime: 0;
   lastValidation: new Date();
-      errorsByType: {},
+      errorsByType, {},
       warningsByType: {}
     }
   }
@@ -111,141 +103,125 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   }
 
   private setupGameValidationRules(): void {
-    this.gameValidationRules = [
-      {
+    this.gameValidationRules  = [
+      { 
         name: 'game_id_validation';
   description: 'Validates game ID format and uniqueness';
         severity: 'error';
-  validate: (game; NFLGame) => this.validateGameId(game)
+  validate, (game; NFLGame)  => this.validateGameId(game)
       },
-      {
-        name: 'team_validation';
+      { name: 'team_validation';
   description: 'Validates team abbreviations and matchup logic';
         severity: 'error';
-  validate: (game; NFLGame) => this.validateTeams(game)
+  validate, (game; NFLGame)  => this.validateTeams(game)
       },
-      {
-        name: 'score_validation';
+      { name: 'score_validation';
   description: 'Validates score ranges and logic';
         severity: 'error';
-  validate: (game; NFLGame) => this.validateScores(game)
+  validate, (game; NFLGame)  => this.validateScores(game)
       },
-      {
-        name: 'time_validation';
+      { name: 'time_validation';
   description: 'Validates game time and status consistency';
         severity: 'warning';
-  validate: (game; NFLGame) => this.validateGameTiming(game)
+  validate, (game; NFLGame)  => this.validateGameTiming(game)
       },
-      {
-        name: 'status_validation';
+      { name: 'status_validation';
   description: 'Validates game status transitions';
         severity: 'error';
-  validate: (game; NFLGame) => this.validateGameStatus(game)
+  validate, (game; NFLGame)  => this.validateGameStatus(game)
       },
-      {
-        name: 'quarter_validation';
+      { name: 'quarter_validation';
   description: 'Validates quarter and time remaining consistency';
         severity: 'warning';
-  validate: (game; NFLGame) => this.validateQuarterTime(game)
+  validate, (game; NFLGame)  => this.validateQuarterTime(game)
       }
     ];
   }
 
-  private setupPlayerValidationRules(): void {
+  private setupPlayerValidationRules(): void { 
     this.playerValidationRules = [
       {
         name: 'player_id_validation';
   description: 'Validates player ID format and uniqueness';
         severity: 'error';
-  validate: (player; NFLPlayer) => this.validatePlayerId(player)
+  validate, (player; NFLPlayer)  => this.validatePlayerId(player)
       },
-      {
-        name: 'player_name_validation';
+      { name: 'player_name_validation';
   description: 'Validates player name format and completeness';
         severity: 'error';
-  validate: (player; NFLPlayer) => this.validatePlayerName(player)
+  validate, (player; NFLPlayer)  => this.validatePlayerName(player)
       },
-      {
-        name: 'position_validation';
+      { name: 'position_validation';
   description: 'Validates position codes and categories';
         severity: 'error';
-  validate: (player; NFLPlayer) => this.validatePosition(player)
+  validate, (player; NFLPlayer)  => this.validatePosition(player)
       },
-      {
-        name: 'team_assignment_validation';
+      { name: 'team_assignment_validation';
   description: 'Validates team assignment and roster limits';
         severity: 'warning';
-  validate: (player; NFLPlayer) => this.validateTeamAssignment(player)
+  validate, (player; NFLPlayer)  => this.validateTeamAssignment(player)
       },
-      {
-        name: 'jersey_number_validation';
+      { name: 'jersey_number_validation';
   description: 'Validates jersey number ranges by position';
         severity: 'info';
-  validate: (player; NFLPlayer) => this.validateJerseyNumber(player)
+  validate, (player; NFLPlayer)  => this.validateJerseyNumber(player)
       },
-      {
-        name: 'injury_status_validation';
+      { name: 'injury_status_validation';
   description: 'Validates injury status and description consistency';
         severity: 'warning';
-  validate: (player; NFLPlayer) => this.validateInjuryStatus(player)
+  validate, (player; NFLPlayer)  => this.validateInjuryStatus(player)
       }
     ];
   }
 
-  private setupStatsValidationRules(): void {
+  private setupStatsValidationRules(): void { 
     this.statsValidationRules = [
       {
         name: 'stats_id_validation';
   description: 'Validates player and game ID references';
         severity: 'error';
-  validate: (stats; PlayerStats) => this.validateStatsIds(stats)
+  validate, (stats; PlayerStats)  => this.validateStatsIds(stats)
       },
-      {
-        name: 'stats_range_validation';
+      { name: 'stats_range_validation';
   description: 'Validates statistical values within reasonable ranges';
         severity: 'warning';
-  validate: (stats; PlayerStats) => this.validateStatsRanges(stats)
+  validate, (stats; PlayerStats)  => this.validateStatsRanges(stats)
       },
-      {
-        name: 'stats_logic_validation';
+      { name: 'stats_logic_validation';
   description: 'Validates logical relationships between stats';
         severity: 'error';
-  validate: (stats; PlayerStats) => this.validateStatsLogic(stats)
+  validate, (stats; PlayerStats)  => this.validateStatsLogic(stats)
       },
-      {
-        name: 'fantasy_points_validation';
+      { name: 'fantasy_points_validation';
   description: 'Validates fantasy points calculation accuracy';
         severity: 'warning';
-  validate: (stats; PlayerStats) => this.validateFantasyPoints(stats)
+  validate, (stats; PlayerStats)  => this.validateFantasyPoints(stats)
       },
-      {
-        name: 'seasonal_consistency';
+      { name: 'seasonal_consistency';
   description: 'Validates stats against seasonal averages';
         severity: 'info';
-  validate: (stats; PlayerStats) => this.validateSeasonalConsistency(stats)
+  validate, (stats; PlayerStats)  => this.validateSeasonalConsistency(stats)
       }
     ];
   }
 
-  private setupWeatherValidationRules(): void {
+  private setupWeatherValidationRules(): void { 
     this.weatherValidationRules = [
       {
         name: 'temperature_validation';
   description: 'Validates temperature ranges for NFL games';
         severity: 'warning';
-  validate: (weather; WeatherData) => this.validateTemperature(weather)
+  validate, (weather; WeatherData)  => this.validateTemperature(weather)
       },
-      {
-        name: 'wind_validation';
+      { name: 'wind_validation';
   description: 'Validates wind speed and direction';
         severity: 'info';
-  validate: (weather; WeatherData) => this.validateWind(weather)
+  validate, (weather; WeatherData)  => this.validateWind(weather)
       },
-      {
-        name: 'precipitation_validation';
+      { name: 'precipitation_validation';
   description: 'Validates precipitation levels';
         severity: 'info';
-  validate: (weather; WeatherData) => this.validatePrecipitation(weather)
+  validate, (weather; WeatherData)  => this.validatePrecipitation(weather)
       }
     ];
   }
@@ -253,17 +229,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   /**
    * Validate NFL game data
    */
-  validateGame(game, NFLGame, context?: any): ValidationResult { const startTime = Date.now();
+  validateGame(game, NFLGame, context? : any): ValidationResult {  const startTime = Date.now();
     
     try {
       const result = this.runValidationRules(this.gameValidationRules, game, context);
       this.recordValidation(startTime, result);
       
-      this.emit('validation:game', { game, result  });
+      this.emit('validation, game', { game: result  });
       return result;
       
     } catch (error) {
-      console.error('❌ Game validation error:', error);
+      console.error('❌ Game validation error: ', error);
       return this.createErrorResult('validation_error', (error as Error).message);
     }
   }
@@ -271,17 +247,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   /**
    * Validate NFL player data
    */
-  validatePlayer(player, NFLPlayer, context?: any): ValidationResult { const startTime = Date.now();
+  validatePlayer(player, NFLPlayer, context? : any): ValidationResult { const startTime  = Date.now();
     
-    try {
+    try { 
       const result = this.runValidationRules(this.playerValidationRules, player, context);
       this.recordValidation(startTime, result);
       
-      this.emit('validation:player', { player, result  });
+      this.emit('validation, player', { player: result  });
       return result;
       
     } catch (error) {
-      console.error('❌ Player validation error:', error);
+      console.error('❌ Player validation error: ', error);
       return this.createErrorResult('validation_error', (error as Error).message);
     }
   }
@@ -289,17 +265,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   /**
    * Validate player statistics
    */
-  validatePlayerStats(stats, PlayerStats, context?: any): ValidationResult { const startTime = Date.now();
+  validatePlayerStats(stats, PlayerStats, context? : any): ValidationResult { const startTime  = Date.now();
     
-    try {
+    try { 
       const result = this.runValidationRules(this.statsValidationRules, stats, context);
       this.recordValidation(startTime, result);
       
-      this.emit('validation:stats', { stats, result  });
+      this.emit('validation, stats', { stats: result  });
       return result;
       
     } catch (error) {
-      console.error('❌ Stats validation error:', error);
+      console.error('❌ Stats validation error: ', error);
       return this.createErrorResult('validation_error', (error as Error).message);
     }
   }
@@ -307,17 +283,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   /**
    * Validate weather data
    */
-  validateWeather(weather, WeatherData, context?: any): ValidationResult { const startTime = Date.now();
+  validateWeather(weather, WeatherData, context? : any): ValidationResult { const startTime  = Date.now();
     
-    try {
+    try { 
       const result = this.runValidationRules(this.weatherValidationRules, weather, context);
       this.recordValidation(startTime, result);
       
-      this.emit('validation:weather', { weather, result  });
+      this.emit('validation, weather', { weather: result  });
       return result;
       
     } catch (error) {
-      console.error('❌ Weather validation error:', error);
+      console.error('❌ Weather validation error: ', error);
       return this.createErrorResult('validation_error', (error as Error).message);
     }
   }
@@ -326,14 +302,14 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
    * Cross-reference consistency check between related data
    */
   async checkConsistency(data: {
-    games?: NFLGame[];
+    games? : NFLGame[];
     players?: NFLPlayer[];
     stats?: PlayerStats[];
     weather?: WeatherData[];
-  }): : Promise<ConsistencyCheckResult> { const inconsistencies: ConsistencyCheckResult['inconsistencies'] = [];
+  }): : Promise<ConsistencyCheckResult> { const inconsistencies: ConsistencyCheckResult['inconsistencies']  = [];
     const checkedFields: string[] = [];
     
-    try {
+    try { 
       // Check game-player consistency
       if (data.games && data.players) {
         const gameTeams = new Set(data.games.flatMap(g => [g.homeTeam, g.awayTeam]));
@@ -341,7 +317,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
         
         for (const team of playerTeams) {
           if (!gameTeams.has(team)) {
-            inconsistencies.push({type: 'cross_reference_failure';
+            inconsistencies.push({ type: 'cross_reference_failure';
   description: `Player team ${team } not found in any game`,
               severity: 'medium';
   affectedFields: ['games.homeTeam', 'games.awayTeam', 'players.team'],
@@ -353,12 +329,12 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       }
 
       // Check stats-player consistency
-      if (data.stats && data.players) { const playerIds = new Set(data.players.map(p => p.id));
+      if (data.stats && data.players) { const playerIds  = new Set(data.players.map(p => p.id));
         const statsPlayerIds = new Set(data.stats.map(s => s.playerId));
         
-        for (const playerId of statsPlayerIds) {
+        for (const playerId of statsPlayerIds) { 
           if (!playerIds.has(playerId)) {
-            inconsistencies.push({type: 'cross_reference_failure';
+            inconsistencies.push({ type: 'cross_reference_failure';
   description: `Stats found for unknown player ID; ${playerId }`,
               severity: 'high';
   affectedFields: ['stats.playerId', 'players.id'],
@@ -370,12 +346,12 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       }
 
       // Check stats-game consistency
-      if (data.stats && data.games) { const gameIds = new Set(data.games.map(g => g.id));
+      if (data.stats && data.games) { const gameIds  = new Set(data.games.map(g => g.id));
         const statsGameIds = new Set(data.stats.map(s => s.gameId));
         
-        for (const gameId of statsGameIds) {
+        for (const gameId of statsGameIds) { 
           if (gameId && !gameIds.has(gameId)) {
-            inconsistencies.push({type: 'cross_reference_failure';
+            inconsistencies.push({ type: 'cross_reference_failure';
   description: `Stats found for unknown game ID; ${gameId }`,
               severity: 'high';
   affectedFields: ['stats.gameId', 'games.id'],
@@ -387,13 +363,13 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       }
 
       // Check temporal consistency
-      if (data.stats) { const currentWeek = new Date().getTime();
-        for (const stat of data.stats) {
+      if (data.stats) { const currentWeek  = new Date().getTime();
+        for (const stat of data.stats) { 
           const statTime = stat.lastUpdated.getTime();
           const timeDiff = Math.abs(currentWeek - statTime);
           
           if (timeDiff > 7 * 24 * 60 * 60 * 1000) { // More than 7 days old
-            inconsistencies.push({type: 'temporal_inconsistency';
+            inconsistencies.push({ type: 'temporal_inconsistency';
   description: `Stats data is more than 7 days old for player ${stat.playerId }`,
               severity: 'low';
   affectedFields: ['stats.lastUpdated'];
@@ -406,9 +382,9 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
 
       // Check logical data consistency
       if (data.stats) { for (const stat of data.stats) {
-          // Check if passing attempts >= completions
-          if (stat.passingAttempts < stat.passingCompletions) {
-            inconsistencies.push({type: 'logical_error';
+          // Check if passing attempts > = completions
+          if (stat.passingAttempts < stat.passingCompletions) { 
+            inconsistencies.push({ type: 'logical_error';
   description: `Passing completions (${stat.passingCompletions }) exceed attempts (${stat.passingAttempts}) for player ${stat.playerId}`,
               severity: 'high';
   affectedFields: ['stats.passingAttempts', 'stats.passingCompletions'],
@@ -416,9 +392,9 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
             });
           }
           
-          // Check if targets >= receptions
-          if (stat.targets < stat.receptions) {
-            inconsistencies.push({type: 'logical_error';
+          // Check if targets > = receptions
+          if (stat.targets < stat.receptions) { 
+            inconsistencies.push({ type: 'logical_error';
   description: `Receptions (${stat.receptions}) exceed targets (${stat.targets}) for player ${stat.playerId}`,
               severity: 'high';
   affectedFields: ['stats.targets', 'stats.receptions'],
@@ -430,16 +406,15 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       }
 
       return {
-        isConsistent: inconsistencies.length === 0;
+        isConsistent: inconsistencies.length  === 0;
         inconsistencies, checkedFields,
         checkTime: new Date()
       }
-    } catch (error) {
-      console.error('❌ Consistency check error:', error);
+    } catch (error) { 
+      console.error('❌ Consistency check error: ', error);
       return {
-        isConsistent, false,
-  inconsistencies: [{typ,
-  e: 'logical_error';
+        isConsistent: false,
+  inconsistencies: [{ typ: e: 'logical_error';
   description: `Consistency check failed; ${(error as Error).message}`,
           severity: 'high';
   affectedFields: ['all']
@@ -451,28 +426,25 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   }
 
   // Individual validation methods
-  private validateGameId(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateGameId(game: NFLGame); ValidationResult { const errors: ValidationError[]  = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
-    if (!game.id) {
-      errors.push({
-        field: 'id';
+    if (!game.id) { 
+      errors.push({ field: 'id';
   message: 'Game ID is required';
         value: game.id;
   code: 'GAME_ID_MISSING'
        });
-    } else if (typeof game.id !== 'string') {
-      errors.push({
-        field: 'id';
+    } else if (typeof game.id ! == 'string') { 
+      errors.push({ field: 'id';
   message: 'Game ID must be a string';
         value: game.id;
   expectedType: 'string';
         code: 'GAME_ID_INVALID_TYPE'
       });
     } else if (game.id.length < 3) {
-      warnings.push({
-        field: 'id';
+      warnings.push({ field: 'id';
   message: 'Game ID appears to be too short';
         value: game.id;
   suggestion: 'Verify ID format with data source';
@@ -480,10 +452,10 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateTeams(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateTeams(game: NFLGame); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
@@ -495,8 +467,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     ];
 
     if (!validTeams.includes(game.homeTeam)) {
-      errors.push({
-        field: 'homeTeam';
+      errors.push({ field: 'homeTeam';
   message: 'Invalid home team abbreviation';
         value: game.homeTeam;
   code: 'INVALID_HOME_TEAM'
@@ -504,33 +475,30 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (!validTeams.includes(game.awayTeam)) {
-      errors.push({
-        field: 'awayTeam';
+      errors.push({ field: 'awayTeam';
   message: 'Invalid away team abbreviation';
         value: game.awayTeam;
   code: 'INVALID_AWAY_TEAM'
       });
     }
 
-    if (game.homeTeam === game.awayTeam) {
-      errors.push({
-        field: 'teams';
+    if (game.homeTeam  === game.awayTeam) { 
+      errors.push({ field: 'teams';
   message: 'Home and away teams cannot be the same';
         value: `${game.homeTeam} vs ${game.awayTeam}`,
         code: 'DUPLICATE_TEAMS'
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateScores(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateScores(game: NFLGame); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (game.homeScore < 0) {
-      errors.push({
-        field: 'homeScore';
+      errors.push({ field: 'homeScore';
   message: 'Home score cannot be negative';
         value: game.homeScore;
   code: 'NEGATIVE_HOME_SCORE'
@@ -538,8 +506,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (game.awayScore < 0) {
-      errors.push({
-        field: 'awayScore';
+      errors.push({ field: 'awayScore';
   message: 'Away score cannot be negative';
         value: game.awayScore;
   code: 'NEGATIVE_AWAY_SCORE'
@@ -547,8 +514,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (game.homeScore > 100) {
-      warnings.push({
-        field: 'homeScore';
+      warnings.push({ field: 'homeScore';
   message: 'Home score is unusually high';
         value: game.homeScore;
   suggestion: 'Verify score accuracy';
@@ -557,8 +523,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (game.awayScore > 100) {
-      warnings.push({
-        field: 'awayScore';
+      warnings.push({ field: 'awayScore';
   message: 'Away score is unusually high';
         value: game.awayScore;
   suggestion: 'Verify score accuracy';
@@ -566,10 +531,10 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateGameTiming(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateGameTiming(game: NFLGame); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
@@ -577,8 +542,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     const gameTime = new Date(game.gameTime);
 
     if (gameTime > new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)) {
-      warnings.push({
-        field: 'gameTime';
+      warnings.push({ field: 'gameTime';
   message: 'Game time is more than a year in the future';
         value: game.gameTime;
   suggestion: 'Verify game date';
@@ -587,8 +551,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (gameTime < new Date('2020-01-01')) {
-      warnings.push({
-        field: 'gameTime';
+      warnings.push({ field: 'gameTime';
   message: 'Game time appears to be in the past';
         value: game.gameTime;
   suggestion: 'Verify game date for current season';
@@ -596,18 +559,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateGameStatus(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateGameStatus(game: NFLGame); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     const validStatuses = ['scheduled', 'in_progress', 'final', 'postponed'];
 
     if (!validStatuses.includes(game.status)) {
-      errors.push({
-        field: 'status';
+      errors.push({ field: 'status';
   message: 'Invalid game status';
         value: game.status;
   code: 'INVALID_GAME_STATUS'
@@ -615,9 +577,8 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     // Status-specific validations
-    if (game.status === 'final' && (game.homeScore === 0 && game.awayScore === 0)) {
-      warnings.push({
-        field: 'status';
+    if (game.status  === 'final' && (game.homeScore === 0 && game.awayScore === 0)) { 
+      warnings.push({ field: 'status';
   message: 'Final game with 0-0 score is unusual';
         value: `${game.status} with ${game.homeScore}-${game.awayScore}`,
         suggestion: 'Verify game completion';
@@ -625,16 +586,15 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateQuarterTime(game: NFLGame); ValidationResult { const errors: ValidationError[] = [];
+  private validateQuarterTime(game: NFLGame); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (game.quarter && (game.quarter < 1 || game.quarter > 5)) {
-      warnings.push({
-        field: 'quarter';
+      warnings.push({ field: 'quarter';
   message: 'Quarter value outside normal range (1-5)';
         value: game.quarter;
   suggestion: 'Verify quarter data';
@@ -642,9 +602,8 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
        });
     }
 
-    if (game.status === 'scheduled' && (game.quarter || game.timeRemaining)) {
-      warnings.push({
-        field: 'quarter';
+    if (game.status  === 'scheduled' && (game.quarter || game.timeRemaining)) { 
+      warnings.push({ field: 'quarter';
   message: 'Scheduled game should not have quarter/time data';
         value: `Q${game.quarter} ${game.timeRemaining}`,
         suggestion: 'Clear quarter/time for scheduled games';
@@ -652,43 +611,41 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
   // Player validation methods
-  private validatePlayerId(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validatePlayerId(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (!player.id) {
-      errors.push({
-        field: 'id';
+      errors.push({ field: 'id';
   message: 'Player ID is required';
         value: player.id;
   code: 'PLAYER_ID_MISSING'
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validatePlayerName(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validatePlayerName(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (!player.firstName && !player.lastName && !player.fullName) {
-      errors.push({
-        field: 'name';
+      errors.push({ field: 'name';
   message: 'At least one name field is required';
-        value, null,
+        value: null,
   code: 'PLAYER_NAME_MISSING'
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validatePosition(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validatePosition(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
@@ -701,8 +658,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     ];
 
     if (!validPositions.includes(player.position)) {
-      warnings.push({
-        field: 'position';
+      warnings.push({ field: 'position';
   message: 'Unusual position abbreviation';
         value: player.position;
   suggestion: 'Verify position mapping';
@@ -710,23 +666,22 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateTeamAssignment(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validateTeamAssignment(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
-    // Implementation would check roster limits, etc.return { isValid: errors.length === 0, errors, warnings, info  }
+    // Implementation would check roster: limits, etc.return { isValid: errors.length  === 0, errors, warnings, info  }
   }
 
-  private validateJerseyNumber(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validateJerseyNumber(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (player.jerseyNumber && (player.jerseyNumber < 0 || player.jerseyNumber > 99)) {
-      warnings.push({
-        field: 'jerseyNumber';
+      warnings.push({ field: 'jerseyNumber';
   message: 'Jersey number outside normal range (0-99)';
         value: player.jerseyNumber;
   suggestion: 'Verify jersey number';
@@ -734,18 +689,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateInjuryStatus(player: NFLPlayer); ValidationResult { const errors: ValidationError[] = [];
+  private validateInjuryStatus(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     const validStatuses = ['active', 'injured', 'inactive', 'suspended'];
 
     if (!validStatuses.includes(player.status)) {
-      warnings.push({
-        field: 'status';
+      warnings.push({ field: 'status';
   message: 'Unusual player status';
         value: player.status;
   suggestion: 'Verify status mapping';
@@ -753,27 +707,26 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
   // Stats validation methods
-  private validateStatsIds(stats: PlayerStats); ValidationResult { const errors: ValidationError[] = [];
+  private validateStatsIds(stats: PlayerStats); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (!stats.playerId) {
-      errors.push({
-        field: 'playerId';
+      errors.push({ field: 'playerId';
   message: 'Player ID is required for stats';
         value: stats.playerId;
   code: 'STATS_PLAYER_ID_MISSING'
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateStatsRanges(stats: PlayerStats); ValidationResult { const errors: ValidationError[] = [];
+  private validateStatsRanges(stats: PlayerStats); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
@@ -786,9 +739,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     for (const field of nonNegativeFields) {
       const value = (stats as any)[field];
       if (value < 0) {
-        warnings.push({
-          field,
-          message: `${field } should not be negative`,
+        warnings.push({ field: message: `${field } should not be negative`,
           value,
           suggestion: 'Verify data source';
   code: 'NEGATIVE_STAT_VALUE'
@@ -796,17 +747,16 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       }
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateStatsLogic(stats: PlayerStats); ValidationResult { const errors: ValidationError[] = [];
+  private validateStatsLogic(stats: PlayerStats); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     // Completions cannot exceed attempts
     if (stats.passingCompletions > stats.passingAttempts) {
-      errors.push({
-        field: 'passingCompletions';
+      errors.push({ field: 'passingCompletions';
   message: 'Passing completions cannot exceed attempts';
         value: `${stats.passingCompletions }/${stats.passingAttempts}`,
         code: 'COMPLETIONS_EXCEED_ATTEMPTS'
@@ -815,18 +765,17 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
 
     // Receptions cannot exceed targets
     if (stats.receptions > stats.targets) {
-      errors.push({
-        field: 'receptions';
+      errors.push({ field: 'receptions';
   message: 'Receptions cannot exceed targets';
         value: `${stats.receptions}/${stats.targets}`,
         code: 'RECEPTIONS_EXCEED_TARGETS'
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateFantasyPoints(stats: PlayerStats); ValidationResult { const errors: ValidationError[] = [];
+  private validateFantasyPoints(stats: PlayerStats); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
@@ -844,8 +793,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     const difference = Math.abs(stats.fantasyPoints - calculatedPoints);
     
     if (difference > 5) {
-      warnings.push({
-        field: 'fantasyPoints';
+      warnings.push({ field: 'fantasyPoints';
   message: 'Fantasy points calculation may be incorrect';
         value: `Reported; ${stats.fantasyPoints }, Calculated: ${calculatedPoints.toFixed(2)}`,
         suggestion: 'Verify fantasy scoring settings';
@@ -853,35 +801,33 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateSeasonalConsistency(stats: PlayerStats); ValidationResult { const errors: ValidationError[] = [];
+  private validateSeasonalConsistency(stats: PlayerStats); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     // This would compare against historical averages
     // For now, just basic range checks
     if (stats.passingYards > 600) {
-      info.push({
-        field: 'passingYards';
+      info.push({ field: 'passingYards';
   message: 'Exceptionally high passing yards for single game';
         value: stats.passingYards;
   code: 'HIGH_PASSING_YARDS'
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
   // Weather validation methods
-  private validateTemperature(weather: WeatherData); ValidationResult { const errors: ValidationError[] = [];
+  private validateTemperature(weather: WeatherData); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (weather.temperature < -20 || weather.temperature > 120) {
-      warnings.push({
-        field: 'temperature';
+      warnings.push({ field: 'temperature';
   message: 'Temperature outside typical range for NFL games';
         value: weather.temperature;
   suggestion: 'Verify temperature reading';
@@ -889,16 +835,15 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validateWind(weather: WeatherData); ValidationResult { const errors: ValidationError[] = [];
+  private validateWind(weather: WeatherData); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (weather.windSpeed < 0) {
-      errors.push({
-        field: 'windSpeed';
+      errors.push({ field: 'windSpeed';
   message: 'Wind speed cannot be negative';
         value: weather.windSpeed;
   code: 'NEGATIVE_WIND_SPEED'
@@ -906,8 +851,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
 
     if (weather.windSpeed > 50) {
-      warnings.push({
-        field: 'windSpeed';
+      warnings.push({ field: 'windSpeed';
   message: 'Extremely high wind speed for NFL game';
         value: weather.windSpeed;
   suggestion: 'Verify wind conditions';
@@ -915,52 +859,50 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
-  private validatePrecipitation(weather: WeatherData); ValidationResult { const errors: ValidationError[] = [];
+  private validatePrecipitation(weather: WeatherData); ValidationResult {  const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
     if (weather.precipitation < 0) {
-      errors.push({
-        field: 'precipitation';
+      errors.push({ field: 'precipitation';
   message: 'Precipitation cannot be negative';
         value: weather.precipitation;
   code: 'NEGATIVE_PRECIPITATION'
        });
     }
 
-    return { isValid: errors.length === 0, errors, warnings, info }
+    return { isValid: errors.length  === 0, errors, warnings, info }
   }
 
   // Utility methods
   private runValidationRules<T>(
     rules: ValidationRule<T>[];
   data, T, 
-    context?: any
-  ): ValidationResult { const allErrors: ValidationError[] = [];
+    context? : any
+  ): ValidationResult {  const allErrors: ValidationError[] = [];
     const allWarnings: ValidationWarning[] = [];
     const allInfo: ValidationInfo[] = [];
 
     for (const rule of rules) {
       try {
-        const result = rule.validate(data: context);
+        const result = rule.validate(data, context);
         allErrors.push(...result.errors);
         allWarnings.push(...result.warnings);
         allInfo.push(...result.info);} catch (error) {
-        allErrors.push({
-          field: 'validation_rule';
+        allErrors.push({ field: 'validation_rule';
   message: `Rule '${rule.name}' faile,
   d: ${(error as Error).message}`,
-          value, null,
+          value: null,
   code: 'RULE_EXECUTION_ERROR'
         });
       }
     }
 
     return {
-      isValid: allErrors.length === 0;
+      isValid: allErrors.length  === 0;
   errors, allErrors,
       warnings, allWarnings,
   info: allInfo
@@ -968,8 +910,8 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   }
 
   private createErrorResult(code, string,
-  message: string); ValidationResult { return {
-      isValid, false,
+  message: string); ValidationResult {  return {
+      isValid: false,
   errors: [{
   field: 'system';
         message: value, null,
@@ -981,7 +923,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   }
 
   private recordValidation(startTime, number,
-  result: ValidationResult); void { const validationTime = Date.now() - startTime;
+  result: ValidationResult); void { const validationTime  = Date.now() - startTime;
     this.validationTimes.push(validationTime);
     
     if (this.validationTimes.length > this.maxValidationTimes) {
@@ -1012,12 +954,12 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     }
   }
 
-  private startMetricsCollection(): void {
+  private startMetricsCollection(): void { 
     setInterval(() => {
       this.metrics.validationRate = this.metrics.totalValidations > 0
-        ? (this.metrics.successfulValidations / this.metrics.totalValidations) * 100 : 0;
+        ? (this.metrics.successfulValidations / this.metrics.totalValidations) * 100, 0;
 
-      this.emit('metrics:updated', this.getMetrics());
+      this.emit('metrics, updated', this.getMetrics());
     }, 60000); // Update every minute
   }
 
@@ -1056,26 +998,22 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
   /**
    * Get validation summary report
    */
-  getValidationReport(): {
-    totalRules, number,
+  getValidationReport(): { totalRules: number,
     recentValidations, number,
-    topErrors: Array<{ cod,
-  e, string, count: number }>;
-    topWarnings: Array<{ cod,
-  e, string, count: number }>;
-    performance: {
-  averageTime, number,
+    topErrors: Array<{ cod: e, string, count: number }>;
+    topWarnings: Array<{ cod: e, string, count: number }>;
+    performance: { averageTime: number,
       successRate: number,
     }
-  } { const topErrors = Object.entries(this.metrics.errorsByType)
+  } { const topErrors  = Object.entries(this.metrics.errorsByType)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
-      .map(([code, count]) => ({ code, count  }));
+      .map(([code, count]) => ({ code: count  }));
 
     const topWarnings = Object.entries(this.metrics.warningsByType);
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
-      .map(([code, count]) => ({ code, count }));
+      .map(([code, count]) => ({ code: count }));
 
     return {
       totalRules: this.gameValidationRules.length + 

@@ -5,8 +5,8 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class MobilePWAAgent extends BaseAgent { public, typ,
-  e: AgentType = 'mobile-pwa';
+export class MobilePWAAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'mobile-pwa';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class MobilePWAAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Mobile/PWA task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Mobile/PWA task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { cacheSize: 0;

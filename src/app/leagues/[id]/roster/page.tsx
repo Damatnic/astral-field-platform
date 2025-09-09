@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { 
-  Users, Star, TrendingUp, TrendingDown, 
+import { Users, Star, TrendingUp, TrendingDown, 
   Plus, Minus, AlertTriangle, Heart,
   BarChart3, Calendar, Activity, Settings,
   ChevronRight, ExternalLink, Info
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface RosterPageProps {
-  params: Promise<{ id, string
+interface RosterPageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -23,7 +21,7 @@ interface Player {
   position: string;
     team: string;
   roster_position: string;
-  projected_points?: number;
+  projected_points? : number;
   season_points?: number;
   injury_status?: string;
   bye_week?: number;
@@ -40,14 +38,12 @@ interface Team {
     owner_name: string;
   
 }
-interface RosterData {
-  team, Team,
-    roster: Player[];
+interface RosterData { team: Team, roster: Player[];
   rosterSettings: Record<string, number>;
   currentWeek: number;
 }
 
-export default function RosterPage({ params }: RosterPageProps) { const router = useRouter();
+export default function RosterPage({ params }: RosterPageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [rosterData, setRosterData] = useState<RosterData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +66,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
        }
       const data = await response.json();
       setRosterData(data);
-    } catch (err) {setError(err instanceof Error ? err.message : 'Failed to load roster');
+    } catch (err) {setError(err instanceof Error ? err.message  : 'Failed to load roster');
     } finally {
       setLoading(false);
     }
@@ -81,8 +77,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
      }
     return rosterData.roster.filter(p => p.roster_position === position);
   }
-  const getPositionColor = (position: string) => { const colors = {,
-  QB: 'bg-purple-100 text-purple-800 border-purple-200',
+  const getPositionColor = (position: string) => {  const colors = { QB: 'bg-purple-100 text-purple-800 border-purple-200',
   RB: 'bg-green-100 text-green-800 border-green-200',
       WR: 'bg-blue-100 text-blue-800 border-blue-200',
   TE: 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -93,7 +88,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
 }
     return colors[position as keyof typeof colors] || colors.BENCH;
   }
-  const getInjuryStatusIcon = (status: string) => { switch (status) {
+  const getInjuryStatusIcon  = (status: string) => {  switch (status) {
       case 'questionable':
       return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
       break;
@@ -101,11 +96,10 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
         return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       case 'out':
         return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default:
-        return null;
+      default, return null;
      }
   }
-  const renderRosterSlot = (position, string;
+  const renderRosterSlot  = (position, string;
   maxSlots: number) => { const players = getPlayersByPosition(position);
     const slots = [];
 
@@ -152,8 +146,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
             <div className="text-center py-6">
               <Plus className="h-8 w-8 text-gray-300 mx-auto mb-2" />
               <p className="text-sm text-gray-500">Empty slot</p>
-              <button className="mt-2 text-xs text-primary-600 hover: text-primary-700">,
-    Add: Player;
+              <button className="mt-2 text-xs text-primary-600 hover: text-primary-700"> : Add: Player;
               </button>
             </div>
           )}
@@ -164,8 +157,8 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
     return (
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-gray-900 flex items-center">
-          {position === 'FLEX' ? 'FLEX (RB/WR/TE)' : position}
-          <span className="ml-2 text-sm font-normal text-gray-500">({maxSlots})</span>
+          { position === 'FLEX' ? 'FLEX (RB/WR/TE)'  : position}
+          <span className ="ml-2 text-sm font-normal text-gray-500">({maxSlots})</span>
         </h3>
         <div className="grid gap-4">
           {slots}
@@ -173,9 +166,9 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
       </div>
     );
   }
-  if (loading) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId } />
+  if (loading) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId } />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/4" />
@@ -193,15 +186,15 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
     );
   }
 
-  if (error || !rosterData) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId } />
+  if (error || !rosterData) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId } />
         <div className="max-w-7xl mx-auto px-4 py-8 text-center">
           <div className="text-red-600 dark:text-red-400 text-lg mb-4">
             { error: || 'Failed to load roster' }
           </div>
           <button 
-            onClick={fetchRosterData}
+            onClick ={fetchRosterData}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
             Retry
@@ -235,8 +228,8 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
               <Plus className="h-4 w-4 mr-2" />
   Add: Player;
             </Link>
-            <button className="inline-flex items-center px-4 py-2 bg-white dark: bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hove,
-  r:bg-gray-50 dar,
+            <button className="inline-flex items-center px-4 py-2 bg-white dark: bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-700">
               <Settings className="h-4 w-4 mr-2" />
               Settings
@@ -303,22 +296,20 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setSelectedTab('lineup')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${selectedTab === 'lineup'
+              className={ `py-2 px-1 border-b-2 font-medium text-sm ${selectedTab === 'lineup'
                   ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                  : 'border-transparent text-gray-500 dark: text-gray-400 hove,
-  r:text-gray-700 dar,
-  k:hover.text-gray-300 hover; border-gray-300'
+                  : 'border-transparent text-gray-500 dark: text-gray-400: hove, r:text-gray-700: dar,
+  k, hover.text-gray-300 hover; border-gray-300'
                }`}
             >
   Starting: Lineup;
             </button>
             <button
-              onClick={() => setSelectedTab('bench')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${selectedTab === 'bench'
+              onClick ={() => setSelectedTab('bench')}
+              className={ `py-2 px-1 border-b-2 font-medium text-sm ${selectedTab === 'bench'
                   ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                  : 'border-transparent text-gray-500 dark: text-gray-400 hove,
-  r:text-gray-700 dar,
-  k:hover.text-gray-300 hover; border-gray-300'
+                  : 'border-transparent text-gray-500 dark: text-gray-400: hove, r:text-gray-700: dar,
+  k, hover.text-gray-300 hover; border-gray-300'
                }`}
             >
               Bench ({getPlayersByPosition('BENCH').length})
@@ -327,7 +318,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
         </div>
 
         {/* Roster Content */}
-        {selectedTab === 'lineup' ? (
+        {selectedTab  === 'lineup' ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl; grid-cols-3 gap-8">
             {Object.entries(rosterData.rosterSettings)
               .filter(([pos]) => pos !== 'BENCH' && pos !== 'IR')
@@ -344,22 +335,22 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
                 Bench Players ({getPlayersByPosition('BENCH').length}/{rosterData.rosterSettings.BENCH})
               </h3>
               <div className="flex items-center space-x-2">
-                <button className="text-sm text-primary-600 dark: text-primary-400 hove,
+                <button className="text-sm text-primary-600 dark: text-primary-400: hove,
   r:underline">
                   ArrowUpDown by projected
                 </button>
                 <span className="text-gray-300">|</span>
-                <button className="text-sm text-primary-600 dark: text-primary-400 hove,
+                <button className="text-sm text-primary-600 dark: text-primary-400: hove,
   r:underline">
                   ArrowUpDown by season
                 </button>
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md: grid-cols-2 l,
+            <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-3 gap-4">
               {getPlayersByPosition('BENCH').map((player) => (
-                <div key={player.id} className="bg-white dark: bg-gray-800 border border-gray-200 dar,
+                <div key={player.id} className="bg-white dark: bg-gray-800 border border-gray-200: dar,
   k:border-gray-700 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1 min-w-0">
@@ -387,8 +378,8 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
                     </span>
                   </div>
 
-                  {player.bye_week === rosterData.currentWeek && (
-                    <div className="mt-2 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark; text-yellow-300 text-xs rounded">
+                  { player.bye_week === rosterData.currentWeek && (
+                    <div className="mt-2 px-2 py-1 bg-yellow-100 dark, bg-yellow-900/30 text-yellow-800 dark; text-yellow-300 text-xs rounded">
                       On bye this week
                     </div>
                   )}
@@ -399,12 +390,12 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
         )}
 
         {/* Quick Actions */}
-        <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+        <div className ="mt-8 bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href={`/leagues/${leagueId}/waiver`}
-              className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50 dar,
+              className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50: dar,
   k, hove,
   r:bg-gray-700 transition-colors"
             >
@@ -418,7 +409,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
 
             <Link
               href={`/leagues/${leagueId}/trades`}
-              className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50 dar,
+              className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50: dar,
   k, hove,
   r:bg-gray-700 transition-colors"
             >
@@ -430,7 +421,7 @@ export default function RosterPage({ params }: RosterPageProps) { const router =
               <ChevronRight className="h-5 w-5 text-gray-400 ml-auto" />
             </Link>
 
-            <button className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50 dar,
+            <button className="flex items-center p-4 border border-gray-200 dark: border-gray-700 rounded-lg hover:bg-gray-50: dar,
   k, hove,
   r:bg-gray-700 transition-colors">
               <Info className="h-6 w-6 text-purple-500 mr-3" />

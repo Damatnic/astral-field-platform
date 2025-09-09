@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
-import { 
-  ArrowRightLeft, UserPlus, UserMinus, DollarSign,
+import { ArrowRightLeft, UserPlus, UserMinus, DollarSign,
   Filter, Search, Calendar, Clock, ChevronDown, TrendingUp, AlertCircle, Shield, Star, X,
   Download, Eye, MessageSquare, Hash
 } from "lucide-react";
 
-interface LeaguePageProps {
-  params: Promise<{ id, string
+interface LeaguePageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -23,9 +21,9 @@ interface Transaction {
   teamOwner: string;
     status: 'completed' | 'pending' | 'vetoed' | 'processing';
   details: {;
-  playersAdded?: string[];
+  playersAdded? : string[];
   playersDropped?: string[];
-  playersTraded?: { from: string; to: string; players: string[];
+  playersTraded?: { FROM string; to: string; players: string[];
 }
 [];
     faabAmount?: number;
@@ -38,7 +36,7 @@ interface Transaction {
   notes?: string;
 }
 
-export default function TransactionsPage({ params }: LeaguePageProps) { const router = useRouter();
+export default function TransactionsPage({ params }: LeaguePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
@@ -46,9 +44,9 @@ export default function TransactionsPage({ params }: LeaguePageProps) { const ro
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null  }>({ start, null,
+  const [dateRange, setDateRange] = useState<{  start: Date | null; end, Date | null  }>({ start: null,
   end: null });
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters]  = useState(false);
   const [sortBy, setSortBy] = useState<'date' | 'type' | 'team'>('date');
   const [expandedTransaction, setExpandedTransaction] = useState<string | null>(null);
 
@@ -67,8 +65,8 @@ export default function TransactionsPage({ params }: LeaguePageProps) { const ro
     filterTransactions();
   }, [transactions, searchQuery, selectedTypes, selectedTeams, selectedStatus, dateRange, sortBy]);
 
-  const loadTransactions = () => {
-    // Mock data - in production, fetch from API
+  const loadTransactions = () => { 
+    // Mock data - in: production, fetch from API
     const mockTransactions: Transaction[] = [
       {
         id: '1',
@@ -79,15 +77,15 @@ type: 'trade',
   status: 'pending',
         details: {
   playersTraded: [
-            { from: 'Space Cowboys',
-  to: 'Tech Titans', players: ['Derrick Henry', '2024 3rd Round Pick'] },
-            { from: 'Tech Titans',
+            { FROM 'Space Cowboys',
+  to: 'Tech Titans', players, ['Derrick Henry', '2024 3rd Round Pick'] },
+            { FROM 'Tech Titans',
   to: 'Space Cowboys', players: ['CeeDee Lamb'] }
           ],
           tradePartner: 'Tech Titans'
         },
-        vetoes, 2,
-  vetoesNeeded, 4,
+        vetoes: 2,
+  vetoesNeeded: 4,
         processDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
   notes: 'Addressing WR needs before playoffs'
       },
@@ -139,15 +137,15 @@ type: 'trade',
   status: 'vetoed',
         details: {
   playersTraded: [
-            { from: 'Beer Bellies',
+            { FROM 'Beer Bellies',
   to: 'Crypto Kings', players: ['Christian McCaffrey'] },
-            { from: 'Crypto Kings',
+            { FROM 'Crypto Kings',
   to: 'Beer Bellies', players: ['Rachaad White', 'Michael Pittman Jr.'] }
           ],
           tradePartner: 'Crypto Kings'
         },
-        vetoes, 5,
-  vetoesNeeded, 4,
+        vetoes: 5,
+  vetoesNeeded: 4,
         notes: 'League vetoed - unbalanced trade'
       },
       {
@@ -175,8 +173,7 @@ type: 'faab',
         },
         processDate: new Date(Date.now() + 12 * 60 * 60 * 1000)
       },
-      {
-        id: '8',
+      { id: '8',
 type: 'trade',
         timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000),
   teamName: 'Tech Titans',
@@ -184,9 +181,9 @@ type: 'trade',
   status: 'completed',
         details: {
   playersTraded: [
-            { from: 'Tech Titans',
+            { FROM 'Tech Titans',
   to: 'Lightning Legends', players: ['Travis Kelce', 'Brandin Cooks'] },
-            { from: 'Lightning Legends',
+            { FROM 'Lightning Legends',
   to: 'Tech Titans', players: ['Mark Andrews', 'DeVonta Smith'] }
           ],
           tradePartner: 'Lightning Legends'
@@ -196,14 +193,14 @@ type: 'trade',
 
     setTransactions(mockTransactions);
   }
-  const filterTransactions = () => { let filtered = [...transactions];
+  const filterTransactions  = () => { let filtered = [...transactions];
 
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(t => 
         t.teamName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         t.teamOwner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.details.playersAdded?.some(p => p.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        t.details.playersAdded? .some(p => p.toLowerCase().includes(searchQuery.toLowerCase())) ||
         t.details.playersDropped?.some(p => p.toLowerCase().includes(searchQuery.toLowerCase())) ||
         t.details.playersTraded?.some(trade => 
           trade.players.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -238,46 +235,43 @@ type: 'trade',
 
     setFilteredTransactions(filtered);
   }
-  const toggleTypeFilter = (type: string) => {setSelectedTypes(prev => 
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+  const toggleTypeFilter = (type: string) => { setSelectedTypes(prev => 
+      prev.includes(type) ? prev.filter(t => t !== type)  : [...prev, type]
     );
   }
-  const getTypeIcon = (type: Transaction['type']) => { const icons = {,
-  trade: <ArrowRightLeft className="h-4 w-4" />,
+  const getTypeIcon  = (type: Transaction['type']) => {  const icons = { trade: <ArrowRightLeft className="h-4 w-4" />,
   add: <UserPlus className="h-4 w-4" />,
       drop: <UserMinus className="h-4 w-4" />,
   waiver: <Clock className="h-4 w-4" />,
-      faab: <DollarSign className="h-4 w-4" />
+      faab, <DollarSign className ="h-4 w-4" />
      }
     return icons[type];
   }
-  const getTypeColor = (type: Transaction['type']) => { const colors = {,
-  trade: 'bg-blue-100 text-blue-800 dar,
+  const getTypeColor = (type: Transaction['type']) => {  const colors = { trade: 'bg-blue-100 text-blue-800: dar,
   k:bg-blue-900 dark; text-blue-300',
-      add: 'bg-green-100 text-green-800 dar,
+      add: 'bg-green-100 text-green-800: dar,
   k:bg-green-900 dark; text-green-300',
-      drop: 'bg-red-100 text-red-800 dar,
+      drop: 'bg-red-100 text-red-800: dar,
   k:bg-red-900 dark; text-red-300',
-      waiver: 'bg-yellow-100 text-yellow-800 dar,
+      waiver: 'bg-yellow-100 text-yellow-800: dar,
   k:bg-yellow-900 dark; text-yellow-300',
-      faab: 'bg-purple-100 text-purple-800 dar,
-  k:bg-purple-900 dark; text-purple-300'
+      faab: 'bg-purple-100 text-purple-800: dar,
+  k, bg-purple-900 dark; text-purple-300'
      }
     return colors[type];
   }
-  const getStatusColor = (status: Transaction['status']) => { const colors = {,
-  completed: 'bg-green-100 text-green-800 dar,
+  const getStatusColor  = (status: Transaction['status']) => {  const colors = { completed: 'bg-green-100 text-green-800: dar,
   k:bg-green-900 dark; text-green-300',
-      pending: 'bg-yellow-100 text-yellow-800 dar,
+      pending: 'bg-yellow-100 text-yellow-800: dar,
   k:bg-yellow-900 dark; text-yellow-300',
-      vetoed: 'bg-red-100 text-red-800 dar,
+      vetoed: 'bg-red-100 text-red-800: dar,
   k:bg-red-900 dark; text-red-300',
-      processing: 'bg-blue-100 text-blue-800 dar,
-  k:bg-blue-900 dark; text-blue-300'
+      processing: 'bg-blue-100 text-blue-800: dar,
+  k, bg-blue-900 dark; text-blue-300'
      }
     return colors[status];
   }
-  const exportTransactions = () => {
+  const exportTransactions  = () => {
     // In production, generate CSV or JSON export
     console.log('Exporting transactions...');}
   // Get unique teams for filter
@@ -359,10 +353,10 @@ type: 'trade',
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search players, teams..."
+                    placeholder="Search: players, teams..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
+                    className="w-full pl-10 pr-4 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                   />
                 </div>
@@ -373,7 +367,7 @@ type: 'trade',
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
+                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                 >
                   <option value="all">All Status</option>
@@ -386,7 +380,7 @@ type: 'trade',
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dar,
+                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                 >
                   <option value="date">ArrowUpDown by Date</option>
@@ -396,12 +390,11 @@ type: 'trade',
 
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 py-2 border dark: border-gray-600 rounded-lg transition-colors inline-flex items-center gap-2 ${showFilters ? 'bg-primary-600 text-white border-primary-600' : 'bg-white dark:bg-gray-700 text-gray-900 dar,
-  k:text-white hove,
-  r:bg-gray-50 dark.hover; bg-gray-600'
+                  className={ `px-4 py-2 border dark: border-gray-600 rounded-lg transition-colors inline-flex items-center gap-2 ${showFilters ? 'bg-primary-600 text-white border-primary-600' : 'bg-white dark:bg-gray-700 text-gray-900: dar, k:text-white: hove,
+  r, bg-gray-50 dark.hover; bg-gray-600'
                    }`}
                 >
-                  <Filter className="h-4 w-4" />
+                  <Filter className ="h-4 w-4" />
                   Filters
                   {(selectedTypes.length > 0 || selectedTeams.length > 0) && (
                     <span className="inline-flex items-center justify-center w-5 h-5 bg-white/20 rounded-full text-xs">
@@ -412,8 +405,8 @@ type: 'trade',
 
                 <button
                   onClick={exportTransactions}
-                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white hove,
-  r:bg-gray-50 dar,
+                  className="px-4 py-2 border dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-600 transition-colors"
                 >
                   <Download className="h-4 w-4" />
@@ -423,12 +416,12 @@ type: 'trade',
           </div>
 
           {/* Advanced Filters */}
-          {showFilters && (
+          { showFilters && (
             <div className="p-4 bg-gray-50 dark:bg-gray-900/50">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md, grid-cols-3 gap-4">
                 {/* Transaction Types */ }
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-2">,
+                  <label className ="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-2">,
     Transaction: Types;
                   </label>
                   <div className="space-y-2">
@@ -459,13 +452,13 @@ type: 'trade',
                         <input
                           type="checkbox"
                           checked={selectedTeams.includes(team)}
-                          onChange={() => {
+                          onChange={ () => {
                             setSelectedTeams(prev =>
                               prev.includes(team)
-                                ? prev.filter(t => t !== team) : [...prev, team]
+                                ? prev.filter(t => t !== team)  : [...prev, team]
                             );
                           }}
-                          className="mr-2"
+                          className ="mr-2"
                         />
                         <span className="text-sm text-gray-700 dark:text-gray-300">
                           {team}
@@ -483,14 +476,14 @@ type: 'trade',
                   <div className="space-y-2">
                     <input
                       type="date"
-                      onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value ? new Date(e.target.value) : null}))}
-                      className="w-full px-3 py-1.5 border dark: border-gray-600 rounded-lg bg-white dar,
+                      onChange={ (e) => setDateRange(prev => ({ ...prev, start: e.target.value ? new Date(e.target.value)  : null}))}
+                      className ="w-full px-3 py-1.5 border dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white text-sm"
                     />
                     <input
                       type="date"
-                      onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value ? new Date(e.target.value) : null}))}
-                      className="w-full px-3 py-1.5 border dark: border-gray-600 rounded-lg bg-white dar,
+                      onChange={ (e) => setDateRange(prev => ({ ...prev, end: e.target.value ? new Date(e.target.value)  : null}))}
+                      className ="w-full px-3 py-1.5 border dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white text-sm"
                     />
                   </div>
@@ -499,14 +492,14 @@ type: 'trade',
 
               <div className="mt-4 flex justify-end gap-2">
                 <button
-                  onClick={() => {
+                  onClick={ () => {
                     setSelectedTypes([]);
                     setSelectedTeams([]);
-                    setDateRange({ start, null,
-  end: null });
+                    setDateRange({ start: null,
+  end, null });
                   }}
-                  className="px-3 py-1.5 text-sm text-gray-600 dark: text-gray-400 hove,
-  r:text-gray-900 dar,
+                  className ="px-3 py-1.5 text-sm text-gray-600 dark: text-gray-400: hove,
+  r:text-gray-900: dar,
   k:hover; text-white"
                 >
   Clear: Filters;
@@ -538,7 +531,7 @@ type: 'trade',
                     </div>
 
                     {/* Transaction Details */}
-                    <div className="mb-2">
+                    <div className ="mb-2">
                       <span className="font-medium text-gray-900 dark:text-white">
                         {transaction.teamName}
                       </span>
@@ -563,33 +556,33 @@ type: 'trade',
                         </div>
                       )}
 
-                      {(transaction.type === 'add' || transaction.type === 'waiver' || transaction.type === 'faab') && (
+                      { (transaction.type === 'add' || transaction.type === 'waiver' || transaction.type === 'faab') && (
                         <div>
                           {transaction.details.playersAdded && (
                             <span>
-                              Added: <span className="text-green-600 dark; text-green-400">
+                              Added, <span className ="text-green-600 dark; text-green-400">
                                 {transaction.details.playersAdded.join(', ')}
                               </span>
                             </span>
                           )}
-                          {transaction.details.playersDropped && (
+                          { transaction.details.playersDropped && (
                             <span className="ml-4">
-                              Dropped: <span className="text-red-600 dark; text-red-400">
+                              Dropped, <span className ="text-red-600 dark; text-red-400">
                                 {transaction.details.playersDropped.join(', ')}
                               </span>
                             </span>
                           )}
-                          {transaction.details.faabAmount && (
+                          { transaction.details.faabAmount && (
                             <span className="ml-4">
-                              FAAB: <span className="font-medium">${transaction.details.faabAmount}</span>
+                              FAAB, <span className ="font-medium">${transaction.details.faabAmount}</span>
                             </span>
                           )}
                         </div>
                       )}
 
-                      {transaction.type === 'drop' && transaction.details.playersDropped && (
+                      { transaction.type === 'drop' && transaction.details.playersDropped && (
                         <div>
-                          Dropped: <span className="text-red-600 dark; text-red-400">
+                          Dropped, <span className ="text-red-600 dark; text-red-400">
                             {transaction.details.playersDropped.join(', ')}
                           </span>
                         </div>
@@ -597,27 +590,26 @@ type: 'trade',
                     </div>
 
                     {/* Additional Info */}
-                    {(transaction.vetoes || transaction.processDate || transaction.notes) && (
+                    { (transaction.vetoes || transaction.processDate || transaction.notes) && (
                       <div className="mt-3 flex flex-wrap gap-4 text-sm">
                         {transaction.status === 'pending' && transaction.vetoes !== undefined && (
-                          <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
-                            <Shield className="h-4 w-4" />
+                          <div className="flex items-center gap-1 text-orange-600 dark, text-orange-400">
+                            <Shield className ="h-4 w-4" />
                             {transaction.vetoes}/{transaction.vetoesNeeded} vetoes
                           </div>
                         )}
-                        {transaction.processDate && (
+                        { transaction.processDate && (
                           <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
                             <Clock className="h-4 w-4" />
-                            Processes: { ne,
-  w: Date(transaction.processDate).toLocaleString() }
+                            Processes: { ne: w, Date(transaction.processDate).toLocaleString() }
                           </div>
                         )}
                         {transaction.notes && (
                           <button
-                            onClick={() => setExpandedTransaction(
-                              expandedTransaction === transaction.id ? null : transaction.id
+                            onClick ={ () => setExpandedTransaction(
+                              expandedTransaction === transaction.id ? null  : transaction.id
                             )}
-                            className="flex items-center gap-1 text-primary-600 dark:text-primary-400 hover; underline"
+                            className ="flex items-center gap-1 text-primary-600 dark:text-primary-400 hover; underline"
                           >
                             <MessageSquare className="h-4 w-4" />
                             View notes
@@ -627,19 +619,19 @@ type: 'trade',
                     )}
 
                     {/* Expanded Notes */}
-                    {expandedTransaction === transaction.id && transaction.notes && (
+                    { expandedTransaction === transaction.id && transaction.notes && (
                       <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                         <p className="text-sm text-gray-700 dark; text-gray-300">
-                          <span className="font-medium">Notes:</span> {transaction.notes }
+                          <span className="font-medium">Notes, </span> {transaction.notes }
                         </p>
                       </div>
                     )}
                   </div>
 
                   {/* Actions */}
-                  {transaction.status === 'pending' && (
+                  {transaction.status  === 'pending' && (
                     <div className="ml-4">
-                      <button className="p-2 text-gray-400 hover: text-gray-600 dar,
+                      <button className="p-2 text-gray-400 hover: text-gray-600: dar,
   k:hover; text-gray-300">
                         <Eye className="h-4 w-4" />
                       </button>
@@ -652,13 +644,13 @@ type: 'trade',
         </div>
 
         {/* Empty State */}
-        {filteredTransactions.length === 0 && (
+        { filteredTransactions.length === 0 && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
             <ArrowRightLeft className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 dark, text-white mb-2">
               No transactions found
             </h3>
-            <p className="text-gray-600 dark; text-gray-400">
+            <p className ="text-gray-600 dark; text-gray-400">
               { searchQuery: || selectedTypes.length > 0 || selectedTeams.length > 0
                 ? 'Try adjusting your filters' : 'No transactions have been made yet'}
             </p>

@@ -1,4 +1,4 @@
-// Oracle: AI servic,
+// Oracle AI: servic,
   e: alias fo;
   r, compatibility, // Re-exports from the: main oracle; service
 

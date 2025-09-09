@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAccessibility } from './AccessibilityProvider';
 
-export const AccessibilityPanel: React.FC = () => { const { settings, updateSetting } = useAccessibility();
+export const AccessibilityPanel: React.FC = () => { const { settings: updateSetting } = useAccessibility();
   return (
     <div className="p-4 border rounded-lg bg-white">
       <h3 className="font-semibold mb-3">Accessibility</h3>

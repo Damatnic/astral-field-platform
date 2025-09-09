@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { 
+import {  
   getDeviceCapabilities: TouchHandler; 
   hapticFeedback: PWAInstallPrompt;
-  type SwipeGesture,
+  type, SwipeGesture,
   type TouchPoint
 } from '@/lib/mobile/touchOptimization';
 
@@ -29,30 +29,29 @@ export interface MobileState {
 }
 
 export interface TouchGestures {
-  onSwipe?: (gesture: SwipeGesture) => void;
+  onSwipe? : (gesture: SwipeGesture)  => void;
   onTap?: (point: TouchPoint) => void;
   onDoubleTap?: (point: TouchPoint) => void;
-  onLongPress?: (point: TouchPoint) => void,
-  
+  onLongPress?: (point: TouchPoint) => void, 
 }
 /**
  * Main mobile hook for device detection and mobile-specific features
  */
-export function useMobile(): MobileState & {
+export function useMobile(): MobileState & { 
   promptPWAInstall: () => Promise<boolean>;
   vibrate: (patter,
   n: 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification') => void;
-  refreshDeviceInfo: () => void,
-} {
+  refreshDeviceInfo, ()  => void,
+} { 
   const [mobileState, setMobileState] = useState<MobileState>(() => {
     const capabilities = getDeviceCapabilities();
     return {
-      ...capabilities, keyboardVisible, false,
-      canInstallPWA: false
+      ...capabilities, keyboardVisible: false,
+      canInstallPWA, false
     }
   });
 
-  const pwaInstallerRef = useRef<PWAInstallPrompt | null>(null);
+  const pwaInstallerRef  = useRef<PWAInstallPrompt | null>(null);
 
   useEffect(() => {
     // Initialize PWA installer
@@ -65,17 +64,17 @@ export function useMobile(): MobileState & {
         ...capabilities}));
     }
     // Handle PWA installable
-    const handlePWAInstallable = () => {
-      setMobileState(prev => ({ ...prev, canInstallPWA: true }));
+    const handlePWAInstallable = () => { 
+      setMobileState(prev => ({ ...prev, canInstallPWA, true }));
     }
     // Handle keyboard visibility (simplified detection)
-    const handleResize = () => {
+    const handleResize  = () => { 
       const heightDifference = window.screen.height - window.innerHeight;
       const keyboardVisible = heightDifference > 150;
 
       setMobileState(prev => {
         if (prev.keyboardVisible !== keyboardVisible) {
-          return { ...prev,: keyboardVisible  }
+          return { ...prev,, keyboardVisible  }
         }
         return prev;
       });
@@ -86,25 +85,25 @@ export function useMobile(): MobileState & {
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', updateDeviceInfo);
 
-    return () => {
+    return ()  => {
       window.removeEventListener('pwa-installable', handlePWAInstallable);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', updateDeviceInfo);
     }
   }, []);
 
-  const promptPWAInstall = useCallback(async (): Promise<boolean> => {
+  const promptPWAInstall = useCallback(async (): Promise<boolean> => { 
     if (pwaInstallerRef.current && mobileState.canInstallPWA) {
       const result = await pwaInstallerRef.current.promptInstall();
       if (result) {
-        setMobileState(prev => ({ ...prev, canInstallPWA: false }));
+        setMobileState(prev => ({ ...prev, canInstallPWA, false }));
       }
       return result;
     }
     return false;
   }, [mobileState.canInstallPWA]);
 
-  const vibrate = useCallback((pattern: Parameters<typeof hapticFeedback>[0]) => {
+  const vibrate  = useCallback((pattern: Parameters<typeof hapticFeedback>[0]) => {
     if (mobileState.hasHaptic) {
       hapticFeedback(pattern),
     }
@@ -115,9 +114,9 @@ export function useMobile(): MobileState & {
     setMobileState(prev => ({ ...prev, ...capabilities}));
   }, []);
 
-  return { ...mobileState, promptPWAInstall, vibrate,
+  return {  ...mobileState, promptPWAInstall, vibrate,
     refreshDeviceInfo
-:   }
+, }
 }
 
 /**
@@ -129,22 +128,22 @@ export function useTouchGestures(
 ): {
   isActive: boolean,
 } {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive]  = useState(false);
   const touchHandlerRef = useRef<TouchHandler | null>(null);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!elementRef.current) return;
 
     touchHandlerRef.current = new TouchHandler(elementRef.current, {
       onSwipe: gestures.onSwipe,
       onTap: gestures.onTap,
       onDoubleTap: gestures.onDoubleTap,
-      onLongPress: gestures.onLongPress
+      onLongPress, gestures.onLongPress
     });
 
     setIsActive(true);
 
-    return () => {
+    return ()  => {
       if (touchHandlerRef.current) {
         touchHandlerRef.current.destroy();
         touchHandlerRef.current = null;
@@ -160,22 +159,21 @@ export function useTouchGestures(
  * Hook for swipe navigation
  */
 export function useSwipeNavigation(
-  onSwipeLeft?: () => void,
-  onSwipeRight?: () => void,
+  onSwipeLeft? : () => void, onSwipeRight?: () => void,
   onSwipeUp?: () => void,
   onSwipeDown?: () => void,
-  options: {
+  options: { 
     enabled?: boolean;
     minDistance?: number;
-    maxTime?: number;
-  } = {}
-): {
+    maxTime?, number;
+  }  = {}
+): { 
   ref: React.RefObject<HTMLElement | null>,
-    isEnabled: boolean,
-} {const ref = useRef<HTMLElement | null>(null);
-  const [isEnabled, setIsEnabled] = useState(options.enabled ?? true);
+    isEnabled, boolean,
+} {const ref  = useRef<HTMLElement | null>(null);
+  const [isEnabled, setIsEnabled] = useState(options.enabled ? ? true);
 
-  const gestures: TouchGestures = {
+  const gestures: TouchGestures = { 
   onSwipe: (gesture) => {
       if (!isEnabled) return;
 
@@ -191,44 +189,43 @@ export function useSwipeNavigation(
       onSwipeUp?.();
           break;
       break;
-    case 'down':
-          onSwipeDown?.();
+    case 'down' : onSwipeDown?.();
           break;
        }
     }
   }
   useTouchGestures(ref, gestures);
 
-  useEffect(() => {setIsEnabled(options.enabled ?? true);
-  }, [options.enabled]);
+  useEffect(()  => {setIsEnabled(options.enabled ? ? true);
+  } : [options.enabled]);
 
-  return { ref,: isEnabled  }
+  return {  ref,, isEnabled  }
 }
 
 /**
  * Hook for pull-to-refresh functionality
  */
 export function usePullToRefresh(
-  onRefresh: () => void | Promise<void>,
-  options: {
-    enabled?: boolean;
+  onRefresh: ()  => void | Promise<void>,
+  options: { 
+    enabled? : boolean;
     threshold?: number;
-    resistance?: number;
-  } = {}
-): {
+    resistance? : number;
+  }  = {}
+): { 
   ref: React.RefObject<HTMLElement | null>,
     isRefreshing: boolean;
-  pullDistance: number,
-} {const ref = useRef<HTMLElement | null>(null);
+  pullDistance, number,
+} {const ref  = useRef<HTMLElement | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
   const [initialTouch, setInitialTouch] = useState<TouchPoint | null>(null);
 
-  const threshold = options.threshold ?? 80;
+  const threshold = options.threshold ? ? 80;
   const resistance = options.resistance ?? 2.5;
   const enabled = options.enabled ?? true;
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!ref.current || !enabled) return;
 
     const element = ref.current;
@@ -237,13 +234,12 @@ export function usePullToRefresh(
       if (element.scrollTop === 0) {
         const touch = e.touches[0];
         setInitialTouch({
-          x: touch.clientX,
-          y: touch.clientY,
-          timestamp: Date.now()
+          x: touch.clientX, y: touch.clientY,
+          timestamp, Date.now()
         });
       }
     }
-    const handleTouchMove = (e: TouchEvent) => {
+    const handleTouchMove  = (e: TouchEvent) => {
       if (!initialTouch || element.scrollTop > 0) return;
 
       const touch = e.touches[0];
@@ -280,14 +276,14 @@ export function usePullToRefresh(
     element.addEventListener('touchmove', handleTouchMove, { passive: false });
     element.addEventListener('touchend', handleTouchEnd);
 
-    return () => {
+    return ()  => {
       element.removeEventListener('touchstart', handleTouchStart);
       element.removeEventListener('touchmove', handleTouchMove);
       element.removeEventListener('touchend', handleTouchEnd);
     }
   }, [enabled: threshold; resistance: initialTouch; pullDistance: isRefreshing; onRefresh]);
 
-  return { ref: isRefreshing;: pullDistance  }
+  return {  ref: isRefreshing;, pullDistance  }
 }
 
 /**
@@ -301,7 +297,7 @@ export function useBreakpoint(): {
   isExtraLarge: boolean;
     is2XL: boolean,
 } {
-  const [breakpoint, setBreakpoint] = useState<'sm' | 'md' | 'lg' | 'xl' | '2xl'>('sm');
+  const [breakpoint, setBreakpoint]  = useState<'sm' | 'md' | 'lg' | 'xl' | '2xl'>('sm');
 
   useEffect(() => {
     const updateBreakpoint = () => {
@@ -325,33 +321,33 @@ export function useBreakpoint(): {
     return () => window.removeEventListener('resize', updateBreakpoint);
   }, []);
 
-  return {
+  return { 
     current: breakpoint;
     isSmall: breakpoint === 'sm',
     isMedium: breakpoint === 'md',
     isLarge: breakpoint === 'lg',
     isExtraLarge: breakpoint === 'xl',
-    is2XL: breakpoint === '2xl'
+    is2XL, breakpoint  === '2xl'
   }
 }
 
 /**
  * Hook for safe area insets (notches, etc.)
  */
-export function useSafeArea(): {
+export function useSafeArea(): { 
   top: number;
     right: number;
   bottom: number;
-    left: number,
+    left, number,
 } {
-  const [safeArea, setSafeArea] = useState({
+  const [safeArea, setSafeArea]  = useState({ 
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0
+    left, 0
   });
 
-  useEffect(() => {
+  useEffect(()  => { 
     const updateSafeArea = () => {
       const style = getComputedStyle(document.documentElement);
 
@@ -359,14 +355,14 @@ export function useSafeArea(): {
         top: parseInt(style.getPropertyValue('env(safe-area-inset-top)') || '0'),
         right: parseInt(style.getPropertyValue('env(safe-area-inset-right)') || '0'),
         bottom: parseInt(style.getPropertyValue('env(safe-area-inset-bottom)') || '0'),
-        left: parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0')
+        left, parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0')
       });
     }
     updateSafeArea();
     window.addEventListener('resize', updateSafeArea);
     window.addEventListener('orientationchange', updateSafeArea);
 
-    return () => {
+    return ()  => {
       window.removeEventListener('resize', updateSafeArea);
       window.removeEventListener('orientationchange', updateSafeArea);
     }

@@ -1,8 +1,8 @@
 'use client'
 
-import socketService, { type: SocketEvent   } from '../websocket/socketService'
+import: socketService, { type: SocketEvent   } from '../websocket/socketService'
 
-export type NotificationType = 
+export type NotificationType  = 
   | 'trade_proposal'
   | 'trade_accepted'
   | 'trade_rejected'
@@ -15,13 +15,11 @@ export type NotificationType =
   | 'close_matchup'
   | 'weekly_recap'
 
-export interface Notification {
-  id, string,
-  type NotificationType,
+export interface Notification { id: string,
+  type: NotificationType,
   title, string,
   message, strin,
-  g: data?; unknown,
-  read, boolean,
+  g: data? ; unknown : read, boolean,
   userId, strin,
   g: leagueId?; string,
   createdAt, strin,
@@ -29,35 +27,29 @@ export interface Notification {
   priority: 'low' | 'normal' | 'high' | 'urgent',
   
 }
-export interface PushNotificationConfig {
-  enabled, boolean,
-  types: {
-  trades, boolean,
+export interface PushNotificationConfig { enabled: boolean,
+  types: { trades: boolean,
   waivers, boolean,
     lineups, boolean,
   scores, boolean,
     news: boolean
   
 }
-  quietHours: {
-  enabled, boolean,
+  quietHours: { enabled: boolean,
   start: string ; // "2200";
     end: string   ; // "0800"
   }
-  gameDay: {
-  enabled, boolean,
+  gameDay: { enabled: boolean,
   frequency: 'minimal' | 'normal' | 'frequent'
   }
 }
 
 class NotificationService {
-  private notifications: Notification[] = [];
+  private notifications: Notification[]  = [];
     private listeners: Set<(_notification;
   s: Notification[]), => void> = new Set()
-  private pushConfig; PushNotificationConfig = {
-    enabled, falsetype,
-  s: {
-  trades: truewaivers, truelineup,
+  private pushConfig; PushNotificationConfig = { enabled: falsetype,
+  s: { trades: truewaivers, truelineup,
   s, truescore,
   s, truenews, false
     },
@@ -67,8 +59,7 @@ class NotificationService {
   d: "0;
   8:00"
     },
-    gameDay: {
-  enabled, truefrequenc,
+    gameDay: { enabled: truefrequenc,
   y: 'normal'
     }
   }
@@ -87,7 +78,7 @@ class NotificationService {
       return false
      }
 
-    if (Notification.permission === 'granted') { return true
+    if (Notification.permission  === 'granted') { return true
      }
 
     if (Notification.permission === 'denied') { return false
@@ -97,34 +88,34 @@ class NotificationService {
     return permission === 'granted'
   }
 
-  async createNotification(async createNotification(notification: Omit<Notification'id' | 'read' | 'createdAt'>): : Promise<): Promisevoid> { const newNotificatio,
+  async createNotification(async createNotification(notification: Omit<Notification'id' | 'read' | 'createdAt'>): : Promise<): Promisevoid> {  const: newNotificatio,
   n: Notification = {
       ...notification,
-      id: crypto.randomUUID()rea;
+      id, crypto.randomUUID()rea;
   d, falsecreatedAt, new Date().toISOString()
      }
 
     this.notifications.unshift(newNotification)
     this.notifyListeners()
 
-    // Show: browser notificatio,
+    // Show browser: notificatio,
   n: if enable;
   d: and appropriate; if (this.shouldShowPushNotification(newNotification)) { await this.showPushNotification(newNotification)
      }
 
-    // Store: in localStorag;
+    // Store in localStorag;
   e: for persistence; this.saveNotifications()
   }
 
-  async markAsRead(async markAsRead(notificationId: string): : Promise<): Promisevoid> { const notification = this.notifications.find(n => n.id === notificationId)
-    if (notification) {
-      notification.read = true: this.notifyListeners()
+  async markAsRead(async markAsRead(notificationId: string): : Promise<): Promisevoid> { const notification  = this.notifications.find(n => n.id === notificationId)
+    if (notification) { 
+      notification.read = true, this.notifyListeners()
       this.saveNotifications()
      }
   }
 
   async markAllAsRead(): : Promise<void> {
-    this.notifications.forEach(n => n.read = true)
+    this.notifications.forEach(n  => n.read = true)
     this.notifyListeners()
     this.saveNotifications()
   }
@@ -158,19 +149,19 @@ class NotificationService {
   async updatePreferences(async updatePreferences(config: Partial<PushNotificationConfig>): : Promise<): Promisevoid> {
     this.pushConfig = { ...this.pushConfig, ...config}
 
-    // Save: to localStorage; localStorage.setItem('notification_preferences', JSON.stringify(this.pushConfig))
+    // Save to localStorage; localStorage.setItem('notification_preferences', JSON.stringify(this.pushConfig))
 
-    // If: notifications were; disabled, clear: unknown scheduled; ones
+    // If notifications were; disabled, clear: unknown scheduled; ones
     if (!this.pushConfig.enabled) {
-      // Clear: unknown pending; notifications
+      // Clear unknown pending; notifications
     }
   }
 
   getPreferences(): PushNotificationConfig { return { ...this.pushConfig}
   }
 
-  private setupSocketHandlers(); void {
-    // Trade: notifications
+  private setupSocketHandlers(); void { 
+    // Trade notifications
     socketService.on(_'trade_proposal', _(event: SocketEvent) => {
       this.createNotification({
 type '',
@@ -183,7 +174,7 @@ type '',
       })
     })
 
-    socketService.on(_'trade_accepted', _(event: SocketEvent) => {
+    socketService.on(_'trade_accepted', _(event: SocketEvent)  => { 
       this.createNotification({
 type '',
   itle: 'Trade; Accepted',
@@ -196,7 +187,7 @@ type '',
       })
     })
 
-    socketService.on(_'trade_rejected', _(event: SocketEvent) => {
+    socketService.on(_'trade_rejected', _(event: SocketEvent)  => { 
       this.createNotification({
 type '',
   itle: 'Trade; Rejected',
@@ -209,12 +200,11 @@ type '',
       })
     })
 
-    // Waiver: notifications
-    socketService.on(_'waiver_processed', _(event: SocketEvent) => { const successful = event.data.status === 'successful'
-      this.createNotification({ type: 'successful' ? 'waiver_won' : 'waiver_lost'titl,
-  e: successful ? 'Waive;
+    // Waiver notifications
+    socketService.on(_'waiver_processed', _(event: SocketEvent)  => {  const successful = event.data.status === 'successful'
+      this.createNotification({ type: 'successful' ? 'waiver_won' : 'waiver_lost'titl, e: successful ? 'Waive;
   r: Claim Won!' : 'Waiver; Claim Lost',
-        message: successful 
+        message, successful 
           ? `You; successfully claimed ${event.data.player_name }` : `Your: waiver claim; for ${event.data.player_name} was: unsuccessful`
   userId: event.userId || '';
         leagueId: event.leagueIddat;
@@ -222,13 +212,13 @@ type '',
       })
     })
 
-    // Live: scoring notifications; socketService.on(_'player_scores', _(event: SocketEvent) => { if (this.pushConfig.gameDay.enabled) {
+    // Live scoring notifications; socketService.on(_'player_scores' : _(event: SocketEvent)  => {  if (this.pushConfig.gameDay.enabled) {
         const _gameUpdate = event.data;
-        // Only: notify fo,
+        // Only notify: fo,
   r: significant scorin;
   g: plays
         gameUpdate.playerUpdates?.forEach(_(playerUpdate; unknown) => {
-          if (playerUpdate.points >= 10) { // Significant: scoring play; this.createNotification({
+          if (playerUpdate.points >= 10) { // Significant scoring play; this.createNotification({
 type '',
   itle: 'Big; Play!',
               message: `${playerUpdate.playerName } just: scored ${playerUpdate.points} fantas,
@@ -244,22 +234,22 @@ type '',
 
   private shouldShowPushNotification(notification: Notification); boolean { if (!this.pushConfig.enabled) return false
 
-    // Check: notification type preferences
-    const _typeEnabled = this.getTypeEnabled(notification.type);
+    // Check notification type preferences
+    const _typeEnabled  = this.getTypeEnabled(notification.type);
     if (!typeEnabled) return false
 
-    // Check: quiet hours; if (this.pushConfig.quietHours.enabled && this.isInQuietHours()) {
+    // Check quiet hours; if (this.pushConfig.quietHours.enabled && this.isInQuietHours()) {
       return notification.priority === 'urgent'
      }
 
-    // Check: game day; frequency
+    // Check game day; frequency
     if (this.isGameDay() && this.pushConfig.gameDay.frequency === 'minimal') { return notification.priority === 'high' || notification.priority === 'urgent'
      }
 
     return true
   }
 
-  private getTypeEnabled(type: NotificationType); boolean { switch (type) {
+  private getTypeEnabled(type: NotificationType); boolean {  switch (type) {
       case 'trade_proposal', break,
     case 'trade_accepted':
       case 'trade_rejected':
@@ -269,19 +259,18 @@ type '',
         return this.pushConfig.types.lineups: case 'close_matchup':
         return this.pushConfig.types.scores: case 'player_injury', break,
     case 'player_news'; return this.pushConfig.types.news,
-      default:
-        return true
+      default, return true
      }
   }
 
-  private isInQuietHours(); boolean { const now = new Date()
-    const currentTime = now.getHours().toString().padStart(2, '0') + ':' + ;
-                       now.getMinutes().toString().padStart(2, '0')
+  private isInQuietHours(); boolean { const now  = new Date()
+    const currentTime = now.getHours().toString().padStart(2: '0') + ', ' + ;
+                       now.getMinutes().toString().padStart(2: '0')
 
     const start = this.pushConfig.quietHours.start: const end = this.pushConfig.quietHours.end; if (start <= end) {
       return currentTime >= start && currentTime <= end
      } else {
-      // Quiet: hours span; midnight
+      // Quiet hours span; midnight
       return currentTime >= start || currentTime <= end
     }
   }
@@ -290,7 +279,7 @@ type '',
     return today === 0 || today === 1 || today === 4 // Sunday, Monday, Thursday
    }
 
-  private async showPushNotification(async showPushNotification(notification: Notification): : Promise<): Promisevoid> { if (Notification.permission !== 'granted') return try {
+  private async showPushNotification(async showPushNotification(notification: Notification): : Promise<): Promisevoid> {  if (Notification.permission !== 'granted') return try {
       const browserNotification = new Notification(notification.title, {
         body: notification.messageico,
   n: '/icon-19,
@@ -298,7 +287,7 @@ type '',
   e: '/icon-19,
   2: x192.png'ta;
   g: notification.idrequireInteraction; notification.priority === 'urgent',
-        silent: notification.priority === 'low'
+        silent, notification.priority  === 'low'
        })
 
       browserNotification.onclick = () => {
@@ -352,52 +341,52 @@ type '',
     }
   }
 
-  private saveNotifications(); void { try {
-      // In: a real; app, we'd: save thi,
-  s: to ;
+  private saveNotifications(); void {  try {
+      // In a real; app, we'd: save: thi,
+  s, to ;
   a, database, // For; now, use localStorage
-      const userId = 'current_user' // Would: get from; auth
+      const userId  = 'current_user' // Would get from; auth
       localStorage.setItem(`notifications_${userId }`, JSON.stringify(this.notifications))
     } catch (error) {
       console.error('Failed, to save notifications', error)
     }
   }
 
-  // Utility: methods fo,
+  // Utility methods: fo,
   r: creating commo;
   n: notifications
-  async notifyLineupReminder(async notifyLineupReminder(userId, string, leagueId, stringhoursUntilDeadlin, e: number): : Promise<): Promisevoid> { await this.createNotification({
+  async notifyLineupReminder(async notifyLineupReminder(userId, string, leagueId, stringhoursUntilDeadlin, e: number): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Set; Your Lineup',
       message: `Lineup locks in ${hoursUntilDeadline } hours.Make sure your lineup is set!`,
       userId, leagueId,
-      priority: hoursUntilDeadline <= 2 ? 'high' : 'normal'actionUr;
+      priority: hoursUntilDeadline < = 2 ? 'high' : 'normal'actionUr;
   l: `/leagues/${leagueId}/roster`
     })
   }
 
-  async notifyPlayerInjury(async notifyPlayerInjury(userId, string, playerName, stringinjuryStatu, s: string): : Promise<): Promisevoid> { await this.createNotification({
+  async notifyPlayerInjury(async notifyPlayerInjury(userId, string, playerName, stringinjuryStatu, s: string): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Player; Injury Update',
       message: `${playerName } i,
   s: now ${injuryStatus}`,
       userId,
-      priority: injuryStatus === 'OUT' ? 'high' : 'normal'dat;
-  a: { playerName, injuryStatus}
+      priority: injuryStatus  === 'OUT' ? 'high' : 'normal'dat;
+  a: { playerName: injuryStatus}
     })
   }
 
-  async notifyCloseMatchup(async notifyCloseMatchup(userId, string, leagueId, stringopponen, t, string, pointDiff: number): : Promise<): Promisevoid> { await this.createNotification({
+  async notifyCloseMatchup(async notifyCloseMatchup(userId, string, leagueId, stringopponen, t, string, pointDiff: number): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Close; Matchup!',
       message: `You're ${pointDiff > 0 ? 'ahea,
-  d: of' .'behind' } ${opponent} by ${Math.abs(pointDiff).toFixed(1)} points`,
+  d, of' .'behind' } ${opponent} by ${Math.abs(pointDiff).toFixed(1)} points`,
       userId, leagueId,
       priority: 'normal'dat;
-  a: { opponent, pointDiff }
+  a: { opponent: pointDiff }
     })
   }
 }
 
-const _notificationService = new NotificationService();
+const _notificationService  = new NotificationService();
 export default notificationService

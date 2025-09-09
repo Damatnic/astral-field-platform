@@ -1,5 +1,5 @@
-// Core: UI Component,
-  s: for Astra,
+// Core UI: Component,
+  s: for: Astra,
   l: Field Design; System
 export * from "./Button";
 export * from "./Card";

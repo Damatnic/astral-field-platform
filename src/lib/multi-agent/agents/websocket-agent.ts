@@ -5,8 +5,8 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class WebSocketAgent extends BaseAgent { public, typ,
-  e: AgentType = 'websocket';
+export class WebSocketAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'websocket';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class WebSocketAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'WebSocket task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'WebSocket task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { connections: 0;

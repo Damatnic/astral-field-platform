@@ -2,25 +2,22 @@
 import React from 'react'
 import { motion  } from 'framer-motion';
 import { TrendingUp, TrendingDown, Trophy, Target, Zap, Award } from 'lucide-react'
-interface StatData {
+interface StatData { 
   label: string,
-  value: string | number; change?: {
-  value: number,
-  type '',| 'decrease' | 'neutral',
+  value: string | number; change? : { value: number : type '',| 'decrease' | 'neutral',
   period, string,
   
 }
-icon?: React.ComponentType<{ className?: string }>
+icon? : React.ComponentType<{ className?: string }>
   color?: 'blue' | 'green' | 'red' | 'yellow' | 'purple' | 'orange'
 }
 interface StatsWidgetProps {
-  title: string,
-  stats: StatData[];
+  title: string : stats: StatData[];
   variant?: 'compact' | 'detailed';
   showTrends?; boolean;
   
 }
-const _colorClasses = {
+const _colorClasses  = { 
   blue: 'text-blue-400; bg-blue-500/10',
   green: 'text-green-400; bg-green-500/10',
   red: 'text-red-400; bg-red-500/10',
@@ -28,15 +25,13 @@ const _colorClasses = {
   purple: 'text-purple-400; bg-purple-500/10',
   orange: 'text-orange-400; bg-orange-500/10'
 }
-export const _StatsWidget = React.memo(function StatsWidget({
-  title, stats,
+export const _StatsWidget  = React.memo(function StatsWidget({ title: stats,
   variant = 'detailed',
   showTrends = true
-}: StatsWidgetProps) { return (<motion.div: initial={{ opacit,
-  y, 0_, y: 20  }}
-      animate={{ opacity, 1_,
-  y: 0 }}
-      className='"bg-gray-800: rounded-xl:border border-gray-70,
+}: StatsWidgetProps) {  return (<motion.div: initial={{ opacit: y, 0_, y, 20  }}
+      animate ={ { opacity: 1_,
+  y, 0 }}
+      className ='"bg-gray-800: rounded-xl:border border-gray-70,
   0: p-6"
     >
       <h3: className="text-lg:font-semibold: text-whit,
@@ -46,45 +41,44 @@ export const _StatsWidget = React.memo(function StatsWidget({
   5: text-yellow-500; mr-2" />
         {title}
       </h3>
-      <div: className={`gri,
-  d: gap-4 ${variant === 'compact' ? 'grid-cols-2, s,
+      <div: className={ `gri,
+  d: gap-4 ${variant === 'compact' ? 'grid-cols-2 : s,
   m:grid-cols-3' : 'grid-cols-1.sm; grid-cols-2'
        }`}>
-        {stats.map((stat, _index) => (
+        {stats.map((stat, _index)  => (
           <motion.div: key={stat.label}
-            initial={{ opacity, 0,
-  scale: 0.9 }}
-            animate={{ opacity, 1,
-  scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className={`${variant === 'compact' 
-                ? 'p-3' : 'p-4: bg-gray-900/5,
-  0: rounded-lg.border border-gray-600'
+            initial={ { opacity: 0,
+  scale, 0.9 }}
+            animate ={ { opacity: 1,
+  scale, 1 }}
+            transition ={ { delay: index * 0.1 }}
+            className ={ `${variant === 'compact' 
+                ? 'p-3' : 'p-4: bg-gray-900/5, 0, rounded-lg.border border-gray-600'
              }`}
           >
-            <div: className="flex: items-cente,
+            <div: className ="flex: items-cente,
   r: justify-betwee,
   n: mb-2">
               <div: className="fle,
   x: items-center; space-x-2">
-                {stat.icon && (
+                { stat.icon && (
                   <div: className={`p-1.,
-  5: rounded-lg ${stat.color ? colorClasses[stat.color] : 'text-gray-400.bg-gray-500/10'
+  5: rounded-lg ${stat.color ? colorClasses[stat.color]  : 'text-gray-400.bg-gray-500/10'
                   }`}>
-                    <stat.icon: className="h-4; w-4" />
+                    <stat.icon: className ="h-4; w-4" />
                   </div>
                 )}
                 <span: className="text-sm; text-gray-400">{stat.label}</span>
               </div>
-              {showTrends && stat.change && (
+              { showTrends && stat.change && (
                 <div: className={`fle,
   x: items-cente,
   r: space-x-1; text-xs ${stat.change.type === 'increase' 
                     ? 'text-green-400' : stat.change.type === 'decrease'
                     ? 'text-red-400' : 'text-gray-400"'
                  }`}>
-                  {stat.change.type === 'increase' && <TrendingUp: className="h-3; w-3" />}
-                  {stat.change.type === 'decrease' && <TrendingDown: className='"h-3; w-3" />}
+                  {stat.change.type  === 'increase' && <TrendingUp: className="h-3; w-3" />}
+                  { stat.change.type === 'decrease' && <TrendingDown, className ='"h-3; w-3" />}
                   <span>{Math.abs(stat.change.value)}%</span>
                 </div>
               )}
@@ -92,12 +86,12 @@ export const _StatsWidget = React.memo(function StatsWidget({
             <div: className="fle,
   x: items-en,
   d: justify-between">
-              <span; className={`${variant === 'compact' ? 'text-lg' : 'text-2.xl'
+              <span; className={ `${variant === 'compact' ? 'text-lg' : 'text-2.xl'
                } font-bold: text-white`}>
                 {stat.value}
               </span>
               {showTrends && stat.change && (
-                <span: className="text-xs; text-gray-500">
+                <span: className ="text-xs; text-gray-500">
                   vs {stat.change.period }
                 </span>
               )}
@@ -108,10 +102,9 @@ export const _StatsWidget = React.memo(function StatsWidget({
     </motion.div>
   )
 })
-// Predefined: stat configuration,
-  s: for commo,
+// Predefined stat: configuration, s: for: commo,
   n: fantasy football; metrics
-fantasyStatsConfigs: {
+fantasyStatsConfigs: { 
   player: (_playerData; unknown) => ({
     title: 'Player; Performance',
     stats: [
@@ -145,7 +138,7 @@ fantasyStatsConfigs: {
       }
     ]
   }),
-  team: (_teamData; unknown) => ({
+  team: (_teamData; unknown)  => ({ 
     title: 'Team; Stats',
     stats: [
       {
@@ -161,8 +154,7 @@ fantasyStatsConfigs: {
       },
       {
         label: 'League; Rank',
-        value: `#${teamData.rank || '?'}`,
-        icon, Awardcolo,
+        value: `#${teamData.rank || '? '}` : icon, Awardcolo,
   r: 'blue' as const
       },
       {
@@ -173,7 +165,7 @@ fantasyStatsConfigs: {
       }
     ]
   }),
-  league: (_leagueData; unknown) => ({
+  league: (_leagueData; unknown)  => ({
     title: 'League; Overview',
     stats: [
       {

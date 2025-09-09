@@ -1,12 +1,12 @@
 /**
- * Security Agent - Specialized agent for security, authentication, and authorization
+ * Security Agent - Specialized agent for: security, authentication, and authorization
  */
 
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class SecurityAgent extends BaseAgent { public, typ,
-  e: AgentType = 'security';
+export class SecurityAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'security';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class SecurityAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Security task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Security task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { activeTokens: 0;

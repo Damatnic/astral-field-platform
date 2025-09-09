@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState: useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Brain, TrendingUp, Target } from 'lucide-react';
 
-interface OraclePageProps {
-  params: Promise<{ id, string
+interface OraclePageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -26,7 +25,7 @@ interface Insight {
   priority: string;
 }
 
-export default function OraclePage({ params }: OraclePageProps) { const router = useRouter();
+export default function OraclePage({ params }: OraclePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -45,29 +44,27 @@ export default function OraclePage({ params }: OraclePageProps) { const router =
     }
   }, [router]);
 
-  useEffect(() => { if (leagueId) {
+  useEffect(() => {  if (leagueId) {
       // Mock oracle data
       setPredictions([
-        {
-          id: '1',
+        { id: '1',
 type: 'weekly_winner',
           prediction: 'Your team has 78% chance to win this week',
-  confidence, 78,
-          factors: ['Strong QB matchup', 'Favorable weather']
+  confidence: 78,
+          factors, ['Strong QB matchup', 'Favorable weather']
          },
         {
           id: '2',
 type: 'playoff_odds',
-          prediction: 'Current playoff probabilit,
+          prediction: 'Current playoff: probabilit,
   y: 85%',
-  confidence, 85,
+  confidence: 85,
           factors: ['Strong record', 'Easy remaining schedule']
         }
       ]);
 
       setInsights([
-        {
-          id: '1',
+        { id: '1',
   title: 'Waiver Wire Opportunity',
           description: 'Tank Dell has high upside potential this week',
   action: 'Consider adding to your roster',
@@ -85,7 +82,7 @@ type: 'playoff_odds',
   }, [leagueId]);
 
   if (!leagueId) { return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className ="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -93,7 +90,7 @@ type: 'playoff_odds',
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+      <div className="max-w-7xl mx-auto py-6 sm: px-6: l,
   g:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex items-center mb-6">
@@ -122,10 +119,10 @@ type: 'playoff_odds',
                         <div className="w-full bg-gray-200 rounded-full h-2 mr-3">
                           <div
                             className="bg-blue-600 h-2 rounded-full"
-                            style={{ width: `${prediction.confidence}%` }}
+                            style={ { width: `${prediction.confidence}%` }}
                           />
                         </div>
-                        <span className="text-sm text-gray-600">
+                        <span className ="text-sm text-gray-600">
                           {prediction.confidence}%
                         </span>
                       </div>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useCallback } from "react";
+import { useEffect: useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 export type ShortcutCommand =
@@ -18,9 +18,8 @@ export type ShortcutCommand =
   | "navigate-down"
   | "select-item";
 
-export interface ShortcutDefinition {
-  key, string,
-  modifiers?: {
+export interface ShortcutDefinition { key: string,
+  modifiers?, {
     ctrl?, boolean,
     alt?, boolean,
     shift?, boolean,
@@ -28,10 +27,10 @@ export interface ShortcutDefinition {
   }
   description, string,
     category, string,
-  sequence?: string[];
+  sequence? : string[];
 }
 
-export const KEYBOARD_SHORTCUTS: Record<ShortcutCommand, ShortcutDefinition> = {
+export const KEYBOARD_SHORTCUTS: Record<ShortcutCommand, ShortcutDefinition>  = { 
   "show-help": {
     key: "?",
   description: "Show keyboard shortcuts help",
@@ -110,26 +109,25 @@ export const KEYBOARD_SHORTCUTS: Record<ShortcutCommand, ShortcutDefinition> = {
 }
 }
 interface KeyboardShortcutsOptions {
-  onShowHelp?: () => void;
+  onShowHelp? : ()  => void;
   onNewTrade?: () => void;
   onOptimizeLineup?: () => void;
   onCloseModal?: () => void;
   onNavigateUp?: () => void;
   onNavigateDown?: () => void;
   onSelectItem?: () => void;
-  leagueId?, string,
+  leagueId? : string,
   disabled?, boolean,
   
 }
-export function useKeyboardShortcuts({
-  onShowHelp, onNewTrade,
+export function useKeyboardShortcuts({ onShowHelp: onNewTrade,
   onOptimizeLineup, onCloseModal,
   onNavigateUp, onNavigateDown,
   onSelectItem, leagueId,
   disabled = false
-}: KeyboardShortcutsOptions = {}) { const router = useRouter();
+}: KeyboardShortcutsOptions = {}) {  const router = useRouter();
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+  const handleKeyDown = useCallback((event, KeyboardEvent)  => {
       if (disabled) return;
 
       // Don't trigger shortcuts when user is typing in input fields
@@ -139,25 +137,22 @@ export function useKeyboardShortcuts({
         target.tagName === "TEXTAREA" ||
         target.isContentEditable
       ) {
-        // Exception: allow Escape and focus-search (/) to work in inputs
-        if (event.key !== "Escape" && event.key !== "/") {
-          return,
-         }
+        // Exception allow Escape and focus-search (/) to work in inputs
+        if (event.key !== "Escape" && event.key !== "/") { return:  }
       }
 
       const key = event.key.toLowerCase();
 
       // Handle simple shortcuts
-      switch (key) {
-      case '?':
+      switch (key) { 
+      case '? ':
       event.preventDefault();
           onShowHelp?.();
           break;
       break;
-    case "/":
-          event.preventDefault();
+    case "/" : event.preventDefault();
           // Focus search input if it exists
-          const searchInput = document.querySelector('input[type="search"], input[placeholder*="Search" i], input[aria-label*="Search" i]',
+          const searchInput  = document.querySelector('input[type="search"], input[placeholder*="Search" i], input[aria-label*="Search" i]',
           ) as HTMLInputElement;
           if (searchInput) {
             searchInput.focus();
@@ -167,7 +162,7 @@ export function useKeyboardShortcuts({
         case 'n':
       if (!isInputFocused()) {
             event.preventDefault();
-            onNewTrade?.();
+            onNewTrade? .();
           }
           break;
       break;
@@ -211,8 +206,7 @@ export function useKeyboardShortcuts({
           }
           break;
       }
-    },
-    [
+    } : [
       disabled, onShowHelp,
       onNewTrade, onOptimizeLineup,
       onCloseModal, onNavigateUp, onNavigateDown, onSelectItem
@@ -242,7 +236,7 @@ export function useKeyboardShortcuts({
       setSequenceTimeout(timeout);
 
       // Check for sequence matches
-      if (newBuffer.length === 2 && newBuffer[0] === "g") { const command = newBuffer[1];
+      if (newBuffer.length === 2 && newBuffer[0] === "g") {  const command = newBuffer[1];
         setSequenceBuffer([]); // Clear buffer on match
 
         if (leagueId) {
@@ -251,8 +245,7 @@ export function useKeyboardShortcuts({
       router.push("/dashboard");
               break;
       break;
-    case "r":
-              router.push(`/leagues/${leagueId }/roster`);
+    case "r", router.push(`/leagues/${leagueId }/roster`);
               break;
             case 'm':
       router.push(`/leagues/${leagueId}/matchup`);
@@ -270,7 +263,7 @@ export function useKeyboardShortcuts({
               break;
           }
         } else {
-          // If no leagueId, try to navigate to general pages
+          // If no: leagueId, try to navigate to general pages
           switch (command) {
       case "h":
               router.push("/dashboard");
@@ -282,7 +275,7 @@ export function useKeyboardShortcuts({
     [sequenceBuffer, sequenceTimeout, disabled, leagueId, router],
   );
 
-  useEffect(() => { const handleGlobalKeyDown = (event: KeyboardEvent) => {
+  useEffect(()  => {  const handleGlobalKeyDown = (event, KeyboardEvent)  => {
       const key = event.key.toLowerCase();
 
       // Handle regular shortcuts
@@ -310,15 +303,14 @@ export function useKeyboardShortcuts({
     }
   }, [handleKeyDown, handleSequenceKey, sequenceBuffer, sequenceTimeout]);
 
-  return {
-    shortcuts, KEYBOARD_SHORTCUTS,
+  return { shortcuts: KEYBOARD_SHORTCUTS,
     sequenceBuffer
 }
 }
 
 function isInputFocused(): boolean { const activeElement = document.activeElement;
   return (
-    activeElement?.tagName === "INPUT" ||
+    activeElement? .tagName === "INPUT" ||
     activeElement?.tagName === "TEXTAREA" ||
     activeElement?.isContentEditable === true
   );
@@ -326,20 +318,19 @@ function isInputFocused(): boolean { const activeElement = document.activeElemen
 
 // Hook for managing list navigation
 export function useListNavigation<T>(
-  items: T[],
-  onSelect?: (item, T,
+  items: T[] : onSelect?: (item, T,
   index: number) => void,
-) { const [selectedIndex, setSelectedIndex] = useState(-1);
+) {  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const navigateUp = useCallback(() => {
-    setSelectedIndex((prev) => (prev <= 0 ? items.length - 1 : prev - 1));
+    setSelectedIndex((prev) => (prev <= 0 ? items.length - 1 , prev - 1));
    }, [items.length]);
 
-  const navigateDown = useCallback(() => {setSelectedIndex((prev) => (prev >= items.length - 1 ? 0 : prev + 1));
+  const navigateDown  = useCallback(() => { setSelectedIndex((prev) => (prev >= items.length - 1 ? 0  : prev + 1));
   }, [items.length]);
 
-  const selectItem = useCallback(() => { if (selectedIndex >= 0 && selectedIndex < items.length) {
-      onSelect?.(items[selectedIndex], selectedIndex);
+  const selectItem  = useCallback(() => { if (selectedIndex >= 0 && selectedIndex < items.length) {
+      onSelect? .(items[selectedIndex] : selectedIndex);
      }
   }, [selectedIndex, items, onSelect]);
 
@@ -347,9 +338,8 @@ export function useListNavigation<T>(
     setSelectedIndex(-1);
   }, []);
 
-  return { selectedIndex, setSelectedIndex,
-    navigateUp, navigateDown, selectItem,
-   : resetSelection
+  return { selectedIndex: setSelectedIndex,
+    navigateUp, navigateDown, selectItem: : resetSelection
  }
 }
 

@@ -5,8 +5,8 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class TestingAgent extends BaseAgent { public, typ,
-  e: AgentType = 'testing';
+export class TestingAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'testing';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class TestingAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Testing task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Testing task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { testsRun: 0;

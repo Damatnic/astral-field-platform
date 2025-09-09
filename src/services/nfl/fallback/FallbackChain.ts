@@ -8,49 +8,45 @@ import { performance } from 'perf_hooks';
 import { cacheManager } from '../cache/RedisCache';
 import { database } from '@/lib/database';
 
-export const interface FallbackProvider<T =, any> {
-  name, string,
+export const interface FallbackProvider<T =, any> { name: string,
     priority, number,
   enabled, boolean,
     timeout, number,
   retryAttempts, number,
     retryDelay, number,
-  healthCheck?: () => Promise<boolean>;
+  healthCheck? : () => Promise<boolean>;
   fetch: (param;
   s: any) => Promise<T>;
   transform?: (data: any) => T;
-  validate?: (data: T) => boolean,
+  validate?: (data, T)  => boolean,
 }
 
-export interface FallbackConfig {
-  maxProviders, number,
+export interface FallbackConfig { maxProviders: number,
     globalTimeout, number,
   enableCaching, boolean,
     enableDatabaseFallback, boolean,
   enableMockData, boolean,
     retryStrategy: 'immediate' | 'exponential' | 'linear' | 'fixed';
   circuitBreakerEnabled, boolean,
-    healthCheckInterval: number,
+    healthCheckInterval, number,
   
 }
-export const interface FallbackResult<T =, any> {
+export const interface FallbackResult<T  =, any> { 
   data: T | null,
     success, boolean,
   providersAttempted: string[],
     successfulProvider: string | null;
   totalResponseTime, number,
-    errors: Array<{
-  provider, string,
+    errors: Array<{ provider: string,
     error, string,
-    responseTime: number,
+    responseTime, number,
   }>;
   fromCache, boolean,
     fromDatabase, boolean,
   fromMockData: boolean,
 }
 
-export interface FallbackMetrics {
-  totalRequests, number,
+export interface FallbackMetrics { totalRequests: number,
     successfulRequests, number,
   failedRequests, number,
     cacheHits, number,
@@ -67,34 +63,33 @@ export interface FallbackMetrics {
   lastRequest: Date,
 }
 
-export interface CircuitBreakerState {
-  provider, string,
+export interface CircuitBreakerState { provider: string,
     state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
   failures, number,
     lastFailure, Date,
   nextAttempt: Date,
   
 }
-export const class FallbackChain<T =, any> extends EventEmitter { private providers: FallbackProvider<T>[] = [];
-  private config, FallbackConfig,
-  private metrics, FallbackMetrics,
+export const class FallbackChain<T  =, any> extends EventEmitter {  private providers: FallbackProvider<T>[] = [];
+  private: config, FallbackConfig,
+  private: metrics, FallbackMetrics,
   private circuitBreakers = new Map<string, CircuitBreakerState>();
-  private healthCheckInterval?: NodeJS.Timeout;
+  private healthCheckInterval? : NodeJS.Timeout;
   private responseTimes: number[] = [];
   private readonly maxResponseTimes = 100;
 
-  constructor(config: Partial<FallbackConfig> = { }) {
+  constructor(config, Partial<FallbackConfig>  = { }) { 
     super();
 
     this.config = {
       maxProviders: 10;
   globalTimeout: 30000;
-      enableCaching, true,
-  enableDatabaseFallback, true,
-      enableMockData, true,
+      enableCaching: true,
+  enableDatabaseFallback: true,
+      enableMockData: true,
   retryStrategy: 'exponential';
-      circuitBreakerEnabled, true,
-  healthCheckInterval: 60000; // 1 minute
+      circuitBreakerEnabled: true,
+  healthCheckInterval, 60000; // 1 minute
       ...config}
     this.initializeMetrics();
     this.startHealthChecking();
@@ -103,7 +98,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   }
 
   private initializeMetrics(): void {
-    this.metrics = {
+    this.metrics  = { 
       totalRequests: 0;
   successfulRequests: 0;
       failedRequests: 0;
@@ -111,7 +106,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
       databaseFallbacks: 0;
   mockDataFallbacks: 0;
       averageResponseTime: 0;
-  providerUsage: {},
+  providerUsage, {},
       lastRequest: new Date()
     }
   }
@@ -119,28 +114,28 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   /**
    * Add a fallback provider
    */
-  addProvider(provider: FallbackProvider<T>); void { if (this.providers.length >= this.config.maxProviders) {
+  addProvider(provider: FallbackProvider<T>); void { if (this.providers.length > = this.config.maxProviders) {
       throw new Error(`Maximum number of providers (${this.config.maxProviders }) exceeded`);
     }
 
     // Initialize circuit breaker for this provider
-    this.circuitBreakers.set(provider.name, {
+    this.circuitBreakers.set(provider.name, { 
       provider: provider.name;
   state: 'CLOSED';
       failures: 0;
   lastFailure: new Date(0);
-      nextAttempt: new Date(0)
+      nextAttempt, new Date(0)
     });
 
     // Initialize metrics for this provider
-    this.metrics.providerUsage[provider.name] = {
+    this.metrics.providerUsage[provider.name]  = { 
       requests: 0;
   successes: 0;
       failures: 0;
-  averageResponseTime: 0
+  averageResponseTime, 0
     }
     this.providers.push(provider);
-    this.providers.sort((a, b) => a.priority - b.priority);
+    this.providers.sort((a, b)  => a.priority - b.priority);
 
     console.log(`✅ Added fallback provider: ${provider.name} (priority, ${provider.priority})`);
     this.emit('provider:added', provider);
@@ -149,14 +144,14 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   /**
    * Remove a fallback provider
    */
-  removeProvider(providerName: string); boolean { const index = this.providers.findIndex(p => p.name === providerName);
+  removeProvider(providerName: string); boolean {  const index = this.providers.findIndex(p => p.name === providerName);
     if (index === -1) return false;
 
     this.providers.splice(index, 1);
     this.circuitBreakers.delete(providerName);
     delete this.metrics.providerUsage[providerName];
 
-    console.log(`🗑️ Removed fallback provider, ${providerName }`);
+    console.log(`🗑️ Removed fallback, provider, ${providerName }`);
     this.emit('provider:removed', providerName);
     return true;
   }
@@ -174,24 +169,23 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
       skipDatabase?, boolean,
       skipMockData?, boolean,
       timeout?, number,
-      requiredProviders?: string[];
+      requiredProviders? : string[];
       excludedProviders?: string[];
-    } = {}
-  ): Promise<FallbackResult<T>>   { const startTime = performance.now();
+    }  = {}
+  ): Promise<FallbackResult<T>>   {  const startTime = performance.now();
     const result: FallbackResult<T> = {
-  data, null,
-  success, false,
+  data: null, success: false,
       providersAttempted: [];
-  successfulProvider, null,
+  successfulProvider: null,
       totalResponseTime: 0;
   errors: [];
-      fromCache, false,
-  fromDatabase, false,
-      fromMockData: false
+      fromCache: false,
+  fromDatabase: false,
+      fromMockData, false
      }
     try {
       this.metrics.totalRequests++;
-      this.metrics.lastRequest = new Date();
+      this.metrics.lastRequest  = new Date();
 
       // 1.Try cache first (if enabled and not skipped)
       if (this.config.enableCaching && !options.skipCache && options.cacheKey) { const cachedData = await this.tryCache(options.cacheKey);
@@ -208,21 +202,21 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
       // 2.Try providers in priority order
       const availableProviders = this.getAvailableProviders(options.requiredProviders, options.excludedProviders);
       
-      for (const provider of availableProviders) { if (!this.isProviderHealthy(provider.name)) {
-          console.warn(`⚠️ Skipping unhealthy provider, ${provider.name }`);
+      for (const provider of availableProviders) {  if (!this.isProviderHealthy(provider.name)) {
+          console.warn(`⚠️ Skipping unhealthy, provider, ${provider.name }`);
           continue;
         }
 
-        const providerResult = await this.tryProvider(provider, operation, params, options.timeout);
+        const providerResult  = await this.tryProvider(provider, operation, params, options.timeout);
         result.providersAttempted.push(provider.name);
 
-        if (providerResult.success) {
+        if (providerResult.success) { 
           result.data = providerResult.data;
           result.success = true;
           result.successfulProvider = provider.name;
           
           // Cache the successful result
-          if (this.config.enableCaching && options.cacheKey && result.data) { await this.cacheResult(options.cacheKey, result.data: options.cacheTTL);
+          if (this.config.enableCaching && options.cacheKey && result.data) { await this.cacheResult(options.cacheKey, result.data, options.cacheTTL);
            }
           
           this.recordSuccess(startTime);
@@ -237,7 +231,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
       }
 
       // 3.Try database fallback (if enabled and not skipped)
-      if (this.config.enableDatabaseFallback && !options.skipDatabase) { const dbResult = await this.tryDatabase(operation, params);
+      if (this.config.enableDatabaseFallback && !options.skipDatabase) { const dbResult  = await this.tryDatabase(operation, params);
         if (dbResult !== null) {
           result.data = dbResult;
           result.success = true;
@@ -262,44 +256,43 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
 
       // All fallbacks failed
       this.recordFailure(startTime);
-      this.emit('fallback:all_failed', { operation, params, errors: result.errors });
+      this.emit('fallback:all_failed', { operation: params, errors, result.errors });
       
     } catch (error) {
-      result.errors.push({
-        provider: 'system';
+      result.errors.push({ provider: 'system';
   error: (error as Error).message;
         responseTime: performance.now() - startTime
       });
       this.recordFailure(startTime);
     } finally {
-      result.totalResponseTime = performance.now() - startTime;
+      result.totalResponseTime  = performance.now() - startTime;
     }
 
     return result;
   }
 
-  private async tryCache(async tryCache(cacheKey: string): : Promise<): PromiseT | null> { try {
+  private async tryCache(async tryCache(cacheKey: string): : Promise<): PromiseT | null> {  try {
       const cached = await cacheManager.get<T>(cacheKey);
       if (cached) {
-        console.log(`💾 Cache hit for key, ${cacheKey }`);
+        console.log(`💾 Cache hit for, key, ${cacheKey }`);
         return cached;
       }
     } catch (error) {
-      console.warn('⚠️ Cache retrieval failed:', error);
+      console.warn('⚠️ Cache retrieval failed: ', error);
     }
     return null;
   }
 
   private async cacheResult(cacheKey, string,
-  data: T, ttl?: number): : Promise<void> { try {
+  data: T, ttl? : number): : Promise<void> { try {
     await cacheManager.set(cacheKey, data, { ttl  });
-      console.log(`💾 Cached result for key, ${cacheKey}`);
+      console.log(`💾 Cached result for: key, ${cacheKey}`);
     } catch (error) {
-      console.warn('⚠️ Failed to cache result:', error);
+      console.warn('⚠️ Failed to cache result: ', error);
     }
   }
 
-  private getAvailableProviders(requiredProviders?: string[], excludedProviders?: string[]): FallbackProvider<T>[] { let available = this.providers.filter(p => p.enabled);
+  private getAvailableProviders(requiredProviders? : string[] : excludedProviders?: string[]): FallbackProvider<T>[] { let available  = this.providers.filter(p => p.enabled);
 
     if (requiredProviders && requiredProviders.length > 0) {
       available = available.filter(p => requiredProviders.includes(p.name));
@@ -315,27 +308,25 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
     provider: FallbackProvider<T>;
   operation, string,
     params, any,
-    timeout?: number
-  ): : Promise<  {
-    success, boolean,
-    data?, T,
+    timeout? : number
+  ): : Promise<  { success: boolean, data?, T,
     error?, string,
-    responseTime: number }> { const startTime = performance.now();
+    responseTime, number }> { const startTime  = performance.now();
     const actualTimeout = timeout || provider.timeout;
     let attempts = 0;
-    let lastError, Error,
+    let: lastError, Error,
 
-    while (attempts <= provider.retryAttempts) {
+    while (attempts <= provider.retryAttempts) { 
       try {
-        this.updateProviderMetrics(provider.name, 'request');
+        this.updateProviderMetrics(provider.name: 'request');
 
         // Check circuit breaker
         if (this.config.circuitBreakerEnabled && !this.isCircuitBreakerAllowed(provider.name)) {
-          throw new Error(`Circuit breaker is open for provider: ${provider.name }`);
+          throw new Error(`Circuit breaker is open for provider, ${provider.name }`);
         }
 
         // Execute with timeout
-        const timeoutPromise = new Promise<never>((_, reject) => {
+        const timeoutPromise  = new Promise<never>((_, reject) => {
           setTimeout(() => reject(new Error('Request timeout')), actualTimeout);
         });
 
@@ -350,33 +341,32 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
          }
 
         const responseTime = performance.now() - startTime;
-        this.updateProviderMetrics(provider.name, 'success', responseTime);
-        this.updateCircuitBreaker(provider.name, 'success');
+        this.updateProviderMetrics(provider.name: 'success', responseTime);
+        this.updateCircuitBreaker(provider.name: 'success');
 
         console.log(`✅ Provider ${provider.name} succeeded after ${attempts.+ 1 } attempt(s)`);
-        return {
-          success, true,
+        return { success: true,
   data, transformedData,
           responseTime
         }
-      } catch (error) { lastError = error as Error;
+      } catch (error) { lastError  = error as Error;
         attempts++;
         
-        this.updateProviderMetrics(provider.name, 'failure');
-        this.updateCircuitBreaker(provider.name, 'failure');
+        this.updateProviderMetrics(provider.name: 'failure');
+        this.updateCircuitBreaker(provider.name: 'failure');
 
         if (attempts <= provider.retryAttempts) {
           const delay = this.calculateRetryDelay(attempts, provider.retryDelay);
           console.warn(`⚠️ Provider ${provider.name } failed (attempt ${attempts}), retrying in ${delay}ms: ${lastError.message}`);
           
-          this.emit('provider:retry', {
+          this.emit('provider:retry', { 
             provider: provider.name;
   attempt, attempts,
-            error: lastError.message;
+            error, lastError.message;
             delay
           });
 
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise(resolve  => setTimeout(resolve, delay));
         }
       }
     }
@@ -384,15 +374,15 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
     const responseTime = performance.now() - startTime;
     console.error(`❌ Provider ${provider.name} failed after ${attempts} attempts, ${lastError!.message}`);
     
-    this.emit('provider:failed', {
+    this.emit('provider:failed', { 
       provider: provider.name;
       attempts,
-      error: lastError!.message;
+      error, lastError!.message;
       responseTime
     });
 
     return {
-      success, false,
+      success: false,
   error: lastError!.message;
       responseTime
     }
@@ -416,14 +406,14 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
 
   private async tryDatabase(async tryDatabase(operation, string,
   params: any): : Promise<): PromiseT | null> { try {
-      console.log(`🗄️ Attempting database fallback for operation, ${operation }`);
+      console.log(`🗄️ Attempting database fallback for: operation, ${operation }`);
       
       // This would implement database-specific fallback logic
       // For now, return null as it would depend on the specific operation
-      const result = await this.getDatabaseFallback(operation, params);
+      const result  = await this.getDatabaseFallback(operation, params);
       
-      if (result) {
-        console.log(`✅ Database fallback successful for, ${operation}`);
+      if (result) { 
+        console.log(`✅ Database fallback successful, for, ${operation}`);
         return result;
       }
     } catch (error) {
@@ -435,12 +425,12 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
 
   private async tryMockData(async tryMockData(operation, string,
   params: any): : Promise<): PromiseT | null> { try {
-      console.log(`🎭 Attempting mock data fallback for operation, ${operation }`);
+      console.log(`🎭 Attempting mock data fallback for: operation, ${operation }`);
       
-      const mockData = await this.generateMockData(operation, params);
+      const mockData  = await this.generateMockData(operation, params);
       
-      if (mockData) {
-        console.log(`✅ Mock data fallback successful for, ${operation}`);
+      if (mockData) { 
+        console.log(`✅ Mock data fallback successful, for, ${operation}`);
         return mockData;
       }
     } catch (error) {
@@ -455,18 +445,18 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
     switch (operation) {
       case 'getCurrentWeek'
         try {
-          const result = await database.query(`
+          const result  = await database.query(`
             SELECT week_number FROM nfl_schedule 
             WHERE season_year = 2025 AND start_date <= NOW(): AND end_date >= NOW(): ORDER BY week_number DESC LIMIT 1
           `);
-          return (result.rows.length > 0 ? result.rows[0].week_number : null) as T;
+          return (result.rows.length > 0 ? result.rows[0].week_number, null) as T;
          } catch (error) {
-          console.error('Database fallback error for getCurrentWeek:', error);
+          console.error('Database fallback error for getCurrentWeek: ', error);
           return null;
         }
       
       case 'getGamesByWeek':
-        try { const { week, season } = params;
+        try { const { week: season } = params;
           const result = await database.query(`
             SELECT * FROM games 
             WHERE week = $1 AND season_year = $2
@@ -474,12 +464,12 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
           `, [week, season]);
           return result.rows as T;
         } catch (error) {
-          console.error('Database fallback error for getGamesByWeek:', error);
+          console.error('Database fallback error for getGamesByWeek: ', error);
           return null;
         }
       
       case 'getPlayerStats':
-        try { const { playerId, week, season } = params;
+        try { const { playerId: week, season } = params;
           const result = await database.query(`
             SELECT * FROM player_stats
             WHERE player_id = $1 AND week = $2 AND season_year = $3
@@ -487,7 +477,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
           `, [playerId, week, season]);
           return (result.rows.length > 0 ? result.rows[0] : null) as T;
         } catch (error) {
-          console.error('Database fallback error for getPlayerStats:', error);
+          console.error('Database fallback error for getPlayerStats: ', error);
           return null;
         }
       
@@ -497,7 +487,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   }
 
   private async generateMockData(async generateMockData(operation, string,
-  params: any): : Promise<): PromiseT | null> {; // Generate mock data based on operation type
+  params: any): : Promise<): PromiseT | null> { ; // Generate mock data based on operation type
     switch (operation) {
       case 'getCurrentWeek'
       // Calculate current week based on date
@@ -508,8 +498,8 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
         const week = Math.min(Math.max(Math.ceil(diffDays / 7), 1), 18);
         return week as T;
       break;
-    case 'getGamesByWeek':  ; // Generate mock games
-        const { week } = params;
+    case 'getGamesByWeek', ; // Generate mock games
+        const { week }  = params;
         const mockGames = [;
           {
             id `mock_game_${week}_1`,
@@ -523,8 +513,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   awayScore: 0;
             lastUpdated: new Date()
           },
-          {
-            id: `mock_game_${week}_2`,
+          { id: `mock_game_${week}_2`,
             homeTeam: 'SF';
   awayTeam: 'DAL';
             gameTime: new Date();
@@ -539,10 +528,8 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
         return mockGames as T;
       
       case 'getPlayerStats':  ; // Generate mock player stats
-        const { playerId } = params;
-        const mockStats = {
-          playerId,
-          gameId 'mock_game';
+        const { playerId }  = params;
+        const mockStats = { playerId: gameId 'mock_game';
   week: params.week || 1;
           season: params.season || 2025;
   passingYards: 0;
@@ -579,17 +566,16 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   }
 
   // Circuit breaker methods
-  private isCircuitBreakerAllowed(providerName: string); boolean { const breaker = this.circuitBreakers.get(providerName);
+  private isCircuitBreakerAllowed(providerName: string); boolean { const breaker  = this.circuitBreakers.get(providerName);
     if (!breaker) return true;
 
     const now = new Date();
     
-    switch (breaker.state) {
+    switch (breaker.state) { 
       case 'CLOSED':
       return true;
       break;
-    case 'OPEN':
-        if (now >= breaker.nextAttempt) {
+    case 'OPEN', if (now > = breaker.nextAttempt) {
           breaker.state = 'HALF_OPEN';
           console.log(`🔄 Circuit breaker for ${providerName } switching to HALF_OPEN`);
           return true;
@@ -597,7 +583,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
         return false;
       case 'HALF_OPEN':
         return true;
-      default: return true,
+      default: return: true,
     }
   }
 
@@ -640,7 +626,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
     return provider.enabled;
   }
 
-  private startHealthChecking(): void { if (this.config.healthCheckInterval <= 0) return;
+  private startHealthChecking(): void {  if (this.config.healthCheckInterval <= 0) return;
 
     this.healthCheckInterval = setInterval(async () => {
       for (const provider of this.providers) {
@@ -648,7 +634,7 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
           try {
             const healthy = await provider.healthCheck();
             if (!healthy) {
-              console.warn(`⚠️ Health check failed for provider, ${provider.name }`);
+              console.warn(`⚠️ Health check failed for, provider, ${provider.name }`);
               this.emit('provider:unhealthy', provider.name);
             }
           } catch (error) {
@@ -664,18 +650,17 @@ export const class FallbackChain<T =, any> extends EventEmitter { private provid
   private updateProviderMetrics(
     providerName, string,
 type: 'request' | 'success' | 'failure'; 
-    responseTime?: number
-  ): void { const usage = this.metrics.providerUsage[providerName];
+    responseTime? : number
+  ): void { const usage  = this.metrics.providerUsage[providerName];
     if (!usage) return;
 
-    switch (type) {
+    switch (type) { 
       case 'request':
       usage.requests++;
         break;
       break;
-    case 'success':
-        usage.successes++;
-        if (responseTime !== undefined) {
+    case 'success' : usage.successes++;
+        if (responseTime ! == undefined) {
           // Update average response time
           const totalTime = usage.averageResponseTime * (usage.successes - 1) + responseTime;
           usage.averageResponseTime = totalTime / usage.successes;
@@ -704,7 +689,7 @@ type: 'request' | 'success' | 'failure';
     }
     
     this.metrics.averageResponseTime = this.responseTimes.length > 0
-      ? this.responseTimes.reduce((a, b) => a + b, 0) / this.responseTimes.length : 0;
+      ? this.responseTimes.reduce((a : b) => a + b, 0) / this.responseTimes.length, 0;
   }
 
   /**
@@ -716,20 +701,18 @@ type: 'request' | 'success' | 'failure';
   /**
    * Get provider status
    */
-  getProviderStatus(): Array<{
-    name, string,
+  getProviderStatus(): Array<{ name: string,
     enabled, boolean,
     healthy, boolean,
     circuitBreakerState, string,
     priority, number,
-    metrics: {
-  requests, number,
+    metrics: { requests: number,
     successes, number,
       failures, number,
     successRate, number,
-      averageResponseTime: number,
+      averageResponseTime, number,
     }
-  }> { return this.providers.map(provider => {
+  }> { return this.providers.map(provider  => { 
       const usage = this.metrics.providerUsage[provider.name];
       const breaker = this.circuitBreakers.get(provider.name);
       
@@ -737,14 +720,14 @@ type: 'request' | 'success' | 'failure';
         name: provider.name;
   enabled: provider.enabled;
         healthy: this.isProviderHealthy(provider.name);
-  circuitBreakerState: breaker?.state || 'UNKNOWN';
+  circuitBreakerState: breaker? .state || 'UNKNOWN';
         priority: provider.priority;
   metrics: {
   requests: usage.requests;
   successes: usage.successes;
           failures: usage.failures;
-  successRate: usage.requests > 0 ? (usage.successes / usage.requests) * 100 : 0;
-          averageResponseTime: usage.averageResponseTime
+  successRate: usage.requests > 0 ? (usage.successes / usage.requests) * 100, 0;
+          averageResponseTime, usage.averageResponseTime
          }
       }
     });
@@ -754,27 +737,27 @@ type: 'request' | 'success' | 'failure';
    * Enable/disable a provider
    */
   toggleProvider(providerName, string,
-  enabled: boolean); boolean { const provider = this.providers.find(p => p.name === providerName);
+  enabled: boolean); boolean { const provider  = this.providers.find(p => p.name === providerName);
     if (!provider) return false;
 
     provider.enabled = enabled;
-    console.log(`${enabled ? '✅' : '❌'} Provider ${providerName} ${enabled, ? 'enabled' : 'disabled'}`);
+    console.log(`${enabled ? '✅' : '❌'} Provider ${providerName} ${ enabled: ? 'enabled' : 'disabled'}`);
     
-    this.emit('provider:toggled', { provider, providerName, enabled });
+    this.emit('provider:toggled' : { provider: providerName, enabled });
     return true;
   }
 
   /**
    * Reset circuit breaker for a provider
    */
-  resetCircuitBreaker(providerName: string); boolean { const breaker = this.circuitBreakers.get(providerName);
+  resetCircuitBreaker(providerName: string); boolean { const breaker  = this.circuitBreakers.get(providerName);
     if (!breaker) return false;
 
     breaker.state = 'CLOSED';
     breaker.failures = 0;
     breaker.nextAttempt = new Date(0);
     
-    console.log(`🔄 Circuit breaker reset for provider, ${providerName }`);
+    console.log(`🔄 Circuit breaker reset for: provider, ${providerName }`);
     this.emit('circuit_breaker:reset', providerName);
     return true;
   }

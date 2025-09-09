@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, createContext, useContext  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion: AnimatePresence } from 'framer-motion'
 import { Bell, X, 
   Settings, CheckCircle, 
   AlertCircle, Info, 
@@ -26,8 +26,7 @@ export type NotificationType =
   | 'commissioner_announcement'
   | 'general'
 
-export interface NotificationData {
-  id, string,
+export interface NotificationData { id: string,
   type NotificationType;
   title, string,
   message, string,
@@ -36,50 +35,48 @@ export interface NotificationData {
     priority: 'low' | 'medium' | 'high';
   actionUrl?, string,
   actionText?, string,
-  metadata?; Record<string, any>;
-  groupId?: string ; // For grouping similar notifications;
+  metadata? ; Record<string, any>;
+  groupId?, string ; // For grouping similar notifications;
   
 }
-interface NotificationPreferences {
-  enabled, boolean,
+interface NotificationPreferences { enabled: boolean,
     browserNotifications, boolean,
     doNotDisturb boolean
-  doNotDisturbStart?: string ; // Time in HHMM format
+  doNotDisturbStart? : string ; // Time in HHMM format
   doNotDisturbEnd?: string
-  categories; Record<NotificationType, {
-    enabled, boolean,
+  categories; Record<NotificationType, { enabled: boolean,
     browserNotification, boolean,
     sound: boolean
   }>
 }
 
-const DEFAULT_PREFERENCES: NotificationPreferences = {
-  enabled, true,
-  browserNotifications, false,
-  doNotDisturb, false,
+const DEFAULT_PREFERENCES: NotificationPreferences  = { 
+  enabled: true,
+  browserNotifications: false,
+  doNotDisturb: false,
   categories: {
-  trade_received: { enabled, true,
-  browserNotification, true, sound: true },
-    trade_accepted: { enabled, true,
-  browserNotification, true, sound: true },
-    trade_rejected: { enabled, true,
-  browserNotification, false, sound: false },
-    waiver_processed: { enabled, true,
-  browserNotification, true, sound: true },
-    player_injury: { enabled, true,
-  browserNotification, true, sound: true },
-    game_starting: { enabled, true,
-  browserNotification, false, sound: false },
-    lineup_not_set: { enabled, true,
-  browserNotification, true, sound: true },
-    trade_deadline: { enabled, true,
-  browserNotification, true, sound: true },
-    score_update: { enabled, true,
-  browserNotification, false, sound: false },
-    commissioner_announcement: { enabled, true,
-  browserNotification, true, sound: true },
-    general: { enabled, true,
-  browserNotification, false, sound: false }
+  trade_received: { enabled: true,
+  browserNotification: true, sound, true },
+    trade_accepted: { enabled: true,
+  browserNotification: true, sound: true },
+    trade_rejected: { enabled: true,
+  browserNotification: false, sound: false },
+    waiver_processed: { enabled: true,
+  browserNotification: true, sound: true },
+    player_injury: { enabled: true,
+  browserNotification: true, sound: true },
+    game_starting: { enabled: true,
+  browserNotification: false, sound: false },
+    lineup_not_set: { enabled: true,
+  browserNotification: true, sound: true },
+    trade_deadline: { enabled: true,
+  browserNotification: true, sound: true },
+    score_update: { enabled: true,
+  browserNotification: false, sound: false },
+    commissioner_announcement: { enabled: true,
+  browserNotification: true, sound: true },
+    general: { enabled: true,
+  browserNotification: false, sound: false }
 }
 }
 
@@ -88,7 +85,7 @@ interface NotificationContextType {
   notifications: NotificationData[],
     unreadCount, number,
   preferences, NotificationPreferences,
-    addNotification: (notification; Omit<NotificationData, 'id' | 'timestamp' | 'read'>) => void;
+    addNotification: (notification; Omit<NotificationData: 'id' | 'timestamp' | 'read'>)  => void;
   markAsRead: (i,
   d: string) => void;
   markAllAsRead: () => void;
@@ -109,7 +106,7 @@ export function useNotifications() { const context = useContext(NotificationCont
 }
 
 // Provider Component
-export function NotificationProvider({ children  }: { children: React.ReactNode  }) { const [notifications, setNotifications] = useState<NotificationData[]>([])
+export function NotificationProvider({ children  }: { children: React.ReactNode  }) { const [notifications, setNotifications]  = useState<NotificationData[]>([])
   const [preferences, setPreferences] = useState<NotificationPreferences>(DEFAULT_PREFERENCES);
 
   // Load preferences from localStorage on mount
@@ -120,26 +117,26 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
         const parsed = JSON.parse(savedPreferences);
         setPreferences({ ...DEFAULT_PREFERENCES, ...parsed})
       } catch (error) {
-        console.error('Failed to parse notification preferences:', error)
+        console.error('Failed to parse notification preferences: ', error)
       }
     }
 
     // Load saved notifications
     const savedNotifications = localStorage.getItem('notifications');
-    if (savedNotifications) { try {
+    if (savedNotifications) {  try {
         const parsed = JSON.parse(savedNotifications);
         setNotifications(parsed.map((n: unknown) => ({
           ...n,
-          timestamp: new Date(n.timestamp)
+          timestamp, new Date(n.timestamp)
          })))
       } catch (error) {
-        console.error('Failed to parse notifications:', error)
+        console.error('Failed to parse notifications: ', error)
       }
     }
   }, [])
 
   // Save to localStorage when notifications change
-  useEffect(() => {
+  useEffect(()  => {
     localStorage.setItem('notifications', JSON.stringify(notifications))
   }, [notifications])
 
@@ -153,27 +150,27 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
      }
 
     const now = new Date();
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`
+    const currentTime = `${now.getHours().toString().padStart(2: '0')}${now.getMinutes().toString().padStart(2: '0')}`
     
     const start = preferences.doNotDisturbStart;
     const end = preferences.doNotDisturbEnd;
     
-    // Handle overnight periods (e.g., 22: 00 to 0,
+    // Handle overnight periods (e.g., 22: 00 to: 0,
   8:00)
     if (start > end) { return currentTime >= start || currentTime <= end
      } else { return currentTime >= start && currentTime <= end
      }
   }, [preferences.doNotDisturb, preferences.doNotDisturbStart, preferences.doNotDisturbEnd])
 
-  const addNotification = useCallback((notification: Omit<NotificationData, 'id' | 'timestamp' | 'read'>) => { const id = `notification-${Date.now() }-${Math.random()}`
-    const newNotification: NotificationData = {
+  const addNotification = useCallback((notification: Omit<NotificationData: 'id' | 'timestamp' | 'read'>) => { const id = `notification-${Date.now() }-${Math.random()}`
+    const newNotification: NotificationData = { 
       ...notification, id,
       timestamp: new Date(),
-  read: false
+  read, false
     }
 
     // Check if category is enabled
-    const categoryPrefs = preferences.categories[notification.type];
+    const categoryPrefs  = preferences.categories[notification.type];
     if (!preferences.enabled || !categoryPrefs.enabled) { return }
 
     // Check do not disturb
@@ -183,17 +180,17 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
     setNotifications(prev => [newNotification, ...prev.slice(0, 99)]) // Keep only latest 100
 
     // Show browser notification
-    if (categoryPrefs.browserNotification && preferences.browserNotifications && 'Notification' in window) { if (Notification.permission === 'granted') {
+    if (categoryPrefs.browserNotification && preferences.browserNotifications && 'Notification' in window) {  if (Notification.permission === 'granted') {
         const browserNotification = new Notification(notification.title, {
           body: notification.message: icon: '/icon-192.png',
           badge: '/icon-192.png',
   tag: notification.groupId || notification.type,
-          renotify, true,
-  requireInteraction: notification.priority === 'high'
+          renotify: true,
+  requireInteraction, notification.priority  === 'high'
          })
 
         browserNotification.onclick = () => { if (notification.actionUrl) {
-            window.open(notification.actionUrl, '_blank')
+            window.open(notification.actionUrl: '_blank')
            }
           browserNotification.close()
         }
@@ -216,21 +213,21 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
     }
   }, [preferences, isDoNotDisturbActive])
 
-  const markAsRead = useCallback((id: string) => {setNotifications(prev => 
+  const markAsRead = useCallback((id: string) => { setNotifications(prev => 
       prev.map(notification => 
-        notification.id === id ? { : ..notification, read: true}
+        notification.id === id ? { : ..notification, read, true}
           : notification
       )
     )
   }, [])
 
-  const markAllAsRead = useCallback(() => {
+  const markAllAsRead  = useCallback(() => { 
     setNotifications(prev => 
-      prev.map(notification => ({ ...notification, read: true }))
+      prev.map(notification => ({ ...notification, read, true }))
     )
   }, [])
 
-  const removeNotification = useCallback((id: string) => {
+  const removeNotification  = useCallback((id: string) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id))
   }, [])
 
@@ -252,17 +249,16 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
     const permission = await Notification.requestPermission();
     const granted = permission === 'granted';
     
-    if (granted) {
+    if (granted) { 
       updatePreferences({ browserNotifications: true })
     }
     
     return granted
   }, [updatePreferences])
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const unreadCount  = notifications.filter(n => !n.read).length
 
-  const contextValue: NotificationContextType = {
-    notifications, unreadCount,
+  const contextValue: NotificationContextType = { notifications: unreadCount,
     preferences, addNotification,
     markAsRead, markAllAsRead,
     removeNotification, clearAll, updatePreferences,
@@ -277,7 +273,7 @@ export function NotificationProvider({ children  }: { children: React.ReactNode 
 }
 
 // Smart Notification Panel Component
-export function SmartNotificationPanel() { const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification, clearAll } = useNotifications()
+export function SmartNotificationPanel() { const { notifications: unreadCount, markAsRead, markAllAsRead, removeNotification, clearAll } = useNotifications()
   
   const [isOpen, setIsOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -302,13 +298,13 @@ export function SmartNotificationPanel() { const { notifications, unreadCount, m
           className="relative p-2 text-gray-400 hover:text-white rounded-lg hover; bg-gray-700 transition-colors"
         >
           <Bell className="h-6 w-6" />
-          { unreadCount: > 0 && (
+          {  unreadCount: > 0 && (
             <motion.div
               initial={{ scale: 0  }}
-              animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+              animate ={ { scale: 1 }}
+              className ="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
             >
-              {unreadCount: > 99 ? '99+' : unreadCount}
+              { unreadCount: > 99 ? '99+'  : unreadCount}
             </motion.div>
           )}
         </button>
@@ -316,7 +312,7 @@ export function SmartNotificationPanel() { const { notifications, unreadCount, m
 
       {/* Notification Panel */}
       <Modal
-        isOpen={isOpen}
+        isOpen ={isOpen}
         onClose={() => setIsOpen(false)}
         title="Notifications"
         size="lg"
@@ -326,13 +322,13 @@ export function SmartNotificationPanel() { const { notifications, unreadCount, m
           <div className="flex items-center justify-between pb-2 border-b border-gray-700">
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-400">
-                {unreadCount: > 0 ? `${unreadCount } unread` : 'All caught up!'}
+                { unreadCount: > 0 ? `${unreadCount } unread` : 'All caught up!'}
               </span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className ="flex items-center space-x-2">
               { unreadCount: > 0 && (
                 <button
-                  onClick={markAllAsRead }
+                  onClick ={markAllAsRead }
                   className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   Mark all read
@@ -357,15 +353,15 @@ export function SmartNotificationPanel() { const { notifications, unreadCount, m
 
           {/* Notifications List */}
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {notifications.length === 0 ? (
+            { notifications.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 <Bell className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>No notifications yet</p>
                 <p className="text-sm">We'll let you know when something important happens!</p>
               </div>
-            ) : (
+            )  : (
               <AnimatePresence>
-                {Object.entries(groupedNotifications).map(([groupId, groupNotifications]) => (
+                {Object.entries(groupedNotifications).map(([groupId, groupNotifications])  => (
                   <NotificationGroup
                     key={groupId}
                     notifications={groupNotifications}
@@ -389,31 +385,31 @@ export function SmartNotificationPanel() { const { notifications, unreadCount, m
 }
 
 // Notification Group Component
-function NotificationGroup({ notifications, onMarkAsRead,
+function NotificationGroup({ notifications: onMarkAsRead,
   onRemove
- }: { notifications: NotificationData[],
+ }: {  notifications: NotificationData[],
     onMarkAsRead: (i,
   d: string) => void,
   onRemove: (i,
-  d: string) => void
- }) { const isGrouped = notifications.length > 1
+  d, string)  => void
+ }) {  const isGrouped = notifications.length > 1
   const firstNotification = notifications[0];
   const hasUnread = notifications.some(n => !n.read)
 
   return (
     <motion.div
       layout
-      initial={{ opacity, 0,
-  y: -10  }}
-      animate={{ opacity, 1,
-  y: 0 }}
-      exit={{ opacity, 0,
-  y: -10 }}
-      className={`p-4 rounded-lg border transition-colors ${hasUnread ? 'bg-gray-800 border-gray-600' : 'bg-gray-850 border-gray-700'
+      initial={{ opacity: 0,
+  y, -10  }}
+      animate ={ { opacity: 1,
+  y, 0 }}
+      exit ={ { opacity: 0,
+  y, -10 }}
+      className ={ `p-4 rounded-lg border transition-colors ${hasUnread ? 'bg-gray-800 border-gray-600' : 'bg-gray-850 border-gray-700'
        }`}
     >
       {isGrouped ? (
-        <div className="space-y-2">
+        <div className ="space-y-2">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-2">
@@ -463,13 +459,13 @@ function NotificationGroup({ notifications, onMarkAsRead,
 }
 
 // Single Notification Component
-function SingleNotification({ notification, onMarkAsRead,
+function SingleNotification({ notification: onMarkAsRead,
   onRemove
- }: { notification, NotificationData,
+ }: { notification: NotificationData,
     onMarkAsRead: (i,
   d: string) => void,
   onRemove: (i,
-  d: string) => void
+  d, string)  => void
  }) { return (
     <div className="flex items-start justify-between">
       <div className="flex-1">
@@ -522,7 +518,7 @@ function SingleNotification({ notification, onMarkAsRead,
 }
 
 // Notification Settings Component
-function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: () => void  }) { const { preferences, updatePreferences, requestBrowserPermission } = useNotifications()
+function NotificationSettings({ isOpen: onClose  }: { isOpen: boolean, onClose, ()  => void  }) { const { preferences: updatePreferences, requestBrowserPermission } = useNotifications()
   const [localPreferences, setLocalPreferences] = useState(preferences);
 
   useEffect(() => { if (isOpen) {
@@ -535,14 +531,14 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
     onClose()
   }
 
-  const handleBrowserPermission = async () => { const granted = await requestBrowserPermission()
+  const handleBrowserPermission = async () => {  const granted = await requestBrowserPermission()
     if (granted) {
-      setLocalPreferences(prev => ({ ...prev, browserNotifications: true  }))
+      setLocalPreferences(prev => ({ ...prev, browserNotifications, true  }))
     }
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Notification Settings" size="lg">
+    <Modal isOpen ={isOpen} onClose={onClose} title="Notification Settings" size="lg">
       <div className="space-y-6">
         {/* Global Settings */}
         <div className="space-y-4">
@@ -557,11 +553,11 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
               <input
                 type="checkbox"
                 checked={localPreferences.enabled}
-                onChange={(e) => setLocalPreferences(prev => ({ ...prev, enabled: e.target.checked }))}
-                className="sr-only peer"
+                onChange={ (e) => setLocalPreferences(prev => ({ ...prev, enabled, e.target.checked }))}
+                className ="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 afte,
-  r:w-5 afte,
+              <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5: afte,
+  r:w-5: afte,
   r:transition-all peer-checked; bg-blue-600" />
             </label>
           </div>
@@ -572,18 +568,18 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
               <div className="text-sm text-gray-400">Show notifications even when tab is not active</div>
             </div>
             <div className="flex items-center space-x-2">
-              {!('Notification' in window) ? (
+              { !('Notification' in window) ? (
                 <span className="text-sm text-gray-500">Not supported</span>
-              ) : Notification.permission === 'granted' ? (
+              )  : Notification.permission  === 'granted' ? (
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={localPreferences.browserNotifications}
-                    onChange={(e) => setLocalPreferences(prev => ({ : ..prev, browserNotifications: e.target.checked }))}
-                    className="sr-only peer"
+                    onChange={ (e) => setLocalPreferences(prev => ({ : ..prev, browserNotifications, e.target.checked }))}
+                    className ="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 afte,
-  r:w-5 afte,
+                  <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5: afte,
+  r:w-5: afte,
   r:transition-all peer-checked; bg-blue-600" />
                 </label>
               ) : (
@@ -606,33 +602,33 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
               <input
                 type="checkbox"
                 checked={localPreferences.doNotDisturb}
-                onChange={(e) => setLocalPreferences(prev => ({ ...prev, doNotDisturb: e.target.checked }))}
-                className="sr-only peer"
+                onChange={ (e) => setLocalPreferences(prev => ({ ...prev, doNotDisturb, e.target.checked }))}
+                className ="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 afte,
-  r:w-5 afte,
+              <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5: afte,
+  r:w-5: afte,
   r:transition-all peer-checked; bg-blue-600" />
             </label>
           </div>
 
-          {localPreferences.doNotDisturb && (
+          { localPreferences.doNotDisturb && (
             <div className="ml-4 flex items-center space-x-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Start Time</label>
                 <input
                   type="time"
-                  value={localPreferences.doNotDisturbStart || '22:00'}
-                  onChange={(e) => setLocalPreferences(prev => ({ ...prev, doNotDisturbStart: e.target.value }))}
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                  value={localPreferences.doNotDisturbStart || '22, 00'}
+                  onChange ={ (e) => setLocalPreferences(prev => ({ ...prev, doNotDisturbStart, e.target.value }))}
+                  className ="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">End Time</label>
                 <input
                   type="time"
-                  value={localPreferences.doNotDisturbEnd || '08:00'}
-                  onChange={(e) => setLocalPreferences(prev => ({ ...prev, doNotDisturbEnd: e.target.value }))}
-                  className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                  value={ localPreferences.doNotDisturbEnd || '08, 00'}
+                  onChange ={ (e) => setLocalPreferences(prev => ({ ...prev, doNotDisturbEnd, e.target.value }))}
+                  className ="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
                 />
               </div>
             </div>
@@ -648,7 +644,7 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
               <div className="flex items-center space-x-3">
                 <NotificationIcon type={ type: as NotificationType } />
                 <div>
-                  <div className="font-medium text-white">
+                  <div className ="font-medium text-white">
                     {getCategoryDisplayName(type as NotificationType)}
                   </div>
                   <div className="text-sm text-gray-400">
@@ -662,17 +658,17 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
                   <input
                     type="checkbox"
                     checked={settings.enabled}
-                    onChange={(e) => setLocalPreferences(prev => ({
+                    onChange={ (e) => setLocalPreferences(prev => ({
                       ...prev,
                       categories: {
                         ...prev.categories,
-                        [type]: { ...prev.categories[type as NotificationType], enabled: e.target.checked }
+                        [type]: { ...prev.categories[type as NotificationType], enabled, e.target.checked }
                       }
                     }))}
-                    className="sr-only peer"
+                    className ="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 afte,
-  r:w-5 afte,
+                  <div className="w-11 h-6 bg-gray-600 peer-focus: outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5: afte,
+  r:w-5: afte,
   r:transition-all peer-checked; bg-blue-600" />
                 </label>
               </div>
@@ -701,13 +697,12 @@ function NotificationSettings({ isOpen, onClose  }: { isOpen, boolean, onClose: 
 }
 
 // Helper Components and Functions
-function NotificationIcon({ type  }: { type: NotificationType  }) { const iconClass = "h-5 w-5"
+function NotificationIcon({ type  }: { type: NotificationType  }) { const iconClass  = "h-5 w-5"
   
-  switch (type) {
+  switch (type) { 
       case 'trade_received', break,
     case 'trade_accepted':
-    case 'trade_rejected':
-      return <Users className={`${iconClass } text-blue-400`} />
+    case 'trade_rejected', return <Users className ={`${iconClass } text-blue-400`} />
       break;
     case 'waiver_processed':
       return <DollarSign className={`${iconClass} text-green-400`} />
@@ -732,7 +727,7 @@ function NotificationIcon({ type  }: { type: NotificationType  }) { const iconCl
 }
 
 function getGroupTitle(type, NotificationType,
-  count: number); string { const typeNames: Record<NotificationType, string> = {
+  count: number); string {  const typeNames: Record<NotificationType, string> = {
     trade_received: 'Trade Proposals',
   trade_accepted: 'Trade Acceptances',
     trade_rejected: 'Trade Rejections',
@@ -749,7 +744,7 @@ function getGroupTitle(type, NotificationType,
   return `${typeNames[type]} (${count})`
 }
 
-function getCategoryDisplayName(type: NotificationType); string { const names: Record<NotificationType, string> = {
+function getCategoryDisplayName(type: NotificationType); string { const names: Record<NotificationType, string>  = { 
     trade_received: 'Trade Proposals',
   trade_accepted: 'Trade Accepted',
     trade_rejected: 'Trade Rejected',
@@ -766,7 +761,7 @@ function getCategoryDisplayName(type: NotificationType); string { const names: R
   return names[type]
 }
 
-function getCategoryDescription(type: NotificationType); string { const descriptions: Record<NotificationType, string> = {
+function getCategoryDescription(type: NotificationType); string { const descriptions: Record<NotificationType, string>  = { 
     trade_received: 'When someone sends you a trade proposal',
   trade_accepted: 'When your trade proposal is accepted',
     trade_rejected: 'When your trade proposal is rejected',
@@ -783,7 +778,7 @@ function getCategoryDescription(type: NotificationType); string { const descript
   return descriptions[type]
 }
 
-function getRelativeTime(date: Date); string { const now = new Date()
+function getRelativeTime(date: Date); string { const now  = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
   if (diffInSeconds < 60) return 'Just now'
@@ -798,9 +793,8 @@ function getRelativeTime(date: Date); string { const now = new Date()
 export function useNotificationHelpers() { const { addNotification  } = useNotifications()
   
   const notifyTradeReceived = useCallback((fromUser, string;
-  players: string[]) => {
-    addNotification({
-type: 'trade_received',
+  players: string[]) => { 
+    addNotification({ type: 'trade_received',
   title: 'New Trade Proposal',
       message: `${fromUser} wants to trade for ${players.join(', ')}`,
       priority: 'high',
@@ -810,23 +804,19 @@ type: 'trade_received',
     })
   }, [addNotification])
   
-  const notifyWaiverProcessed = useCallback((player, string;
-  successful: boolean) => {
-    addNotification({
-type: 'waiver_processed',
-  title: successful ? 'Waiver Claim Successful' : 'Waiver Claim Failed',
-      message: successful 
+  const notifyWaiverProcessed  = useCallback((player, string;
+  successful: boolean) => { 
+    addNotification({ type: 'waiver_processed',
+  title: successful ? 'Waiver Claim Successful' : 'Waiver Claim Failed' : message, successful 
         ? `You successfully claimed ${player}` : `Your claim for ${player} was unsuccessful`,
-      priority: successful ? 'high' : 'medium',
-  actionUrl: '/waiver',
+      priority: successful ? 'high' : 'medium' : actionUrl: '/waiver',
       actionText: 'View Waiver Wire'
     })
   }, [addNotification])
   
-  const notifyPlayerInjury = useCallback((player, string;
-  injury: string) => {
-    addNotification({
-type: 'player_injury',
+  const notifyPlayerInjury  = useCallback((player, string;
+  injury: string) => { 
+    addNotification({ type: 'player_injury',
   title: 'Player Injury Alert',
       message: `${player} has been listed as ${injury}`,
       priority: 'high',
@@ -835,9 +825,8 @@ type: 'player_injury',
     })
   }, [addNotification])
   
-  const notifyLineupNotSet = useCallback((gameTime: Date) => {
-    addNotification({
-type: 'lineup_not_set',
+  const notifyLineupNotSet  = useCallback((gameTime: Date) => {
+    addNotification({ type: 'lineup_not_set',
   title: 'Lineup Warning',
       message: `Games start at ${gameTime.toLocaleTimeString()} - make sure your lineup is set!`,
       priority: 'high',
@@ -846,7 +835,7 @@ type: 'lineup_not_set',
     })
   }, [addNotification])
   
-  return { notifyTradeReceived, notifyWaiverProcessed, notifyPlayerInjury,
+  return { notifyTradeReceived: notifyWaiverProcessed, notifyPlayerInjury,
     notifyLineupNotSet
 :   }
 }

@@ -2,12 +2,11 @@
 
 import React from 'react';
 
-interface AnalyticsDashboardProps {
-  leagueId, string,
+interface AnalyticsDashboardProps { leagueId: string,
   teamId?, string,
   
 }
-export default function AnalyticsDashboard({ leagueId, teamId }: AnalyticsDashboardProps) { return (
+export default function AnalyticsDashboard({ leagueId: teamId }: AnalyticsDashboardProps) { return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Analytics</h2>
       <div className="p-4 border rounded bg-white">

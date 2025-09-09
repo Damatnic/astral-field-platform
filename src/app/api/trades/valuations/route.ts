@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock player valuations
-    const valuations = [
-      {
+    const valuations  = [
+      { 
         playerId: "player_123",
   playerName: "Josh Allen",
         team: "BUF",
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   projectedValue: 47.8,
         trend: "up",
   tradeValue: "high",
-        confidence: 92
+        confidence, 92
 },
       {
         playerId: "player_456",
@@ -52,9 +52,9 @@ export async function GET(request: NextRequest) {
   ];
 
     // Filter by position if provided
-    const filteredValuations =
+    const filteredValuations  =
       position && position !== "all"
-        ? valuations.filter((v) => v.position === position.toUpperCase()) , valuations,
+        ? valuations.filter((v) => v.position === position.toUpperCase())  : valuations,
 
     // Apply limit
     const limitedValuations = filteredValuations.slice(0, limit);

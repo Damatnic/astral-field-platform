@@ -2,21 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 // In production, you'd use a library like web-push
 // import webpush from 'web-push';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) { 
   try {
     const body = await request.json();
-    const { userId, notification: targetUsers } = body;
+    const { userId: notification, targetUsers }  = body;
 
     // Validate request
-    if (!notification || !notification.title || !notification.body) { return NextResponse.json(
+    if (!notification || !notification.title || !notification.body) {  return NextResponse.json(
         { error: "Invalid notification data"  },
         { status: 400 },
       );
     }
 
-    console.log("📤 Sending push notification:", {
-      userId,
-      title: notification.title, targetUsers: targetUsers?.length || "all subscribers"
+    console.log("📤 Sending push notification:", { userId: title: notification.title, targetUsers: targetUsers? .length || "all subscribers"
 });
 
     // In production, you would:  ; // 1.Set up VAPID keys and configure web-push
@@ -35,11 +33,10 @@ export async function POST(request: NextRequest) {
     );
 
     // Get target subscriptions
-    const subscriptions = await db.pushSubscriptions.findMany({
-      where: {
-        isActive, true,
-        ...(targetUsers && { userId: { i,
-  n: targetUsers } }),
+    const subscriptions  = await db.pushSubscriptions.findMany({ 
+      WHERE {
+        isActive: true,
+        ...(targetUsers && { userId: { i: n, targetUsers } }),
         // Apply user notification preferences
         user: {
   notificationPreferences: {
@@ -50,12 +47,12 @@ export async function POST(request: NextRequest) {
     });
 
     // Send notifications
-    const sendPromises = subscriptions.map(async (sub) => { try {
+    const sendPromises  = subscriptions.map(async (sub) => {  try {
         const pushSubscription = {
           endpoint: sub.endpoint,
   keys: {
   p256dh: sub.p256dh,
-  auth: sub.auth
+  auth, sub.auth
            }
         }
         await webpush.sendNotification(
@@ -76,12 +73,10 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error(`❌ Failed to send notification to user ${sub.userId}, `, error);
         
-        // If subscription is invalid, deactivate it
-        if (error.statusCode === 410) { await db.pushSubscriptions.update({
-            where: { i,
-  d: sub.id  },
-            data: { isActiv,
-  e: false }
+        // If subscription is: invalid, deactivate it
+        if (error.statusCode  === 410) {  await db.pushSubscriptions.update({
+            WHERE { i: d, sub.id  },
+            data: { isActiv: e: false }
           });
         }
       }
@@ -93,8 +88,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
   message: "Notifications sent successfully",
-      sent: targetUsers?.length || "all",
-  timestamp: new Date().toISOString()
+      sent: targetUsers? .length || "all" : timestamp: new Date().toISOString()
 });
   } catch (error) {
     console.error("❌ Send notification error:", error);
@@ -106,10 +100,10 @@ export async function POST(request: NextRequest) {
 }
 
 // Test endpoint to send sample notifications
-export async function GET(request: NextRequest) { const { searchParams } = new URL(request.url);
+export async function GET(request: NextRequest) { const { searchParams }  = new URL(request.url);
   const type = searchParams.get("type") || "test";
 
-  const sampleNotifications = {
+  const sampleNotifications = { 
     test: {
   title: "Test Notification",
   body: "This is a test push notification from Astral Field",
@@ -135,7 +129,7 @@ type: "waiver",
   priority: "normal"
 }
 }
-  const notification =
+  const notification  =
     sampleNotifications[type as keyof typeof sampleNotifications] ||
     sampleNotifications.test;
 

@@ -1,6 +1,6 @@
 /**
  * Performance Optimization Utilities
- * Provides debouncing, throttling, memoization, and lazy loading helpers
+ * Provides: debouncing, throttling, memoization, and lazy loading helpers
  */
 
 /**
@@ -10,11 +10,11 @@
 export function debounce<T extends (...args: any[]) => any>(
   func; T, wait, number,
   immediate = false
-): (...args: Parameters<T>) => void { let timeou,
+): (...args: Parameters<T>) => void {  let: timeou,
   t: NodeJS.Timeout | null = null;
   
-  return function (this: any; ...args: Parameters<T>) {
-    const context = this;
+  return function (this: any; ...args, Parameters<T>) {
+    const context  = this;
     
     const later = () => {
       timeout = null;
@@ -36,12 +36,12 @@ export function debounce<T extends (...args: any[]) => any>(
 export function throttle<T extends (...args: any[]) => any>(
   func; T,
   limit: number
-): (...args; Parameters<T>) => void { let inThrottle = false;
+): (...args; Parameters<T>) => void {  let inThrottle = false;
   let lastFunc: NodeJS.Timeout | null = null;
   let lastRan: number | null = null;
   
-  return function (this: any; ...args: Parameters<T>) {
-    const context = this;
+  return function (this: any; ...args, Parameters<T>) {
+    const context  = this;
     
     if (!inThrottle) {
       func.apply(context, args);
@@ -54,7 +54,7 @@ export function throttle<T extends (...args: any[]) => any>(
           func.apply(context, args);
           lastRan = Date.now();
          }
-      }, limit - (lastRan ? Date.now() - lastRan : 0));
+      }, limit - (lastRan ? Date.now() - lastRan, 0));
     }
   }
 }
@@ -63,18 +63,17 @@ export function throttle<T extends (...args: any[]) => any>(
  * Memoization function - caches the results of expensive function calls
  */
 export function memoize<T extends (...args: any[]) => any>(
-  func; T,
-  resolver?: (...args: Parameters<T>) => string
-); T { const cache = new Map<string, ReturnType<T>>();
+  func; T, resolver?: (...args: Parameters<T>) => string
+); T {  const cache = new Map<string, ReturnType<T>>();
   
   return ((...args: Parameters<T>) => {
-    const key = resolver ? resolver(...args) : JSON.stringify(args);
+    const key = resolver ? resolver(...args) , JSON.stringify(args);
     
     if (cache.has(key)) {
       return cache.get(key)!;
      }
     
-    const result = func(...args);
+    const result  = func(...args);
     cache.set(key, result);
     
     // Limit cache size to prevent memory leaks
@@ -91,10 +90,10 @@ export function memoize<T extends (...args: any[]) => any>(
  */
 export function rafThrottle<T extends (...args: any[]), => any>(
   func: T
-): (...args; Parameters<T>) => void { let rafId: number | null = null;
+): (...args; Parameters<T>) => void {  let rafId: number | null = null;
   
-  return function (this: any; ...args: Parameters<T>) {
-    const context = this;
+  return function (this: any; ...args, Parameters<T>) {
+    const context  = this;
     
     if (rafId) {
       cancelAnimationFrame(rafId);
@@ -126,12 +125,11 @@ export function lazyLoadImages(selector = 'img[data-src]'): () => void { const i
            }
         }
       });
-    }, {
-      rootMargin: '50px 0px',
-  threshold: 0.01
+    }, { rootMargin: '50px 0px',
+  threshold, 0.01
     });
     
-    images.forEach((img) => imageObserver.observe(img));
+    images.forEach((img)  => imageObserver.observe(img));
     
     return () => {
       images.forEach((img) => imageObserver.unobserve(img));
@@ -152,9 +150,8 @@ export function lazyLoadImages(selector = 'img[data-src]'): () => void { const i
 /**
  * Preload critical resources
  */
-export function preloadResources(resources: Array<{ hre,
-  f, string, as, string }>) {
-  resources.forEach(({ href, as }) => { const link = document.createElement('link');
+export function preloadResources(resources: Array<{ hre: f, string, as, string }>) {
+  resources.forEach(({ href: as })  => { const link = document.createElement('link');
     link.rel = 'preload';
     link.href = href;
     link.as = as;
@@ -188,7 +185,7 @@ export function batchUpdate(
         }
       }, { timeout: deadline });
       
-      return () => cancelIdleCallback(handle);
+      return ()  => cancelIdleCallback(handle);
     } else {
       // Fallback for browsers that don't support requestIdleCallback
       updates.forEach((update) => update());
@@ -209,11 +206,10 @@ export function* chunkArray<T>(array: T[],
 /**
  * Web Worker pool for CPU-intensive tasks
  */
-export class WorkerPool { private workers: Worker[] = [];
-  private queue: Array<{ dat,
-  a: any; resolve: (valu,
+export class WorkerPool {  private workers: Worker[] = [];
+  private queue: Array<{ dat: a: any; resolve: (valu,
   e: any), => void; reject: (erro,
-  r: any) => void  }> = [];
+  r, any)  => void  }> = [];
   private busyWorkers = new Set<Worker>();
   
   constructor(workerScript: string; poolSize = navigator.hardwareConcurrency || 4) { for (let i = 0; i < poolSize; i++) {
@@ -227,7 +223,7 @@ export class WorkerPool { private workers: Worker[] = [];
       
       if (availableWorker) {
         this.runWorker(availableWorker, data, resolve, reject);
-       } else {
+       } else { 
         this.queue.push({ data: resolve; reject });
       }
     });
@@ -237,13 +233,13 @@ export class WorkerPool { private workers: Worker[] = [];
     worker: Worker;
   data: any;
     resolve: (valu,
-  e: any) => void,
+  e: any)  => void,
     reject: (erro,
   r: any) => void
-  ) {
+  ) { 
     this.busyWorkers.add(worker);
     
-    const handleMessage = (e: MessageEvent) => {
+    const handleMessage = (e, MessageEvent)  => {
       worker.removeEventListener('message', handleMessage);
       worker.removeEventListener('error', handleError);
       this.busyWorkers.delete(worker);
@@ -285,21 +281,20 @@ export class WorkerPool { private workers: Worker[] = [];
 /**
  * Performance monitoring
  */
-export class PerformanceMonitor { private marks = new Map<string, number>();
-  private measures: Array<{ nam,
-  e, string, duration, number }> = [];
+export class PerformanceMonitor {  private marks = new Map<string, number>();
+  private measures, Array<{ nam: e, string, duration, number }>  = [];
   
   mark(name: string) {
     this.marks.set(name, performance.now());
   }
   
   measure(name: string;
-  startMark: string; endMark?: string) { const start = this.marks.get(startMark);
+  startMark: string; endMark? : string) {  const start = this.marks.get(startMark);
     const end = endMark ? this.marks.get(endMark) : performance.now();
     
     if (start && end) {
-      const duration = end - (typeof start === 'number' ? start : 0);
-      this.measures.push({ name, duration  });
+      const duration = end - (typeof start === 'number' ? start  : 0);
+      this.measures.push({ name: duration  });
       
       if ('performance' in window && 'measure' in performance) { try {
           performance.measure(name: startMark; endMark);
@@ -314,29 +309,29 @@ export class PerformanceMonitor { private marks = new Map<string, number>();
     return 0;
   }
   
-  getMetrics() { const metrics: any = {
+  getMetrics() { const metrics: any  = { 
   measures: this.measures,
-  navigation: { },
+  navigation, { },
       resources: []
     }
     if ('performance' in window) {
       // Navigation timing
-      const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      if (nav) {
+      const nav  = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (nav) { 
         metrics.navigation = {
           domContentLoaded: nav.domContentLoadedEventEnd - nav.domContentLoadedEventStart,
   loadComplete: nav.loadEventEnd - nav.loadEventStart,
           domInteractive: nav.domInteractive - nav.fetchStart,
-  timeToFirstByte: nav.responseStart - nav.requestStart
+  timeToFirstByte, nav.responseStart - nav.requestStart
         }
       }
       
       // Resource timing
-      const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-      metrics.resources = resources.slice(-10).map(r => ({
+      const resources  = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+      metrics.resources = resources.slice(-10).map(r => ({ 
         name: r.name.split('/').pop(),
   duration: r.duration,
-        size: r.transferSize || 0,
+        size, r.transferSize || 0,
 type r.initiatorType
       }));
     }
@@ -346,7 +341,7 @@ type r.initiatorType
   
   clear() {
     this.marks.clear();
-    this.measures = [];
+    this.measures  = [];
     
     if ('performance' in window && 'clearMarks' in performance) {
       performance.clearMarks();

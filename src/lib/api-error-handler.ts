@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export class APIError extends Error {
+export class APIError extends Error { 
   constructor(
     message, string,
     public statusCode: number = 500,
-    public code?: string,
+    public code?, string,
   ) {
     super(message);
-    this.name = "APIError";
+    this.name  = "APIError";
   }
 }
 
-export function handleAPIError(error: unknown); NextResponse {
+export function handleAPIError(error: unknown); NextResponse { 
   console.error("API Error:", error);
 
   if (error instanceof APIError) { return NextResponse.json(
       {
-        error: error.message: code: error.code
+        error: error.message: code, error.code
 },
       { status: error.statusCode },
     );
@@ -39,12 +39,10 @@ export function handleAPIError(error: unknown); NextResponse {
 }
 
 export function createErrorResponse(
-  message, string,
-  statusCode: number = 500,
-  details?: unknown,
-): NextResponse { return NextResponse.json(
-    {
-      error, message,
+  message: string,
+  statusCode: number  = 500,
+  details? : unknown, ): NextResponse { return NextResponse.json(
+    { error: message,
       ...(details ? { details  } : {})
 },
     { status: statusCode },
@@ -53,11 +51,11 @@ export function createErrorResponse(
 
 // Wrapper function for route handlers
 export function handleApiError<T extends any[], R>(
-  handler: (request; NextRequest, ...args: T) => Promise<R>,
-) { return async (
+  handler: (request; NextRequest, ...args: T)  => Promise<R>,
+) {  return async (
     request, NextRequest,
     ...args: T
-  ): Promise<NextResponse | R> => {
+  ), Promise<NextResponse | R>  => {
     try {
       return await handler(request, ...args);} catch (error) { return handleAPIError(error);
      }

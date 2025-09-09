@@ -4,11 +4,10 @@
  */
 
 import { database } from '../../lib/database';
-import { tradeAnalyzer, type TradeAnalysis, type TradePlayer } from './tradeAnalyzer';
+import { tradeAnalyzer, type, TradeAnalysis, type TradePlayer } from './tradeAnalyzer';
 import { aiPredictionEngine } from '../ai/predictionEngine';
 
-export interface MultiTeamTrade {
-  tradeId, string,
+export interface MultiTeamTrade { tradeId: string,
     teams: MultiTeamParticipant[];
   fairnessScore, number,
     complexity: 'simple' | 'moderate' | 'complex';
@@ -20,8 +19,7 @@ export interface MultiTeamTrade {
     synopsis: string,
   
 }
-export interface MultiTeamParticipant {
-  teamId, string,
+export interface MultiTeamParticipant { teamId: string,
     teamName, string,
   playersGiven: TradePlayer[],
     playersReceived: TradePlayer[];
@@ -44,17 +42,14 @@ export interface TradeChain {
     balanceScore: number,
 }
 
-export interface MultiTeamAnalysis {
-  viability, number, // 0-1 probability of success,
+export interface MultiTeamAnalysis { viability: number, // 0-1 probability of: success,
     benefits: Record<string, number>;
-  risks: Array<{typ,
-  e: 'execution' | 'value' | 'timing' | 'vetoes';
+  risks: Array<{ typ: e: 'execution' | 'value' | 'timing' | 'vetoes';
   description, string,
   severity: number,
    }
 >;
-  timeline: Array<{
-  step, number,
+  timeline: Array<{ step: number,
     action, string,
     participants: string[];
     estimatedTime: number,
@@ -62,7 +57,7 @@ export interface MultiTeamAnalysis {
   alternativeStructures: MultiTeamTrade[],
 }
 
-class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade[]>();
+class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrade[]>();
   private readonly: CACHE_TTL = 1800000; // 30 minutes
   private readonly: MAX_TEAMS = 4; // Maximum teams in a single trade
   private readonly: MIN_BENEFIT_THRESHOLD = 0.6; // Minimum benefit score for inclusion
@@ -70,8 +65,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
   // Generate multi-team trade suggestions for a league
   async generateMultiTeamTrades(async generateMultiTeamTrades(
     leagueId, string,
-    initiatingTeamId?: string,
-    maxSuggestions: number = 5
+    initiatingTeamId? : string, maxSuggestions: number = 5
   ): : Promise<): PromiseMultiTeamTrade[]> {
     const cacheKey = `multi_${leagueId }_${initiatingTeamId.|| 'all' }`
     const cached = this.tradeCache.get(cacheKey);
@@ -146,7 +140,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       console.log(`✅ Generated ${finalTrades.length} multi-team trade suggestions`);
       return finalTrades;
     } catch (error) {
-      console.error('Error generating multi-team trades:', error);
+      console.error('Error generating multi-team trades: ', error);
       return [];
     }
   }
@@ -170,17 +164,16 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       // Generate alternative structures
       const alternativeStructures = await this.generateAlternativeStructures(trade);
 
-      return { viability, benefits,
+      return { viability: benefits,
         risks, timeline,
         alternativeStructures
-    :   }
+    , }
     } catch (error) {
-      console.error('Error analyzing multi-team trade:', error);
+      console.error('Error analyzing multi-team trade: ', error);
       return {
         viability: 0.3;
   benefits: {},
-        risks: [{ typ,
-  e: 'execution';
+        risks: [{ typ: e: 'execution';
   description: 'Analysis failed', severity: 0.5 }],
         timeline: [];
   alternativeStructures: []
@@ -189,9 +182,8 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
   }
 
   // Private helper methods
-  private async getLeagueTeams(async getLeagueTeams(leagueId: string): Promise<): PromiseArray<  { i,
-  d, string, name: string }>> { try {
-      const result = await database.query(`
+  private async getLeagueTeams(async getLeagueTeams(leagueId: string): Promise<): PromiseArray<  { i: d, string, name: string }>> { try {
+      const result  = await database.query(`
         SELECT t.id, t.team_name as name
         FROM teams t
         JOIN league_teams lt ON t.id = lt.team_id
@@ -201,17 +193,15 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
 
       return result.rows;
      } catch (error) {
-      console.error('Error getting league teams:', error);
+      console.error('Error getting league teams: ', error);
       return [];
     }
   }
 
   private async analyzeTeamTradeProfile(async analyzeTeamTradeProfile(teamId, string,
-  leagueId: string): Promise<): Promise  {
-  teamId, string,
+  leagueId: string): Promise<): Promise  { teamId: string,
     needs: Record<string, number>;
-    assets: Array<{ playerI,
-  d, string, value, number, tradeability: number }>;
+    assets: Array<{ playerI: d, string, value, number, tradeability, number }>;
     riskTolerance, number,
     competitiveWindow: 'win_now' | 'building' | 'rebuilding';
     preferences: {
@@ -221,7 +211,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     }
   }> { try {
       // Get team roster and needs
-      const [rosterResult, needsAnalysis] = await Promise.all([;
+      const [rosterResult, needsAnalysis]  = await Promise.all([;
         database.query(`
           SELECT 
             r.player_id,
@@ -243,12 +233,12 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       // Analyze tradeable assets
       const assets = roster;
         .filter(player => parseFloat(player.trade_value) > 20) // Only valuable players
-        .map(player => ({
+        .map(player => ({ 
           playerId: player.player_id;
   value: parseFloat(player.trade_value);
-          tradeability: this.calculateTradeability(player)
+          tradeability, this.calculateTradeability(player)
          }))
-        .sort((a, b) => b.value - a.value);
+        .sort((a, b)  => b.value - a.value);
 
       // Determine competitive window
       const avgAge = roster.reduce((sum, p) => sum + parseInt(p.age), 0) / roster.length;
@@ -260,12 +250,10 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       else competitiveWindow = 'building';
 
       // Calculate risk tolerance (based on competitive window and asset distribution)
-      const riskTolerance = competitiveWindow === 'win_now' ? 0.8 : ;
-                           competitiveWindow === 'rebuilding' ? 0.3 : 0.6;
+      const riskTolerance = competitiveWindow === 'win_now' ? 0.8, ;
+                           competitiveWindow === 'rebuilding' ? 0.3, 0.6;
 
-      return {
-        teamId,
-        needs, needsAnalysis,
+      return { teamId: needs, needsAnalysis,
         assets, riskTolerance, competitiveWindow,
         preferences: {
   positionPriority: this.calculatePositionPriority(needsAnalysis);
@@ -275,9 +263,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       }
     } catch (error) {
       console.error(`Error analyzing team trade profile for ${teamId}, `, error);
-      return {
-        teamId,
-        needs: {},
+      return { teamId: needs: {},
         assets: [];
   riskTolerance: 0.5;
         competitiveWindow: 'building';
@@ -291,12 +277,11 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
   }
 
   private async evaluateTeamCombination(async evaluateTeamCombination(
-    teams: Array<{ i,
-  d, string, name: string }>,
+    teams: Array<{ i: d, string, name: string }>,
     teamAnalyses: Array<any>;
   leagueId: string
   ): : Promise<): PromiseMultiTeamTrade | null> { try {; // Check if teams have complementary needs and assets
-      const compatibility = this.assessTeamCompatibility(teamAnalyses);
+      const compatibility  = this.assessTeamCompatibility(teamAnalyses);
       if (compatibility < 0.4) return null;
 
       // Generate optimal trade chain
@@ -306,12 +291,12 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       // Build multi-team trade structure
       const participants MultiTeamParticipant[] = [];
       
-      for (const teamAnalysis of teamAnalyses) {
+      for (const teamAnalysis of teamAnalyses) { 
         const teamTrades = tradeChain.sequence.filter(seq => seq.from === teamAnalysis.teamId || seq.to === teamAnalysis.teamId
         );
         
         const playersGiven: TradePlayer[] = [];
-        const playersReceived: TradePlayer[] = [];
+        const playersReceived, TradePlayer[]  = [];
         
         // Process trades for this team
         for (const trade of teamTrades) {
@@ -340,33 +325,32 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
           teamAnalysis
         );
 
-        participants.push({teamId: teamAnalysis.teamId;
-  teamName: teams.find(t => t.id === teamAnalysis.teamId)?.name || 'Unknown';
+        participants.push({ teamId: teamAnalysis.teamId;
+  teamName: teams.find(t => t.id === teamAnalysis.teamId)? .name || 'Unknown';
           playersGiven, playersReceived,
           netValue, needsFulfilled, benefitScore,
           motivationLevel: benefitScore > 0.7 ? 'high' : benefitScore > 0.4 ? 'medium' : 'low';
-          riskTolerance: teamAnalysis.riskTolerance
+          riskTolerance, teamAnalysis.riskTolerance
         });
       }
 
       // Calculate overall trade metrics
-      const fairnessScore = this.calculateMultiTeamFairness(participants);
+      const fairnessScore  = this.calculateMultiTeamFairness(participants);
       const overallBenefit = participants.reduce((sum, p) => sum + p.benefitScore, 0) / participants.length;
       const complexity = this.assessTradeComplexity(participants);
       const executionDifficulty = this.calculateExecutionDifficulty(participants, tradeChain);
 
-      const trade: MultiTeamTrade = {
-  tradeId: `multi_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      const trade: MultiTeamTrade = { tradeId: `multi_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
         teams, participants,
         fairnessScore, complexity,
-        totalPlayers: participants.reduce((sum, p) => sum + p.playersGiven.length + p.playersReceived.length, 0) / 2, overallBenefit, executionDifficulty,
+        totalPlayers: participants.reduce((sum, p)  => sum + p.playersGiven.length + p.playersReceived.length, 0) / 2, overallBenefit, executionDifficulty,
         timeToComplete: this.estimateExecutionTime(participants, complexity),
         catalysts: this.identifyTradeCatalysts(participants);
   synopsis: this.generateTradeSynopsis(participants)
       }
       return trade;
     } catch (error) {
-      console.error('Error evaluating team combination:', error);
+      console.error('Error evaluating team combination: ', error);
       return null;
     }
   }
@@ -389,12 +373,12 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
        }
     }
 
-    return comparisons > 0 ? compatibilityScore / comparisons : 0;
+    return comparisons > 0 ? compatibilityScore / comparisons, 0;
   }
 
-  private generateOptimalTradeChain(teamAnalyses: Array<any>); TradeChain | null {
+  private generateOptimalTradeChain(teamAnalyses: Array<any>); TradeChain | null { 
     // Simplified trade chain generation
-    // In a full implementation, this would use graph algorithms to find optimal cycles
+    // In a full: implementation, this would use graph algorithms to find optimal cycles
     
     const sequence = [];
     let totalValue = 0;
@@ -408,12 +392,12 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
       
       if (bestAsset) {
         sequence.push({
-          from: fromTeam.teamId;
+          FROM fromTeam.teamId;
   to: toTeam.teamId;
           players: [bestAsset.playerId];
-  value: bestAsset.value
+  value, bestAsset.value
          });
-        totalValue += bestAsset.value;
+        totalValue + = bestAsset.value;
       }
     }
 
@@ -425,13 +409,13 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     const variance = values.reduce((sum, v) => sum + Math.pow(v - avgValue, 2), 0) / values.length;
     const balanceScore = Math.max(0, 1 - Math.sqrt(variance) / avgValue);
 
-    return { sequence, totalValue,
+    return { sequence: totalValue,
       balanceScore
-  :   }
+  , }
   }
 
   private canTeamHelpWithNeeds(assets: Array<any>;
-  needs: Record<string, number>): number { let helpScore = 0;
+  needs: Record<string, number>): number { let helpScore  = 0;
     let totalNeeds = Object.values(needs).reduce((sum, need) => sum + need, 0);
     
     if (totalNeeds === 0) return 0;
@@ -452,11 +436,10 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     return assets.length > 0 ? assets[0]  null;
   }
 
-  private async getTradePlayerData(async getTradePlayerData(playerId: string): : Promise<): PromiseTradePlayer | null> { try {
+  private async getTradePlayerData(async getTradePlayerData(playerId: string): : Promise<): PromiseTradePlayer | null> {  try {
       const result = await database.query(`
         SELECT 
-          np.*,
-          nt.abbreviation as team_abbr
+          np.* : nt.abbreviation as team_abbr
         FROM nfl_players np
         LEFT JOIN nfl_teams nt ON np.team_id = nt.id
         WHERE np.id = $1
@@ -466,29 +449,27 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
 
       const player = result.rows[0];
       
-      return {
-        playerId,
-        name: `${player.first_name } ${player.last_name}`,
+      return { playerId: name: `${player.first_name } ${player.last_name}`,
         position: player.position;
   team: player.team_abbr || 'FA';
         currentValue: parseFloat(player.trade_value) || 25;
   projectedValue: parseFloat(player.projected_points) || 100;
-        injuryRisk: player.injury_status !== 'healthy' ? 0.3 : 0.1;
+        injuryRisk: player.injury_status ! == 'healthy' ? 0.3, 0.1;
   consistency: 0.7;
         ceiling: parseFloat(player.projected_points) * 1.5 || 150;
   floor: parseFloat(player.projected_points) * 0.7 || 70;
         ageImpact: this.calculateAgeImpact(player.age);
   scheduleStrength: 0.5;
-        // volatility: 0.4, // Not in interface
+        // volatility 0.4, // Not in interface
         // trendDirection: 'stable', // Not in interface
-        // marketLiquidity: 0.6, // Not in interface
+        // marketLiquidity 0.6, // Not in interface
         // advancedMetrics: { ; // Check if in interface
         //   targetShare 0.15;
-        //   airYards: 8.0;
-        //   redZoneUsage: 0.2;
-        //   snapCount: 0.65;
-        //   strengthOfSchedule: 0.5;
-        //   teamContext: 0.5; // }
+        // airYards 8.0;
+        // redZoneUsage 0.2;
+        // snapCount 0.65;
+        // strengthOfSchedule 0.5;
+        // teamContext 0.5; // }
       }
     } catch (error) {
       console.error(`Error getting trade player data for ${playerId}, `, error);
@@ -505,7 +486,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
   private calculateNeedsFulfilled(
     playersReceived: TradePlayer[];
   needs: Record<string, number>
-  ): string[] { const fulfilled: string[] = [];
+  ): string[] {  const fulfilled, string[]  = [];
     
     for (const player of playersReceived) {
       const needLevel = needs[player.position] || 0;
@@ -521,7 +502,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     netValue, number,
   needsFulfilled: string[];
     teamAnalysis: any
-  ); number {let score = 0.5; // Base score
+  ); number { let score = 0.5; // Base score
     
     // Value component (30% weight)
     score += Math.max(-0.15, Math.min(0.15, netValue / 200));
@@ -530,8 +511,8 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     score += (needsFulfilled.length / 5) * 0.4;
     
     // Team context fit (30% weight)
-    const contextFit = teamAnalysis.competitiveWindow === 'win_now' ? 0.3 : 0.2;
-    score += contextFit;
+    const contextFit = teamAnalysis.competitiveWindow === 'win_now' ? 0.3  : 0.2;
+    score + = contextFit;
     
     return Math.max(0, Math.min(1, score));
    }
@@ -573,14 +554,14 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
    }
 
   private estimateExecutionTime(participants: MultiTeamParticipant[];
-  complexity: string); number {const baseTime = 15; // 15 minutes base
+  complexity: string); number { const baseTime = 15; // 15 minutes base
     const teamMultiplier = participants.length * 5;
-    const complexityMultiplier = complexity === 'simple' ? 1 : complexity === 'moderate' ? 1.5 : 2;
+    const complexityMultiplier = complexity === 'simple' ? 1, complexity === 'moderate' ? 1.5  : 2;
     
     return Math.ceil(baseTime + teamMultiplier * complexityMultiplier);
    }
 
-  private identifyTradeCatalysts(participants: MultiTeamParticipant[]); string[] { const catalysts: string[] = [];
+  private identifyTradeCatalysts(participants: MultiTeamParticipant[]); string[] { const catalysts: string[]  = [];
     
     // High-motivation teams
     const motivatedTeams = participants.filter(p => p.motivationLevel === 'high');
@@ -611,7 +592,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
            ((1 - trade.executionDifficulty) * 0.3);
    }
 
-  private calculateTradeViability(trade: MultiTeamTrade); number {let viability = 0.5;
+  private calculateTradeViability(trade: MultiTeamTrade); number { let viability = 0.5;
     
     // Fairness factor
     viability += (trade.fairnessScore - 0.5) * 0.4;
@@ -624,32 +605,32 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     viability += (highMotivationCount / trade.teams.length) * 0.2;
     
     // Complexity penalty
-    const complexityPenalty = trade.complexity === 'simple' ? 0 : ;
-                             trade.complexity === 'moderate' ? 0.1 : 0.2;
-    viability -= complexityPenalty;
+    const complexityPenalty = trade.complexity === 'simple' ? 0, ;
+                             trade.complexity === 'moderate' ? 0.1  : 0.2;
+    viability - = complexityPenalty;
     
     return Math.max(0, Math.min(1, viability));
    }
 
-  private identifyTradeRisks(trade: MultiTeamTrade); MultiTeamAnalysis['risks'] { const risks: MultiTeamAnalysis['risks'] = [];
+  private identifyTradeRisks(trade: MultiTeamTrade); MultiTeamAnalysis['risks'] {  const risks: MultiTeamAnalysis['risks'] = [];
     
     if (trade.executionDifficulty > 0.7) {
-      risks.push({type: 'execution';
+      risks.push({ type: 'execution';
   description: 'High execution difficulty may lead to trade falling through';
-        severity: trade.executionDifficulty
+        severity, trade.executionDifficulty
        });
     }
     
     if (trade.fairnessScore < 0.4) {
-      risks.push({type: 'value';
+      risks.push({ type: 'value';
   description: 'Unbalanced value may cause teams to reject the trade';
         severity: 0.6
       });
     }
     
-    const lowMotivationTeams = trade.teams.filter(t => t.motivationLevel === 'low').length;
-    if (lowMotivationTeams > 0) {
-      risks.push({type: 'vetoes';
+    const lowMotivationTeams  = trade.teams.filter(t => t.motivationLevel === 'low').length;
+    if (lowMotivationTeams > 0) { 
+      risks.push({ type: 'vetoes';
   description: `${lowMotivationTeams} team(s) may lack motivation to complete trade`,
         severity: lowMotivationTeams / trade.teams.length
       });
@@ -658,27 +639,27 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     return risks;
   }
 
-  private createExecutionTimeline(trade: MultiTeamTrade); MultiTeamAnalysis['timeline'] { const timeline: MultiTeamAnalysis['timeline'] = [];
+  private createExecutionTimeline(trade: MultiTeamTrade); MultiTeamAnalysis['timeline'] { const timeline: MultiTeamAnalysis['timeline']  = [];
     
-    timeline.push({
+    timeline.push({ 
       step: 1;
   action: 'Initial proposal and team notifications';
       participants: [trade.teams[0].teamId];
-  estimatedTime: 5
+  estimatedTime, 5
      });
     
     timeline.push({
       step: 2;
   action: 'Team discussions and preliminary agreements';
-      participants: trade.teams.map(t => t.teamId);
+      participants: trade.teams.map(t  => t.teamId);
   estimatedTime: trade.timeToComplete * 0.4
     });
     
-    timeline.push({
+    timeline.push({ 
       step: 3;
   action: 'Final negotiations and adjustments';
       participants: trade.teams.map(t => t.teamId);
-  estimatedTime: trade.timeToComplete * 0.3
+  estimatedTime, trade.timeToComplete * 0.3
     });
     
     timeline.push({
@@ -709,9 +690,9 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
   }
 
   private calculateTradeability(player: any); number {// Base tradeability on value and position
-    const baseScore = Math.min(1, parseFloat(player.trade_value) / 100);
-    const positionFactor = player.position === 'RB' ? 1.1 : ;
-                          player.position === 'WR' ? 1.0 : 0.9;
+    const baseScore  = Math.min(1, parseFloat(player.trade_value) / 100);
+    const positionFactor = player.position === 'RB' ? 1.1, ;
+                          player.position === 'WR' ? 1.0, 0.9;
     return baseScore * positionFactor;
   }
 
@@ -727,8 +708,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
 
   private async expandTrade(async expandTrade(
     baseTrade, MultiTeamTrade,
-  additionalTeam: { i,
-  d, string, name: string },
+  additionalTeam: { i: d, string, name, string },
     teamAnalysis, any,
   leagueId: string
   ): : Promise<): PromiseMultiTeamTrade | null> {; // Mock implementation for expanding trades to include additional teams
@@ -743,8 +723,7 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
     activeAnalyses: number }> { try {
     await database.query('SELECT 1');
       
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   cacheSize: this.tradeCache.size;
         maxTeams: this.MAX_TEAMS;
   activeAnalyses: 0
@@ -760,5 +739,5 @@ class MultiTeamTradeEngine { private tradeCache = new Map<string, MultiTeamTrade
 }
 
 // Singleton instance
-export const multiTeamTradeEngine = new MultiTeamTradeEngine();
+export const multiTeamTradeEngine  = new MultiTeamTradeEngine();
 export default multiTeamTradeEngine;

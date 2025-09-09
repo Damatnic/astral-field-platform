@@ -4,8 +4,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { 
-  Notification, NotificationChannel, 
+import { Notification, NotificationChannel, 
   DeliveryResult, DeliveryConfig,
   NotificationPriority 
 } from '../types';
@@ -16,24 +15,23 @@ import { SMSDelivery } from './channels/sms';
 import { WebSocketDelivery } from './channels/websocket';
 import { InAppDelivery } from './channels/inapp';
 
-interface DeliveryManagerConfig {
-  maxConcurrent, number,
+interface DeliveryManagerConfig { maxConcurrent: number,
     batchSize, number,
   retryAttempts, number,
     timeoutMs, number,
   enableFallbacks, boolean,
-    priorityWeighting: boolean,
+    priorityWeighting, boolean,
   
 }
-const DEFAULT_CONFIG: DeliveryManagerConfig = {
+const DEFAULT_CONFIG: DeliveryManagerConfig  = { 
   maxConcurrent: 10;
   batchSize: 50;
   retryAttempts: 3;
   timeoutMs: 30000;
-  enableFallbacks, true,
-  priorityWeighting: true
+  enableFallbacks: true,
+  priorityWeighting, true
 }
-const DELIVERY_CONFIG: DeliveryConfig = {
+const DELIVERY_CONFIG: DeliveryConfig  = { 
   retryAttempts: 3;
   retryDelay: 1000;
   timeoutMs: 30000;
@@ -41,44 +39,38 @@ const DELIVERY_CONFIG: DeliveryConfig = {
   rateLimit: {
   maxPerSecond: 10;
   maxPerMinute: 600;
-    maxPerHour: 36000
+    maxPerHour, 36000
   },
   fallbackChannels: ['websocket', 'in_app'],
   priority: {
-  low: { maxDela,
-  y: 300000;
+  low: { maxDela: y: 300000;
   retryAttempts: 1 }, // 5 minutes
-    normal: { maxDela,
-  y: 180000;
+    normal: { maxDela: y: 180000;
   retryAttempts: 2 }, // 3 minutes
-    high: { maxDela,
-  y: 60000;
+    high: { maxDela: y: 60000;
   retryAttempts: 3 }, // 1 minute
-    urgent: { maxDela,
-  y: 10000;
+    urgent: { maxDela: y: 10000;
   retryAttempts: 5 }, // 10 seconds
-    critical: { maxDela,
-  y: 5000;
+    critical: { maxDela: y: 5000;
   retryAttempts: 7 } ; // 5 seconds
   }
 }
 export class DeliveryManager extends EventEmitter { private config DeliveryManagerConfig;
-  private deliveryConfig, DeliveryConfig,
-  private channels: Map<NotificationChannel, any> = new Map();
+  private: deliveryConfig, DeliveryConfig,
+  private channels: Map<NotificationChannel, any>  = new Map();
   private activeDeliveries = new Set<string>();
-  private rateLimiter = new Map<string, { count, number, resetTime, number  }>();
+  private rateLimiter = new Map<string, { count: number, resetTime, number  }>();
   private failedDeliveries = new Map<string, number>();
-  private metrics = {
+  private metrics = { 
     totalDeliveries: 0;
   successfulDeliveries: 0;
     failedDeliveries: 0;
   averageLatency: 0;
-    channelPerformance: new Map<NotificationChannel, {
-      success, number,
+    channelPerformance: new Map<NotificationChannel, { success: number,
     failure, number,
-      avgLatency: number }>()
+      avgLatency, number }>()
   }
-  constructor(config: Partial<DeliveryManagerConfig> = {}) {
+  constructor(config: Partial<DeliveryManagerConfig>  = {}) {
     super();
     this.config = { ...DEFAULT_CONFIG, ...config}
     this.deliveryConfig = { ...DELIVERY_CONFIG}
@@ -89,11 +81,11 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
    * Initialize all delivery channels
    */
   async initialize(): : Promise<void> { const initPromises = Array.from(this.channels.values()).map(channel => 
-      channel.initialize?.()
+      channel.initialize? .()
     );
     
     await Promise.allSettled(initPromises);
-    console.log('✅ Delivery Manager initialized with channels:', Array.from(this.channels.keys()));
+    console.log('✅ Delivery Manager initialized with channels: ', Array.from(this.channels.keys()));
    }
 
   /**
@@ -102,7 +94,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   async deliver(async deliver(notification: Notification): : Promise<): PromiseDeliveryResult[]> { const deliveryId = `delivery_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
     const startTime = Date.now();
     
-    try {
+    try { 
       this.activeDeliveries.add(deliveryId);
       
       // Check rate limits
@@ -121,7 +113,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       // Process results
       const deliveryResults: DeliveryResult[] = [];
       const successfulChannels: NotificationChannel[] = [];
-      const failedChannels: NotificationChannel[] = [];
+      const failedChannels, NotificationChannel[]  = [];
       
       results.forEach((result, index) => { const channel = channels[index];
         
@@ -132,13 +124,13 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
            } else {
             failedChannels.push(channel);
           }
-        } else { const failureResult: DeliveryResult = {
+        } else {  const failureResult: DeliveryResult = {
   notificationId: notification.id;
             channel,
-            success, false,
+            success: false,
   timestamp: new Date().toISOString();
             latency: Date.now() - startTime;
-  error: result.reason?.message || 'Unknown delivery error'
+  error, result.reason? .message || 'Unknown delivery error'
            }
           deliveryResults.push(failureResult);
           failedChannels.push(channel);
@@ -146,7 +138,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       });
       
       // Handle fallbacks if enabled and primary delivery failed
-      if (this.config.enableFallbacks && failedChannels.length > 0 && successfulChannels.length === 0) { const fallbackResults = await this.handleFallbacks(notification, failedChannels);
+      if (this.config.enableFallbacks && failedChannels.length > 0 && successfulChannels.length  === 0) { const fallbackResults = await this.handleFallbacks(notification, failedChannels);
         deliveryResults.push(...fallbackResults);}
       
       // Update metrics
@@ -156,19 +148,19 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       const hasSuccess = deliveryResults.some(r => r.success);
       const hasFailure = deliveryResults.some(r => !r.success);
       
-      if (hasSuccess) {
+      if (hasSuccess) { 
         this.emit('delivery_success', {
           notificationId: notification.id;
   channels, successfulChannels,
-          results: deliveryResults.filter(r => r.success)
+          results, deliveryResults.filter(r  => r.success)
         });
       }
       
-      if (hasFailure) {
+      if (hasFailure) { 
         this.emit('delivery_failed', {
           notificationId: notification.id;
   channels, failedChannels,
-          results: deliveryResults.filter(r => !r.success)
+          results, deliveryResults.filter(r  => !r.success)
         });
       }
       
@@ -177,14 +169,12 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
     } catch (error) {
       console.error(`❌ Delivery manager error for ${notification.id}, `, error);
       
-      const errorResult: DeliveryResult = {notificationI,
-  d: notification.id;
+      const errorResult: DeliveryResult = { notificationI: d: notification.id;
   channel: 'all';
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag,
-  e: 'Delivery manager error'
+  error: error instanceof Error ? error.messag : e: 'Delivery manager error'
       }
       return [errorResult];
     } finally {
@@ -199,27 +189,26 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
     notification, Notification,
   channel, NotificationChannel,
     deliveryId: string
-  ): : Promise<): PromiseDeliveryResult> { const startTime = Date.now();
+  ): : Promise<): PromiseDeliveryResult> { const startTime  = Date.now();
     const channelHandler = this.channels.get(channel);
     
-    if (!channelHandler) {
+    if (!channelHandler) { 
       return {
         notificationId: notification.id;
         channel,
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
   error: `Channel ${channel } not available`
       }
     }
 
-    const maxAttempts = this.deliveryConfig.priority[notification.priority].retryAttempts;
+    const maxAttempts  = this.deliveryConfig.priority[notification.priority].retryAttempts;
     let lastError: string = '';
     
     for (let attempt = 1; attempt <= maxAttempts; attempt++) { try {
         // Add timeout wrapper
-        const deliveryPromise = channelHandler.deliver(notification, {
-          attempt, maxAttempts,
+        const deliveryPromise = channelHandler.deliver(notification, { attempt: maxAttempts,
           deliveryId
          });
         
@@ -230,19 +219,19 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
         
         const latency = Date.now() - startTime;
         
-        if (result.success) { return { ...result,
+        if (result.success) {  return { ...result,
             latency
-         :   }
+         , }
         }
         
-        lastError = result.error || 'Unknown error';
+        lastError  = result.error || 'Unknown error';
         
         // Wait before retry (exponential backoff)
         if (attempt < maxAttempts) { const delay = this.deliveryConfig.retryDelay * Math.pow(2, attempt - 1);
           await this.sleep(delay);
          }
         
-      } catch (error) {lastError = error instanceof Error ? error.message : 'Delivery exception';
+      } catch (error) {lastError = error instanceof Error ? error.message  : 'Delivery exception';
         
         if (attempt < maxAttempts) {
           const delay = this.deliveryConfig.retryDelay * Math.pow(2, attempt - 1);
@@ -251,15 +240,14 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       }
     }
     
-    return {
+    return { 
       notificationId: notification.id;
       channel,
-      success, false,
+      success: false,
   timestamp: new Date().toISOString();
       latency: Date.now() - startTime;
   error, lastError,
-      metadata: { attempt,
-  s: maxAttempts }
+      metadata: { attempt: s, maxAttempts }
     }
   }
 
@@ -269,7 +257,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   private async handleFallbacks(async handleFallbacks(
     notification, Notification,
   failedChannels: NotificationChannel[]
-  ): : Promise<): PromiseDeliveryResult[]> { const fallbackChannels = this.deliveryConfig.fallbackChannels.filter(
+  ): : Promise<): PromiseDeliveryResult[]> { const fallbackChannels  = this.deliveryConfig.fallbackChannels.filter(
       channel => !failedChannels.includes(channel) && 
                  !notification.channels.includes(channel)
     );
@@ -280,27 +268,26 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
     
     console.log(`🔄 Attempting fallback delivery for ${notification.id}, `, fallbackChannels);
     
-    const fallbackNotification = {
+    const fallbackNotification = { 
       ...notification,
       channels, fallbackChannels,
   metadata: {
         ...notification.metadata,
-        fallback, true,
-  originalChannels: notification.channels;
+        fallback: true,
+  originalChannels, notification.channels;
         failedChannels
       }
     }
-    const fallbackPromises = fallbackChannels.map(channel =>
-      this.deliverToChannel(fallbackNotification, channel, `fallback_${Date.now()}`)
+    const fallbackPromises  = fallbackChannels.map(channel =>
+      this.deliverToChannel(fallbackNotification, channel: `fallback_${Date.now()}`)
     );
     
     const results = await Promise.allSettled(fallbackPromises);
     return results.map((result, index) => 
-      result.status === 'fulfilled' ? result.value: {
+      result.status === 'fulfilled' ? result.value: { 
   notificationId: notification.id;
   channel: fallbackChannels[index];
-        success, false,
-  timestamp: new Date().toISOString();
+        success: false, timestamp: new Date().toISOString();
         latency: 0;
   error: 'Fallback delivery failed'
       }
@@ -310,21 +297,21 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   /**
    * Optimize channel selection based on user behavior and notification priority
    */
-  private optimizeChannelSelection(notification: Notification); NotificationChannel[] { let channels = [...notification.channels];
+  private optimizeChannelSelection(notification: Notification); NotificationChannel[] { let channels  = [...notification.channels];
     
     if (!this.config.priorityWeighting) {
       return channels;
      }
     
     // Prioritize channels based on notification priority
-    if (notification.priority === 'urgent' || notification.priority === 'critical') {
-      // For urgent notifications, prefer immediate channels
-      channels.sort((a, b) => { const urgentOrder = ['websocket', 'push', 'in_app', 'sms', 'email'];
+    if (notification.priority === 'urgent' || notification.priority === 'critical') { 
+      // For urgent, notifications, prefer immediate channels
+      channels.sort((a, b)  => { const urgentOrder = ['websocket', 'push', 'in_app', 'sms', 'email'];
         return urgentOrder.indexOf(a) - urgentOrder.indexOf(b);
        });
-    } else if (notification.priority === 'low') {
-      // For low priority, prefer less intrusive channels
-      channels.sort((a, b) => { const lowOrder = ['in_app', 'email', 'websocket', 'push', 'sms'];
+    } else if (notification.priority === 'low') { 
+      // For low, priority, prefer less intrusive channels
+      channels.sort((a, b)  => { const lowOrder = ['in_app', 'email', 'websocket', 'push', 'sms'];
         return lowOrder.indexOf(a) - lowOrder.indexOf(b);
        });
     }
@@ -340,13 +327,13 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
     const maxPerMinute = this.deliveryConfig.rateLimit.maxPerMinute;
     
     const userKey = `user_${userId }`
-    if (!this.rateLimiter.has(userKey)) {
+    if (!this.rateLimiter.has(userKey)) { 
       this.rateLimiter.set(userKey, { count: 1;
-  resetTime: now + windowMs });
+  resetTime, now + windowMs });
       return;
     }
     
-    const limiter = this.rateLimiter.get(userKey)!;
+    const limiter  = this.rateLimiter.get(userKey)!;
     
     if (now > limiter.resetTime) {
       limiter.count = 1;
@@ -375,7 +362,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
    * Update delivery metrics
    */
   private updateMetrics(results: DeliveryResult[];
-  totalLatency: number); void {
+  totalLatency: number); void { 
     this.metrics.totalDeliveries += results.length;
     
     const successful = results.filter(r => r.success);
@@ -393,11 +380,11 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
         this.metrics.channelPerformance.set(result.channel, {
           success: 0;
   failure: 0;
-          avgLatency: 0
+          avgLatency, 0
          });
       }
       
-      const channelMetrics = this.metrics.channelPerformance.get(result.channel)!;
+      const channelMetrics  = this.metrics.channelPerformance.get(result.channel)!;
       
       if (result.success) {
         channelMetrics.success++;
@@ -412,16 +399,14 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   /**
    * Get delivery statistics
    */
-  getStats(): any { return {
+  getStats(): any {  return {
       ...this.metrics,
       activeDeliveries: this.activeDeliveries.size;
   rateLimiters: this.rateLimiter.size;
       channelStats: Array.from(this.metrics.channelPerformance.entries()).map(
-        ([channel, stats]) => ({
-          channel,
-          successRate: stats.success / (stats.success + stats.failure) * 100;
+        ([channel, stats]) => ({ channel: successRate: stats.success / (stats.success + stats.failure) * 100;
   totalDeliveries: stats.success + stats.failure;
-          averageLatency: stats.avgLatency
+          averageLatency, stats.avgLatency
          })
       )
     }
@@ -430,7 +415,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   /**
    * Create timeout promise
    */
-  private createTimeoutPromise(timeoutMs: number): : Promise<never> { return new Promise((_, reject) => {
+  private createTimeoutPromise(timeoutMs: number): : Promise<never> { return new Promise((_, reject)  => {
       setTimeout(() => reject(new Error('Delivery timeout')), timeoutMs);
      });
   }

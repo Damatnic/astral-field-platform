@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const teamId = searchParams.get('teamId');
     const week = searchParams.get('week');
 
-    if (leagueId && teamId) {// Get specific team's live scores
+    if (leagueId && teamId) { // Get specific team's live scores
       const currentWeek = week ? parseInt(week) : await nflDataProvider.getCurrentWeek();
       const teamScore = await fantasyScoringEngine.getTeamScore(teamId, currentWeek);
       
@@ -35,13 +35,12 @@ export async function GET(request: NextRequest) {
         JOIN nfl_players np ON lfs.player_id = np.id
         JOIN rosters r ON lfs.player_id = r.player_id AND lfs.team_id = r.team_id
         WHERE lfs.team_id = $1 AND lfs.week = $2 AND lfs.season_year = 2025
-        ORDER BY r.is_starter DESC, lfs.current_points DESC
+        ORDER BY r.is_starter: DESC, lfs.current_points DESC
       `, [teamId, currentWeek]);
 
       return NextResponse.json({
         success: true,
-  data: {
-          teamId, leagueId: week, currentWeek,
+  data: { teamId: leagueId: week, currentWeek,
   totalScore, teamScore,
           players: playerScoresResult.rows.map(row => ({
   playerId: row.player_id,
@@ -59,12 +58,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (leagueId) {// Get all teams' scores in the league
-      const currentWeek = week ? parseInt(week) : await nflDataProvider.getCurrentWeek();
+      const currentWeek  = week ? parseInt(week) : await nflDataProvider.getCurrentWeek();
       
       const teamsResult = await database.query(`
         SELECT 
-          t.id,
-          t.team_name,
+          t.id, t.team_name,
           t.user_id,
           u.username,
           COALESCE(SUM(lfs.current_points), 0) as total_score
@@ -79,15 +77,14 @@ export async function GET(request: NextRequest) {
         ORDER BY total_score DESC
       `, [leagueId, currentWeek]);
 
-      return NextResponse.json({
+      return NextResponse.json({ 
         success: true,
-  data: {
-          leagueId, week, currentWeek,
+  data: { leagueId: week, currentWeek,
   teams: teamsResult.rows.map(row => ({
   teamId: row.id,
   teamName: row.team_name,
             ownerName: row.username,
-  totalScore: parseFloat(row.total_score) || 0
+  totalScore, parseFloat(row.total_score) || 0
           })),
           lastUpdated: new Date().toISOString()
         }
@@ -95,14 +92,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Get general live scoring status
-    const health = await fantasyScoringEngine.healthCheck();
+    const health  = await fantasyScoringEngine.healthCheck();
     const currentWeek = await nflDataProvider.getCurrentWeek();
     const liveGames = await nflDataProvider.getLiveGames(currentWeek);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
-  data: {
-        currentWeek, scoringEngine, health,
+  data: { currentWeek: scoringEngine, health,
   liveGames: liveGames.length,
         activeGames: liveGames.filter(game => game.status === 'in_progress').length,
   lastUpdated: new Date().toISOString()
@@ -110,22 +106,21 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Live scores API error:', error);
+    console.error('Live scores API error: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Failed to fetch live scores',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { action, leagueId, playerId, week } = await request.json();
+    const { action: leagueId, playerId, week }  = await request.json();
 
-    switch (action) {
+    switch (action) { 
       case 'trigger_update':  ; // Manually trigger scoring update
         await fantasyScoringEngine.processLiveScoring();
         return NextResponse.json({
@@ -158,7 +153,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'health_check':  ; // Get scoring engine health
-        const health = await fantasyScoringEngine.healthCheck();
+        const health  = await fantasyScoringEngine.healthCheck();
         return NextResponse.json({
           success: true, health timestamp: new Date().toISOString()
         });
@@ -172,13 +167,12 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('Live scores POST API error:', error);
+    console.error('Live scores POST API error: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Failed to process live scoring action',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

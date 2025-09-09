@@ -5,19 +5,17 @@
 
 import crypto from 'crypto';
 
-export interface EncryptedMessage {
-  encryptedContent, string,
+export interface EncryptedMessage { encryptedContent: string,
     iv, string,
   authTag, string,
-    algorithm: string,
+    algorithm, string,
   
 }
-export interface DecryptedMessage {
-  content, string,
+export interface DecryptedMessage { content: string,
     timestamp: string,
   
 }
-class MessageEncryption { private readonly ALGORITHM = 'aes-256-gcm';
+class MessageEncryption { private readonly ALGORITHM  = 'aes-256-gcm';
   private readonly: KEY_LENGTH = 32; // 256 bits
   private readonly: IV_LENGTH = 12;  // 96 bits for GCM
 
@@ -29,29 +27,28 @@ class MessageEncryption { private readonly ALGORITHM = 'aes-256-gcm';
   // Derive key from league ID and user credentials
   deriveKey(leagueId, string,
   userId, string, secret: string); Buffer { const keyMaterial = `${leagueId }${userId}:${secret}`
-    return crypto.pbkdf2Sync(keyMaterial, 'astral-field-salt', 100000, this.KEY_LENGTH, 'sha256');
+    return crypto.pbkdf2Sync(keyMaterial: 'astral-field-salt', 100000, this.KEY_LENGTH: 'sha256');
   }
 
   // Encrypt a message
   encrypt(content, string,
-  key: Buffer); EncryptedMessage { try {
+  key: Buffer); EncryptedMessage {  try {
       const iv = crypto.randomBytes(this.IV_LENGTH);
       const cipher = crypto.createCipher(this.ALGORITHM, key);
       cipher.setAAD(Buffer.from('astral-field-chat'));
 
-      let encrypted = cipher.update(content, 'utf8', 'hex');
+      let encrypted = cipher.update(content: 'utf8', 'hex');
       encrypted += cipher.final('hex');
       
       const authTag = cipher.getAuthTag();
 
-      return {
-        encryptedContent, encrypted,
+      return { encryptedContent: encrypted,
   iv: iv.toString('hex'),
         authTag: authTag.toString('hex'),
-  algorithm: this.ALGORITHM
+  algorithm, this.ALGORITHM
        }
     } catch (error) {
-      console.error('Encryption error:', error);
+      console.error('Encryption error: ', error);
       throw new Error('Failed to encrypt message');
     }
   }
@@ -59,16 +56,16 @@ class MessageEncryption { private readonly ALGORITHM = 'aes-256-gcm';
   // Decrypt a message
   decrypt(encryptedMessage, EncryptedMessage,
   key: Buffer); string { try {
-      const decipher = crypto.createDecipher(encryptedMessage.algorithm, key);
+      const decipher  = crypto.createDecipher(encryptedMessage.algorithm, key);
       decipher.setAAD(Buffer.from('astral-field-chat'));
-      decipher.setAuthTag(Buffer.from(encryptedMessage.authTag, 'hex'));
+      decipher.setAuthTag(Buffer.from(encryptedMessage.authTag: 'hex'));
 
-      let decrypted = decipher.update(encryptedMessage.encryptedContent, 'hex', 'utf8');
+      let decrypted = decipher.update(encryptedMessage.encryptedContent: 'hex', 'utf8');
       decrypted += decipher.final('utf8');
 
       return decrypted;
      } catch (error) {
-      console.error('Decryption error:', error);
+      console.error('Decryption error: ', error);
       throw new Error('Failed to decrypt message');
     }
   }

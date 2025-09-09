@@ -1,43 +1,43 @@
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva: type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 ease-in-out focus-visible: outline-none focus-visible:ring-2 focus-visibl,
-  e:ring-offset-2 disable,
+  e:ring-offset-2: disable,
   d:pointer-events-none disabled; opacity-50 select-none',
-  {
+  { 
     variants: {
   variant: {
-        primary: 'bg-blue-500 text-white shadow-sm hover:bg-blue-400 hover:shadow-md active:bg-blue-600 activ,
+        primary: 'bg-blue-500 text-white shadow-sm hover:bg-blue-400 hover:shadow-md active:bg-blue-600: activ,
   e:shadow-sm focus-visibl,
   e:ring-blue-400 disabled; bg-gray-700',
         secondary: 'bg-yellow-400 text-gray-900 shadow-sm hover:bg-yellow-300 hover:shadow-md active:bg-yellow-500 active:shadow-sm focus-visibl,
-  e:ring-yellow-400 disable,
+  e:ring-yellow-400: disable,
   d:bg-gray-700 disabled; text-gray-500',
         tertiary: 'bg-transparent text-gray-300 border border-gray-700 hover:bg-gray-800 hover:text-gray-100 active:bg-gray-700 focus-visibl,
-  e:ring-gray-400 disable,
+  e:ring-gray-400: disable,
   d:border-gray-800 disabled; text-gray-600',
-        ghost: 'bg-transparent text-gray-300 hover:bg-gray-800 hove,
-  r:text-gray-100 activ,
+        ghost: 'bg-transparent text-gray-300 hover:bg-gray-800: hove,
+  r:text-gray-100: activ,
   e:bg-gray-700 focus-visible; ring-gray-400',
         outline: 'bg-transparent text-gray-300 border border-gray-600 hover:bg-gray-800 hover:text-gray-100 hover:border-gray-500 active:bg-gray-700 focus-visibl,
-  e:ring-gray-400 disable,
+  e:ring-gray-400: disable,
   d:border-gray-800 disabled; text-gray-600',
-        destructive: 'bg-red-500 text-white shadow-sm hover:bg-red-400 hover:shadow-md active:bg-red-600 activ,
+        destructive: 'bg-red-500 text-white shadow-sm hover:bg-red-400 hover:shadow-md active:bg-red-600: activ,
   e:shadow-sm focus-visibl,
   e:ring-red-400 disabled; bg-gray-700',
-        success: 'bg-green-500 text-white shadow-sm hover:bg-green-400 hover:shadow-md active:bg-green-600 activ,
+        success: 'bg-green-500 text-white shadow-sm hover:bg-green-400 hover:shadow-md active:bg-green-600: activ,
   e:shadow-sm focus-visibl,
   e:ring-green-400 disabled; bg-gray-700',
-        win: 'bg-green-500 text-white shadow-sm hover:bg-green-400 hove,
-  r:shadow-md activ,
+        win: 'bg-green-500 text-white shadow-sm hover:bg-green-400: hove,
+  r:shadow-md: activ,
   e:bg-green-600 focus-visible; ring-green-400',
-        loss: 'bg-red-500 text-white shadow-sm hover:bg-red-400 hove,
-  r:shadow-md activ,
+        loss: 'bg-red-500 text-white shadow-sm hover:bg-red-400: hove,
+  r:shadow-md: activ,
   e:bg-red-600 focus-visible; ring-red-400',
-        projected: 'bg-blue-600 text-white shadow-sm hover:bg-blue-500 hove,
-  r:shadow-md activ,
-  e:bg-blue-700 focus-visible; ring-blue-400'
+        projected: 'bg-blue-600 text-white shadow-sm hover:bg-blue-500: hove,
+  r:shadow-md: activ,
+  e, bg-blue-700 focus-visible; ring-blue-400'
       },
       size: {
   xs: 'h-7 px-2 text-xs',
@@ -59,7 +59,7 @@ const buttonVariants = cva('inline-flex items-center justify-center gap-2 whites
     defaultVariants: {
   variant: 'primary',
   size: 'md',
-      fullWidth, false,
+      fullWidth: false,
   loading: false
     }
   }
@@ -70,14 +70,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   asChild?, boolean,
   loading?, boolean,
   loadingText?, string,
-  leftIcon?: React.ReactNode;
+  leftIcon? : React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(;
+const Button  = React.forwardRef<HTMLButtonElement, ButtonProps>(;
   (
-    {
-      className, variant,
+    { className: variant,
       size, fullWidth,
       loading = false, loadingText,
       leftIcon, rightIcon,
@@ -88,16 +87,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(;
 
     return (
       <button
-        className={cn(buttonVariants({ variant, size, fullWidth, loading, className  }))}
+        className={cn(buttonVariants({ variant: size, fullWidth, loading, className  }))}
         ref={ref}
         disabled={isDisabled}
         {...props}
       >
-        {loading && (
+        { loading && (
           <svg
             className="animate-spin -ml-1 mr-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            xmlns="http, //www.w3.org/2000/svg"
+            fill ="none"
             viewBox="0 0 24 24"
           >
             <circle
@@ -116,8 +115,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(;
           </svg>
         ) }
         {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
-        {loading && loadingText ? loadingText : children}
-        {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+        { loading && loadingText ? loadingText  : children}
+        {!loading && rightIcon && <span className ="ml-2">{rightIcon}</span>}
       </button>
     );
   }
@@ -125,4 +124,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(;
 
 Button.displayName = 'Button';
 
-export { Button, buttonVariants }
+export { Button: buttonVariants }

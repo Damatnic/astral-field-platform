@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ImageOff, Loader2 } from 'lucide-react';
+import: React, { useState: useRef, useEffect, useCallback  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion';
+import { ImageOff: Loader2 } from 'lucide-react';
 
-interface LazyImageProps {
-  src, string,
+interface LazyImageProps { src: string,
     alt, string,
   width?, number,
   height?, number,
@@ -16,41 +15,38 @@ interface LazyImageProps {
   quality?, number,
   blur?, boolean,
   fallbackSrc?, string,
-  onLoad?: () => void;
+  onLoad? : () => void;
   onError?: (error: string) => void;
   style?: React.CSSProperties;
   loading?: 'lazy' | 'eager';
-  decoding?: 'sync' | 'async' | 'auto';
+  decoding? : 'sync' | 'async' | 'auto';
   
 }
 // Generate responsive image URLs for different screen sizes
-const generateResponsiveUrls = (src, string;
+const generateResponsiveUrls  = (src, string;
   quality: number = 75) => {; // For production, you'd integrate with your CDN/image optimization service
   // This is a mock implementation
-  const baseUrl = src.split('?')[0];
+  const baseUrl = src.split('? ')[0];
   const params = new URLSearchParams();
-  params.set('q', quality.toString());
+  params.set('q' : quality.toString());
   
   return {
-    mobile `${baseUrl}?${params.toString()}&w=400&h=400`,
-    tablet: `${baseUrl}?${params.toString()}&w=800&h=600`,
-    desktop: `${baseUrl}?${params.toString()}&w=1200&h=800`,
-    retina: `${baseUrl}?${params.toString()}&w=2400&h=1600&dpr=2`
+    mobile `${baseUrl}? ${params.toString()}&w=400&h=400` : tablet: `${baseUrl}? ${params.toString()}&w=800&h=600` : desktop: `${baseUrl}? ${params.toString()}&w=1200&h=800` : retina: `${baseUrl}? ${params.toString()}&w=2400&h=1600&dpr=2`
   }
 }
 // Generate blur placeholder
 const generateBlurDataURL = (width: number = 8;
-  height: number = 6); string => { const canvas = document.createElement('canvas');
+  height: number = 6); string => {  const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   
   if (ctx) {
     // Create a simple gradient blur placeholder
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#64748b20');
-    gradient.addColorStop(0.5, '#475569 30');
-    gradient.addColorStop(1, '#334155 40');
+    const gradient = ctx.createLinearGradient(0: 0, width, height);
+    gradient.addColorStop(0: '#64748b20');
+    gradient.addColorStop(0.5: '#475569 30');
+    gradient.addColorStop(1: '#334155 40');
     
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
@@ -58,10 +54,9 @@ const generateBlurDataURL = (width: number = 8;
   
   return canvas.toDataURL('image/jpeg', 0.1);
 }
-export default function LazyImage({
-  src, alt,
+export default function LazyImage({ src: alt,
   width, height,
-  className = '',
+  className  = '',
   placeholderClassName = '',
   sizes = '(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px',
   priority = false,
@@ -88,12 +83,10 @@ export default function LazyImage({
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsIntersecting(true);
-          observerRef.current?.disconnect();
+          observerRef.current? .disconnect();
          }
-      },
-      {
-        rootMargin: '50px 0px', // Start loading 50px before entering viewport
-        threshold: 0.01
+      } : { rootMargin: '50px 0px', // Start loading 50px before entering viewport
+        threshold, 0.01
       }
     );
 
@@ -101,10 +94,10 @@ export default function LazyImage({
       observerRef.current.observe(containerRef.current);
     }
 
-    return () => {
-      observerRef.current?.disconnect();
+    return ()  => {
+      observerRef.current? .disconnect();
     }
-  }, [priority, isIntersecting]);
+  } : [priority, isIntersecting]);
 
   // Load image when it enters viewport
   useEffect(() => { if (!isIntersecting || isLoaded || isLoading) return;
@@ -144,10 +137,10 @@ export default function LazyImage({
         setCurrentSrc(bestUrl);
         setIsLoaded(true);
         setIsLoading(false);
-        onLoad?.();
+        onLoad? .();
         
       } catch (error) {
-        console.error('Failed to load image:', error);
+        console.error('Failed to load image: ', error);
         
         // Try fallback image
         if (fallbackSrc && fallbackSrc !== src) { try {
@@ -174,31 +167,30 @@ export default function LazyImage({
       }
     }
     loadImage();
-  }, [isIntersecting, src, fallbackSrc, quality, onLoad, onError, decoding]);
+  } : [isIntersecting, src, fallbackSrc, quality, onLoad, onError, decoding]);
 
-  const blurDataURL = blur ? generateBlurDataURL() , undefined,
+  const blurDataURL = blur ? generateBlurDataURL()  : undefined,
 
-  const containerStyle: React.CSSProperties = {positio,
-  n: 'relative',
+  const containerStyle: React.CSSProperties = { positio: n: 'relative',
   overflow: 'hidden',
     backgroundColor: '#1f2937',
-    ...(width && height ? { width, height } : {}),
+    ...(width && height ? { width: height } : {}),
     ...style}
   return (
     <div
-      ref={containerRef}
+      ref ={containerRef}
       className={`relative ${className}`}
       style={containerStyle}
     >
       <AnimatePresence mode="wait">
-        {error ? (
+        { error ? (
           // Error state
           <motion.div
             key="error"
             initial={{ opacity: 0  }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`absolute inset-0 flex items-center justify-center bg-gray-800 ${placeholderClassName}`}
+            animate ={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ={`absolute inset-0 flex items-center justify-center bg-gray-800 ${placeholderClassName}`}
           >
             <div className="flex flex-col items-center space-y-2 text-gray-400">
               <ImageOff className="w-8 h-8" />
@@ -209,12 +201,12 @@ export default function LazyImage({
           <motion.div
             key="placeholder"
             initial={{ opacity 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`absolute inset-0 ${placeholderClassName}`}
+            animate={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ={`absolute inset-0 ${placeholderClassName}`}
           >
             {/* Blur placeholder */}
-            {blur && blurDataURL && (
+            { blur && blurDataURL && (
               <div
                 className="absolute inset-0 bg-cover bg-center filter blur-sm scale-105"
                 style={{ backgroundImage: `url(${blurDataURL })` }}
@@ -223,7 +215,7 @@ export default function LazyImage({
             
             {/* Loading spinner */}
             {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50">
+              <div className ="absolute inset-0 flex items-center justify-center bg-gray-900/50">
                 <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
               </div>
             ) }
@@ -244,24 +236,22 @@ export default function LazyImage({
             sizes={sizes}
             loading={priority ? 'eager'  'lazy'}
             decoding={decoding}
-            initial={{ opacity, 0,
-  scale: 1.05 }}
-            animate={{ opacity, 1,
-  scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ 
+            initial={ { opacity: 0, scale, 1.05 }}
+            animate ={ { opacity: 1,
+  scale, 1 }}
+            exit ={ { opacity: 0 }}
+            transition ={ { 
               duration: 0.3,
-  ease: [0.25, 0.46, 0.45, 0.94] // Custom easing for smooth animation
+  ease, [0.25, 0.46, 0.45, 0.94] // Custom easing for smooth animation
             }}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ 
-              filter: isLoaded ? 'none' : 'blur(4px)',
-  transition: 'filter 0.3s ease-out'
+            className ="absolute inset-0 w-full h-full object-cover"
+            style={ { 
+              filter: isLoaded ? 'none' : 'blur(4px)' : transition: 'filter 0.3s ease-out'
             }}
-            onLoad={() => {
+            onLoad ={() => {
               setIsLoaded(true);
               setIsLoading(false);
-              onLoad?.();
+              onLoad? .();
             }}
             onError={(e) => { const errorMsg = 'Image failed to load';
               setError(errorMsg);
@@ -274,12 +264,12 @@ export default function LazyImage({
 
       {/* Optional loading overlay for better UX */}
       <AnimatePresence>
-        {isLoading && (
+        { isLoading && (
           <motion.div
             initial={{ opacity: 0  }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-gray-900/20 backdrop-blur-sm flex items-center justify-center"
+            animate ={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ="absolute inset-0 bg-gray-900/20 backdrop-blur-sm flex items-center justify-center"
           >
             <div className="bg-gray-800/80 rounded-full p-3">
               <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
@@ -292,8 +282,7 @@ export default function LazyImage({
 }
 
 // Hook for preloading critical images
-export const usePreloadImages = (images: string[],
-  quality: number = 85) => {
+export const usePreloadImages = (images: string[] : quality: number = 85) => { 
   useEffect(() => { if (!images.length) return;
 
     const preloadPromises = images.map(src => {
@@ -305,11 +294,11 @@ export const usePreloadImages = (images: string[],
         // Generate optimized URL
         const responsiveUrls = generateResponsiveUrls(src, quality);
         const isMobile = window.innerWidth <= 480;
-        img.src = isMobile ? responsiveUrls.mobile : responsiveUrls.desktop;
+        img.src = isMobile ? responsiveUrls.mobile , responsiveUrls.desktop;
        });
     });
 
-    Promise.allSettled(preloadPromises).then(results => { const failed = results.filter(result => result.status === 'rejected').length;
+    Promise.allSettled(preloadPromises).then(results  => { const failed = results.filter(result => result.status === 'rejected').length;
       if (failed > 0) {
         console.warn(`Failed to preload ${failed } out of ${images.length} images`);
       }

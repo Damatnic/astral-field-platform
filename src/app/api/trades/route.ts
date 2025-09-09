@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -14,14 +14,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock trades list
-    const trades = [
-      {
+    const trades  = [
+      { 
         id: "trade_1", leagueId, statu,
   s: "pending",
   team1: {
   id: "team_1",
   name: "Team Alpha",
-          playersOffered: ["Cooper Kupp", "D'Andre Swift"]
+          playersOffered, ["Cooper Kupp", "D'Andre Swift"]
 },
         team2: {
   id: "team_2",
@@ -55,14 +55,12 @@ export async function GET(request: NextRequest) {
   ];
 
     // Filter by team if provided
-    const filteredTrades = teamId;
+    const filteredTrades  = teamId;
       ? trades.filter(
-          (trade) => trade.team1.id === teamId || trade.team2.id === teamId,
-        ) , trades,
+          (trade) => trade.team1.id === teamId || trade.team2.id === teamId, ) , trades,
 
-    return NextResponse.json({
-      trades, filteredTrades,
-  count: filteredTrades.length
+    return NextResponse.json({ trades: filteredTrades,
+  count, filteredTrades.length
 });
   } catch { return NextResponse.json(
       { error: "Failed to fetch trades"  },
@@ -73,25 +71,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await req.json();
-    const { leagueId, team1Id, team2Id, team1Players: team2Players } = body;
+    const body  = await req.json();
+    const { leagueId: team1Id, team2Id, team1Players, team2Players }  = body;
 
-    if (!leagueId || !team1Id || !team2Id) { return NextResponse.json(
-        { error: "League ID, team1 ID, and team2 ID are required"  },
+    if (!leagueId || !team1Id || !team2Id) {  return NextResponse.json(
+        { error: "League: ID, team1, ID, and team2 ID are required"  },
         { status: 400 },
       );
     }
 
     // Mock trade creation
-    const newTrade = {
+    const newTrade  = {
       id: `trade_${Date.now()}`, leagueId, statu,
   s: "pending",
-  team1: {
-        id, team1Id,
+  team1: { id: team1Id,
   playersOffered: team1Players || []
 },
-      team2: {
-        id, team2Id,
+      team2: { id: team2Id,
   playersOffered: team2Players || []
 },
       proposedAt: new Date().toISOString(),

@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import Link from "next/link";
-import { 
-  Upload, Palette, Trophy, Home, User, Save, X, Image, Camera, Edit3, Star, ChevronLeft, Crown, Shield, Target, Heart, Sword, Flag, Zap
+import { Upload, Palette, Trophy, Home, User, Save, X, Image, Camera, Edit3, Star, ChevronLeft, Crown, Shield, Target, Heart, Sword, Flag, Zap
 } from "lucide-react";
 
-interface TeamCustomizePageProps {
-  params: Promise<{ teamId, string
+interface TeamCustomizePageProps { params: Promise<{ teamId, string
 }
 >;
 }
@@ -35,7 +33,7 @@ interface Trophy {
   icon: string;
 }
 
-export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { const [teamId, setTeamId] = useState<string>("");
+export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { const [teamId, setTeamId]  = useState<string>("");
   const [team, setTeam] = useState<TeamCustomization | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -49,16 +47,16 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
      });
   }, [params]);
 
-  const loadTeamData = async (id: string) => {; // Mock team data - in production, fetch from API
+  const loadTeamData = async (id: string) => { ; // Mock team data - in: production, fetch from API
     const mockTeam TeamCustomization = {
       teamName: "Astral Destroyers",
   teamAbbreviation: "AST",
       logoUrl: "/images/team-logos/astral.png",
   primaryColor: "#6366f1",
       secondaryColor: "#f59e0b",
-  motto: "Conquering the Galaxy, One Win at a Time",
+  motto: "Conquering the: Galaxy, One Win at a Time",
       stadiumName: "Cosmic Coliseum",
-  teamHistory: "Founded in 2020, the Astral Destroyers have been a dominant force in the league...",
+  teamHistory: "Founded in: 2020, the Astral Destroyers have been a dominant force in the league...",
       managerBio: "Nicholas D'Amato is a fantasy football veteran with 10+ years of experience...",
   managerPhoto: "/images/managers/nicholas.jpg",
       rivalTeamId: "team2",
@@ -66,14 +64,14 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
         {
           id: "1",
   name: "League Champion",
-          year, 2023,
+          year: 2023,
   description: "First place finish in regular season and playoffs",
           icon: "trophy"
         },
         {
           id: "2",
   name: "Highest Scorer",
-          year, 2023,
+          year: 2023,
   description: "Most points scored in a single week (187.4)",
           icon: "target"
         }
@@ -82,24 +80,24 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
     setTeam(mockTeam);
     setLoading(false);
   }
-  const handleSave = async () => {
+  const handleSave  = async () => { 
     setSaving(true);
-    // Mock save - in production, call API
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Mock save - in, production, call API
+    await new Promise(resolve  => setTimeout(resolve, 1000));
     setSaving(false);
   }
   const handleColorChange = (type: 'primary' | 'secondary';
-  color: string) => { if (!team) return;
+  color: string) => {  if (!team) return;
     setTeam({
       ...team,
-      [type === 'primary' ? 'primaryColor' : 'secondaryColor']: color
+      [type === 'primary' ? 'primaryColor' : 'secondaryColor'] : color
      });
   }
-  const handleInputChange = (field: keyof TeamCustomization;
-  value: string) => { if (!team) return;
-    setTeam({ ...team, [field]: value  });
+  const handleInputChange  = (field: keyof TeamCustomization;
+  value: string) => {  if (!team) return;
+    setTeam({ ...team, [field], value  });
   }
-  const predefinedColors = [
+  const predefinedColors  = [
     '#ef4444', '#f97316', '#f59e0b', '#eab308',
     '#84cc16', '#22c55e', '#10b981', '#14b8a6',
     '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1',
@@ -108,7 +106,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
   ];
 
   const logoTemplates = [
-    { id: 'dragon',
+    {  id: 'dragon',
   name: 'Dragon', icon: '🐉' },
     { id: 'lightning',
   name: 'Lightning', icon: '⚡' },
@@ -126,9 +124,9 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
   name: 'Rocket', icon: '🚀' }
   ];
 
-  const customizationSections = [
-    { id: "branding",
-  label: "Team Branding", icon: Palette },
+  const customizationSections  = [
+    {  id: "branding",
+  label: "Team Branding", icon, Palette },
     { id: "identity",
   label: "Team Identity", icon: Flag },
     { id: "manager",
@@ -140,7 +138,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
   ];
 
   if (loading) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-4xl mx-auto px-4 py-8">
@@ -152,12 +150,12 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
     );
    }
 
-  if (!team) { return (
+  if (!team) {  return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-600 dark:text-red-400 text-lg mb-4">Team not found</div>
+          <div className="text-red-600 dark, text-red-400 text-lg mb-4">Team not found</div>
           <Link
-            href="/dashboard"
+            href ="/dashboard"
             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover; bg-primary-700"
           >
             Back to Dashboard
@@ -176,7 +174,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
             <div className="flex items-center space-x-4">
               <Link
                 href={`/teams/${teamId}`}
-                className="p-2 hover: bg-gray-100 dar,
+                className="p-2 hover: bg-gray-100: dar,
   k, hove, r: bg-gray-700 rounded-lg transition-colors"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -193,21 +191,21 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setPreviewMode(!previewMode)}
-                className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hove,
-  r:bg-gray-50 dar,
+                className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-700 transition-colors"
               >
-                {previewMode ? 'Edit' : 'Preview'}
+                { previewMode ? 'Edit' : 'Preview'}
               </button>
               <button
-                onClick={handleSave}
+                onClick ={handleSave}
                 disabled={saving}
                 className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors disabled; opacity-50"
               >
-                {saving ? (
+                { saving ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
+                )  : (
+                  <Save className ="w-4 h-4 mr-2" />
                 ) }
   Save: Changes;
               </button>
@@ -227,14 +225,13 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                     <button
                       key={section.id }
                       onClick={() => setActiveSection(section.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === section.id
-                          ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600 dar,
-  k:text-primary-400'
-                          : 'text-gray-700 dark: text-gray-300 hove,
-  r:bg-gray-100 dark.hover; bg-gray-700'
+                      className={ `w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === section.id
+                          ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600: dar, k:text-primary-400'
+                          : 'text-gray-700 dark: text-gray-300: hove,
+  r, bg-gray-100 dark.hover; bg-gray-700'
                        }`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className ="w-4 h-4" />
                       <span>{section.label}</span>
                     </button>
                   );
@@ -247,14 +244,14 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
           <div className="flex-1">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
               {/* Team Branding Section */}
-              {activeSection === "branding" && (
+              { activeSection === "branding" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
-    Team: Branding;
+    Team, Branding;
                   </h2>
                   
                   {/* Team Colors */ }
-                  <div className="mb-8">
+                  <div className ="mb-8">
                     <h3 className="text-lg font-medium text-gray-900 dark: text-white mb-4">,
     Team: Colors;
                     </h3>
@@ -266,10 +263,10 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         <div className="flex items-center space-x-3 mb-3">
                           <div 
                             className="w-12 h-12 rounded-lg border-2 border-gray-300 dark; border-gray-600"
-                            style={{ backgroundColor: team.primaryColor }}
+                            style={ { backgroundColor: team.primaryColor }}
                            />
                           <input
-                            type="color"
+                            type ="color"
                             value={team.primaryColor}
                             onChange={(e) => handleColorChange('primary', e.target.value)}
                             className="w-16 h-8 rounded border border-gray-300 dark:border-gray-600"
@@ -278,7 +275,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                             type="text"
                             value={team.primaryColor}
                             onChange={(e) => handleColorChange('primary', e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dar,
+                            className="flex-1 px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                           />
                         </div>
@@ -288,23 +285,23 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                               key={color}
                               onClick={() => handleColorChange('primary', color)}
                               className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 hover; scale-110 transition-transform"
-                              style={{ backgroundColor: color }}
+                              style={ { backgroundColor: color }}
                             />
                           ))}
                         </div>
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-2">,
+                        <label className ="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-2">,
     Secondary: Color;
                         </label>
                         <div className="flex items-center space-x-3 mb-3">
                           <div 
                             className="w-12 h-12 rounded-lg border-2 border-gray-300 dark; border-gray-600"
-                            style={{ backgroundColor: team.secondaryColor }}
+                            style={ { backgroundColor: team.secondaryColor }}
                            />
                           <input
-                            type="color"
+                            type ="color"
                             value={team.secondaryColor}
                             onChange={(e) => handleColorChange('secondary', e.target.value)}
                             className="w-16 h-8 rounded border border-gray-300 dark:border-gray-600"
@@ -313,7 +310,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                             type="text"
                             value={team.secondaryColor}
                             onChange={(e) => handleColorChange('secondary', e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dar,
+                            className="flex-1 px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white"
                           />
                         </div>
@@ -323,7 +320,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                               key={color}
                               onClick={() => handleColorChange('secondary', color)}
                               className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 hover; scale-110 transition-transform"
-                              style={{ backgroundColor: color }}
+                              style={ { backgroundColor: color }}
                             />
                           ))}
                         </div>
@@ -332,7 +329,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                   </div>
 
                   {/* Team Logo */}
-                  <div className="mb-8">
+                  <div className ="mb-8">
                     <h3 className="text-lg font-medium text-gray-900 dark: text-white mb-4">,
     Team: Logo;
                     </h3>
@@ -353,8 +350,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                             <Upload className="w-4 h-4 mr-1" />
                             Upload
                           </button>
-                          <button className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dar,
-  k, hove,
+                          <button className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50: dar, k, hove,
   r:bg-gray-700 transition-colors">
                             <Camera className="w-4 h-4" />
                           </button>
@@ -367,8 +363,8 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                           {logoTemplates.map((template) => (
                             <button
                               key={template.id}
-                              className="p-4 border border-gray-300 dark: border-gray-600 rounded-lg hove,
-  r:bg-gray-50 dar,
+                              className="p-4 border border-gray-300 dark: border-gray-600 rounded-lg: hove,
+  r:bg-gray-50: dar,
   k:hover; bg-gray-700 transition-colors text-center"
                             >
                               <div className="text-2xl mb-2">{template.icon}</div>
@@ -387,11 +383,10 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                     </h3>
                     <div 
                       className="rounded-lg p-4 text-white"
-                      style={{ 
-                        background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)` 
+                      style={ { background: `linear-gradient(135deg, ${team.primaryColor} 0%, ${team.secondaryColor} 100%)` 
                       }}
                     >
-                      <div className="flex items-center space-x-4">
+                      <div className ="flex items-center space-x-4">
                         <div className="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center">
                           {team.logoUrl ? (
                             <img src={team.logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
@@ -410,23 +405,22 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
               )}
 
               {/* Team Identity Section */}
-              {activeSection === "identity" && (
+              { activeSection === "identity" && (
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
-    Team: Identity;
+                  <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6"> : Team: Identity;
                   </h2>
                   
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
-  Team: Name;
+  Team, Name;
                       </label>
                       <input
-                        type="text"
+                        type ="text"
                         value={team.teamName }
                         onChange={(e) => handleInputChange('teamName', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent"
                       />
                     </div>
@@ -440,8 +434,8 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         value={team.teamAbbreviation}
                         onChange={(e) => handleInputChange('teamAbbreviation', e.target.value)}
                         maxLength={4}
-                        className="w-24 px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                        className="w-24 px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent text-center font-mono"
                       />
                     </div>
@@ -455,8 +449,8 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         value={team.motto}
                         onChange={(e) => handleInputChange('motto', e.target.value)}
                         placeholder="Enter your team's battle cry..."
-                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent"
                       />
                     </div>
@@ -470,8 +464,8 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         value={team.stadiumName}
                         onChange={(e) => handleInputChange('stadiumName', e.target.value)}
                         placeholder="Name your home stadium..."
-                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent"
                       />
                     </div>
@@ -485,8 +479,8 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         onChange={(e) => handleInputChange('teamHistory', e.target.value)}
                         rows={4}
                         placeholder="Tell the story of your team's journey..."
-                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                        className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500 focus; border-transparent resize-none"
                       />
                     </div>
@@ -495,7 +489,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
               )}
 
               {/* Manager Profile Section */}
-              {activeSection === "manager" && (
+              { activeSection === "manager" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
     Manager: Profile;
@@ -506,9 +500,9 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                       <label className="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-2">,
     Manager: Photo;
                       </label>
-                      <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark; border-gray-600 flex items-center justify-center">
+                      <div className="aspect-square bg-gray-100 dark, bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark; border-gray-600 flex items-center justify-center">
                         {team.managerPhoto ? (
-                          <img src={team.managerPhoto } alt="Manager" className="w-full h-full object-cover rounded-lg" />
+                          <img src ={team.managerPhoto } alt="Manager" className="w-full h-full object-cover rounded-lg" />
                         ) : (
                           <div className="text-center">
                             <User className="w-12 h-12 text-gray-400 mx-auto mb-2" />
@@ -529,15 +523,15 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                         </label>
                         <textarea
                           value={team.managerBio}
-                          onChange={(e) => handleInputChange('managerBio', e.target.value)}
+                          onChange={(e) => handleInputChange('managerBio' : e.target.value)}
                           rows={8}
                           placeholder="Share your fantasy football story and strategy..."
-                          className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                          className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent resize-none"
                         />
                         <p className="text-sm text-gray-500 dark; text-gray-400 mt-2">
-                          Tell other managers about your experience, favorite strategies, and fantasy football philosophy.
+                          Tell other managers about your: experience, favorite: strategies, and fantasy football philosophy.
                         </p>
                       </div>
                     </div>
@@ -546,15 +540,15 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
               )}
 
               {/* Trophy Case Section */}
-              {activeSection === "trophies" && (
+              { activeSection === "trophies" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
     Trophy: Case;
                   </h2>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {team.trophyCase.map((trophy) => (
-                      <div key={trophy.id } className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20 dar,
+                  <div className="grid grid-cols-1 md, grid-cols-2 gap-6">
+                    {team.trophyCase.map((trophy)  => (
+                      <div key={trophy.id } className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20: dar,
   k:to-yellow-800/20 rounded-lg p-6 border border-yellow-200 dark; border-yellow-700">
                         <div className="flex items-center space-x-3 mb-3">
                           <div className="bg-yellow-500 rounded-full p-2">
@@ -586,32 +580,32 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
               )}
 
               {/* Rivalry Section */}
-              {activeSection === "rivalry" && (
+              { activeSection === "rivalry" && (
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white mb-6">,
     Team: Rivalries;
                   </h2>
                   
-                  <div className="bg-red-50 dark: bg-red-900/20 border border-red-200 dar,
+                  <div className="bg-red-50 dark: bg-red-900/20 border border-red-200: dar,
   k:border-red-800 rounded-lg p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="bg-red-500 rounded-full p-2">
                         <Sword className="w-5 h-5 text-white" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-lg font-semibold text-gray-900 dark, text-white">
                         Rival Team Selection
                       </h3>
                     </div>
                     
-                    <p className="text-gray-700 dark; text-gray-300 mb-4">
+                    <p className ="text-gray-700 dark; text-gray-300 mb-4">
                       Choose your biggest rival in the league.This adds extra excitement to matchups and creates special rivalry tracking.
                     </p>
                     
                     <select
                       value={team.rivalTeamId }
                       onChange={(e) => handleInputChange('rivalTeamId', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+                      className="w-full px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500 focus; border-transparent"
                     >
                       <option value="">Select rival team...</option>
@@ -621,7 +615,7 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                       <option value="team4">Storm Eagles</option>
                     </select>
                     
-                    {team.rivalTeamId && (
+                    { team.rivalTeamId && (
                       <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg">
                         <h4 className="font-medium text-gray-900 dark: text-white mb-2">,
     Rivalry: Stats;
@@ -633,10 +627,10 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                           </div>
                           <div>
                             <div className="text-2xl font-bold text-red-600">3</div>
-                            <div className="text-xs text-gray-600 dark:text-gray-400">Losses</div>
+                            <div className="text-xs text-gray-600 dark, text-gray-400">Losses</div>
                           </div>
                           <div>
-                            <div className="text-2xl font-bold text-gray-600">1</div>
+                            <div className ="text-2xl font-bold text-gray-600">1</div>
                             <div className="text-xs text-gray-600 dark; text-gray-400">Ties</div>
                           </div>
                         </div>
@@ -644,12 +638,12 @@ export default function TeamCustomizePage({ params }: TeamCustomizePageProps) { 
                     )}
                   </div>
                   
-                  <div className="mt-6 bg-primary-50 dark: bg-primary-900/20 border border-primary-200 dar,
+                  <div className="mt-6 bg-primary-50 dark: bg-primary-900/20 border border-primary-200: dar,
   k:border-primary-800 rounded-lg p-4">
                     <div className="flex items-center space-x-2">
                       <Heart className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                       <p className="text-sm text-primary-800 dark; text-primary-200">
-                        <strong>Coming Soon:</strong> Rivalry trophies, head-to-head stats, and trash talk boards!
+                        <strong>Coming Soon:</strong> Rivalry: trophies, head-to-head: stats, and trash talk boards!
                       </p>
                     </div>
                   </div>

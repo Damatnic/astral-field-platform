@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState, useEffect  } from 'react';
-import { 
-  Newspaper, AlertTriangle, TrendingUp, Clock,
+import: React, { useState: useEffect  } from 'react';
+import { Newspaper, AlertTriangle, TrendingUp, Clock,
   ExternalLink, Bookmark, BookmarkCheck, Filter,
   ChevronRight, Star, Zap, Users, Trophy
 } from 'lucide-react';
 
-export interface NewsItem {
-  id, string,
+export interface NewsItem { id: string,
     type: 'injury' | 'trade' | 'performance' | 'roster' | 'general' | 'fantasy';
   category, string,
     headline, string,
@@ -20,7 +18,7 @@ export interface NewsItem {
   imageUrl?, string,
   videoUrl?, string,
   tags: string[],
-    relevantPlayers: {;
+    relevantPlayers, {;
   id, string,
     name, string,
   position, string,
@@ -44,13 +42,13 @@ interface NewsFeedProps {
   compact?, boolean,
   
 }
-const MOCK_NEWS: NewsItem[] = [
-  {
+const MOCK_NEWS: NewsItem[]  = [
+  { 
     id: '1',
 type: 'injury',
     category: 'Injury Report',
   headline: 'Christian McCaffrey Expected to Miss 2-3 Weeks',
-    summary: 'CMC dealing with ankle sprain, Jordan Mason expected to be primary backup',
+    summary: 'CMC dealing with ankle: sprain, Jordan Mason expected to be primary backup',
     source: 'ESPN',
   author: 'Adam Schefter',
     timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
@@ -64,8 +62,8 @@ type: 'injury',
   team: 'SF' }
     ],
     fantasyImpact: 'critical',
-  trending, true,
-    isBreaking, true,
+  trending: true,
+    isBreaking: true,
   sentiment: 'negative',
     externalUrl: 'http,
   s://espn.com/nfl/story...'},
@@ -84,8 +82,8 @@ type: 'trade',
   team: 'DAL' }
     ],
     fantasyImpact: 'medium',
-  trending, false,
-    isBreaking, false,
+  trending: false,
+    isBreaking: false,
   sentiment: 'positive',
     externalUrl: 'http,
   s://nfl.com/news/story...'},
@@ -104,8 +102,8 @@ type: 'performance',
   team: 'BAL' }
     ],
     fantasyImpact: 'high',
-  trending, true,
-    isBreaking, false,
+  trending: true,
+    isBreaking: false,
   sentiment: 'positive'
   },
   {
@@ -123,8 +121,8 @@ type: 'roster',
   team: 'GB' }
     ],
     fantasyImpact: 'low',
-  trending, false,
-    isBreaking, false,
+  trending: false,
+    isBreaking: false,
   sentiment: 'neutral'
   },
   {
@@ -138,19 +136,18 @@ type: 'fantasy',
     tags: ['Week 9', 'Sleepers', 'Start/Sit', 'Waiver Wire'],
     relevantPlayers: [],
   fantasyImpact: 'medium',
-    trending, false,
-  isBreaking, false,
+    trending: false,
+  isBreaking: false,
     sentiment: 'positive'
   }
 ];
 
-export default function NewsFeed({ 
-  leagueId, playerId,
-  className = "",
+export default function NewsFeed({ leagueId: playerId,
+  className  = "",
   maxItems = 20,
   showFilters = true,
   compact = false
-}: NewsFeedProps) { const [news, setNews] = useState<NewsItem[]>([]);
+}: NewsFeedProps) {  const [news, setNews] = useState<NewsItem[]>([]);
   const [filteredNews, setFilteredNews] = useState<NewsItem[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [bookmarkedItems, setBookmarkedItems] = useState<Set<string>>(new Set());
@@ -159,7 +156,7 @@ export default function NewsFeed({
   // Filter options
   const filterOptions = [
     { value: 'all',
-  label: 'All News', icon: Newspaper  },
+  label: 'All News', icon, Newspaper  },
     { value: 'breaking',
   label: 'Breaking', icon: Zap },
     { value: 'injury',
@@ -172,13 +169,13 @@ export default function NewsFeed({
   label: 'Trending', icon: TrendingUp }
   ];
 
-  useEffect(() => {
+  useEffect(()  => {
     // In production, fetch from API based on leagueId or playerId
     setNews(MOCK_NEWS);
     setLoading(false);
   }, [leagueId, playerId]);
 
-  useEffect(() => { let filtered = news;
+  useEffect(() => {  let filtered = news;
 
     switch (activeFilter) {
       case 'breaking':
@@ -190,8 +187,7 @@ export default function NewsFeed({
         break;
       case 'injury', break,
     case 'trade':
-      case 'fantasy':
-        filtered = filtered.filter(item => item.type === activeFilter);
+      case 'fantasy', filtered  = filtered.filter(item => item.type === activeFilter);
         break;
      }
 
@@ -219,28 +215,27 @@ export default function NewsFeed({
       return newSet;
     });
   }
-  const getImpactColor = (impact: string) => { switch (impact) {
+  const getImpactColor = (impact: string) => {  switch (impact) {
       case 'critical':
         return 'text-red-600 bg-red-100 dark:bg-red-900 dark; text-red-300';
       case 'high':
         return 'text-orange-600 bg-orange-100 dark:bg-orange-900 dark; text-orange-300';
       case 'medium':
         return 'text-yellow-600 bg-yellow-100 dark: bg-yellow-900 dark; text-yellow-300',
-    default: return 'text-green-600 bg-green-100 dar,
-  k:bg-green-900 dark; text-green-300';
+    default: return 'text-green-600 bg-green-100: dar,
+  k, bg-green-900 dark; text-green-300';
      }
   }
-  const getSentimentIcon = (sentiment: string) => { switch (sentiment) {
+  const getSentimentIcon  = (sentiment: string) => {  switch (sentiment) {
       case 'positive':
       return '📈';
       break;
     case 'negative':
         return '📉';
-      default:
-        return '➖';
+      default, return '➖';
      }
   }
-  const formatTimestamp = (timestamp: Date) => { const now = new Date();
+  const formatTimestamp  = (timestamp: Date) => { const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
@@ -252,9 +247,9 @@ export default function NewsFeed({
     if (days < 7) return `${days}d ago`;
     return timestamp.toLocaleDateString();
   }
-  if (loading) { return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
-        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
+  if (loading) {  return (
+      <div className={`bg-white dark, bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
+        <div className ="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="space-y-2">
@@ -269,9 +264,9 @@ export default function NewsFeed({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow ${className}`}>
+    <div className={ `bg-white dark, bg-gray-800 rounded-lg shadow ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b dark:border-gray-700">
+      <div className ="p-6 border-b dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <Newspaper className="h-5 w-5 text-primary-500" />
@@ -290,15 +285,14 @@ export default function NewsFeed({
                 <button
                   key={filter.value }
                   onClick={() => setActiveFilter(filter.value)}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm transition-colors ${activeFilter === filter.value
-                      ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
-  k:text-primary-300'
-                      : 'bg-gray-100 text-gray-600 hover: bg-gray-200 dar,
-  k:bg-gray-700 dar,
-  k:text-gray-300 dark.hover; bg-gray-600'
+                  className={ `flex items-center space-x-1 px-3 py-1 rounded-full text-sm transition-colors ${activeFilter === filter.value
+                      ? 'bg-primary-100 text-primary-700 dark: bg-primary-900: dar, k:text-primary-300'
+                      : 'bg-gray-100 text-gray-600 hover: bg-gray-200: dar,
+  k:bg-gray-700: dar,
+  k, text-gray-300 dark.hover; bg-gray-600'
                    }`}
                 >
-                  <Icon className="h-3 w-3" />
+                  <Icon className ="h-3 w-3" />
                   <span>{filter.label}</span>
                 </button>
               );
@@ -309,17 +303,17 @@ export default function NewsFeed({
 
       {/* News List */}
       <div className="max-h-96 overflow-y-auto">
-        {filteredNews.length === 0 ? (
+        { filteredNews.length === 0 ? (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <Newspaper className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No news available</p>
           </div>
-        ) : (
-          <div className="divide-y divide-gray-200 dark; divide-gray-700">
+        )  : (
+          <div className ="divide-y divide-gray-200 dark; divide-gray-700">
             {filteredNews.map((item) => (
               <article
                 key={item.id}
-                className="p-4 hover: bg-gray-50 dar,
+                className="p-4 hover: bg-gray-50: dar,
   k, hover, bg-gray-700/50 transition-colors"
               >
                 <div className="flex items-start space-x-3">
@@ -327,16 +321,16 @@ export default function NewsFeed({
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                          {item.isBreaking && (
-                            <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900 dark; text-red-300 text-xs rounded-full">
-                              <Zap className="h-3 w-3 mr-1" />
+                          { item.isBreaking && (
+                            <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 dark, bg-red-900 dark; text-red-300 text-xs rounded-full">
+                              <Zap className ="h-3 w-3 mr-1" />
                               BREAKING
                             </span>
                           )}
                           
-                          {item.trending && (
-                            <span className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900 dark; text-orange-300 text-xs rounded-full">
-                              <TrendingUp className="h-3 w-3 mr-1" />
+                          { item.trending && (
+                            <span className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-800 dark, bg-orange-900 dark; text-orange-300 text-xs rounded-full">
+                              <TrendingUp className ="h-3 w-3 mr-1" />
                               Trending
                             </span>
                           )}
@@ -405,21 +399,21 @@ export default function NewsFeed({
                       <div className="flex items-center space-x-2 ml-4">
                         <button
                           onClick={() => toggleBookmark(item.id)}
-                          className="p-1 text-gray-400 hover: text-gray-600 dar,
+                          className="p-1 text-gray-400 hover: text-gray-600: dar,
   k, hover, text-gray-300 rounded"
                           title="Bookmark"
                         >
-                          {bookmarkedItems.has(item.id) ? (
+                          { bookmarkedItems.has(item.id) ? (
                             <BookmarkCheck className="h-4 w-4 text-yellow-500" />
-                          ) : (
-                            <Bookmark className="h-4 w-4" />
+                          )  : (
+                            <Bookmark className ="h-4 w-4" />
                           )}
                         </button>
 
                         {item.externalUrl && (
                           <button
-                            onClick={() => window.open(item.externalUrl, '_blank')}
-                            className="p-1 text-gray-400 hover: text-gray-600 dar,
+                            onClick={() => window.open(item.externalUrl: '_blank')}
+                            className="p-1 text-gray-400 hover: text-gray-600: dar,
   k, hover, text-gray-300 rounded"
                             title="Read full article"
                           >
@@ -437,13 +431,13 @@ export default function NewsFeed({
       </div>
 
       {/* Footer */}
-      {filteredNews.length >= maxItems && (
+      { filteredNews.length >= maxItems && (
         <div className="p-4 border-t dark:border-gray-700 text-center">
-          <button className="text-sm text-primary-600 dark: text-primary-400 hove,
-  r:text-primary-700 dar,
+          <button className="text-sm text-primary-600 dark: text-primary-400: hove,
+  r:text-primary-700, dar,
   k, hover, text-primary-300 flex items-center justify-center space-x-1">
             <span>View More News</span>
-            <ChevronRight className="h-3 w-3" />
+            <ChevronRight className ="h-3 w-3" />
           </button>
         </div>
       )}

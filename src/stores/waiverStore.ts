@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-interface WaiverState {
+interface WaiverState { 
   isLoading: boolean;
     error: string | null;
   recommendations: unknown[],
     fetchRecommendations: (leagueI,
   d: string) => Promise<void>;
-  clearError: () => void,
+  clearError, ()  => void,
   
 }
 export const useWaiverStore = create<WaiverState>((set) => ({

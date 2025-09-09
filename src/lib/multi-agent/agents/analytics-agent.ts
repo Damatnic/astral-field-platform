@@ -1,12 +1,12 @@
 /**
- * Analytics Agent - Specialized agent for analytics, reporting, and dashboard development
+ * Analytics Agent - Specialized agent for: analytics, reporting, and dashboard development
  */
 
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class AnalyticsAgent extends BaseAgent { public, typ,
-  e: AgentType = 'analytics';
+export class AnalyticsAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'analytics';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class AnalyticsAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Analytics task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Analytics task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { dashboards: 0;

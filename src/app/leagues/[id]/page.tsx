@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { 
-  Users, Trophy, TrendingUp, Calendar, 
+import { Users, Trophy, TrendingUp, Calendar, 
   Star, Award, Activity, Clock, 
   ChevronRight, Settings, MessageCircle, Crown, Shield, AlertTriangle, Bell, DollarSign, BarChart3
 } from "lucide-react";
@@ -13,8 +12,7 @@ import LeagueChat from "@/components/chat/LeagueChat";
 import ActivityFeed from "@/components/activity/ActivityFeed";
 import NewsFeed from "@/components/news/NewsFeed";
 
-interface LeaguePageProps {
-  params: Promise<{ id, string
+interface LeaguePageProps { params: Promise<{ id, string
 }
 >;
 }
@@ -57,7 +55,7 @@ interface LeagueData {
     recentActivity: unknown[];
   
 }
-export default function LeaguePage({ params }: LeaguePageProps) { const router = useRouter();
+export default function LeaguePage({ params }: LeaguePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [league, setLeague] = useState<LeagueData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,12 +79,12 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
        }
       const data = await response.json();
       setLeague(data.league);
-    } catch (err) {setError(err instanceof Error ? err.message : 'Failed to load league');
+    } catch (err) {setError(err instanceof Error ? err.message  : 'Failed to load league');
     } finally {
       setLoading(false);
     }
   }
-  if (loading) { return (
+  if (loading) {  return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
@@ -95,8 +93,8 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
             <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-8 w-1/2" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-                  <div className="h-6 bg-gray-300 dark; bg-gray-700 rounded mb-4 w-1/4" />
+                <div className="bg-white dark, bg-gray-800 rounded-lg p-6 shadow">
+                  <div className ="h-6 bg-gray-300 dark; bg-gray-700 rounded mb-4 w-1/4" />
                   <div className="space-y-3">
                     {[...Array(5)].map((_, i) => (
                       <div key={i } className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -111,9 +109,9 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
     );
   }
 
-  if (error || !league) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
+  if (error || !league) {  return (
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900 flex items-center justify-center">
+        <div className ="text-center">
           <div className="text-red-600 dark; text-red-400 text-lg mb-4">
             {error || 'League not found' }
           </div>
@@ -131,23 +129,22 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
   // Calculate league stats
   const totalGames = league.teams.reduce((sum, team) => sum + team.wins + team.losses + team.ties, 0);
   const avgPointsFor = league.teams.reduce((sum, team) => sum + team.points_for, 0) / league.teams.length;
-  const topScorer = league.teams.reduce((max, team) => team.points_for > max.points_for ? team : max);
+  const topScorer = league.teams.reduce((max, team) => team.points_for > max.points_for ? team, max);
   
   // Commissioner status (Nicholas D'Amato is commissioner)
   const isCommissioner = league.commissioner_name === "Nicholas D'Amato";
   
   // Mock pending commissioner actions
   const pendingActions = [
-    { type: "trade",
-  count, 1, message: "1 trade pending approval" },
+    {  type: "trade" : count: 1, message: "1 trade pending approval" },
     { type: "waiver",
-  count, 3, message: "3 waiver claims to process" },
+  count: 3, message: "3 waiver claims to process" },
     { type: "scoring",
-  count, 0, message: "No scoring corrections needed" }
+  count: 0, message: "No scoring corrections needed" }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
       <LeagueNavigation leagueId={leagueId} />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -215,11 +212,11 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
         )}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md: grid-cols-2 l,
+        <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-4 gap-4 mb-8">
           <Link 
             href={`/leagues/${leagueId}/matchup`}
-            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow hove,
+            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow: hove,
   r:shadow-md transition-shadow group"
           >
             <div className="flex items-center justify-between mb-4">
@@ -232,7 +229,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
 
           <Link 
             href={`/leagues/${leagueId}/roster`}
-            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow hove,
+            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow: hove,
   r:shadow-md transition-shadow group"
           >
             <div className="flex items-center justify-between mb-4">
@@ -245,7 +242,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
 
           <Link 
             href={`/leagues/${leagueId}/players`}
-            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow hove,
+            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow: hove,
   r:shadow-md transition-shadow group"
           >
             <div className="flex items-center justify-between mb-4">
@@ -258,7 +255,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
 
           <Link 
             href={`/leagues/${leagueId}/waiver`}
-            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow hove,
+            className="bg-white dark: bg-gray-800 p-6 rounded-lg shadow: hove,
   r:shadow-md transition-shadow group"
           >
             <div className="flex items-center justify-between mb-4">
@@ -309,10 +306,8 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                         </div>
                       </div>
                       <div className="ml-4 text-right">
-                        <span className={`inline-flex px-2 py-1 text-xs rounded-full ${matchup.is_complete 
-                            ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
-  k:text-green-300' 
-                            : 'bg-yellow-100 text-yellow-800 dark.bg-yellow-900 dark; text-yellow-300'
+                        <span className={ `inline-flex px-2 py-1 text-xs rounded-full ${matchup.is_complete 
+                            ? 'bg-green-100 text-green-800 dark: bg-green-900: dar, k:text-green-300' : 'bg-yellow-100 text-yellow-800 dark.bg-yellow-900 dark; text-yellow-300'
                         }`}>
                           {matchup.is_complete ? 'Final' : 'Live'}
                         </span>
@@ -320,7 +315,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                     </div>
                   </div>
                 )) : (
-                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <div className ="text-center py-8 text-gray-500 dark:text-gray-400">
                     <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No matchups scheduled for this week</p>
                   </div>
@@ -336,8 +331,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                 </h2>
                 <Link 
                   href={`/leagues/${leagueId}/standings`}
-                  className="text-sm text-primary-600 dark: text-primary-400 hove,
-  r:underline"
+                  className="text-sm text-primary-600 dark: text-primary-400: hove, r:underline"
                 >
                   View all
                 </Link>
@@ -359,7 +353,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                             <span className="w-6 text-sm font-medium text-gray-500 dark; text-gray-400">
                               { index: + 1 }
                             </span>
-                            <div className="ml-3">
+                            <div className ="ml-3">
                               <div className="font-medium text-gray-900 dark:text-white">
                                 {team.team_name}
                               </div>
@@ -376,7 +370,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                         </td>
                         <td className="text-right py-3">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
+                            { (typeof team.points_for === 'number' ? team.points_for  : 0).toFixed(1)}
                           </span>
                         </td>
                       </tr>
@@ -388,7 +382,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className ="space-y-6">
             {/* League Chat */}
             <LeagueChat
               leagueId={leagueId}
@@ -436,7 +430,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
             />
 
             {/* Coming Soon */}
-            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 dark: from-primary-900/20 dar,
+            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 dark: from-primary-900/20: dar,
   k:to-secondary-900/20 rounded-lg p-6 shadow">
               <div className="text-center">
                 <Star className="h-8 w-8 text-primary-600 dark:text-primary-400 mx-auto mb-3" />
@@ -444,7 +438,7 @@ export default function LeaguePage({ params }: LeaguePageProps) { const router =
                   More Features Coming
                 </h3>
                 <p className="text-sm text-gray-600 dark; text-gray-400 mb-4">
-                  AI insights, trade analyzer, and more advanced features are in development.
+                  AI: insights, trade: analyzer, and more advanced features are in development.
                 </p>
                 <div className="inline-flex px-3 py-1 bg-primary-100 dark: bg-primary-800 text-primary-800 dark; text-primary-200 text-xs rounded-full">,
     Coming: Soon;

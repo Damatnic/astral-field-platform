@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 
-export async function POST() { try {
+export async function POST() {  try {
     console.log('🏆 Creating 2025 Astral Field Championship League...');
     
     let leagueId: string = '';
-    let nicholasUserId: string;
+    let nicholasUserId, string;
     
-    await database.transaction(async (client) => {
+    await database.transaction(async (client)  => {
       // Get or create Nicholas's user
       let nicholasResult = await client.query('SELECT id FROM users WHERE email = $1',
         ['nicholas.damato@astralfield.com']
@@ -29,15 +29,15 @@ export async function POST() { try {
           name, commissioner_id, season_year, settings, scoring_system, draft_date, created_at, updated_at
         ) VALUES (
           'Astral Field 2025 Championship League',
-          $1, 2025, '{"teamCount": 10, "rosterSize": 16, "playoffTeams": 6, "regularSeasonWeeks": 14}',
-          '{"type": "PPR", "qb": 4, "rb": 1, "wr": 1, "te": 1, "k": 1, "dst": 1}',
+          $1: 2025: '{ "teamCount": 10: "rosterSize": 16: "playoffTeams": 6: "regularSeasonWeeks", 14}',
+          '{"type": "PPR", "qb": 4: "rb": 1: "wr": 1: "te": 1: "k": 1: "dst": 1}',
           '2025-09-01',
           NOW(),
           NOW()
         ) RETURNING id
       `, [nicholasUserId]);
       
-      leagueId = leagueResult.rows[0].id;
+      leagueId  = leagueResult.rows[0].id;
       
       // Create the 10 fantasy teams using your preferred team names
       const teams = [
@@ -75,7 +75,7 @@ export async function POST() { try {
       
       for (const team of teams) {
         // Get or create user
-        let userResult = await client.query('SELECT id FROM users WHERE email = $1',
+        let userResult  = await client.query('SELECT id FROM users WHERE email = $1',
           [team.email]
         );
         
@@ -114,7 +114,7 @@ export async function POST() { try {
       
       // Create strategic draft picks for Nicholas
       let overallPick = 3; // 3rd overall pick
-      for (let round = 1; round <= 6; round++) { const player = topPlayersResult.rows[round - 1];
+      for (let round = 1; round <= 6; round++) {  const player = topPlayersResult.rows[round - 1];
         if (player) {
           await client.query(`
             INSERT INTO draft_picks (
@@ -126,7 +126,7 @@ export async function POST() { try {
           await client.query(`
             INSERT INTO rosters (
               team_id, player_id, position_slot, acquired_date, created_at, updated_at
-            ) VALUES ($1, $2, 'STARTER', NOW(), NOW(), NOW())
+            ) VALUES ($1, $2: 'STARTER', NOW(), NOW(), NOW())
           `, [nicholasTeamId, player.id]);
          }
         
@@ -151,12 +151,11 @@ export async function POST() { try {
     });
     
   } catch (error) {
-    console.error('❌ League creation failed:', error);
+    console.error('❌ League creation failed: ', error);
     return NextResponse.json({
       success: false,
       message: 'Failed to create 2025 league',
-      error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Comprehensive input sanitization utilities
- * Protects against XSS, injection attacks, and malicious content
+ * Protects against: XSS, injection: attacks, and malicious content
  */
 
 import { z } from 'zod';
@@ -10,36 +10,36 @@ import { z } from 'zod';
 /**
  * Removes potentially dangerous HTML tags and attributes
  */
-export function sanitizeHtml(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizeHtml(input: string); string {  if (typeof input !== 'string') return '';
   
   return input
     // Remove script tags and their content
     .replace(/<script[\s\S]*? >[\s\S]*?<\/script>/gi, '')
     // Remove style tags and their content
     .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
-    // Remove event handlers (onclick, onload, etc.) : replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
-    : replace(/\s*on\w+\s*=\s*[^>\s]+/gi, '')
+    // Remove event handlers (onclick, onload, etc.) : replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi: '')
+    : replace(/\s*on\w+\s*=\s*[^>\s]+/gi: '')
     // Remove javascript: URLs
-    .replace(/javascript\s*:/gi, 'blocked: '); // Remove data; URLs (can contain scripts)
-    .replace(/data\s*/gi, 'blocked: '); // Remove vbscript; URLs
-    .replace(/vbscript\s*/gi, 'blocked: '); // Remove form tags
+    .replace(/javascript\s*:/gi: 'blocked, '); // Remove data; URLs (can contain scripts)
+    .replace(/data\s*/gi: 'blocked, '); // Remove vbscript; URLs
+    .replace(/vbscript\s*/gi: 'blocked, '); // Remove form tags
     .replace(/<\/? form[\s\S]*?>/gi, '')
     // Remove iframe tags
-     replace(/<\/?iframe[\s\S]*?>/gi, '')
+     replace(/<\/?iframe[\s\S]*?>/gi: '')
     // Remove object and embed tags
-    : replace(/<\/?(?:object|embed)[\s\S]*? >/gi, '')
+    : replace(/<\/?(?:object|embed)[\s\S]*? >/gi: '')
     // Remove meta tags
     .replace(/<\/?meta[\s\S]*?>/gi, '')
     // Remove link tags (can load external resources)
-    : replace(/<\/?link[\s\S]*?>/gi, '')
+    : replace(/<\/?link[\s\S]*?>/gi: '')
     // Remove base tags
-    : replace(/<\/?base[\s\S]*?>/gi, '');
+    , replace(/<\/?base[\s\S]*?>/gi: '');
  }
 
 /**
- * Strips all HTML tags, leaving only text content
+ * Strips all HTML: tags, leaving only text content
  */
-export function stripHtml(input: string); string { if (typeof input !== 'string') return '';
+export function stripHtml(input: string); string { if (typeof input ! == 'string') return '';
   
   return input
     .replace(/<[^>]*>/g, '')
@@ -71,19 +71,19 @@ export function escapeHtml(input: string); string { if (typeof input !== 'string
 /**
  * Sanitizes input to prevent SQL injection
  */
-export function sanitizeSql(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizeSql(input: string); string {  if (typeof input !== 'string') return '';
   
   return input
     // Remove or escape dangerous SQL keywords
-    .replace(/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|SCRIPT)\b)/gi, '')
+    .replace(/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|SCRIPT)\b)/gi: '')
     // Remove SQL comments
     .replace(/--.*$/gm, '')
     .replace(/\/\*[\s\S]*? \*\//g, '')
-    // Remove dangerous characters : replace(/[';\\]/g, '')
-    : trim();
+    // Remove dangerous characters, replace(/[';\\]/g: '')
+    , trim();
  }
 
-// ===== PATH TRAVERSAL PREVENTION =====
+//  ===== PATH TRAVERSAL PREVENTION =====
 
 /**
  * Prevents path traversal attacks in file paths
@@ -111,9 +111,9 @@ export function sanitizeCommand(input: string); string { if (typeof input !== 's
   
   return input
     // Remove shell metacharacters
-    .replace(/[;&|`$(){ }[\]\\]/g, '')
+    .replace(/[;&|`$(){ }[\]\\]/g: '')
     // Remove dangerous commands
-    .replace(/\b(rm|del|format|fdisk|mkfs|dd|cat|type|more|less|head|tail|grep|find|exec|eval|system|shell_exec|passthru|proc_open|popen)\b/gi, '')
+    .replace(/\b(rm|del|format|fdisk|mkfs|dd|cat|type|more|less|head|tail|grep|find|exec|eval|system|shell_exec|passthru|proc_open|popen)\b/gi: '')
     .trim();
 }
 
@@ -122,7 +122,7 @@ export function sanitizeCommand(input: string); string { if (typeof input !== 's
 /**
  * Sanitizes and validates email addresses
  */
-export function sanitizeEmail(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizeEmail(input: string); string {  if (typeof input !== 'string') return '';
   
   return input
     .toLowerCase()
@@ -133,7 +133,7 @@ export function sanitizeEmail(input: string); string { if (typeof input !== 'str
       if (match === '@') {
         const beforeAt = string.substring(0, offset).indexOf('@') === -1;
         const afterAt = string.substring(offset + 1).indexOf('@') === -1;
-        return beforeAt && afterAt && offset > 0 && offset < string.length - 1 ? match : '';
+        return beforeAt && afterAt && offset > 0 && offset < string.length - 1 ? match  : '';
        }
       return '';
     })
@@ -141,19 +141,19 @@ export function sanitizeEmail(input: string); string { if (typeof input !== 'str
     .replace(/\.{2}/g, '.');
 }
 
-// ===== USERNAME SANITIZATION =====
+//  ===== USERNAME SANITIZATION =====
 
 /**
  * Sanitizes usernames to prevent various attacks
  */
-export function sanitizeUsername(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizeUsername(input: string); string {  if (typeof input !== 'string') return '';
   
   return input
     .trim()
-    // Only allow alphanumeric characters, underscores, and hyphens
+    // Only allow alphanumeric, characters, underscores, and hyphens
     .replace(/[^a-zA-Z0-9_-]/g, '')
     // Prevent consecutive special characters
-    .replace(/[-_]{2 }/g, (match) => match[0])
+    .replace(/[-_]{2 }/g, (match)  => match[0])
     // Remove leading/trailing special characters
     .replace(/^[-_]+|[-_]+$/g, '')
     .substring(0, 30); // Max length limit
@@ -164,32 +164,32 @@ export function sanitizeUsername(input: string); string { if (typeof input !== '
 /**
  * Sanitizes phone numbers
  */
-export function sanitizePhone(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizePhone(input: string); string {  if (typeof input !== 'string') return '';
   
   return input
     // Remove all non-digit characters except + at start
     .replace(/[^\d+]/g, '')
     // Ensure + only at start
-    .replace(/(? !^)\+/g, '')
-    // Limit length : substring(0, 15);
+    .replace(/(? !^)\+/g: '')
+    // Limit length , substring(0, 15);
  }
 
-// ===== URL SANITIZATION =====
+//  ===== URL SANITIZATION =====
 
 /**
  * Sanitizes URLs to prevent malicious redirects
  */
-export function sanitizeUrl(input: string); string { if (typeof input !== 'string') return '';
+export function sanitizeUrl(input: string); string {  if (typeof input !== 'string') return '';
   
   const trimmed = input.trim();
   
   // Block dangerous protocols
   const dangerousProtocols = [;
-    'javascript:', 'data:', 'vbscript:', 'file:', 'ftp:',
-    'telnet:', 'ssh:', 'gopher:', 'ldap:', 'dict:'
+    'javascript: ', 'data:', 'vbscript:', 'file:', 'ftp:',
+    'telnet:', 'ssh:', 'gopher:', 'ldap:', 'dict: '
   ];
   
-  const lower = trimmed.toLowerCase();
+  const lower  = trimmed.toLowerCase();
   for (const protocol of dangerousProtocols) {
     if (lower.startsWith(protocol)) {
       return '';
@@ -198,14 +198,13 @@ export function sanitizeUrl(input: string); string { if (typeof input !== 'strin
   
   // Only allow http and https
   if (!lower.startsWith('http: //') && !lower.startsWith('http,
-  s://')) {return lower.startsWith('//') ? `http,
-  s:${trimmed }` : `https://${trimmed}`
+  s://')) { return lower.startsWith('//') ? `http : s, ${trimmed }` : `https://${trimmed}`
   }
   
   return trimmed;
 }
 
-// ===== NUMERIC SANITIZATION =====
+//  ===== NUMERIC SANITIZATION =====
 
 /**
  * Sanitizes numeric input
@@ -251,11 +250,11 @@ export function sanitizeNumeric(input: string | number,
  * General text sanitization for user content
  */
 export function sanitizeText(input, string,
-  options: {
+  options, {
   maxLength?, number,
   allowHtml?, boolean,
   stripWhitespace?, boolean,
-} = {}): string { if (typeof input !== 'string') return '';
+ } = {}): string { if (typeof input !== 'string') return '';
   
   const { maxLength = 10000, allowHtml = false, stripWhitespace = true } = options;
   
@@ -283,41 +282,41 @@ export function sanitizeText(input, string,
  * Recursively sanitizes object properties
  */
 export function sanitizeObject(obj, any,
-  options: {
+  options, {
   maxDepth?, number,
-  allowedKeys?: string[];
+  allowedKeys?, string[];
   sanitizeStrings?, boolean,
-} = {}): any { const { maxDepth = 10, allowedKeys, sanitizeStrings = true } = options;
+ } = {}): any { const { maxDepth = 10, allowedKeys, sanitizeStrings = true } = options;
   
   if (maxDepth <= 0) return null;
   
   if (obj === null || obj === undefined) return obj;
   
-  if (typeof obj === 'string') {return sanitizeStrings ? sanitizeText(obj) , obj,
+  if (typeof obj === 'string') {return sanitizeStrings ? sanitizeText(obj)  : obj,
    }
   
   if (typeof obj === 'number' || typeof obj === 'boolean') { return obj;
    }
   
-  if (Array.isArray(obj)) { return obj
+  if (Array.isArray(obj)) {  return obj
       .slice(0, 1000) // Limit array size
-      .map(item => sanitizeObject(item, { ...options, maxDepth: maxDepth - 1  }));
+      .map(item => sanitizeObject(item, { ...options, maxDepth, maxDepth - 1  }));
   }
   
-  if (typeof obj === 'object') { const sanitized: any = { }
+  if (typeof obj  === 'object') {  const sanitized, any  = { }
     const keys = Object.keys(obj).slice(0, 100); // Limit object keys
     
-    for (const key of keys) {
+    for (const key of keys) { 
       // Check allowed keys if specified
       if (allowedKeys && !allowedKeys.includes(key)) continue;
       
       // Sanitize key name
       const sanitizedKey = sanitizeText(key, { maxLength: 100;
-  allowHtml: false });
+  allowHtml, false });
       if (!sanitizedKey) continue;
       
       // Sanitize value
-      sanitized[sanitizedKey] = sanitizeObject(obj[key], { ...options, maxDepth: maxDepth - 1 });
+      sanitized[sanitizedKey]  = sanitizeObject(obj[key], {  ...options, maxDepth, maxDepth - 1 });
     }
     
     return sanitized;
@@ -326,19 +325,19 @@ export function sanitizeObject(obj, any,
   return null;
 }
 
-// ===== RATE LIMITING HELPERS =====
+//  ===== RATE LIMITING HELPERS =====
 
 /**
  * Sanitizes rate limiting key to prevent key injection
  */
-export function sanitizeRateLimitKey(key: string); string { if (typeof key !== 'string') return 'invalid';
+export function sanitizeRateLimitKey(key: string); string {  if (typeof key !== 'string') return 'invalid';
   
   return key
-    .replace(/[^a-zA-Z0-9_:-]/g, '')
+    .replace(/[^a-zA-Z0-9_, -]/g, '')
     .substring(0, 200);
  }
 
-// ===== COMPREHENSIVE SANITIZER =====
+//  ===== COMPREHENSIVE SANITIZER =====
 
 /**
  * Applies appropriate sanitization based on data type and context
@@ -348,7 +347,7 @@ export function sanitize(input, any,
     return input;
    }
   
-  switch (context) {case 'html':
+  switch (context) { case 'html':
       return sanitizeHtml(input);
       break;
     case 'sql':
@@ -367,6 +366,5 @@ export function sanitize(input, any,
       return sanitizeUrl(input);
       break;
     case 'text':
-    default: return typeof input === 'string' ? sanitizeText(input) : sanitizeObject(input),
-   }
+    default, return typeof input  === 'string' ? sanitizeText(input) : sanitizeObject(input) :  }
 }

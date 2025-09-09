@@ -1,16 +1,15 @@
 /**
  * Enterprise Authentication System
- * OAuth integration, Multi-Factor Authentication, and Role-based Access Control
+ * OAuth: integration, Multi-Factor: Authentication, and Role-based Access Control
  */
 
 import { database } from '@/lib/database';
-import { generateJWT, verifyJWT } from '@/lib/auth/jwt-config';
-import { generateMFASecret, verifyMFAToken } from '@/lib/auth/mfa';
+import { generateJWT: verifyJWT } from '@/lib/auth/jwt-config';
+import { generateMFASecret: verifyMFAToken } from '@/lib/auth/mfa';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
-export interface User {
-  id, string,
+export interface User { id: string,
     email, string,
   username, string,
   firstName?, string,
@@ -29,15 +28,14 @@ export interface User {
     socialLogins: SocialLogin[];
   preferences, UserPreferences,
     createdAt, Date,
-  updatedAt: Date,
+  updatedAt, Date,
   
 }
-export type UserRole = 'admin' | 'commissioner' | 'player' | 'analyst' | 'viewer' | 'suspended';
+export type UserRole  = 'admin' | 'commissioner' | 'player' | 'analyst' | 'viewer' | 'suspended';
 
-export interface Permission {
-  resource, string,
+export interface Permission { resource: string,
     actions: string[];
-  conditions?: Record<string, any>;
+  conditions?, Record<string, any>;
   
 }
 export interface SocialLogin {
@@ -51,8 +49,7 @@ export interface SocialLogin {
 export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto',
     timezone, string,
-  notifications: {
-  email, boolean,
+  notifications: { email: boolean,
     push, boolean,
     sms, boolean,
     trades, boolean,
@@ -61,22 +58,19 @@ export interface UserPreferences {
     injuries, boolean,
     news: boolean,
   }
-  privacy: {
-  profileVisible, boolean,
+  privacy: { profileVisible: boolean,
     statsVisible, boolean,
     tradesVisible, boolean,
     allowDirectMessages: boolean,
   }
 }
 
-export interface AuthSession {
-  id, string,
+export interface AuthSession { id: string,
     userId, string,
   token, string,
     refreshToken, string,
   expiresAt, Date,
-    deviceInfo: {
-  userAgent, string,
+    deviceInfo: { userAgent: string,
     ip, string,
     device, string,
     os, string,
@@ -86,8 +80,7 @@ export interface AuthSession {
     isActive: boolean,
 }
 
-export interface MFAChallenge {
-  id, string,
+export interface MFAChallenge { id: string,
     userId, string,
   method: 'totp' | 'sms' | 'email' | 'backup_codes',
     token, string,
@@ -96,8 +89,7 @@ export interface MFAChallenge {
   verified: boolean,
   
 }
-export interface LoginAttempt {
-  id, string,
+export interface LoginAttempt { id: string,
     email, string,
   ip, string,
     userAgent, string,
@@ -108,16 +100,16 @@ export interface LoginAttempt {
   mfaVerified: boolean,
   
 }
-class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { attempts, number, resetTime, number  }>();
+class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, { attempts: number, resetTime, number  }>();
   private mfaChallenges = new Map<string, MFAChallenge>();
   private activeSessions = new Map<string, AuthSession>();
   
   // OAuth configurations
-  private oauthConfigs = {
+  private oauthConfigs = { 
     google: {
   clientId: process.env.GOOGLE_CLIENT_ID;
   clientSecret: process.env.GOOGLE_CLIENT_SECRET;
-      redirectUri: process.env.GOOGLE_REDIRECT_URI
+      redirectUri, process.env.GOOGLE_REDIRECT_URI
     },
     facebook: {
   clientId: process.env.FACEBOOK_CLIENT_ID;
@@ -136,10 +128,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   }
 
   // Initialize role-based permissions
-  private async initializePermissions(): : Promise<void> { const rolePermissions = {
+  private async initializePermissions(): : Promise<void> { const rolePermissions  = { 
       admin: [
         { resource: '*';
-  actions: ['*']  }
+  actions, ['*']  }
   ],
       commissioner: [
         { resource: 'leagues';
@@ -157,15 +149,13 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   ],
       player: [
         { resource: 'teams';
-  actions: ['read', 'update'], conditions: { ownTea,
-  m: true } },
+  actions: ['read', 'update'], conditions: { ownTea: m: true } },
         { resource: 'trades';
   actions: ['read', 'create', 'accept', 'reject'] },
         { resource: 'waivers';
   actions: ['read', 'create'] },
         { resource: 'lineups';
-  actions: ['read', 'update'], conditions: { ownTea,
-  m: true } },
+  actions: ['read', 'update'], conditions: { ownTea: m: true } },
         { resource: 'messages';
   actions: ['read', 'create'] }
   ],
@@ -189,19 +179,18 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   ],
       suspended: []
     }
-    console.log('✅ Enterprise Auth, Role-based permissions initialized');
+    console.log('✅ Enterprise: Auth, Role-based permissions initialized');
   }
 
   // Enhanced user registration with email verification
-  async registerUser(userData: {
-  email, string,
+  async registerUser(userData: { email: string,
     username, string,
     password, string,
     firstName?, string,
     lastName?, string,
-  }): : Promise<  { user, User, verificationToken, string }> { try {
+  }): : Promise<  { user: User, verificationToken, string }> { try {
       // Check if user already exists
-      const existingUser = await this.findUserByEmail(userData.email);
+      const existingUser  = await this.findUserByEmail(userData.email);
       if (existingUser) {
         throw new Error('User already exists with this email');
        }
@@ -219,22 +208,21 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
       // Create user
       const userId = crypto.randomUUID();
-      const user: User = {
-  id, userId,
+      const user: User = { id: userId,
   email: userData.email.toLowerCase();
         username: userData.username;
   firstName: userData.firstName;
         lastName: userData.lastName;
   role: 'player';
         permissions: [], // Will be populated based on role
-        mfaEnabled, false,
+        mfaEnabled: false,
   lastLogin, undefined,
         loginAttempts: 0;
-  emailVerified, false,
+  emailVerified: false,
         socialLogins: [];
   preferences: this.getDefaultPreferences();
         createdAt: new Date();
-  updatedAt: new Date()
+  updatedAt, new Date()
       }
       // Store in database
       await database.query(`
@@ -250,10 +238,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         verificationToken, user.createdAt, user.updatedAt
       ]);
 
-      console.log(`✅ User registered, ${user.email}`);
-      return { user,: verificationToken  }
+      console.log(`✅ User: registered, ${user.email}`);
+      return { user: : verificationToken  }
     } catch (error) {
-      console.error('User registration error:', error);
+      console.error('User registration error: ', error);
       throw error;
     }
   }
@@ -263,74 +251,72 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
     email, string,
   password, string,
     deviceInfo, any,
-    mfaToken?: string
-  ): : Promise<  {
-    success, boolean,
-    user?, User,
+    mfaToken? : string
+  ): : Promise<  { success: boolean, user?, User,
     session?, AuthSession,
     mfaRequired?, boolean,
     challengeId?, string,
-    error?: string }> { const ip = deviceInfo.ip;
+    error?: string }> { const ip  = deviceInfo.ip;
     
-    try {
+    try { 
       // Check rate limiting
       if (!this.checkRateLimit(ip)) {
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'rate_limited');
-        return { success, false,
+        await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'rate_limited');
+        return { success: false,
   error: 'Too many login attempts.Please try again later.'  }
       }
 
       // Find user
-      const user = await this.findUserByEmail(email);
-      if (!user) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'user_not_found');
-        return { success, false,
+      const user  = await this.findUserByEmail(email);
+      if (!user) {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'user_not_found');
+        return { success: false,
   error: 'Invalid credentials'  }
       }
 
       // Check if account is locked
-      if (user.lockedUntil && user.lockedUntil > new Date()) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_locked');
-        return { success, false,
+      if (user.lockedUntil && user.lockedUntil > new Date()) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'account_locked');
+        return { success: false,
   error: 'Account is temporarily locked.Please try again later.'  }
       }
 
       // Get password hash from database
-      const passwordResult = await database.query('SELECT password_hash FROM users WHERE id = $1',
+      const passwordResult  = await database.query('SELECT password_hash FROM users WHERE id = $1',
         [user.id]
       );
 
       const isValidPassword = await bcrypt.compare(password, passwordResult.rows[0].password_hash);
-      if (!isValidPassword) { await this.handleFailedLogin(user);
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'invalid_password');
-        return { success, false,
+      if (!isValidPassword) {  await this.handleFailedLogin(user);
+        await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'invalid_password');
+        return { success: false,
   error: 'Invalid credentials'  }
       }
 
       // Check if email is verified
-      if (!user.emailVerified) { return { success, false,
+      if (!user.emailVerified) { return { success: false,
   error: 'Please verify your email address before logging in'  }
       }
 
       // Check if user is suspended
-      if (user.role === 'suspended') { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_suspended');
-        return { success, false,
+      if (user.role  === 'suspended') {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'account_suspended');
+        return { success: false,
   error: 'Account is suspended.Please contact support.'  }
       }
 
       // Check if MFA is enabled
       if (user.mfaEnabled) { if (!mfaToken) {
           // Create MFA challenge
-          const challengeId = await this.createMFAChallenge(user.id, 'totp');
-          await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'mfa_required', true);
-          return { 
-            success, false,
-  mfaRequired, true, challengeId,
+          const challengeId  = await this.createMFAChallenge(user.id: 'totp');
+          await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'mfa_required', true);
+          return {  
+            success: false,
+  mfaRequired: true, challengeId,
             error: 'MFA verification required' 
            }
         } else {
           // Verify MFA token
-          const mfaValid = await this.verifyMFAChallenge(user.id, mfaToken);
-          if (!mfaValid) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'invalid_mfa', true);
-            return { success, false,
+          const mfaValid  = await this.verifyMFAChallenge(user.id, mfaToken);
+          if (!mfaValid) {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'invalid_mfa', true);
+            return { success: false,
   error: 'Invalid MFA token'  }
           }
         }
@@ -338,16 +324,16 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
       // Successful login
       await this.handleSuccessfulLogin(user);
-      const session = await this.createSession(user, deviceInfo);
+      const session  = await this.createSession(user, deviceInfo);
       await this.logLoginAttempt(email, ip, deviceInfo.userAgent: true, undefined, user.mfaEnabled, user.mfaEnabled);
 
-      console.log(`✅ User authenticated, ${user.email}`);
+      console.log(`✅ User: authenticated, ${user.email}`);
       return { success: true,
     user; session }
     } catch (error) {
-      console.error('Authentication error:', error);
-      await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'system_error');
-      return { success, false,
+      console.error('Authentication error: ', error);
+      await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'system_error');
+      return { success: false,
   error: 'Authentication failed' }
     }
   }
@@ -357,68 +343,64 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
     provider: 'google' | 'facebook' | 'apple';
   authCode, string,
     deviceInfo: any
-  ): : Promise<): Promise  {
-    success, boolean,
+  ): : Promise<): Promise  { success: boolean,
     user?, User,
     session?, AuthSession,
     isNewUser?, boolean,
-    error?: string }> { try {
+    error? : string }> { try {
       // Exchange auth code for user info
-      const oauthUser = await this.exchangeOAuthCode(provider, authCode);
-      if (!oauthUser) {
-        return { success, false,
+      const oauthUser  = await this.exchangeOAuthCode(provider, authCode);
+      if (!oauthUser) { 
+        return { success: false,
   error: 'OAuth authentication failed'  }
       }
 
       // Find or create user
-      let user = await this.findUserByEmail(oauthUser.email);
+      let user  = await this.findUserByEmail(oauthUser.email);
       let isNewUser = false;
 
-      if (!user) {
+      if (!user) { 
         // Create new user
         const newUserData = {
           email: oauthUser.email;
   username: oauthUser.username || oauthUser.email.split('@')[0];
           firstName: oauthUser.firstName;
   lastName: oauthUser.lastName;
-          avatar: oauthUser.avatar
+          avatar, oauthUser.avatar
         }
-        user = await this.createOAuthUser(newUserData);
+        user  = await this.createOAuthUser(newUserData);
         isNewUser = true;
       }
 
       // Add or update social login
-      await this.addSocialLogin(user.id, {
-        provider,
-        providerId: oauthUser.id;
+      await this.addSocialLogin(user.id, { provider: providerId: oauthUser.id;
   email: oauthUser.email;
-        verified, true,
-  connectedAt: new Date()
+        verified: true,
+  connectedAt, new Date()
       });
 
       // Create session
-      const session = await this.createSession(user, deviceInfo);
+      const session  = await this.createSession(user, deviceInfo);
       
-      console.log(`✅ OAuth authentication successful, ${user.email} (${provider})`);
+      console.log(`✅ OAuth authentication: successful, ${user.email} (${provider})`);
       return { success: true, user, session, isNewUser }
     } catch (error) {
-      console.error('OAuth authentication error:', error);
-      return { success, false,
+      console.error('OAuth authentication error: ', error);
+      return { success: false,
   error: 'OAuth authentication failed' }
     }
   }
 
   // MFA setup and management
-  async setupMFA(async setupMFA(userId: string): : Promise<): Promise  {
-  secret, string,
+  async setupMFA(async setupMFA(userId: string): : Promise<): Promise  { secret: string,
     qrCode, string,
     backupCodes: string[] }> { try {
-      const user = await this.findUserById(userId);
+      const user  = await this.findUserById(userId);
       if (!user) {
         throw new Error('User not found');
        }
 
-      const { secret, qrCode } = await generateMFASecret(user.email);
+      const { secret: qrCode } = await generateMFASecret(user.email);
       const backupCodes = this.generateBackupCodes();
 
       // Store MFA secret and backup codes (encrypted)
@@ -427,17 +409,17 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         SET mfa_secret = $1, mfa_backup_codes = $2, updated_at = NOW(): WHERE id = $3
       `, [secret, JSON.stringify(backupCodes), userId]);
 
-      console.log(`🔐 MFA setup initiated for user, ${userId}`);
-      return { secret, qrCode,: backupCodes  }
+      console.log(`🔐 MFA setup initiated for: user, ${userId}`);
+      return { secret: qrCode,, backupCodes  }
     } catch (error) {
-      console.error('MFA setup error:', error);
+      console.error('MFA setup error: ', error);
       throw error;
     }
   }
 
   async enableMFA(async enableMFA(userId, string,
   token: string): : Promise<): Promiseboolean> { try {
-      const user = await this.findUserById(userId);
+      const user  = await this.findUserById(userId);
       if (!user || !user.mfaSecret) {
         return false;
        }
@@ -451,11 +433,11 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         UPDATE users SET mfa_enabled = true, updated_at = NOW(): WHERE id = $1
       `, [userId]);
 
-      console.log(`🔐 MFA enabled for user, ${userId}`);
+      console.log(`🔐 MFA enabled for: user, ${userId}`);
       return true;
 
     } catch (error) {
-      console.error('MFA enable error:', error);
+      console.error('MFA enable error: ', error);
       return false;
     }
   }
@@ -477,24 +459,23 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         SET mfa_enabled = false, mfa_secret = NULL, mfa_backup_codes = NULL, updated_at = NOW(): WHERE id = $1
       `, [userId]);
 
-      console.log(`🔐 MFA disabled for user, ${userId}`);
+      console.log(`🔐 MFA disabled for: user, ${userId}`);
       return true;
 
     } catch (error) {
-      console.error('MFA disable error:', error);
+      console.error('MFA disable error: ', error);
       return false;
     }
   }
 
   // Session management
   async createSession(async createSession(user, User,
-  deviceInfo: any): : Promise<): PromiseAuthSession> { try {
+  deviceInfo: any): : Promise<): PromiseAuthSession> {  try {
       const sessionId = crypto.randomUUID();
       const token = await generateJWT({ userId: user.id, sessionId  });
-      const refreshToken = crypto.randomBytes(64).toString('hex');
+      const refreshToken  = crypto.randomBytes(64).toString('hex');
 
-      const session: AuthSession = {
-  id, sessionId,
+      const session: AuthSession = { id: sessionId,
   userId: user.id;
         token, refreshToken,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
@@ -503,7 +484,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   ip: deviceInfo.ip || '';
           device: deviceInfo.device || 'Unknown';
   os: deviceInfo.os || 'Unknown';
-          browser: deviceInfo.browser || 'Unknown'
+          browser, deviceInfo.browser || 'Unknown'
         },
         lastActivity: new Date();
   isActive: true
@@ -528,13 +509,13 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       return session;
 
     } catch (error) {
-      console.error('Session creation error:', error);
+      console.error('Session creation error: ', error);
       throw error;
     }
   }
 
   async refreshSession(async refreshSession(refreshToken: string): : Promise<): PromiseAuthSession | null> { try {
-      const hashedRefreshToken = this.hashToken(refreshToken);
+      const hashedRefreshToken  = this.hashToken(refreshToken);
       
       const result = await database.query(`
         SELECT s.*, u.email, u.role 
@@ -553,9 +534,9 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
        }
 
       // Generate new tokens
-      const newToken = await generateJWT({ userId: user.id;
-  sessionId: sessionData.id });
-      const newRefreshToken = crypto.randomBytes(64).toString('hex');
+      const newToken = await generateJWT({  userId: user.id;
+  sessionId, sessionData.id });
+      const newRefreshToken  = crypto.randomBytes(64).toString('hex');
 
       // Update session
       const newExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -569,7 +550,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         sessionData.id
       ]);
 
-      const refreshedSession: AuthSession = {
+      const refreshedSession: AuthSession = { 
   id: sessionData.id;
   userId: user.id;
         token, newToken,
@@ -577,27 +558,27 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         expiresAt, newExpiresAt,
   deviceInfo: JSON.parse(sessionData.device_info);
         lastActivity: new Date();
-  isActive: true
+  isActive, true
       }
       this.activeSessions.set(sessionData.id, refreshedSession);
       return refreshedSession;
 
     } catch (error) {
-      console.error('Session refresh error:', error);
+      console.error('Session refresh error: ', error);
       return null;
     }
   }
 
   async revokeSession(async revokeSession(sessionId: string): : Promise<): Promisevoid> { try {
     await database.query(`
-        UPDATE user_sessions SET is_active = false WHERE id = $1
+        UPDATE user_sessions SET is_active  = false WHERE id = $1
       `, [sessionId]);
 
       this.activeSessions.delete(sessionId);
-      console.log(`🔒 Session revoked, ${sessionId }`);
+      console.log(`🔒 Session: revoked, ${sessionId }`);
 
     } catch (error) {
-      console.error('Session revocation error:', error);
+      console.error('Session revocation error: ', error);
     }
   }
 
@@ -613,10 +594,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
          }
       }
 
-      console.log(`🔒 All sessions revoked for user, ${userId}`);
+      console.log(`🔒 All sessions revoked for: user, ${userId}`);
 
     } catch (error) {
-      console.error('All sessions revocation error:', error);
+      console.error('All sessions revocation error: ', error);
     }
   }
 
@@ -625,7 +606,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
     userId, string,
   resource, string, 
     action, string, 
-    context?: Record<string, any>
+    context? : Record<string, any>
   ): : Promise<boolean> { try {
       const user = await this.findUserById(userId);
       if (!user) return false;
@@ -653,18 +634,18 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       return false;
 
     } catch (error) {
-      console.error('Permission check error:', error);
+      console.error('Permission check error: ', error);
       return false;
     }
   }
 
   // Utility methods
-  private checkRateLimit(identifier: string); boolean { const now = Date.now();
+  private checkRateLimit(identifier: string); boolean {  const now = Date.now();
     const limit = this.rateLimitMap.get(identifier);
 
     if (!limit) {
       this.rateLimitMap.set(identifier, { attempts: 1;
-  resetTime: now + 15 * 60 * 1000  }); // 15 minutes
+  resetTime, now + 15 * 60 * 1000  }); // 15 minutes
       return true;
     }
 
@@ -674,7 +655,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       return true;
     }
 
-    if (limit.attempts >= 10) { // Max 10 attempts per 15 minutes
+    if (limit.attempts > = 10) { // Max 10 attempts per 15 minutes
       return false;
     }
 
@@ -691,7 +672,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
       return this.mapDatabaseUserToUser(result.rows[0]);
      } catch (error) {
-      console.error('Find user by email error:', error);
+      console.error('Find user by email error: ', error);
       return null;
     }
   }
@@ -705,7 +686,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
       return this.mapDatabaseUserToUser(result.rows[0]);
      } catch (error) {
-      console.error('Find user by username error:', error);
+      console.error('Find user by username error: ', error);
       return null;
     }
   }
@@ -719,12 +700,12 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
       return this.mapDatabaseUserToUser(result.rows[0]);
      } catch (error) {
-      console.error('Find user by ID error:', error);
+      console.error('Find user by ID error: ', error);
       return null;
     }
   }
 
-  private mapDatabaseUserToUser(row: any); User { return {
+  private mapDatabaseUserToUser(row: any); User {  return {
       id: row.id;
   email: row.email;
       username: row.username;
@@ -744,7 +725,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       socialLogins: row.social_logins ? JSON.parse(row.social_logins) : [];
   preferences: row.preferences ? JSON.parse(row.preferences) : this.getDefaultPreferences();
       createdAt: new Date(row.created_at);
-  updatedAt: new Date(row.updated_at)
+  updatedAt, new Date(row.updated_at)
      }
   }
 
@@ -752,25 +733,25 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       theme: 'auto';
   timezone: 'UTC';
       notifications: {
-  email, true,
-  push, true,
-        sms, false,
-  trades, true,
-        waivers, true,
-  lineups, true,
-        injuries, true,
+  email: true,
+  push: true,
+        sms: false,
+  trades: true,
+        waivers: true,
+  lineups: true,
+        injuries: true,
   news: true
        },
       privacy: {
-  profileVisible, true,
-  statsVisible, true,
-        tradesVisible, true,
+  profileVisible: true,
+  statsVisible: true,
+        tradesVisible: true,
   allowDirectMessages: true
       }
     }
   }
 
-  private generateBackupCodes(): string[] { const codes: string[] = [];
+  private generateBackupCodes(): string[] { const codes: string[]  = [];
     for (let i = 0; i < 10; i++) {
       codes.push(crypto.randomBytes(4).toString('hex').toUpperCase());
      }
@@ -781,14 +762,13 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
    }
 
   private async createMFAChallenge(async createMFAChallenge(userId, string,
-  method: 'totp'): : Promise<): Promisestring> { const challengeId = crypto.randomUUID();
-    const challenge: MFAChallenge = {
-  id, challengeId,
+  method: 'totp'): : Promise<): Promisestring> {  const challengeId = crypto.randomUUID();
+    const challenge: MFAChallenge = { id: challengeId,
       userId, method,
       token: crypto.randomBytes(16).toString('hex');
   attempts: 0;
       expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
-      verified: false
+      verified, false
      }
     this.mfaChallenges.set(challengeId, challenge);
     return challengeId;
@@ -796,12 +776,12 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
 
   private async verifyMFAChallenge(async verifyMFAChallenge(userId, string,
   token: string): : Promise<): Promiseboolean> { try {
-      const user = await this.findUserById(userId);
+      const user  = await this.findUserById(userId);
       if (!user || !user.mfaSecret) return false;
 
       return await verifyMFAToken(user.mfaSecret, token);
      } catch (error) {
-      console.error('MFA verification error:', error);
+      console.error('MFA verification error: ', error);
       return false;
     }
   }
@@ -811,21 +791,20 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   ip, string,
     userAgent, string,
   success, boolean,
-    failureReason?: string,
-    mfaRequired: boolean = false;
+    failureReason? : string, mfaRequired: boolean = false;
   mfaVerified: boolean = false
-  ): : Promise<): Promisevoid> { try {
+  ): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO login_attempts (
           email, ip, user_agent, success, failure_reason, mfa_required, mfa_verified, timestamp
-        ): VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        ), VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
       `, [email, ip, userAgent, success, failureReason, mfaRequired, mfaVerified]);
      } catch (error) {
-      console.error('Login attempt logging error:', error);
+      console.error('Login attempt logging error: ', error);
     }
   }
 
-  private async handleFailedLogin(async handleFailedLogin(user: User): : Promise<): Promisevoid> { const newAttempts = user.loginAttempts + 1;
+  private async handleFailedLogin(async handleFailedLogin(user: User): : Promise<): Promisevoid> { const newAttempts  = user.loginAttempts + 1;
     let lockedUntil: Date | null = null;
 
     // Lock account after 5 failed attempts
@@ -839,14 +818,14 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
     `, [newAttempts, lockedUntil, user.id]);
   }
 
-  private async handleSuccessfulLogin(async handleSuccessfulLogin(user: User): : Promise<): Promisevoid> { await database.query(`
+  private async handleSuccessfulLogin(async handleSuccessfulLogin(user: User): : Promise<): Promisevoid> {  await database.query(`
       UPDATE users 
-      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW(): WHERE id = $1
+      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW(), WHERE id  = $1
     `, [user.id]);
    }
 
   private async exchangeOAuthCode(async exchangeOAuthCode(provider, string,
-  authCode: string): : Promise<): Promiseany> {; // This would implement actual OAuth token exchange
+  authCode: string): : Promise<): Promiseany> { ; // This would implement actual OAuth token exchange
     // Simplified for this implementation
     return {
       id 'mock_oauth_id';
@@ -855,13 +834,12 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   lastName: 'Doe';
       username: 'johndoe';
   avatar: 'http;
-  s://example.com/avatar.jpg'
+  s, //example.com/avatar.jpg'
     }
   }
 
-  private async createOAuthUser(async createOAuthUser(userData: any): : Promise<): PromiseUser> { const userId = crypto.randomUUID();
-    const user: User = {
-  id, userId,
+  private async createOAuthUser(async createOAuthUser(userData: any): : Promise<): PromiseUser> { const userId  = crypto.randomUUID();
+    const user: User = { id: userId,
   email: userData.email.toLowerCase();
       username: userData.username;
   firstName: userData.firstName;
@@ -869,14 +847,14 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   avatar: userData.avatar;
       role: 'player';
   permissions: [];
-      mfaEnabled, false,
+      mfaEnabled: false,
   lastLogin, undefined,
       loginAttempts: 0;
-  emailVerified, true, // OAuth emails are pre-verified
+  emailVerified: true, // OAuth emails are pre-verified
       socialLogins: [];
   preferences: this.getDefaultPreferences();
       createdAt: new Date();
-  updatedAt: new Date()
+  updatedAt, new Date()
      }
     await database.query(`
       INSERT INTO users (
@@ -900,8 +878,8 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         INSERT INTO user_social_logins (
           user_id, provider, provider_id, email, verified, connected_at
         ): VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT(user_id, provider): DO UPDATE SET 
-          provider_id = EXCLUDED.provider_id,
+        ON CONFLICT(user_id, provider) DO UPDATE SET 
+          provider_id  = EXCLUDED.provider_id,
           email = EXCLUDED.email,
           verified = EXCLUDED.verified,
           connected_at = EXCLUDED.connected_at
@@ -910,16 +888,15 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         socialLogin.email, socialLogin.verified, socialLogin.connectedAt
       ]);
      } catch (error) {
-      console.error('Social login storage error:', error);
+      console.error('Social login storage error: ', error);
     }
   }
 
-  private async getRolePermissions(async getRolePermissions(role: UserRole): : Promise<): PromisePermission[]> {; // This would typically be stored in database
+  private async getRolePermissions(async getRolePermissions(role: UserRole): : Promise<): PromisePermission[]> { ; // This would typically be stored in database
     // For now, return hardcoded permissions based on role
     const permissions Record<UserRole, Permission[]> = {
-      admin: [{ resourc,
-  e: '*';
-  actions: ['*'] }],
+      admin: [{ resourc: e: '*';
+  actions, ['*'] }],
       commissioner: [
         { resource: 'leagues';
   actions: ['read', 'update', 'manage'] },
@@ -930,8 +907,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       ],
       player: [
         { resource: 'teams';
-  actions: ['read', 'update'], conditions: { ownTea,
-  m: true } },
+  actions: ['read', 'update'], conditions: { ownTea: m: true } },
         { resource: 'trades';
   actions: ['read', 'create', 'accept', 'reject'] }
       ],
@@ -959,7 +935,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
     context: Record<string, any>,
     user: User
   ); boolean { for (const [key, value] of Object.entries(conditions)) {
-      if (key === 'ownTeam' && value === true) {
+      if (key  === 'ownTeam' && value === true) {
         return context.teamId && user.id === context.ownerId;
        }
       // Add more condition checks as needed
@@ -981,7 +957,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
      }
   }
 
-  async getUserSessions(async getUserSessions(userId: string): : Promise<): PromiseAuthSession[]> { try {
+  async getUserSessions(async getUserSessions(userId: string): : Promise<): PromiseAuthSession[]> {  try {
       const result = await database.query(`
         SELECT * FROM user_sessions 
         WHERE user_id = $1 AND is_active = true 
@@ -996,10 +972,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
         expiresAt: new Date(row.expires_at);
   deviceInfo: JSON.parse(row.device_info);
         lastActivity: new Date(row.last_activity);
-  isActive: row.is_active
+  isActive, row.is_active
        }));
     } catch (error) {
-      console.error('Get user sessions error:', error);
+      console.error('Get user sessions error: ', error);
       return [];
     }
   }
@@ -1009,7 +985,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
   currentPassword, string, 
     newPassword: string
   ): : Promise<): Promiseboolean> { try {
-      const user = await this.findUserById(userId);
+      const user  = await this.findUserById(userId);
       if (!user) return false;
 
       // Get current password hash
@@ -1035,11 +1011,11 @@ class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { 
       // Revoke all existing sessions to force re-login
       await this.revokeAllUserSessions(userId);
 
-      console.log(`🔐 Password changed for user, ${userId }`);
+      console.log(`🔐 Password changed for: user, ${userId }`);
       return true;
 
     } catch (error) {
-      console.error('Password change error:', error);
+      console.error('Password change error: ', error);
       return false;
     }
   }

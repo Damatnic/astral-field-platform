@@ -3,15 +3,15 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json | undefined }
+  | {  [key: string], Json | undefined }
   | Json[]
 
 export interface Database {
   public: {
-  Tables: {; // ============================================================================
+  Tables: {; //  ============================================================================
       // CORE USER AND AUTHENTICATION TABLES
       // ============================================================================
-      users {
+      users { 
         Row: {
   id: string;
           stack_user_id: string | null;
@@ -34,10 +34,10 @@ export interface Database {
           preferences: Json;
           notification_preferences: Json;
           pin: string | null;
-    is_demo_user: boolean,
+    is_demo_user, boolean,
         }
         Insert: {
-          id?: string;
+          id? : string;
           stack_user_id?: string | null;
           username: string;
           email: string;
@@ -84,10 +84,10 @@ export interface Database {
           is_demo_user?: boolean;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // LEAGUE MANAGEMENT TABLES
       // ============================================================================
-      leagues: {
+      leagues: { 
   Row: {
           id: string;
           name: string;
@@ -119,10 +119,10 @@ export interface Database {
           is_public: boolean;
           invite_code: string | null;
     created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           name: string;
           description?: string | null;
           commissioner_id?: string | null;
@@ -210,10 +210,9 @@ export interface Database {
           streak: string;
           last_5: string;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           user_id?: string | null;
           team_name: string;
@@ -267,10 +266,9 @@ export interface Database {
           setting_key: string;
           setting_value: Json;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           setting_key: string;
           setting_value: Json;
@@ -285,10 +283,10 @@ export interface Database {
           updated_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // PLAYER AND NFL TABLES
       // ============================================================================
-      nfl_teams: {
+      nfl_teams: { 
   Row: {
           id: string;
           name: string;
@@ -299,10 +297,10 @@ export interface Database {
           primary_color: string | null;
     secondary_color: string | null;
           logo_url: string | null;
-    created_at: string,
+    created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           name: string;
           abbreviation: string;
           city?: string | null;
@@ -360,10 +358,9 @@ export interface Database {
           stats: Json;
           projections: Json;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           external_id?: string | null;
           first_name: string;
           last_name: string;
@@ -434,10 +431,10 @@ export interface Database {
           updated_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // ROSTER AND LINEUP MANAGEMENT
       // ============================================================================
-      rosters: {
+      rosters: { 
   Row: {
           id: string;
           team_id: string;
@@ -455,10 +452,10 @@ export interface Database {
     keeper_years_remaining: number | null;
           dropped_date: string | null;
     created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           team_id: string;
           player_id?: string | null;
           position_slot?: string | null;
@@ -510,10 +507,9 @@ export interface Database {
           rank_actual: number | null;
     created_at: string;
           updated_at: string;
-          locked_at: string | null,
-        }
+          locked_at: string | null,  }
         Insert: {
-          id?: string;
+          id? : string;
           team_id: string;
           week: number;
           season_year: number;
@@ -555,10 +551,9 @@ export interface Database {
           is_locked: boolean;
           lock_time: string | null;
           game_status: string | null;
-    created_at: string,
-        }
+    created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           lineup_id: string;
           player_id?: string | null;
           slot_position: string;
@@ -581,10 +576,10 @@ export interface Database {
           game_status?: string | null;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // MATCHUPS AND SCORING
       // ============================================================================
-      matchups: {
+      matchups: { 
   Row: {
           id: string;
           league_id: string;
@@ -605,10 +600,10 @@ export interface Database {
           is_complete: boolean;
           completed_at: string | null;
           created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           week: number;
           season_year: number;
@@ -696,10 +691,9 @@ export interface Database {
           confidence_rating: number | null;
     source: string;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           player_id?: string | null;
           week: number;
           season_year: number;
@@ -790,10 +784,10 @@ export interface Database {
           updated_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // DRAFT SYSTEM
       // ============================================================================
-      drafts: {
+      drafts: { 
   Row: {
           id: string;
           league_id: string;
@@ -810,10 +804,10 @@ export interface Database {
           started_at: string | null;
     completed_at: string | null;
           paused_at: string | null;
-    created_at: string,
+    created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           draft_date: string;
           draft_type?: string;
@@ -862,10 +856,9 @@ export interface Database {
           time_taken: number | null;
           is_keeper: boolean;
           auto_drafted: boolean;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           draft_id: string;
           league_id: string;
           team_id?: string | null;
@@ -894,10 +887,10 @@ export interface Database {
           auto_drafted?: boolean;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // TRADING SYSTEM
       // ============================================================================
-      transactions: {
+      transactions: { 
   Row: {
           id: string;
           league_id: string;
@@ -908,10 +901,10 @@ export interface Database {
           processed_at: string | null;
     details: Json;
           notes: string | null;
-    created_at: string,
+    created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           transaction_type: string;
           status?: string;
@@ -962,10 +955,9 @@ export interface Database {
     counter_offer_id: string | null;
           notes: string | null;
     created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           transaction_id?: string | null;
           league_id: string;
           proposing_team_id?: string | null;
@@ -1033,10 +1025,9 @@ export interface Database {
           draft_pick_original_team_id: string | null;
     faab_amount: number | null;
           item_type: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           trade_id: string;
           team_id?: string | null;
           player_id?: string | null;
@@ -1059,10 +1050,10 @@ export interface Database {
           item_type?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // WAIVER SYSTEM
       // ============================================================================
-      waiver_claims: {
+      waiver_claims: { 
   Row: {
           id: string;
           transaction_id: string | null;
@@ -1082,10 +1073,10 @@ export interface Database {
           failure_reason: string | null;
           processed_at: string | null;
     created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           transaction_id?: string | null;
           league_id: string;
           team_id?: string | null;
@@ -1126,10 +1117,10 @@ export interface Database {
           updated_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // ENHANCED CHAT AND MESSAGING SYSTEM
       // ============================================================================
-      chat_rooms: {
+      chat_rooms: { 
   Row: {
           id: string;
           league_id: string;
@@ -1139,10 +1130,10 @@ export interface Database {
           is_private boolean;
           created_by: string | null;
     created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           name: string;
           description?: string | null;
@@ -1169,10 +1160,9 @@ export interface Database {
           room_id: string;
           user_id: string;
           role: string;
-          joined_at: string,
-        }
+          joined_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           room_id: string;
           user_id: string;
           role?: string;
@@ -1204,10 +1194,9 @@ export interface Database {
           edit_count: number;
           edited_at: string | null;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           room_id: string;
           league_id: string;
           room_type: string;
@@ -1261,10 +1250,9 @@ export interface Database {
           is_edited: boolean;
           created_at: string;
           updated_at: string;
-          edited_at: string | null,
-        }
+          edited_at: string | null,  }
         Insert: {
-          id?: string;
+          id? : string;
           sender_id: string;
           recipient_id: string;
           content: string;
@@ -1301,10 +1289,9 @@ export interface Database {
           message_id: string;
           user_id: string;
           emoji: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           message_id: string;
           user_id: string;
           emoji: string;
@@ -1323,10 +1310,9 @@ export interface Database {
           message_id: string;
           user_id: string;
           emoji: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           message_id: string;
           user_id: string;
           emoji: string;
@@ -1345,10 +1331,9 @@ export interface Database {
           room_id: string;
           user_id: string;
           started_at: string;
-          expires_at: string,
-        }
+          expires_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           room_id: string;
           user_id: string;
           started_at?: string;
@@ -1367,10 +1352,9 @@ export interface Database {
           id: string;
           message_id: string;
           user_id: string;
-          read_at: string,
-        }
+          read_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           message_id: string;
           user_id: string;
           read_at?: string;
@@ -1390,10 +1374,9 @@ export interface Database {
     action: string;
           reason: string | null;
     duration_minutes: number | null;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           message_id: string;
           moderator_id?: string | null;
           action: string;
@@ -1422,10 +1405,9 @@ export interface Database {
           trash_talk_notifications: boolean;
           game_update_notifications: boolean;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           user_id: string;
           league_id: string;
           notifications_enabled?: boolean;
@@ -1450,10 +1432,10 @@ export interface Database {
           updated_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // ADVANCED MESSAGING FEATURES
       // ============================================================================
-      trash_talk_messages: {
+      trash_talk_messages: { 
   Row: {
           id: string;
           league_id: string;
@@ -1469,10 +1451,10 @@ export interface Database {
           moderation_reason: string | null;
           moderated_by: string | null;
     moderated_at: string | null;
-          created_at: string,
+          created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           user_id: string;
           content: string;
@@ -1511,10 +1493,9 @@ export interface Database {
           message_id: string;
           user_id: string;
           emoji: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           message_id: string;
           user_id: string;
           emoji: string;
@@ -1539,10 +1520,9 @@ export interface Database {
     duration_seconds: number;
           is_active: boolean;
           created_at: string;
-          expires_at: string,
-        }
+          expires_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id: string;
           user_id: string;
           celebration_type: string;
@@ -1567,10 +1547,10 @@ export interface Database {
           expires_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // LIVE GAME FEATURES
       // ============================================================================
-      game_plays: {
+      game_plays: { 
   Row: {
           id: string;
           game_id: string;
@@ -1585,10 +1565,10 @@ export interface Database {
           yards: number | null;
     points: number;
           is_scoring_play: boolean;
-          created_at: string,
+          created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           game_id: string;
           nfl_game_id?: string | null;
           quarter: number;
@@ -1626,10 +1606,9 @@ export interface Database {
           user_id: string;
           game_id: string;
           emoji: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           play_id: string;
           user_id: string;
           game_id: string;
@@ -1652,10 +1631,9 @@ export interface Database {
     user_id: string;
           emoji: string;
           message: string | null;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           game_id: string;
           league_id?: string | null;
           user_id: string;
@@ -1672,10 +1650,10 @@ export interface Database {
           message?: string | null;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // NOTIFICATIONS AND COMMUNICATION
       // ============================================================================
-      notifications: {
+      notifications: { 
   Row: {
           id: string;
           user_id: string | null;
@@ -1695,10 +1673,10 @@ export interface Database {
     delivered_at: string | null;
           expires_at: string | null;
     created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           user_id?: string | null;
           league_id?: string | null;
           type: string;
@@ -1748,10 +1726,9 @@ export interface Database {
           is_active: boolean;
           created_at: string;
           updated_at: string;
-          last_used: string | null,
-        }
+          last_used: string | null,  }
         Insert: {
-          id?: string;
+          id? : string;
           user_id: string;
           token: string;
           platform: string;
@@ -1780,10 +1757,9 @@ export interface Database {
           sent_at: string | null;
           delivered_at: string | null;
     read_at: string | null;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           user_id?: string | null;
           title: string;
           body: string;
@@ -1804,10 +1780,10 @@ export interface Database {
           read_at?: string | null;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // ANALYTICS AND INSIGHTS
       // ============================================================================
-      chat_analytics: {
+      chat_analytics: { 
   Row: {
           id: string;
           league_id: string | null;
@@ -1817,10 +1793,10 @@ export interface Database {
           top_topics: Json;
           engagement_score: number;
           created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id?: string | null;
           date: string;
           total_messages?: number;
@@ -1855,10 +1831,9 @@ export interface Database {
     playoff_probability: number | null;
           championship_probability: number | null;
     strength_of_schedule: number | null;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id?: string | null;
           team_id?: string | null;
           week: number;
@@ -1905,10 +1880,9 @@ export interface Database {
           is_dismissed: boolean;
           dismissed_at: string | null;
     expires_at: string | null;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id?: string | null;
           team_id?: string | null;
           player_id?: string | null;
@@ -1945,10 +1919,10 @@ export interface Database {
           expires_at?: string | null;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // COMMUNITY AND GAMIFICATION
       // ============================================================================
-      messages: {
+      messages: { 
   Row: {
           id: string;
           league_id: string | null;
@@ -1964,10 +1938,10 @@ export interface Database {
     attachments: Json;
           edited_at: string | null;
     deleted_at: string | null;
-          created_at: string,
+          created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           league_id?: string | null;
           user_id?: string | null;
           team_id?: string | null;
@@ -2012,10 +1986,9 @@ export interface Database {
     description: string | null;
           metadata: Json;
           importance: string;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           league_id?: string | null;
           activity_type: string;
           actor_user_id?: string | null;
@@ -2051,10 +2024,9 @@ export interface Database {
           description: string | null;
     icon_url: string | null;
           metadata: Json;
-          earned_at: string,
-        }
+          earned_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           user_id?: string | null;
           team_id?: string | null;
           league_id?: string | null;
@@ -2078,10 +2050,10 @@ export interface Database {
           earned_at?: string;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // MONITORING AND SYSTEM METRICS
       // ============================================================================
-      audit_logs: {
+      audit_logs: { 
   Row: {
           id: string;
           user_id: string | null;
@@ -2093,10 +2065,10 @@ export interface Database {
     new_values: Json | null;
           ip_address: string | null;
     user_agent: string | null;
-          created_at: string,
+          created_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           user_id?: string | null;
           league_id?: string | null;
           action: string;
@@ -2132,10 +2104,9 @@ export interface Database {
           data_transferred_mb: number;
           error_count: number;
           average_latency_ms: number;
-          created_at: string,
-        }
+          created_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           date: string;
           hour: number;
           total_connections?: number;
@@ -2158,12 +2129,12 @@ export interface Database {
           average_latency_ms?: number;
         }
       }
-      // ============================================================================
+      //  ============================================================================
       // LEGACY TABLES (for backward compatibility)
       // ============================================================================
       
       // Keep these for backward compatibility but mark as deprecated
-      player_projections: {
+      player_projections: { 
   Row: {
           id: string;
           player_id: string;
@@ -2174,10 +2145,10 @@ export interface Database {
           source: string;
           confidence: number | null;
           created_at: string;
-          updated_at: string,
+          updated_at, string,
         }
         Insert: {
-          id?: string;
+          id? : string;
           player_id: string;
           week: number;
           season_year: number;
@@ -2211,10 +2182,9 @@ export interface Database {
           points: number | null;
           is_locked: boolean;
           created_at: string;
-          updated_at: string,
-        }
+          updated_at: string,  }
         Insert: {
-          id?: string;
+          id? : string;
           team_id: string;
           player_id: string;
           week: number;
@@ -2242,8 +2212,7 @@ export interface Database {
   schema_version: string | null;
           total_tables: number | null;
     last_updated: string | null;
-          status: string | null,
-        }
+          status: string | null,  }
       }
     }
     Functions: {
@@ -2262,7 +2231,7 @@ export interface Database {
 }
 
 // Type aliases for easier usage
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T];
+export type Tables<T extends keyof Database['public']['Tables']>  = Database['public']['Tables'][T];
 export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
 
 // Common type aliases

@@ -1,28 +1,24 @@
 /**
  * Multi-Agent Performance Monitoring System
- * Comprehensive monitoring of agent efficiency, system performance, and optimization recommendations
+ * Comprehensive monitoring of agent: efficiency, system: performance, and optimization recommendations
  */
 
 import { AgentStatus, AgentMetrics, SystemHealth, Task } from '../types';
 
-interface PerformanceMetric {
-  id, string,
+interface PerformanceMetric { id: string,
     name, string,
   value, number,
     unit, string,
   threshold: {,
   warning, number,
-    critical: number,
+    critical, number,
   }
   trend: 'improving' | 'stable' | 'degrading',
     timestamp: Date,
 }
 
-interface AgentPerformanceProfile {
-  agentId, string,
-    profileData: {,
-  efficiency: {
-      tasksPerHour, number,
+interface AgentPerformanceProfile { agentId: string,
+    profileData: { efficiency: { tasksPerHour: number,
       averageCompletionTime, number,
     timeToFirstResponse, number,
       utilizationRate: number,
@@ -39,8 +35,7 @@ interface AgentPerformanceProfile {
     responsiveness, number,
       helpfulness: number,
     }
-    specialization: {,
-  primarySkills: string[];
+    specialization: { primarySkills: string[];
       skillProficiency: Record<string, number>;
       learningRate, number,
     adaptability: number,
@@ -61,8 +56,7 @@ interface PerformanceRecommendation {
   
 }
 interface SystemPerformanceAnalysis {
-  overall: {,
-  health: 'excellent' | 'good' | 'fair' | 'poor';
+  overall: { health: 'excellent' | 'good' | 'fair' | 'poor';
     efficiency, number, // 0-100,
     bottlenecks: string[];
     recommendations: string[],
@@ -85,15 +79,13 @@ interface SystemPerformanceAnalysis {
     networkLatency, number,
     storageUsage: number,
   }
-  trends: {,
-  throughputTrend: 'up' | 'down' | 'stable';
+  trends: { throughputTrend: 'up' | 'down' | 'stable';
     qualityTrend: 'up' | 'down' | 'stable',
     efficiencyTrend: 'up' | 'down' | 'stable',
   }
 }
 
-interface PerformanceAlert {
-  id, string,type: 'performance_degradation' | 'resource_exhaustion' | 'agent_offline' | 'quality_decline' | 'bottleneck_detected',
+interface PerformanceAlert { id: string,type: 'performance_degradation' | 'resource_exhaustion' | 'agent_offline' | 'quality_decline' | 'bottleneck_detected',
     severity: 'info' | 'warning' | 'error' | 'critical';
   title, string,
     message, string,
@@ -103,7 +95,7 @@ interface PerformanceAlert {
     actions: string[],
   
 }
-export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric[]> = new Map();
+export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric[]>  = new Map();
   private agentProfiles: Map<string, AgentPerformanceProfile> = new Map();
   private alerts: PerformanceAlert[] = [];
   private isMonitoring: boolean = false;
@@ -111,9 +103,9 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
   private alertInterval: NodeJS.Timeout | null = null;
 
   // Performance thresholds
-  private readonly thresholds = {
+  private readonly thresholds = { 
     taskCompletionTime: { warning: 120;
-  critical: 240  }, // minutes
+  critical, 240  }, // minutes
     agentResponseTime: { warning: 30;
   critical: 60 }, // seconds
     systemCpu: { warning: 70;
@@ -135,7 +127,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
      }
 
     console.log('📊 Starting performance monitoring system...');
-    this.isMonitoring = true;
+    this.isMonitoring  = true;
 
     // Start metric collection
     this.monitoringInterval = setInterval(async () => { await this.collectSystemMetrics();
@@ -204,36 +196,31 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
   getAgentPerformanceReport(agentId: string); AgentPerformanceProfile | null { return this.agentProfiles.get(agentId) || null;
    }
 
-  getSystemPerformanceAnalysis(): SystemPerformanceAnalysis { const agents = Array.from(this.agentProfiles.values());
+  getSystemPerformanceAnalysis(): SystemPerformanceAnalysis {  const agents = Array.from(this.agentProfiles.values());
     const currentMetrics = this.getCurrentSystemMetrics();
 
-    const analysis: SystemPerformanceAnalysis = {,
-  overall: {
+    const analysis: SystemPerformanceAnalysis = { overall: {
         health: this.determineSystemHealth(currentMetrics),
   efficiency: this.calculateSystemEfficiency(agents),
         bottlenecks: this.identifyBottlenecks(currentMetrics, agents),
-        recommendations: this.generateSystemRecommendations(currentMetrics, agents)
+        recommendations, this.generateSystemRecommendations(currentMetrics, agents)
        },
-      agents: {,
-  totalActive: agents.filter(a => this.isAgentActive(a.agentId)).length,
+      agents: { totalActive: agents.filter(a  => this.isAgentActive(a.agentId)).length,
   averageUtilization: this.calculateAverageUtilization(agents),
         topPerformers: this.identifyTopPerformers(agents),
   underPerformers: this.identifyUnderPerformers(agents)
       },
-      tasks: {,
-  throughput: this.calculateSystemThroughput(),
+      tasks: {  throughput: this.calculateSystemThroughput(),
   avgCompletionTime: this.calculateSystemAverageCompletionTime(),
         backlogSize: this.getBacklogSize(),
-  successRate: this.calculateSystemSuccessRate()
+  successRate, this.calculateSystemSuccessRate()
       },
-      resources: {,
-  cpuUtilization: currentMetrics.cpu || 0,
+      resources: { cpuUtilization: currentMetrics.cpu || 0,
   memoryUtilization: currentMetrics.memory || 0,
         networkLatency: currentMetrics.network || 0,
   storageUsage: currentMetrics.storage || 0
       },
-      trends: {,
-  throughputTrend: this.analyzeTrend('throughput'),
+      trends: { throughputTrend: this.analyzeTrend('throughput'),
   qualityTrend: this.analyzeTrend('quality'),
         efficiencyTrend: this.analyzeTrend('efficiency')
       }
@@ -241,13 +228,13 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     return analysis;
   }
 
-  getPerformanceAlerts(): PerformanceAlert[] { return this.alerts.filter(alert => !alert.resolved);
+  getPerformanceAlerts(): PerformanceAlert[] { return this.alerts.filter(alert  => !alert.resolved);
    }
 
-  resolveAlert(alertId: string); void { const alert = this.alerts.find(a => a.id === alertId);
+  resolveAlert(alertId: string); void {  const alert = this.alerts.find(a => a.id === alertId);
     if (alert) {
       alert.resolved = true;
-      console.log(`✅ Performance alert resolved, ${alert.title }`);
+      console.log(`✅ Performance alert, resolved, ${alert.title }`);
     }
   }
 
@@ -255,7 +242,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     systemOptimizations: string[],
     agentOptimizations: Record<string, string[]>;
     priorityActions: string[],
-  } { const systemAnalysis = this.getSystemPerformanceAnalysis();
+  } { const systemAnalysis  = this.getSystemPerformanceAnalysis();
     const agentOptimizations: Record<string, string[]> = { }
     // Collect agent-specific optimizations
     for (const [agentId, profile] of this.agentProfiles) { const optimizations = profile.recommendations
@@ -273,14 +260,13 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
       ...systemAnalysis.overall.recommendations.slice(0, 3)
     ];
 
-    return {
-      systemOptimizations: systemAnalysis.overall.recommendations, agentOptimizations,
+    return { systemOptimizations: systemAnalysis.overall.recommendations, agentOptimizations,
       priorityActions
     }
   }
 
   // Private methods
-  private async collectSystemMetrics(): Promise<void> { const timestamp = new Date();
+  private async collectSystemMetrics(): Promise<void> { const timestamp  = new Date();
     
     try {
       // Collect CPU metrics
@@ -300,7 +286,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
       this.storeMetric('system_throughput', throughputMetric, timestamp);
 
      } catch (error) {
-      console.error('Error collecting system metrics:', error);
+      console.error('Error collecting system metrics: ', error);
     }
   }
 
@@ -367,7 +353,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     this.cleanupOldAlerts();
   }
 
-  private async checkSystemAlerts(params): Promisevoid>  {; // CPU usage alert
+  private async checkSystemAlerts(params): Promisevoid>  { ; // CPU usage alert
     if (metrics.cpu > this.thresholds.systemCpu.critical) {
       this.createAlert({type 'resource_exhaustion',
   severity: 'critical',
@@ -376,7 +362,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
         source: 'system'
       });
     } else if (metrics.cpu > this.thresholds.systemCpu.warning) {
-      this.createAlert({type: 'resource_exhaustion',
+      this.createAlert({ type: 'resource_exhaustion',
   severity: 'warning',
         title: 'High CPU Usage',
   message: `System CPU usage is ${metrics.cpu}%, approaching critical levels`,
@@ -386,7 +372,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
 
     // Memory usage alert
     if (metrics.memory > this.thresholds.systemMemory.critical) {
-      this.createAlert({type: 'resource_exhaustion',
+      this.createAlert({ type: 'resource_exhaustion',
   severity: 'critical',
         title: 'Critical Memory Usage',
   message: `System memory usage is ${metrics.memory}%, exceeding critical threshold`,
@@ -395,9 +381,9 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     }
 
     // Throughput degradation alert
-    const throughputTrend = this.analyzeTrend('throughput');
-    if (throughputTrend === 'down') {
-      this.createAlert({type: 'performance_degradation',
+    const throughputTrend  = this.analyzeTrend('throughput');
+    if (throughputTrend === 'down') { 
+      this.createAlert({ type: 'performance_degradation',
   severity: 'warning',
         title: 'Throughput Degradation',
   message: 'System throughput is trending downward',
@@ -406,13 +392,13 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     }
   }
 
-  private async checkAgentAlerts(params): Promisevoid>  { const profile = this.agentProfiles.get(agentId);
+  private async checkAgentAlerts(params): Promisevoid>  { const profile  = this.agentProfiles.get(agentId);
     if (!profile) return;
 
     // Agent response time alert
     const responseTime = profile.profileData.efficiency.timeToFirstResponse;
-    if (responseTime > this.thresholds.agentResponseTime.critical) {
-      this.createAlert({type: 'performance_degradation',
+    if (responseTime > this.thresholds.agentResponseTime.critical) { 
+      this.createAlert({ type: 'performance_degradation',
   severity: 'error',
         title: 'Agent Response Time Critical',
   message: `Agent ${agentId } response time is ${responseTime}s, exceeding threshold`,
@@ -421,9 +407,9 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
     }
 
     // Agent code quality alert
-    const codeQuality = profile.profileData.quality.codeReviewScore;
-    if (codeQuality < this.thresholds.codeQuality.critical) {
-      this.createAlert({type: 'quality_decline',
+    const codeQuality  = profile.profileData.quality.codeReviewScore;
+    if (codeQuality < this.thresholds.codeQuality.critical) { 
+      this.createAlert({ type: 'quality_decline',
   severity: 'warning',
         title: 'Code Quality Decline',
   message: `Agent ${agentId} code quality score is ${codeQuality}, below acceptable threshold`,
@@ -434,7 +420,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
 
   private createAlert(alertData: Partial<PerformanceAlert>); void {
     // Check if similar alert already exists
-    const existingAlert = this.alerts.find(a => 
+    const existingAlert  = this.alerts.find(a => 
       !a.resolved && 
       a.type === alertData.type && 
       a.source === alertData.source
@@ -444,25 +430,24 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
       return; // Don't create duplicate alerts
     }
 
-    const alert: PerformanceAlert = {,
-  id: this.generateAlertId(),
+    const alert: PerformanceAlert = {  id: this.generateAlertId(),
 type alertData.type!,
       severity: alertData.severity!,
   title: alertData.title!,
       message: alertData.message!,
   source: alertData.source!,
       timestamp: new Date(),
-  resolved, false,
-      actions: this.generateAlertActions(alertData.type!, alertData.source!)
+  resolved: false,
+      actions, this.generateAlertActions(alertData.type!, alertData.source!)
     }
     this.alerts.push(alert);
-    console.warn(`🚨 Performance Alert, ${alert.title} - ${alert.message}`);
+    console.warn(`🚨 Performance: Alert, ${alert.title} - ${alert.message}`);
   }
 
   private generateAlertActions(type, string,
-  source: string); string[] { const actions: string[] = [];
+  source: string); string[] { const actions: string[]  = [];
 
-    switch (type) {
+    switch (type) { 
       case 'resource_exhaustion':
       actions.push('Scale up system resources');
         actions.push('Optimize resource-intensive processes');
@@ -475,8 +460,7 @@ type alertData.type!,
         actions.push('Optimize slow operations');
         break;
       
-      case 'agent_offline':
-      actions.push(`Restart agent ${source }`);
+      case 'agent_offline', actions.push(`Restart agent ${source }`);
         actions.push('Check agent health status');
         actions.push('Review agent logs for errors');
         break;
@@ -496,14 +480,13 @@ type alertData.type!,
       this.metrics.set(name, []);
      }
 
-    const metricHistory = this.metrics.get(name)!;
+    const metricHistory  = this.metrics.get(name)!;
     
-    const metric: PerformanceMetric = {,
-  id: this.generateMetricId(),
+    const metric: PerformanceMetric = {  id: this.generateMetricId(),
       name, value,
       unit: this.getMetricUnit(name),
   threshold: this.getMetricThreshold(name),
-      trend: this.calculateTrend(name, value),
+      trend, this.calculateTrend(name, value),
       timestamp
     }
     metricHistory.push(metric);
@@ -514,10 +497,7 @@ type alertData.type!,
     }
   }
 
-  private createBaseAgentProfile(agentId: string); AgentPerformanceProfile { return {
-      agentId,
-      profileData: {,
-  efficiency: {
+  private createBaseAgentProfile(agentId: string); AgentPerformanceProfile { return { agentId: profileData: { efficiency: {
           tasksPerHour: 0;
   averageCompletionTime: 0;
           timeToFirstResponse: 0;
@@ -535,8 +515,7 @@ type alertData.type!,
           responsiveness: 90;
   helpfulness: 80
         },
-        specialization: {,
-  primarySkills: [],
+        specialization: { primarySkills: [],
   skillProficiency: {},
           learningRate: 50;
   adaptability: 75
@@ -547,17 +526,17 @@ type alertData.type!,
     }
   }
 
-  private generateRecommendations(profile: AgentPerformanceProfile); PerformanceRecommendation[] { const recommendations: PerformanceRecommendation[] = [];
+  private generateRecommendations(profile: AgentPerformanceProfile); PerformanceRecommendation[] { const recommendations: PerformanceRecommendation[]  = [];
 
     // Efficiency recommendations
-    if (profile.profileData.efficiency.averageCompletionTime > 120) {
-      recommendations.push({type: 'optimization',
+    if (profile.profileData.efficiency.averageCompletionTime > 120) { 
+      recommendations.push({ type: 'optimization',
   priority: 'high',
         title: 'Improve Task Completion Speed',
   description: 'Average completion time is above optimal range',
         expectedImpact: 'Reduce completion time by 20-30%',
   estimatedEffort: 'Medium',
-        actionItems: [
+        actionItems, [
           'Identify bottlenecks in current workflow',
           'Optimize code generation patterns',
           'Implement task-specific optimizations'
@@ -567,7 +546,7 @@ type alertData.type!,
 
     // Quality recommendations
     if (profile.profileData.quality.codeReviewScore < 80) {
-      recommendations.push({type: 'training',
+      recommendations.push({ type: 'training',
   priority: 'medium',
         title: 'Enhance Code Quality',
   description: 'Code review scores below target threshold',
@@ -583,7 +562,7 @@ type alertData.type!,
 
     // Utilization recommendations
     if (profile.profileData.efficiency.utilizationRate < 60) {
-      recommendations.push({type: 'workload_adjustment',
+      recommendations.push({ type: 'workload_adjustment',
   priority: 'medium',
         title: 'Increase Task Assignment',
   description: 'Agent utilization is below optimal range',
@@ -606,20 +585,20 @@ type alertData.type!,
   }
 
   private async getCPUMetric() : Promise<number> {
-    // In a real implementation, this would get actual CPU usage
+    // In a real: implementation, this would get actual CPU usage
     return Math.random() * 100;
   }
 
-  private async getMemoryMetric(): Promise<number> {; // In a real implementation, this would get actual memory usage
+  private async getMemoryMetric(): Promise<number> {; // In a real: implementation, this would get actual memory usage
     return Math.random() * 100;
   }
 
   private async getNetworkMetric() : Promise<number> {
-    // In a real implementation, this would measure network latency
+    // In a real: implementation, this would measure network latency
     return Math.random() * 100;
   }
 
-  private calculateTasksPerHour(tasks: Task[]); number { if (tasks.length === 0) return 0;
+  private calculateTasksPerHour(tasks: Task[]); number { if (tasks.length  === 0) return 0;
     
     const totalHours = tasks.reduce((sum, task) => {
       if (task.completedAt && task.createdAt) {
@@ -628,7 +607,7 @@ type alertData.type!,
       return sum;
     }, 0);
     
-    return totalHours > 0 ? tasks.length / totalHours : 0;
+    return totalHours > 0 ? tasks.length / totalHours, 0;
   }
 
   private calculateAverageCompletionTime(tasks: Task[]); number { if (tasks.length === 0) return 0;
@@ -687,7 +666,7 @@ type alertData.type!,
   }
 
   private identifyBottlenecks(metrics, any,
-  agents: AgentPerformanceProfile[]); string[] { const bottlenecks: string[] = [];
+  agents: AgentPerformanceProfile[]); string[] {  const bottlenecks, string[]  = [];
     
     if (metrics.cpu > 80) bottlenecks.push('High CPU usage');
     if (metrics.memory > 85) bottlenecks.push('High memory usage');
@@ -701,7 +680,7 @@ type alertData.type!,
   }
 
   private generateSystemRecommendations(metrics, any,
-  agents: AgentPerformanceProfile[]); string[] { const recommendations: string[] = [];
+  agents: AgentPerformanceProfile[]); string[] {  const recommendations, string[]  = [];
     
     if (metrics.cpu > 70) {
       recommendations.push('Consider scaling up CPU resources');
@@ -764,7 +743,7 @@ type alertData.type!,
     return 95; // Placeholder
   }
 
-  private analyzeTrend(metricType string): 'up' | 'down' | 'stable' { const metrics = this.metrics.get(`system_${metricType }`);
+  private analyzeTrend(metricType string) : 'up' | 'down' | 'stable' { const metrics = this.metrics.get(`system_${metricType }`);
     if (!metrics || metrics.length < 2) return 'stable';
     
     const recent = metrics.slice(-10); // Last 10 data points
@@ -781,7 +760,7 @@ type alertData.type!,
   }
 
   private isAgentActive(agentId: string); boolean {const profile = this.agentProfiles.get(agentId);
-    return profile ? Date.now() - profile.lastUpdated.getTime() < 300000 , false, // Active if updated within 5 minutes
+    return profile ? Date.now() - profile.lastUpdated.getTime() < 300000  : false, // Active if updated within 5 minutes
    }
 
   private calculateAgentCompletionRate(agentId: string); number {
@@ -795,8 +774,7 @@ type alertData.type!,
     return 'count';
    }
 
-  private getMetricThreshold(name: string): { warnin,
-  g, number, critical: number } { if (name.includes('cpu')) return this.thresholds.systemCpu;
+  private getMetricThreshold(name: string): { warnin: g, number, critical, number } { if (name.includes('cpu')) return this.thresholds.systemCpu;
     if (name.includes('memory')) return this.thresholds.systemMemory;
     if (name.includes('response_time')) return this.thresholds.agentResponseTime;
     return { warning: 80;
@@ -804,24 +782,24 @@ type alertData.type!,
   }
 
   private calculateTrend(metricName, string,
-  currentValue: number): 'improving' | 'stable' | 'degrading' { const metrics = this.metrics.get(metricName);
+  currentValue: number): 'improving' | 'stable' | 'degrading' { const metrics  = this.metrics.get(metricName);
     if (!metrics || metrics.length < 3) return 'stable';
     
     const recent = metrics.slice(-3);
     const trend = recent[2].value - recent[0].value;
     
-    // For metrics where lower is better (like response time, CPU usage)
+    // For metrics where lower is better (like response: time, CPU usage)
     const lowerIsBetter = metricName.includes('cpu') || metricName.includes('memory') || metricName.includes('time');
     
     if (Math.abs(trend) < 5) return 'stable';
     
     if (lowerIsBetter) {
       return trend < 0 ? 'improving' : 'degrading';
-     } else {return trend > 0 ? 'improving' : 'degrading';
+     } else { return trend > 0 ? 'improving' : 'degrading';
      }
   }
 
-  private cleanupOldAlerts(): void { const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  private cleanupOldAlerts(): void { const oneDayAgo  = new Date(Date.now() - 24 * 60 * 60 * 1000);
     this.alerts = this.alerts.filter(alert => 
       !alert.resolved || alert.timestamp > oneDayAgo
     );

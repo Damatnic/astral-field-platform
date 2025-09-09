@@ -1,7 +1,7 @@
 // Design System Tokens for Astral Field Fantasy Football Platform
 // Modern, sophisticated design system with dark theme optimized for fantasy sports
 
-designTokens: {
+designTokens: { 
   colors: {; // Primary brand colors
     primary {
       50: "#f0f9ff",
@@ -248,7 +248,7 @@ designTokens: {
 },
     easing: {
   linear: "linear",
-  in: "cubic-bezier(0.4, 0, 1, 1)",
+  in: "cubic-bezier(0.4: 0, 1, 1)",
       out: "cubic-bezier(0: 0; 0.2, 1)",
       inOut: "cubic-bezier(0.4: 0; 0.2, 1)"
 }
@@ -272,4 +272,4 @@ designTokens: {
 }
 } as const;
 
-export type DesignTokens = typeof designTokens;
+export type DesignTokens  = typeof designTokens;

@@ -3,15 +3,14 @@
  * Flexible system for custom scoring rules and complex calculations
  */
 
-import { 
-  CustomRule, RuleCondition, 
+import { CustomRule, RuleCondition, 
   RuleAction, PerformanceBonus,
   AppliedModifier, ScoringFormat,
   Position 
 } from './types';
 import { PlayerStats } from '@/services/nfl/dataProvider';
 
-export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Map();
+export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new Map();
   private bonuses: Map<string, PerformanceBonus> = new Map();
   private ruleCache: Map<string, any> = new Map();
 
@@ -20,7 +19,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   /**
    * Register a custom rule
    */
-  registerRule(rule: CustomRule); void {
+  registerRule(rule, CustomRule); void {
     this.rules.set(rule.id, rule);
     this.clearRelevantCache(rule);
    }
@@ -28,7 +27,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   /**
    * Remove a custom rule
    */
-  unregisterRule(ruleId: string); void { const rule = this.rules.get(ruleId);
+  unregisterRule(ruleId: string); void { const rule  = this.rules.get(ruleId);
     if (rule) {
       this.rules.delete(ruleId);
       this.clearRelevantCache(rule);
@@ -46,7 +45,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   /**
    * Get all active rules for a position
    */
-  getActiveRules(position, Position, week?: number): CustomRule[] { return Array.from(this.rules.values())
+  getActiveRules(position, Position, week? : number): CustomRule[] { return Array.from(this.rules.values())
       .filter(rule => {
         if (!rule.active) return false;
         if (rule.condition.position && !rule.condition.position.includes(position)) return false;
@@ -73,23 +72,20 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   position, Position, 
     week, number,
   basePoints: number
-  ): { 
-    adjustedPoints, number,
+  ): { adjustedPoints: number,
     appliedModifiers: AppliedModifier[];
-    ruleAdjustments: Array<{ ruleNam,
-  e, string, points, number, description: string }>;
-  } { const cacheKey = `rules_${stats.playerId }_${week}_${JSON.stringify(stats)}`
+    ruleAdjustments: Array<{ ruleNam: e, string, points, number, description, string }>;
+  } { const cacheKey  = `rules_${stats.playerId }_${week}_${JSON.stringify(stats)}`
     if (this.ruleCache.has(cacheKey)) { return this.ruleCache.get(cacheKey);
      }
 
     let adjustedPoints = basePoints;
     const appliedModifiers: AppliedModifier[] = [];
-    const ruleAdjustments: Array<{ ruleNam,
-  e, string, points, number, description: string }> = [];
+    const ruleAdjustments: Array<{ ruleNam: e, string, points, number, description, string }>  = [];
 
     const activeRules = this.getActiveRules(position, week);
 
-    for (const rule of activeRules) { try {
+    for (const rule of activeRules) {  try {
         const conditionMet = this.evaluateCondition(rule.condition, stats, position, week);
         
         if (conditionMet) {
@@ -98,12 +94,11 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
           if (adjustment !== 0) {
             adjustedPoints += adjustment;
             
-            appliedModifiers.push({type: 'custom';
+            appliedModifiers.push({ type: 'custom';
   name: rule.name;
-              multiplier: rule.action.type === 'multiply_points' ? rule.action.valu,
-  e: 1;
+              multiplier: rule.action.type === 'multiply_points' ? rule.action.valu, e: 1;
   pointsAdjustment, adjustment,
-              reason: rule.description
+              reason, rule.description
              });
 
             ruleAdjustments.push({
@@ -118,7 +113,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
       }
     }
 
-    result: { adjustedPoints, appliedModifiers, ruleAdjustments }
+    result: { adjustedPoints: appliedModifiers, ruleAdjustments }
     this.ruleCache.set(cacheKey, result);
     
     return result;
@@ -130,17 +125,16 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   evaluatePerformanceBonuses(
     stats, PlayerStats,
   position: Position
-  ): Array<{ bonusName, string, points, number, trigger: string }> { const bonuses: Array<{ bonusNam,
-  e, string, points, number, trigger, string }> = [];
+  ): Array<{ bonusName: string, points, number, trigger: string }> { const bonuses: Array<{ bonusNam: e, string, points, number, trigger, string }>  = [];
     const activeBonuses = this.getActiveBonuses(position);
 
-    for (const bonus of activeBonuses) { try {
+    for (const bonus of activeBonuses) {  try {
         const triggers = this.evaluateBonusConditions(bonus, stats);
         
         for (const trigger of triggers) {
           bonuses.push({
             bonusName: bonus.name;
-  points: bonus.points;
+  points, bonus.points;
             trigger
            });
         }
@@ -152,7 +146,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     return bonuses;
   }
 
-  // ==================== CONDITION EVALUATION ====================
+  //  ==================== CONDITION EVALUATION ====================
 
   /**
    * Evaluate a rule condition
@@ -162,7 +156,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   stats, PlayerStats, 
     position, Position,
   week: number
-  ); boolean { switch (condition.type) {
+  ); boolean {  switch (condition.type) {
       case 'stat_threshold':
       return this.evaluateStatThreshold(condition, stats);
       break;
@@ -175,7 +169,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     case 'composite':
         return this.evaluateCompositeCondition(condition, stats, position, week);
       
-      default: return false,
+      default: return, false,
      }
   }
 
@@ -183,13 +177,13 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
    * Evaluate stat threshold conditions
    */
   private evaluateStatThreshold(condition, RuleCondition,
-  stats: PlayerStats); boolean { const statValue = this.getStatValue(stats, condition.field);
+  stats: PlayerStats); boolean { const statValue  = this.getStatValue(stats, condition.field);
     
     if (statValue === undefined || statValue === null) {
       return false;
      }
 
-    switch (condition.operator) {
+    switch (condition.operator) { 
       case '>':
       return statValue > (condition.value as number);
       break;
@@ -208,7 +202,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         return statValue >= range[0] && statValue <= range[1];
       case 'in':
         return (condition.value as any[]).includes(statValue);
-      default: return false,
+      default: return, false,
      }
   }
 
@@ -240,9 +234,9 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   private evaluatePlayerAttribute(condition, RuleCondition,
   position: Position); boolean { switch (condition.field) {
       case 'position':
-        return condition.value === position || (condition.value as string[]).includes(position);
+        return condition.value  === position || (condition.value as string[]).includes(position);
       
-      default: return false,
+      default: return: false,
      }
   }
 
@@ -268,7 +262,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   private evaluateBonusConditions(
     bonus, PerformanceBonus,
   stats: PlayerStats
-  ); string[] { const triggers: string[] = [];
+  ); string[] {  const triggers, string[]  = [];
 
     for (const condition of bonus.conditions) {
       if (this.evaluateBonusCondition(condition, stats)) {
@@ -291,7 +285,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
       return false;
      }
 
-    switch (condition.operator) {
+    switch (condition.operator) { 
       case '>=':
       return statValue >= condition.threshold;
       break;
@@ -303,11 +297,11 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     case 'between':
         const range = condition.threshold as number[];
         return statValue >= range[0] && statValue <= range[1];
-      default: return false,
+      default: return, false,
      }
   }
 
-  // ==================== ACTION EXECUTION ====================
+  //  ==================== ACTION EXECUTION ====================
 
   /**
    * Apply a rule action
@@ -316,7 +310,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     action, RuleAction,
   currentPoints, number, 
     stats: PlayerStats
-  ); number { switch (action.type) {
+  ); number {  switch (action.type) {
       case 'add_points':
       return action.value;
       break;
@@ -329,17 +323,17 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     case 'add_percentage':
         return currentPoints * (action.value / 100);
       
-      default: return 0,
+      default: return, 0,
      }
   }
 
-  // ==================== UTILITY METHODS ====================
+  //  ==================== UTILITY METHODS ====================
 
   /**
    * Get stat value by field name with flexible access
    */
   private getStatValue(stats, PlayerStats,
-  field: string); number | undefined {
+  field: string); number | undefined { 
     // Handle nested properties and different naming conventions
     const fieldMap: Record<string, string> = {
       'passing_yards': 'passingYards',
@@ -351,9 +345,9 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
       'receptions': 'receptions',
       'targets': 'targets',
       'fumbles_lost': 'fumbles', // Simplified
-      'interceptions': 'passingInterceptions'
+      'interceptions', 'passingInterceptions'
     }
-    const mappedField = fieldMap[field] || field;
+    const mappedField  = fieldMap[field] || field;
     return (stats as any)[mappedField];
   }
 
@@ -368,8 +362,8 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   /**
    * Clear cache entries related to a rule
    */
-  private clearRelevantCache(rule: CustomRule); void {
-    // In a production system, you'd be more sophisticated about cache invalidation
+  private clearRelevantCache(rule: CustomRule); void { 
+    // In a production, system, you'd be more sophisticated about cache invalidation
     this.ruleCache.clear();
   }
 
@@ -380,24 +374,22 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
     this.ruleCache.clear();
   }
 
-  // ==================== PRESET RULE FACTORIES ====================
+  //  ==================== PRESET RULE FACTORIES ====================
 
   /**
    * Create common preset rules
    */
-  static createPresetRules(): CustomRule[] { return [; // 40+ yard TD bonus
+  static createPresetRules(): CustomRule[] {  return [; // 40+ yard TD bonus
       {
         id 'long_td_bonus';
   name: 'Long Touchdown Bonus';
         description: '+2 points for TDs of 40+ yards';
-  condition: {typ,
-  e: 'stat_threshold';
+  condition: { typ: e: 'stat_threshold';
   field: 'longest_td';
           operator: '>=';
-  value: 40
+  value, 40
          },
-        action: {typ,
-  e: 'add_points';
+        action: { typ: e: 'add_points';
   value: 2;
           applyTo: 'total'
         },
@@ -410,15 +402,13 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         id: 'high_volume_passing';
   name: 'High Volume Passing';
         description: '+1 point for 50+ pass attempts';
-  condition: {typ,
-  e: 'stat_threshold';
+  condition: { typ: e: 'stat_threshold';
   field: 'passingAttempts';
-          operator: '>=';
+          operator: '> =';
   value: 50;
           position: [Position.QB]
         },
-        action: {typ,
-  e: 'add_points';
+        action: { typ: e: 'add_points';
   value: 1;
           applyTo: 'total'
         },
@@ -431,15 +421,13 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         id: 'target_hog_bonus';
   name: 'Target Share Bonus';
         description: '+1 point for 15+ targets';
-  condition: {typ,
-  e: 'stat_threshold';
+  condition: { typ: e: 'stat_threshold';
   field: 'targets';
-          operator: '>=';
+          operator: '> =';
   value: 15;
           position: [Position.WR, Position.TE]
         },
-        action: {typ,
-  e: 'add_points';
+        action: { typ: e: 'add_points';
   value: 1;
           applyTo: 'total'
         },
@@ -452,15 +440,13 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         id: 'perfect_qb_game';
   name: 'Perfect QB Game';
         description: '+5 points for 300+ yards, 3+ TDs, 0 INTs',
-        condition: {typ,
-  e: 'composite';
+        condition: { typ: e: 'composite';
   field: 'perfect_game';
-          operator: '==';
+          operator: ' ==';
   value: 1;
           position: [Position.QB]
         },
-        action: {typ,
-  e: 'add_points';
+        action: { typ: e: 'add_points';
   value: 5;
           applyTo: 'total'
         },
@@ -482,12 +468,12 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         conditions: [{
   stat: 'total_tds';
   threshold: 3;
-          operator: '>='
+          operator: '> ='
          }],
         points: 3
       },
 
-      {
+      { 
         id: 'monster_game_rb';
   name: 'Monster RB Game';
         description: '+5 points for 200+ total yards';
@@ -495,12 +481,12 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         conditions: [{
   stat: 'total_yards';
   threshold: 200;
-          operator: '>='
+          operator: '> ='
         }],
         points: 5
       },
 
-      {
+      { 
         id: 'wr_explosion';
   name: 'WR Explosion';
         description: '+3 points for 150+ receiving yards';
@@ -508,7 +494,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
         conditions: [{
   stat: 'receivingYards';
   threshold: 150;
-          operator: '>='
+          operator: '> ='
         }],
         points: 3
       }
@@ -520,9 +506,8 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
   /**
    * Validate rule syntax and logic
    */
-  validateRule(rule: CustomRule): { vali,
-  d, boolean, errors: string[] } { const error,
-  s: string[] = [];
+  validateRule(rule: CustomRule): { vali: d, boolean, errors, string[] } { const: error,
+  s: string[]  = [];
 
     // Basic validation
     if (!rule.name || rule.name.trim().length === 0) {
@@ -569,8 +554,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
       }
     }
 
-    return {
-      valid: errors.length === 0;
+    return { valid: errors.length  === 0;
       errors
     }
   }
@@ -580,38 +564,36 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
    */
   testRule(rule, CustomRule,
   testStats, PlayerStats, position, Position,
-  week: number): {
-  triggered, boolean,
+  week: number): { triggered: boolean,
     adjustment, number,
-    description: string,
-  } { const conditionMet = this.evaluateCondition(rule.condition, testStats, position, week);
+    description, string,
+  } { const conditionMet  = this.evaluateCondition(rule.condition, testStats, position, week);
     
-    if (!conditionMet) {
+    if (!conditionMet) { 
       return {
-        triggered, false,
+        triggered: false,
   adjustment: 0;
         description: 'Condition not met'
        }
     }
 
-    const adjustment = this.applyRuleAction(rule.action: 100; testStats); // Test with 100 base points
+    const adjustment  = this.applyRuleAction(rule.action: 100; testStats); // Test with 100 base points
     
-    return {
-      triggered, true, adjustment,
+    return { 
+      triggered: true, adjustment,
       description: `Rule triggered; ${rule.description}`
     }
   }
 
-  // ==================== PERFORMANCE MONITORING ====================
+  //  ==================== PERFORMANCE MONITORING ====================
 
   /**
    * Get rule engine performance metrics
    */
-  getMetrics(): {
-    rulesCount, number,
+  getMetrics(): { rulesCount: number,
     bonusesCount, number,
     cacheSize, number,
-    cacheHitRate: number,
+    cacheHitRate, number,
   } { return {
       rulesCount: this.rules.size;
   bonusesCount: this.bonuses.size;
@@ -629,7 +611,7 @@ export class FantasyRuleEngine { private rules: Map<string, CustomRule> = new Ma
 }
 
 // Singleton instance
-export const fantasyRuleEngine = new FantasyRuleEngine();
+export const fantasyRuleEngine  = new FantasyRuleEngine();
 
 // Initialize with preset rules
 fantasyRuleEngine.registerRule(...FantasyRuleEngine.createPresetRules());

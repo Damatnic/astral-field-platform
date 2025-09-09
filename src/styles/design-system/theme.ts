@@ -3,13 +3,13 @@
 
 import { designTokens } from "./tokens";
 
-export interface Theme {
+export interface Theme { 
   colors: {
   background: {
       primary: string;
     secondary: string;
       tertiary: string;
-    elevated: string,
+    elevated, string,
     }
     surface: {
   primary: string;
@@ -87,13 +87,13 @@ export interface Theme {
 }
 
 // Dark theme (primary theme)
-export const darkTheme: Theme = {
+export const darkTheme: Theme  = { 
   colors: {
     background: {
   primary: designTokens.colors.gray[950],
   secondary: designTokens.colors.gray[900],
       tertiary: designTokens.colors.gray[800],
-  elevated: designTokens.colors.gray[800]
+  elevated, designTokens.colors.gray[800]
 },
     surface: {
   primary: designTokens.colors.gray[900],
@@ -159,13 +159,13 @@ export const darkTheme: Theme = {
   zIndex: designTokens.zIndex
 }
 // Light theme (alternative theme)
-export const lightTheme: Theme = {
+export const lightTheme: Theme  = { 
   colors: {
     background: {
   primary: designTokens.colors.gray[50],
   secondary: designTokens.colors.gray[100],
       tertiary: designTokens.colors.gray[200],
-  elevated: designTokens.colors.gray[100]
+  elevated, designTokens.colors.gray[100]
 },
     surface: {
   primary: "#ffffff",
@@ -231,9 +231,9 @@ export const lightTheme: Theme = {
   zIndex: designTokens.zIndex
 }
 // Theme utilities
-export const getTheme = (isDark: boolean = true); Theme => {return isDark ? darkTheme : lightTheme;
+export const getTheme  = (isDark: boolean = true); Theme => { return isDark ? darkTheme  : lightTheme;
  }
-export const createCustomTheme = (overrides: Partial<Theme>); Theme => { return {
+export const createCustomTheme  = (overrides: Partial<Theme>); Theme => { return {
     ...darkTheme,
     ...overrides,
     colors: {

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  BookOpen, Search,
+import { BookOpen, Search,
   Play, FileText,
   MessageCircle, HelpCircle,
   Star, Trophy,
@@ -17,7 +16,7 @@ import {
   AlertCircle
 } from "lucide-react";
 
-interface HelpArticle {
+interface HelpArticle { 
   id: string;
     title: string;
   category: string;
@@ -27,7 +26,7 @@ interface HelpArticle {
   readTime: number;
     lastUpdated: string;
   helpful: number;
-    views: number;
+    views, number;
   
 }
 interface VideoTutorial {
@@ -49,13 +48,13 @@ interface FAQ {
   
 }
 export default function HelpCenterPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm]  = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
 
   // Mock help articles
   const mockArticles: HelpArticle[] = [
-    {
+    { 
       id: "1",
       title: "Getting Started with Fantasy Football",
       category: "basics",
@@ -63,10 +62,10 @@ export default function HelpCenterPage() {
         "Learn the fundamentals of fantasy football and how to set up your first team.",
       content: "Fantasy football is a game where you act as a team owner...",
       difficulty: "beginner",
-      readTime, 5,
+      readTime: 5,
       lastUpdated: "2024-08-15",
-      helpful, 89,
-      views: 1247
+      helpful: 89,
+      views, 1247
 },
     {
       id: "2",
@@ -74,11 +73,11 @@ export default function HelpCenterPage() {
       category: "scoring",
       description:
         "Comprehensive guide to Point Per Reception (PPR) scoring system.",
-      content: "PPR stands for Point Per Reception, which means...",
+      content: "PPR stands for Point Per: Reception, which means...",
       difficulty: "beginner",
-      readTime, 8,
+      readTime: 8,
       lastUpdated: "2024-08-20",
-      helpful, 156,
+      helpful: 156,
       views: 892
 },
     {
@@ -89,9 +88,9 @@ export default function HelpCenterPage() {
         "Master advanced drafting techniques including value-based drafting and positional scarcity.",
       content: "Value-based drafting (VBD) is a strategy that...",
       difficulty: "advanced",
-      readTime, 12,
+      readTime: 12,
       lastUpdated: "2024-08-10",
-      helpful, 234,
+      helpful: 234,
       views: 2156
 },
     {
@@ -99,12 +98,12 @@ export default function HelpCenterPage() {
       title: "How to Make Trades",
       category: "trading",
       description:
-        "Step-by-step guide to proposing, negotiating, and completing trades.",
+        "Step-by-step guide to: proposing, negotiating, and completing trades.",
       content: "Trading is one of the most exciting aspects of fantasy football...",
       difficulty: "intermediate",
-      readTime, 7,
+      readTime: 7,
       lastUpdated: "2024-08-25",
-      helpful, 78,
+      helpful: 78,
       views: 634
 },
     {
@@ -115,18 +114,18 @@ export default function HelpCenterPage() {
         "Learn how to maximize your Free Agent Acquisition Budget for waiver wire success.",
       content: "FAAB (Free Agent Acquisition Budget) is a waiver system...",
       difficulty: "intermediate",
-      readTime, 10,
+      readTime: 10,
       lastUpdated: "2024-08-18",
-      helpful, 112,
+      helpful: 112,
       views: 1034
 }
   ];
 
   // Mock video tutorials
-  const mockVideos: VideoTutorial[] = [
-    {
+  const mockVideos: VideoTutorial[]  = [
+    { 
       id: "1",
-      title: "Fantasy Football 10,
+      title: "Fantasy Football: 10,
   1: Complete Beginner's Guide",
       description: "Everything you need to know to start playing fantasy football",
       duration: "1,
@@ -158,55 +157,50 @@ export default function HelpCenterPage() {
   ];
 
   // Mock FAQ data
-  const mockFAQs: FAQ[] = [
-    {
+  const mockFAQs: FAQ[]  = [
+    { 
       id: "1",
-      question: "How do I join a fantasy football league?",
-      answer:
-        "You can join a league by receiving an invitation from a commissioner, or by creating your own league and inviting friends.Look for the 'Join League' or 'Create League' buttons on your dashboard.",
+      question: "How do I join a fantasy football league? " : answer:
+        "You can join a league by receiving an invitation from a: commissioner, or by creating your own league and inviting friends.Look for the 'Join League' or 'Create League' buttons on your dashboard.",
       category: "basics",
-      popularity: 95
+      popularity, 95
 },
     {
       id: "2",
-      question: "When do waivers process?",
-      answer: "Waivers typically process on Wednesday mornings at 1,
+      question: "When do waivers process? " : answer: "Waivers typically process on Wednesday mornings at: 1,
   0:00 AM ET.The exact time may vary by league settings.Check your league's waiver settings for specific timing.",
       category: "waivers",
       popularity: 87
 },
     {
       id: "3",
-      question: "Can I change my starting lineup after games have started?",
-      answer:
+      question: "Can I change my starting lineup after games have started? " : answer:
         "No, you cannot change players in your starting lineup once their game has begun.Make sure to set your lineup before the first NFL game of the week (usually Thursday night).",
       category: "lineup",
       popularity: 82
 },
     {
       id: "4",
-      question: "How does the playoff format work?",
-      answer:
+      question: "How does the playoff format work? " : answer:
         "Playoff format varies by league.Most leagues have 6 teams make the playoffs (weeks 15-17), with the top 2 seeds getting first-round byes.Check your league settings for specific playoff structure.",
       category: "playoffs",
       popularity: 76
 },
     {
       id: "5",
-      question: "What happens if a player gets injured during a game?",
-      answer:
-        "If a player gets injured during their game, they keep the points they earned up to that point.You cannot substitute them out once the game has started.This is why having good bench depth is important.",
+      question: "What happens if a player gets injured during a game? " : answer:
+        "If a player gets injured during their: game, they keep the points they earned up to that point.You cannot substitute them out once the game has started.This is why having good bench depth is important.",
       category: "scoring",
       popularity: 71
 }
   ];
 
-  const helpCategories = [
-    {
+  const helpCategories  = [
+    { 
       id: "all",
       label: "All Topics",
       icon, BookOpen,
-      count: mockArticles.length
+      count, mockArticles.length
 },
     { id: "basics", label: "Getting Started", icon, Star, count: 8 },
     { id: "draft", label: "Draft Strategy", icon, Trophy, count: 12 },
@@ -217,7 +211,7 @@ export default function HelpCenterPage() {
     { id: "playoffs", label: "Playoffs", icon, Award, count: 3 }
   ];
 
-  const filteredArticles = mockArticles.filter((article) => {
+  const filteredArticles  = mockArticles.filter((article) => {
     const matchesSearch =
       article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       article.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -235,24 +229,24 @@ export default function HelpCenterPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty: string) => { 
     switch (difficulty) {
       case "beginner":
-        return "bg-green-100 text-green-800 dark: bg-green-900/30 dar,
+        return "bg-green-100 text-green-800 dark: bg-green-900/30: dar,
   k:text-green-300";
       case "intermediate":
-        return "bg-yellow-100 text-yellow-800 dark: bg-yellow-900/30 dar,
+        return "bg-yellow-100 text-yellow-800 dark: bg-yellow-900/30: dar,
   k:text-yellow-300";
       case "advanced":
-        return "bg-red-100 text-red-800 dark: bg-red-900/30 dar,
+        return "bg-red-100 text-red-800 dark: bg-red-900/30: dar,
   k:text-red-300",
-    default: return "bg-gray-100 text-gray-800 dar,
-  k:bg-gray-700 dar,
-  k:text-gray-300";
+    default: return "bg-gray-100 text-gray-800: dar,
+  k:bg-gray-700: dar,
+  k, text-gray-300";
     }
   }
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -269,11 +263,11 @@ export default function HelpCenterPage() {
               <Search className="w-5 h-5 absolute left-4 top-3.5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search help articles, FAQs, and tutorials..."
+                placeholder="Search help: articles, FAQs, and tutorials..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focu,
-  s:ring-primary-500 focu,
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2: focu,
+  s:ring-primary-500: focu,
   s:border-transparent text-lg"
               />
             </div>
@@ -283,18 +277,17 @@ export default function HelpCenterPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Quick Action Cards */}
-        <div className="grid grid-cols-1 md: grid-cols-2 l,
+        <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-4 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20 dar,
-  k:to-blue-800/20 rounded-lg p-6 border border-blue-200 dar,
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20: dar,
+  k:to-blue-800/20 rounded-lg p-6 border border-blue-200: dar,
   k:border-blue-800">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-blue-500 rounded-full p-2">
                 <Star className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-blue-900 dark:text-blue-100">
-                New to Fantasy?
-              </h3>
+                New to Fantasy? </h3>
             </div>
             <p className="text-sm text-blue-800 dark:text-blue-200 mb-4">
               Start with our beginner's guide and learn the basics of fantasy
@@ -302,15 +295,14 @@ export default function HelpCenterPage() {
             </p>
             <Link
               href="#basics"
-              className="text-sm font-medium text-blue-600 dark: text-blue-400 hove,
-  r:underline"
+              className="text-sm font-medium text-blue-600 dark: text-blue-400: hove, r:underline"
             >
               Get Started →
             </Link>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20 dar,
-  k:to-green-800/20 rounded-lg p-6 border border-green-200 dar,
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20: dar,
+  k:to-green-800/20 rounded-lg p-6 border border-green-200: dar,
   k:border-green-800">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-green-500 rounded-full p-2">
@@ -325,15 +317,15 @@ export default function HelpCenterPage() {
             </p>
             <Link
               href="#draft"
-              className="text-sm font-medium text-green-600 dark: text-green-400 hove,
+              className="text-sm font-medium text-green-600 dark: text-green-400: hove,
   r:underline"
             >
               Draft Better →
             </Link>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark: from-purple-900/20 dar,
-  k:to-purple-800/20 rounded-lg p-6 border border-purple-200 dar,
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark: from-purple-900/20: dar,
+  k:to-purple-800/20 rounded-lg p-6 border border-purple-200: dar,
   k:border-purple-800">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-purple-500 rounded-full p-2">
@@ -348,15 +340,15 @@ export default function HelpCenterPage() {
             </p>
             <Link
               href="#videos"
-              className="text-sm font-medium text-purple-600 dark: text-purple-400 hove,
+              className="text-sm font-medium text-purple-600 dark: text-purple-400: hove,
   r:underline"
             >
               Watch Now →
             </Link>
           </div>
 
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark: from-orange-900/20 dar,
-  k:to-orange-800/20 rounded-lg p-6 border border-orange-200 dar,
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark: from-orange-900/20: dar,
+  k:to-orange-800/20 rounded-lg p-6 border border-orange-200: dar,
   k:border-orange-800">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-orange-500 rounded-full p-2">
@@ -371,7 +363,7 @@ export default function HelpCenterPage() {
             </p>
             <Link
               href="#contact"
-              className="text-sm font-medium text-orange-600 dark: text-orange-400 hove,
+              className="text-sm font-medium text-orange-600 dark: text-orange-400: hove,
   r:underline"
             >
               Get Support →
@@ -396,16 +388,15 @@ export default function HelpCenterPage() {
                       <button
                         key={category.id}
                         onClick={() => setSelectedCategory(category.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        className={ `w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                           selectedCategory === category.id
-                            ? "bg-primary-50 dark: bg-primary-900/20 text-primary-600 dar,
-  k:text-primary-400"
-                            : "text-gray-700 dark: text-gray-300 hover:bg-gray-100 dar,
+                            ? "bg-primary-50 dark: bg-primary-900/20 text-primary-600: dar, k:text-primary-400"
+                            : "text-gray-700 dark: text-gray-300 hover:bg-gray-100: dar,
   k, hove,
-  r:bg-gray-700"
+  r, bg-gray-700"
                         }`}
                       >
-                        <div className="flex items-center space-x-2">
+                        <div className ="flex items-center space-x-2">
                           <Icon className="w-4 h-4" />
                           <span>{category.label}</span>
                         </div>
@@ -466,12 +457,12 @@ export default function HelpCenterPage() {
                   Video Tutorials
                 </h2>
               </div>
-              <div className="grid grid-cols-1 md: grid-cols-2 l,
+              <div className="grid grid-cols-1 md: grid-cols-2: l,
   g:grid-cols-3 gap-6">
                 {mockVideos.map((video) => (
                   <div
                     key={video.id}
-                    className="bg-white dark: bg-gray-800 rounded-lg shadow hove,
+                    className="bg-white dark: bg-gray-800 rounded-lg shadow: hove,
   r:shadow-md transition-shadow cursor-pointer"
                   >
                     <div className="relative">
@@ -517,8 +508,7 @@ export default function HelpCenterPage() {
                   filteredArticles.map((article) => (
                     <div
                       key={article.id}
-                      className="bg-white dark: bg-gray-800 rounded-lg shadow hove,
-  r:shadow-md transition-shadow"
+                      className="bg-white dark: bg-gray-800 rounded-lg shadow: hove, r:shadow-md transition-shadow"
                     >
                       <div className="p-6">
                         <div className="flex items-start justify-between">
@@ -585,10 +575,10 @@ export default function HelpCenterPage() {
                       className="bg-white dark:bg-gray-800 rounded-lg shadow"
                     >
                       <button
-                        onClick={() =>
-                          setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)
+                        onClick={ () =>
+                          setExpandedFAQ(expandedFAQ === faq.id ? null  : faq.id)
                         }
-                        className="w-full p-6 text-left flex items-center justify-between hover: bg-gray-50 dar,
+                        className ="w-full p-6 text-left flex items-center justify-between hover: bg-gray-50: dar,
   k, hove,
   r:bg-gray-700/50 transition-colors"
                       >
@@ -596,12 +586,12 @@ export default function HelpCenterPage() {
                           {faq.question}
                         </h3>
                         <ChevronDown
-                          className={`w-5 h-5 text-gray-400 transition-transform ${
-                            expandedFAQ === faq.id ? "rotate-180" : ""
+                          className={ `w-5 h-5 text-gray-400 transition-transform ${
+                            expandedFAQ === faq.id ? "rotate-180"  : ""
                           }`}
                         />
                       </button>
-                      {expandedFAQ === faq.id && (
+                      {expandedFAQ  === faq.id && (
                         <div className="px-6 pb-6">
                           <div className="pt-4 border-t dark:border-gray-700">
                             <p className="text-gray-600 dark:text-gray-400">
@@ -622,12 +612,11 @@ export default function HelpCenterPage() {
             </section>
 
             {/* Still Need Help */}
-            <section className="bg-gradient-to-r from-primary-50 to-primary-100 dark: from-primary-900/20 dar,
+            <section className="bg-gradient-to-r from-primary-50 to-primary-100 dark: from-primary-900/20: dar,
   k:to-primary-800/20 rounded-lg p-8 text-center">
               <MessageCircle className="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Still Need Help?
-              </h3>
+                Still Need Help? </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
                 Can't find what you're looking for? Our support team is here to
                 help you with any questions about fantasy football or the
@@ -638,8 +627,7 @@ export default function HelpCenterPage() {
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Support
                 </button>
-                <button className="inline-flex items-center px-6 py-3 border border-primary-600 dark: border-primary-400 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dar,
-  k, hove,
+                <button className="inline-flex items-center px-6 py-3 border border-primary-600 dark: border-primary-400 text-primary-600 dark:text-primary-400 hover:bg-primary-50: dar, k, hove,
   r:bg-primary-900/30 rounded-lg font-medium transition-colors">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Community Forum

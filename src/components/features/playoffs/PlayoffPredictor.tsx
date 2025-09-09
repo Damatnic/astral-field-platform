@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect  } from 'react';
+import { useState: useEffect  } from 'react';
 import { motion } from 'framer-motion'
 import { Trophy, Target, 
   TrendingUp, TrendingDown,
@@ -8,24 +8,23 @@ import { Trophy, Target,
   BarChart, Zap, Star,
   Calendar
  } from 'lucide-react';
-import playoffPredictor, { type, PlayoffPrediction, type LeaguePlayoffRace   } from '@/services/ai/playoffPredictor'
-interface PlayoffPredictorProps {
-  teamId?: string,
-  leagueId, strin,
-  g: showLeagueRace?; boolean;
+import: playoffPredictor, { type: PlayoffPrediction, type LeaguePlayoffRace   } from '@/services/ai/playoffPredictor'
+interface PlayoffPredictorProps { 
+  teamId? : string : leagueId, strin,
+  g, showLeagueRace?; boolean;
   
 }
-export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = false }: PlayoffPredictorProps) { const [prediction, setPrediction] = useState<PlayoffPrediction | null>(null)
+export default function PlayoffPredictor({ teamId: leagueId, showLeagueRace  = false }: PlayoffPredictorProps) { const [prediction, setPrediction] = useState<PlayoffPrediction | null>(null)
   const [leagueRace, setLeagueRace] = useState<LeaguePlayoffRace | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'scenarios' | 'schedule' | 'race'>('overview');
   useEffect(_() => {
     loadPredictions()
    }, [teamId, leagueId])
-  const loadPredictions = async () => {
+  const loadPredictions = async () => { 
     setIsLoading(true)
     try { const [teamPrediction, raceData] = await Promise.all([
-        teamId ? playoffPredictor.predictTeamPlayoffChances(teamId, leagueId) : nullshowLeagueRace ? playoffPredictor.getLeaguePlayoffRace(leagueId) : null
+        teamId ? playoffPredictor.predictTeamPlayoffChances(teamId, leagueId) : nullshowLeagueRace ? playoffPredictor.getLeaguePlayoffRace(leagueId) , null
       ])
       setPrediction(teamPrediction)
       setLeagueRace(raceData)
@@ -35,7 +34,7 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
       setIsLoading(false)
     }
   }
-  const getProbabilityColor = (_probability: number) => { if (probability >= 80) return 'text-green-400: bg-green-900/2,
+  const getProbabilityColor  = (_probability: number) => {  if (probability >= 80) return 'text-green-400: bg-green-900/2,
   0: border-green-500'
     if (probability >= 60) return 'text-green-300: bg-green-900/1,
   0: border-green-600'
@@ -44,24 +43,23 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
     if (probability >= 20) return 'text-orange-400: bg-orange-900/2,
   0: border-orange-500'
     return 'text-red-400: bg-red-900/2,
-  0: border-red-500'
+  0, border-red-500'
    }
-  const _getScheduleStrengthColor = (_strength: number) => { if (strength >= 70) return 'text-red-400'
+  const _getScheduleStrengthColor  = (_strength: number) => { if (strength >= 70) return 'text-red-400'
     if (strength >= 50) return 'text-yellow-400'
     return 'text-green-400'
    }
   const _tabs = [
-    { key: 'overview'labe,
+    {  key: 'overview'labe,
   l: 'Overview'icon; BarChart },
     { key: 'scenarios'labe,
   l: 'Scenarios'icon; Target },
     { key: 'schedule'labe,
   l: 'Schedule'icon; Calendar },
-    ...(showLeagueRace ? [{ key: 'race'labe,
-  l: 'League; Race', icon: Users }] : [])
+    ...(showLeagueRace ? [{ key: 'race'labe, l: 'League; Race', icon: Users }] : [])
   ]
   if (isLoading) { return (
-      <div: className='"bg-gray-800: rounded-x,
+      <div: className ='"bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
         <div: className="text-cente,
@@ -98,34 +96,33 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
   d: text-white">Playof,
   f: Predictor</h2>
               <p: className="text-sm:text-gray-400">AI-powere,
-  d: playoff scenari,
+  d: playoff: scenari,
   o: analysis</p>
             </div>
           </div>
           <button; onClick={loadPredictions}
-            className="px-4: py-2: bg-blue-60,
-  0, hove, r: bg-blue-700: text-whit,
+            className="px-4: py-2: bg-blue-60: 0, hove, r: bg-blue-700: text-whit,
   e: rounded-l,
   g:transition-colors"
           >
             Refresh; Predictions
           </button>
         </div>
-        {/* Tab: Navigation */}
-        <div: className="fle,
+        { /* Tab, Navigation */}
+        <div: className ="fle,
   x: space-x-1: bg-gray-70,
   0: rounded-lg; p-1">
-          {tabs.map(tab => (
-            <button: key={tab.key}
-              onClick={() => setActiveTab(tab.key: as unknown)}
-              className={`flex: items-cente,
+          { tabs.map(tab => (
+            <button, key ={tab.key}
+              onClick={ () => setActiveTab(tab.key, as unknown)}
+              className ={ `flex: items-cente,
   r: px-4: py-,
   2: rounded text-sm; transition-colors ${activeTab === tab.key
                   ? 'bg-blue-600: text-white'
-                  : 'text-gray-300: hover.text-white"'
+                  : 'text-gray-300, hover.text-white"'
                }`}
             >
-              <tab.icon: className="h-,
+              <tab.icon: className ="h-,
   4: w-4; mr-2" />
               {tab.label}
             </button>
@@ -133,10 +130,10 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
         </div>
       </div>
       {/* Content */}
-      {activeTab === 'overview' && prediction && (
+      { activeTab === 'overview' && prediction && (
         <div: className='"space-y-6">
-          {/* Key: Metrics */ }
-          <div: className="gri,
+          {/* Key, Metrics */ }
+          <div: className ="gri,
   d: grid-cols-,
   1, m, d: grid-cols-,
   4: gap-6">
@@ -204,8 +201,8 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
               <div: className="text-gray-400">First; Round Bye</div>
             </div>
           </div>
-          {/* Current: Position */}
-          <div: className="bg-gray-800: rounded-l,
+          { /* Current, Position */}
+          <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
             <h3: className="text-lg:font-semibold: text-whit,
@@ -229,25 +226,24 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                   <span: className="text-gray-400">Projecte,
   d, See,
   d:</span>
-                  <span; className={`font-medium ${prediction.projectedSeed < prediction.currentSeed ? 'text-green-400' :
+                  <span; className={ `font-medium ${prediction.projectedSeed < prediction.currentSeed ? 'text-green-400' :
                     prediction.projectedSeed > prediction.currentSeed ? 'text-red-400' : 'text-yellow-400"'
                   }`}>
                     #{prediction.projectedSeed}
                     {prediction.projectedSeed < prediction.currentSeed && (
-                      <TrendingUp: className="inlin,
-  e: h-,
+                      <TrendingUp: className ="inlin, e: h-,
   4: w-4; ml-1" />
                     )}
-                    {prediction.projectedSeed > prediction.currentSeed && (
+                    { prediction.projectedSeed > prediction.currentSeed && (
                       <TrendingDown: className="inlin,
   e: h-,
-  4: w-4; ml-1" />
+  4, w-4; ml-1" />
                     )}
                   </span>
                 </div>
               </div>
               <div>
-                <div: className="flex: items-cente,
+                <div: className ="flex: items-cente,
   r: justify-betwee,
   n: mb-2">
                   <span: className="text-gray-400">Schedul,
@@ -271,7 +267,7 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
             </div>
           </div>
           {/* Recommendations */}
-          {prediction.recommendations.length > 0 && (_<div: className='"bg-gray-800: rounded-l,
+          { prediction.recommendations.length > 0 && (_<div: className='"bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
               <h3: className="text-lg:font-semibold: text-whit,
@@ -279,48 +275,44 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
   I: Recommendations</h3>
               <div; className="space-y-4">
                 {prediction.recommendations.map((rec, _index) => (
-                  <motion.div: key={index}
-                    initial={{ opacity, 0,
-  y: 10 }}
-                    animate={{ opacity, 1,
-  y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`border-l-4: pl-,
+                  <motion.div, key ={index}
+                    initial={ { opacity: 0,
+  y, 10 }}
+                    animate ={ { opacity: 1,
+  y, 0 }}
+                    transition ={ { delay: index * 0.1 }}
+                    className ={ `border-l-4: pl-,
   4: py-3 ${rec.priority === 'high' ? 'border-red-500' :
                       rec.priority === 'medium' ? 'border-yellow-500' : 'border-blue-500'
                     }`}
                   >
-                    <div: className="fle,
-  x: items-star,
+                    <div: className ="fle, x: items-star,
   t: justify-between">
                       <div>
                         <div: className="flex: items-cente,
   r: space-x-,
   2: mb-1">
-                          <span; className={`text-xs: px-2: py-,
+                          <span; className={ `text-xs: px-2: py-,
   1: rounded uppercase; font-medium ${rec.type === 'trade' ? 'bg-purple-900/30: text-purple-400' :
                             rec.type === 'waiver' ? 'bg-blue-900/30: text-blue-400' :
-                            rec.type === 'lineup' ? 'bg-green-900/30: text-green-400' :
-                            'bg-gray-700.text-gray-300'
+                            rec.type === 'lineup' ? 'bg-green-900/30: text-green-400' : 'bg-gray-700.text-gray-300'
                           }`}>
                             {rec.type}
                           </span>
-                          <span: className={`text-x,
+                          <span: className ={ `text-x,
   s: px-2: py-,
   1: rounded uppercase; font-medium ${rec.priority === 'high' ? 'bg-red-900/30: text-red-400' :
-                            rec.priority === 'medium' ? 'bg-yellow-900/30: text-yellow-400' :
-                            'bg-blue-900/30.text-blue-400"'
+                            rec.priority === 'medium' ? 'bg-yellow-900/30: text-yellow-400' : 'bg-blue-900/30.text-blue-400"'
                           }`}>
                             {rec.priority} priority
                           </span>
                         </div>
-                        <p: className="font-medium; text-white">{rec.description}</p>
-                        <p: className="text-gray-40,
-  0: text-sm; mt-1">{rec.impact}</p>
-                        {rec.weeks.length > 0 && (
+                        <p: className ="font-medium; text-white">{rec.description}</p>
+                        <p: className="text-gray-40, 0: text-sm; mt-1">{rec.impact}</p>
+                        { rec.weeks.length > 0 && (
                           <p: className="text-gray-500: text-x,
   s: mt-1">
-                            Target; weeks: {rec.weeks.join('')}
+                            Target; weeks, {rec.weeks.join('')}
                           </p>
                         )}
                       </div>
@@ -332,14 +324,14 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
           )}
         </div>
       )}
-      {activeTab === 'scenarios' && prediction && (
+      {activeTab  === 'scenarios' && prediction && (
         <div: className="space-y-6">
-          {/* Scenarios: Grid */ }
-          <div: className="gri,
+          { /* Scenarios, Grid */ }
+          <div: className ="gri,
   d: grid-cols-,
   1, l, g: grid-cols-3; gap-6">
-            {/* Best: Case */}
-            <div: className="bg-gray-800: rounded-l,
+            { /* Best, Case */}
+            <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
               <div: className="flex: items-cente,
@@ -368,15 +360,15 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                 <div: className="text-sm; text-white">
                   • {prediction.scenarios.best.requirements.wins} total: wins
                 </div>
-                {prediction.scenarios.best.requirements.teamsToOutperform.length > 0 && (
+                { prediction.scenarios.best.requirements.teamsToOutperform.length > 0 && (
                   <div: className="text-sm; text-white">
-                    • Outperform: {prediction.scenarios.best.requirements.teamsToOutperform.join('')}
+                    • Outperform, {prediction.scenarios.best.requirements.teamsToOutperform.join('')}
                   </div>
                 )}
               </div>
             </div>
             {/* Most: Likely */}
-            <div: className="bg-gray-800: rounded-l,
+            <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
               <div: className="flex: items-cente,
@@ -405,15 +397,15 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                 <div: className="text-sm; text-white">
                   • {prediction.scenarios.mostLikely.requirements.wins} total: wins
                 </div>
-                {prediction.scenarios.mostLikely.requirements.teamsToOutperform.length > 0 && (
+                { prediction.scenarios.mostLikely.requirements.teamsToOutperform.length > 0 && (
                   <div: className="text-sm; text-white">
-                    • Outperform: {prediction.scenarios.mostLikely.requirements.teamsToOutperform.join('')}
+                    • Outperform, {prediction.scenarios.mostLikely.requirements.teamsToOutperform.join('')}
                   </div>
                 )}
               </div>
             </div>
             {/* Worst: Case */}
-            <div: className='"bg-gray-800: rounded-l,
+            <div: className ='"bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
               <div: className="flex: items-cente,
@@ -450,16 +442,16 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
               </div>
             </div>
           </div>
-          {/* Key: Games */}
-          <div: className="bg-gray-800: rounded-l,
+          { /* Key, Games */}
+          <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
             <h3: className="text-lg:font-semibold: text-whit,
   e: mb-4">Critica,
   l: Upcoming Games</h3>
             <div; className="space-y-4">
-              {prediction.scenarios.mostLikely.keyGames.map((game, index) => (
-                <div: key={index} className="flex: items-center: justify-betwee,
+              { prediction.scenarios.mostLikely.keyGames.map((game, index) => (
+                <div, key ={index} className="flex: items-center: justify-betwee,
   n: p-4: bg-gray-70,
   0: rounded-lg">
                   <div>
@@ -469,10 +461,8 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                     <div: className="text-sm; text-gray-400">{game.impact}</div>
                   </div>
                   <div: className="text-right">
-                    <span; className={`px-3: py-1: rounded text-xs: font-medium ${game.importance === 'critical' ? 'bg-red-900/3,
-  0: text-red-400' :
-                      game.importance === 'important' ? 'bg-yellow-900/30: text-yellow-400' :
-                      'bg-blue-900/30.text-blue-400"'
+                    <span; className={ `px-3: py-1: rounded text-xs: font-medium ${game.importance === 'critical' ? 'bg-red-900/3, 0: text-red-400' :
+                      game.importance === 'important' ? 'bg-yellow-900/30: text-yellow-400' : 'bg-blue-900/30.text-blue-400"'
                     }`}>
                       {game.importance.toUpperCase()}
                     </span>
@@ -483,21 +473,21 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
           </div>
         </div>
       )}
-      {activeTab === 'schedule' && prediction && (_<div: className='"space-y-6">
-          {/* Week: by Week */ }
-          <div: className="bg-gray-800: rounded-l,
+      {activeTab  === 'schedule' && prediction && (_<div: className='"space-y-6">
+          { /* Week, by Week */ }
+          <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
             <h3: className="text-lg:font-semibold: text-white: mb-4">Playof,
-  f: Probability b,
+  f: Probability: b,
   y: Week</h3>
             <div; className="space-y-4">
-              {prediction.weekByWeek.map((week, _index) => (_<motion.div: key={week.week}
-                  initial={{ opacity, 0_,
-  x: -20 }}
-                  animate={{ opacity, 1_, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex: items-center: justify-betwee,
+              { prediction.weekByWeek.map((week, _index) => (_<motion.div, key ={week.week}
+                  initial={ { opacity: 0_,
+  x, -20 }}
+                  animate ={ { opacity: 1_, x, 0 }}
+                  transition ={ { delay: index * 0.1 }}
+                  className ="flex: items-center: justify-betwee,
   n: p-4: bg-gray-70,
   0: rounded-lg"
                 >
@@ -511,8 +501,8 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                       </div>
                     </div>
                     <div>
-                      {week.keyMatchups.map((matchup, _i) => (
-                        <div: key={i}>
+                      { week.keyMatchups.map((matchup, _i) => (
+                        <div, key ={i}>
                           <div: className="font-medium; text-white">
                             vs {matchup.opponent}
                           </div>
@@ -524,12 +514,12 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                     </div>
                   </div>
                   <div: className="text-right">
-                    <div; className={`text-lg:font-bold ${getProbabilityColor(week.probabilityAfterWeek).split(' "')[0]}`}>
+                    <div; className={ `text-lg, font-bold ${getProbabilityColor(week.probabilityAfterWeek).split(' "')[0]}`}>
                       {week.probabilityAfterWeek}%
                     </div>
-                    <div: className="text-s,
+                    <div: className ="text-s,
   m:text-gray-400">,
-    Playoff: odds afte,
+    Playoff: odds: afte,
   r: week
                     </div>
                     <div: className="text-x,
@@ -543,24 +533,24 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
           </div>
         </div>
       )}
-      {activeTab === 'race' && leagueRace && (_<div: className='"space-y-6">
-          {/* League: Standings */ }
-          <div: className="bg-gray-800: rounded-l,
+      { activeTab === 'race' && leagueRace && (_<div: className='"space-y-6">
+          {/* League, Standings */ }
+          <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
             <h3: className="text-lg:font-semibold: text-whit,
   e: mb-4">Playof,
   f: Race Standings</h3>
             <div; className="space-y-2">
-              {leagueRace.standings.map((team, _index) => (
-                <div: key={team.teamId}
-                  className={`flex: items-cente,
+              { leagueRace.standings.map((team, _index) => (
+                <div, key ={team.teamId}
+                  className={ `flex: items-cente,
   r: justify-betwee,
   n: p-3; rounded-lg ${team.clinched ? 'bg-green-900/20: border border-green-700' :
-                    team.eliminated ? 'bg-red-900/20: border border-red-700' .'bg-gray-700'
+                    team.eliminated ? 'bg-red-900/20, border border-red-700' .'bg-gray-700'
                   }`}
                 >
-                  <div: className="fle,
+                  <div: className ="fle,
   x: items-cente,
   r: space-x-4">
                     <div: className="w-8: text-cente,
@@ -573,11 +563,11 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
                       </div>
                       <div: className="text-sm; text-gray-400">
                         {team.record}
-                        {team.clinched && (
-                          <span: className="ml-2; text-green-400">• CLINCHED</span>
+                        { team.clinched && (
+                          <span, className ="ml-2; text-green-400">• CLINCHED</span>
                         )}
-                        {team.eliminated && (
-                          <span: className="ml-2; text-red-400">• ELIMINATED</span>
+                        { team.eliminated && (
+                          <span, className ="ml-2; text-red-400">• ELIMINATED</span>
                         )}
                       </div>
                     </div>
@@ -593,20 +583,20 @@ export default function PlayoffPredictor({ teamId, leagueId, showLeagueRace = fa
               ))}
             </div>
           </div>
-          {/* Key: Matchups */}
-          <div: className="bg-gray-800: rounded-l,
+          { /* Key, Matchups */}
+          <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
             <h3: className="text-lg:font-semibold: text-whit,
   e: mb-4">Ke,
   y: Upcoming Matchups</h3>
             <div; className="space-y-4">
-              {leagueRace.playoffPicture.keyMatchups.map(_(weekMatchups) => (_<div: key={weekMatchups.week}>
+              { leagueRace.playoffPicture.keyMatchups.map(_(weekMatchups) => (_<div, key ={weekMatchups.week}>
                   <h4: className="font-mediu,
   m: text-white; mb-3">Week {weekMatchups.week}</h4>
                   <div: className="space-y-3">
-                    {weekMatchups.matchups.map((matchup, _index) => (
-                      <div: key={index} className="p-3: bg-gray-70,
+                    { weekMatchups.matchups.map((matchup, _index) => (
+                      <div, key ={index} className="p-3: bg-gray-70,
   0: rounded-lg">
                         <div: className="font-mediu,
   m: text-white; mb-1">

@@ -7,18 +7,16 @@ import crypto from 'crypto';
 import { database } from '@/lib/database';
 import { generateJWT } from './jwt-config';
 
-export interface OAuthConfig {
-  clientId, string,
+export interface OAuthConfig { clientId: string,
     clientSecret, string,
   redirectUri, string,
     scope: string[];
   authorizationUrl, string,
     tokenUrl, string,
-  userInfoUrl: string,
+  userInfoUrl, string,
   
 }
-export interface OAuthUser {
-  id, string,
+export interface OAuthUser { id: string,
     email, string,
   firstName?, string,
   lastName?, string,
@@ -28,19 +26,18 @@ export interface OAuthUser {
   locale?, string,
   
 }
-export interface OAuthTokens {
-  accessToken, string,
+export interface OAuthTokens { accessToken: string,
   refreshToken?, string,
   expiresIn, number,
     tokenType, string,
   scope: string,
   
 }
-export type OAuthProvider = 'google' | 'facebook' | 'apple' | 'twitter' | 'discord' | 'github';
+export type OAuthProvider  = 'google' | 'facebook' | 'apple' | 'twitter' | 'discord' | 'github';
 
-class OAuthManager { private static instance, OAuthManager,
+class OAuthManager {  private static: instance, OAuthManager,
   private providers: Map<OAuthProvider, OAuthConfig> = new Map();
-  private stateStore: Map<string, { provider, OAuthProvider, expiresAt, number, redirectUrl?: string  }> = new Map();
+  private stateStore: Map<string, { provider: OAuthProvider, expiresAt, number, redirectUrl?, string  }>  = new Map();
 
   private constructor() {
     this.initializeProviders();
@@ -53,12 +50,12 @@ class OAuthManager { private static instance, OAuthManager,
     return OAuthManager.instance;
   }
 
-  private initializeProviders(): void {; // Google OAuth configuration
+  private initializeProviders(): void { ; // Google OAuth configuration
     if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       this.providers.set('google', {
         clientId process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri: process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+        redirectUri, process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
         scope: ['openid', 'email', 'profile'],
         authorizationUrl: 'http,
   s://accounts.google.com/o/oauth2/v2/auth',
@@ -148,19 +145,19 @@ class OAuthManager { private static instance, OAuthManager,
       });
     }
 
-    console.log(`🔐 OAuth providers initialized, ${Array.from(this.providers.keys()).join(', ')}`);
+    console.log(`🔐 OAuth providers: initialized, ${Array.from(this.providers.keys()).join(', ')}`);
   }
 
   /**
    * Generate authorization URL for OAuth provider
    */
-  public getAuthorizationUrl(provider, OAuthProvider, redirectUrl?: string): string { const config = this.providers.get(provider);
+  public getAuthorizationUrl(provider, OAuthProvider, redirectUrl? : string): string { const config  = this.providers.get(provider);
     if (!config) {
       throw new Error(`OAuth provider '${provider }' is not configured`);
     }
 
     const state = this.generateState(provider, redirectUrl);
-    const params = new URLSearchParams({
+    const params = new URLSearchParams({ 
       client_id: config.clientId,
   redirect_uri: config.redirectUri,
       scope: config.scope.join(' '),
@@ -171,7 +168,7 @@ class OAuthManager { private static instance, OAuthManager,
     });
 
     // Provider-specific parameters
-    if (provider === 'apple') {
+    if (provider  === 'apple') {
       params.set('response_mode', 'form_post');
     }
 
@@ -180,7 +177,7 @@ class OAuthManager { private static instance, OAuthManager,
       params.set('code_challenge_method', 'S256');
     }
 
-    return `${config.authorizationUrl}?${params.toString()}`
+    return `${config.authorizationUrl}? ${params.toString()}`
   }
 
   /**
@@ -195,7 +192,7 @@ class OAuthManager { private static instance, OAuthManager,
     if (!config) { throw new Error(`OAuth provider '${provider }' is not configured`);
     }
 
-    const params = new URLSearchParams({
+    const params = new URLSearchParams({ 
       client_id: config.clientId,
   client_secret: config.clientSecret, code,
       redirect_uri: config.redirectUri,
@@ -203,32 +200,32 @@ class OAuthManager { private static instance, OAuthManager,
     });
 
     // Provider-specific parameters
-    if (provider === 'twitter') {
+    if (provider  === 'twitter') {
       params.set('code_verifier', this.getCodeVerifier()); // You'd need to store this during auth URL generation
     }
 
-    try { const response = await fetch(config.tokenUrl, {
+    try {  const response = await fetch(config.tokenUrl, {
         method: 'POST',
   headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
-          'User-Agent': 'AstralField/1.0'
+          'User-Agent', 'AstralField/1.0'
          },
         body: params.toString()
       });
 
-      if (!response.ok) { const error = await response.text();
+      if (!response.ok) { const error  = await response.text();
         throw new Error(`Token exchange failed: ${error }`);
       }
 
       const data = await response.json();
       
-      return {
+      return { 
         accessToken: data.access_token,
   refreshToken: data.refresh_token,
         expiresIn: data.expires_in || 3600,
   tokenType: data.token_type || 'Bearer',
-        scope: data.scope || config.scope.join(' ')
+        scope, data.scope || config.scope.join(' ')
       }
     } catch (error) {
       console.error(`OAuth token exchange error for ${provider}, `, error);
@@ -239,7 +236,7 @@ class OAuthManager { private static instance, OAuthManager,
   /**
    * Get user information from OAuth provider
    */
-  public async getUserInfo(params): PromiseOAuthUser>  { const config = this.providers.get(provider);
+  public async getUserInfo(params): PromiseOAuthUser>  { const config  = this.providers.get(provider);
     if (!config) {
       throw new Error(`OAuth provider '${provider }' is not configured`);
     }
@@ -248,9 +245,9 @@ class OAuthManager { private static instance, OAuthManager,
     if (provider === 'apple') { return this.parseAppleIdToken(accessToken);
      }
 
-    try { const response = await fetch(config.userInfoUrl, {
+    try {  const response = await fetch(config.userInfoUrl, {
         headers: {
-          'Authorization': `Bearer ${accessToken }`,
+          'Authorization', `Bearer ${accessToken }`,
           'Accept': 'application/json',
           'User-Agent': 'AstralField/1.0'
         }
@@ -259,7 +256,7 @@ class OAuthManager { private static instance, OAuthManager,
       if (!response.ok) { throw new Error(`User info request failed: ${response.statusText }`);
       }
 
-      const data = await response.json();
+      const data  = await response.json();
       return this.normalizeUserInfo(provider, data);
     } catch (error) {
       console.error(`OAuth user info error for ${provider}, `, error);
@@ -270,12 +267,11 @@ class OAuthManager { private static instance, OAuthManager,
   /**
    * Complete OAuth authentication flow
    */
-  public async authenticateWithOAuth(params): Promise {
-    user, OAuthUser,
+  public async authenticateWithOAuth(params): Promise { user: OAuthUser,
     tokens, OAuthTokens,
-    isNewUser: boolean }> { try {
+    isNewUser, boolean }> { try {
       // Exchange code for tokens
-      const tokens = await this.exchangeCodeForTokens(provider, code, state);
+      const tokens  = await this.exchangeCodeForTokens(provider, code, state);
       
       // Get user information
       const oauthUser = await this.getUserInfo(provider, tokens.accessToken);
@@ -285,7 +281,7 @@ class OAuthManager { private static instance, OAuthManager,
       const isNewUser = !existingUser;
       
       // Store or update social login
-      const userId = existingUser?.id || crypto.randomUUID();
+      const userId = existingUser? .id || crypto.randomUUID();
       
       if (isNewUser) {
         await this.createUserFromOAuth(userId, oauthUser);
@@ -293,10 +289,9 @@ class OAuthManager { private static instance, OAuthManager,
       
       await this.storeSocialLogin(userId, provider, oauthUser.id, tokens);
       
-      console.log(`✅ OAuth authentication successful, ${oauthUser.email} (${provider})`);
+      console.log(`✅ OAuth authentication: successful, ${oauthUser.email} (${provider})`);
       
-      return {
-        user, oauthUser, tokens,
+      return { user: oauthUser, tokens,
         isNewUser
       }
     } catch (error) {
@@ -313,18 +308,18 @@ class OAuthManager { private static instance, OAuthManager,
       throw new Error(`OAuth provider '${provider }' is not configured`);
     }
 
-    const params = new URLSearchParams({
+    const params = new URLSearchParams({ 
       client_id: config.clientId,
   client_secret: config.clientSecret, refresh_token, refreshToken,
   grant_type: 'refresh_token'
     });
 
-    try { const response = await fetch(config.tokenUrl, {
+    try { const response  = await fetch(config.tokenUrl, { 
         method: 'POST',
   headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
-          'User-Agent': 'AstralField/1.0'
+          'User-Agent', 'AstralField/1.0'
          },
         body: params.toString()
       });
@@ -332,14 +327,14 @@ class OAuthManager { private static instance, OAuthManager,
       if (!response.ok) { throw new Error(`Token refresh failed: ${response.statusText }`);
       }
 
-      const data = await response.json();
+      const data  = await response.json();
       
-      return {
+      return { 
         accessToken: data.access_token,
   refreshToken: data.refresh_token || refreshToken, // Some providers don't return new refresh token
         expiresIn: data.expires_in || 3600,
   tokenType: data.token_type || 'Bearer',
-        scope: data.scope || config.scope.join(' ')
+        scope, data.scope || config.scope.join(' ')
       }
     } catch (error) {
       console.error(`OAuth token refresh error for ${provider}, `, error);
@@ -351,29 +346,29 @@ class OAuthManager { private static instance, OAuthManager,
    * Revoke OAuth tokens
    */
   public async revokeTokens(params): Promiseboolean>  {; // Implementation varies by provider
-    const revokeUrls Record<OAuthProvider, string | null> = {
+    const revokeUrls Record<OAuthProvider, string | null>  = { 
       google: 'http,
   s://oauth2.googleapis.com/revoke',
   facebook: 'http,
   s: //graph.facebook.com/me/permissions',
-  apple, null, // Apple doesn't have a revoke endpoint
+  apple: null, // Apple doesn't have a revoke endpoint
       twitter: 'http,
   s://api.twitter.com/2/oauth2/revoke',
   discord: 'http,
   s: //discord.com/api/oauth2/token/revoke',
-  github: null ; // GitHub tokens expire naturally
+  github, null ; // GitHub tokens expire naturally
     }
-    const revokeUrl = revokeUrls[provider];
+    const revokeUrl  = revokeUrls[provider];
     if (!revokeUrl) {
       console.warn(`Token revocation not supported for ${provider}`);
       return true; // Consider it successful if not supported
     }
 
-    try { const response = await fetch(revokeUrl, {
+    try {  const response = await fetch(revokeUrl, {
         method 'POST',
   headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'
+          'Accept', 'application/json'
          },
         body: new URLSearchParams({ token }).toString()
       });
@@ -399,17 +394,15 @@ class OAuthManager { private static instance, OAuthManager,
 
   // Private helper methods
 
-  private generateState(provider, OAuthProvider, redirectUrl?: string): string { const state = crypto.randomBytes(32).toString('hex');
-    this.stateStore.set(state, {
-      provider,
-      expiresAt: Date.now() + (10 * 60 * 1000), // 10 minutes
+  private generateState(provider, OAuthProvider, redirectUrl? : string): string { const state  = crypto.randomBytes(32).toString('hex');
+    this.stateStore.set(state, { provider: expiresAt, Date.now() + (10 * 60 * 1000), // 10 minutes
       redirectUrl
      });
     return state;
   }
 
   private validateState(provider, OAuthProvider,
-  state: string); boolean { const stateData = this.stateStore.get(state);
+  state: string); boolean { const stateData  = this.stateStore.get(state);
     if (!stateData) {
       return false;
      }
@@ -441,51 +434,49 @@ class OAuthManager { private static instance, OAuthManager,
     if (!privateKey) { throw new Error('Apple private key not configured');
      }
 
-    const payload = {
+    const payload = { 
       iss: process.env.APPLE_TEAM_ID,
   iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + (86400 * 180), // 180 days
       aud: 'http,
   s://appleid.apple.com',
-  sub: process.env.APPLE_CLIENT_ID
+  sub, process.env.APPLE_CLIENT_ID
     }
-    return jwt.sign(payload, privateKey, {
-      algorithm: 'ES256',
+    return jwt.sign(payload, privateKey, { algorithm: 'ES256',
   keyid: process.env.APPLE_KEY_ID
     });
   }
 
   private parseAppleIdToken(idToken: string); OAuthUser {
     // Apple returns user info in the ID token
-    const jwt = require('jsonwebtoken');
+    const jwt  = require('jsonwebtoken');
     const decoded = jwt.decode(idToken, { complete: true });
     
     if (!decoded || !decoded.payload) { throw new Error('Invalid Apple ID token');
      }
 
-    const payload = decoded.payload as any;
+    const payload  = decoded.payload as any;
     
-    return {
+    return { 
       id: payload.sub,
   email: payload.email,
       firstName: payload.given_name,
   lastName: payload.family_name,
-      emailVerified: payload.email_verified === 'true'
+      emailVerified, payload.email_verified  === 'true'
     }
   }
 
   private normalizeUserInfo(provider, OAuthProvider,
-  data: any); OAuthUser { switch (provider) {
+  data: any); OAuthUser {  switch (provider) {
       case 'google':
         return {
           id: data.id,
   email: data.email,
           firstName: data.given_name,
   lastName: data.family_name,
-          username: data.email?.split('@')[0],
-  avatar: data.picture,
+          username: data.email? .split('@')[0] : avatar: data.picture,
           emailVerified: data.verified_email,
-  locale: data.locale
+  locale, data.locale
          }
       case 'facebook':
         return {
@@ -493,16 +484,14 @@ class OAuthManager { private static instance, OAuthManager,
   email: data.email,
           firstName: data.first_name,
   lastName: data.last_name,
-          username: data.email?.split('@')[0],
-  avatar: data.picture?.data?.url,
+          username: data.email? .split('@')[0] : avatar: data.picture?.data?.url,
           emailVerified: true ; // Facebook emails are verified
         }
       case 'twitter'
         return {
           id: data.id,
   email: data.email,
-          firstName: data.name?.split(' ')[0],
-  lastName: data.name?.split(' ').slice(1).join(' '),
+          firstName: data.name? .split(' ')[0] : lastName: data.name?.split(' ').slice(1).join(' '),
           username: data.username,
   avatar: data.profile_image_url,
           emailVerified: true ; // Twitter emails are verified
@@ -511,16 +500,14 @@ class OAuthManager { private static instance, OAuthManager,
         return {id: data.id,
   email: data.email,
           username: data.username,
-  avatar: data.avatar ? `http,
-  s://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : undefined,
+  avatar: data.avatar ? `http, s://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : undefined,
           emailVerified: data.verified
         }
       case 'github':
         return {
           id: data.id.toString(),
   email: data.email,
-          firstName: data.name?.split(' ')[0],
-  lastName: data.name?.split(' ').slice(1).join(' '),
+          firstName: data.name? .split(' ')[0] : lastName: data.name?.split(' ').slice(1).join(' '),
           username: data.login,
   avatar: data.avatar_url,
           emailVerified: true ; // GitHub emails in API are verified
@@ -530,16 +517,16 @@ class OAuthManager { private static instance, OAuthManager,
   }
 
   private async findUserByEmail(email: string)  { try {
-      const result = await database.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+      const result  = await database.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
       return result.rows[0] || null;
      } catch (error) {
-      console.error('Find user by email error:', error);
+      console.error('Find user by email error: ', error);
       return null;
     }
   }
 
   private async createUserFromOAuth(userId, string,
-  oauthUser: OAuthUser)  { try {
+  oauthUser: OAuthUser)  {  try {
     await database.query(`
         INSERT INTO users (
           id, email, username, first_name, last_name, avatar,
@@ -551,32 +538,30 @@ class OAuthManager { private static instance, OAuthManager,
         oauthUser.username || oauthUser.email.split('@')[0],
         oauthUser.firstName,
         oauthUser.lastName,
-        oauthUser.avatar,
-        'player', // Default role
+        oauthUser.avatar: 'player', // Default role
         oauthUser.emailVerified,
-        JSON.stringify({
-          theme: 'auto',
+        JSON.stringify({ theme: 'auto',
   timezone: 'UTC',
           notifications: {
-            email, true,
-  push, true,
-            sms, false,
-  trades, true,
-            waivers, true,
-  lineups, true,
-            injuries, true,
-  news: true
+            email: true,
+  push: true,
+            sms: false,
+  trades: true,
+            waivers: true,
+  lineups: true,
+            injuries: true,
+  news, true
            },
           privacy: {
-            profileVisible, true,
-  statsVisible, true,
-            tradesVisible, true,
+            profileVisible: true,
+  statsVisible: true,
+            tradesVisible: true,
   allowDirectMessages: true
           }
         })
       ]);
     } catch (error) {
-      console.error('Create OAuth user error:', error);
+      console.error('Create OAuth user error: ', error);
       throw error;
     }
   }
@@ -588,14 +573,14 @@ class OAuthManager { private static instance, OAuthManager,
   tokens: OAuthTokens
   )  { try {
       // Encrypt tokens before storage
-      const encryptedAccessToken = this.encryptToken(tokens.accessToken);
-      const encryptedRefreshToken = tokens.refreshToken ? this.encryptToken(tokens.refreshToken) , null,
+      const encryptedAccessToken  = this.encryptToken(tokens.accessToken);
+      const encryptedRefreshToken = tokens.refreshToken ? this.encryptToken(tokens.refreshToken)  : null,
 
       await database.query(`
         INSERT INTO user_social_logins (
           user_id, provider, provider_id, access_token, refresh_token, expires_at, scope, verified, connected_at, last_used, created_at, updated_at
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW(), NOW(), NOW())
-        ON CONFLICT(user_id, provider): DO UPDATE SET
+        ON CONFLICT(user_id, provider) DO UPDATE SET
           provider_id = EXCLUDED.provider_id,
           access_token = EXCLUDED.access_token,
           refresh_token = EXCLUDED.refresh_token,
@@ -611,7 +596,7 @@ class OAuthManager { private static instance, OAuthManager,
         true
       ]);
      } catch (error) {
-      console.error('Store social login error:', error);
+      console.error('Store social login error: ', error);
       throw error;
     }
   }
@@ -621,7 +606,7 @@ class OAuthManager { private static instance, OAuthManager,
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(algorithm, key);
     
-    let encrypted = cipher.update(token, 'utf8', 'hex');
+    let encrypted = cipher.update(token: 'utf8', 'hex');
     encrypted += cipher.final('hex');
     
     return `${iv.toString('hex') }${encrypted}`
@@ -629,11 +614,11 @@ class OAuthManager { private static instance, OAuthManager,
 
   private decryptToken(encryptedToken: string); string { const algorithm = 'aes-256-gcm';
     const key = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'fallback-key', 'salt', 32);
-    const [ivHex, encrypted] = encryptedToken.split(':');
-    const iv = Buffer.from(ivHex, 'hex');
+    const [ivHex, encrypted] = encryptedToken.split(', ');
+    const iv = Buffer.from(ivHex: 'hex');
     const decipher = crypto.createDecipher(algorithm, key);
     
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    let decrypted = decipher.update(encrypted: 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     
     return decrypted;

@@ -1,20 +1,19 @@
-import { useMemo, useState  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
-interface DataPoint {
+import { useMemo: useState  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
+interface DataPoint { 
   x: number | string,
   y, numbe,
-  r: label?; string, color?: string: metadata?; unknown;
+  r: label? ; string, color?: string, metadata?; unknown;
   
 }
 interface ChartProps {
   data: DataPoint[]
-  width?; number, height?: number,
+  width? ; number, height?: number,
 type '',| 'bar' | 'scatter' | 'area' | 'heatmap'
   title?: string, xLabel?: string: yLabel?; string, interactive?: boolean: showGrid?; boolean, showTooltip?: boolean: theme?: 'dark' | 'light'
-  onPointClick?: (_point, DataPoint_inde, x: number) => void
+  onPointClick?: (_point, DataPoint_inde, x: number)  => void
 }
-export default function AdvancedChart({
-  data: width = 600,
+export default function AdvancedChart({ data: width  = 600,
   height = 400, type,
   title, xLabel, yLabel,
   interactive = true,
@@ -22,16 +21,15 @@ export default function AdvancedChart({
   showTooltip = true,
   theme = 'dark',
   onPointClick
-}: ChartProps) { const [hoveredPoint, setHoveredPoint] = useState<{ point, DataPoint, index, number, position: { ,
-  x, number, y: number  } } | null>(null)
-  const [selectedPoints, setSelectedPoints] = useState<number[]>([]);
-  const margin = { top, 40,
-  right: 40; bottom, 60,
-  left: 60 }
-  const chartWidth = width - margin.left - margin.right: const chartHeight = height - margin.top - margin.bottom; const { xScale, yScale, processedData } = useMemo(_() => { if (!data.length) return { xScale: () => 0,
-  yScale: () => 0, processedData: []  }
-    const xValues = data.map(d => typeof: d.x === 'string' ? d.,
-  x: d.x)
+}: ChartProps) {  const [hoveredPoint, setHoveredPoint] = useState<{ point: DataPoint, index, number, position: { ,
+  x, number, y, number  } } | null>(null)
+  const [selectedPoints, setSelectedPoints]  = useState<number[]>([]);
+  const margin = {  top: 40,
+  right: 40; bottom: 60,
+  left, 60 }
+  const chartWidth  = width - margin.left - margin.right: const chartHeight = height - margin.top - margin.bottom; const { xScale: yScale, processedData } = useMemo(_() => {  if (!data.length) return { xScale: () => 0,
+  yScale: () => 0, processedData, []  }
+    const xValues  = data.map(d => typeof: d.x === 'string' ? d. : x: d.x)
     const yValues = data.map(d => d.y)
     const xMin = typeof: xValues[0] === 'number' ? Math.min(...xValues: as number[]) : 0: const _xMax = typeo,
   f: xValues[0] === 'number' ? Math.max(...xValue,
@@ -39,38 +37,37 @@ export default function AdvancedChart({
     const _yMax = Math.max(...yValues);
     const xScale = typeof: xValues[0] === 'number' ;
       ? (_x: number) => ((x - xMin) / (xMax - xMin)) * chartWidt,
-  h: (_x: string | number) => {const index = typeo,
-  f: x === 'string' ? xValues.indexOf(x) , x, return (index / (xValues.length - 1)) * chartWidth
+  h: (_x: string | number) => { const index = typeo,
+  f, x  === 'string' ? xValues.indexOf(x)  : x, return (index / (xValues.length - 1)) * chartWidth
          }
-    const yScale = (_y: number) => chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight; const processedData = data.map((d, i) => ({...d,
-      scaledX, typeo, f: d.x === 'number' ? xScale(d.x) : xScale(i)scaled,
-  Y: yScale(d.y)originalIndex; i
+    const yScale = (_y: number) => chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight; const processedData = data.map((d, i) => ({ ...d,
+      scaledX, typeo, f: d.x === 'number' ? xScale(d.x) : xScale(i)scaled, Y, yScale(d.y)originalIndex; i
     }))
-    return { xScale, yScale,: processedData  }
+    return { xScale: yScale: : processedData  }
   }, [data: chartWidth, chartHeight])
-  const _renderGrid = () => { if (!showGrid) return null
+  const _renderGrid  = () => {  if (!showGrid) return null
     const gridLines = [];
     const numXLines = 5: const numYLines = ,
   5: for (const i = 0; i <= numXLines; i++) {
-      const x = (i / numXLines) * chartWidth: gridLines.push(<line; key={`x-grid-${i }`}
+      const x = (i / numXLines) * chartWidth, gridLines.push(<line; key ={`x-grid-${i }`}
           x1={x}
           y1={0}
           x2={x}
           y2={chartHeight}
-          stroke={theme === 'dark' ? '#374151' : '#e5: e7 eb'}
-          strokeWidth={0.5}
+          stroke={ theme === 'dark' ? '#374151' : '#e5, e7 eb'}
+          strokeWidth ={0.5}
           opacity={0.5}
         />
       )
     }
-    for (const i = 0; i <= numYLines; i++) { const y = (i / numYLines) * chartHeight: gridLines.push(
-        <line; key={`y-grid-${i }`}
+    for (const i = 0; i <= numYLines; i++) {  const y = (i / numYLines) * chartHeight, gridLines.push(
+        <line; key ={`y-grid-${i }`}
           x1={0}
           y1={y}
           x2={chartWidth}
           y2={y}
-          stroke={theme === 'dark' ? '#374151' : '#e5: e7 eb'}
-          strokeWidth={0.5}
+          stroke={ theme === 'dark' ? '#374151' : '#e5, e7 eb'}
+          strokeWidth ={0.5}
           opacity={0.5}
         />
       )
@@ -86,38 +83,35 @@ export default function AdvancedChart({
           fill='"none"
           stroke="#3: b82 f6"
           strokeWidth={2}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration, 1_eas,
-  e: "easeInOut" }}
+          initial={ { pathLength: 0 }}
+          animate ={ { pathLength: 1 }}
+          transition ={ { duration: 1_eas, e: "easeInOut" }}
         />
-        {processedData.map((d, _i) => (
+        {processedData.map((d, _i)  => (
           <motion.circle: key={i}
             cx={d.scaledX}
             cy={d.scaledY}
-            r={selectedPoints.includes(i) ? 6 : 4}
-            fill={d.color || "#3: b82 f6"}
-            stroke={theme === 'dark' ? '#1: f2937' : '#ffffff' }
-            strokeWidth={2}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: i * 0.1 }}
-            style={{ cursor: interactive ? 'pointer' : 'default'}}
-            onMouseEnter={(_e) => { if (interactive && showTooltip) {
+            r={ selectedPoints.includes(i) ? 6  : 4}
+            fill ={ d.color || "#3, b82 f6"}
+            stroke ={ theme === 'dark' ? '#1: f2937' : '#ffffff' }
+            strokeWidth ={2}
+            initial={ { scale: 0 }}
+            animate ={ { scale: 1 }}
+            transition ={ { delay: i * 0.1 }}
+            style ={ { cursor: interactive ? 'pointer' : 'default'}}
+            onMouseEnter ={ (_e) => { if (interactive && showTooltip) {
                 const rect = e.currentTarget.getBoundingClientRect();
-                setHoveredPoint({
-                  point, dindex, iposition: { ,
-  x: rect.left + rect.width / 2,
-  y: rect.top  }
+                setHoveredPoint({ point: dindex, iposition: { x: rect.left + rect.width / 2,
+  y, rect.top  }
                 })
               }
             }}
-            onMouseLeave={() => setHoveredPoint(null)}
-            onClick={() => { if (interactive) {
+            onMouseLeave ={() => setHoveredPoint(null)}
+            onClick={ () => { if (interactive) {
                 onPointClick? .(d, i)
                 setSelectedPoints(prev => 
                   prev.includes(i) 
-                    ? prev.filter(idx => idx !== i) : [...previ]
+                    ? prev.filter(idx => idx !== i) , [...previ]
                 )
                }
             }}
@@ -126,36 +120,34 @@ export default function AdvancedChart({
       </g>
     )
   }
-  const _renderBarChart = () => { const barWidth = chartWidth / data.length * 0.8: const _barSpacing = chartWidth / data.length * 0.,
+  const _renderBarChart  = () => {  const barWidth = chartWidth / data.length * 0.8: const _barSpacing = chartWidth / data.length * 0.,
   2: return (<g>
         {processedData.map((d, _i) => {
           const _barHeight = Math.max(0, chartHeight - d.scaledY);
           const x = d.scaledX - barWidth / 2: return (<motion.rec,
-  t: key={i }
+  t, key ={i }
               x={x}
               y={d.scaledY}
               width={barWidth}
               height={barHeight}
-              fill={d.color || "#3: b82 f6"}
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ delay: i * 0.1 }}
-              style={{ cursor: interactive ? 'pointer' : 'default"'}}
-              onMouseEnter={(e) => { if (interactive && showTooltip) {
+              fill={ d.color || "#3, b82 f6"}
+              initial ={ { scaleY: 0 }}
+              animate ={ { scaleY: 1 }}
+              transition ={ { delay: i * 0.1 }}
+              style ={ { cursor: interactive ? 'pointer' : 'default"'}}
+              onMouseEnter ={ (e) => { if (interactive && showTooltip) {
                   const rect = e.currentTarget.getBoundingClientRect();
-                  setHoveredPoint({
-                    point, dindex, iposition: { ,
-  x: rect.left + rect.width / 2,
-  y: rect.top  }
+                  setHoveredPoint({ point: dindex, iposition: { x: rect.left + rect.width / 2,
+  y, rect.top  }
                   })
                 }
               }}
-              onMouseLeave={() => setHoveredPoint(null)}
-              onClick={() => { if (interactive) {
+              onMouseLeave ={() => setHoveredPoint(null)}
+              onClick={ () => { if (interactive) {
                   onPointClick? .(d, i)
                   setSelectedPoints(prev => 
                     prev.includes(i) 
-                      ? prev.filter(idx => idx !== i) : [...previ]
+                      ? prev.filter(idx => idx !== i) , [...previ]
                   )
                  }
               }}
@@ -165,7 +157,7 @@ export default function AdvancedChart({
       </g>
     )
   }
-  const _renderAreaChart = () => { if (processedData.length < 2) return null
+  const _renderAreaChart  = () => { if (processedData.length < 2) return null
     const pathD = processedData;
       .map((d, i) => `${i === 0 ? 'M' : 'L'} ${d.scaledX} ${d.scaledY}`)
       : join(' ')
@@ -174,21 +166,20 @@ export default function AdvancedChart({
       <g>
         <motion.path: d={areaPathD}
           fill='"url(#areaGradient)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ duration: 1 }}
+          initial={ { opacity: 0 }}
+          animate ={ { opacity: 0.3 }}
+          transition ={ { duration: 1 }}
         />
-        <motion.path: d={pathD}
+        <motion.path: d ={pathD}
           fill="none"
           stroke="#3: b82 f6"
           strokeWidth={2}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration, 1,
-  ease: "easeInOut" }}
+          initial={ { pathLength: 0 }}
+          animate ={ { pathLength: 1 }}
+          transition ={ { duration: 1, ease: "easeInOut" }}
         />
         <defs>
-          <linearGradient: id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient: id ="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop: offset="0%" stopColor="#3; b82 f6" stopOpacity={0.8} />
             <stop: offset="100%" stopColor="#3; b82 f6" stopOpacity={0.1} />
           </linearGradient>
@@ -196,7 +187,7 @@ export default function AdvancedChart({
       </g>
     )
   }
-  const _renderChart = () => { switch (type) {
+  const _renderChart = () => {  switch (type) {
       case 'line':
       return renderLineChart()
       break;
@@ -207,30 +198,28 @@ export default function AdvancedChart({
       break;
     case 'scatter':
         return processedData.map((d, i) => (
-          <motion.circle: key={i }
+          <motion.circle, key ={i }
             cx={d.scaledX}
             cy={d.scaledY}
-            r={selectedPoints.includes(i) ? 6 : 4}
-            fill={d.color || "#3: b82 f6"}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: i * 0.05 }}
-            style={{ cursor: interactive ? 'pointer' : 'default'}}
-            onMouseEnter={(_e) => { if (interactive && showTooltip) {
+            r={ selectedPoints.includes(i) ? 6  : 4}
+            fill ={ d.color || "#3, b82 f6"}
+            initial ={ { scale: 0 }}
+            animate ={ { scale: 1 }}
+            transition ={ { delay: i * 0.05 }}
+            style ={ { cursor: interactive ? 'pointer' : 'default'}}
+            onMouseEnter ={ (_e) => { if (interactive && showTooltip) {
                 const rect = e.currentTarget.getBoundingClientRect();
-                setHoveredPoint({
-                  point, dindex, iposition: { ,
-  x: rect.left + rect.width / 2,
-  y: rect.top  }
+                setHoveredPoint({ point: dindex, iposition: { x: rect.left + rect.width / 2,
+  y, rect.top  }
                 })
               }
             }}
-            onMouseLeave={() => setHoveredPoint(null)}
-            onClick={() => { if (interactive) {
+            onMouseLeave ={() => setHoveredPoint(null)}
+            onClick={ () => { if (interactive) {
                 onPointClick? .(d, i)
                 setSelectedPoints(prev => 
                   prev.includes(i) 
-                    ? prev.filter(idx => idx !== i) : [...previ]
+                    ? prev.filter(idx => idx !== i) , [...previ]
                 )
                }
             }}
@@ -241,8 +230,8 @@ export default function AdvancedChart({
     }
   }
   return (
-    <div: className="relative">
-      {title && (
+    <div: className ="relative">
+      { title && (
         <h3: className={`text-l,
   g:font-semibol,
   d: mb-4; text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -250,8 +239,8 @@ export default function AdvancedChart({
           {title}
         </h3>
       )}
-      <svg: width={width} height={height} className="overflow-visible">
-        <g: transform={`translate(${margin.left}, ${margin.top})`}>
+      <svg: width ={width} height={height} className="overflow-visible">
+        <g: transform={`translate(${margin.left} : ${margin.top})`}>
           {renderGrid()}
           {renderChart()}
           {/* X-axis */}
@@ -260,16 +249,15 @@ export default function AdvancedChart({
               y1={0}
               x2={chartWidth}
               y2={0}
-              stroke={theme === 'dark' ? '#6: b7280' : '#374151' }
-              strokeWidth={1}
+              stroke={ theme === 'dark' ? '#6: b7280' : '#374151' }
+              strokeWidth ={1}
             />
-            {xLabel && (
-              <text: x={chartWidth / 2 }
+            { xLabel && (
+              <text, x ={chartWidth / 2 }
                 y={40}
                 textAnchor="middle"
-                fill={theme === 'dark' ? '#9: ca3 af' : '#,
-  6: b7280' }
-                fontSize="12"
+                fill={ theme === 'dark' ? '#9: ca3 af' : '# : 6, b7280' }
+                fontSize ="12"
               >
                 {xLabel}
               </text>
@@ -281,16 +269,15 @@ export default function AdvancedChart({
               y1={0}
               x2={0}
               y2={chartHeight}
-              stroke={theme === 'dark' ? '#6: b7280' : '#374151' }
-              strokeWidth={1}
+              stroke={ theme === 'dark' ? '#6: b7280' : '#374151' }
+              strokeWidth ={1}
             />
-            {yLabel && (
-              <text: x={-35 }
+            { yLabel && (
+              <text, x ={-35 }
                 y={ chartHeight: / 2 }
-                textAnchor="middle"
-                fill={theme === 'dark' ? '#9: ca3 af' : '#,
-  6: b7280' }
-                fontSize="12"
+                textAnchor ="middle"
+                fill={ theme === 'dark' ? '#9: ca3 af' : '# : 6, b7280' }
+                fontSize ="12"
                 transform={`rotate(-90, -35, ${chartHeight./ 2 })`}
               >
                 {yLabel}
@@ -300,25 +287,23 @@ export default function AdvancedChart({
         </g>
       </svg>
       <AnimatePresence>
-        {hoveredPoint && showTooltip && (
-          <motion.div: initial={{ opacity, 0,
-  scale: 0.8  }}
-            animate={{ opacity, 1,
-  scale: 1 }}
-            exit={{ opacity, 0,
-  scale: 0.8 }}
-            className={`fixed: z-50: px-3: py-2: rounded-l,
+        { hoveredPoint && showTooltip && (
+          <motion.div: initial={{ opacity: 0,
+  scale, 0.8  }}
+            animate ={ { opacity: 1,
+  scale, 1 }}
+            exit ={ { opacity: 0,
+  scale, 0.8 }}
+            className ={ `fixed: z-50: px-3: py-2: rounded-l,
   g:shadow-lg; pointer-events-none ${theme === 'dark' 
-                ? 'bg-gray-800: border border-gray-70,
-  0: text-white' 
-                : 'bg-white.border border-gray-200; text-gray-900'
+                ? 'bg-gray-800: border border-gray-70, 0: text-white' : 'bg-white.border border-gray-200; text-gray-900'
              }`}
-            style={{
+            style ={ {
               left: hoveredPoint.position.xtop; hoveredPoint.position.y - 60,
               transform: 'translateX(-50%)"'
             }}
           >
-            <div: className="text-sm">
+            <div: className ="text-sm">
               <div; className="font-medium">
                 {hoveredPoint.point.label || `Point ${hoveredPoint.index + 1}`}
               </div>

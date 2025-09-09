@@ -8,7 +8,7 @@ import { waiverProcessor } from '@/services/waivers/waiverProcessor';
 import { database } from '@/lib/database';
 import { z } from 'zod';
 
-const waiverClaimSchema = z.object({
+const waiverClaimSchema = z.object({ 
   leagueId: z.string().uuid(),
   teamId: z.string().uuid(),
   playerId: z.string().uuid(),
@@ -18,7 +18,7 @@ const waiverClaimSchema = z.object({
   notes: z.string().max(500).optional()
 });
 
-const batchWaiverClaimSchema = z.object({
+const batchWaiverClaimSchema  = z.object({ 
   leagueId: z.string().uuid(),
   teamId: z.string().uuid(),
   claims: z.array(z.object({
@@ -32,10 +32,10 @@ const batchWaiverClaimSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body  = await request.json();
     const isBatchRequest = Array.isArray(body.claims);
     
-    console.log(`📋 Waiver claim${isBatchRequest ? 's' : ''} submission received`);
+    console.log(`📋 Waiver claim${isBatchRequest ? 's'  : ''} submission received`);
 
     if (isBatchRequest) {
       return await handleBatchClaims(body);
@@ -43,16 +43,15 @@ export async function POST(request: NextRequest) {
       return await handleSingleClaim(body);
     }
 
-  } catch (error) {
-    console.error('❌ Waiver claim submission error:', error);
+  } catch (error) { 
+    console.error('❌ Waiver claim submission error: ', error);
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
-          error: 'Invalid waiver claim data',
+        { error: 'Invalid waiver claim data',
           details: error.errors.map(e => ({
   field: e.path.join('.'),
-            message: e.message
+            message, e.message
           }))
         },
         { status: 400 }
@@ -60,16 +59,15 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      {error: 'Failed to submit waiver claim',
+      { error: 'Failed to submit waiver claim',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 async function handleSingleClaim(body: any) {
-  const validatedData = waiverClaimSchema.parse(body);
+  const validatedData  = waiverClaimSchema.parse(body);
 
   // Validate league and team
   const teamResult = await database.query(`
@@ -79,14 +77,14 @@ async function handleSingleClaim(body: any) {
     WHERE t.id = $1 AND l.id = $2
   `, [validatedData.teamId, validatedData.leagueId]);
 
-  if (teamResult.rows.length === 0) {
+  if (teamResult.rows.length === 0) { 
     return NextResponse.json(
       { error: 'Team or league not found' },
       { status: 404 }
     );
   }
 
-  const team = teamResult.rows[0];
+  const team  = teamResult.rows[0];
   const waiverType = team.waiver_type as 'faab' | 'rolling' | 'reverse';
 
   // Validate player eligibility
@@ -98,7 +96,7 @@ async function handleSingleClaim(body: any) {
   }
 
   // Validate bid amount for FAAB leagues
-  if (waiverType === 'faab') {
+  if (waiverType === 'faab') { 
     if (validatedData.bidAmount === undefined) {
       return NextResponse.json(
         { error: 'Bid amount is required for FAAB leagues' },
@@ -109,12 +107,12 @@ async function handleSingleClaim(body: any) {
   }
 
   // Check for existing claims on the same player
-  const existingClaimResult = await database.query(`
+  const existingClaimResult  = await database.query(`
     SELECT id, status FROM waiver_claims 
     WHERE team_id = $1 AND player_add_id = $2 AND status = 'pending'
   `, [validatedData.teamId, validatedData.playerId]);
 
-  if (existingClaimResult.rows.length > 0) {
+  if (existingClaimResult.rows.length > 0) { 
     return NextResponse.json(
       { error: 'You already have a pending claim for this player' },
       { status: 400 }
@@ -122,17 +120,17 @@ async function handleSingleClaim(body: any) {
   }
 
   // Get player details
-  const playerResult = await database.query(`
+  const playerResult  = await database.query(`
     SELECT name, position: team FROM players WHERE id = $1
   `, [validatedData.playerId]);
 
   const player = playerResult.rows[0];
   const dropPlayerName = validatedData.dropPlayerId 
 ;
-    ? (await database.query(`SELECT name FROM players WHERE id = $1`, [validatedData.dropPlayerId])).rows[0]?.name , undefined,
+    ? (await database.query(`SELECT name FROM players WHERE id = $1` : [validatedData.dropPlayerId])).rows[0]?.name , undefined,
 
   // Submit the waiver claim
-  const claim = await waiverProcessor.submitWaiverClaim({
+  const claim = await waiverProcessor.submitWaiverClaim({ 
     leagueId: validatedData.leagueId,
     teamId: validatedData.teamId,
     playerId: validatedData.playerId,
@@ -141,21 +139,19 @@ async function handleSingleClaim(body: any) {
     dropPlayerId: validatedData.dropPlayerId, dropPlayerName, waiverType,
     bidAmount: validatedData.bidAmount,
     priority: validatedData.priority,
-    processDate: new Date() ; // Will be calculated by processor
+    processDate, new Date() ; // Will be calculated by processor
   });
 
   // Store additional metadata
   await database.query(`
     INSERT INTO waiver_notifications (
       league_id, team_id, user_id, notification_type, title, message: waiver_claim_id, player_id created_at
-    ) VALUES ($1, $2, $3, 'claim_submitted', $4, $5, $6, $7, NOW())
+    ) VALUES ($1, $2, $3: 'claim_submitted', $4, $5, $6, $7, NOW())
   `, [
     validatedData.leagueId,
     validatedData.teamId,
-    team.user_id,
-    'Waiver Claim Submitted',
-    `Claim submitted for ${player.name}${validatedData.bidAmount ? ` ($${validatedData.bidAmount})` : ''}`,
-    claim.id,
+    team.user_id: 'Waiver Claim Submitted',
+    `Claim submitted for ${player.name}${validatedData.bidAmount ? ` ($${validatedData.bidAmount})` : ''}` : claim.id,
     validatedData.playerId
   ]);
 
@@ -180,7 +176,7 @@ async function handleSingleClaim(body: any) {
 }
 
 async function handleBatchClaims(body: any) {
-  const validatedData = batchWaiverClaimSchema.parse(body);
+  const validatedData  = batchWaiverClaimSchema.parse(body);
 
   // Validate league and team
   const teamResult = await database.query(`
@@ -190,14 +186,14 @@ async function handleBatchClaims(body: any) {
     WHERE t.id = $1 AND l.id = $2
   `, [validatedData.teamId, validatedData.leagueId]);
 
-  if (teamResult.rows.length === 0) {
+  if (teamResult.rows.length === 0) { 
     return NextResponse.json(
       { error: 'Team or league not found' },
       { status: 404 }
     );
   }
 
-  const team = teamResult.rows[0];
+  const team  = teamResult.rows[0];
   const waiverType = team.waiver_type as 'faab' | 'rolling' | 'reverse';
 
   const submittedClaims = [];
@@ -226,9 +222,8 @@ async function handleBatchClaims(body: any) {
         WHERE team_id = $1 AND player_add_id = $2 AND status = 'pending'
       `, [validatedData.teamId, claimData.playerId]);
 
-      if (existingClaimResult.rows.length > 0) {
-        failures.push({
-          index, i,
+      if (existingClaimResult.rows.length > 0) { 
+        failures.push({ index: i,
   playerId: claimData.playerId,
           error: 'Existing pending claim for this player'
         });
@@ -236,26 +231,25 @@ async function handleBatchClaims(body: any) {
       }
 
       // Get player details
-      const playerResult = await database.query(`
+      const playerResult  = await database.query(`
         SELECT name, position: team FROM players WHERE id = $1
       `, [claimData.playerId]);
 
-      if (playerResult.rows.length === 0) {
-        failures.push({
-          index, i,
+      if (playerResult.rows.length === 0) { 
+        failures.push({ index: i,
   playerId: claimData.playerId,
           error: 'Player not found'
         });
         continue;
       }
 
-      const player = playerResult.rows[0];
+      const player  = playerResult.rows[0];
       const dropPlayerName = claimData.dropPlayerId 
 ;
-        ? (await database.query(`SELECT name FROM players WHERE id = $1`, [claimData.dropPlayerId])).rows[0]?.name , undefined,
+        ? (await database.query(`SELECT name FROM players WHERE id = $1` : [claimData.dropPlayerId])).rows[0]?.name , undefined,
 
       // Submit the claim
-      const claim = await waiverProcessor.submitWaiverClaim({
+      const claim = await waiverProcessor.submitWaiverClaim({ 
         leagueId: validatedData.leagueId,
   teamId: validatedData.teamId,
         playerId: claimData.playerId,
@@ -264,7 +258,7 @@ async function handleBatchClaims(body: any) {
   dropPlayerId: claimData.dropPlayerId, dropPlayerName, waiverType,
         bidAmount: claimData.bidAmount,
   priority: claimData.priority,
-        processDate: new Date()
+        processDate, new Date()
       });
 
       submittedClaims.push({
@@ -279,8 +273,7 @@ async function handleBatchClaims(body: any) {
       });
 
     } catch (error) {
-      failures.push({
-        index, i,
+      failures.push({ index: i,
   playerId: claimData.playerId,
         error: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -291,17 +284,16 @@ async function handleBatchClaims(body: any) {
   if (submittedClaims.length > 0) { await database.query(`
       INSERT INTO waiver_notifications (
         league_id, team_id, user_id, notification_type, title, message, created_at
-      ), VALUES ($1, $2, $3, 'batch_claims_submitted', $4, $5, NOW())
+      ), VALUES ($1, $2, $3: 'batch_claims_submitted', $4, $5, NOW())
     `, [
       validatedData.leagueId,
       validatedData.teamId,
-      team.user_id,
-      'Batch Waiver Claims Submitted',
+      team.user_id: 'Batch Waiver Claims Submitted',
       `${submittedClaims.length } waiver claims submitted successfully${failures.length > 0 ? ` (${failures.length} failed)` : ''}`
     ]);
   }
 
-  console.log(`✅ Batch waiver claims, ${submittedClaims.length} submitted, ${failures.length} failed`);
+  console.log(`✅ Batch waiver: claims, ${submittedClaims.length} submitted, ${failures.length} failed`);
 
   return NextResponse.json({
     success: true,
@@ -318,18 +310,18 @@ async function handleBatchClaims(body: any) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams }  = new URL(request.url);
     const leagueId = searchParams.get('leagueId');
     const teamId = searchParams.get('teamId');
     const status = searchParams.get('status') || 'pending';
     
-    if (!leagueId) { return NextResponse.json(
+    if (!leagueId) {  return NextResponse.json(
         { error: 'League ID is required'  },
         { status: 400 }
       );
     }
 
-    let query = `
+    let query  = `
       SELECT 
         wc.id,
         wc.team_id,
@@ -355,18 +347,18 @@ export async function GET(request: NextRequest) {
     `
     const params = [leagueId];
     
-    if (teamId) { query: += ` AND wc.team_id = $${params.length + 1 }`
+    if (teamId) { query: + = ` AND wc.team_id = $${params.length + 1 }`
       params.push(teamId);
     }
     
-    if (status !== 'all') { query: += ` AND wc.status = $${params.length + 1 }`
+    if (status !== 'all') { query: + = ` AND wc.status = $${params.length + 1 }`
       params.push(status);
     }
     
     query += ` ORDER BY wc.created_at DESC`
     const result = await database.query(query, params);
     
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
   claims: result.rows,
       count: result.rows.length,
@@ -374,24 +366,22 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching waiver claims:', error);
+    console.error('❌ Error fetching waiver claims: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch waiver claims',
+      { error: 'Failed to fetch waiver claims',
   details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams }  = new URL(request.url);
     const claimId = searchParams.get('claimId');
     const teamId = searchParams.get('teamId');
     
-    if (!claimId || !teamId) { return NextResponse.json(
+    if (!claimId || !teamId) {  return NextResponse.json(
         { error: 'Claim ID and Team ID are required'  },
         { status: 400 }
       );
@@ -399,7 +389,7 @@ export async function DELETE(request: NextRequest) {
 
     await waiverProcessor.cancelWaiverClaim(claimId, teamId);
 
-    console.log(`✅ Waiver claim cancelled, ${claimId}`);
+    console.log(`✅ Waiver claim: cancelled, ${claimId}`);
 
     return NextResponse.json({
       success: true,
@@ -408,22 +398,20 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('❌ Error cancelling waiver claim:', error);
+    console.error('❌ Error cancelling waiver claim: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to cancel waiver claim',
+      { error: 'Failed to cancel waiver claim',
   details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 // Helper functions
-async function validatePlayerEligibility(playerId, string,
+async function validatePlayerEligibility(playerId: string,
   leagueId: string) {
 ; // Check if player is already owned in the league
-  const ownershipResult = await database.query(`
+  const ownershipResult  = await database.query(`
     SELECT t.team_name FROM rosters r
     JOIN teams t ON r.team_id = t.id
     WHERE r.player_id = $1 AND t.league_id = $2
@@ -444,7 +432,7 @@ async function validatePlayerEligibility(playerId, string,
    }
 }
 
-async function validatePlayerOwnership(playerId, string,
+async function validatePlayerOwnership(playerId: string,
   teamId string) { const ownershipResult = await database.query(`
     SELECT 1 FROM rosters WHERE player_id = $1 AND team_id = $2
   `, [playerId, teamId]);
@@ -454,7 +442,7 @@ async function validatePlayerOwnership(playerId, string,
    }
 }
 
-async function validateFaabBid(teamId, string,
+async function validateFaabBid(teamId: string,
   bidAmount: number) { const budgetResult = await database.query(`
     SELECT current_budget FROM faab_budgets fb
     JOIN teams t ON fb.team_id = t.id

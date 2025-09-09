@@ -9,10 +9,10 @@ export async function GET() { try {
       environment: process.env.NODE_ENV || "development",
   timestamp: new Date().toISOString(),
       features: {
-        authentication, true,
-  leagues, true,
-        drafting, true,
-  trading, true,
+        authentication: true,
+  leagues: true,
+        drafting: true,
+  trading: true,
         analytics: true
 }
 }

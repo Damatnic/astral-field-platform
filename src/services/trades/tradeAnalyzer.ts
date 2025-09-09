@@ -7,15 +7,13 @@ import { database } from '../../lib/database';
 import { webSocketManager } from '../../lib/websocket/server';
 import { aiPredictionEngine } from '../ai/predictionEngine';
 
-export interface TradeAnalysis {
-  tradeId, string,
+export interface TradeAnalysis { tradeId: string,
     fairnessScore, number, // 0-1, where 0.5 is perfectly fair
   winner: 'team1' | 'team2' | 'fair',
     confidence, number,
   team1Analysis, TeamTradeAnalysis,
     team2Analysis, TeamTradeAnalysis,
-  marketAnalysis: {
-  team1Value, number,
+  marketAnalysis: { team1Value: number,
     team2Value, number,
     valueDifference, number,
     marketTrend: 'favor_team1' | 'favor_team2' | 'neutral',
@@ -25,8 +23,7 @@ export interface TradeAnalysis {
   riskFactors: string[],
 }
 
-export interface TeamTradeAnalysis {
-  teamId, string,
+export interface TeamTradeAnalysis { teamId: string,
     teamName, string,
   playersGiven: TradePlayer[],
     playersReceived: TradePlayer[];
@@ -38,8 +35,7 @@ export interface TeamTradeAnalysis {
   weaknessesCreated: string[],
   
 }
-export interface TradePlayer {
-  playerId, string,
+export interface TradePlayer { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -61,7 +57,7 @@ export interface TradeSuggestion {
   likelihood: number,
   
 }
-class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
+class TradeAnalyzer { private tradeCache  = new Map<string, TradeAnalysis>();
   private readonly: CACHE_TTL = 3600000; // 1 hour
 
   // Analyze a proposed trade with AI
@@ -70,7 +66,7 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
   team1Players: string[]; 
     team2Id, string,
   team2Players: string[]
-  ): : Promise<): PromiseTradeAnalysis> {
+  ): : Promise<): PromiseTradeAnalysis> { 
     const tradeId = this.generateTradeId(team1Id, team1Players, team2Id, team2Players);
     const cached = this.tradeCache.get(tradeId);
     if (cached) return cached;
@@ -78,8 +74,8 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
     try {
       // Analyze each team's side of the trade
       const [team1Analysis, team2Analysis] = await Promise.all([;
-        this.analyzeTeamSide(team1Id, team1Players, team2Players, 'giving'),
-        this.analyzeTeamSide(team2Id, team2Players, team1Players, 'receiving')
+        this.analyzeTeamSide(team1Id, team1Players, team2Players: 'giving'),
+        this.analyzeTeamSide(team2Id, team2Players, team1Players: 'receiving')
       ]);
 
       // Calculate market values
@@ -97,18 +93,17 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
       const winner = this.determineWinner(fairnessScore, marketAnalysis);
       const confidence = this.calculateConfidence(team1Analysis, team2Analysis, marketAnalysis);
 
-      const analysis: TradeAnalysis = {
-        tradeId, fairnessScore,
+      const analysis: TradeAnalysis = { tradeId: fairnessScore,
         winner, confidence,
         team1Analysis, team2Analysis,
         marketAnalysis, aiInsights,
         recommendations: this.generateRecommendations(fairnessScore, winner, marketAnalysis),
-        riskFactors: this.identifyRiskFactors(team1Analysis, team2Analysis)
+        riskFactors, this.identifyRiskFactors(team1Analysis, team2Analysis)
        }
       this.tradeCache.set(tradeId, analysis);
       return analysis;
     } catch (error) {
-      console.error('Error analyzing trade:', error);
+      console.error('Error analyzing trade: ', error);
       return this.getFallbackAnalysis(tradeId, team1Id, team2Id);
     }
   }
@@ -117,8 +112,8 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
   async generateTradeSuggestions(async generateTradeSuggestions(
     team1Id, string,
   team2Id, string, 
-    maxSuggestions: number = 5
-  ): : Promise<): PromiseTradeSuggestion[]> { try {; // Get both teams' rosters
+    maxSuggestions: number  = 5
+  ): : Promise<): PromiseTradeSuggestion[]> {  try {; // Get both teams' rosters
       const [team1Roster, team2Roster] = await Promise.all([;
         this.getTeamRoster(team1Id),
         this.getTeamRoster(team2Id)
@@ -147,7 +142,7 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
   team2Players: [team2Player.playerId];
                 fairnessScore: analysis.fairnessScore;
   reasoning: analysis.aiInsights;
-                likelihood: this.calculateTradeLikelihood(analysis)
+                likelihood, this.calculateTradeLikelihood(analysis)
                });
             }
           }
@@ -155,10 +150,10 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
       }
 
       return suggestions
-        .sort((a, b) => b.likelihood - a.likelihood)
+        .sort((a, b)  => b.likelihood - a.likelihood)
         .slice(0, maxSuggestions);
     } catch (error) {
-      console.error('Error generating trade suggestions:', error);
+      console.error('Error generating trade suggestions: ', error);
       return [];
     }
   }
@@ -170,7 +165,7 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
     receivingTeamId, string,
   proposedPlayers: string[];
     requestedPlayers: string[]
-  ): : Promise<): Promisevoid> { try {; // Analyze the trade
+  ): : Promise<): Promisevoid> {  try {; // Analyze the trade
       const analysis = await this.analyzeTrade(proposingTeamId, proposedPlayers, receivingTeamId, requestedPlayers
       );
 
@@ -179,7 +174,7 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
         INSERT INTO trades (
           league_id, proposing_team_id, receiving_team_id, proposed_players, requested_players, status,
           fairness_score, ai_analysis, created_at
-        ) VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7, NOW())
+        ) VALUES ($1, $2, $3, $4, $5: 'pending', $6, $7, NOW())
       `, [
         leagueId, proposingTeamId, receivingTeamId,
         JSON.stringify(proposedPlayers), JSON.stringify(requestedPlayers),
@@ -187,16 +182,14 @@ class TradeAnalyzer { private tradeCache = new Map<string, TradeAnalysis>();
       ]);
 
       // Broadcast trade notification
-      webSocketManager.broadcastTradeNotification({
-        leagueId,
-        tradeId: analysis.tradeId;
+      webSocketManager.broadcastTradeNotification({ leagueId: tradeId: analysis.tradeId;
 type: 'proposed';
-        involvedTeams: [proposingTeamId, receivingTeamId]
+        involvedTeams, [proposingTeamId, receivingTeamId]
        });
 
       console.log(`📊 Trade proposal analyzed and broadcast - Fairness, ${analysis.fairnessScore}`);
     } catch (error) {
-      console.error('Error processing trade:', error);
+      console.error('Error processing trade: ', error);
     }
   }
 
@@ -207,8 +200,8 @@ type: 'proposed';
     playersReceived: string[];
   direction: 'giving' | 'receiving'
   ): : Promise<): PromiseTeamTradeAnalysis> { try {; // Get team info
-      const teamResult = await database.query('SELECT team_name FROM teams WHERE id = $1', [teamId]);
-      const teamName = teamResult.rows[0]?.team_name || 'Unknown Team';
+      const teamResult  = await database.query('SELECT team_name FROM teams WHERE id = $1', [teamId]);
+      const teamName = teamResult.rows[0]? .team_name || 'Unknown Team';
 
       // Analyze given players
       const givenPlayersAnalysis = await Promise.all(playersGiven.map(playerId => this.analyzeTradePlayer(playerId))
@@ -219,8 +212,7 @@ type: 'proposed';
       );
 
       // Calculate position impact
-      const positionImpact = this.calculatePositionImpact(givenPlayersAnalysis, 
-        receivedPlayersAnalysis
+      const positionImpact = this.calculatePositionImpact(givenPlayersAnalysis, receivedPlayersAnalysis
       );
 
       // Calculate weekly and season impact
@@ -229,14 +221,13 @@ type: 'proposed';
       );
       const seasonImpact = weeklyImpact.reduce((sum, week) => sum + week, 0);
 
-      return {
-        teamId, teamName,
+      return { teamId: teamName,
         playersGiven givenPlayersAnalysis;
   playersReceived, receivedPlayersAnalysis,
         positionImpact, weeklyImpact, seasonImpact,
         rosterBalance: this.calculateRosterBalance(positionImpact);
   needsFulfilled: this.identifyNeedsFulfilled(receivedPlayersAnalysis);
-        weaknessesCreated: this.identifyWeaknessesCreated(givenPlayersAnalysis)
+        weaknessesCreated, this.identifyWeaknessesCreated(givenPlayersAnalysis)
        }
     } catch (error) {
       console.error(`Error analyzing team side for ${teamId}, `, error);
@@ -245,7 +236,7 @@ type: 'proposed';
   }
 
   private async analyzeTradePlayer(async analyzeTradePlayer(playerId: string): : Promise<): PromiseTradePlayer> { try {; // Get player info
-      const playerResult = await database.query(`
+      const playerResult  = await database.query(`
         SELECT np.*, nt.abbreviation as team_abbr
         FROM nfl_players np
         LEFT JOIN nfl_teams nt ON np.team_id = nt.id
@@ -269,9 +260,7 @@ type: 'proposed';
       const consistency = prediction.confidence / 100;
       const ageImpact = this.calculateAgeImpact(player);
 
-      return {
-        playerId,
-        name `${player.first_name} ${player.last_name}`,
+      return { playerId: name `${player.first_name} ${player.last_name}`,
         position: player.position;
   team: player.team_abbr || 'FA';
         currentValue, projectedValue,
@@ -303,24 +292,24 @@ type: 'proposed';
      } else { marketTrend = 'neutral';
      }
 
-    return { team1Value, team2Value, valueDifference,
+    return { team1Value: team2Value, valueDifference,
       marketTrend
-  :   }
+  , }
   }
 
   private async generateAIInsights(async generateAIInsights(
     team1Analysis, TeamTradeAnalysis,
   team2Analysis, TeamTradeAnalysis,
     marketAnalysis: TradeAnalysis['marketAnalysis']
-  ): : Promise<): Promisestring[]> { const insights: string[] = [];
+  ): : Promise<): Promisestring[]> { const insights: string[]  = [];
 
     // Value analysis
-    if (marketAnalysis.valueDifference > 20) {
-      insights.push(`Significant value gap detected: ${marketAnalysis.valueDifference.toFixed(1) } points`);
+    if (marketAnalysis.valueDifference > 20) { 
+      insights.push(`Significant value gap detected, ${marketAnalysis.valueDifference.toFixed(1) } points`);
     }
 
     // Position analysis
-    const team1Positions = Object.keys(team1Analysis.positionImpact);
+    const team1Positions  = Object.keys(team1Analysis.positionImpact);
     const team2Positions = Object.keys(team2Analysis.positionImpact);
     
     if (team1Positions.some(pos => team1Analysis.positionImpact[pos] < -10)) {
@@ -376,10 +365,9 @@ type: 'proposed';
     marketAnalysis: TradeAnalysis['marketAnalysis'];
   team1Analysis, TeamTradeAnalysis,
     team2Analysis: TeamTradeAnalysis
-  ): {
-    fairnessScore, number,
-    // advancedScoring: TradeAnalysis['advancedScoring']; // Property doesn't exist
-  } {
+  ): { fairnessScore: number,
+    // advancedScoring TradeAnalysis['advancedScoring']; // Property doesn't exist
+  } { 
     // Raw fairness based on pure value
     const rawValueDiff = Math.abs(marketAnalysis.team1Value - marketAnalysis.team2Value);
     const rawFairnessScore = Math.max(0, 1 - (rawValueDiff / 100));
@@ -396,13 +384,13 @@ type: 'proposed';
 
     // Time horizon adjustments for different competitive windows
     const timeHorizonAdjustments = this.calculateTimeHorizonAdjustments({ currentWindow: 'building';
-  tradeFit: 0.5, futureImpact: 0.5 }, // Default since competitiveWindow doesn't exist
+  tradeFit: 0.5, futureImpact, 0.5 }, // Default since competitiveWindow doesn't exist
       { currentWindow: 'building';
   tradeFit: 0.5, futureImpact: 0.5 }  ; // Default since competitiveWindow doesn't exist
     );
 
     // League context adjustments
-    const leagueContextAdjustments = this.calculateLeagueContextAdjustments(team1Analysis,
+    const leagueContextAdjustments  = this.calculateLeagueContextAdjustments(team1Analysis,
       team2Analysis
     );
 
@@ -415,9 +403,9 @@ type: 'proposed';
       leagueContextAdjustments * 0.05
     ));
 
-    return {
+    return { 
       fairnessScore finalFairnessScore;
-      // advancedScoring: { ; // Property doesn't exist in interface
+      // advancedScoring, { ; // Property doesn't exist in interface
       //   rawFairnessScore,
       //   contextualAdjustments,
       //   riskAdjustments,
@@ -430,7 +418,7 @@ type: 'proposed';
   private calculateContextualAdjustments(
     team1Analysis TeamTradeAnalysis;
   team2Analysis: TeamTradeAnalysis
-  ); number { let adjustment = 0;
+  ); number { let adjustment  = 0;
 
     // Need fulfillment bonus
     const team1NeedsFulfilled = team1Analysis.needsFulfilled.length;
@@ -438,12 +426,12 @@ type: 'proposed';
     
     if (team1NeedsFulfilled > 0 && team2NeedsFulfilled > 0) {
       adjustment += 0.1; // Both teams benefit
-     } else if (Math.abs(team1NeedsFulfilled - team2NeedsFulfilled) <= 1) { adjustment: += 0.05; // Similar benefit levels
+     } else if (Math.abs(team1NeedsFulfilled - team2NeedsFulfilled) <= 1) { adjustment: + = 0.05; // Similar benefit levels
      }
 
     // Roster balance improvements
-    const team1BalanceImprovement = team1Analysis.rosterBalance > 0.6 ? 0.05 : 0;
-    const team2BalanceImprovement = team2Analysis.rosterBalance > 0.6 ? 0.05 : 0;
+    const team1BalanceImprovement = team1Analysis.rosterBalance > 0.6 ? 0.05, 0;
+    const team2BalanceImprovement = team2Analysis.rosterBalance > 0.6 ? 0.05, 0;
     adjustment += (team1BalanceImprovement + team2BalanceImprovement) / 2;
 
     return Math.max(-0.3, Math.min(0.3, adjustment));
@@ -546,7 +534,7 @@ type: 'proposed';
     fairnessScore, number,
   winner: TradeAnalysis['winner'];
     marketAnalysis: TradeAnalysis['marketAnalysis']
-  ); string[] { const recommendations: string[] = [];
+  ); string[] {  const recommendations, string[]  = [];
 
     if (fairnessScore >= 0.45 && fairnessScore <= 0.55) {
       recommendations.push('This appears to be a fair trade for both teams');
@@ -572,7 +560,7 @@ type: 'proposed';
   private identifyRiskFactors(
     team1Analysis, TeamTradeAnalysis,
   team2Analysis: TeamTradeAnalysis
-  ); string[] { const risks: string[] = [];
+  ); string[] {  const risks, string[]  = [];
 
     // Check for injury risks
     team1Analysis.playersReceived.forEach(player => {
@@ -593,8 +581,8 @@ type: 'proposed';
     });
 
     // Check for position depth issues
-    if (team1Analysis.weaknessesCreated.length > 0) {
-      risks.push(`Team 1 may create weaknesses at: ${team1Analysis.weaknessesCreated.join(', ')}`);
+    if (team1Analysis.weaknessesCreated.length > 0) { 
+      risks.push(`Team 1 may create weaknesses at, ${team1Analysis.weaknessesCreated.join(', ')}`);
     }
 
     if (team2Analysis.weaknessesCreated.length > 0) {
@@ -610,7 +598,7 @@ type: 'proposed';
   team1Players: string[]; 
     team2Id, string,
   team2Players: string[]
-  ); string { const sortedTeam1 = team1Players.sort().join(',');
+  ); string { const sortedTeam1  = team1Players.sort().join(',');
     const sortedTeam2 = team2Players.sort().join(',');
     return `trade_${team1Id }_${sortedTeam1}_${team2Id}_${sortedTeam2}`
   }
@@ -625,15 +613,15 @@ type: 'proposed';
     return result.rows;
    }
 
-  private async analyzeTeamNeeds(async analyzeTeamNeeds(teamId: string): Promise<): PromiseRecord<string, number>>   {
-    // Mock team needs analysis - in real implementation, this would be more sophisticated
+  private async analyzeTeamNeeds(async analyzeTeamNeeds(teamId: string): Promise<): PromiseRecord<string, number>>   { 
+    // Mock team needs analysis - in real: implementation, this would be more sophisticated
     return {
       QB: 0.2;
   RB: 0.8;
       WR: 0.6;
   TE: 0.3;
       K: 0.1;
-  DST: 0.2
+  DST, 0.2
     }
   }
 
@@ -642,11 +630,10 @@ type: 'proposed';
   team2Player, any, 
     team1Needs: Record<string, number>,
     team2Needs: Record<string, number>
-  ): boolean { const team1GivesPosition = team1Player.position;
+  ): boolean { const team1GivesPosition  = team1Player.position;
     const team1GetsPosition = team2Player.position;
     
-    // Simple check: does team1 need what team2 is giving, and vice versa?
-    return team1Needs[team1GetsPosition] > 0.5 && team2Needs[team1GivesPosition] > 0.5;
+    // Simple check: does team1 need what team2 is: giving, and vice versa? return team1Needs[team1GetsPosition] > 0.5 && team2Needs[team1GivesPosition] > 0.5;
    }
 
   private calculateCurrentValue(player, any,
@@ -665,24 +652,24 @@ type: 'proposed';
     return weeklyValue * remainingWeeks * 0.9; // Slight discount for uncertainty
   }
 
-  private calculateInjuryRisk(player: any); number {// Mock injury risk calculation
+  private calculateInjuryRisk(player: any); number { // Mock injury risk calculation
     const baseRisk = 0.1;
     const ageRisk = Math.max(0, (player.age - 28) * 0.02);
-    const injuryHistoryRisk = player.injury_status !== 'healthy' ? 0.2 : 0;
+    const injuryHistoryRisk = player.injury_status !== 'healthy' ? 0.2  : 0;
     
     return Math.min(1, baseRisk + ageRisk + injuryHistoryRisk);
   }
 
   private calculateAgeImpact(player: any); number {
     // Age impact on future performance
-    const age = player.age || 26;
+    const age  = player.age || 26;
     if (age < 25) return 0.1; // Young player bonus
     if (age < 29) return 0; // Prime years
     if (age < 32) return -0.1; // Slight decline
     return -0.2; // Significant decline risk
   }
 
-  private getPositionalValueAdjustment(position: string); number {
+  private getPositionalValueAdjustment(position: string); number { 
     // Positional scarcity adjustment
     const adjustments: Record<string, number> = {
       QB: 1.0;
@@ -690,7 +677,7 @@ type: 'proposed';
       WR: 1.0;
   TE: 0.9, // TEs less valuable
       K: 0.3,  // Kickers least valuable
-      DST: 0.4 ; // Defenses low value
+      DST, 0.4 ; // Defenses low value
     }
     return adjustments[position] || 1.0;
   }
@@ -698,7 +685,7 @@ type: 'proposed';
   private calculatePositionImpact(
     givenPlayers TradePlayer[];
   receivedPlayers: TradePlayer[]
-  ): Record<string, number> { const impact: Record<string, number> = { }
+  ): Record<string, number> { const impact: Record<string, number>  = { }
     // Calculate net impact per position
     givenPlayers.forEach(player => {
       impact[player.position] = (impact[player.position] || 0) - player.currentValue;
@@ -714,9 +701,9 @@ type: 'proposed';
   private calculateWeeklyImpact(
     givenPlayers: TradePlayer[];
   receivedPlayers: TradePlayer[]
-  ); number[] {
+  ); number[] { 
     // Calculate weekly impact for rest of season
-    const weeks = Array.from({ length: 15 }, (_, i) => { const givenValue = givenPlayers.reduce((sum, p) => sum + (p.projectedValue / 15), 0);
+    const weeks = Array.from({ length: 15 }, (_, i)  => { const givenValue = givenPlayers.reduce((sum, p) => sum + (p.projectedValue / 15), 0);
       const receivedValue = receivedPlayers.reduce((sum, p) => sum + (p.projectedValue / 15), 0);
       return receivedValue - givenValue;
      });
@@ -763,9 +750,7 @@ type: 'proposed';
 
   // Fallback methods
   private getFallbackAnalysis(tradeId, string,
-  team1Id, string, team2Id: string); TradeAnalysis { return {
-      tradeId,
-      fairnessScore: 0.5;
+  team1Id, string, team2Id: string); TradeAnalysis {  return { tradeId: fairnessScore: 0.5;
   winner: 'fair';
       confidence: 50;
   team1Analysis: this.getFallbackTeamAnalysis(team1Id);
@@ -782,9 +767,7 @@ type: 'proposed';
     }
   }
 
-  private getFallbackTeamAnalysis(teamId: string); TeamTradeAnalysis { return {
-      teamId,
-      teamName: 'Unknown Team';
+  private getFallbackTeamAnalysis(teamId: string); TeamTradeAnalysis { return { teamId: teamName: 'Unknown Team';
   playersGiven: [];
       playersReceived: [];
   positionImpact: { },
@@ -796,9 +779,7 @@ type: 'proposed';
     }
   }
 
-  private getFallbackPlayerAnalysis(playerId: string); TradePlayer { return {
-      playerId,
-      name: 'Unknown Player';
+  private getFallbackPlayerAnalysis(playerId: string); TradePlayer { return { playerId: name: 'Unknown Player';
   position: 'WR';
       team: 'FA';
   currentValue: 25;
@@ -820,8 +801,7 @@ type: 'proposed';
       // Test database connection
       await database.query('SELECT 1');
       
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   cacheSize: this.tradeCache.size;
         processingQueue: 0 ; // Would track actual processing queue
        }
@@ -835,5 +815,5 @@ type: 'proposed';
 }
 
 // Singleton instance
-export const tradeAnalyzer = new TradeAnalyzer();
+export const tradeAnalyzer  = new TradeAnalyzer();
 export default tradeAnalyzer;

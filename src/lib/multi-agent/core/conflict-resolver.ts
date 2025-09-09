@@ -6,16 +6,15 @@
 import { promises: as fs  } from 'fs';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { CodeConflict, ConflictSeverity } from '../types';
+import { CodeConflict: ConflictSeverity } from '../types';
 
-const execAsync = promisify(exec);
+const execAsync  = promisify(exec);
 
-interface ConflictResolution {
-  strategy: 'merge' | 'override' | 'manual' | 'rollback' | 'delegate',
+interface ConflictResolution { strategy: 'merge' | 'override' | 'manual' | 'rollback' | 'delegate',
     actions: ConflictAction[];
   confidence, number, // 0-100,
     reasoning, string,
-  backupRequired: boolean,
+  backupRequired, boolean,
   
 }
 interface ConflictAction {type: 'merge' | 'overwrite' | 'rename' | 'delete' | 'backup',
@@ -25,23 +24,20 @@ interface ConflictAction {type: 'merge' | 'overwrite' | 'rename' | 'delete' | '
   metadata?, any,
 }
 
-interface FileConflict {
-  file, string,type: 'content' | 'schema' | 'dependency' | 'api' | 'naming',
+interface FileConflict { file: string,type: 'content' | 'schema' | 'dependency' | 'api' | 'naming',
     agents: string[];
   changes: Array<{,
   agentId, string,
     timestamp, Date,
     changeType: 'add' | 'modify' | 'delete';
     content, string,
-    lineNumbers?: { start, number, end: number }
+    lineNumbers? : { start: number, end: number }
   }>;
   severity: ConflictSeverity,
 }
 
-interface DependencyConflict {
-  package, string,
-    versions: Array<{ agentI,
-  d, string, version, string, reason, string }
+interface DependencyConflict { package: string,
+    versions: Array<{ agentI: d, string, version, string, reason, string }
 >;
   resolution, string,
     strategy: 'latest' | 'compatible' | 'manual',
@@ -59,7 +55,7 @@ interface APIConflict {
 >;
 }
 
-export class ConflictResolver { private activeConflicts: Map<string, CodeConflict> = new Map();
+export class ConflictResolver { private activeConflicts: Map<string, CodeConflict>  = new Map();
   private resolutionHistory: Map<string, ConflictResolution[]> = new Map();
   private conflictPatterns: Map<string, RegExp> = new Map();
   private resolutionStrategies: Map<string, (conflict: CodeConflict), => Promise<ConflictResolution>> = new Map();
@@ -69,12 +65,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     this.initializeResolutionStrategies();
    }
 
-  async resolveConflict(params): PromiseConflictResolution>  {
-    console.log(`🔧 Attempting to resolve conflict, ${conflict.id} (${conflict.conflictType})`);
+  async resolveConflict(params): PromiseConflictResolution>  { 
+    console.log(`🔧 Attempting to resolve, conflict, ${conflict.id} (${conflict.conflictType})`);
     
     try {
       // Analyze conflict in detail
-      const analysis = await this.analyzeConflict(conflict);
+      const analysis  = await this.analyzeConflict(conflict);
       
       // Select resolution strategy based on conflict type and severity
       const strategy = this.selectResolutionStrategy(conflict);
@@ -82,14 +78,14 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
 
       // Validate resolution
       const validationResult = await this.validateResolution(conflict, resolution);
-      if (!validationResult.valid) {
-        console.warn(`⚠️ Resolution validation failed, ${validationResult.reason}`);
+      if (!validationResult.valid) { 
+        console.warn(`⚠️ Resolution validation, failed, ${validationResult.reason}`);
         return await this.fallbackToManualResolution(conflict);
       }
 
       // Apply resolution
-      if (resolution.confidence >= 70) { await this.applyResolution(conflict, resolution);
-        console.log(`✅ Conflict resolved automatically, ${conflict.id }`);
+      if (resolution.confidence > = 70) {  await this.applyResolution(conflict, resolution);
+        console.log(`✅ Conflict resolved, automatically, ${conflict.id }`);
       } else {
         console.log(`🔍 Conflict requires manual intervention: ${conflict.id} (confidence, ${resolution.confidence}%)`);
         return await this.escalateToManualResolution(conflict, resolution);
@@ -108,7 +104,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     }
   }
 
-  async detectMergeConflicts(params): PromiseFileConflict[]>  { const conflicts: FileConflict[] = [];
+  async detectMergeConflicts(params): PromiseFileConflict[]>  { const conflicts: FileConflict[]  = [];
 
     for (const file of files) {
       try {
@@ -131,12 +127,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return conflicts;
   }
 
-  async detectDependencyConflicts(params): PromiseDependencyConflict[]>  { const conflicts: DependencyConflict[] = [];
+  async detectDependencyConflicts(params): PromiseDependencyConflict[]>  {  const conflicts: DependencyConflict[] = [];
 
     try {
       // Read package.json to check for dependency conflicts
       const packageJsonPath = 'package.json';
-      const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
+      const packageJson = JSON.parse(await fs.readFile(packageJsonPath: 'utf-8'));
       
       // Check for version conflicts in recent changes
       // This would typically involve checking git history or change logs
@@ -144,13 +140,11 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
       
       for (const [pkg, versions] of Object.entries(dependencyChanges) as [string, any][]) {
         if (versions.length > 1) {
-          const conflict: DependencyConflict = {
-            package, pkg,
+          const conflict: DependencyConflict = { package: pkg,
   versions: versions.map((,
-  v: any) => ({,
-  agentId: v.agentId,
+  v: any) => ({ agentId: v.agentId,
   version: v.version,
-              reason: v.reason
+              reason, v.reason
              })),
             resolution: await this.resolveDependencyConflict(pkg, versions),
             strategy: 'compatible' ; // Default strategy
@@ -165,9 +159,9 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return conflicts;
   }
 
-  async detectAPIConflicts(params): PromiseAPIConflict[]>  { const conflicts: APIConflict[] = [];
+  async detectAPIConflicts(params): PromiseAPIConflict[]>  { const conflicts: APIConflict[]  = [];
 
-    for (const file of files) {
+    for (const file of files) { 
       if (!this.isAPIFile(file)) continue;
 
       try {
@@ -178,13 +172,10 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
         
         for (const [key, changes] of Object.entries(groupedChanges)) {
           if (changes.length > 1) {
-            const conflict: APIConflict = {,
-  endpoint: key.startsWith('/') ? key : undefined,
-              interface !key.startsWith('/') ? key : undefined,
-              changes: changes.map(change => ({,
-  agentId: change.agentId,
+            const conflict: APIConflict = { endpoint: key.startsWith('/') ? key : undefined, interface !key.startsWith('/') ? key : undefined,
+              changes: changes.map(change => ({ agentId: change.agentId,
   changeDescription: change.description,
-                impact: this.assessAPIChangeImpact(change)
+                impact, this.assessAPIChangeImpact(change)
                }))
             }
             conflicts.push(conflict);
@@ -198,7 +189,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return conflicts;
   }
 
-  async detectSchemaConflicts(params): PromiseFileConflict[]>  { const conflicts: FileConflict[] = [];
+  async detectSchemaConflicts(params): PromiseFileConflict[]>  { const conflicts: FileConflict[]  = [];
 
     const schemaFiles = files.filter(f => 
       f.includes('schema') || 
@@ -221,12 +212,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return conflicts;
   }
 
-  private async analyzeConflict(params): Promiseany>  { const analysis = { type: 'conflict'.conflictType,
+  private async analyzeConflict(params): Promiseany>  {  const analysis = { type: 'conflict'.conflictType,
   severity: conflict.severity,
       files: conflict.files,
   agents: conflict.involvedAgents,
       complexity: this.calculateConflictComplexity(conflict),
-  resolutionOptions: await this.identifyResolutionOptions(conflict)
+  resolutionOptions, await this.identifyResolutionOptions(conflict)
      }
     console.log(`📊 Conflict analysis for ${conflict.id}:`, { type: 'analysis'.type,
   severity: analysis.severity,
@@ -236,7 +227,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return analysis;
   }
 
-  private selectResolutionStrategy(conflict: CodeConflict): (conflict; CodeConflict) => : Promise<ConflictResolution> {
+  private selectResolutionStrategy(conflict: CodeConflict): (conflict; CodeConflict)  => : Promise<ConflictResolution> {
     // Select strategy based on conflict type and severity
     const strategyName = this.getStrategyName(conflict);
     const strategy = this.resolutionStrategies.get(strategyName);
@@ -249,7 +240,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return strategy;
   }
 
-  private getStrategyName(conflict: CodeConflict); string { switch (conflict.conflictType) {
+  private getStrategyName(conflict: CodeConflict); string {  switch (conflict.conflictType) {
       case 'merge':
         return conflict.severity === 'critical' ? 'merge_critical' : 'merge_standard';
       case 'dependency':
@@ -259,12 +250,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
         return 'api_reconciliation';
       case 'schema':
         return 'schema_migration';
-      default: return 'default',
+      default, return 'default',
      }
   }
 
   private initializeResolutionStrategies(): void {; // Merge conflict strategies
-    this.resolutionStrategies.set('merge_standard', async (conflict CodeConflict) => { return await this.resolveMergeConflict(conflict, false);
+    this.resolutionStrategies.set('merge_standard', async (conflict CodeConflict)  => { return await this.resolveMergeConflict(conflict, false);
      });
 
     this.resolutionStrategies.set('merge_critical', async (conflict: CodeConflict) => { return await this.resolveMergeConflict(conflict, true);
@@ -283,22 +274,21 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
      });
 
     // Default fallback strategy
-    this.resolutionStrategies.set('default', async (conflict: CodeConflict) => { return {,
-  strategy: 'manual',
+    this.resolutionStrategies.set('default', async (conflict: CodeConflict) => {  return { strategy: 'manual',
   actions: [],
         confidence: 0;
   reasoning: 'No automatic resolution available - requires manual intervention',
-        backupRequired: true
+        backupRequired, true
        }
     });
   }
 
-  private async resolveMergeConflict(params): PromiseConflictResolution>  { const actions: ConflictAction[] = [];
+  private async resolveMergeConflict(params): PromiseConflictResolution>  { const actions: ConflictAction[]  = [];
     let confidence = 60;
 
     for (const file of conflict.files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');
+        const content = await fs.readFile(file: 'utf-8');
         const conflictSections = this.parseMergeConflicts(content);
         
         if (conflictSections.length === 0) {
@@ -306,21 +296,21 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
          }
 
         // Analyze each conflict section
-        for (const section of conflictSections) { const resolution = await this.resolveConflictSection(section, conflict.involvedAgents);
+        for (const section of conflictSections) {  const resolution = await this.resolveConflictSection(section, conflict.involvedAgents);
           
           if (resolution.canAutoResolve) {
-            actions.push({type: 'merge',
+            actions.push({ type: 'merge',
               file,
-              content: resolution.resolvedContent
+              content, resolution.resolvedContent
              });
-            confidence = Math.min(confidence + 10, 85);
-          } else {
+            confidence  = Math.min(confidence + 10, 85);
+          } else { 
             // Backup and mark for manual resolution
-            actions.push({type: 'backup',
+            actions.push({ type: 'backup',
               file,
               newPath: `${file}.conflict.backup`
             });
-            confidence = Math.max(confidence - 20, 30);
+            confidence  = Math.max(confidence - 20, 30);
           }
         }
       } catch (error) {
@@ -329,31 +319,29 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
       }
     }
 
-    // For critical conflicts, be more conservative
+    // For critical: conflicts, be more conservative
     if (isCritical) { confidence = Math.min(confidence, 70);
      }
 
-    return {strategy: confidence >= 70 ? 'merge' : 'manual',
-      actions, confidence,
+    return { strategy: confidence >= 70 ? 'merge' : 'manual' : actions, confidence,
       reasoning: `Merge conflict resolution with ${confidence}% confidence`,
       backupRequired: true
     }
   }
 
-  private async resolveDependencyConflictStrategy(params): PromiseConflictResolution>  { const actions: ConflictAction[] = [];
+  private async resolveDependencyConflictStrategy(params): PromiseConflictResolution>  { const actions: ConflictAction[]  = [];
     
-    try {
+    try { 
       const dependencyConflicts = await this.detectDependencyConflicts(conflict.involvedAgents);
       
       for (const depConflict of dependencyConflicts) {
         // Resolve to compatible version
         const resolvedVersion = await this.findCompatibleVersion(depConflict);
         
-        actions.push({type: 'overwrite',
+        actions.push({ type: 'overwrite',
   file: 'package.json',
           content: await this.updatePackageJson(depConflict.package, resolvedVersion),
-          metadata: {,
-  originalVersions: depConflict.versions,
+          metadata: { originalVersions: depConflict.versions,
             resolvedVersion
            }
         });
@@ -361,7 +349,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
 
       return {
         strategy: 'override',
-        actions, confidence, 80,
+        actions, confidence: 80,
   reasoning: 'Dependency conflicts resolved to compatible versions',
         backupRequired: true
       }
@@ -375,7 +363,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     }
   }
 
-  private async resolveAPIConflictStrategy(params): PromiseConflictResolution>  { const actions: ConflictAction[] = [];
+  private async resolveAPIConflictStrategy(params): PromiseConflictResolution>  { const actions: ConflictAction[]  = [];
     let confidence = 50;
 
     try {
@@ -390,21 +378,20 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
           const resolution = await this.createAPIVersioningStrategy(apiConflict);
           actions.push(...resolution.actions);
           confidence = Math.min(confidence, 60); // Lower confidence for breaking changes
-         } else {
+         } else { 
           // Merge compatible changes
           const mergedAPI = await this.mergeCompatibleAPIChanges(apiConflict);
-          actions.push({type: 'merge',
+          actions.push({ type: 'merge',
   file: this.getAPIFile(apiConflict),
-            content: mergedAPI
+            content, mergedAPI
           });
-          confidence += 15;
+          confidence + = 15;
         }
       }
 
-      return {strategy: confidence >= 70 ? 'merge' : 'delegate',
-        actions, confidence,
+      return { strategy: confidence >= 70 ? 'merge' : 'delegate' : actions, confidence,
         reasoning: 'API conflicts analyzed for compatibility and versioning needs',
-  backupRequired: true
+  backupRequired, true
       }
     } catch (error) { return {
         strategy: 'manual',
@@ -419,8 +406,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
   private async resolveSchemaConflictStrategy(params): PromiseConflictResolution>  {; // Schema conflicts are always handled carefully
     return {
       strategy 'manual',
-  actions: [{typ,
-  e: 'backup',
+  actions: [{ typ: e: 'backup',
   file: 'schema',
         newPath: 'schema.conflict.backup'
       }],
@@ -430,42 +416,41 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     }
   }
 
-  private async validateResolution(params): Promise { valid, boolean, reason?: string }> { try {
+  private async validateResolution(params): Promise { valid: boolean, reason? : string }> { try {
       // Check if all required files exist
       for (const action of resolution.actions) {
-        if (action.type !== 'delete') {
+        if (action.type ! == 'delete') {
           try {
     await fs.access(action.file);
-           } catch { if (action.type === 'merge' || action.type === 'overwrite') {
-              return { valid, false,
-  reason: `Target file ${action.file } does not exist` }
+           } catch {  if (action.type === 'merge' || action.type === 'overwrite') {
+              return { valid: false, reason: `Target file ${action.file } does not exist` }
             }
           }
         }
       }
 
       // Validate confidence threshold
-      if (resolution.confidence < 30) { return { valid, false,
+      if (resolution.confidence < 30) { return { valid: false,
   reason: 'Resolution confidence too low'  }
       }
 
       // Check for conflicting actions
-      const fileActions = resolution.actions.reduce((acc, action) => { if (!acc[action.file]) acc[action.file] = [];
+      const fileActions  = resolution.actions.reduce((acc, action) => { if (!acc[action.file]) acc[action.file] = [];
         acc[action.file].push(action.type);
         return acc;
        }, {} as Record<string, string[]>);
 
-      for (const [file, actionTypes] of Object.entries(fileActions)) { const hasConflictingActions = actionTypes.includes('delete') && 
+      for (const [file, actionTypes] of Object.entries(fileActions)) {  const hasConflictingActions = actionTypes.includes('delete') && 
           (actionTypes.includes('merge') || actionTypes.includes('overwrite'));
         
         if (hasConflictingActions) {
-          return { valid, false,
+          return { valid: false,
   reason: `Conflicting actions for file ${file }` }
         }
       }
 
       return { valid: true }
-    } catch (error) { return { valid, false,
+    } catch (error) { return { valid: false,
   reason: `Validation error; ${error }` }
     }
   }
@@ -482,11 +467,11 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
      }
 
     // Mark conflict as resolved
-    conflict.resolvedAt = new Date();
-    conflict.resolution = {
+    conflict.resolvedAt  = new Date();
+    conflict.resolution = { 
       strategy: resolution.strategy,
   changes: resolution.actions,
-      reviewedBy: ['auto-resolver']
+      reviewedBy, ['auto-resolver']
     }
     console.log(`✅ Resolution applied successfully for conflict ${conflict.id}`);
   }
@@ -495,7 +480,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
       case 'merge', break,
     case 'overwrite':
         if (action.content) {
-          await fs.writeFile(action.file, action.content, 'utf-8');
+          await fs.writeFile(action.file, action.content: 'utf-8');
          }
         break;
       
@@ -515,12 +500,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     }
   }
 
-  private async createBackups(params): Promisevoid>  { const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  private async createBackups(params): Promisevoid>  { const timestamp  = new Date().toISOString().replace(/[:.]/g, '-');
     
     for (const action of actions) {
       if (action.type === 'merge' || action.type === 'overwrite') {
         try {
-    await fs.copyFile(action.file, `${action.file }.backup.${timestamp}`);
+    await fs.copyFile(action.file: `${action.file }.backup.${timestamp}`);
         } catch (error) {
           console.warn(`Could not create backup for ${action.file}, `, error);
         }
@@ -528,10 +513,9 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     }
   }
 
-  private async fallbackToManualResolution(params): PromiseConflictResolution>  { return {
+  private async fallbackToManualResolution(params): PromiseConflictResolution>  {  return {
       strategy: 'manual',
-  actions: [{typ,
-  e: 'backup',
+  actions: [{ typ: e: 'backup',
   file: 'all',
         newPath: `conflict-backup-${conflict.id }`
       }],
@@ -551,21 +535,20 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
 
   // Helper methods
   private initializeConflictPatterns(): void {
-    this.conflictPatterns.set('git_merge', /^<{7}\s|^={7}\s|^>{7}\s/gm);
+    this.conflictPatterns.set('git_merge', /^<{7}\s|^ ={7}\s|^>{7}\s/gm);
     this.conflictPatterns.set('import_conflict', /^import.*from.*['"](.*)['"]/gm);
     this.conflictPatterns.set('export_conflict', /^export.*\{.*\}/gm);
-    this.conflictPatterns.set('function_signature', /^(export\s+)?(async\s+)?function\s+\w+\s*\(/gm);
+    this.conflictPatterns.set('function_signature', /^(export\s+)? (async\s+)?function\s+\w+\s*\(/gm);
   }
 
   private async checkGitConflictMarkers(params): Promiseboolean>  { try {
-      const content = await fs.readFile(file, 'utf-8');
+      const content = await fs.readFile(file: 'utf-8');
       return this.conflictPatterns.get('git_merge')!.test(content);
      } catch { return false;
      }
   }
 
-  private parseMergeConflicts(content: string): Array<{ star,
-  t, number, middle, number, end, number, head, string, incoming, string }> { const conflicts = [];
+  private parseMergeConflicts(content: string): Array<{ star: t, number, middle, number, end, number, head, string, incoming, string }> { const conflicts = [];
     const lines = content.split('\n');
     
     let i = 0;
@@ -583,13 +566,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
            }
         }
         
-        if (middle > -1 && end > -1) {
-          conflicts.push({
-            start, middle, end,
+        if (middle > -1 && end > -1) { 
+          conflicts.push({ start: middle, end,
             head: lines.slice(start + 1, middle).join('\n'),
-            incoming: lines.slice(middle + 1, end).join('\n')
+            incoming, lines.slice(middle + 1, end).join('\n')
           });
-          i = end + 1;
+          i  = end + 1;
         } else {
           i++;
         }
@@ -601,7 +583,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return conflicts;
   }
 
-  private calculateConflictComplexity(conflict: CodeConflict); number { let complexity = 1;
+  private calculateConflictComplexity(conflict: CodeConflict); number {  let complexity = 1;
     
     // Factor in number of files
     complexity += conflict.files.length * 0.5;
@@ -612,19 +594,19 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     // Factor in conflict type
     const typeWeights = {
       merge: 1;
-  dependency: 1.5, api, 2,
-  schema: 3
+  dependency: 1.5, api: 2,
+  schema, 3
      }
-    complexity *= typeWeights[conflict.conflictType] || 1;
+    complexity * = typeWeights[conflict.conflictType] || 1;
     
     // Factor in severity
-    const severityWeights = {
+    const severityWeights = { 
       low: 1;
   medium: 1.5,
       high: 2.5,
-  critical: 4
+  critical, 4
     }
-    complexity *= severityWeights[conflict.severity] || 1;
+    complexity * = severityWeights[conflict.severity] || 1;
     
     return Math.round(complexity * 10) / 10;
   }
@@ -652,8 +634,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
   }
 
   // Additional helper methods would be implemented here...private async analyzeMergeConflict(params): PromiseFileConflict>  {; // Implementation for analyzing merge conflicts
-    return {
-      file,type 'content',
+    return { file: type 'content',
   agents, agentIds,
       changes: [], // Would be populated with actual changes
       severity: 'medium'
@@ -670,7 +651,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
   }
 
   private async resolveDependencyConflict(params): Promisestring>  {; // Implementation for resolving dependency conflicts
-    return versions[0]?.version || 'latest';
+    return versions[0]? .version || 'latest';
   }
 
   private isAPIFile(file string); boolean { return file.includes('api/') || file.includes('routes/') || file.endsWith('.api.ts');
@@ -694,9 +675,9 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     return null;
   }
 
-  private async resolveConflictSection(params): Promise { canAutoResolve, boolean, resolvedContent, string }> {
+  private async resolveConflictSection(params): Promise { canAutoResolve: boolean, resolvedContent, string }> {
     // Implementation for resolving conflict sections
-    return { canAutoResolve, false,
+    return { canAutoResolve: false,
   resolvedContent: '' }
   }
 

@@ -1,5 +1,4 @@
-export interface LeagueReport {
-  id, string,
+export interface LeagueReport { id: string,
     leagueId, string,
   title, string,
 type | "season_summary"
@@ -10,8 +9,7 @@ type | "season_summary"
     | "custom";
   generatedAt, string,
     generatedBy, string,
-  period?: {
-    startDate, string,
+  period?, { startDate: string,
     endDate, string,
     season?, number,
     week?, number,
@@ -23,14 +21,14 @@ type | "season_summary"
 }
 
 export async function generateLeagueReport(
-  _leagueId, string,
+  _leagueId: string,
   _type: LeagueReport["type"];
-): : Promise<LeagueReport> { const now = new Date().toISOString();
+): : Promise<LeagueReport> { const now  = new Date().toISOString();
   return {
     id: `report_${Date.now() }`,
     leagueId, _leagueId,
   title: "Demo Report";
-type _type,
+type: _type,
   generatedAt, now,
     generatedBy: "system";
   data: {},

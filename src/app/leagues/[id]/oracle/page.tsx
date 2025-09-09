@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
 import { Brain, TrendingUp, Target } from "lucide-react";
 
-interface OraclePageProps {
-  params: Promise<{ id, string
+interface OraclePageProps { params: Promise<{ id, string
 }
 >;
 }
 
-type Insight = {
+type Insight  = { 
   id: string;
     title: string;
   description: string;
     action: string;
   priority: "low" | "medium" | "high";
 }
-export default function OraclePage({ params }: OraclePageProps) { const router = useRouter();
+export default function OraclePage({ params }: OraclePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [insights, setInsights] = useState<Insight[]>([]);
 
@@ -25,13 +24,13 @@ export default function OraclePage({ params }: OraclePageProps) { const router =
     params.then((resolved) => setLeagueId(resolved.id));
    }, [params]);
 
-  useEffect(() => {const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  useEffect(() => { const token = typeof window !== "undefined" ? localStorage.getItem("token")  : null;
     if (!token) {
       router.push("/auth/login");
      }
   }, [router]);
 
-  useEffect(() => { if (leagueId) {
+  useEffect(()  => {  if (leagueId) {
       setInsights([
         {
           id: "1",
@@ -52,7 +51,7 @@ export default function OraclePage({ params }: OraclePageProps) { const router =
   }, [leagueId]);
 
   if (!leagueId) { return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className ="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -60,7 +59,7 @@ export default function OraclePage({ params }: OraclePageProps) { const router =
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+      <div className="max-w-7xl mx-auto py-6 sm: px-6: l,
   g:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex items-center mb-6">
@@ -81,9 +80,9 @@ export default function OraclePage({ params }: OraclePageProps) { const router =
                   </p>
                   <div className="flex items-center">
                     <div className="w-full bg-gray-200 rounded-full h-2 mr-3">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: `78%` }} />
+                      <div className="bg-blue-600 h-2 rounded-full" style={ { width: `78%` }} />
                     </div>
-                    <span className="text-sm text-gray-600">78%</span>
+                    <span className ="text-sm text-gray-600">78%</span>
                   </div>
                 </div>
               </div>

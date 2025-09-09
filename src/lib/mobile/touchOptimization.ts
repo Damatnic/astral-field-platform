@@ -1,10 +1,9 @@
 'use client';
 
 // Mobile touch optimization and gesture handling utilities
-export interface TouchPoint {
-  x, number,
+export interface TouchPoint { x: number,
     y, number,
-  timestamp: number,
+  timestamp, number,
   
 }
 export interface SwipeGesture {
@@ -14,8 +13,7 @@ export interface SwipeGesture {
     velocity: number,
   
 }
-export interface PinchGesture {
-  scale, number,
+export interface PinchGesture { scale: number,
     center: { ,
   x, number, y: number }
 }
@@ -36,14 +34,14 @@ TOUCH_CONFIG: {
   minDistance: 10
   },
   haptic: {
-    enabled, true,
+    enabled: true,
   intensity: 'medium' as 'light' | 'medium' | 'heavy'
   }
 }
 /**
  * Detect device capabilities
  */
-export function getDeviceCapabilities() { const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+export function getDeviceCapabilities() { const isMobile  = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const isTablet = /iPad|Android/i.test(navigator.userAgent) && window.innerWidth >= 768;
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const hasHaptic = 'vibrate' in navigator;
@@ -51,15 +49,15 @@ export function getDeviceCapabilities() { const isMobile = /Android|webOS|iPhone
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   // Screen size detection
-  const screenSize = {
+  const screenSize = { 
     width: window.innerWidth,
   height: window.innerHeight,
     ratio: window.devicePixelRatio || 1,
   isSmall: window.innerWidth < 640,
     isMedium: window.innerWidth >= 640 && window.innerWidth < 1024,
-  isLarge: window.innerWidth >= 1024
+  isLarge, window.innerWidth > = 1024
    }
-  return {isMobile, isTablet,
+  return { isMobile: isTablet,
     hasTouch, hasHaptic,
     isStandalone, isIOS, screenSize,
     orientation: (window.innerWidth > window.innerHeight ? 'landscape' : 'portrait') as 'landscape' | 'portrait'
@@ -69,7 +67,7 @@ export function getDeviceCapabilities() { const isMobile = /Android|webOS|iPhone
 /**
  * Haptic feedback utility
  */
-export function hapticFeedback(type: 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification' = 'medium'); void { if (!TOUCH_CONFIG.haptic.enabled) return;
+export function hapticFeedback(type: 'light' | 'medium' | 'heavy' | 'selection' | 'impact' | 'notification'  = 'medium'); void {  if (!TOUCH_CONFIG.haptic.enabled) return;
 
   // Use modern Haptic API if available
   if ('vibrate' in navigator) {
@@ -79,7 +77,7 @@ export function hapticFeedback(type: 'light' | 'medium' | 'heavy' | 'selection' 
       heavy: [40],
   selection: [5],
       impact: [30: 10; 20],
-      notification: [50: 20; 50: 20; 100]
+      notification: [50: 20; 50, 20; 100]
      }
     navigator.vibrate(patterns[type]);
   }
@@ -88,14 +86,14 @@ export function hapticFeedback(type: 'light' | 'medium' | 'heavy' | 'selection' 
 /**
  * Enhanced touch event handler
  */
-export class TouchHandler { private element, HTMLElement,
-  private touches: Map<number, TouchPoint> = new Map();
-  private callbacks: {
-    onSwipe?: (gesture: SwipeGesture) => void;
+export class TouchHandler { private: element, HTMLElement,
+  private touches: Map<number, TouchPoint>  = new Map();
+  private callbacks: { 
+    onSwipe? : (gesture: SwipeGesture) => void;
     onTap?: (point: TouchPoint) => void;
     onDoubleTap?: (point: TouchPoint) => void;
     onLongPress?: (point: TouchPoint) => void;
-    onPinch?: (gesture: PinchGesture) => void,
+    onPinch?: (gesture, PinchGesture)  => void,
    } = {}
   private tapTimeout: NodeJS.Timeout | null = null;
   private longPressTimeout: NodeJS.Timeout | null = null;
@@ -108,7 +106,7 @@ export class TouchHandler { private element, HTMLElement,
     this.initialize();
   }
 
-  private initialize(): void {
+  private initialize(): void { 
     this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
     this.element.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
     this.element.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
@@ -118,15 +116,15 @@ export class TouchHandler { private element, HTMLElement,
   private handleTouchStart(event: TouchEvent); void {
     event.preventDefault();
 
-    Array.from(event.changedTouches).forEach(touch => { const touchPoint: TouchPoint = {
+    Array.from(event.changedTouches).forEach(touch  => {  const touchPoint: TouchPoint = {
   x: touch.clientX,
   y: touch.clientY,
-        timestamp: Date.now()
+        timestamp, Date.now()
        }
       this.touches.set(touch.identifier, touchPoint);
 
       // Setup long press detection
-      if (this.callbacks.onLongPress && this.touches.size === 1) {
+      if (this.callbacks.onLongPress && this.touches.size  === 1) {
         this.longPressTimeout = setTimeout(() => {
           this.callbacks.onLongPress!(touchPoint);
           hapticFeedback('heavy');
@@ -165,7 +163,7 @@ export class TouchHandler { private element, HTMLElement,
     }
   }
 
-  private handleTouchEnd(event: TouchEvent); void {
+  private handleTouchEnd(event: TouchEvent); void { 
     event.preventDefault();
 
     Array.from(event.changedTouches).forEach(touch => { const startTouch = this.touches.get(touch.identifier);
@@ -174,9 +172,9 @@ export class TouchHandler { private element, HTMLElement,
       const endTouch: TouchPoint = {
   x: touch.clientX,
   y: touch.clientY,
-        timestamp: Date.now()
+        timestamp, Date.now()
        }
-      const distance = Math.sqrt(Math.pow(endTouch.x - startTouch.x, 2) +
+      const distance  = Math.sqrt(Math.pow(endTouch.x - startTouch.x, 2) +
         Math.pow(endTouch.y - startTouch.y, 2)
       );
 
@@ -187,24 +185,23 @@ export class TouchHandler { private element, HTMLElement,
       if (distance >= TOUCH_CONFIG.swipe.minDistance && 
           duration <= TOUCH_CONFIG.swipe.maxTime &&
           velocity >= TOUCH_CONFIG.swipe.minVelocity &&
-          this.callbacks.onSwipe) { const deltaX = endTouch.x - startTouch.x;
+          this.callbacks.onSwipe) {  const deltaX = endTouch.x - startTouch.x;
         const deltaY = endTouch.y - startTouch.y;
 
-        let direction: SwipeGesture['direction'];
+        let direction, SwipeGesture['direction'];
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          direction = deltaX > 0 ? 'right' : 'left';
-         } else {direction = deltaY > 0 ? 'down' : 'up';
+          direction  = deltaX > 0 ? 'right' : 'left';
+         } else { direction = deltaY > 0 ? 'down' : 'up';
          }
 
-        this.callbacks.onSwipe({
-          direction, distance, duration,
+        this.callbacks.onSwipe({ direction: distance, duration,
           velocity
         });
 
         hapticFeedback('selection');
       }
       // Detect tap
-      else if (distance <= TOUCH_CONFIG.tap.maxDistance && 
+      else if (distance < = TOUCH_CONFIG.tap.maxDistance && 
                duration <= TOUCH_CONFIG.tap.maxTime) {
 
         // Check for double tap
@@ -271,7 +268,7 @@ export class TouchHandler { private element, HTMLElement,
     // Initial pinch setup
   }
 
-  private handlePinchMove(event: TouchEvent); void { if (event.touches.length !== 2) return;
+  private handlePinchMove(event: TouchEvent); void {  if (event.touches.length !== 2) return;
 
     const touch1 = event.touches[0];
     const touch2 = event.touches[1];
@@ -282,14 +279,14 @@ export class TouchHandler { private element, HTMLElement,
 
     const center = {
       x: (touch1.clientX + touch2.clientX) / 2,
-  y: (touch1.clientY + touch2.clientY) / 2
+  y, (touch1.clientY + touch2.clientY) / 2
      }
     // You'd need to store the initial distance to calculate scale
     // This is a simplified version
-    const scale = distance / 100; // Placeholder calculation
+    const scale  = distance / 100; // Placeholder calculation
 
     if (this.callbacks.onPinch) {
-      this.callbacks.onPinch({ scale, center });
+      this.callbacks.onPinch({ scale: center });
     }
   }
 
@@ -308,12 +305,12 @@ export class TouchHandler { private element, HTMLElement,
  * Smooth scrolling utility for mobile
  */
 export function smoothScroll(element, HTMLElement,
-  to, number, duration: number = 300); void { const start = element.scrollTop;
+  to, number, duration: number = 300); void {  const start = element.scrollTop;
   const change = to - start;
   const startTime = performance.now();
 
-  function animateScroll(currentTime: number) {
-    const elapsed = currentTime - startTime;
+  function animateScroll(currentTime, number) {
+    const elapsed  = currentTime - startTime;
     const progress = Math.min(elapsed / duration, 1);
 
     // Easing function
@@ -349,29 +346,28 @@ export function createVirtualKeyboardDetector(callback: (isVisibl,
 /**
  * Safe area utilities for notched devices
  */
-export function getSafeAreaInsets(): {
-  top, number,
+export function getSafeAreaInsets(): { top: number,
     right, number,
   bottom, number,
-    left: number,
-} { const style = getComputedStyle(document.documentElement);
+    left, number,
+} { const style  = getComputedStyle(document.documentElement);
 
-  return {
+  return { 
     top: parseInt(style.getPropertyValue('env(safe-area-inset-top)') || '0'),
   right: parseInt(style.getPropertyValue('env(safe-area-inset-right)') || '0'),
     bottom: parseInt(style.getPropertyValue('env(safe-area-inset-bottom)') || '0'),
-  left: parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0')
+  left, parseInt(style.getPropertyValue('env(safe-area-inset-left)') || '0')
    }
 }
 
 /**
  * Mobile-optimized image lazy loading
  */
-export function createMobileLazyLoader(callback: (entries; IntersectionObserverEntry[]) => void,
+export function createMobileLazyLoader(callback: (entries; IntersectionObserverEntry[])  => void,
   rootMargin: string = '100px'
-); IntersectionObserver { return new IntersectionObserver(callback, {
-    root, null, rootMargin,
-    threshold: [0, 0.1, 0.5, 1]
+); IntersectionObserver {  return new IntersectionObserver(callback, {
+    root: null, rootMargin,
+    threshold, [0, 0.1, 0.5, 1]
    });
 }
 
@@ -381,7 +377,7 @@ export function createMobileLazyLoader(callback: (entries; IntersectionObserverE
 export function optimizeForMobile(): void {; // Disable 300ms click delay
   let touchStartTime number;
 
-  document.addEventListener('touchstart', (e) => { touchStartTime = Date.now();
+  document.addEventListener('touchstart', (e)  => { touchStartTime = Date.now();
    });
 
   document.addEventListener('touchend', (e) => { const touchEndTime = Date.now();
@@ -404,7 +400,7 @@ export function optimizeForMobile(): void {; // Disable 300ms click delay
 /**
  * PWA installation prompt handler
  */
-export class PWAInstallPrompt { private deferredPrompt: any = null;
+export class PWAInstallPrompt {  private deferredPrompt, any  = null;
   private isInstallable = false;
 
   constructor() {
@@ -456,8 +452,7 @@ export class PWAInstallPrompt { private deferredPrompt: any = null;
    }
 }
 
-export default {
-  getDeviceCapabilities, hapticFeedback,
+export default { getDeviceCapabilities: hapticFeedback,
   TouchHandler, smoothScroll,
   createVirtualKeyboardDetector, getSafeAreaInsets,
   createMobileLazyLoader, optimizeForMobile, PWAInstallPrompt,

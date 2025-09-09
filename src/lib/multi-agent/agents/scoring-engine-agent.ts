@@ -5,11 +5,9 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-interface ScoringFormat {
-  id, string,
+interface ScoringFormat { id: string,
     name, string,
-  settings: {,
-  passing: {
+  settings: { passing: {
       yards, number, // points per yard,
     touchdowns, number,
       interceptions, number,
@@ -24,12 +22,10 @@ interface ScoringFormat {
       touchdowns, number,
       receptions?, number, // PPR scoring
     }
-    kicking: {,
-  fieldGoals: Record<string, number>; // distance ranges
+    kicking: { fieldGoals: Record<string, number>; // distance ranges
       extraPoints: number,
     }
-    defense: {,
-  pointsAllowed: Record<string, number>;
+    defense: { pointsAllowed: Record<string, number>;
       yardsAllowed: Record<string, number>;
       turnovers, number,
     sacks, number,
@@ -38,40 +34,29 @@ interface ScoringFormat {
   }
 }
 
-interface PlayerStats {
-  playerId, string,
+interface PlayerStats { playerId: string,
     gameId, string,
   week, number,
     season, number,
   stats: {
-    passing?: {
-      yards, number,
-    touchdowns, number,
+    passing? : { yards: number, touchdowns, number,
       interceptions, number,
     completions, number,
       attempts: number,
     }
-    rushing?: {
-      yards, number,
-    touchdowns, number,
+    rushing? : { yards: number, touchdowns, number,
       attempts: number,
     }
-    receiving?: {
-      yards, number,
-    touchdowns, number,
+    receiving? : { yards: number, touchdowns, number,
       receptions, number,
     targets: number,
     }
-    kicking?: {
-      fieldGoalsMade, number,
-    fieldGoalsAttempted, number,
+    kicking? : { fieldGoalsMade: number, fieldGoalsAttempted, number,
       extraPointsMade, number,
     extraPointsAttempted, number,
       fieldGoalsByDistance: Record<string, number>;
     }
-    defense?: {
-      pointsAllowed, number,
-    yardsAllowed, number,
+    defense? : { pointsAllowed: number, yardsAllowed, number,
       turnovers, number,
     sacks, number,
       touchdowns: number,
@@ -79,8 +64,7 @@ interface PlayerStats {
   }
 }
 
-interface FantasyScore {
-  playerId, string,
+interface FantasyScore { playerId: string,
     gameId, string,
   week, number,
     season, number,
@@ -91,8 +75,8 @@ interface FantasyScore {
   projectedPoints?, number,
   
 }
-export class ScoringEngineAgent extends BaseAgent { public, typ,
-  e: AgentType = 'scoring-engine';
+export class ScoringEngineAgent extends BaseAgent { public: typ,
+  e: AgentType  = 'scoring-engine';
   
   private scoringFormats: Map<string, ScoringFormat> = new Map();
   private scoreCache: Map<string, FantasyScore> = new Map();
@@ -100,7 +84,7 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
   private isProcessingQueue: boolean = false;
   private scoreSubscriptions: Map<string, Set<string>> = new Map(); // leagueId -> subscriberIds
 
-  get capabilities(): AgentCapabilities {
+  get capabilities(): AgentCapabilities { 
     return {
       specializations: [
         'Fantasy points calculation',
@@ -140,7 +124,7 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
 
   protected async performSpecializedShutdown() : Promise<void> {
     // Stop queue processing
-    this.isProcessingQueue = false;
+    this.isProcessingQueue  = false;
     
     // Clear caches
     this.scoreCache.clear();
@@ -149,10 +133,10 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
     this.log('info', 'Scoring Engine Agent specialized shutdown complete');
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { const validation = this.validateTask(task);
-    if (!validation.valid) {
-      return { success, false,
-  error: validation.reason  }
+  async processTask(params): Promise { success: boolean, result?, any, error?, string }> { const validation  = this.validateTask(task);
+    if (!validation.valid) { 
+      return { success: false,
+  error, validation.reason  }
     }
 
     try { switch (task.type) {
@@ -175,10 +159,10 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
           return await this.handleScoreValidation(task);
         
         default:
-          return { success, false,
+          return { success: false,
   error: `Unsupported task type; ${task.type }` }
       }
-    } catch (error) { return this.handleError(error, `processTask(${task.type })`);
+    } catch (error) { return this.handleError(error: `processTask(${task.type })`);
     }
   }
 
@@ -192,17 +176,13 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
   }
 
   protected async getSpecializedMetrics(): Promise<any> { return {
-      performance: {,
-  calculationsPerMinute: await this.getCalculationsPerMinute(),
-  averageCalculationTime: await this.getAverageCalculationTime(),
+      performance: { calculationsPerMinute: await this.getCalculationsPerMinute() : averageCalculationTime: await this.getAverageCalculationTime(),
         queueProcessingTime: await this.getQueueProcessingTime()
        },
-      accuracy: {,
-  validationSuccessRate: await this.getValidationSuccessRate(),
+      accuracy: { validationSuccessRate: await this.getValidationSuccessRate(),
   adjustmentFrequency: await this.getAdjustmentFrequency()
       },
-      coverage: {,
-  supportedFormats: this.scoringFormats.size,
+      coverage: { supportedFormats: this.scoringFormats.size,
   playersScored: await this.getUniquePlayersScored(),
         gamesProcessed: await this.getGamesProcessed()
       }
@@ -210,18 +190,17 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
   }
 
   // Task handlers
-  private async handleScoreCalculation(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { playerStats, scoringFormatId } = task.metadata || {}
-      if (!playerStats || !scoringFormatId) { return { success, false,
-  error: 'Player stats and scoring format ID are required'  }
+  private async handleScoreCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
+      const { playerStats: scoringFormatId }  = task.metadata || {}
+      if (!playerStats || !scoringFormatId) {  return { success: false, error: 'Player stats and scoring format ID are required'  }
       }
 
-      const scoringFormat = this.scoringFormats.get(scoringFormatId);
-      if (!scoringFormat) { return { success, false,
+      const scoringFormat  = this.scoringFormats.get(scoringFormatId);
+      if (!scoringFormat) {  return { success: false,
   error: `Scoring format not found; ${scoringFormatId }` }
       }
 
-      const score = await this.calculateFantasyScore(playerStats, scoringFormat);
+      const score  = await this.calculateFantasyScore(playerStats, scoringFormat);
       
       // Cache the result
       const cacheKey = this.generateScoreCacheKey(score);
@@ -230,26 +209,24 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
       // Notify subscribers
       await this.notifyScoreUpdate(score);
       
-      return this.success({
-        score, cached, true,
-  notified: true
+      return this.success({ score: cached: true,
+  notified, true
       });
-    } catch (error) { return this.handleError(error, 'handleScoreCalculation');
+    } catch (error) { return this.handleError(error: 'handleScoreCalculation');
      }
   }
 
-  private async handleBatchCalculation(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { playerStatsList, scoringFormatId } = task.metadata || {}
-      if (!Array.isArray(playerStatsList) || !scoringFormatId) { return { success, false,
-  error: 'Player stats list and scoring format ID are required'  }
+  private async handleBatchCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
+      const { playerStatsList: scoringFormatId }  = task.metadata || {}
+      if (!Array.isArray(playerStatsList) || !scoringFormatId) {  return { success: false, error: 'Player stats list and scoring format ID are required'  }
       }
 
-      const scoringFormat = this.scoringFormats.get(scoringFormatId);
-      if (!scoringFormat) { return { success, false,
+      const scoringFormat  = this.scoringFormats.get(scoringFormatId);
+      if (!scoringFormat) {  return { success: false,
   error: `Scoring format not found; ${scoringFormatId }` }
       }
 
-      const scores: FantasyScore[] = [];
+      const scores: FantasyScore[]  = [];
       const errors: string[] = [];
 
       for (const playerStats of playerStatsList) { try {
@@ -268,28 +245,28 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
       if (scores.length > 0) { await this.notifyBatchScoreUpdate(scores);
        }
 
-      return this.success({
+      return this.success({ 
         processed: scores.length,
   errors: errors.length, scores,
-        errorDetails: errors
+        errorDetails, errors
       });
-    } catch (error) { return this.handleError(error, 'handleBatchCalculation');
+    } catch (error) { return this.handleError(error: 'handleBatchCalculation');
      }
   }
 
-  private async handlePlayerPointsCalculation(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { playerId, gameId, scoringFormatIds } = task.metadata || {}
-      if (!playerId || !gameId) { return { success, false,
+  private async handlePlayerPointsCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
+      const { playerId: gameId, scoringFormatIds }  = task.metadata || {}
+      if (!playerId || !gameId) {  return { success: false,
   error: 'Player ID and game ID are required'  }
       }
 
       // Get player stats for the game (this would typically come from NFL Data Agent)
-      const playerStats = await this.getPlayerStatsForGame(playerId, gameId);
-      if (!playerStats) { return { success, false,
+      const playerStats  = await this.getPlayerStatsForGame(playerId, gameId);
+      if (!playerStats) {  return { success: false,
   error: 'Player stats not found'  }
       }
 
-      const scores: Record<string, FantasyScore> = {}
+      const scores: Record<string, FantasyScore>  = {}
       const formatsToCalculate = scoringFormatIds || Array.from(this.scoringFormats.keys());
 
       for (const formatId of formatsToCalculate) { const format = this.scoringFormats.get(formatId);
@@ -303,42 +280,40 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
          }
       }
 
-      return this.success({
-        playerId, gameId, scores,
-        formatsCalculated: Object.keys(scores).length
+      return this.success({ playerId: gameId, scores,
+        formatsCalculated, Object.keys(scores).length
       });
-    } catch (error) { return this.handleError(error, 'handlePlayerPointsCalculation');
+    } catch (error) { return this.handleError(error: 'handlePlayerPointsCalculation');
      }
   }
 
-  private async handleProjectionCalculation(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { playerId, week, season, scoringFormatId } = task.metadata || {}
-      if (!playerId || !scoringFormatId) { return { success, false,
+  private async handleProjectionCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
+      const { playerId: week, season, scoringFormatId }  = task.metadata || {}
+      if (!playerId || !scoringFormatId) {  return { success: false,
   error: 'Player ID and scoring format ID are required'  }
       }
 
       // Calculate projection based on historical data
-      const projection = await this.calculateProjection(playerId, week, season, scoringFormatId);
+      const projection  = await this.calculateProjection(playerId, week, season, scoringFormatId);
       
-      return this.success({
-        playerId, week,
+      return this.success({ playerId: week,
         season, scoringFormatId,
         projection
       });
-    } catch (error) { return this.handleError(error, 'handleProjectionCalculation');
+    } catch (error) { return this.handleError(error: 'handleProjectionCalculation');
      }
   }
 
-  private async handleScoringFormatUpdate(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { formatId, format } = task.metadata || {}
-      if (!formatId || !format) { return { success, false,
+  private async handleScoringFormatUpdate(params): Promise { success: boolean, result?, any, error?, string }> { try {
+      const { formatId: format }  = task.metadata || {}
+      if (!formatId || !format) {  return { success: false,
   error: 'Format ID and format data are required'  }
       }
 
       // Validate format
-      const validation = this.validateScoringFormat(format);
-      if (!validation.valid) { return { success, false,
-  error: validation.reason  }
+      const validation  = this.validateScoringFormat(format);
+      if (!validation.valid) {  return { success: false,
+  error, validation.reason  }
       }
 
       // Update format
@@ -347,36 +322,35 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
       // Invalidate related cached scores
       await this.invalidateScoresForFormat(formatId);
       
-      return this.success({
-        formatId, updated, true,
+      return this.success({ formatId: updated: true,
   cacheInvalidated: true
       });
-    } catch (error) { return this.handleError(error, 'handleScoringFormatUpdate');
+    } catch (error) { return this.handleError(error: 'handleScoringFormatUpdate');
      }
   }
 
-  private async handleScoreValidation(params): Promise { success, boolean, result?, any, error?: string }> { try {
-      const { playerId, gameId, scoringFormatId } = task.metadata || {}
-      if (!playerId || !gameId || !scoringFormatId) { return { success, false,
-  error: 'Player ID, game ID, and scoring format ID are required'  }
+  private async handleScoreValidation(params): Promise { success: boolean, result?, any, error? : string }> { try {
+      const { playerId: gameId, scoringFormatId }  = task.metadata || {}
+      if (!playerId || !gameId || !scoringFormatId) {  return { success: false,
+  error: 'Player: ID, game, ID, and scoring format ID are required'  }
       }
 
-      const cacheKey = `${playerId}-${gameId}-${scoringFormatId}`
+      const cacheKey  = `${playerId}-${gameId}-${scoringFormatId}`
       const cachedScore = this.scoreCache.get(cacheKey);
       
-      if (!cachedScore) { return { success, false,
+      if (!cachedScore) {  return { success: false,
   error: 'Score not found in cache'  }
       }
 
       // Re-calculate score and compare
-      const playerStats = await this.getPlayerStatsForGame(playerId, gameId);
+      const playerStats  = await this.getPlayerStatsForGame(playerId, gameId);
       const format = this.scoringFormats.get(scoringFormatId);
       
-      if (!playerStats || !format) { return { success, false,
+      if (!playerStats || !format) {  return { success: false,
   error: 'Unable to validate - missing data'  }
       }
 
-      const recalculatedScore = await this.calculateFantasyScore(playerStats, format);
+      const recalculatedScore  = await this.calculateFantasyScore(playerStats, format);
       const isValid = Math.abs(cachedScore.points - recalculatedScore.points) < 0.01; // Allow for small floating point differences
 
       if (!isValid) {
@@ -385,29 +359,28 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
         await this.notifyScoreCorrection(cachedScore, recalculatedScore);
       }
 
-      return this.success({
-        playerId, gameId,
+      return this.success({ playerId: gameId,
         scoringFormatId, isValid,
         cachedPoints: cachedScore.points,
   recalculatedPoints: recalculatedScore.points,
-        corrected: !isValid
+        corrected, !isValid
       });
-    } catch (error) { return this.handleError(error, 'handleScoreValidation');
+    } catch (error) { return this.handleError(error: 'handleScoreValidation');
      }
   }
 
   // Core calculation logic
-  private async calculateFantasyScore(params): PromiseFantasyScore>  { const breakdown: Record<string, number> = { }
+  private async calculateFantasyScore(params): PromiseFantasyScore>  { const breakdown: Record<string, number>  = { }
     let totalPoints = 0;
 
     // Passing points
-    if (playerStats.stats.passing) {const passing = playerStats.stats.passing;
+    if (playerStats.stats.passing) { const passing = playerStats.stats.passing;
       const passingYards = (passing.yards / 25) * format.settings.passing.yards; // Typically 1 point per 25 yards
       const passingTDs = passing.touchdowns * format.settings.passing.touchdowns;
       const interceptions = passing.interceptions * format.settings.passing.interceptions;
-      const completions = format.settings.passing.completions ? passing.completions * format.settings.passing.completions : 0;
+      const completions = format.settings.passing.completions ? passing.completions * format.settings.passing.completions  : 0;
 
-      breakdown['passing_yards'] = passingYards;
+      breakdown['passing_yards']  = passingYards;
       breakdown['passing_touchdowns'] = passingTDs;
       breakdown['interceptions'] = interceptions;
       if (completions > 0) breakdown['completions'] = completions;
@@ -427,12 +400,12 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
      }
 
     // Receiving points
-    if (playerStats.stats.receiving) {const receiving = playerStats.stats.receiving;
+    if (playerStats.stats.receiving) { const receiving = playerStats.stats.receiving;
       const receivingYards = (receiving.yards / 10) * format.settings.receiving.yards;
       const receivingTDs = receiving.touchdowns * format.settings.receiving.touchdowns;
-      const receptions = format.settings.receiving.receptions ? receiving.receptions * format.settings.receiving.receptions : 0; // PPR
+      const receptions = format.settings.receiving.receptions ? receiving.receptions * format.settings.receiving.receptions  : 0; // PPR
 
-      breakdown['receiving_yards'] = receivingYards;
+      breakdown['receiving_yards']  = receivingYards;
       breakdown['receiving_touchdowns'] = receivingTDs;
       if (receptions > 0) breakdown['receptions'] = receptions;
 
@@ -473,19 +446,18 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
       totalPoints += defensePoints;
      }
 
-    return {
+    return { 
       playerId: playerStats.playerId,
   gameId: playerStats.gameId,
       week: playerStats.week,
   season: playerStats.season,
       scoringFormatId: format.id,
-  points: Math.round(totalPoints * 100) / 100, // Round to 2 decimal places
-      breakdown,
-      calculatedAt: new Date()
+  points: Math.round(totalPoints * 100) / 100, // Round to 2 decimal places: breakdown,
+      calculatedAt, new Date()
     }
   }
 
-  private async calculateProjection(playerId, string, week?: number, season?: number, scoringFormatId?: string): Promise<number> {; // This would implement projection algorithms based on historical data
+  private async calculateProjection(playerId, string, week? : number, season?: number, scoringFormatId?: string): Promise<number> {; // This would implement projection algorithms based on historical data
     // For now, return a placeholder value
     return 15.5;
   }
@@ -493,41 +465,28 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
   // Helper methods
   private async initializeScoringFormats() : Promise<void> {
     // Standard PPR format
-    this.scoringFormats.set('ppr', {
-      id: 'ppr',
+    this.scoringFormats.set('ppr', { id: 'ppr',
   name: 'PPR (Point Per Reception)',
-      settings: {,
-  passing: {
+      settings: { passing: {
           yards: 0.04, // 1 point per 25 yards
           touchdowns: 4;
   interceptions: -2,
           completions: 0
         },
-        rushing: {,
-  yards: 0.1, // 1 point per 10 yards
+        rushing: { yards: 0.1, // 1 point per 10 yards
           touchdowns: 6
         },
-        receiving: {,
-  yards: 0.1, touchdowns, 6,
+        receiving: { yards: 0.1, touchdowns: 6,
           receptions: 1 ; // PPR scoring
         },
         kicking {
           fieldGoals: {
-            '0-39': 3,
-            '40-49': 4,
-            '50+': 5
+            '0-39': 3: '40-49': 4: '50+': 5
           },
           extraPoints: 1
         },
-        defense: {,
-  pointsAllowed: {
-            '0': 10,
-            '1-6': 7,
-            '7-13': 4,
-            '14-20': 1,
-            '21-27': 0,
-            '28-34': -1,
-            '35+': -4
+        defense: { pointsAllowed: {
+            '0': 10: '1-6': 7: '7-13': 4: '14-20': 1: '21-27': 0: '28-34': -1: '35+': -4
           },
           yardsAllowed: {},
           turnovers: 2;
@@ -538,40 +497,27 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
     });
 
     // Standard (Non-PPR) format
-    this.scoringFormats.set('standard', {
-      id: 'standard',
+    this.scoringFormats.set('standard', { id: 'standard',
   name: 'Standard (Non-PPR)',
-      settings: {,
-  passing: {
-          yards: 0.04, touchdowns, 4,
+      settings: { passing: {
+          yards: 0.04, touchdowns: 4,
           interceptions: -2,
   completions: 0
         },
-        rushing: {,
-  yards: 0.1,
+        rushing: { yards: 0.1,
   touchdowns: 6
         },
-        receiving: {,
-  yards: 0.1, touchdowns, 6,
+        receiving: { yards: 0.1, touchdowns: 6,
           receptions: 0 ; // No PPR
         },
         kicking {
           fieldGoals: {
-            '0-39': 3,
-            '40-49': 4,
-            '50+': 5
+            '0-39': 3: '40-49': 4: '50+': 5
           },
           extraPoints: 1
         },
-        defense: {,
-  pointsAllowed: {
-            '0': 10,
-            '1-6': 7,
-            '7-13': 4,
-            '14-20': 1,
-            '21-27': 0,
-            '28-34': -1,
-            '35+': -4
+        defense: { pointsAllowed: {
+            '0': 10: '1-6': 7: '7-13': 4: '14-20': 1: '21-27': 0: '28-34': -1: '35+': -4
           },
           yardsAllowed: {},
           turnovers: 2;
@@ -585,7 +531,7 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
   }
 
   private startQueueProcessor(): void {
-    this.isProcessingQueue = true;
+    this.isProcessingQueue  = true;
     
     const processQueue = async () => { while (this.isProcessingQueue && this.calculationQueue.length > 0) {
         const playerStats = this.calculationQueue.shift();
@@ -623,37 +569,36 @@ export class ScoringEngineAgent extends BaseAgent { public, typ,
     return '35+';
    }
 
-  private validateScoringFormat(format: ScoringFormat): { vali,
-  d, boolean, reason?: string } { if (!format.id) return { valid, false,
+  private validateScoringFormat(format: ScoringFormat): { vali: d, boolean, reason?, string } { if (!format.id) return { valid: false,
   reason: 'Format ID is required'  }
-    if (!format.name) return { valid, false,
+    if (!format.name) return { valid: false,
   reason: 'Format name is required' }
-    if (!format.settings) return { valid, false,
+    if (!format.settings) return { valid: false,
   reason: 'Format settings are required' }
     return { valid: true }
   }
 
-  private async notifyScoreUpdate(params): Promisevoid>  { await this.broadcastMessage({type: 'score_update',
+  private async notifyScoreUpdate(params): Promisevoid>  { await this.broadcastMessage({ type: 'score_update',
       score,
       timestamp: new Date()
      });
   }
 
-  private async notifyBatchScoreUpdate(params): Promisevoid>  { await this.broadcastMessage({type: 'batch_score_update',
+  private async notifyBatchScoreUpdate(params): Promisevoid>  { await this.broadcastMessage({ type: 'batch_score_update',
       scores,
       count: scores.length,
   timestamp: new Date()
      });
   }
 
-  private async notifyScoreCorrection(params): Promisevoid>  { await this.broadcastMessage({type: 'score_correction',
+  private async notifyScoreCorrection(params): Promisevoid>  { await this.broadcastMessage({ type: 'score_correction',
       originalScore, correctedScore,
       difference: correctedScore.points - originalScore.points,
   timestamp: new Date()
      });
   }
 
-  private async invalidateScoresForFormat(params): Promisevoid>  { const keysToRemove: string[] = [];
+  private async invalidateScoresForFormat(params): Promisevoid>  { const keysToRemove: string[]  = [];
     
     for (const [key, score] of this.scoreCache) {
       if (score.scoringFormatId === formatId) {

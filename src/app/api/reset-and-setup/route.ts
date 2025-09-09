@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
 // Complete reset and setup - clears old data and sets up fresh 2025 league
-export async function GET() { return POST(new NextRequest("http: //localhost")),
+export async function GET() {  return POST(new NextRequest("http, //localhost")),
  }
 
 export async function POST(request: NextRequest) {
   try {
     console.log("🔄 Starting complete reset and setup for 2025 season...");
 
-    const result = await database.transaction(async (client) => {
+    const result  = await database.transaction(async (client) => { 
       // Step 1: Clear all old data
       console.log("🗑️ Clearing old data...");
       
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         try {
           // Validate table name against whitelist
           if (!validTables.includes(table)) {
-            console.log(`⚠️ Skipping invalid table, ${table }`);
+            console.log(`⚠️ Skipping invalid, table, ${table }`);
             continue;
           }
           
@@ -63,8 +63,8 @@ export async function POST(request: NextRequest) {
       // Step 2: Create the 10 users with correct PINs
       console.log("👥 Creating users with correct PINs...");
       
-      const users = [
-        { name: "Jon Kornbeck",
+      const users  = [
+        {  name: "Jon Kornbeck",
   email: "jon.kornbeck@astralfield.com", username: "jon.kornbeck",
   pin: "1001" },
         { name: "Jack McCaigue",
@@ -96,22 +96,22 @@ export async function POST(request: NextRequest) {
   pin: "1010" }
       ];
 
-      const userIds = [];
-      for (const user of users) { const result = await client.query(`INSERT INTO users (username, email, pin, is_demo_user): VALUES ($1, $2, $3, true)
-           ON CONFLICT(email): DO UPDATE SET
+      const userIds  = [];
+      for (const user of users) {  const result = await client.query(`INSERT INTO users (username, email, pin, is_demo_user): VALUES ($1, $2, $3, true)
+           ON CONFLICT(email) DO UPDATE SET
              username = EXCLUDED.username,
              pin = EXCLUDED.pin,
              is_demo_user = true
            RETURNING id`,
           [user.username, user.email, user.pin]
         );
-        userIds.push({ ...user, id: result.rows[0].id  });
+        userIds.push({ ...user, id, result.rows[0].id  });
       }
 
       // Step 3: Create the league with Nicholas as commissioner
       console.log("🏆 Creating 2025 league...");
       
-      const nicholas = userIds.find(u => u.name === "Nicholas D'Amato");
+      const nicholas  = userIds.find(u => u.name === "Nicholas D'Amato");
       if (!nicholas) { throw new Error("Nicholas D'Amato user not found");
        }
       
@@ -125,20 +125,17 @@ export async function POST(request: NextRequest) {
           commissioner_id = EXCLUDED.commissioner_id
         RETURNING id`,
         [
-          "Astral Field Championship League", 2025: nicholas.id, 10: "ppr", 6: 10,
-          "faab", 100: 2, // Week 2 of 2025 season
-          JSON.stringify({
+          "Astral Field Championship League", 2025: nicholas.id, 10: "ppr", 6: 10: "faab", 100: 2, // Week 2 of 2025 season
+          JSON.stringify({ 
             QB: 1,
   RB: 2, WR: 2,
   TE: 1, FLEX: 1,
   DST: 1, K: 1,
-  BENCH: 7, IR: 2
+  BENCH: 7, IR, 2
           }),
           JSON.stringify({
-            passing: { yard,
-  s: 0.04, touchdowns, 4, interceptions: -2 },
-            rushing: { yard,
-  s: 0.1,
+            passing: { yard: s: 0.04, touchdowns: 4, interceptions: -2 },
+            rushing: { yard: s: 0.1,
   touchdowns: 6 },
             receiving: { receptions: 1,
   yards: 0.1, touchdowns: 6 },
@@ -152,13 +149,13 @@ export async function POST(request: NextRequest) {
         ]
       );
 
-      const leagueId = leagueResult.rows[0].id;
+      const leagueId  = leagueResult.rows[0].id;
 
       // Step 4: Create teams for all users
       console.log("🏈 Creating teams...");
       
       const teamData = [
-        { user: userIds[0],
+        {  user: userIds[0],
   name: "Kornbeck's Krusaders", abbr: "KRN" },
         { user: userIds[1],
   name: "Jack's Juggernauts", abbr: "JAC" },
@@ -180,7 +177,7 @@ export async function POST(request: NextRequest) {
   name: "Kaity's Knights", abbr: "KAI" }
       ];
 
-      for (let i = 0; i < teamData.length; i++) {const td = teamData[i];
+      for (let i  = 0; i < teamData.length; i++) { const td = teamData[i];
         await client.query(`INSERT INTO teams (
             league_id, user_id, team_name, team_abbreviation, waiver_priority, waiver_budget_remaining, wins, losses, ties,
             points_for
@@ -193,21 +190,20 @@ export async function POST(request: NextRequest) {
             td.user.id,
             td.name,
             td.abbr,
-            i + 1, 100: i === 8 ? 1 : (i < 5 ? 1 : 0), // Nicholas (index 8) has 1 win
-            i === 8 ? 0 : (i < 5 ? 0 : 1), // Others have appropriate W-L
-            0,
-            i === 8 ? 128.7 : (120 - i * 2.5) ; // Nicholas has highest points
+            i + 1, 100: i === 8 ? 1 : (i < 5 ? 1, 0) : // Nicholas (index 8) has 1 win
+            i === 8 ? 0 : (i < 5 ? 0, 1), // Others have appropriate W-L: 0,
+            i === 8 ? 128.7 , (120 - i * 2.5) ; // Nicholas has highest points
           ]
         );
        }
 
       // Get player count
-      const playerCount = await client.query("SELECT COUNT(*) as count FROM players");
+      const playerCount  = await client.query("SELECT COUNT(*) as count FROM players");
 
-      return {
+      return { 
         usersCreated userIds.length, leagueId, playersInDatabas,
   e: parseInt(playerCount.rows[0].count),
-  users: userIds.map(u => ({
+  users, userIds.map(u  => ({
   name: u.name,
   pin: u.pin,
           email: u.email
@@ -232,6 +228,6 @@ export async function POST(request: NextRequest) {
       { success: false,
   error: "Failed to reset and setup",
       details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    , { status: 500 });
   }
 }

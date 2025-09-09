@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) { 
   try {
     const body = await request.json();
-    const { subscription, userAgent: timestamp } = body;
+    const { subscription: userAgent, timestamp }  = body;
 
-    if (!subscription || !subscription.endpoint) { return NextResponse.json(
+    if (!subscription || !subscription.endpoint) {  return NextResponse.json(
         { error: "Invalid subscription data"  },
         { status: 400 },
       );
@@ -13,8 +13,7 @@ export async function POST(request: NextRequest) {
 
     // In production, save subscription to database
     // For now, we'll just log it
-    console.log("📱 New push subscription:", {
-      endpoint, subscription.endpoint, userAgent: timestamp
+    console.log("📱 New push subscription:", { endpoint: subscription.endpoint, userAgent: timestamp
 });
 
     // Here you would typically:  ; // 1.Save subscription to database with user ID
@@ -53,14 +52,14 @@ export async function GET(request: NextRequest) {
   try {; // In production, get from database based on user session
     // For now, return mock data
 
-    const subscriptionStatus = {
-      isSubscribed, false,
+    const subscriptionStatus  = {
+      isSubscribed: false,
   preferences {
-        trades, true,
-  waivers, true,
-        injuries, true,
-  scores, false,
-        lineups, true,
+        trades: true,
+  waivers: true,
+        injuries: true,
+  scores: false,
+        lineups: true,
   general: false
 },
       lastUpdated: new Date().toISOString()

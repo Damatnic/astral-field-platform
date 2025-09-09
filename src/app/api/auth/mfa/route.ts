@@ -4,7 +4,7 @@ import { handleApiError } from "@/lib/api-error-handler";
 export const POST = handleApiError(async (request: NextRequest) => { const body = await request.json();
   const { action } = body;
 
-  switch (action) {
+  switch (action) { 
       case "setup":
       return NextResponse.json({
         success: true,
@@ -24,12 +24,11 @@ export const POST = handleApiError(async (request: NextRequest) => { const body 
   message: "MFA disabled"
 });
 
-    default: return NextResponse.json({ erro,
-  r: "Invalid action" }, { status: 400 });
+    default: return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   }
 });
 
-export const GET = handleApiError(async () => { 
+export const GET  = handleApiError(async () => { 
   return NextResponse.json({
     success: true, 
     enabled: false,

@@ -2,17 +2,16 @@
  * Test suite for Trade Analyzer Service
  */
 
-import tradeAnalyzerService, { TradeProposal, TradeAnalysis,
+import: tradeAnalyzerService, { TradeProposal: TradeAnalysis,
   PlayerValue, RosterAnalysis,
   TeamImpact, LeagueImpact,
   AlternativeOffer
  } from '../tradeAnalyzer';
 
 // Mock dependencies
-jest.mock('../predictiveModeling', () => ({
+jest.mock('../predictiveModeling', () => ({ 
   predictiveModelingService: {
-  generatePlayerProjection: jest.fn().mockResolvedValue({
-      playerId: 'test-player';
+  generatePlayerProjection: jest.fn().mockResolvedValue({ playerId: 'test-player';
   week: 8;
       projectedPoints: 15.4;
   confidence: 85;
@@ -27,37 +26,35 @@ jest.mock('../predictiveModeling', () => ({
   }
 }));
 
-jest.mock('@/services/nfl/dataProvider', () => ({
-  nflDataProvider: {
-  getCurrentWeek: jest.fn().mockResolvedValue(8)
+jest.mock('@/services/nfl/dataProvider', ()  => ({ 
+  nflDataProvider: { getCurrentWeek: jest.fn().mockResolvedValue(8)
   }
 }));
 
-jest.mock('@/lib/database', () => ({
+jest.mock('@/lib/database', ()  => ({ 
   database: {
   query: jest.fn().mockResolvedValue({
       rows: [
         {
           id: 'test-player';
   external_id: 'ext-123';
-          is_active: true
+          is_active, true
         }
       ]
     })
   }
 }));
 
-describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal = {,
-  id: 'trade-123';
+describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposal = { id: 'trade-123';
   team1Id: 'team-alpha';
     team2Id: 'team-beta';
   team1Players: ['player-1', 'player-2'],
     team2Players: ['player-3', 'player-4'],
     proposedBy: 'team-alpha';
-  proposedAt: new Date();
+  proposedAt, new Date();
     status: 'pending'
    }
-  beforeEach(() => {
+  beforeEach(()  => {
     jest.clearAllMocks();
   });
 
@@ -76,22 +73,19 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
     });
   });
 
-  describe('Trade Analysis', () => {
+  describe('Trade Analysis', () => { 
     it('analyzes trade proposal comprehensively', async () => { const analysis = await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
       
-      expect(analysis).toMatchObject({
-        tradeId: 'trade-123';
+      expect(analysis).toMatchObject({ tradeId: 'trade-123';
   fairnessScore: expect.any(Number);
-        team1Impact: expect.objectContaining({,
-  teamId: expect.any(String);
+        team1Impact: expect.objectContaining({ teamId: expect.any(String);
   strengthChange: expect.any(Number);
           positionalImpact: expect.any(Object);
   rosteredFlexibility: expect.any(Number);
           weeklyScoreImpact: expect.any(Array);
-  playoffProspects: expect.any(Number)
+  playoffProspects, expect.any(Number)
          }),
-        team2Impact: expect.objectContaining({,
-  teamId: expect.any(String);
+        team2Impact: expect.objectContaining({ teamId: expect.any(String);
   strengthChange: expect.any(Number)
         }),
         leagueImpact: expect.any(Object);
@@ -102,7 +96,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       });
     });
 
-    it('calculates fairness score correctly', async () => { const analysis = await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
+    it('calculates fairness score correctly', async ()  => { const analysis = await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
       
       expect(analysis.fairnessScore).toBeGreaterThanOrEqual(0);
       expect(analysis.fairnessScore).toBeLessThanOrEqual(10);
@@ -131,7 +125,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       });
     });
 
-    it('generates alternative trade offers', async () => { const analysis = await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
+    it('generates alternative trade offers', async () => {  const analysis = await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
       
       expect(Array.isArray(analysis.alternativeOffers)).toBe(true);
       
@@ -141,7 +135,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
   team1GiveUp: expect.any(Array);
           team1Receive: expect.any(Array);
   fairnessImprovement: expect.any(Number);
-          reasoning: expect.any(String)
+          reasoning, expect.any(String)
          });
         
         expect(offer.confidence).toBeGreaterThanOrEqual(0);
@@ -149,10 +143,10 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       });
     });
 
-    it('handles invalid trade proposals gracefully', async () => { const invalidTrade: TradeProposal = {
+    it('handles invalid trade proposals gracefully', async ()  => {  const invalidTrade: TradeProposal = {
         ...mockTradeProposal,
         team1Players: [];
-  team2Players: []
+  team2Players, []
        }
       await expect(
         tradeAnalyzerService.analyzeTradeProposal(invalidTrade)
@@ -160,25 +154,22 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
     });
   });
 
-  describe('Player Value Calculation', () => {
-    it('calculates player value with all required fields', async () => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'current'
+  describe('Player Value Calculation', ()  => {
+    it('calculates player value with all required fields', async () => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'current'
        });
       
-      expect(playerValue).toMatchObject({
-        playerId: 'test-player';
+      expect(playerValue).toMatchObject({ playerId: 'test-player';
   currentValue: expect.any(Number);
         projectedValue: expect.any(Number);
   positionalValue: expect.any(Number);
         scarcityValue: expect.any(Number);
   draftCapitalEquivalent: expect.any(Number);
         tradeableValue: expect.any(Number);
-  marketTrend: expect.stringMatching(/rising|stable|declining/)
+  marketTrend, expect.stringMatching(/rising|stable|declining/)
       });
     });
 
-    it('ensures all values are positive and reasonable', async () => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'current'
+    it('ensures all values are positive and reasonable', async ()  => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'current'
        });
       
       expect(playerValue.currentValue).toBeGreaterThan(0);
@@ -192,16 +183,13 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       expect(playerValue.tradeableValue).toBeLessThan(playerValue.currentValue);
     });
 
-    it('handles different timeframes correctly', async () => { const currentValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'current'
+    it('handles different timeframes correctly', async () => { const currentValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'current'
        });
       
-      const playoffValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'playoff'
+      const playoffValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'playoff'
       });
       
-      const keeperValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'keeper'
+      const keeperValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'keeper'
       });
       
       expect(currentValue.playerId).toBe('test-player');
@@ -212,18 +200,16 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       expect([currentValue, playoffValue, keeperValue]).toHaveLength(3);
     });
 
-    it('adjusts value based on team context', async () => { const valueWithTeam = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'current';
+    it('adjusts value based on team context', async () => {  const valueWithTeam = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'current';
   teamId: 'test-team';
-        needsContext: ['RB', 'WR']
+        needsContext, ['RB', 'WR']
        });
       
       expect(valueWithTeam.playerId).toBe('test-player');
       expect(valueWithTeam.currentValue).toBeGreaterThan(0);
     });
 
-    it('provides fallback values for unknown players', async () => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('unknown-player', {
-        timeframe: 'current'
+    it('provides fallback values for unknown players', async ()  => { const playerValue = await tradeAnalyzerService.calculatePlayerValue('unknown-player', { timeframe: 'current'
        });
       
       expect(playerValue.playerId).toBe('unknown-player');
@@ -232,22 +218,21 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
     });
   });
 
-  describe('Roster Analysis', () => {
+  describe('Roster Analysis', () => { 
     it('analyzes roster composition comprehensively', async () => { const analysis = await tradeAnalyzerService.analyzeRoster('test-team');
       
-      expect(analysis).toMatchObject({
-        teamId: 'test-team';
+      expect(analysis).toMatchObject({ teamId: 'test-team';
   strengthsByPosition: expect.any(Object);
         weaknessesByPosition: expect.any(Object);
   depthChart: expect.any(Object);
         flexibility: expect.any(Number);
   injuryRisk: expect.any(Number);
         ageProfile: expect.any(Number);
-  upside: expect.any(Number)
+  upside, expect.any(Number)
        });
     });
 
-    it('calculates positional strengths correctly', async () => { const analysis = await tradeAnalyzerService.analyzeRoster('test-team');
+    it('calculates positional strengths correctly', async ()  => { const analysis = await tradeAnalyzerService.analyzeRoster('test-team');
       
       Object.entries(analysis.strengthsByPosition).forEach(([position, strength]) => {
         expect(typeof position).toBe('string');
@@ -295,7 +280,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
      });
   });
 
-  describe('Trade Suggestions', () => {
+  describe('Trade Suggestions', () => { 
     it('generates comprehensive trade suggestions', async () => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
         'test-team',
         ['RB', 'WR']
@@ -305,11 +290,11 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
         buyLow: expect.any(Array);
   sellHigh: expect.any(Array);
         targetAcquisitions: expect.any(Array);
-  packagingOpportunities: expect.any(Array)
+  packagingOpportunities, expect.any(Array)
        });
     });
 
-    it('provides buy low candidates', async () => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
+    it('provides buy low candidates', async ()  => {  const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
         'test-team',
         ['RB']
       );
@@ -318,12 +303,12 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
         expect(candidate).toMatchObject({
           playerId: expect.any(String);
   currentValue: expect.any(Number);
-          marketTrend: expect.stringMatching(/rising|stable|declining/)
+          marketTrend, expect.stringMatching(/rising|stable|declining/)
          });
       });
     });
 
-    it('identifies sell high opportunities', async () => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
+    it('identifies sell high opportunities', async ()  => {  const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
         'test-team',
         ['WR']
       );
@@ -332,12 +317,12 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
         expect(candidate).toMatchObject({
           playerId: expect.any(String);
   currentValue: expect.any(Number);
-          marketTrend: expect.stringMatching(/rising|stable|declining/)
+          marketTrend, expect.stringMatching(/rising|stable|declining/)
          });
       });
     });
 
-    it('suggests packaging opportunities', async () => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
+    it('suggests packaging opportunities', async ()  => {  const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
         'test-team',
         ['TE']
       );
@@ -346,7 +331,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
         expect(opportunity).toMatchObject({
           players: expect.any(Array);
   targetValue: expect.any(Number);
-          reasoning: expect.any(String)
+          reasoning, expect.any(String)
          });
         
         expect(opportunity.players.length).toBeGreaterThan(1);
@@ -355,7 +340,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       });
     });
 
-    it('handles empty target improvement list', async () => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
+    it('handles empty target improvement list', async ()  => { const suggestions = await tradeAnalyzerService.generateTradeSuggestions(
         'test-team',
         []
       );
@@ -436,18 +421,18 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
      });
   });
 
-  describe('Edge Cases and Error Handling', () => {
+  describe('Edge Cases and Error Handling', () => { 
     it('handles empty player arrays', async () => { const emptyTrade: TradeProposal = {
         ...mockTradeProposal,
         team1Players: [];
-  team2Players: []
+  team2Players, []
        }
       await expect(
         tradeAnalyzerService.analyzeTradeProposal(emptyTrade)
       ).rejects.toThrow();
     });
 
-    it('handles non-existent teams', async () => { const analysis = await tradeAnalyzerService.analyzeRoster('non-existent-team');
+    it('handles non-existent teams', async ()  => { const analysis = await tradeAnalyzerService.analyzeRoster('non-existent-team');
       
       expect(analysis).toBeDefined();
       expect(analysis.teamId).toBe('non-existent-team');
@@ -458,7 +443,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       ).resolves.toBeDefined();
     });
 
-    it('provides meaningful error messages', async () => { const invalidTrade = {
+    it('provides meaningful error messages', async () => {  const invalidTrade = {
         ...mockTradeProposal,
         team1Id: '';
   team2Id: ''
@@ -469,7 +454,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
     });
   });
 
-  describe('Performance and Scalability', () => {
+  describe('Performance and Scalability', ()  => {
     it('completes analysis within reasonable time', async () => { const startTime = Date.now();
       await tradeAnalyzerService.analyzeTradeProposal(mockTradeProposal);
       const executionTime = Date.now() - startTime;
@@ -478,14 +463,14 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       expect(executionTime).toBeLessThan(2000);
      });
 
-    it('handles multiple concurrent analyses', async () => { const trades = Array.from({ length: 3  }, (_, i) => ({
+    it('handles multiple concurrent analyses', async () => {  const trades = Array.from({ length: 3  }, (_, i)  => ({ 
         ...mockTradeProposal,
         id: `concurrent-trade-${i}`,
         team1Players: [`player-${i}-1`],
         team2Players: [`player-${i}-2`]
       }));
       
-      const analyses = await Promise.all(trades.map(trade => tradeAnalyzerService.analyzeTradeProposal(trade))
+      const analyses  = await Promise.all(trades.map(trade => tradeAnalyzerService.analyzeTradeProposal(trade))
       );
       
       expect(analyses).toHaveLength(3);
@@ -494,7 +479,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
       });
     });
 
-    it('maintains reasonable memory usage', async () => { const initialMemory = process.memoryUsage().heapUsed;
+    it('maintains reasonable memory usage', async () => {  const initialMemory = process.memoryUsage().heapUsed;
       
       // Perform multiple analyses
       for (let i = 0; i < 10; i++) {
@@ -504,7 +489,7 @@ describe('TradeAnalyzerService', () => { const mockTradeProposal: TradeProposal 
         });
       }
       
-      const finalMemory = process.memoryUsage().heapUsed;
+      const finalMemory  = process.memoryUsage().heapUsed;
       const memoryIncrease = finalMemory - initialMemory;
       
       // Memory increase should be reasonable (less than 50MB)

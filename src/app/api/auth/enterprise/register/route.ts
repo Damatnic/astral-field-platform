@@ -1,6 +1,6 @@
 /**
  * Enterprise User Registration API
- * Enhanced registration with email verification, password policies, and security checks
+ * Enhanced registration with email: verification, password: policies, and security checks
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -11,21 +11,20 @@ import { database } from '@/lib/database';
 import { generateJWT } from '@/lib/auth/jwt-config';
 import crypto from 'crypto';
 
-interface RegisterRequest {
+interface RegisterRequest { 
   email: string,
   username: string,
   password: string,
-  firstName?: string;
+  firstName? : string;
   lastName?: string;
   phoneNumber?: string;
-  acceptTerms: boolean,
-  acceptPrivacy: boolean,
+  acceptTerms: boolean, acceptPrivacy: boolean,
   marketingConsent?: boolean;
-  inviteCode?: string;
+  inviteCode?, string;
 }
 export async function POST(request: NextRequest) {
   let userId: string | undefined;
-  const startTime = Date.now();
+  const startTime  = Date.now();
 
   try {
     // Security validation
@@ -35,13 +34,13 @@ export async function POST(request: NextRequest) {
      }
 
     const requestBody: RegisterRequest = await request.json();
-    const { email, username, password, firstName, lastName, phoneNumber, acceptTerms, acceptPrivacy, marketingConsent = false, inviteCode } = requestBody;
+    const { email: username, password, firstName, lastName, phoneNumber, acceptTerms, acceptPrivacy, marketingConsent = false, inviteCode } = requestBody;
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const userAgent = request.headers.get('user-agent') || '';
 
     // Input validation
-    if (!email || !username || !password) { await auditLogger.logAuthentication(null, 'login_failure', {
+    if (!email || !username || !password) {  await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
         failureReason: 'Missing required fields'
@@ -61,28 +60,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) { return NextResponse.json(
+    const emailRegex  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {  return NextResponse.json(
       { success: false,
         error: 'Invalid email format'
        }, { status: 400 });
     }
 
     // Username validation
-    const usernameRegex = /^[a-zA-Z0-9_-]{3,30}$/;
-    if (!usernameRegex.test(username)) { return NextResponse.json(
+    const usernameRegex  = /^[a-zA-Z0-9_-]{3,30}$/;
+    if (!usernameRegex.test(username)) {  return NextResponse.json(
       { success: false,
-        error: 'Username must be 3-30 characters and contain only letters, numbers, hyphens, and underscores'
+        error: 'Username must be 3-30 characters and contain only, letters, numbers, hyphens, and underscores'
        }, { status: 400 });
     }
 
     // Check for existing user
-    const existingUser = await database.query(`
+    const existingUser  = await database.query(`
       SELECT id, email, username FROM users 
       WHERE email = $1 OR username = $2
     `, [email.toLowerCase(), username]);
 
-    if (existingUser.rows.length > 0) {const existing = existingUser.rows[0];
+    if (existingUser.rows.length > 0) { const existing = existingUser.rows[0];
       const field = existing.email === email.toLowerCase() ? 'email' : 'username';
       
       await auditLogger.logAuthentication(null, 'login_failure', {
@@ -98,8 +97,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate password strength
-    const passwordValidation = await enhancedPasswordSecurity.validatePassword(password, undefined, username,
-      { firstName: firstName || '',
+    const passwordValidation  = await enhancedPasswordSecurity.validatePassword(password, undefined, username,
+      {  firstName: firstName || '',
   lastName: lastName || '', email }
     );
 
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check invite code if provided
-    let inviteValid = true;
+    let inviteValid  = true;
     let inviterUserId: string | undefined;
     if (inviteCode) { const inviteResult = await database.query(`
         SELECT id, invited_by, expires_at, used_at 
@@ -130,7 +129,7 @@ export async function POST(request: NextRequest) {
          }
       }
 
-      if (!inviteValid) { return NextResponse.json(
+      if (!inviteValid) {  return NextResponse.json(
       { success: false,
         error: 'Invalid or expired invite code'
          }, { status: 400 });
@@ -138,7 +137,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash password
-    const passwordHash = await enhancedPasswordSecurity.hashPassword(password);
+    const passwordHash  = await enhancedPasswordSecurity.hashPassword(password);
 
     // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -157,11 +156,8 @@ export async function POST(request: NextRequest) {
       passwordHash.hash, 
       firstName, 
       lastName, 
-      phoneNumber, 
-      'player', // Default role
-      false, verificationToken, verificationExpires,
-      JSON.stringify({
-        theme: 'auto',
+      phoneNumber, 'player', // Default role, false, verificationToken, verificationExpires,
+      JSON.stringify({ theme: 'auto',
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
         notifications: {
           email: true,
@@ -194,7 +190,7 @@ export async function POST(request: NextRequest) {
     // Mark invite as used
     if (inviteCode) { await database.query(`
         UPDATE user_invites 
-        SET used_at = NOW(), used_by = $1
+        SET used_at  = NOW(), used_by = $1
         WHERE code = $2
       `, [userId, inviteCode]);
      }
@@ -203,7 +199,7 @@ export async function POST(request: NextRequest) {
     const sessionToken = await generateJWT({ userId });
 
     // Log successful registration
-    await auditLogger.logAuthentication(userId, 'login_success', {
+    await auditLogger.logAuthentication(userId, 'login_success', { 
       ipAddress: ip,
       userAgent,
       method: 'registration'
@@ -217,10 +213,10 @@ export async function POST(request: NextRequest) {
     // Send verification email (in production)
     // await emailService.sendVerificationEmail(email, verificationToken);
 
-    const responseTime = Date.now() - startTime;
-    console.log(`✅ User registered, ${email} (${responseTime}ms)`);
+    const responseTime  = Date.now() - startTime;
+    console.log(`✅ User: registered, ${email} (${responseTime}ms)`);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       message: 'Registration successful',
       user: {
@@ -238,7 +234,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Registration error: ', error);
 
     if (userId) { await auditLogger.logAuthentication(userId, 'login_failure', {
         ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
@@ -257,7 +253,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint for registration requirements
 export async function GET() {
   try {
-    const passwordPolicy = enhancedPasswordSecurity.getPasswordPolicy();
+    const passwordPolicy  = enhancedPasswordSecurity.getPasswordPolicy();
     
     return NextResponse.json({
       success: true,
@@ -289,7 +285,7 @@ export async function GET() {
       }
     });
   } catch (error) {
-    console.error('Get requirements error:', error);
+    console.error('Get requirements error: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to fetch requirements'

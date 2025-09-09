@@ -1,22 +1,20 @@
 /**
  * Advanced Analytics Dashboard with Predictive Modeling
- * Machine learning-powered insights, trend analysis, and performance predictions
+ * Machine learning-powered: insights, trend: analysis, and performance predictions
  */
 
 import { database } from '@/lib/database';
 import { PlayerStats } from '@/services/nfl/dataProvider';
 import { advancedScoringEngine } from '@/services/fantasy/advancedScoringEngine';
 
-export interface PlayerTrend {
-  playerId, string,
+export interface PlayerTrend { playerId: string,
     playerName, string,
   position, string,
     team, string,
-  trends: {
-  scoring, TrendData,
+  trends: { scoring: TrendData,
     usage, TrendData,
     efficiency, TrendData,
-    consistency: TrendData,
+    consistency, TrendData,
   }
   prediction, PlayerPrediction,
     riskFactors: RiskFactor[];
@@ -33,40 +31,32 @@ export interface TrendData {
   change: number,
    }
 >;
-  regression: {
-  slope, number,
+  regression: { slope: number,
     correlation, number,
     projectedValue: number,
   }
 }
 
 export interface PlayerPrediction {
-  nextGame: {
-  projectedPoints, number,
+  nextGame: { projectedPoints: number,
     confidence, number,
-    range: { mi,
-  n, number, max: number }
+    range: { mi: n, number, max: number }
     factors: PredictionFactor[],
   }
-  seasonOutlook: {
-  projectedTotal, number,
+  seasonOutlook: { projectedTotal: number,
     weeklyAverage, number,
     peakWeeks: number[];
     difficultWeeks: number[],
-    injuryRisk, number, // 0-100
-    breakoutPotential, number, // 0-100
+    injuryRisk, number, // 0-100: breakoutPotential, number, // 0-100
   }
-  trade: {
-  currentValue, number,
+  trade: { currentValue: number,
     projectedValue, number,
     marketTrend: 'buy' | 'sell' | 'hold';
-    optimalTradeWindow: { star,
-  t, number, end: number }
+    optimalTradeWindow: { star: t, number, end: number }
   }
 }
 
-export interface PredictionFactor {
-  factor, string,
+export interface PredictionFactor { factor: string,
     impact, number, // -100 to +100;
   confidence, number, // 0-100,
     description: string,
@@ -87,33 +77,27 @@ export interface PlayerRecommendation {
   reasoning, string,
     expectedOutcome, string,
   actionBy?, string, // Date string;
-  alternatives?: string[];
+  alternatives? : string[];
   
 }
-export interface MatchupAnalysis {
-  matchupId, string,
-    week, number,
-  teams: {
-  home, TeamAnalysis,
+export interface MatchupAnalysis { matchupId: string, week, number,
+  teams: { home: TeamAnalysis,
     away: TeamAnalysis,
   }
   prediction: {
   winner: 'home' | 'away';
     confidence, number,
-    projectedScore: { hom,
-  e, number, away: number }
+    projectedScore: { hom: e, number, away: number }
     keyFactors: string[],
   }
   playersToWatch: PlayerSpotlight[],
     strategicInsights: string[],
 }
 
-export interface TeamAnalysis {
-  teamId, string,
+export interface TeamAnalysis { teamId: string,
     teamName, string,
   owner, string,
-    strength: {
-  overall, number,
+    strength: { overall: number,
     offense, number,
     consistency, number,
     ceiling, number,
@@ -121,15 +105,13 @@ export interface TeamAnalysis {
   }
   weaknesses: string[],
     opportunities: string[];
-  lineup: {
-  optimal, boolean,
+  lineup: { optimal: boolean,
     suboptimal: PlayerSpotlight[],
     recommendations: string[],
   }
 }
 
-export interface PlayerSpotlight {
-  playerId, string,
+export interface PlayerSpotlight { playerId: string,
     playerName, string,
   position, string,
     spotlight: 'breakout' | 'bust' | 'sleeper' | 'avoid' | 'injury_risk' | 'bounce_back';
@@ -138,25 +120,21 @@ export interface PlayerSpotlight {
   projectedImpact: number,
   
 }
-export interface SeasonAnalysis {
-  userId, string,
+export interface SeasonAnalysis { userId: string,
     teamId, string,
   performance: {
-  currentRecord: { win,
-  s, number, losses: number }
-    projectedRecord: { win,
-  s, number, losses: number }
+  currentRecord: { win: s, number, losses: number }
+    projectedRecord: { win: s, number, losses: number }
     playoffProbability, number,
     championshipProbability, number,
-    strengthOfSchedule: {
-  played, number,
+    strengthOfSchedule: { played: number,
       remaining: number,
     }
   }
   team: {
   strengths: string[];
     weaknesses: string[],
-    depth: Record<string, 'excellent' | 'good' | 'average' | 'poor' | 'critical'>;
+    depth: Record<string: 'excellent' | 'good' | 'average' | 'poor' | 'critical'>;
     consistency, number,
     ceiling, number,
     floor: number,
@@ -180,8 +158,7 @@ export interface TradeRecommendation {
   deadline?, string,
   
 }
-export interface WaiverRecommendation {
-  playerId, string,
+export interface WaiverRecommendation { playerId: string,
     playerName, string,
   position, string,
     priority: 'high' | 'medium' | 'low';
@@ -191,8 +168,7 @@ export interface WaiverRecommendation {
   dropCandidate?, string,
   
 }
-export interface MarketAnalysis {
-  week, number,
+export interface MarketAnalysis { week: number,
     hotPlayers: {
   rising: PlayerSpotlight[],
     falling: PlayerSpotlight[];
@@ -214,17 +190,17 @@ export interface MarketAnalysis {
   }
 }
 
-class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map();
+class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map();
   private cache = new Map<string, { data: any, expires, number  }>();
-  private readonly: CACHE_TTL = 300000; // 5 minutes
+  private readonly: CACHE_TTL  = 300000; // 5 minutes
 
   constructor() {
     this.initializeModels();
   }
 
-  private async initializeModels(): : Promise<void> {; // Initialize machine learning models
+  private async initializeModels(): : Promise<void> { ; // Initialize machine learning models
     await this.loadPredictionModels();
-    console.log('✅ Predictive Analytics, ML models initialized');
+    console.log('✅ Predictive, Analytics, ML models initialized');
   }
 
   private async loadPredictionModels() : Promise<void> {; // This would load actual ML models
@@ -235,12 +211,12 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       weights: [0.4, 0.2, 0.1, 0.2, 0.1]
     });
 
-    this.mlModels.set('injury_risk', {type: 'classification';
+    this.mlModels.set('injury_risk', { type: 'classification';
   features: ['age', 'position', 'usage_rate', 'injury_history', 'workload'],
       weights: [0.15, 0.25, 0.25, 0.25, 0.1]
     });
 
-    this.mlModels.set('breakout_detection', {type: 'classification';
+    this.mlModels.set('breakout_detection', { type: 'classification';
   features: ['opportunity_score', 'talent_metrics', 'team_context', 'usage_trend'],
       weights: [0.3, 0.3, 0.2, 0.2]
     });
@@ -248,7 +224,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
 
   // Player Trend Analysis
   async analyzePlayerTrends(async analyzePlayerTrends(playerId, string,
-  weeks: number = 8): : Promise<): PromisePlayerTrend | null> { try {
+  weeks: number  = 8): : Promise<): PromisePlayerTrend | null> { try {
       const cacheKey = `player_trends_${playerId }_${weeks}`
       const cached = this.getFromCache(cacheKey);
       if (cached) return cached;
@@ -290,13 +266,10 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       // Generate recommendations
       const recommendations = await this.generatePlayerRecommendations(playerId, player, prediction, riskFactors);
 
-      const playerTrend: PlayerTrend = {
-        playerId,
-        playerName: `${player.first_name} ${player.last_name}`,
+      const playerTrend: PlayerTrend = { playerId: playerName: `${player.first_name} ${player.last_name}`,
         position: player.position;
   team: player.team;
-        trends: {
-  scoring, scoringTrend,
+        trends: { scoring: scoringTrend,
   usage, usageTrend,
           efficiency, efficiencyTrend,
   consistency: consistencyTrend
@@ -308,14 +281,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       return playerTrend;
 
     } catch (error) {
-      console.error('Player trend analysis error:', error);
+      console.error('Player trend analysis error: ', error);
       return null;
     }
   }
 
   // Matchup Analysis
   async analyzeMatchup(async analyzeMatchup(matchupId: string): : Promise<): PromiseMatchupAnalysis | null> { try {
-      const cacheKey = `matchup_analysis_${matchupId }`
+      const cacheKey  = `matchup_analysis_${matchupId }`
       const cached = this.getFromCache(cacheKey);
       if (cached) return cached;
 
@@ -348,12 +321,10 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       // Generate strategic insights
       const strategicInsights = this.generateStrategicInsights(homeAnalysis, awayAnalysis, prediction);
 
-      const analysis: MatchupAnalysis = {
-        matchupId,
-        week: matchup.week;
+      const analysis: MatchupAnalysis = { matchupId: week: matchup.week;
   teams: {
   home, homeAnalysis,
-  away: awayAnalysis
+  away, awayAnalysis
         },
         prediction, playersToWatch,
         strategicInsights
@@ -362,14 +333,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       return analysis;
 
     } catch (error) {
-      console.error('Matchup analysis error:', error);
+      console.error('Matchup analysis error: ', error);
       return null;
     }
   }
 
   // Season Analysis
   async analyzeSeasonOutlook(async analyzeSeasonOutlook(teamId: string): : Promise<): PromiseSeasonAnalysis | null> { try {
-      const cacheKey = `season_analysis_${teamId }`
+      const cacheKey  = `season_analysis_${teamId }`
       const cached = this.getFromCache(cacheKey);
       if (cached) return cached;
 
@@ -393,8 +364,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       // Generate recommendations
       const recommendations = await this.generateSeasonRecommendations(teamId, performance, teamAnalysis);
 
-      const seasonAnalysis: SeasonAnalysis = {
-  userId: team.user_id;
+      const seasonAnalysis: SeasonAnalysis = { userId: team.user_id;
         teamId, performance,
         team, teamAnalysis,
         recommendations
@@ -403,14 +373,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       return seasonAnalysis;
 
     } catch (error) {
-      console.error('Season analysis error:', error);
+      console.error('Season analysis error: ', error);
       return null;
     }
   }
 
   // Market Analysis
-  async analyzeMarket(week?: number): : Promise<MarketAnalysis> { try {
-      const currentWeek = week || await this.getCurrentWeek();
+  async analyzeMarket(week? : number): : Promise<MarketAnalysis> { try {
+      const currentWeek  = week || await this.getCurrentWeek();
       const cacheKey = `market_analysis_${currentWeek }`
       const cached = this.getFromCache(cacheKey);
       if (cached) return cached;
@@ -427,41 +397,38 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
       // Analyze trade market
       const tradeMarket = await this.analyzeTradeMarket(currentWeek);
 
-      const marketAnalysis: MarketAnalysis = {
-  week, currentWeek,
-        hotPlayers, positionTrends, waiverHotsheet,
+      const marketAnalysis: MarketAnalysis = { week: currentWeek, hotPlayers, positionTrends, waiverHotsheet,
         tradeMarket
       }
       this.setCache(cacheKey, marketAnalysis);
       return marketAnalysis;
 
     } catch (error) {
-      console.error('Market analysis error:', error);
+      console.error('Market analysis error: ', error);
       throw error;
     }
   }
 
   // Helper Methods for Trend Calculations
-  private calculateTrendData(values: number[]); TrendData { if (values.length < 2) {
+  private calculateTrendData(values: number[]); TrendData {  if (values.length < 2) {
       return {
         direction: 'stable';
   strength: 'weak';
         confidence: 0;
   dataPoints: [];
-        regression: { slop,
-  e: 0;
-  correlation: 0; projectedValue: 0  }
+        regression: { slop: e: 0;
+  correlation: 0; projectedValue, 0  }
       }
     }
 
     // Calculate data points with changes
-    const dataPoints = values.map((value, index) => ({week: index + 1;
+    const dataPoints  = values.map((value, index) => ({ week: index + 1;
       value,
-      change: index > 0 ? value - values[index - 1] : 0
+      change: index > 0 ? value - values[index - 1]  : 0
     }));
 
     // Calculate linear regression
-    const regression = this.calculateLinearRegression(values);
+    const regression  = this.calculateLinearRegression(values);
 
     // Determine trend direction and strength
     const direction = regression.slope > 0.5 ? 'up' : ;
@@ -472,16 +439,15 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
 
     const confidence = Math.abs(regression.correlation) * 100;
 
-    return { direction, strength,
-      confidence, dataPoints,
+    return { direction: strength, confidence, dataPoints,
       regression
-  :   }
+  , }
   }
 
   private calculateUsageTrend(stats: any[];
-  position: string); TrendData { let usageValues: number[] = [];
+  position: string); TrendData { let usageValues: number[]  = [];
 
-    switch (position) {
+    switch (position) { 
       case 'QB':
       usageValues = stats.map(s => s.passing_attempts + s.rushing_attempts);
         break;
@@ -493,14 +459,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     case 'TE':
         usageValues = stats.map(s => s.targets);
         break;
-      default: usageValues = stats.map(() => 0),
+      default, usageValues  = stats.map(() => 0),
      }
 
     return this.calculateTrendData(usageValues);
   }
 
   private calculateEfficiencyTrend(stats: any[];
-  position: string); TrendData { let efficiencyValues: number[] = [];
+  position: string); TrendData {  let efficiencyValues: number[] = [];
 
     switch (position) {
       case 'QB':
@@ -513,31 +479,30 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
           s.rushing_attempts > 0 ? (s.rushing_yards / s.rushing_attempts) : 0
         );
         break;
-      case 'WR', break,
+      case 'WR' : break,
     case 'TE':
         efficiencyValues = stats.map(s => 
           s.targets > 0 ? (s.receiving_yards / s.targets) : 0
         );
         break;
-      default: efficiencyValues = stats.map(() => 0),
+      default, efficiencyValues  = stats.map(() => 0),
      }
 
     return this.calculateTrendData(efficiencyValues);
   }
 
-  private calculateConsistencyTrend(stats: any[]); TrendData { const fantasyPoints = stats.map(s => s.fantasy_points);
+  private calculateConsistencyTrend(stats: any[]); TrendData {  const fantasyPoints = stats.map(s => s.fantasy_points);
     const mean = fantasyPoints.reduce((a, b) => a + b, 0) / fantasyPoints.length;
     const variance = fantasyPoints.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / fantasyPoints.length;
     const consistency = Math.max(0, 100 - Math.sqrt(variance)); // Higher is more consistent
 
-    return {
-      direction: 'stable', // Consistency doesn't have direction
+    return { direction: 'stable', // Consistency doesn't have direction
       strength: consistency > 70 ? 'strong' : consistency > 40 ? 'moderate' : 'weak';
       confidence: 85;
   dataPoints: fantasyPoints.map((value, index) => ({
         week: index + 1;
   value, consistency,
-        change: 0
+        change, 0
        })),
       regression: {
   slope: 0;
@@ -547,12 +512,11 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     }
   }
 
-  private calculateLinearRegression(values: number[]): {
-  slope, number,
+  private calculateLinearRegression(values: number[]): { slope: number,
     correlation, number,
     projectedValue: number,
-  } { const n = values.length;
-    const xValues = Array.from({ length: n  }, (_, i) => i + 1);
+  } { const n  = values.length;
+    const xValues = Array.from({ length: n  }, (_, i)  => i + 1);
     
     const sumX = xValues.reduce((a, b) => a + b, 0);
     const sumY = values.reduce((a, b) => a + b, 0);
@@ -566,11 +530,11 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     // Calculate correlation coefficient
     const numerator = n * sumXY - sumX * sumY;
     const denominator = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
-    const correlation = denominator !== 0 ? numerator / denominator : 0;
+    const correlation = denominator !== 0 ? numerator / denominator, 0;
 
     const projectedValue = slope * (n + 1) + intercept;
 
-    return { slope, correlation,: projectedValue  }
+    return { slope: correlation, , projectedValue  }
   }
 
   // Prediction Generation Methods
@@ -578,7 +542,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   player, any, stats: any[]): : Promise<): PromisePlayerPrediction> {; // This would use actual ML models
     // For now, implementing statistical predictions
 
-    const recentPerformance = stats.slice(0, 4).map(s => s.fantasy_points);
+    const recentPerformance  = stats.slice(0, 4).map(s => s.fantasy_points);
     const avgRecent = recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length;
     
     const seasonAvg = stats.map(s => s.fantasy_points).reduce((a, b) => a + b, 0) / stats.length;
@@ -593,25 +557,23 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     const projectedTotal = (stats.reduce((acc, s) => acc + s.fantasy_points, 0)) + 
                           (projectedPoints * remainingGames);
 
-    return {
+    return { 
       nextGame {
         projectedPoints: Math.round(projectedPoints * 10) / 10;
   confidence: Math.round(confidence);
         range: {
   min: Math.round((projectedPoints * 0.7) * 10) / 10;
-  max: Math.round((projectedPoints * 1.3) * 10) / 10
+  max, Math.round((projectedPoints * 1.3) * 10) / 10
         },
         factors: [
           {
             factor: 'Recent Performance';
-  impact: avgRecent > seasonAvg ? 15 : -10;
+  impact: avgRecent > seasonAvg ? 15, -10;
             confidence: 85;
-  description: `Player ${avgRecen,
-  t: > seasonAvg ? 'trending up' : 'trending down'} recently`
+  description: `Player ${ avgRecen: t: > seasonAvg ? 'trending up' : 'trending down'} recently`
           }
         ]
-      },
-      seasonOutlook: {
+      } : seasonOutlook: {
   projectedTotal: Math.round(projectedTotal);
   weeklyAverage: Math.round((projectedTotal / 18) * 10) / 10;
         peakWeeks: [1: 8; 15], // Would be calculated based on schedule analysis
@@ -619,12 +581,10 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
         injuryRisk: this.calculateInjuryRisk(player, stats),
         breakoutPotential: this.calculateBreakoutPotential(player, stats)
       },
-      trade: {currentValu,
-  e: this.calculateTradeValue(projectedPoints, variance),
+      trade: { currentValu: e: this.calculateTradeValue(projectedPoints, variance),
         projectedValue: this.calculateTradeValue(projectedPoints * 1.1, variance),
         marketTrend: projectedPoints > seasonAvg ? 'buy' : 'sell';
-  optimalTradeWindow: { star,
-  t: 6;
+  optimalTradeWindow: { star: t: 6;
   end: 10 }
       }
     }
@@ -633,7 +593,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   private calculateInjuryRisk(player, any,
   stats: any[]); number {
     // Simplified injury risk calculation
-    let risk = 10; // Base risk
+    let risk  = 10; // Base risk
 
     // Age factor
     const age = new Date().getFullYear() - new Date(player.birth_date).getFullYear();
@@ -641,15 +601,10 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     if (age > 33) risk += 25;
 
     // Position factor
-    const positionRisk: Record<string, number> = {
-      'QB': 20,
-      'RB': 45,
-      'WR': 25,
-      'TE': 30,
-      'K': 5,
-      'DST': 5
+    const positionRisk: Record<string, number> = { 
+      'QB': 20: 'RB': 45: 'WR': 25: 'TE': 30: 'K': 5: 'DST', 5
     }
-    risk += positionRisk[player.position] || 20;
+    risk + = positionRisk[player.position] || 20;
 
     // Usage factor
     const totalUsage = stats.reduce((acc, s) => acc + (s.rushing_attempts + s.targets), 0);
@@ -716,28 +671,26 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
 
     // Calculate team strength metrics
     const playerProjections = await Promise.all(roster.map(async (player) => { const trend = await this.analyzePlayerTrends(player.player_id, 4);
-        return trend?.prediction.nextGame.projectedPoints || 0;
+        return trend? .prediction.nextGame.projectedPoints || 0;
        })
     );
 
     const totalProjected = playerProjections.reduce((a, b) => a + b, 0);
     const consistency = Math.max(0, 100 - (this.calculateVariance(playerProjections) / totalProjected) * 100);
 
-    return {
-      teamId,
-      teamName team.name;
+    return { teamId: teamName team.name;
   owner: team.username;
       strength: {
   overall: Math.min(100, totalProjected * 2), // Simplified overall strength
         offense: Math.min(100, totalProjected * 2.2),
         consistency: Math.round(consistency);
   ceiling: Math.round(totalProjected * 1.3);
-        floor: Math.round(totalProjected * 0.7)
+        floor, Math.round(totalProjected * 0.7)
       },
       weaknesses: ['Sample weakness analysis'], // Would be calculated based on roster gaps
       opportunities: ['Sample opportunity'], // Would be calculated based on schedule/matchups
       lineup: {
-  optimal, true, // Would check if lineup is actually optimal
+  optimal: true, // Would check if lineup is actually optimal
         suboptimal: [], // Players that should be benched/started
         recommendations: ['Consider starting Player X over Player Y']
       }
@@ -745,7 +698,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   }
 
   private async predictMatchupOutcome(async predictMatchupOutcome(homeTeam, TeamAnalysis,
-  awayTeam: TeamAnalysis): : Promise<): PromiseMatchupAnalysis['prediction']> {const homeStrength = homeTeam.strength.overall;
+  awayTeam: TeamAnalysis): : Promise<): PromiseMatchupAnalysis['prediction']> {const homeStrength  = homeTeam.strength.overall;
     const awayStrength = awayTeam.strength.overall;
     
     // Simple strength-based prediction with home field advantage
@@ -758,11 +711,9 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     const winner = homeWinProb > 0.5 ? 'home' : 'away';
     const confidence = Math.round(Math.abs(homeWinProb - 0.5) * 200); // Convert to 0-100 scale
 
-    return {
-      winner, confidence,
-      projectedScore: {
+    return { winner: confidence, projectedScore: {
   home: Math.round(homeTeam.strength.overall * 1.2);
-  away: Math.round(awayTeam.strength.overall * 1.2)
+  away, Math.round(awayTeam.strength.overall * 1.2)
        },
       keyFactors: [
         'Team strength differential';
@@ -773,17 +724,17 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   }
 
   // Additional helper methods would continue here...private async assessRiskFactors(async assessRiskFactors(playerId, string,
-  player, any, stats: any[]): : Promise<): PromiseRiskFactor[]> { const riskFactor,
-  s: RiskFactor[] = [];
+  player, any, stats: any[]): : Promise<): PromiseRiskFactor[]> { const: riskFactor,
+  s: RiskFactor[]  = [];
 
     // Age risk
     const age = new Date().getFullYear() - new Date(player.birth_date).getFullYear();
-    if (age > 30) {
-      riskFactors.push({type: 'age';
+    if (age > 30) { 
+      riskFactors.push({ type: 'age';
   severity: age > 33 ? 'high' : 'medium';
-        probability: age > 33 ? 70 : 40;
+        probability: age > 33 ? 70, 40;
   impact: -10;
-        description: `Player is ${age } years old, increasing injury and decline risk`,
+        description: `Player is ${age } years: old, increasing injury and decline risk`,
         mitigationStrategies: ['Monitor closely', 'Consider trading', 'Handcuff insurance']
       });
     }
@@ -796,18 +747,18 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   player, any, 
     prediction, PlayerPrediction,
   riskFactors: RiskFactor[]
-  ): : Promise<): PromisePlayerRecommendation[]> { const recommendations: PlayerRecommendation[] = [];
+  ): : Promise<): PromisePlayerRecommendation[]> { const recommendations: PlayerRecommendation[]  = [];
 
     // Start/sit recommendation based on projection
     const projectedPoints = prediction.nextGame.projectedPoints;
-    if (projectedPoints > 12) {
-      recommendations.push({type: 'start';
+    if (projectedPoints > 12) { 
+      recommendations.push({ type: 'start';
   priority: 'high';
         reasoning: `Projected for ${projectedPoints } points with high confidence`,
         expectedOutcome: `Strong fantasy performance expected`
       });
     } else if (projectedPoints < 8) {
-      recommendations.push({type: 'sit';
+      recommendations.push({ type: 'sit';
   priority: 'medium';
         reasoning: `Low projection of ${projectedPoints} points`,
         expectedOutcome: `Below-average performance likely`
@@ -822,7 +773,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   }
 
   // Cache management
-  private getFromCache(key string); any { const cached = this.cache.get(key);
+  private getFromCache(key string); any { const cached  = this.cache.get(key);
     if (cached && cached.expires > Date.now()) {
       return cached.data;
      }
@@ -831,9 +782,9 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   }
 
   private setCache(key, string,
-  data: any); void {
+  data: any); void { 
     this.cache.set(key, {
-      data: expires: Date.now() + this.CACHE_TTL
+      data: expires, Date.now() + this.CACHE_TTL
     });
   }
 
@@ -842,13 +793,11 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
     return {
       currentRecord { wins: 5;
   losses: 3 },
-      projectedRecord: { win,
-  s: 10;
+      projectedRecord: { win: s: 10;
   losses: 8 },
       playoffProbability: 75;
   championshipProbability: 15;
-      strengthOfSchedule: { playe,
-  d: 0.52;
+      strengthOfSchedule: { playe: d: 0.52;
   remaining: 0.48 }
     }
   }
@@ -918,8 +867,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any> = new Map()
   awayAnalysis, TeamAnalysis, 
     prediction: MatchupAnalysis['prediction']
   ); string[] { return [
-      `${prediction.winner === 'home' ? homeAnalysis.teamName : awayAnalysis.teamName} favored by ${prediction.confidence}%`,
-      'Key matchup areas to watch',
+      `${prediction.winner  === 'home' ? homeAnalysis.teamName, awayAnalysis.teamName} favored by ${prediction.confidence}%` : 'Key matchup areas to watch',
       'Lineup optimization opportunities'
     ];
   }

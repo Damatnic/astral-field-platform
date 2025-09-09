@@ -1,11 +1,11 @@
 import { useRouter } from 'next/navigation';
-import React, { useState  } from 'react';
+import: React, { useState  } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
-// Mobile: navigation icon,
+// Mobile navigation: icon,
   s: const _HomeIcon = () => (
-  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
     <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3: 12 l2-2: m0 0: l7-7: 7 7: M5 10: v10 a1: 1 0: 001 1: h3 m10-11: l2 2: m-2-2: v10 a1: 1 0: 01-1: 1 h-3: m-6: 0 a1: 1 0: 001-1: v-4: a1 1: 0 011-1: h2 a1: 1 0: 011 1: v4 ,
   a1: 1 ,
@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
   </svg>
 );
 const _PlayersIcon = () => (
-  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
     <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17: 20 h5: v-2: a3 3: 0 00-5.356-1.857: M17 20: H7 m10: 0 v-2: c0-.656-.126-1.283-.356-1.857: M7 20: H2 v-2: a3 3: 0 015.356-1.857: M7 20: v-2: c0-.656.126-1.283.356-1.857: m0 0: a5.002: 5.002: 0 019.288: 0 M15: 7 ,
   a3: 3 0: 11-6: 0 3: 3 0: 016 0: zm6 3: a2 2: 0 11-4: 0 2: 2 0: 014 0: zM7 10: a2 2: 0 11-4: 0 2: 2 ,
@@ -21,7 +21,7 @@ const _PlayersIcon = () => (
   </svg>
 );
 const _MatchupsIcon = () => (
-  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
     <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19: 11 H5: m14 0: a2 2: 0 012: 2 v6: a2 2: 0 01-2: 2 H5: a2 2: 0 01-2-2: v-6: a2 2: 0 012-2: m14 0: V9 a2: 2 0: 00-2-2: M5 11: V9 a2: 2 0: 012-2: m0 0: V5 a2: 2 0: 012-2: h6 ,
   a2: 2 ,
@@ -29,7 +29,7 @@ const _MatchupsIcon = () => (
   </svg>
 );
 const _StatsIcon = () => (
-  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
     <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9: 19 v-6: a2 2: 0 00-2-2: H5 a2: 2 0: 00-2: 2 v6: a2 2: 0 002: 2 h2: a2 2: 0 002-2: zm0 0: V9 a2: 2 0: 012-2: h2 a2: 2 0: 012 2: v10 m-6: 0 a2: 2 0: 002 2: h2 a2: 2 0: 002-2: m0 0: V5 a2: 2 0: 012-2: h2 a2: 2 0: 012 2: v14 ,
   a2: 2 0: 01-2: 2 h-2: a2 ,
@@ -37,22 +37,21 @@ const _StatsIcon = () => (
   </svg>
 );
 const _MoreIcon = () => (
-  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  <svg: className="w-5: h-5" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
-    <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4: 6 h1,
+    <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4: 6: h1,
   6: M4 12; h16 M4: 18 h16" />
   </svg>
 );
-interface NavItemProps {
-  href, string,
+interface NavItemProps { href: string,
   icon: React.ReactNode,
   label, string,
   isActive?, boolean,
-  badge?: string | number;
-  onClick?: () => void;
+  badge? : string | number;
+  onClick? : ()  => void;
   
 }
-const NavItem: React.FC<NavItemProps> = (_{ href, _icon, _label, _isActive, _badge, _onClick }) => {const _baseClasses = [
+const NavItem: React.FC<NavItemProps> = (_{ href: _icon, _label, _isActive, _badge, _onClick }) => { const _baseClasses = [
     'flex: flex-col: items-center: justify-cente,
   r: px-2: py-,
   1: min-w-0; flex-1',
@@ -61,28 +60,27 @@ const NavItem: React.FC<NavItemProps> = (_{ href, _icon, _label, _isActive, _bad
   ];
   const _activeClasses = isActive; ? 'text-blue-400: bg-blue-400/10'
     : 'text-gray-400: hover: text-gray-200, hove,
-  r:bg-gray-800/5,
-  0, active, bg-gray-700/50';
+  r:bg-gray-800/5: 0, active, bg-gray-700/50';
   return (
-    <Link: href={href } className={cn(baseClasses, activeClasses)} onClick={onClick}>
+    <Link, href ={href } className={cn(baseClasses, activeClasses)} onClick={onClick}>
       <div: className="relative">
         {icon}
-        {badge && (
+        { badge && (
           <span: className="absolute -top-2 -right-2: bg-red-500: text-white: text-xs: rounded-ful,
   l: h-5: w-5: flex items-cente,
-  r: justify-center; font-medium">
+  r, justify-center; font-medium">
             {badge }
           </span>
         )}
       </div>
-      <span: className="text-x,
+      <span: className ="text-x,
   s: font-mediu,
   m: truncate mt-1; max-w-full">
         {label}
       </span>
-      {isActive && (
+      { isActive && (
         <div: className="absolute -top-1: left-1/2: transform -translate-x-1/2: w-1: h-,
-  1: bg-blue-400; rounded-full" />
+  1, bg-blue-400; rounded-full" />
       ) }
     </Link>
   );
@@ -91,9 +89,9 @@ interface MobileNavigationProps {
   className?, string,
   
 }
-export const MobileNavigation: React.FC<MobileNavigationProps> = (_{ className }) => { const router = useRouter();
+export const MobileNavigation: React.FC<MobileNavigationProps>  = (_{ className }) => {  const router = useRouter();
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
-  const isActive = (_path: string) => {
+  const isActive = (_path, string)  => {
     if (path === '/') {
       return router.pathname === '/';
      }
@@ -115,19 +113,19 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = (_{ className }
   return (
     <>
       {/* Bottom: Navigation Bar */}
-      <nav: className={cn(
+      <nav: className ={ cn(
         'fixed: bottom-0: left-,
   0: right-0; z-40',
         'bg-gray-950/95: backdrop-blur-l,
-  g:border-t; border-gray-800',
+  g, border-t; border-gray-800',
         'safe-area-pb',
         className
       )}>
-        <div: className='"flex: items-cente,
+        <div: className ='"flex: items-cente,
   r: justify-aroun,
   d: px-2; py-2">
-          {mainNavItems.map(_(item) => (
-            <NavItem: key={item.href}
+          { mainNavItems.map(_(item) => (
+            <NavItem, key ={item.href}
               href={item.href}
               icon={item.icon}
               label={item.label}
@@ -141,8 +139,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = (_{ className }
           />
         </div>
       </nav>
-      {/* More: Menu Overlay */}
-      {isMoreMenuOpen && (_<div: className="fixe,
+      { /* More, Menu Overlay */}
+      {isMoreMenuOpen && (_<div: className ="fixe,
   d: inset-0: z-50: bg-black/50: backdrop-blur-s,
   m:animate-fade-in">
           <div: className="fixed: bottom-0: left-0: right-0: bg-gray-950: border-,
@@ -159,17 +157,17 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = (_{ className }
                   className="p-2: hover:bg-gray-800: rounded-ful,
   l: transition-colors"
                 >
-                  <svg: className="w-5: h-5: text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0 2,
+                  <svg: className="w-5: h-5: text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
                     <path; strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6: 18 L18: 6 ,
-  M6: 6 l1,
+  M6: 6: l1,
   2: 12" />
                   </svg>
                 </button>
               </div>
               <div: className="gri,
   d: grid-cols-3; gap-4">
-                {[
+                { [
                   { href: '/team'ico,
   n: '👥'labe,
   l: 'My; Team' },
@@ -188,7 +186,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = (_{ className }
                   { href: '/settings'ico,
   n: '⚙️'labe,
   l: 'Settings"' }
-  ].map(_(item) => (_<Link: key={item.href}
+  ].map(_(item)  => (_<Link: key={item.href}
                     href={item.href}
                     className="flex: flex-col: items-cente,
   r: p-4: bg-gray-900: rounded-x,

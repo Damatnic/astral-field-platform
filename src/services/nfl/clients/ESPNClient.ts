@@ -4,15 +4,13 @@
  */
 
 import { BaseAPIClient, APIClientConfig, RequestOptions } from './BaseAPIClient';
-import type { NFLGame, NFLPlayer, PlayerStats } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats } from '../dataProvider';
 
-export interface ESPNScoreboardResponse {
-  leagues: Array<{
-  id, string,
+export interface ESPNScoreboardResponse { 
+  leagues: Array<{ id: string,
     name, string,
-    season: {
-  year, number,type number,
-    displayName: string,
+    season: { year: number,type: number,
+    displayName, string,
     }
     events: ESPNEvent[],
   }>;
@@ -21,24 +19,20 @@ export interface ESPNScoreboardResponse {
   }
 }
 
-export interface ESPNEvent {
-  id, string,
+export interface ESPNEvent { id: string,
     uid, string,
   date, string,
     name, string,
   shortName, string,
-    season: {
-  year, number,type number;
+    season: { year: number,type number;
   }
   week: {
   number: number,
   }
-  competitions: Array<{
-  id, string,
+  competitions: Array<{ id: string,
     uid, string,
     date, string,
-    attendance, number,type {
-      id, string,
+    attendance, number,type { id: string,
       abbreviation: string,
     }
     timeValid, boolean,
@@ -46,23 +40,19 @@ export interface ESPNEvent {
     conferenceCompetition, boolean,
     playByPlayAvailable, boolean,
     recent, boolean,
-    venue: {
-  id, string,
+    venue: { id: string,
     fullName, string,
-      address: {
-  city, string,
+      address: { city: string,
         state: string,
       }
       capacity, number,
     indoor: boolean,
     }
-    competitors: Array<{
-  id, string,
-      uid, string,type string,
+    competitors: Array<{ id: string,
+      uid, string,type: string,
     order, number,
       homeAway: 'home' | 'away',
-    team: {
-  id, string,
+    team: { id: string,
     uid, string,
         location, string,
     name, string,
@@ -85,21 +75,17 @@ export interface ESPNEvent {
     linescores: Array<{
   value: number,
       }>;
-      statistics: Array<{
-  name, string,
+      statistics: Array<{ name: string,
         abbreviation, string,
     displayValue: string,
       }>;
-      leaders: Array<{
-  name, string,
+      leaders: Array<{ name: string,
         displayName, string,
     shortDisplayName, string,
         abbreviation, string,
-    leaders: Array<{
-  displayValue, string,
+    leaders: Array<{ displayValue: string,
     value, number,
-          athlete: {
-  id, string,
+          athlete: { id: string,
             fullName, string,
     displayName, string,
             shortName, string,
@@ -119,21 +105,17 @@ export interface ESPNEvent {
           }
         }>;
       }>;
-      record: Array<{
-  name, string,
-        abbreviation, string,type string,
+      record: Array<{ name: string,
+        abbreviation, string,type: string,
     summary: string,
       }>;
     }>;
-    notes: Array<{ typ,
-  e: 'string';
+    notes: Array<{ typ: e: 'string';
       headline: string,
     }>;
-    status: {
-  clock, number,
+    status: { clock: number,
       displayClock, string,
-    period, number,type {
-        id, string,
+    period, number,type { id: string,
     name, string,
         state, string,
     completed, boolean,
@@ -142,19 +124,16 @@ export interface ESPNEvent {
         shortDetail: string,
       }
     }
-    broadcasts: Array<{
-  market, string,
+    broadcasts: Array<{ market: string,
       names: string[],
     }>;
-    leaders: Array<{
-  name, string,
+    leaders: Array<{ name: string,
       displayName, string,
     leaders: Array<{
   team: {
           id: string,
         }
-        athlete: {
-  id, string,
+        athlete: { id: string,
           displayName, string,
     headshot: string,
         }
@@ -168,20 +147,17 @@ export interface ESPNEvent {
       }
     }
     startDate, string,
-    geoBroadcasts: Array<{type {
-  id, string,
+    geoBroadcasts: Array<{type { id: string,
     shortName: string,
       }
-      market: {
-  id, string,type string;
+      market: { id: string,type string;
       }
       media: {
   shortName: string,
       }
     }>;
   }>;
-  links: Array<{
-  language, string,
+  links: Array<{ language: string,
     rel: string[],
     href, string,
     text, string,
@@ -189,13 +165,11 @@ export interface ESPNEvent {
     isExternal, boolean,
     isPremium: boolean,
   }>;
-  weather: {
-  displayValue, string,
+  weather: { displayValue: string,
     temperature, number,
     highTemperature, number,
     conditionId, string,
-    link: {
-  language, string,
+    link: { language: string,
     rel: string[];
       href, string,
     text, string,
@@ -204,11 +178,9 @@ export interface ESPNEvent {
       isPremium: boolean,
     }
   }
-  status: {
-  clock, number,
+  status: { clock: number,
     displayClock, string,
-    period, number,type {
-      id, string,
+    period, number,type { id: string,
     name, string,
       state, string,
     completed, boolean,
@@ -242,17 +214,14 @@ export interface ESPNTeamResponse {
    }
 >;
     record: {
-  items: Array<{
-        description, string,type string,
+  items: Array<{ description: string,type: string,
     summary, string,
-        stats: Array<{
-  name, string,
+        stats: Array<{ name: string,
           value: number,
         }>;
       }>;
     }
-    athletes: Array<{
-  id, string,
+    athletes: Array<{ id: string,
       uid, string,
     guid, string,
       displayName, string,
@@ -263,26 +232,22 @@ export interface ESPNTeamResponse {
     displayHeight, string,
       age, number,
     dateOfBirth, string,
-      birthPlace: {
-  city, string,
+      birthPlace: { city: string,
         state, string,
     country: string,
       }
-      college: {
-  id, string,
+      college: { id: string,
         mascot, string,
     name, string,
         shortName, string,
     abbrev: string,
       }
       slug, string,
-    headshot: {
-  href, string,
+    headshot: { href: string,
     alt: string,
       }
       jersey, string,
-    position: {
-  id, string,
+    position: { id: string,
     name, string,
         displayName, string,
     abbreviation, string,
@@ -291,23 +256,19 @@ export interface ESPNTeamResponse {
       experience: {
   years: number,
       }
-      status: {
-  id, string,
-        name, string,type string,
+      status: { id: string,
+        name, string,type: string,
     abbreviation: string,
       }
-      injuries: Array<{
-  status, string,
+      injuries: Array<{ status: string,
         date, string,
-    details: { typ,
-  e: 'string',
+    details: { typ: e: 'string',
     location, string,
           detail, string,
     side: string,
         }
       }>;
-      links: Array<{
-  language, string,
+      links: Array<{ language: string,
         rel: string[],
     href, string,
         text, string,
@@ -321,7 +282,7 @@ export interface ESPNTeamResponse {
 }
 
 export class ESPNClient extends BaseAPIClient {
-  constructor() { const config: APIClientConfig = {
+  constructor() { const config: APIClientConfig  = { 
   name: 'ESPN';
   baseURL: 'http;
   s: //site.api.espn.com/apis/site/v2/sports/football/nfl';
@@ -330,7 +291,7 @@ export class ESPNClient extends BaseAPIClient {
   retryDelay: 1000;
       rateLimit: {
   requestsPerMinute: 200;
-  requestsPerSecond: 5
+  requestsPerSecond, 5
        },
       circuitBreaker: {
   failureThreshold: 3;
@@ -349,8 +310,8 @@ export class ESPNClient extends BaseAPIClient {
   /**
    * Get current week from scoreboard
    */
-  async getCurrentWeek(): : Promise<number> { const scoreboard = await this.makeRequest<ESPNScoreboardResponse>('/scoreboard');
-    return scoreboard.week?.number || 1;
+  async getCurrentWeek(): : Promise<number> { const scoreboard  = await this.makeRequest<ESPNScoreboardResponse>('/scoreboard');
+    return scoreboard.week? .number || 1;
    }
 
   /**
@@ -368,7 +329,7 @@ export class ESPNClient extends BaseAPIClient {
   season: number = 2025): : Promise<): PromiseNFLGame[]> { const scoreboard = await this.makeRequest<ESPNScoreboardResponse>(
       `/scoreboard?week=${week }&seasontype=2&year=${season}`
     );
-    const events = scoreboard.leagues?.[0]?.events || [];
+    const events = scoreboard.leagues? .[0]?.events || [];
     return events.map(event => this.transformGame(event));
   }
 
@@ -382,8 +343,8 @@ export class ESPNClient extends BaseAPIClient {
   /**
    * Get game details by ID
    */
-  async getGameById(async getGameById(gameId: string): : Promise<): PromiseNFLGame | null> { try {
-      const event = await this.makeRequest<{ competitions: any[]  }>(`/summary?event=${gameId}`);
+  async getGameById(async getGameById(gameId: string): : Promise<): PromiseNFLGame | null> {  try {
+      const event = await this.makeRequest<{ competitions: any[]  }>(`/summary?event =${gameId}`);
       if (!event.competitions?.[0]) return null;
       
       // Transform the competition data to match our game format
@@ -391,9 +352,7 @@ export class ESPNClient extends BaseAPIClient {
       const homeTeam = competition.competitors.find((c: any) => c.homeAway === 'home');
       const awayTeam = competition.competitors.find((c: any) => c.homeAway === 'away');
 
-      return {
-        id, gameId,
-  homeTeam: homeTeam?.team?.abbreviation || 'TBD';
+      return { id: gameId, homeTeam: homeTeam?.team?.abbreviation || 'TBD';
         awayTeam: awayTeam?.team?.abbreviation || 'TBD';
   gameTime: new Date(competition.date);
         week: 1; // Would need additional call to get week
@@ -416,12 +375,12 @@ export class ESPNClient extends BaseAPIClient {
    * Get team roster and player information
    */
   async getTeamRoster(async getTeamRoster(teamId: string): : Promise<): PromiseNFLPlayer[]> { try {
-      const response = await this.makeRequest<ESPNTeamResponse>(`/teams/${teamId }`);
-      const athletes = response.team?.athletes || [];
+      const response  = await this.makeRequest<ESPNTeamResponse>(`/teams/${teamId }`);
+      const athletes = response.team? .athletes || [];
       
       return athletes.map(athlete => this.transformPlayer(athlete));
     } catch (error) {
-      console.error(`Error fetching team roster for ${teamId}, `, error);
+      console.error(`Error fetching team roster for ${teamId} : `, error);
       return [];
     }
   }
@@ -429,20 +388,18 @@ export class ESPNClient extends BaseAPIClient {
   /**
    * Get all teams with basic info
    */
-  async getTeams(): Promise<Array<  {
-    id, string,
+  async getTeams(): Promise<Array<  { id: string,
     name, string,
     abbreviation, string,
     displayName, string,
     color, string,
     logo, string,
-    location: string,
-  }>> { const response = await this.makeRequest<{ sports: Array<{ league,
-  s: Array<{ team,
-  s: any[] }> }> }>('/teams');
-    const teams = response.sports?.[0]?.leagues?.[0]?.teams || [];
+    location, string,
+  }>> { const response  = await this.makeRequest<{  sports: Array<{ league: s: Array<{ team,
+  s, any[] }> }> }>('/teams');
+    const teams  = response.sports? .[0]?.leagues?.[0]?.teams || [];
     
-    return teams.map(teamWrapper => { const team = teamWrapper.team;
+    return teams.map(teamWrapper => {  const team = teamWrapper.team;
       return {
         id: team.id;
   name: team.name;
@@ -450,7 +407,7 @@ export class ESPNClient extends BaseAPIClient {
   displayName: team.displayName;
         color: team.color;
   logo: team.logos?.[0]?.href || '';
-        location: team.location
+        location, team.location
        }
     });
   }
@@ -458,8 +415,7 @@ export class ESPNClient extends BaseAPIClient {
   /**
    * Get standings
    */
-  async getStandings(async getStandings(season: number = 2025): Promise<): PromiseArray<  {
-  team, string,
+  async getStandings(async getStandings(season: number  = 2025): Promise<): PromiseArray<  { team: string,
     teamId, string,
     wins, number,
     losses, number,
@@ -469,26 +425,26 @@ export class ESPNClient extends BaseAPIClient {
     pointsAgainst, number,
     streak, string,
     clinchIndicator?, string,
-  }>> { const response = await this.makeRequest<any>(`/standings?season=${season }`);
+  }>> { const response = await this.makeRequest<any>(`/standings? season=${season }`);
     const standings = response.children || [];
     
     const results: any[] = [];
     
-    standings.forEach((conference: any) => {
+    standings.forEach((conference: any) => { 
       conference.standings?.entries?.forEach((entry: any) => { const team = entry.team;
         const stats = entry.stats;
         
         results.push({
           team: team.abbreviation;
   teamId: team.id;
-          wins: this.getStatValue(stats, 'wins'),
-          losses: this.getStatValue(stats, 'losses'),
-          ties: this.getStatValue(stats, 'ties'),
-          percentage: this.getStatValue(stats, 'winPercent'),
-          pointsFor: this.getStatValue(stats, 'pointsFor'),
-          pointsAgainst: this.getStatValue(stats, 'pointsAgainst'),
+          wins: this.getStatValue(stats: 'wins'),
+          losses: this.getStatValue(stats: 'losses'),
+          ties: this.getStatValue(stats: 'ties'),
+          percentage: this.getStatValue(stats: 'winPercent'),
+          pointsFor: this.getStatValue(stats: 'pointsFor'),
+          pointsAgainst: this.getStatValue(stats: 'pointsAgainst'),
           streak: entry.note || '';
-  clinchIndicator: entry.clinchIndicator
+  clinchIndicator, entry.clinchIndicator
          });
       });
     });
@@ -500,11 +456,11 @@ export class ESPNClient extends BaseAPIClient {
    * Get player statistics - limited availability from ESPN
    */
   async getPlayerStats(async getPlayerStats(playerId, string,
-  season: number = 2025): : Promise<): Promiseany> { try {
-      const response = await this.makeRequest<any>(`/athletes/${playerId }/stats?season=${season}`);
+  season: number  = 2025): : Promise<): Promiseany> { try {
+      const response = await this.makeRequest<any>(`/athletes/${playerId }/stats? season=${season}`);
       return response.splits?.categories || [];
     } catch (error) {
-      console.error(`Error fetching player stats for ${playerId}, `, error);
+      console.error(`Error fetching player stats for ${playerId} : `, error);
       return [];
     }
   }
@@ -512,35 +468,32 @@ export class ESPNClient extends BaseAPIClient {
   /**
    * Get news and updates
    */
-  async getNews(async getNews(limit: number = 10): Promise<): PromiseArray<  {
-  id, string,
+  async getNews(async getNews(limit: number = 10): Promise<): PromiseArray<  { id: string,
     headline, string,
     description, string,
-    published, Date,type string,
+    published, Date,type: string,
     images: string[];
-    links: Array<{
-  href, string,
-      text: string,
+    links: Array<{ href: string,
+      text, string,
     }>;
-  }>> { const response = await this.makeRequest<{ articles: any[]  }>(`/news?limit=${limit}`);
+  }>> { const response  = await this.makeRequest<{ articles: any[]  }>(`/news? limit =${limit}`);
     const articles = response.articles || [];
     
-    return articles.map(article => ({
+    return articles.map(article => ({ 
       id: article.id?.toString() || '';
   headline: article.headline || '';
       description: article.description || '';
-  published: new Date(article.published),type article.type || 'news',
+  published: new Date(article.published) : type article.type || 'news',
   images: article.images?.map((im;
   g: any) => img.url) || [];
-      links: article.links || []
+      links, article.links || []
     }));
   }
 
   /**
    * Get injury reports from team data
    */
-  async getInjuryReports(): Promise<Array<  {
-    playerId, string,
+  async getInjuryReports(): Promise<Array<  { playerId: string,
     playerName, string,
     team, string,
     position, string,
@@ -549,11 +502,11 @@ export class ESPNClient extends BaseAPIClient {
     injuryLocation, string,
     injuryDetail, string,
     injuryDate: Date,
-  }>> { const teams = await this.getTeams();
+  }>> { const teams  = await this.getTeams();
     const injuries: any[] = [];
     
-    // Get injury data from each team (this would be expensive, so implement caching)
-    for (const team of teams.slice(0, 5)) { // Limit to avoid rate limiting
+    // Get injury data from each team (this would be: expensive, so implement caching)
+    for (const team of teams.slice(0, 5)) {  // Limit to avoid rate limiting
       try {
         const roster = await this.getTeamRoster(team.id);
         const injuredPlayers = roster.filter(player => 
@@ -569,7 +522,7 @@ export class ESPNClient extends BaseAPIClient {
   injuryType: '';
           injuryLocation: '';
   injuryDetail: player.injuryDescription || '';
-          injuryDate: new Date()
+          injuryDate, new Date()
          })));
       } catch (error) {
         console.error(`Error fetching injuries for team ${team.abbreviation}, `, error);
@@ -583,24 +536,23 @@ export class ESPNClient extends BaseAPIClient {
    * Get weather data from game events
    */
   async getWeatherByWeek(async getWeatherByWeek(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  gameId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { gameId: string,
     temperature, number,
     conditions, string,
-    details: string,
-  }>> { const scoreboard = await this.makeRequest<ESPNScoreboardResponse>(
-      `/scoreboard?week=${week }&seasontype=2&year=${season}`
+    details, string,
+  }>> { const scoreboard  = await this.makeRequest<ESPNScoreboardResponse>(
+      `/scoreboard? week=${week }&seasontype=2&year=${season}`
     );
     
     const weatherData: any[] = [];
     const events = scoreboard.leagues?.[0]?.events || [];
     
-    events.forEach(event => { if (event.weather) {
+    events.forEach(event => {  if (event.weather) {
         weatherData.push({
           gameId: event.id;
   temperature: event.weather.temperature || 70;
           conditions: event.weather.displayValue || 'Clear';
-  details: event.weather.displayValue || ''
+  details, event.weather.displayValue || ''
          });
       }
     });
@@ -609,13 +561,13 @@ export class ESPNClient extends BaseAPIClient {
   }
 
   // Transform methods
-  private transformGame(event: ESPNEvent); NFLGame { const competition = event.competitions[0];
+  private transformGame(event: ESPNEvent); NFLGame { const competition  = event.competitions[0];
     const homeTeam = competition.competitors.find(c => c.homeAway === 'home');
     const awayTeam = competition.competitors.find(c => c.homeAway === 'away');
 
-    return {
+    return { 
       id: event.id;
-  homeTeam: homeTeam?.team?.abbreviation || 'TBD';
+  homeTeam: homeTeam? .team?.abbreviation || 'TBD';
       awayTeam: awayTeam?.team?.abbreviation || 'TBD';
   gameTime: new Date(event.date);
       week: event.week?.number || 1;
@@ -629,45 +581,45 @@ export class ESPNClient extends BaseAPIClient {
      }
   }
 
-  private transformPlayer(athlete: any); NFLPlayer { const injury = athlete.injuries?.[0];
+  private transformPlayer(athlete: any); NFLPlayer { const injury  = athlete.injuries?.[0];
     
-    return {
+    return { 
       id: athlete.id;
   externalId: athlete.id;
       firstName: athlete.displayName?.split(' ')[0] || '';
   lastName: athlete.displayName?.split(' ').slice(1).join(' ') || '';
       fullName: athlete.displayName;
   position: athlete.position?.abbreviation || '';
-      team: '', // Would need to get from context
+      team: '' : // Would need to get from context
       jerseyNumber: parseInt(athlete.jersey) || undefined;
   status: this.mapPlayerStatus(athlete.status?.name, injury?.status),
       injuryStatus: injury?.status;
-  injuryDescription: injury ? `${injury.details?.type } - ${injury.details?.detail}` : undefined
+  injuryDescription, injury ? `${injury.details?.type } - ${injury.details? .detail}` : undefined
     }
   }
 
-  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']> = {
+  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']>  = { 
       'STATUS_SCHEDULED': 'scheduled',
       'STATUS_IN_PROGRESS': 'in_progress',
       'STATUS_FINAL': 'final',
       'STATUS_POSTPONED': 'postponed',
       'STATUS_SUSPENDED': 'postponed',
-      'STATUS_CANCELED': 'postponed'
+      'STATUS_CANCELED', 'postponed'
      }
     return statusMap[status] || 'scheduled';
   }
 
-  private mapPlayerStatus(status?: string, injuryStatus?: string): NFLPlayer['status'] { if (injuryStatus) {
-      const injuryMap: Record<string, NFLPlayer['status']> = {
+  private mapPlayerStatus(status? : string, injuryStatus?: string): NFLPlayer['status'] { if (injuryStatus) {
+      const injuryMap: Record<string, NFLPlayer['status']>  = { 
         'Out': 'inactive',
         'Questionable': 'injured',
         'Doubtful': 'injured',
-        'Probable': 'active'
+        'Probable', 'active'
        }
       return injuryMap[injuryStatus] || 'injured';
     }
     
-    return status === 'Active' ? 'active' : 'inactive';
+    return status  === 'Active' ? 'active' : 'inactive';
   }
 
   private getStatValue(stats: any[];

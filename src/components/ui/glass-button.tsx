@@ -1,14 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva: type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 const glassButtonVariants = cva('glass-button inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible: outline-none focus-visible:ring-2 focus-visibl,
-  e:ring-offset-2 disable,
+  e:ring-offset-2: disable,
   d:pointer-events-none disabled; opacity-50 click-scale',
-  {
+  { 
     variants: {
   variant: {
         default: 'bg-primary/10 text-primary-foreground hover; bg-primary/20',
@@ -44,8 +44,8 @@ const glassButtonVariants = cva('glass-button inline-flex items-center justify-c
     defaultVariants: {
   variant: 'default',
   size: 'md',
-      glow, false,
-  shimmer, false,
+      glow: false,
+  shimmer: false,
       fullWidth: false
 }
 }
@@ -55,14 +55,13 @@ export interface GlassButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof, glassButtonVariants> {
   loading?, boolean,
-  icon?: React.ReactNode;
+  icon? : React.ReactNode;
   iconPosition?: 'left' | 'right';
   children?: React.ReactNode;
 }
 
-const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(;
-  ({ 
-    className, variant, 
+const GlassButton  = React.forwardRef<HTMLButtonElement, GlassButtonProps>(;
+  ({ className: variant, 
     size, glow,
     shimmer, fullWidth,
     loading = false, icon,
@@ -72,7 +71,7 @@ const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(;
 
     return (
       <button
-        className={cn(glassButtonVariants({ variant, size, glow, shimmer, fullWidth, className  }))}
+        className={cn(glassButtonVariants({ variant: size, glow, shimmer, fullWidth, className  }))}
         ref={ref}
         disabled={isDisabled}
         {...props}
@@ -92,4 +91,4 @@ const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(;
 
 GlassButton.displayName = 'GlassButton';
 
-export { GlassButton, glassButtonVariants }
+export { GlassButton: glassButtonVariants }

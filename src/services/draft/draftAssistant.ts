@@ -7,8 +7,7 @@ import { database } from '../../lib/database';
 import { webSocketManager } from '../../lib/websocket/server';
 import { aiPredictionEngine } from '../ai/predictionEngine';
 
-export interface DraftRecommendation {
-  playerId, string,
+export interface DraftRecommendation { playerId: string,
     playerName, string,
   position, string,
     team, string,
@@ -19,15 +18,13 @@ export interface DraftRecommendation {
   valueScore, number,
     riskLevel: 'low' | 'medium' | 'high';
   scarcityFactor, number,
-    leagueContext: {
-  positionScarcity, number,
+    leagueContext: { positionScarcity: number,
     teamNeeds, number,
-    replacementLevel: number,
+    replacementLevel, number,
   }
 }
 
-export interface DraftPick {
-  pickNumber, number,
+export interface DraftPick { pickNumber: number,
     round, number,
   teamId, string,
   playerId?, string,
@@ -36,8 +33,7 @@ export interface DraftPick {
   timestamp?, Date,
   
 }
-export interface DraftState {
-  leagueId, string,
+export interface DraftState { leagueId: string,
     currentPick, number,
   currentRound, number,
     totalRounds, number,
@@ -48,8 +44,7 @@ export interface DraftState {
   endTime?, Date,
   
 }
-export interface TeamNeeds {
-  teamId, string,
+export interface TeamNeeds { teamId: string,
     teamName, string,
   positionNeeds: Record<string, number>; // 0-10 scale;
   overallNeeds, number,
@@ -57,13 +52,11 @@ export interface TeamNeeds {
   targetPositions: string[],
   
 }
-export interface DraftAnalysis {
-  leagueId, string,
+export interface DraftAnalysis { leagueId: string,
     teamId, string,
   recommendations: DraftRecommendation[],
     teamNeeds, TeamNeeds,
-  draftStrategy: {
-  approach, string,
+  draftStrategy: { approach: string,
     keyTargets: string[],
     riskTolerance: 'conservative' | 'moderate' | 'aggressive';
     tradeValue: number,
@@ -75,7 +68,7 @@ export interface DraftAnalysis {
   }
 }
 
-class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
+class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
   private readonly: CACHE_TTL = 300000; // 5 minutes for draft data
 
   // Get AI-powered draft recommendations for a team
@@ -103,17 +96,16 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
       );
 
       // Cache results
-      const analysis: DraftAnalysis = {
-        leagueId, teamId,
+      const analysis: DraftAnalysis = { leagueId: teamId,
         recommendations, teamNeeds,
         draftStrategy: await this.generateDraftStrategy(teamNeeds, currentPick),
-        marketAnalysis: await this.analyzeMarketConditions(leagueId)
+        marketAnalysis, await this.analyzeMarketConditions(leagueId)
       }
       this.draftCache.set(cacheKey, analysis);
 
       return recommendations.slice(0, 10); // Top 10 recommendations
     } catch (error) {
-      console.error('Error generating draft recommendations:', error);
+      console.error('Error generating draft recommendations: ', error);
       return this.getFallbackRecommendations(teamId);
     }
   }
@@ -121,7 +113,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   // Analyze comprehensive team needs
   async analyzeTeamNeeds(async analyzeTeamNeeds(leagueId, string,
   teamId: string): : Promise<): PromiseTeamNeeds> { try {; // Get current roster
-      const roster = await this.getTeamRoster(teamId);
+      const roster  = await this.getTeamRoster(teamId);
 
       // Get league settings
       const leagueSettings = await this.getLeagueSettings(leagueId);
@@ -140,14 +132,12 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
       // Determine draft strategy
       const draftStrategy = this.determineDraftStrategy(positionNeeds, overallNeeds);
 
-      return {
-        teamId,
-        teamName await this.getTeamName(teamId);
+      return { teamId: teamName await this.getTeamName(teamId);
         positionNeeds, overallNeeds, draftStrategy,
         targetPositions
        }
     } catch (error) {
-      console.error('Error analyzing team needs:', error);
+      console.error('Error analyzing team needs: ', error);
       return this.getFallbackTeamNeeds(teamId);
     }
   }
@@ -158,7 +148,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   teamNeeds, TeamNeeds,
     currentPick, number,
   leagueId: string
-  ): : Promise<): PromiseDraftRecommendation[]> { const recommendations: DraftRecommendation[] = [];
+  ): : Promise<): PromiseDraftRecommendation[]> {  const recommendations: DraftRecommendation[] = [];
 
     for (const player of players) {
       try {
@@ -184,10 +174,9 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
         );
 
         // Calculate league context
-        const leagueContext = {
-          positionScarcity, scarcityFactor,
+        const leagueContext = { positionScarcity: scarcityFactor,
   teamNeeds: teamNeeds.positionNeeds[player.position] || 5;
-          replacementLevel: await this.getReplacementLevel(player.position)
+          replacementLevel, await this.getReplacementLevel(player.position)
          }
         recommendations.push({
           playerId: player.id;
@@ -207,7 +196,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
 
     // Sort by value score and return top recommendations
     return recommendations
-      .sort((a, b) => b.valueScore - a.valueScore)
+      .sort((a, b)  => b.valueScore - a.valueScore)
       .slice(0, 15);
   }
 
@@ -218,7 +207,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     teamNeeds, TeamNeeds,
   currentPick, number,
     leagueId: string
-  ): : Promise<): Promisenumber> {let score = 0;
+  ): : Promise<): Promisenumber> { let score = 0;
 
     // Base projection score (40% weight)
     const projectedPoints = prediction.projectedPoints || 0;
@@ -239,8 +228,8 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     score += ageValue * 10;
 
     // Injury risk adjustment (5% weight)
-    const injuryRisk = player.injury_status === 'healthy' ? 0 : 0.3;
-    score -= injuryRisk * 5;
+    const injuryRisk = player.injury_status === 'healthy' ? 0  : 0.3;
+    score - = injuryRisk * 5;
 
     // Draft position adjustment (5% weight)
     const pickAdjustment = this.calculatePickAdjustment(currentPick, player.overall_rank || 999);
@@ -251,7 +240,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
 
   // Calculate position scarcity factor
   private async calculateScarcityFactor(async calculateScarcityFactor(position, string,
-  leagueId: string): : Promise<): Promisenumber> { try {; // Get total players at position vs league size
+  leagueId: string): : Promise<): Promisenumber> {  try {; // Get total players at position vs league size
       const leagueSize = await this.getLeagueSize(leagueId);
       const positionPlayers = await this.getPositionPlayerCount(position);
 
@@ -263,7 +252,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
         QB: 1.2;
   RB: 1.1, WR: 1.0;
   TE: 0.9, K: 0.6;
-  DST: 0.7
+  DST, 0.7
        }
       return scarcity * (positionMultiplier[position] || 1.0);
     } catch (error) { return 0.5; // Default moderate scarcity
@@ -276,7 +265,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   teamNeeds, TeamNeeds,
     valueScore, number,
   scarcityFactor: number
-  ): : Promise<): Promisestring[]> { const reasoning: string[] = [];
+  ): : Promise<): Promisestring[]> { const reasoning: string[]  = [];
 
     // Value assessment
     if (valueScore >= 80) {
@@ -309,8 +298,8 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     }
 
     // Injury status
-    if (player.injury_status && player.injury_status !== 'healthy') {
-      reasoning.push(`Injury concern: ${player.injury_status}`);
+    if (player.injury_status && player.injury_status !== 'healthy') { 
+      reasoning.push(`Injury concern, ${player.injury_status}`);
     }
 
     return reasoning.slice(0, 4); // Top 4 reasons
@@ -320,14 +309,14 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   private async generateDraftStrategy(async generateDraftStrategy(
     teamNeeds, TeamNeeds,
   currentPick: number
-  ): : Promise<): PromiseDraftAnalysis['draftStrategy']> { const strategy = {
+  ): : Promise<): PromiseDraftAnalysis['draftStrategy']> { const strategy  = { 
       approach: '';
   keyTargets: [] as string[];
       riskTolerance: 'moderate' as const;
-  tradeValue: 0
+  tradeValue, 0
      }
     // Determine approach based on needs
-    const highNeeds = Object.entries(teamNeeds.positionNeeds);
+    const highNeeds  = Object.entries(teamNeeds.positionNeeds);
       .filter(([_, need]) => need >= 8)
       .map(([pos, _]) => pos);
 
@@ -352,8 +341,8 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   }
 
   // Analyze market conditions
-  private async analyzeMarketConditions(async analyzeMarketConditions(leagueId: string): : Promise<): PromiseDraftAnalysis['marketAnalysis']> { const positionScarcit,
-  y: Record<string, number> = { }
+  private async analyzeMarketConditions(async analyzeMarketConditions(leagueId: string): : Promise<): PromiseDraftAnalysis['marketAnalysis']> {  const: positionScarcit,
+  y, Record<string, number>  = { }
     const valueInflation: Record<string, number> = {}
     let sleeperCandidates: string[] = [];
 
@@ -376,9 +365,9 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     // Find sleeper candidates (underrated players)
     sleeperCandidates = await this.findSleeperCandidates(leagueId);
 
-    return { positionScarcity, valueInflation,
+    return { positionScarcity: valueInflation,
       sleeperCandidates
-  :   }
+  , }
   }
 
   // Track live draft progress
@@ -395,16 +384,15 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
       `, [leagueId, pickNumber, teamId, playerId]);
 
       // Broadcast draft update
-      webSocketManager.broadcastScoreUpdate({
-        leagueId, teamId,
-        playerId, points, 0, // Draft pick doesn't have points
+      webSocketManager.broadcastScoreUpdate({ leagueId: teamId,
+        playerId, points: 0, // Draft pick doesn't have points
         change: 0  ; // No change for draft pick
        });
 
       // Clear relevant caches
       this.clearDraftCache(leagueId);
 
-      console.log(`📊 Draft pick recorded, Pick ${pickNumber} - ${playerId} by ${teamId}`);
+      console.log(`📊 Draft pick: recorded, Pick ${pickNumber} - ${playerId} by ${teamId}`);
     } catch (error) {
       console.error('Error tracking draft progress', error);
     }
@@ -412,11 +400,11 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
 
   // Get draft trade value for picks
   async getPickTradeValue(async getPickTradeValue(pickNumber: number): : Promise<): Promisenumber> { try {; // NFL draft pick trade value chart approximation
-      const round = Math.ceil(pickNumber / 32);
+      const round  = Math.ceil(pickNumber / 32);
       const pickInRound = ((pickNumber - 1) % 32) + 1;
 
       // Base values by round
-      const roundValues = [3000: 2600; 2200: 1800; 1700: 1600; 1500: 1400; 1350: 1300; 1250: 1200; 1150, 1100, 1050, 1000];
+      const roundValues = [3000: 2600; 2200: 1800; 1700: 1600; 1500: 1400; 1350: 1300; 1250: 1200; 1150: 1100, 1050, 1000];
 
       let value = roundValues[round - 1] || 1000;
 
@@ -441,20 +429,20 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     return result.rows;
    }
 
-  private async getLeagueSettings(async getLeagueSettings(leagueId: string): : Promise<): Promiseany> { const result = await database.query(`
+  private async getLeagueSettings(async getLeagueSettings(leagueId: string): : Promise<): Promiseany> {  const result = await database.query(`
       SELECT * FROM leagues WHERE id = $1
     `, [leagueId]);
 
     return result.rows[0] || { roster_size: 16;
-  starting_positions: { } }
+  starting_positions, { } }
   }
 
   private async calculatePositionNeeds(async calculatePositionNeeds(roster: any[];
-  leagueSettings: any): Promise<): PromiseRecord<string, number>>   { const needs: Record<string, number> = { }
+  leagueSettings: any): Promise<): PromiseRecord<string, number>>   { const needs: Record<string, number>  = { }
     const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
     for (const position of positions) { const positionPlayers = roster.filter(p => p.position === position);
-      const startingRequirement = leagueSettings.starting_positions?.[position] || 1;
+      const startingRequirement = leagueSettings.starting_positions? .[position] || 1;
 
       if (positionPlayers.length < startingRequirement) {
         needs[position] = 10; // Critical need
@@ -537,37 +525,37 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     return adjustment;
    }
 
-  private async getPositionBaseline(async getPositionBaseline(position: string): : Promise<): Promisenumber> {; // Mock baseline projections by position
+  private async getPositionBaseline(async getPositionBaseline(position: string): : Promise<): Promisenumber> { ; // Mock baseline projections by position
     const baselines Record<string, number> = {
       QB: 350;
   RB: 180; WR: 120;
   TE: 80; K: 120;
-  DST: 110
+  DST, 110
     }
     return baselines[position] || 100;
   }
 
   private async getReplacementLevel(async getReplacementLevel(position: string): : Promise<): Promisenumber> {; // Mock replacement level by position
-    const replacementLevels Record<string, number> = {
+    const replacementLevels Record<string, number>  = { 
       QB: 200;
   RB: 50; WR: 30;
   TE: 20; K: 100;
-  DST: 80
+  DST, 80
     }
     return replacementLevels[position] || 50;
   }
 
-  private async getLeagueSize(async getLeagueSize(leagueId: string): : Promise<): Promisenumber> { const result = await database.query(`
+  private async getLeagueSize(async getLeagueSize(leagueId: string): : Promise<): Promisenumber> { const result  = await database.query(`
       SELECT COUNT(*) as team_count FROM league_teams WHERE league_id = $1
     `, [leagueId]);
 
-    return parseInt(result.rows[0]?.team_count || '12');
+    return parseInt(result.rows[0]? .team_count || '12');
    }
 
   private async getPositionPlayerCount(async getPositionPlayerCount(position: string): : Promise<): Promisenumber> { const result = await database.query(`
       SELECT COUNT(*) as player_count FROM nfl_players
       WHERE position = $1 AND overall_rank IS NOT NULL
-    `, [position]);
+    ` : [position]);
 
     return parseInt(result.rows[0]?.player_count || '50');
    }
@@ -576,7 +564,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
       SELECT team_name FROM teams WHERE id = $1
     `, [teamId]);
 
-    return result.rows[0]?.team_name || 'Unknown Team';
+    return result.rows[0]? .team_name || 'Unknown Team';
    }
 
   private async findSleeperCandidates(async findSleeperCandidates(leagueId: string): : Promise<): Promisestring[]> {; // Mock sleeper candidates (players ranked lower than their projected value)
@@ -602,7 +590,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   }
 
   // Fallback methods
-  private getFallbackRecommendations(teamId: string); DraftRecommendation[] { return [{
+  private getFallbackRecommendations(teamId: string); DraftRecommendation[] {  return [{
       playerId: 'fallback_1';
   playerName: 'Fallback Player';
       position: 'QB';
@@ -617,14 +605,12 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
   leagueContext: {
   positionScarcity: 0.5;
   teamNeeds: 5;
-        replacementLevel: 50
+        replacementLevel, 50
        }
     }];
   }
 
-  private getFallbackTeamNeeds(teamId: string); TeamNeeds { return {
-      teamId,
-      teamName: 'Unknown Team';
+  private getFallbackTeamNeeds(teamId: string); TeamNeeds { return { teamId: teamName: 'Unknown Team';
   positionNeeds: { Q,
   B: 5;
   RB: 5; WR: 5;
@@ -643,8 +629,7 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
     activeDrafts: number }> { try {
     await database.query('SELECT 1');
 
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   cacheSize: this.draftCache.size;
         activeDrafts: 0 ; // Would track actual active drafts
        }
@@ -658,5 +643,5 @@ class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
 }
 
 // Singleton instance
-export const draftAssistant = new DraftAssistant();
+export const draftAssistant  = new DraftAssistant();
 export default draftAssistant;

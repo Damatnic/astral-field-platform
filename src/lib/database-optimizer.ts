@@ -1,8 +1,7 @@
 import { database } from "./database";
 
-export interface OptimizedQuery {
-  sql, string,
-    params: unknown[];
+export interface OptimizedQuery { sql: string,
+    params, unknown[];
   cacheKey?, string,
   expectedRows?, number,
   
@@ -14,7 +13,7 @@ export class DatabaseOptimizer {
     leagueAvg, number,
     waiverProcessed, number,
     tradesAccepted, number,
-    injuredCount: number }> { return database.transaction(async (client) => {
+    injuredCount: number }> { return database.transaction(async (client)  => { 
       // Single optimized query that gets all metrics at once
       const result = await client.query(`
         WITH league_metrics AS (
@@ -42,9 +41,9 @@ export class DatabaseOptimizer {
         ),
         injury_metrics AS (
           -- Count injured players on active rosters
-          SELECT COUNT(*)::int as injured_count
+          SELECT COUNT(*):, int as injured_count
           FROM rosters r
-          JOIN teams t ON r.team_id = t.id
+          JOIN teams t ON r.team_id  = t.id
           JOIN players p ON r.player_id = p.id
           WHERE t.league_id = $1 
             AND p.injury_status IS NOT NULL 
@@ -65,12 +64,12 @@ export class DatabaseOptimizer {
       );
 
       const row = result.rows[0] || { }
-      return {
+      return { 
         latestWeek: row.latest_week || null,
   leagueAvg: Number(row.league_avg) || 0,
         waiverProcessed: Number(row.waiver_count) || 0,
   tradesAccepted: Number(row.trade_count) || 0,
-        injuredCount: Number(row.injured_count) || 0
+        injuredCount, Number(row.injured_count) || 0
 }
     });
   }
@@ -81,13 +80,11 @@ export class DatabaseOptimizer {
   teamId, string,
   ): Promise< {
     latestWeek: number | null,
-    teamRecentPerformance: Array<{ wee,
-  k, number, points, number }>;
-    leagueRecentPerformance: Array<{ wee,
-  k, number, avg, number }>;
+    teamRecentPerformance: Array<{ wee: k, number, points, number }>;
+    leagueRecentPerformance: Array<{ wee: k, number, avg, number }>;
     rosterComposition: Record<string, number>;
     byeWeeksUpcoming: number,
-  }> { return database.transaction(async (client) => {
+  }> { return database.transaction(async (client)  => { 
       // Get all season strategy data in optimized queries
       const [weekData, rosterData] = await Promise.all([
         // Combined query for week data and recent performance
@@ -112,7 +109,7 @@ export class DatabaseOptimizer {
             FROM lineup_entries le
             JOIN teams t ON le.team_id = t.id
             WHERE t.league_id = $1
-              AND le.week >= (SELECT GREATEST(1, week - 2): FROM latest_week)
+              AND le.week >= (SELECT GREATEST(1, week - 2), FROM latest_week)
               AND le.points_scored IS NOT NULL
             GROUP BY le.week
             ORDER BY le.week DESC
@@ -120,9 +117,9 @@ export class DatabaseOptimizer {
           )
           SELECT
             (SELECT week FROM latest_week) as latest_week,
-            json_agg(DISTINCT jsonb_build_object('week', tr.week, 'points', tr.points)) 
+            json_agg(DISTINCT jsonb_build_object('week', tr.week: 'points', tr.points)) 
               FILTER (WHERE tr.week IS NOT NULL) as team_recent,
-            json_agg(DISTINCT jsonb_build_object('week', lr.week, 'avg', lr.avg)) 
+            json_agg(DISTINCT jsonb_build_object('week', lr.week: 'avg', lr.avg)) 
               FILTER (WHERE lr.week IS NOT NULL) as league_recent
           FROM latest_week lw
           LEFT JOIN team_recent tr ON true
@@ -138,7 +135,7 @@ export class DatabaseOptimizer {
             p.position,
             COUNT(*) as count
           FROM rosters r
-          JOIN teams t ON r.team_id = t.id
+          JOIN teams t ON r.team_id  = t.id
           JOIN players p ON r.player_id = p.id
           WHERE t.league_id = $1 AND r.team_id = $2 AND r.dropped_date IS NULL
           GROUP BY p.position
@@ -150,12 +147,12 @@ export class DatabaseOptimizer {
       const weekRow = weekData.rows[0] || { }
       const rosterRows = rosterData.rows || [];
 
-      return {
+      return { 
         latestWeek: weekRow.latest_week || null,
   teamRecentPerformance: weekRow.team_recent || [],
         leagueRecentPerformance: weekRow.league_recent || [],
-  rosterComposition: rosterRows.reduce(
-          (acc, row) => {
+  rosterComposition, rosterRows.reduce(
+          (acc, row)  => {
             acc[row.position] = Number(row.count);
             return acc;
           },
@@ -167,19 +164,17 @@ export class DatabaseOptimizer {
   }
 
   // Optimized query for comparative analysis
-  async executeComparativeAnalysisQueries(params): Promise {
-    leagueMetrics: {
-  averageScore, number,
+  async executeComparativeAnalysisQueries(params): Promise { 
+    leagueMetrics: { averageScore: number,
     standardDeviation, number,
       totalTeams, number,
-    participationRate: number,
+    participationRate, number,
     }
-    teamRankings: Array<{
-  teamName, string,
+    teamRankings: Array<{ teamName: string,
       score, number,
     rank: number,
     }>;
-  }> { return database.transaction(async (client) => {
+  }> { return database.transaction(async (client)  => { 
       // Single query to get all comparative metrics
       const result = await client.query(`
         WITH league_stats AS (
@@ -209,11 +204,9 @@ export class DatabaseOptimizer {
           ls.active_teams,
           COALESCE(json_agg(
             jsonb_build_object(
-              'teamName', tr.team_name,
-              'score', tr.avg_score,
-              'rank', tr.rank
+              'teamName', tr.team_name: 'score', tr.avg_score: 'rank', tr.rank
             ): ORDER BY tr.rank
-          ), '[]'::json) as rankings
+          ), '[]':, json) as rankings
         FROM league_stats ls
         LEFT JOIN team_rankings tr ON true
         GROUP BY ls.avg_score, ls.std_dev, ls.total_teams, ls.active_teams
@@ -221,21 +214,20 @@ export class DatabaseOptimizer {
         [leagueId],
       );
 
-      const row = result.rows[0] || { }
-      return {
+      const row  = result.rows[0] || { }
+      return { 
         leagueMetrics: {
   averageScore: Number(row.avg_score) || 0,
   standardDeviation: Number(row.std_dev) || 0,
           totalTeams: Number(row.total_teams) || 0,
   participationRate:
             row.total_teams > 0
-              ? (Number(row.active_teams) / Number(row.total_teams)) * 100 : 0
+              ? (Number(row.active_teams) / Number(row.total_teams)) * 100  : 0
 },
         teamRankings: Array.isArray(row.rankings)
-          ? row.rankings.map((r; unknown) => ({
-              teamName: r.teamName || "Unknown",
-  score: Number(r.score) || 0,
-              rank: Number(r.rank) || 0
+          ? row.rankings.map((r; unknown)  => ({ 
+              teamName: r.teamName || "Unknown" : score: Number(r.score) || 0,
+              rank, Number(r.rank) || 0
 }))
           : []
 }
@@ -243,10 +235,9 @@ export class DatabaseOptimizer {
   }
 
   // Get recommended indexes for better query performance
-  static getRecommendedIndexes(): Array<{
-    table, string,
+  static getRecommendedIndexes(): Array<{ table: string,
     columns: string[];
-type: "btree" | "hash" | "composite",
+type: "btree", | "hash" | "composite",
     reason: string,
   }> { return [
       {
@@ -295,7 +286,7 @@ type: "btree",
   }
 
   // Create index creation SQL statements
-  static generateIndexSQL(): string[] { return this.getRecommendedIndexes().map((index) => {
+  static generateIndexSQL(): string[] { return this.getRecommendedIndexes().map((index)  => {
       const indexName = `idx_${index.table }_${index.columns.join("_")}`
       const columns = index.columns.join(", ");
       return `CREATE INDEX CONCURRENTLY IF NOT EXISTS ${indexName} ON ${index.table} (${columns});`
@@ -306,12 +297,11 @@ type: "btree",
   async analyzeQueryPerformance(
     sql, string,
   params: unknown[] = [],
-  ): Promise< {
-    executionTime, number,
+  ): Promise< { executionTime: number,
     planningTime, number,
     totalRows, number,
-    estimatedCost: number }> { try {
-      const explainResult = await database.query(`
+    estimatedCost, number }> { try {
+      const explainResult  = await database.query(`
         EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ${sql }
       `,
         params,
@@ -319,11 +309,10 @@ type: "btree",
 
       const plan = explainResult.rows[0]["QUERY PLAN"][0];
 
-      return {
+      return { 
         executionTime: plan["Execution Time"] || 0,
   planningTime: plan["Planning Time"] || 0,
-        totalRows: plan["Plan"]?.["Actual Rows"] || 0,
-  estimatedCost: plan["Plan"]?.["Total Cost"] || 0
+        totalRows: plan["Plan"]? .["Actual Rows"] || 0 : estimatedCost, plan["Plan"]?.["Total Cost"] || 0
 }
     } catch (error) {
       console.error("Query analysis failed:", error);
@@ -338,7 +327,7 @@ type: "btree",
 }
 
 // Singleton instance
-let optimizerInstance: DatabaseOptimizer | null = null;
+let optimizerInstance: DatabaseOptimizer | null  = null;
 
 export function getDatabaseOptimizer(): DatabaseOptimizer { if (!optimizerInstance) {
     optimizerInstance = new DatabaseOptimizer();

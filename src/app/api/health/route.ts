@@ -38,8 +38,7 @@ export async function GET() { try {
     return NextResponse.json(
       { success: false,
   error: error instanceof Error ? error.message :
-  "Health check failed",
-  health: {
+  "Health check failed" : health: {
   status: "unhealthy",
   timestamp: new Date().toISOString()
 }

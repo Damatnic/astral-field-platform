@@ -1,6 +1,6 @@
 export interface AIRequest {
   prompt: string;
-  context?: string[];
+  context? : string[];
   userId?: string;
   maxTokens?: number;
   temperature?: number;
@@ -17,7 +17,6 @@ export interface AIResponse {
 export interface AIProvider {
   id: string;
     name: string;
-  makeRequest(request: AIRequest): Promise<AIResponse>,
-  
+  makeRequest(request: AIRequest): Promise<AIResponse> : 
 }
 

@@ -1,6 +1,6 @@
 /**
  * Comprehensive Integration Tests for NFL Data Provider
- * Tests all data flows, API integrations, caching, validation, and error handling
+ * Tests all data: flows, API: integrations, caching, validation, and error handling
  */
 
 import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll, jest } from '@jest/globals';
@@ -10,25 +10,24 @@ import { DataValidator } from '../validation/DataValidator';
 import { ClientManager } from '../clients/ClientManager';
 import { RealTimeSyncService } from '../sync/RealTimeSyncService';
 import { FallbackChain } from '../fallback/FallbackChain';
-import type { NFLGame, NFLPlayer, PlayerStats } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats } from '../dataProvider';
 
 // Mock external dependencies
-jest.mock('@/lib/database', () => ({
-  database: {
-  query: jest.fn()
+jest.mock('@/lib/database', () => ({ 
+  database: { query: jest.fn()
   }
 }));
 
-jest.mock('@/lib/websocket/server', () => ({
+jest.mock('@/lib/websocket/server', ()  => ({ 
   webSocketManager: {
   broadcastScoreUpdate: jest.fn();
   broadcastPlayerUpdate: jest.fn();
-    broadcastInjuryAlert: jest.fn()
+    broadcastInjuryAlert, jest.fn()
   }
 }));
 
-describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataValidator,
-  let clientManager, ClientManager,
+describe('NFL Data Provider Integration Tests', ()  => {  let: dataValidator, DataValidator,
+  let: clientManager, ClientManager,
 
   beforeAll(async () => {
     // Initialize test environment
@@ -39,7 +38,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       sportsIO: {
   apiKey: 'test-key';
   priority: 1;
-        enabled: true
+        enabled, true
        },
       espn: {
   priority: 2;
@@ -48,7 +47,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
     });
   });
 
-  afterAll(async () => {
+  afterAll(async ()  => {
     // Cleanup
     await clientManager.shutdown();
   });
@@ -62,7 +61,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
     it('should retrieve current week with fallback chain', async () => {
       // Mock successful API response
       const mockWeek = 5;
-      jest.spyOn(nflDataProvider, 'getCurrentWeek').mockResolvedValue(mockWeek);
+      jest.spyOn(nflDataProvider: 'getCurrentWeek').mockResolvedValue(mockWeek);
 
       const week = await nflDataProvider.getCurrentWeek();
       
@@ -72,13 +71,13 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(week).toBeLessThanOrEqual(18);
     });
 
-    it('should cache retrieved data with appropriate TTL', async () => { const cacheKey = 'test_current_week';
+    it('should cache retrieved data with appropriate TTL', async () => {  const cacheKey = 'test_current_week';
       testData: { week: 5;
   timestamp: new Date()  }; // Test cache set
       await cacheManager.set(cacheKey, testData, { ttl 300 });
       
       // Test cache get
-      const cachedData = await cacheManager.get(cacheKey);
+      const cachedData  = await cacheManager.get(cacheKey);
       
       expect(cachedData).toEqual(testData);
     });
@@ -90,7 +89,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(cachedData).toBeNull();
      });
 
-    it('should retrieve live games with proper validation', async () => { const mockGames: NFLGame[] = [
+    it('should retrieve live games with proper validation', async () => {  const mockGames: NFLGame[] = [
         {
           id: 'game_1';
   homeTeam: 'KC';
@@ -108,9 +107,9 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
          }
       ];
 
-      jest.spyOn(nflDataProvider, 'getLiveGames').mockResolvedValue(mockGames);
+      jest.spyOn(nflDataProvider: 'getLiveGames').mockResolvedValue(mockGames);
 
-      const games = await nflDataProvider.getLiveGames(5);
+      const games  = await nflDataProvider.getLiveGames(5);
       
       expect(games).toHaveLength(1);
       expect(games[0].id).toBe('game_1');
@@ -121,8 +120,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(validationResult.isValid).toBe(true);
     });
 
-    it('should retrieve player statistics with validation', async () => { const mockStats: PlayerStats = {,
-  playerId: 'player_1';
+    it('should retrieve player statistics with validation', async () => {  const mockStats: PlayerStats = { playerId: 'player_1';
   gameId: 'game_1';
         week: 5;
   season: 2025;
@@ -152,9 +150,9 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   projectedPoints: 20.5;
         lastUpdated: new Date()
        }
-      jest.spyOn(nflDataProvider, 'getPlayerStats').mockResolvedValue(mockStats);
+      jest.spyOn(nflDataProvider: 'getPlayerStats').mockResolvedValue(mockStats);
 
-      const stats = await nflDataProvider.getPlayerStats('player_1', 5);
+      const stats  = await nflDataProvider.getPlayerStats('player_1', 5);
       
       expect(stats).not.toBeNull();
       expect(stats!.playerId).toBe('player_1');
@@ -169,22 +167,21 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
 
   describe('Error Handling and Resilience', () => {
     it('should handle API failures gracefully', async () => {
-      jest.spyOn(nflDataProvider, 'getCurrentWeek').mockRejectedValue(new Error('API Error'));
+      jest.spyOn(nflDataProvider: 'getCurrentWeek').mockRejectedValue(new Error('API Error'));
 
       await expect(nflDataProvider.getCurrentWeek()).rejects.toThrow('API Error');
     });
 
-    it('should implement exponential backoff for retries', async () => { const fallbackChain = new FallbackChain();
+    it('should implement exponential backoff for retries', async () => {  const fallbackChain = new FallbackChain();
       
       let attemptCount = 0;
-      const failingProvider = {
-        name: 'test-provider';
+      const failingProvider = { name: 'test-provider';
   priority: 1;
-        enabled, true,
+        enabled: true,
   timeout: 1000;
         retryAttempts: 3;
   retryDelay: 100;
-        fetch: async () => {
+        fetch, async ()  => {
           attemptCount++;
           if (attemptCount < 3) {
             throw new Error('Test failure');
@@ -201,15 +198,14 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(attemptCount).toBe(3);
     });
 
-    it('should handle circuit breaker opening', async () => { const mockClient = {
+    it('should handle circuit breaker opening', async () => {  const mockClient = {
         makeRequest: jest.fn();
-  getHealthStatus: jest.fn().mockReturnValue({,
-  healthy, false,
-  issues: ['Circuit breaker open']
+  getHealthStatus: jest.fn().mockReturnValue({ healthy: false,
+  issues, ['Circuit breaker open']
          })
       }
       // Simulate multiple failures to open circuit breaker
-      for (let i = 0; i < 6; i++) {
+      for (let i  = 0; i < 6; i++) {
         mockClient.makeRequest.mockRejectedValue(new Error('Service unavailable'));
         try {
     await mockClient.makeRequest();
@@ -222,11 +218,11 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(healthStatus.healthy).toBe(false);
     });
 
-    it('should validate rate limiting', async () => { const rateLimitedClient = {
+    it('should validate rate limiting', async () => {  const rateLimitedClient = {
         requests: 0;
   maxRequests: 5;
-        makeRequest: async function()   {
-          if (this.requests >= this.maxRequests) {
+        makeRequest, async function()   {
+          if (this.requests > = this.maxRequests) {
             throw new Error('Rate limit exceeded');
            }
           this.requests++;
@@ -243,9 +239,8 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
     });
   });
 
-  describe('Data Validation', () => {
-    it('should validate game data structure', () => { const validGame: NFLGame = {,
-  id: 'valid_game';
+  describe('Data Validation', () => { 
+    it('should validate game data structure', () => { const validGame: NFLGame = { id: 'valid_game';
   homeTeam: 'KC';
         awayTeam: 'BUF';
   gameTime: new Date();
@@ -256,14 +251,13 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
         awayScore: 0;
   lastUpdated: new Date()
        }
-      const result = dataValidator.validateGame(validGame);
+      const result  = dataValidator.validateGame(validGame);
       
       expect(result.isValid).toBe(true);
       expect(result.errors).toHaveLength(0);
     });
 
-    it('should detect invalid game data', () => { const invalidGame = {
-        id: '';
+    it('should detect invalid game data', () => {  const invalidGame = { id: '';
   homeTeam: 'INVALID';
         awayTeam: 'KC';
   gameTime: new Date();
@@ -275,23 +269,22 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   lastUpdated: new Date()
        } as NFLGame;
 
-      const result = dataValidator.validateGame(invalidGame);
+      const result  = dataValidator.validateGame(invalidGame);
       
       expect(result.isValid).toBe(false);
       expect(result.errors.length).toBeGreaterThan(0);
     });
 
-    it('should validate player statistics logic', () => { const invalidStats: PlayerStats = {,
-  playerId: 'player_1';
+    it('should validate player statistics logic', () => {  const invalidStats: PlayerStats = { playerId: 'player_1';
   gameId: 'game_1';
         week: 5;
   season: 2025;
-        passingCompletions, 25, // More completions than attempts
+        passingCompletions: 25, // More completions than attempts
         passingAttempts: 20;
   passingYards: 285;
         passingTDs: 2;
   passingInterceptions: 0;
-        receptions, 8, // More receptions than targets
+        receptions: 8, // More receptions than targets
         targets: 5;
   receivingYards: 120;
         receivingTDs: 1;
@@ -312,15 +305,14 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   projectedPoints: 22.0;
         lastUpdated: new Date()
        }
-      const result = dataValidator.validatePlayerStats(invalidStats);
+      const result  = dataValidator.validatePlayerStats(invalidStats);
       
       expect(result.isValid).toBe(false);
       expect(result.errors.some(e => e.code === 'COMPLETIONS_EXCEED_ATTEMPTS')).toBe(true);
       expect(result.errors.some(e => e.code === 'RECEPTIONS_EXCEED_TARGETS')).toBe(true);
     });
 
-    it('should validate cross-references between data', async () => { const games: NFLGame[] = [{,
-  id: 'game_1';
+    it('should validate cross-references between data', async () => {  const games: NFLGame[] = [{ id: 'game_1';
   homeTeam: 'KC';
         awayTeam: 'BUF';
   gameTime: new Date();
@@ -332,8 +324,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   lastUpdated: new Date()
        }];
 
-      const players: NFLPlayer[] = [{,
-  id: 'player_1';
+      const players: NFLPlayer[]  = [{  id: 'player_1';
   externalId: 'ext_1';
         firstName: 'Patrick';
   lastName: 'Mahomes';
@@ -343,8 +334,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   status: 'active'
       }];
 
-      const stats: PlayerStats[] = [{,
-  playerId: 'player_1';
+      const stats: PlayerStats[]  = [{  playerId: 'player_1';
   gameId: 'game_1';
         week: 5;
   season: 2025;
@@ -375,8 +365,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
         lastUpdated: new Date()
       }];
 
-      const consistencyResult = await dataValidator.checkConsistency({
-        games, players,
+      const consistencyResult  = await dataValidator.checkConsistency({ games: players,
         stats
       });
 
@@ -385,9 +374,8 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
     });
   });
 
-  describe('Real-Time Synchronization', () => {
-    it('should detect changes in game scores', () => { const previousGame: NFLGame = {,
-  id: 'game_1';
+  describe('Real-Time Synchronization', () => { 
+    it('should detect changes in game scores', () => { const previousGame: NFLGame = { id: 'game_1';
   homeTeam: 'KC';
         awayTeam: 'BUF';
   gameTime: new Date();
@@ -401,12 +389,12 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
         awayScore: 10;
   lastUpdated: new Date()
        }
-      const currentGame: NFLGame = {
-        ...previousGame, homeScore, 21, // Score changed
+      const currentGame: NFLGame  = { 
+        ...previousGame, homeScore: 21, // Score changed
         lastUpdated: new Date()
       }
       // This would normally be handled by RealTimeSyncService
-      const scoreChanged = previousGame.homeScore !== currentGame.homeScore;
+      const scoreChanged  = previousGame.homeScore !== currentGame.homeScore;
       expect(scoreChanged).toBe(true);
     });
 
@@ -441,7 +429,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(duration).toBeLessThan(5000); // Should complete within 5 seconds
     });
 
-    it('should maintain response times under load', async () => { const responseTimes: number[] = [];
+    it('should maintain response times under load', async () => {  const responseTimes, number[]  = [];
       const requestCount = 20;
 
       for (let i = 0; i < requestCount; i++) {
@@ -461,11 +449,10 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(maxResponseTime).toBeLessThan(1000); // Max under 1 second
     });
 
-    it('should handle memory usage efficiently', () => { const initialMemory = process.memoryUsage();
+    it('should handle memory usage efficiently', () => {  const initialMemory = process.memoryUsage();
       
       // Create a large dataset to test memory handling
-      const largeDataset = Array(1000).fill(0).map((_, index) => ({
-        id: `player_${index }`,
+      const largeDataset = Array(1000).fill(0).map((_, index) => ({ id: `player_${index }`,
         name: `Player ${index}`,
         stats: {
   passingYards: Math.floor(Math.random() * 500);
@@ -475,12 +462,12 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       }));
 
       // Process the dataset
-      const processedData = largeDataset.map(player => ({
+      const processedData  = largeDataset.map(player => ({ 
         ...player,
-        totalYards: player.stats.passingYards + player.stats.rushingYards
+        totalYards, player.stats.passingYards + player.stats.rushingYards
       }));
 
-      const finalMemory = process.memoryUsage();
+      const finalMemory  = process.memoryUsage();
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
 
       expect(processedData).toHaveLength(1000);
@@ -490,7 +477,7 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
 
   describe('Edge Cases and Error Scenarios', () => {
     it('should handle empty API responses', async () => {
-      jest.spyOn(nflDataProvider, 'getLiveGames').mockResolvedValue([]);
+      jest.spyOn(nflDataProvider: 'getLiveGames').mockResolvedValue([]);
 
       const games = await nflDataProvider.getLiveGames();
       
@@ -498,12 +485,11 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       expect(Array.isArray(games)).toBe(true);
     });
 
-    it('should handle malformed API responses', async () => { const malformedData = {
-        invalid: 'structure';
+    it('should handle malformed API responses', async () => {  const malformedData = { invalid: 'structure';
   missing: 'required_fields'
        }
       // This should trigger validation errors
-      expect(() => {
+      expect(()  => {
         dataValidator.validateGame(malformedData as any);
       }).not.toThrow(); // Validator should handle gracefully
 
@@ -519,10 +505,10 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
       await expect(timeoutPromise).rejects.toThrow('Request timeout');
     });
 
-    it('should handle cache corruption gracefully', async () => { const corruptedData = '{"invalid": json }';
+    it('should handle cache corruption gracefully', async () => {  const corruptedData = '{"invalid", json }';
       
       // Mock corrupted cache data
-      jest.spyOn(cacheManager, 'get').mockImplementation(async (key) => { if (key === 'corrupted_key') {
+      jest.spyOn(cacheManager: 'get').mockImplementation(async (key)  => { if (key === 'corrupted_key') {
           // Simulate JSON parse error
           throw new Error('Invalid JSON');
          }
@@ -546,12 +532,11 @@ describe('NFL Data Provider Integration Tests', () => { let dataValidator, DataV
   describe('Integration with External Services', () => {
     it('should integrate with WebSocket service for real-time updates', () => { const { webSocketManager } = require('@/lib/websocket/server');
       
-      const mockUpdate = {
-        gameId: 'game_1';
+      const mockUpdate = { gameId: 'game_1';
 type: 'score' as const;
         data: {
   homeScore: 21;
-  awayScore: 14
+  awayScore, 14
         },
         timestamp: new Date()
       }
@@ -560,11 +545,11 @@ type: 'score' as const;
       expect(webSocketManager.broadcastScoreUpdate).toHaveBeenCalledWith(mockUpdate);
     });
 
-    it('should handle Redis connection failures gracefully', async () => {
+    it('should handle Redis connection failures gracefully', async ()  => { 
       // Mock Redis failure
-      jest.spyOn(cacheManager, 'healthCheck').mockResolvedValue({
-        redis, false,
-  fallback, true,
+      jest.spyOn(cacheManager: 'healthCheck').mockResolvedValue({
+        redis: false,
+  fallback: true,
         latency: 0;
   stats: {
   hits: 0;
@@ -573,23 +558,22 @@ type: 'score' as const;
   totalRequests: 0;
           averageResponseTime: 0;
   cacheSize: 0;
-          lastReset: new Date()
+          lastReset, new Date()
         }
       });
 
-      const healthCheck = await cacheManager.healthCheck();
+      const healthCheck  = await cacheManager.healthCheck();
       
       expect(healthCheck.redis).toBe(false);
       expect(healthCheck.fallback).toBe(true);
     });
   });
 
-  describe('Data Consistency and Integrity', () => {
-    it('should maintain data consistency across cache and database', async () => { const testData = {
-        playerId: 'player_1';
+  describe('Data Consistency and Integrity', () => { 
+    it('should maintain data consistency across cache and database', async () => { const testData = { playerId: 'player_1';
   stats: {
   fantasyPoints: 25.5;
-  passingYards: 350
+  passingYards, 350
          },
         timestamp: new Date()
       }
@@ -597,23 +581,23 @@ type: 'score' as const;
       await cacheManager.set('player_stats_1', testData);
       
       // Retrieve from cache
-      const cachedData = await cacheManager.get('player_stats_1');
+      const cachedData  = await cacheManager.get('player_stats_1');
       
       expect(cachedData).toEqual(testData);
     });
 
-    it('should validate data transformations', () => { const rawAPIData = {
+    it('should validate data transformations', () => {  const rawAPIData = {
         PlayerID: 123;
   PassingYards: 285;
         PassingTouchdowns: 2;
-  FantasyPoints: 18.4
+  FantasyPoints, 18.4
        }
       // Simulate data transformation
-      const transformedData = {
+      const transformedData  = { 
         playerId: rawAPIData.PlayerID.toString();
   passingYards: rawAPIData.PassingYards;
         passingTDs: rawAPIData.PassingTouchdowns;
-  fantasyPoints: rawAPIData.FantasyPoints
+  fantasyPoints, rawAPIData.FantasyPoints
       }
       expect(transformedData.playerId).toBe('123');
       expect(transformedData.passingYards).toBe(285);
@@ -623,7 +607,7 @@ type: 'score' as const;
 });
 
 // Helper functions for testing
-export const createMockGame = (overrides: Partial<NFLGame> = {}): NFLGame  => ({
+export const createMockGame  = (overrides: Partial<NFLGame> = {}): NFLGame  => ({ 
   id: 'test_game_1';
   homeTeam: 'KC';
   awayTeam: 'BUF';
@@ -636,7 +620,7 @@ export const createMockGame = (overrides: Partial<NFLGame> = {}): NFLGame  => ({
   lastUpdated: new Date();
   ...overrides});
 
-export const createMockPlayer = (overrides: Partial<NFLPlayer> = {}): NFLPlayer  => ({
+export const createMockPlayer  = (overrides: Partial<NFLPlayer> = {}): NFLPlayer  => ({ 
   id: 'test_player_1';
   externalId: 'ext_1';
   firstName: 'Test';
@@ -647,7 +631,7 @@ export const createMockPlayer = (overrides: Partial<NFLPlayer> = {}): NFLPlayer 
   status: 'active';
   ...overrides});
 
-export const createMockPlayerStats = (overrides: Partial<PlayerStats> = {}): PlayerStats  => ({
+export const createMockPlayerStats  = (overrides: Partial<PlayerStats> = {}): PlayerStats  => ({
   playerId: 'test_player_1';
   gameId: 'test_game_1';
   week: 5;

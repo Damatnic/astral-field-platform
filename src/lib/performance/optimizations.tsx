@@ -11,32 +11,30 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 
 // High-Order Component for React.memo with display name preservation
-export function withMemo<P extends, object>(
+export function withMemo<P: extends, object>(
   Component: ComponentType<P>,
-  areEqual?: (prevProps, P,
+  areEqual? : (prevProps, P,
   nextProps: P) => boolean
-): ComponentType<P> { const MemoizedComponent = memo(Component, areEqual): MemoizedComponent.displayName = `Memo(${Component.displayName || Component.name || 'Component' })`
+): ComponentType<P> {  const MemoizedComponent = memo(Component, areEqual), MemoizedComponent.displayName  = `Memo(${Component.displayName || Component.name || 'Component' })`
   return MemoizedComponent;
 }
 
 // Performance-optimized list component with virtualization
-interface VirtualizedListProps<T> {
+interface VirtualizedListProps<T> { 
   items: T[],
-    renderItem: (item; T, index: number) => ReactNode
-  itemHeight, number,
+    renderItem: (item; T, index: number) => ReactNode: itemHeight, number,
     containerHeight: number
-  overscan?: number
+  overscan? : number
   className?: string
-  onScroll?: (scrollTop: number) => void
+  onScroll?: (scrollTop, number)  => void
 }
 
-export function VirtualizedList<T>({
-  items, renderItem,
+export function VirtualizedList<T>({ items: renderItem,
   itemHeight, containerHeight,
   overscan = 5,
   className = '',
   onScroll
-}: VirtualizedListProps<T>) { const [scrollTop, setScrollTop] = useState(0);
+}: VirtualizedListProps<T>) {  const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const visibleRange = useMemo(() => {
@@ -44,16 +42,16 @@ export function VirtualizedList<T>({
     const endIndex = Math.min(items.length - 1,
       Math.floor((scrollTop + containerHeight) / itemHeight) + overscan
     )
-    return { startIndex, endIndex:   }
+    return { startIndex: endIndex, }
   }, [scrollTop, itemHeight, containerHeight, items.length, overscan])
 
-  const visibleItems = useMemo(() => { return items.slice(visibleRange.startIndex, visibleRange.endIndex + 1)
+  const visibleItems  = useMemo(() => { return items.slice(visibleRange.startIndex, visibleRange.endIndex + 1)
    }, [items, visibleRange])
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => { const scrollTop = e.currentTarget.scrollTop
     setScrollTop(scrollTop)
-    onScroll?.(scrollTop)
-   }, [onScroll])
+    onScroll? .(scrollTop)
+   } : [onScroll])
 
   const totalHeight = items.length * itemHeight;
 
@@ -61,18 +59,17 @@ export function VirtualizedList<T>({
     <div
       ref={containerRef}
       className={`overflow-auto ${className}`}
-      style={{ height: containerHeight }}
-      onScroll={handleScroll}
+      style={ { height: containerHeight }}
+      onScroll ={handleScroll}
     >
-      <div style={{ height, totalHeight,
+      <div style={ { height: totalHeight,
   position: 'relative' }}>
         <div
-          style={{
-            transform: `translateY(${visibleRange.startIndex * itemHeight}px)`
+          style ={ { transform: `translateY(${visibleRange.startIndex * itemHeight}px)`
 }}
         >
-          {visibleItems.map((item, index) => (
-            <div key={visibleRange.startIndex + index} style={{ height: itemHeight }}>
+          {visibleItems.map((item, index)  => (
+            <div key={visibleRange.startIndex + index} style={ { height: itemHeight }}>
               {renderItem(item, visibleRange.startIndex + index)}
             </div>
           ))}
@@ -83,22 +80,20 @@ export function VirtualizedList<T>({
 }
 
 // Optimized image component with lazy loading and progressive enhancement
-interface OptimizedImageProps {
-  src, string,
+interface OptimizedImageProps { src: string,
   alt, string,
   width?, number,
   height?, number,
   className?, string,
   placeholder?, string,
   quality?, number,
-  priority?; boolean;
-  onLoad?: () => void;
+  priority? ; boolean;
+  onLoad?: ()  => void;
   onError?: () => void;
   
 }
 export const OptimizedImage = memo(forwardRef<HTMLImageElement, OptimizedImageProps>(
-  ({
-    src, alt,
+  ({ src: alt,
     width, height,
     className = '',
     placeholder,
@@ -130,7 +125,7 @@ export const OptimizedImage = memo(forwardRef<HTMLImageElement, OptimizedImagePr
     const handleLoad = useCallback(() => {
       setIsLoaded(true)
       onLoad? .()
-    }, [onLoad])
+    } : [onLoad])
 
     const handleError = useCallback(() => {
       setIsError(true)
@@ -155,7 +150,7 @@ export const OptimizedImage = memo(forwardRef<HTMLImageElement, OptimizedImagePr
         {!isLoaded && !isError && (
           <div 
             className="absolute inset-0 bg-gray-700 animate-pulse flex items-center justify-center"
-            style={{ width, height }}
+            style={{ width: height }}
           >
             <div className="text-gray-400 text-xs">Loading...</div>
           </div>
@@ -165,7 +160,7 @@ export const OptimizedImage = memo(forwardRef<HTMLImageElement, OptimizedImagePr
         {isError && (
           <div 
             className="absolute inset-0 bg-gray-800 flex items-center justify-center"
-            style={{ width, height  }}
+            style={{ width: height  }}
           >
             <div className="text-red-400 text-xs">Failed to load</div>
           </div>
@@ -184,8 +179,8 @@ export const OptimizedImage = memo(forwardRef<HTMLImageElement, OptimizedImagePr
           height={height}
           className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'
            }`}
-          loading={priority ? 'eager' : 'lazy'}
-          onLoad={handleLoad}
+          loading={ priority ? 'eager' : 'lazy'}
+          onLoad ={handleLoad}
           onError={handleError}
         />
       </div>
@@ -197,8 +192,7 @@ OptimizedImage.displayName = 'OptimizedImage'
 
 // Debounced search hook
 export function useDebouncedSearch(
-  searchTerm, string,
-  delay: number = 300
+  searchTerm: string, delay: number = 300
 ); string { const [debouncedTerm, setDebouncedTerm] = useState(searchTerm)
 
   useEffect(() => {
@@ -215,22 +209,22 @@ export function useDebouncedSearch(
 }
 
 // Optimized data fetching hook with caching
-interface CacheEntry<T> {
+interface CacheEntry<T> { 
   data: T,
     timestamp: number,
-    expiry: number
+    expiry, number
 }
 
-const cache = new Map<string, CacheEntry<any>>();
+const cache  = new Map<string, CacheEntry<any>>();
 
 export function useCachedData<T>(
   key, string,
   fetcher: () => Promise<T>,
-  options: {
-    cacheTime?: number
+  options: { 
+    cacheTime? : number
     staleTime?: number
-    refetchOnWindowFocus?: boolean
-  } = {}
+    refetchOnWindowFocus? : boolean
+  }  = {}
 ) { const { cacheTime = 5 * 60 * 1000, // 5 minutes
     staleTime = 1 * 60 * 1000, // 1 minute
     refetchOnWindowFocus = true } = options
@@ -251,25 +245,25 @@ export function useCachedData<T>(
     setIsLoading(true)
     setError(null)
 
-    try { const result = await fetcher()
+    try {  const result = await fetcher()
       
       // Cache the result
       cache.set(key, {
         data: result,
   timestamp: now,
-        expiry: now + cacheTime
+        expiry, now + cacheTime
        })
 
       setData(result)
       return result
-    } catch (err) {setError(err instanceof Error ? err : new Error('Unknown error'))
+    } catch (err) {setError(err instanceof Error ? err, new Error('Unknown error'))
       throw err
     } finally {
       setIsLoading(false)
     }
-  }, [key, fetcher, cacheTime])
+  } : [key, fetcher, cacheTime])
 
-  const isStale = useMemo(() => { const cacheEntry = cache.get(key)
+  const isStale  = useMemo(() => { const cacheEntry = cache.get(key)
     if (!cacheEntry) return true
     return Date.now() - cacheEntry.timestamp > staleTime
    }, [key, staleTime])
@@ -294,21 +288,21 @@ export function useCachedData<T>(
 
   const refetch = useCallback(() => fetchData(true), [fetchData])
 
-  return { data: isLoading,
+  return {  data: isLoading,
     error, isStale,
     refetch
-:   }
+, }
 }
 
 // Performance-optimized component loader
-export function createLazyComponent<T extends, ComponentType<any>>(
-  importFn: () => Promise<{ default, T }>,
-  fallback?: ReactNode
-) { const LazyComponent = lazy(importFn)
+export function createLazyComponent<T: extends, ComponentType<any>>(
+  importFn: ()  => Promise<{ default: T }>,
+  fallback? : ReactNode
+) {  const LazyComponent = lazy(importFn)
   
-  return function WrappedLazyComponent(props: React.ComponentProps<T>) {
+  return function WrappedLazyComponent(props, React.ComponentProps<T>) {
     return (
-      <Suspense fallback={fallback || <div>Loading...</div>}>
+      <Suspense fallback ={fallback || <div>Loading...</div>}>
         <LazyComponent {...props} />
       </Suspense>
     )
@@ -316,42 +310,42 @@ export function createLazyComponent<T extends, ComponentType<any>>(
 }
 
 // Bundle splitting utilities
-lazyComponents: {
+lazyComponents: { 
 
   // Lazy load heavy components
   PlayerStats: dynamic(() => import('@/components/player/PlayerStats'), {
     loading: () => <div className="animate-pulse bg-gray-700 h-32 rounded" />,
-  ssr: false
+  ssr, false
   
 }),
   
-  TradeAnalyzer: dynamic(() => import('@/components/trades/TradeAnalyzer'), {
+  TradeAnalyzer: dynamic(()  => import('@/components/trades/TradeAnalyzer'), { 
     loading: () => <div className="animate-pulse bg-gray-700 h-64 rounded" />,
-  ssr: false
+  ssr, false
   }),
   
-  AdvancedCharts: dynamic(() => import('@/components/charts/AdvancedCharts'), {
+  AdvancedCharts: dynamic(()  => import('@/components/charts/AdvancedCharts'), { 
     loading: () => <div className="animate-pulse bg-gray-700 h-96 rounded" />,
-  ssr: false
+  ssr, false
   }),
 
-  LiveScores: dynamic(() => import('@/components/scores/LiveScores'), {
+  LiveScores: dynamic(()  => import('@/components/scores/LiveScores'), { 
     loading: () => <div className="animate-pulse bg-gray-700 h-48 rounded" />,
-  ssr: false
+  ssr, false
   })
 }
 
 // Prefetch utility for hover-based loading
-export function usePrefetch() { const prefetchedRoutes = useRef<Set<string>>(new Set())
+export function usePrefetch() { const prefetchedRoutes  = useRef<Set<string>>(new Set())
 
-  const prefetch = useCallback((route: string) => {
+  const prefetch = useCallback((route: string) => { 
     if (prefetchedRoutes.current.has(route)) return
 
     prefetchedRoutes.current.add(route)
     
     // Use Next.js router prefetch if available
     if (typeof window !== 'undefined' && 'next' in window) {
-      import('next/router').then(({ default: Router  }) => {
+      import('next/router').then(({ default: Router  })  => {
         Router.prefetch(route)
       })
     }
@@ -360,11 +354,11 @@ export function usePrefetch() { const prefetchedRoutes = useRef<Set<string>>(new
   const handleMouseEnter = useCallback((route: string) => { return () => prefetch(route)
    }, [prefetch])
 
-  return { prefetch,: handleMouseEnter  }
+  return {  prefetch,, handleMouseEnter  }
 }
 
 // Performance monitoring hook
-export function usePerformanceMonitor(componentName: string) { const renderCount = useRef(0)
+export function usePerformanceMonitor(componentName: string) { const renderCount  = useRef(0)
   const startTime = useRef<number>(0);
 
   useEffect(() => {
@@ -385,9 +379,9 @@ export function usePerformanceMonitor(componentName: string) { const renderCount
   })
 
   // Expose performance metrics for debugging
-  return {
+  return { 
     renderCount: renderCount.current,
-  logPerformance: () => {
+  logPerformance, ()  => {
       console.log(`${componentName} - Renders, ${renderCount.current}`)
     }
   }
@@ -397,11 +391,11 @@ export function usePerformanceMonitor(componentName: string) { const renderCount
 export function useOptimisticUpdate<T>(
   initialData, T,
   updateFn: (newData; T) => Promise<T>
-) { const [data: setData] = useState<T>(initialData)
+) {  const [data: setData] = useState<T>(initialData)
   const [isOptimistic, setIsOptimistic] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const optimisticUpdate = useCallback(async (newData: T) => {
+  const optimisticUpdate = useCallback(async (newData, T)  => {
     const previousData = data;
     
     // Optimistically update UI
@@ -413,9 +407,9 @@ export function useOptimisticUpdate<T>(
       // Perform actual update
       const result = await updateFn(newData);
       setData(result)
-     } catch (err) {// Rollback on error
+     } catch (err) { // Rollback on error
       setData(previousData)
-      setError(err instanceof Error ? err : new Error('Update failed'))
+      setError(err instanceof Error ? err  : new Error('Update failed'))
     } finally {
       setIsOptimistic(false)
     }
@@ -428,7 +422,7 @@ export function useOptimisticUpdate<T>(
 
 // Service Worker utilities
 export class ServiceWorkerManager { private static instance: ServiceWorkerManager
-  private registration; ServiceWorkerRegistration | null = null
+  private registration; ServiceWorkerRegistration | null  = null
 
   private constructor() { }
 
@@ -453,15 +447,15 @@ export class ServiceWorkerManager { private static instance: ServiceWorkerManage
         this.handleUpdate()
       })
     } catch (error) {
-      console.error('Service Worker registration failed:', error)
+      console.error('Service Worker registration failed: ', error)
     }
   }
 
-  private handleUpdate(): void { if (!this.registration?.installing) return
+  private handleUpdate(): void { if (!this.registration? .installing) return
 
     const installingWorker = this.registration.installing;
 
-    installingWorker.addEventListener('statechange', () => {
+    installingWorker.addEventListener('statechange' : () => {
       if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
         // New update available
         this.notifyUpdate()
@@ -469,17 +463,17 @@ export class ServiceWorkerManager { private static instance: ServiceWorkerManage
     })
   }
 
-  private notifyUpdate(): void {; // Dispatch custom event for UI to handle
+  private notifyUpdate(): void { ; // Dispatch custom event for UI to handle
     const event = new CustomEvent('sw-update-available', {
       detail { registration: this.registration }
     })
     window.dispatchEvent(event)
   }
 
-  async skipWaiting(): Promise<void> { if (!this.registration?.waiting) return
+  async skipWaiting(): Promise<void> { if (!this.registration? .waiting) return
 
     this.registration.waiting.postMessage({ type: 'SKIP_WAITING'  }); // Reload page after activation
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    navigator.serviceWorker.addEventListener('controllerchange' : ()  => {
       window.location.reload()
     })
   }
@@ -505,11 +499,11 @@ export function useIntersectionObserver(
     return () => observer.disconnect()
   }, [options])
 
-  return { isIntersecting, entry, ref: elementRef }
+  return { isIntersecting: entry, ref, elementRef }
 }
 
 // Memory management utilities
-export function useMemoryCleanup(cleanupFn: () => void,
+export function useMemoryCleanup(cleanupFn: ()  => void,
   deps: unknown[] = []) {
   useEffect(() => { return cleanupFn
    }, deps)
@@ -521,7 +515,7 @@ export const MotionButton = memo(motion.button)
 export const MotionSpan = memo(motion.span)
 
 // HOC for adding performance monitoring
-export function withPerformanceMonitoring<P extends, object>(
+export function withPerformanceMonitoring<P: extends, object>(
   Component: ComponentType<P>,
   componentName?: string
 ) { return function PerformanceMonitoredComponent(props: P) {

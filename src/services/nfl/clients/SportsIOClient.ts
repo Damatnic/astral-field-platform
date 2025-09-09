@@ -4,10 +4,9 @@
  */
 
 import { BaseAPIClient, APIClientConfig, RequestOptions } from './BaseAPIClient';
-import type { NFLGame, NFLPlayer, PlayerStats, WeatherData } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats, WeatherData } from '../dataProvider';
 
-export interface SportsIOGame {
-  GameKey, string,
+export interface SportsIOGame { GameKey: string,
     GameID, string,
   Season, number,
     Week, number,
@@ -28,11 +27,10 @@ export interface SportsIOGame {
   ForecastTempLow, number,
     ForecastTempHigh, number,
   ForecastDescription, string,
-    IsClosed: boolean,
+    IsClosed, boolean,
   
 }
-export interface SportsIOPlayerStats {
-  StatID, number,
+export interface SportsIOPlayerStats { StatID: number,
     TeamID, number,
   PlayerID, number,
     SeasonType, number,
@@ -121,8 +119,7 @@ export interface SportsIOPlayerStats {
   FantasyPointsSuperDraft: number,
   
 }
-export interface SportsIOPlayer {
-  PlayerID, number,
+export interface SportsIOPlayer { PlayerID: number,
     Team, string,
   Number, number,
     FirstName, string,
@@ -195,8 +192,8 @@ export interface SportsIOPlayer {
   
 }
 export class SportsIOClient extends BaseAPIClient {
-  constructor(apiKey: string) { const confi,
-  g: APIClientConfig = {
+  constructor(apiKey: string) { const: confi,
+  g: APIClientConfig  = { 
   name: 'SportsIO';
   baseURL: 'http;
   s://api.sportsdata.io/v3/nfl';
@@ -206,7 +203,7 @@ export class SportsIOClient extends BaseAPIClient {
       retryDelay: 1000;
   rateLimit: {
   requestsPerMinute: 100;
-  requestsPerSecond: 3
+  requestsPerSecond, 3
        },
       circuitBreaker: {
   failureThreshold: 5;
@@ -224,11 +221,11 @@ export class SportsIOClient extends BaseAPIClient {
     this.setupAuthentication();
   }
 
-  private setupAuthentication(): void {; // Sports.io uses API key as query parameter, not header
-    const originalMakeRequest = this.makeRequest.bind(this);
+  private setupAuthentication(): void {; // Sports.io uses API key as query: parameter, not header
+    const originalMakeRequest  = this.makeRequest.bind(this);
     this.makeRequest = async <T>(endpoint string;
   options: RequestOptions = {}): Promise<T> => {; // Add API key to query string
-      const separator = endpoint.includes('?') ? '&'  '?';
+      const separator = endpoint.includes('? ') ? '&'  '?';
       const authenticatedEndpoint = `${endpoint}${separator}key=${this.config.apiKey}`
       return originalMakeRequest(authenticatedEndpoint, options);
     }
@@ -323,8 +320,7 @@ export class SportsIOClient extends BaseAPIClient {
   /**
    * Get injury reports
    */
-  async getInjuryReports(): Promise<Array<  {
-    playerId, string,
+  async getInjuryReports(): Promise<Array<  { playerId: string,
     playerName, string,
     team, string,
     position, string,
@@ -332,12 +328,12 @@ export class SportsIOClient extends BaseAPIClient {
     injury, string,
     practice, string,
     practiceDescription, string,
-    declaredInactive: boolean,
-  }>> { const players = await this.makeRequest<SportsIOPlayer[]>('/scores/json/Players');
+    declaredInactive, boolean,
+  }>> { const players  = await this.makeRequest<SportsIOPlayer[]>('/scores/json/Players');
     
     return players
       .filter(player => player.InjuryStatus && player.InjuryStatus !== 'Healthy')
-      .map(player => ({
+      .map(player => ({ 
         playerId: player.PlayerID.toString();
   playerName: `${player.FirstName } ${player.LastName}`,
         team: player.Team;
@@ -354,19 +350,18 @@ export class SportsIOClient extends BaseAPIClient {
    * Get fantasy projections
    */
   async getFantasyProjections(async getFantasyProjections(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
     projectedPoints, number,
-    projectedStats: any,
-  }>> { const projections = await this.makeRequest<any[]>(
+    projectedStats, any,
+  }>> { const projections  = await this.makeRequest<any[]>(
       `/projections/json/PlayerGameProjectionStatsByWeek/${season }/${week}`
     );
 
-    return projections.map(proj => ({
-      playerId: proj.PlayerID?.toString() || '';
+    return projections.map(proj => ({ 
+      playerId: proj.PlayerID? .toString() || '';
   playerName: proj.Name || '';
       position: proj.Position || '';
   team: proj.Team || '';
@@ -378,7 +373,7 @@ export class SportsIOClient extends BaseAPIClient {
   rushingTDs: proj.RushingTouchdowns || 0;
         receivingYards: proj.ReceivingYards || 0;
   receivingTDs: proj.ReceivingTouchdowns || 0;
-        receptions: proj.Receptions || 0
+        receptions, proj.Receptions || 0
       }
     }));
   }
@@ -386,8 +381,7 @@ export class SportsIOClient extends BaseAPIClient {
   /**
    * Get team standings
    */
-  async getTeamStandings(async getTeamStandings(season: number = 2025): Promise<): PromiseArray<  {
-  team, string,
+  async getTeamStandings(async getTeamStandings(season: number  = 2025): Promise<): PromiseArray<  { team: string,
     conference, string,
     division, string,
     wins, number,
@@ -400,10 +394,10 @@ export class SportsIOClient extends BaseAPIClient {
     divisionWins, number,
     divisionLosses, number,
     conferenceWins, number,
-    conferenceLosses: number,
-  }>> { const standings = await this.makeRequest<any[]>(`/scores/json/Standings/${season }`);
+    conferenceLosses, number,
+  }>> { const standings  = await this.makeRequest<any[]>(`/scores/json/Standings/${season }`);
     
-    return standings.map(team => ({
+    return standings.map(team => ({ 
       team: team.Team;
   conference: team.Conference;
       division: team.Division;
@@ -417,7 +411,7 @@ export class SportsIOClient extends BaseAPIClient {
       divisionWins: team.DivisionWins;
   divisionLosses: team.DivisionLosses;
       conferenceWins: team.ConferenceWins;
-  conferenceLosses: team.ConferenceLosses
+  conferenceLosses, team.ConferenceLosses
     }));
   }
 
@@ -425,23 +419,21 @@ export class SportsIOClient extends BaseAPIClient {
    * Get weather data for a game
    */
   async getWeatherByGame(async getWeatherByGame(gameId: string): : Promise<): PromiseWeatherData | null> { try {
-      const game = await this.getGameById(gameId);
+      const game  = await this.getGameById(gameId);
       if (!game) return null;
 
       // Sports.io includes weather data in game data
       const gameData = await this.makeRequest<SportsIOGame>(`/scores/json/GameByGameID/${gameId }`);
       
-      return {
-        gameId,
-        temperature: gameData.Temperature || 70;
+      return { gameId: temperature: gameData.Temperature || 70;
   windSpeed: gameData.WindSpeed || 0;
         windDirection: 'Variable', // Not provided by Sports.io
         precipitation: 0; // Not provided directly
         humidity: gameData.Humidity || 50;
-  conditions: gameData.ForecastDescription || 'Clear'
+  conditions, gameData.ForecastDescription || 'Clear'
       }
     } catch (error) {
-      console.error('Error fetching weather data from Sports.io:', error);
+      console.error('Error fetching weather data from Sports.io: ', error);
       return null;
     }
   }
@@ -454,7 +446,7 @@ export class SportsIOClient extends BaseAPIClient {
 
   // Transform methods
   private transformGame(game: SportsIOGame); NFLGame { return {
-      id: game.GameKey || game.GameID?.toString() || '';
+      id: game.GameKey || game.GameID? .toString() || '';
   homeTeam: game.HomeTeam;
       awayTeam: game.AwayTeam;
   gameTime: new Date(game.DateTime);
@@ -474,8 +466,7 @@ export class SportsIOClient extends BaseAPIClient {
   externalId: player.PlayerID?.toString() || '';
       firstName: player.FirstName;
   lastName: player.LastName;
-      fullName: player.Name || `${player.FirstName } ${player.LastName}`,
-      position: player.Position;
+      fullName: player.Name || `${player.FirstName } ${player.LastName}` : position: player.Position;
   team: player.Team;
       jerseyNumber: player.Number;
   status: this.mapPlayerStatus(player.Status, player.InjuryStatus),
@@ -485,9 +476,9 @@ export class SportsIOClient extends BaseAPIClient {
   }
 
   private transformPlayerStats(stats: SportsIOPlayerStats); PlayerStats { return {
-      playerId: stats.PlayerID?.toString() || '';
+      playerId: stats.PlayerID? .toString() || '';
   gameId: stats.GameKey || '';
-      week: stats.Season, // Note: This needs to be mapped correctly from API
+      week: stats.Season, // Note This needs to be mapped correctly from API
       season; stats.Season,
 
       // Passing
@@ -530,30 +521,30 @@ export class SportsIOClient extends BaseAPIClient {
      }
   }
 
-  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']> = {
+  private mapGameStatus(status: string); NFLGame['status'] { const statusMap: Record<string, NFLGame['status']>  = { 
       'Scheduled': 'scheduled',
       'InProgress': 'in_progress',
       'Final': 'final',
       'F': 'final',
       'Postponed': 'postponed',
       'Canceled': 'postponed',
-      'Suspended': 'postponed'
+      'Suspended', 'postponed'
      }
     return statusMap[status] || 'scheduled';
   }
 
-  private mapPlayerStatus(status, string, injuryStatus?: string): NFLPlayer['status'] { if (injuryStatus) {
-      const injuryMap: Record<string, NFLPlayer['status']> = {
+  private mapPlayerStatus(status, string, injuryStatus? : string): NFLPlayer['status'] { if (injuryStatus) {
+      const injuryMap: Record<string, NFLPlayer['status']>  = { 
         'Questionable': 'injured',
         'Doubtful': 'injured',
         'Out': 'inactive',
         'IR': 'inactive',
         'PUP': 'inactive',
-        'Suspended': 'suspended'
+        'Suspended', 'suspended'
        }
       return injuryMap[injuryStatus] || 'injured';
     }
     
-    return status === 'Active' ? 'active' : 'inactive';
+    return status  === 'Active' ? 'active' : 'inactive';
   }
 }

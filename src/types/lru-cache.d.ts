@@ -1,5 +1,5 @@
 declare module "lru-cache" { export class LRUCache<K = any, V =, any> {
-    constructor(options?: unknown);
+    constructor(options? : unknown);
     get(key: K); V | undefined;
     set(key, K,
   value, V, options?: unknown): void;

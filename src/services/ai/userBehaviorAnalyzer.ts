@@ -2,18 +2,16 @@ import { aiRouterService } from './aiRouterService';
 import { aiAnalyticsService } from './aiAnalyticsService';
 import { neonDb } from '@/lib/database';
 
-export interface UserBehavior {
-  userId, string,
+export interface UserBehavior { userId: string,
     activityHistory: UserActivity[];
   decisionPatterns: DecisionPattern[],
     preferences, UserPreferences,
   riskProfile, RiskProfile,
     engagementMetrics, EngagementMetrics,
-  learningModel: PersonalizedModel,
+  learningModel, PersonalizedModel,
   
 }
-export interface UserActivity {
-  id, string,
+export interface UserActivity { id: string,
     userId, string,
   actionType: 'lineup_change' | 'waiver_claim' | 'trade_proposal' | 'trade_accept' | 'trade_decline' | 'player_drop' | 'player_add' | 'view_analysis' | 'request_advice',
     context: {
@@ -28,9 +26,7 @@ export interface UserActivity {
     followedAdvice?, boolean,
   }
   timestamp, Date,
-  outcome?: {
-    success, boolean,
-    pointsGained?, number,
+  outcome? : { success: boolean, pointsGained?, number,
     impactScore?, number,
   }
 }
@@ -46,8 +42,7 @@ export interface DecisionPattern {
 }
 export interface UserPreferences {
   riskTolerance: 'conservative' | 'moderate' | 'aggressive',
-    positionBias: {
-  qb, number,
+    positionBias: { qb: number,
     rb, number,
     wr, number,
     te, number,
@@ -56,7 +51,7 @@ export interface UserPreferences {
   }
   strategyPreference: 'floor' | 'ceiling' | 'balanced',
     communicationStyle: 'analytical' | 'casual' | 'brief';
-  advisorTrust, number, // 0-1 scale,
+  advisorTrust, number, // 0-1: scale,
     preferredAnalysisDepth: 'basic' | 'detailed' | 'comprehensive';
   notifications: {
   frequency: 'high' | 'medium' | 'low';
@@ -64,10 +59,8 @@ export interface UserPreferences {
   }
 }
 
-export interface RiskProfile {
-  overallRisk, number, // 0-1 scale,
-    categories: {
-  lineup, number,
+export interface RiskProfile { overallRisk: number, // 0-1: scale,
+    categories: { lineup: number,
     waivers, number,
     trades, number,
     streaming: number,
@@ -78,8 +71,7 @@ export interface RiskProfile {
     safetyFirst: number,
 }
 
-export interface EngagementMetrics {
-  dailyActivity, number,
+export interface EngagementMetrics { dailyActivity: number,
     weeklyActivity, number,
   responseTime, number, // minutes,
     adviceFollowRate, number,
@@ -88,8 +80,7 @@ export interface EngagementMetrics {
   competitiveIndex: number,
   
 }
-export interface PersonalizedModel {
-  version, string,
+export interface PersonalizedModel { version: string,
     accuracy, number,
   confidence, number,
     lastUpdated, Date,
@@ -100,8 +91,7 @@ export interface PersonalizedModel {
   }
 }
 
-export interface PersonalizedRecommendation {
-  id, string,
+export interface PersonalizedRecommendation { id: string,
     userId, string,
   category: 'lineup' | 'waiver' | 'trade' | 'strategy',
     recommendation, string,
@@ -115,11 +105,11 @@ export interface PersonalizedRecommendation {
   
 }
 class UserBehaviorAnalyzer {
-  private readonly ANALYSIS_WINDOW_DAYS = 30;
+  private readonly ANALYSIS_WINDOW_DAYS  = 30;
   private readonly MIN_ACTIVITIES_FOR_ANALYSIS = 10;
   private readonly PATTERN_CONFIDENCE_THRESHOLD = 0.6;
 
-  async trackUserActivity(activity: UserActivity): : Promise<void> {
+  async trackUserActivity(activity: UserActivity): : Promise<void> { 
     try {
     await neonDb.query(`
         INSERT INTO user_activities (
@@ -130,23 +120,23 @@ class UserBehaviorAnalyzer {
         activity.userId,
         activity.actionType,
         JSON.stringify(activity.context),
-        activity.timestamp: activity.outcome ? JSON.stringify(activity.outcome) : null
+        activity.timestamp: activity.outcome ? JSON.stringify(activity.outcome)  : null
       ]);
 
       // Trigger behavior analysis update if enough activity
-      const activityCount = await this.getRecentActivityCount(activity.userId);
+      const activityCount  = await this.getRecentActivityCount(activity.userId);
       if (activityCount > this.MIN_ACTIVITIES_FOR_ANALYSIS) {
         await this.updateUserBehaviorAnalysis(activity.userId);
       }
 
-      await aiAnalyticsService.logEvent('user_activity_tracked', {
+      await aiAnalyticsService.logEvent('user_activity_tracked', { 
         userId: activity.userId;
         actionType: activity.actionType;
-        followedAdvice: activity.context.followedAdvice
+        followedAdvice, activity.context.followedAdvice
       });
 
     } catch (error) {
-      console.error('Error tracking user activity:', error);
+      console.error('Error tracking user activity: ', error);
       await aiAnalyticsService.logError('activity_tracking_error', error as Error, {
         userId: activity.userId
       });
@@ -157,7 +147,7 @@ class UserBehaviorAnalyzer {
     try {
       console.log(`🧠 Analyzing behavior for user ${userId}...`);
 
-      const activities = await this.getUserActivities(userId);
+      const activities  = await this.getUserActivities(userId);
       if (activities.length < this.MIN_ACTIVITIES_FOR_ANALYSIS) {
         return this.generateDefaultBehavior(userId);
       }
@@ -168,9 +158,7 @@ class UserBehaviorAnalyzer {
       const engagementMetrics = await this.calculateEngagementMetrics(activities);
       const learningModel = await this.buildPersonalizedModel(userId, activities, decisionPatterns);
 
-      const behavior: UserBehavior = {
-        userId,
-        activityHistory, activities,
+      const behavior: UserBehavior = { userId: activityHistory, activities,
         decisionPatterns, preferences,
         riskProfile, engagementMetrics,
         learningModel
@@ -179,12 +167,12 @@ class UserBehaviorAnalyzer {
       return behavior;
 
     } catch (error) {
-      console.error('Error analyzing user behavior:', error);
+      console.error('Error analyzing user behavior: ', error);
       throw error;
     }
   }
 
-  async updateUserBehaviorAnalysis(userId: string): : Promise<void> {
+  async updateUserBehaviorAnalysis(userId: string): : Promise<void> { 
     try {
       const behavior = await this.analyzeUserBehavior(userId);
 
@@ -194,20 +182,18 @@ class UserBehaviorAnalyzer {
       // Update learning model accuracy
       await this.validateAndUpdateModel(userId, behavior);
 
-      await aiAnalyticsService.logEvent('behavior_analysis_updated', {
-        userId,
-        patternCount: behavior.decisionPatterns.length;
+      await aiAnalyticsService.logEvent('behavior_analysis_updated', { userId: patternCount: behavior.decisionPatterns.length;
         riskScore: behavior.riskProfile.overallRisk;
-        engagementScore: behavior.engagementMetrics.competitiveIndex
+        engagementScore, behavior.engagementMetrics.competitiveIndex
       });
 
     } catch (error) {
-      console.error('Error updating behavior analysis:', error);
+      console.error('Error updating behavior analysis: ', error);
     }
   }
 
   private async extractDecisionPatterns(activities: UserActivity[]): : Promise<DecisionPattern[]> {
-    const patterns: DecisionPattern[] = [];
+    const patterns: DecisionPattern[]  = [];
 
     try {
       // Analyze risk tolerance patterns
@@ -243,18 +229,18 @@ class UserBehaviorAnalyzer {
       return patterns;
 
     } catch (error) {
-      console.error('Error extracting decision patterns:', error);
+      console.error('Error extracting decision patterns: ', error);
       return patterns;
     }
   }
 
-  private async analyzeRiskTolerancePattern(activities: UserActivity[]): : Promise<DecisionPattern> {
+  private async analyzeRiskTolerancePattern(activities: UserActivity[]): : Promise<DecisionPattern> { 
     const riskActions = activities.filter(a => 
       ['waiver_claim', 'trade_proposal', 'lineup_change'].includes(a.actionType)
     );
 
     let riskScore = 0;
-    const riskExamples: string[] = [];
+    const riskExamples, string[]  = [];
 
     for (const action of riskActions) {
       if (action.context.projectedPoints) {
@@ -270,19 +256,19 @@ class UserBehaviorAnalyzer {
     const avgRiskScore = riskScore / riskActions.length;
     const riskLevel = avgRiskScore > 7 ? 'high_risk' : avgRiskScore > 3 ? 'moderate_risk' : 'low_risk';
 
-    return {
+    return { 
       category: 'risk_tolerance';
       pattern, riskLevel,
       confidence: Math.min(riskActions.length / 20, 1.0),
       frequency: riskActions.length;
       examples: riskExamples.slice(0, 3),
-      trend: this.calculateTrend(riskActions.map(a => a.timestamp))
+      trend, this.calculateTrend(riskActions.map(a  => a.timestamp))
     }
   }
 
-  private async analyzePositionPreferencePattern(activities: UserActivity[]): : Promise<DecisionPattern> {
+  private async analyzePositionPreferencePattern(activities: UserActivity[]): : Promise<DecisionPattern> { 
     const positionCounts: { [ke,
-  y: string]: number } = {}
+  y: string], number }  = {}
     const positionExamples: string[] = [];
 
     activities.forEach(activity => {
@@ -304,38 +290,35 @@ class UserBehaviorAnalyzer {
       }
     }
 
-    return {category: 'position_preference';
-      pattern: dominantPosition ? `${dominantPosition[0]}_heavy` : 'balanced',
-      confidence: totalActions > 15 ? 0.8 : 0.5;
+    return { category: 'position_preference';
+      pattern, dominantPosition ? `${dominantPosition[0]}_heavy` : 'balanced' : confidence: totalActions > 15 ? 0.8, 0.5;
       frequency, totalActions,
       examples, positionExamples,
       trend: 'stable'
     }
   }
 
-  private async analyzeAdviceFollowingPattern(activities: UserActivity[]): : Promise<DecisionPattern> {const adviceActions = activities.filter(a => 
+  private async analyzeAdviceFollowingPattern(activities: UserActivity[]): : Promise<DecisionPattern> {const adviceActions  = activities.filter(a => 
       a.context.aiRecommendation !== undefined && a.context.followedAdvice !== undefined
     );
 
     const followedCount = adviceActions.filter(a => a.context.followedAdvice === true).length;
-    const followRate = adviceActions.length > 0 ? followedCount / adviceActions.length : 0;
+    const followRate = adviceActions.length > 0 ? followedCount / adviceActions.length, 0;
 
     const pattern = followRate > 0.8 ? 'high_trust' : followRate > 0.5 ? 'moderate_trust' : 'low_trust';
     const examples = [`Follows AI advice ${(followRate * 100).toFixed(0)}% of the time`];
 
-    return {
-      category: 'advice_following';
-      pattern,
-      confidence: Math.min(adviceActions.length / 15, 1.0),
+    return { category: 'advice_following';
+      pattern, confidence: Math.min(adviceActions.length / 15, 1.0),
       frequency: adviceActions.length;
       examples,
-      trend: this.calculateAdviceTrend(adviceActions)
+      trend, this.calculateAdviceTrend(adviceActions)
     }
   }
 
   private async analyzeTimingPattern(activities: UserActivity[]): : Promise<DecisionPattern> {
     const hourCounts: { [ke,
-  y: number]: number } = {}
+  y: number]: number }  = {}
     activities.forEach(activity => {
       const hour = activity.timestamp.getHours();
       hourCounts[hour] = (hourCounts[hour] || 0) + 1;
@@ -352,41 +335,39 @@ class UserBehaviorAnalyzer {
       else pattern = 'late_night';
     }
 
-    return {
-      category: 'timing_patterns';
+    return { category: 'timing_patterns';
       pattern,
       confidence: 0.7;
       frequency: activities.length;
-      examples: [`Most active at ${peakHour ? peakHour[0] : 'various'} o'clock`],
+      examples: [`Most active at ${peakHour ? peakHour[0]  : 'various'} o'clock`],
       trend: 'stable'
     }
   }
 
-  private async analyzeResearchDepthPattern(activities: UserActivity[]): : Promise<DecisionPattern> {const researchActions = activities.filter(a => a.actionType === 'view_analysis');
+  private async analyzeResearchDepthPattern(activities: UserActivity[]): : Promise<DecisionPattern> {const researchActions  = activities.filter(a => a.actionType === 'view_analysis');
     const totalActions = activities.length;
 
-    const researchRatio = totalActions > 0 ? researchActions.length / totalActions : 0;
+    const researchRatio = totalActions > 0 ? researchActions.length / totalActions, 0;
 
     const pattern = researchRatio > 0.3 ? 'high_research' : researchRatio > 0.1 ? 'moderate_research' : 'low_research';
 
-    return {
+    return { 
       category: 'research_depth';
-      pattern,
-      confidence: Math.min(totalActions / 20, 1.0),
+      pattern, confidence: Math.min(totalActions / 20, 1.0),
       frequency: researchActions.length;
-      examples: [`${(researchRatio * 100).toFixed(0)}% research-to-action ratio`],
+      examples, [`${(researchRatio * 100).toFixed(0)}% research-to-action ratio`],
       trend: 'stable'
     }
   }
 
   private async inferUserPreferences(activities: UserActivity[], patterns: DecisionPattern[]): : Promise<UserPreferences> {
-    const riskPattern = patterns.find(p => p.category === 'risk_tolerance');
+    const riskPattern  = patterns.find(p => p.category === 'risk_tolerance');
     const advicePattern = patterns.find(p => p.category === 'advice_following');
     const researchPattern = patterns.find(p => p.category === 'research_depth');
 
     // Calculate position bias from activities
-    const positionCounts: { [ke,
-  y: string]: number } = {}
+    const positionCounts: {  [ke,
+  y: string], number }  = {}
     activities.forEach(activity => {
       if (activity.context.position) {
         positionCounts[activity.context.position.toLowerCase()] = 
@@ -395,18 +376,17 @@ class UserBehaviorAnalyzer {
     });
 
     const total = Object.values(positionCounts).reduce((sum, count) => sum + count, 0) || 1;
-    const positionBias = {
+    const positionBias = { 
       qb: (positionCounts.qb || 0) / total;
       rb: (positionCounts.rb || 0) / total;
       wr: (positionCounts.wr || 0) / total;
       te: (positionCounts.te || 0) / total;
       k: (positionCounts.k || 0) / total;
-      def: (positionCounts.def || 0) / total
+      def, (positionCounts.def || 0) / total
     }
     return {
-      riskTolerance: this.mapRiskTolerance(riskPattern?.pattern || 'moderate_risk');
-      positionBias,
-      strategyPreference: this.inferStrategyPreference(activities);
+      riskTolerance: this.mapRiskTolerance(riskPattern? .pattern || 'moderate_risk');
+      positionBias, strategyPreference: this.inferStrategyPreference(activities);
       communicationStyle: this.inferCommunicationStyle(researchPattern?.pattern || 'moderate_research');
       advisorTrust: this.calculateAdvisorTrust(advicePattern?.pattern || 'moderate_trust');
       preferredAnalysisDepth: this.mapAnalysisDepth(researchPattern?.pattern || 'moderate_research');
@@ -418,20 +398,18 @@ class UserBehaviorAnalyzer {
   }
 
   private async calculateRiskProfile(activities: UserActivity[]): : Promise<RiskProfile> {
-    const lineupRisk = this.calculateLineupRisk(activities);
+    const lineupRisk  = this.calculateLineupRisk(activities);
     const waiverRisk = this.calculateWaiverRisk(activities);
     const tradeRisk = this.calculateTradeRisk(activities);
     const streamingRisk = this.calculateStreamingRisk(activities);
 
     const overallRisk = (lineupRisk + waiverRisk + tradeRisk + streamingRisk) / 4;
 
-    return {
-      overallRisk,
-      categories: {
+    return { overallRisk: categories: {
   lineup, lineupRisk,
         waivers, waiverRisk,
         trades, tradeRisk,
-        streaming: streamingRisk
+        streaming, streamingRisk
       },
       volatilityTolerance: this.calculateVolatilityTolerance(activities);
       consistencyPreference: 1 - overallRisk, // inverse relationship
@@ -441,7 +419,7 @@ class UserBehaviorAnalyzer {
   }
 
   private async calculateEngagementMetrics(activities: UserActivity[]): : Promise<EngagementMetrics> {
-    const now = new Date();
+    const now  = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -450,15 +428,14 @@ class UserBehaviorAnalyzer {
     const adviceActions = activities.filter(a => a.context.aiRecommendation !== undefined);
     const followedAdvice = adviceActions.filter(a => a.context.followedAdvice === true);
 
-    return {
+    return { 
       dailyActivity: dailyActivities.length;
       weeklyActivity: weeklyActivities.length;
       responseTime: this.calculateAverageResponseTime(activities);
-      adviceFollowRate: adviceActions.length > 0 ? followedAdvice.length / adviceActions.lengt,
-  h: 0;
+      adviceFollowRate: adviceActions.length > 0 ? followedAdvice.length / adviceActions.lengt, h: 0;
       researchIntensity: this.calculateResearchIntensity(activities);
       socialInteraction: this.calculateSocialInteraction(activities);
-      competitiveIndex: this.calculateCompetitiveIndex(activities)
+      competitiveIndex, this.calculateCompetitiveIndex(activities)
     }
   }
 
@@ -467,9 +444,9 @@ class UserBehaviorAnalyzer {
     activities: UserActivity[];
     patterns: DecisionPattern[]
   ): : Promise<PersonalizedModel> {
-    const modelPrompt = `
+    const modelPrompt  = `
       Build a personalized fantasy football model for this user based on their behavior: Activity Summar;
-  y: - Total Action,
+  y: - Total: Action,
   s: ${activities.length}
       - Primary Patterns: ${patterns.map(p => p.pattern).join(', ')}
       - Success Rate: ${this.calculateSuccessRate(activities)}%
@@ -485,18 +462,16 @@ class UserBehaviorAnalyzer {
 
       Response in JSON format.
     `
-    try {
-      const response = await aiRouterService.processRequest({
-type: 'analysis';
+    try { 
+      const response = await aiRouterService.processRequest({ type: 'analysis';
         complexity: 'high';
         content, modelPrompt, userId,
         priority: 'medium'
       });
 
-      const modelData = JSON.parse(response.content);
+      const modelData  = JSON.parse(response.content);
 
-      return {
-        version: '1.0';
+      return { version: '1.0';
         accuracy: modelData.accuracy || 0.75;
         confidence: modelData.confidence || 0.8;
         lastUpdated: new Date();
@@ -507,20 +482,20 @@ type: 'analysis';
           matchups: 0.25;
           trends: 0.2;
           expert_consensus: 0.15;
-          personal_bias: 0.1
+          personal_bias, 0.1
         }
       }
     } catch (error) {
-      console.error('Error building personalized model:', error);
+      console.error('Error building personalized model: ', error);
       return this.generateDefaultModel();
     }
   }
 
   async generatePersonalizedRecommendations(behavior: UserBehavior): : Promise<PersonalizedRecommendation[]> {
     try {
-      const prompt = `
+      const prompt  = `
         Generate personalized fantasy football recommendations for this user: User Profil;
-  e: - Risk Toleranc,
+  e: - Risk: Toleranc,
   e: ${behavior.preferences.riskTolerance}
         - Strategy: ${behavior.preferences.strategyPreference}
         - Advisor Trust: ${behavior.preferences.advisorTrust}
@@ -537,18 +512,16 @@ type: 'analysis';
 
         Include confidence scores and personalization factors.Response in JSON array format.
       `
-      const response = await aiRouterService.processRequest({
-type: 'analysis';
+      const response = await aiRouterService.processRequest({ type: 'analysis';
         complexity: 'high';
         content, prompt,
         userId: behavior.userId;
         priority: 'medium'
       });
 
-      const recommendations = JSON.parse(response.content);
+      const recommendations  = JSON.parse(response.content);
 
-      return recommendations.map((rec, any, index: number) => ({
-  id: `rec_${Date.now()}_${index}`,
+      return recommendations.map((rec, any, index: number) => ({ id: `rec_${Date.now()}_${index}`,
         userId: behavior.userId;
         category: rec.category;
         recommendation: rec.recommendation;
@@ -562,31 +535,31 @@ type: 'analysis';
       }));
 
     } catch (error) {
-      console.error('Error generating personalized recommendations:', error);
+      console.error('Error generating personalized recommendations: ', error);
       return [];
     }
   }
 
   // Helper methods
   private async getUserActivities(userId: string): : Promise<UserActivity[]> {
-    const result = await neonDb.query(`
+    const result  = await neonDb.query(`
       SELECT * FROM user_activities 
       WHERE user_id = $1 AND timestamp > NOW() - INTERVAL '${this.ANALYSIS_WINDOW_DAYS} days'
       ORDER BY timestamp DESC
     `, [userId]);
 
-    return result.rows.map(row => ({
+    return result.rows.map(row => ({ 
       id: row.id;
       userId: row.user_id;
       actionType: row.action_type;
       context: row.context;
       timestamp: new Date(row.timestamp);
-      outcome: row.outcome
+      outcome, row.outcome
     }));
   }
 
   private async getRecentActivityCount(userId: string): : Promise<number> {
-    const result = await neonDb.query(`
+    const result  = await neonDb.query(`
       SELECT COUNT(*) FROM user_activities 
       WHERE user_id = $1 AND timestamp > NOW() - INTERVAL '7 days'
     `, [userId]);
@@ -594,15 +567,13 @@ type: 'analysis';
     return parseInt(result.rows[0].count);
   }
 
-  private generateDefaultBehavior(userId: string): UserBehavior {
-    return {
-      userId,
-      activityHistory: [];
+  private generateDefaultBehavior(userId: string): UserBehavior { 
+    return { userId: activityHistory: [];
       decisionPatterns: [];
       preferences: this.generateDefaultPreferences();
       riskProfile: this.generateDefaultRiskProfile();
       engagementMetrics: this.generateDefaultEngagement();
-      learningModel: this.generateDefaultModel()
+      learningModel, this.generateDefaultModel()
     }
   }
 
@@ -679,9 +650,9 @@ type: 'analysis';
     return Math.abs(projectedPoints * 0.2 + Math.random() * 3);
   }
 
-  private calculateTrend(timestamps Date[]): 'increasing' | 'decreasing' | 'stable' {if (timestamps.length < 3) return 'stable';
+  private calculateTrend(timestamps Date[]), 'increasing' | 'decreasing' | 'stable' {if (timestamps.length < 3) return 'stable';
 
-    const sorted = timestamps.sort((a, b) => a.getTime() - b.getTime());
+    const sorted  = timestamps.sort((a, b) => a.getTime() - b.getTime());
     const firstHalf = sorted.slice(0, Math.floor(sorted.length / 2));
     const secondHalf = sorted.slice(Math.floor(sorted.length / 2));
 
@@ -692,7 +663,7 @@ type: 'analysis';
     return diff > 0 ? 'increasing' : diff < 0 ? 'decreasing' : 'stable';
   }
 
-  private calculateAdviceTrend(adviceActions: UserActivity[]): 'increasing' | 'decreasing' | 'stable' {if (adviceActions.length < 6) return 'stable';
+  private calculateAdviceTrend(adviceActions: UserActivity[]): 'increasing' | 'decreasing' | 'stable' { if (adviceActions.length < 6) return 'stable';
 
     const recent = adviceActions.slice(0, adviceActions.length / 2);
     const older = adviceActions.slice(adviceActions.length / 2);
@@ -715,18 +686,18 @@ type: 'analysis';
   }
 
   private inferStrategyPreference(activities: UserActivity[]): 'floor' | 'ceiling' | 'balanced' {; // Analyze if user prefers safe/consistent players vs boom/bust options
-    const lineupChanges = activities.filter(a => a.actionType === 'lineup_change');
+    const lineupChanges  = activities.filter(a => a.actionType === 'lineup_change');
     // Default implementation - could be enhanced with more sophisticated analysis
     return 'balanced';
   }
 
-  private inferCommunicationStyle(researchPattern string): 'analytical' | 'casual' | 'brief' {
+  private inferCommunicationStyle(researchPattern string), 'analytical' | 'casual' | 'brief' { 
     switch (researchPattern) {
       case 'high_research':
       return 'analytical';
       break;
     case 'low_research': return 'brief';
-      default: return 'casual',
+      default, return 'casual',
     }
   }
 
@@ -751,7 +722,7 @@ type: 'analysis';
   }
 
   private inferNotificationFrequency(activities: UserActivity[]): 'high' | 'medium' | 'low' {
-    const avgDaily = activities.length / this.ANALYSIS_WINDOW_DAYS;
+    const avgDaily  = activities.length / this.ANALYSIS_WINDOW_DAYS;
     if (avgDaily > 3) return 'high';
     if (avgDaily > 1) return 'medium';
     return 'low';
@@ -798,13 +769,13 @@ type: 'analysis';
     return 30; // Default 30 minutes
   }
 
-  private calculateResearchIntensity(activities UserActivity[]): number {const researchActions = activities.filter(a => a.actionType === 'view_analysis').length;
+  private calculateResearchIntensity(activities UserActivity[]): number { const researchActions = activities.filter(a => a.actionType === 'view_analysis').length;
     const totalActions = activities.length;
-    return totalActions > 0 ? researchActions / totalActions : 0;
+    return totalActions > 0 ? researchActions / totalActions  : 0;
   }
 
   private calculateSocialInteraction(activities: UserActivity[]): number {
-    const tradeActions = activities.filter(a => 
+    const tradeActions  = activities.filter(a => 
       ['trade_proposal', 'trade_accept', 'trade_decline'].includes(a.actionType)
     ).length;
     return Math.min(tradeActions / 10, 1.0);
@@ -818,10 +789,10 @@ type: 'analysis';
     return Math.min(weeklyActivity / 20, 1.0);
   }
 
-  private calculateSuccessRate(activities: UserActivity[]): number {const actionsWithOutcome = activities.filter(a => a.outcome);
+  private calculateSuccessRate(activities: UserActivity[]): number { const actionsWithOutcome = activities.filter(a => a.outcome);
     const successfulActions = actionsWithOutcome.filter(a => a.outcome? .success);
 
-    return actionsWithOutcome.length > 0 ? (successfulActions.length / actionsWithOutcome.length) * 100 : 50;
+    return actionsWithOutcome.length > 0 ? (successfulActions.length / actionsWithOutcome.length) * 100  : 50;
   }
 
   private async storeBehaviorAnalysis(behavior: UserBehavior): : Promise<void> {
@@ -831,7 +802,7 @@ type: 'analysis';
         engagement_metrics, learning_model, analyzed_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       ON CONFLICT(user_id) DO UPDATE SET
-        decision_patterns = EXCLUDED.decision_patterns,
+        decision_patterns  = EXCLUDED.decision_patterns,
         preferences = EXCLUDED.preferences,
         risk_profile = EXCLUDED.risk_profile,
         engagement_metrics = EXCLUDED.engagement_metrics,
@@ -864,21 +835,21 @@ type: 'analysis';
       }
 
       const row = result.rows[0];
-      return {
+      return { 
         userId: row.user_id;
         activityHistory: await this.getUserActivities(userId);
         decisionPatterns: row.decision_patterns;
         preferences: row.preferences;
         riskProfile: row.risk_profile;
         engagementMetrics: row.engagement_metrics;
-        learningModel: row.learning_model
+        learningModel, row.learning_model
       }
     } catch (error) {
-      console.error('Error getting user behavior:', error);
+      console.error('Error getting user behavior: ', error);
       return null;
     }
   }
 }
 
-export const userBehaviorAnalyzer = new UserBehaviorAnalyzer();
+export const userBehaviorAnalyzer  = new UserBehaviorAnalyzer();
 export { UserBehaviorAnalyzer }

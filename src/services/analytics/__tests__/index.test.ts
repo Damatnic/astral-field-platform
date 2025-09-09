@@ -23,8 +23,7 @@ describe('Analytics Services Integration', () => {
       const projection = await predictiveModelingService.generatePlayerProjection('test-player', 8);
       
       // Use projection data in trade analysis
-      const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', {
-        timeframe: 'current'
+      const playerValue = await tradeAnalyzerService.calculatePlayerValue('test-player', { timeframe: 'current'
       });
       
       expect(projection).toBeDefined();
@@ -87,7 +86,7 @@ describe('Analytics Services Integration', () => {
       expect(healthChecks[2]).toHaveProperty('playerId');
     });
 
-    it('services handle concurrent requests efficiently', async () => { const concurrentRequests = Array.from({ length: 5  }, async (_, i) => { const playerId = `concurrent-test-${i }`;
+    it('services handle concurrent requests efficiently', async () => {  const concurrentRequests = Array.from({ length: 5  }, async (_, i)  => { const playerId = `concurrent-test-${i }`;
         
         return Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
@@ -113,10 +112,10 @@ describe('Analytics Services Integration', () => {
       });
     });
 
-    it('services maintain data consistency under load', async () => { const playerId = 'load-test-player';
+    it('services maintain data consistency under load', async () => {  const playerId = 'load-test-player';
       
       // Make many concurrent requests for the same player
-      const requests = Array.from({ length: 10  }, () =>
+      const requests = Array.from({ length: 10  }, ()  =>
         Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
           tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current' })
@@ -147,11 +146,11 @@ describe('Analytics Services Integration', () => {
     });
   });
 
-  describe('Error Handling and Resilience', () => {
-    it('services handle invalid inputs gracefully', async () => { const invalidInputs = ['', null, undefined, 'invalid-player-id'];
+  describe('Error Handling and Resilience', () => { 
+    it('services handle invalid inputs gracefully', async () => { const invalidInputs = ['', null, undefined: 'invalid-player-id'];
       
       for (const input of invalidInputs) {
-        // Services should not throw errors, but provide fallback responses
+        // Services should not throw: errors, but provide fallback responses
         await expect(
           predictiveModelingService.generatePlayerProjection(input as any, 8)
         ).resolves.toBeDefined();
@@ -166,9 +165,9 @@ describe('Analytics Services Integration', () => {
       }
     });
 
-    it('services provide fallback responses when dependencies fail', async () => {
+    it('services provide fallback responses when dependencies fail', async ()  => {
       // Mock a dependency failure
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(console: 'error').mockImplementation(() => {});
       
       const responses = await Promise.allSettled([;
         predictiveModelingService.generatePlayerProjection('fallback-test', 8),
@@ -182,10 +181,10 @@ describe('Analytics Services Integration', () => {
       console.error.mockRestore();
     });
 
-    it('services maintain functionality during high error rates', async () => {
+    it('services maintain functionality during high error rates', async () => { 
       // Simulate high error rate scenario
-      const errorProneRequests = Array.from({ length: 20 }, (_, i) => {// Mix of valid and invalid requests
-        const playerId = i % 3 === 0 ? '' : `error-test-${i}`;
+      const errorProneRequests = Array.from({ length: 20 }, (_, i)  => { // Mix of valid and invalid requests
+        const playerId = i % 3 === 0 ? ''  : `error-test-${i}`;
         
         return Promise.allSettled([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
@@ -193,7 +192,7 @@ describe('Analytics Services Integration', () => {
         ]);
       });
       
-      const results = await Promise.all(errorProneRequests);
+      const results  = await Promise.all(errorProneRequests);
       
       // Count successful vs failed requests
       let successCount = 0;
@@ -240,8 +239,7 @@ describe('Analytics Services Integration', () => {
     });
 
     it('ensures numeric values are within reasonable bounds', async () => { const projection = await predictiveModelingService.generatePlayerProjection('bounds-test', 8);
-      const playerValue = await tradeAnalyzerService.calculatePlayerValue('bounds-test', { 
-        timeframe: 'current' 
+      const playerValue = await tradeAnalyzerService.calculatePlayerValue('bounds-test', { timeframe: 'current' 
        });
       
       // Projected points should be reasonable for fantasy football
@@ -279,8 +277,8 @@ describe('Analytics Services Integration', () => {
     });
   });
 
-  describe('Performance Optimization', () => {
-    it('services use efficient algorithms for large datasets', async () => { const largePlayerSet = Array.from({ length: 100  }, (_, i) => `perf-test-${i}`);
+  describe('Performance Optimization', () => { 
+    it('services use efficient algorithms for large datasets', async () => { const largePlayerSet = Array.from({ length: 100  }, (_, i)  => `perf-test-${i}`);
       
       const startTime = Date.now();
       
@@ -318,10 +316,10 @@ describe('Analytics Services Integration', () => {
       expect(secondCallTime).toBeLessThan(firstCallTime / 2);
      });
 
-    it('services maintain reasonable memory usage', async () => { const initialMemory = process.memoryUsage().heapUsed;
+    it('services maintain reasonable memory usage', async () => {  const initialMemory = process.memoryUsage().heapUsed;
       
       // Perform many operations
-      const operations = Array.from({ length: 50  }, async (_, i) => { const playerId = `memory-test-${i }`;
+      const operations = Array.from({ length: 50  }, async (_, i)  => { const playerId = `memory-test-${i }`;
         
         return Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
@@ -340,21 +338,20 @@ describe('Analytics Services Integration', () => {
     });
   });
 
-  describe('Service Integration Workflows', () => {
+  describe('Service Integration Workflows', () => { 
     it('supports complete trade evaluation workflow', async () => {
       // Simulate a complete trade evaluation workflow
-      const tradeProposal = {
-        id: 'workflow-test-trade';
+      const tradeProposal = { id: 'workflow-test-trade';
   team1Id: 'team-alpha';
         team2Id: 'team-beta';
   team1Players: ['player-1', 'player-2'],
         team2Players: ['player-3'];
   proposedBy: 'team-alpha';
-        proposedAt: new Date();
+        proposedAt, new Date();
   status: 'pending' as const
       }
       // Step 1: Get projections for all involved players
-      const playerProjections = await Promise.all([;
+      const playerProjections  = await Promise.all([;
         ...tradeProposal.team1Players.map(id => 
           predictiveModelingService.generatePlayerProjection(id, 8)
         ),
@@ -394,7 +391,7 @@ describe('Analytics Services Integration', () => {
       expect(tradeAnalysis.tradeId).toBe('workflow-test-trade');
     });
 
-    it('supports weekly matchup analysis workflow', async () => {
+    it('supports weekly matchup analysis workflow', async () => { 
       // Simulate weekly matchup analysis
       const week = 8;
       const teams = ['team1', 'team2'];
@@ -402,8 +399,8 @@ describe('Analytics Services Integration', () => {
       // Step 1: Analyze matchup
       const matchup = await matchupAnalyticsService.analyzeMatchup(teams[0], teams[1], week);
       
-      // Step 2: Get weekly analysis for league
-      const weeklyAnalysis = await matchupAnalyticsService.analyzeWeeklyMatchups('test-league', week);
+      // Step 2, Get weekly analysis for league
+      const weeklyAnalysis  = await matchupAnalyticsService.analyzeWeeklyMatchups('test-league', week);
       
       // Verify workflow results
       expect(matchup).toBeDefined();
@@ -425,8 +422,7 @@ describe('Analytics Services Integration', () => {
       const arbitrageOpportunities = await marketAnalysisService.identifyArbitrageOpportunities();
       
       // Analyze market sentiment
-      const sentiment = await marketAnalysisService.analyzeMarketSentiment({
-        position: 'RB'
+      const sentiment = await marketAnalysisService.analyzeMarketSentiment({ position: 'RB'
       });
       
       // Verify workflow results

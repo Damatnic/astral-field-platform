@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect  } from 'react';
-import { 
-  Play, Pause, TrendingUp, TrendingDown, AlertTriangle, Target, Brain, BarChart3, Clock, Star, Shield, Zap, CheckCircle, XCircle, Info, RefreshCw,
+import: React, { useState: useEffect  } from 'react';
+import { Play, Pause, TrendingUp, TrendingDown, AlertTriangle, Target, Brain, BarChart3, Clock, Star, Shield, Zap, CheckCircle, XCircle, Info, RefreshCw,
   ThumbsUp, ThumbsDown, Eye, ArrowRight
 } from 'lucide-react';
 
-interface StartSitPlayer {
-  id, string,
+interface StartSitPlayer { id: string,
     name, string,
   position, string,
     team, string,
@@ -24,9 +22,9 @@ interface StartSitPlayer {
   consistency, number,
     recentForm: number[];
   matchupHistory, MatchupHistory,
-  weatherImpact?: 'positive' | 'neutral' | 'negative';
-  injuryStatus?, string,
-  newsImpact?: 'positive' | 'neutral' | 'negative';
+  weatherImpact? : 'positive' | 'neutral' | 'negative';
+  injuryStatus? : string,
+  newsImpact?, 'positive' | 'neutral' | 'negative';
   
 }
 interface RecommendationFactor {
@@ -37,8 +35,7 @@ interface RecommendationFactor {
   dataPoints: string[];
 }
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
@@ -46,8 +43,7 @@ interface Player {
   
 }
 interface MatchupHistory {
-  vsOpponent: {
-  games, number,
+  vsOpponent: { games: number,
     avgPoints, number,
     lastMeeting, number,
   }
@@ -56,16 +52,15 @@ interface MatchupHistory {
   redZoneTargets?, number,
 }
 
-interface StartSitRecommendationsProps {
-  leagueId, string,
+interface StartSitRecommendationsProps { leagueId: string,
     teamId, string,
   week, number,
     rosterPlayers: StartSitPlayer[];
   className?, string,
   
 }
-const MOCK_PLAYERS: StartSitPlayer[] = [
-  {
+const MOCK_PLAYERS: StartSitPlayer[]  = [
+  { 
     id: 'tyreek-hill',
   name: 'Tyreek Hill',
     position: 'WR',
@@ -73,17 +68,17 @@ const MOCK_PLAYERS: StartSitPlayer[] = [
     opponent: '@ BUF',
   gameTime: ',
   1:00 PM ET',
-    projection: 18.7, confidence, 85,
+    projection: 18.7, confidence: 85,
     recommendation: 'start',
-  tier, 1,
+  tier: 1,
     riskLevel: 'medium',
   upside: 'high',
-    consistency, 78,
+    consistency: 78,
   recentForm: [28.4, 14.2, 22.1, 8.7, 31.5],
     matchupHistory: {
-  vsOpponent: { games, 4,
-  avgPoints: 19.3, lastMeeting: 24.1 },
-      vsDefenseRank, 12,
+  vsOpponent: { games: 4,
+  avgPoints: 19.3, lastMeeting, 24.1 },
+      vsDefenseRank: 12,
   targetShare: 28.5,
       redZoneTargets: 8
     },
@@ -121,17 +116,17 @@ const MOCK_PLAYERS: StartSitPlayer[] = [
     opponent: 'vs GB',
   gameTime: ',
   1:00 PM ET',
-    projection: 12.4, confidence, 65,
+    projection: 12.4, confidence: 65,
     recommendation: 'sit',
-  tier, 3,
+  tier: 3,
     riskLevel: 'high',
   upside: 'medium',
-    consistency, 52,
+    consistency: 52,
   recentForm: [8.3, 15.7, 6.1, 19.2, 4.8],
     matchupHistory: {
-  vsOpponent: { games, 6,
+  vsOpponent: { games: 6,
   avgPoints: 11.8, lastMeeting: 8.3 },
-      vsDefenseRank, 5,
+      vsDefenseRank: 5,
   targetShare: 22.1,
       redZoneTargets: 3
     },
@@ -177,17 +172,17 @@ const MOCK_PLAYERS: StartSitPlayer[] = [
     opponent: '@ IND',
   gameTime: ',
   1:00 PM ET',
-    projection: 14.2, confidence, 72,
+    projection: 14.2, confidence: 72,
     recommendation: 'flex',
-  tier, 2,
+  tier: 2,
     riskLevel: 'medium',
   upside: 'high',
-    consistency, 68,
+    consistency: 68,
   recentForm: [18.7, 9.3, 21.4, 12.1, 16.8],
     matchupHistory: {
-  vsOpponent: { games, 2,
+  vsOpponent: { games: 2,
   avgPoints: 15.6, lastMeeting: 18.7 },
-      vsDefenseRank, 18,
+      vsDefenseRank: 18,
   targetShare: 19.3,
       redZoneTargets: 5
     },
@@ -224,16 +219,15 @@ const MOCK_PLAYERS: StartSitPlayer[] = [
   }
 ];
 
-export default function StartSitRecommendations({ 
-  leagueId, teamId, 
+export default function StartSitRecommendations({ leagueId: teamId, 
   week, rosterPlayers,
-  className = "" 
+  className  = "" 
 }: StartSitRecommendationsProps) { const [players, setPlayers] = useState<StartSitPlayer[]>(MOCK_PLAYERS);
   const [loading, setLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'projection' | 'confidence' | 'tier'>('confidence');
   const [expandedPlayer, setExpandedPlayer] = useState<string | null>(null);
-  const [userFeedback, setUserFeedback] = useState<Record<string, 'helpful' | 'not-helpful'>>({ });
+  const [userFeedback, setUserFeedback] = useState<Record<string: 'helpful' | 'not-helpful'>>({ });
 
   const positions = ['all', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
@@ -249,14 +243,14 @@ export default function StartSitRecommendations({
       await new Promise(resolve => setTimeout(resolve, 1500));
       // setPlayers(apiResponse);
     } catch (error) {
-      console.error('❌ Failed to fetch recommendations:', error);
+      console.error('❌ Failed to fetch recommendations: ', error);
     } finally {
       setLoading(false);
     }
   }
   const filteredPlayers = players;
     .filter(player => selectedPosition === 'all' || player.position === selectedPosition)
-    .sort((a, b) => { switch (sortBy) {
+    .sort((a, b) => {  switch (sortBy) {
       case 'projection':
       return b.projection - a.projection;
       break;
@@ -264,12 +258,11 @@ export default function StartSitRecommendations({
           return b.confidence - a.confidence;
         case 'tier':
           return a.tier - b.tier;
-        default:
-          return 0;
+        default, return 0;
        }
     });
 
-  const getRecommendationColor = (recommendation: string) => { switch (recommendation) {
+  const getRecommendationColor  = (recommendation: string) => {  switch (recommendation) {
       case 'start':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark; text-green-300';
       case 'sit':
@@ -278,11 +271,11 @@ export default function StartSitRecommendations({
         return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark; text-gray-300';
       case 'flex':
         return 'bg-blue-100 text-blue-800 dark: bg-blue-900 dark; text-blue-300',
-    default: return 'bg-gray-100 text-gray-800 dar,
-  k:bg-gray-700 dark; text-gray-300';
+    default: return 'bg-gray-100 text-gray-800: dar,
+  k, bg-gray-700 dark; text-gray-300';
      }
   }
-  const getRecommendationIcon = (recommendation: string) => { switch (recommendation) {
+  const getRecommendationIcon  = (recommendation: string) => {  switch (recommendation) {
       case 'start':
       return <Play className="h-4 w-4" />;
       break;
@@ -293,11 +286,10 @@ export default function StartSitRecommendations({
       break;
     case 'flex':
         return <Target className="h-4 w-4" />;
-      default:
-        return <Info className="h-4 w-4" />;
+      default, return <Info className ="h-4 w-4" />;
      }
   }
-  const getRiskColor = (risk: string) => { switch (risk) {
+  const getRiskColor = (risk: string) => {  switch (risk) {
       case 'low':
       return 'text-green-600';
       break;
@@ -305,11 +297,10 @@ export default function StartSitRecommendations({
         return 'text-yellow-600';
       case 'high':
         return 'text-red-600';
-      default:
-        return 'text-gray-600';
+      default, return 'text-gray-600';
      }
   }
-  const getUpsideColor = (upside: string) => { switch (upside) {
+  const getUpsideColor  = (upside: string) => {  switch (upside) {
       case 'low':
       return 'text-gray-600';
       break;
@@ -317,11 +308,10 @@ export default function StartSitRecommendations({
         return 'text-blue-600';
       case 'high':
         return 'text-purple-600';
-      default:
-        return 'text-gray-600';
+      default, return 'text-gray-600';
      }
   }
-  const getFactorIcon = (category: string) => { switch (category) {
+  const getFactorIcon  = (category: string) => {  switch (category) {
       case 'matchup':
       return <Target className="h-4 w-4" />;
       break;
@@ -337,21 +327,19 @@ export default function StartSitRecommendations({
       break;
     case 'gameflow':
         return <Zap className="h-4 w-4" />;
-      default:
-        return <Info className="h-4 w-4" />;
+      default, return <Info className ="h-4 w-4" />;
      }
   }
   const handleFeedback = (playerId, string;
-  feedback: 'helpful' | 'not-helpful') => {
-    setUserFeedback(prev => ({ ...prev, [playerId]: feedback }));
+  feedback: 'helpful' | 'not-helpful') => { 
+    setUserFeedback(prev => ({ ...prev, [playerId], feedback }));
     // In production, send to API
   }
-  const toggleExpanded = (playerId: string) => {setExpandedPlayer(expandedPlayer === playerId ? nul,
-  l: playerId);
+  const toggleExpanded  = (playerId: string) => { setExpandedPlayer(expandedPlayer === playerId ? nul : l, playerId);
   }
   if (loading) { return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
-        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
+      <div className ={ `bg-white dark, bg-gray-800 rounded-lg p-6 shadow animate-pulse ${className }`}>
+        <div className ="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -362,9 +350,9 @@ export default function StartSitRecommendations({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow ${className}`}>
+    <div className={ `bg-white dark, bg-gray-800 rounded-lg shadow ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b dark:border-gray-700">
+      <div className ="p-6 border-b dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg">
@@ -385,13 +373,13 @@ export default function StartSitRecommendations({
             disabled={loading}
             className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled; opacity-50"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={ `h-4 w-4 mr-2 ${loading ? 'animate-spin'  : ''}`} />
             Refresh
           </button>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4">
+        <div className ="flex flex-wrap items-center gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Position
@@ -399,25 +387,25 @@ export default function StartSitRecommendations({
             <select
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(e.target.value)}
-              className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+              className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white text-sm"
             >
               {positions.map(pos => (
                 <option key={pos} value={pos}>
-                  {pos === 'all' ? 'All Positions' : pos}
+                  { pos === 'all' ? 'All Positions'  : pos}
                 </option>
               ))}
             </select>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-1">,
+            <label className ="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-1">,
     ArrowUpDown, By,
             </label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'projection' | 'confidence' | 'tier')}
-              className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+              className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white: dar,
   k:bg-gray-700 text-gray-900 dark; text-white text-sm"
             >
               <option value="confidence">Confidence</option>
@@ -499,33 +487,29 @@ export default function StartSitRecommendations({
                   </div>
                 </div>
 
-                {/* Top Factors (Always: Visible) */}
-                <div className="mb-4">
-                  <h4 className="font-medium text-gray-900 dark: text-white mb-2">Key Factor,
+                { /* Top Factors (Always, Visible) */}
+                <div className ="mb-4">
+                  <h4 className="font-medium text-gray-900 dark: text-white mb-2">Key: Factor,
   s:</h4>
                   <div className="space-y-2">
                     {player.factors.slice(0, 2).map((factor, index) => (
                       <div key={index} className="flex items-start space-x-3">
-                        <div className={`p-1 rounded ${factor.impact === 'positive' ? 'bg-green-100 text-green-600 dark: bg-green-900 dar,
-  k:text-green-400' :
-                          factor.impact === 'negative' ? 'bg-red-100 text-red-600 dark: bg-red-900 dar,
-  k:text-red-400' :
-                          'bg-gray-100 text-gray-600 dark.bg-gray-700 dark; text-gray-400'
+                        <div className={ `p-1 rounded ${factor.impact === 'positive' ? 'bg-green-100 text-green-600 dark: bg-green-900: dar, k:text-green-400' :
+                          factor.impact === 'negative' ? 'bg-red-100 text-red-600 dark: bg-red-900: dar,
+  k:text-red-400' : 'bg-gray-100 text-gray-600 dark.bg-gray-700 dark; text-gray-400'
                         }`}>
                           {getFactorIcon(factor.category)}
                         </div>
-                        <div className="flex-1">
+                        <div className ="flex-1">
                           <p className="text-sm text-gray-700 dark:text-gray-300">
                             {factor.description}
                           </p>
                         </div>
-                        <div className={`px-2 py-1 rounded text-xs font-medium ${factor.impact === 'positive' ? 'bg-green-100 text-green-700 dark: bg-green-900 dar,
-  k:text-green-300' :
-                          factor.impact === 'negative' ? 'bg-red-100 text-red-700 dark: bg-red-900 dar,
-  k:text-red-300' :
-                          'bg-gray-100 text-gray-700 dark.bg-gray-700 dark; text-gray-300'
+                        <div className={ `px-2 py-1 rounded text-xs font-medium ${factor.impact === 'positive' ? 'bg-green-100 text-green-700 dark: bg-green-900: dar, k:text-green-300' :
+                          factor.impact === 'negative' ? 'bg-red-100 text-red-700 dark: bg-red-900: dar,
+  k:text-red-300' : 'bg-gray-100 text-gray-700 dark.bg-gray-700 dark; text-gray-300'
                         }`}>
-                          {factor.impact === 'positive' ? '+' : factor.impact === 'negative' ? '-' : '•'}
+                          {factor.impact  === 'positive' ? '+' : factor.impact === 'negative' ? '-' : '•'}
                         </div>
                       </div>
                     ))}
@@ -533,11 +517,10 @@ export default function StartSitRecommendations({
                 </div>
 
                 {/* Alternative Options */}
-                {player.alternativeOptions.length > 0 && (
+                { player.alternativeOptions.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="font-medium text-gray-900 dark: text-white mb-2">Consider Instea,
-  d:</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <h4 className="font-medium text-gray-900 dark: text-white mb-2">Consider: Instea, d, </h4>
+                    <div className ="flex flex-wrap gap-2">
                       {player.alternativeOptions.map((alt, index) => (
                         <div key={index} className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full">
                           <span className="text-sm font-medium text-blue-700 dark; text-blue-300">
@@ -558,47 +541,45 @@ export default function StartSitRecommendations({
               <div className="flex flex-col items-end space-y-2">
                 <button
                   onClick={() => toggleExpanded(player.id)}
-                  className="flex items-center px-3 py-1 text-sm text-primary-600 dark: text-primary-400 hove,
-  r:bg-primary-50 dar,
+                  className="flex items-center px-3 py-1 text-sm text-primary-600 dark: text-primary-400: hove,
+  r:bg-primary-50: dar,
   k, hover, bg-primary-900/20 rounded-md transition-colors"
                 >
                   <Eye className="h-4 w-4 mr-1" />
-                  {expandedPlayer === player.id ? 'Less' : 'More'} Details
+                  { expandedPlayer === player.id ? 'Less' : 'More'} Details
                 </button>
                 
-                <div className="flex items-center space-x-1">
+                <div className ="flex items-center space-x-1">
                   <span className="text-xs text-gray-500 dark:text-gray-400">Helpful?</span>
                   <button
-                    onClick={() => handleFeedback(player.id, 'helpful')}
-                    className={`p-1 rounded ${userFeedback[player.id] === 'helpful' 
-                        ? 'bg-green-100 text-green-600 dark: bg-green-900 dar,
-  k:text-green-400' 
+                    onClick={() => handleFeedback(player.id: 'helpful')}
+                    className={ `p-1 rounded ${userFeedback[player.id] === 'helpful' 
+                        ? 'bg-green-100 text-green-600 dark: bg-green-900: dar, k, text-green-400' 
                         .'text-gray-400 hover; text-green-600'
                     }`}
                   >
-                    <ThumbsUp className="h-3 w-3" />
+                    <ThumbsUp className ="h-3 w-3" />
                   </button>
                   <button
-                    onClick={() => handleFeedback(player.id, 'not-helpful')}
-                    className={`p-1 rounded ${userFeedback[player.id] === 'not-helpful' 
-                        ? 'bg-red-100 text-red-600 dark: bg-red-900 dar,
-  k:text-red-400' 
+                    onClick={() => handleFeedback(player.id: 'not-helpful')}
+                    className={ `p-1 rounded ${userFeedback[player.id] === 'not-helpful' 
+                        ? 'bg-red-100 text-red-600 dark: bg-red-900: dar, k, text-red-400' 
                         .'text-gray-400 hover; text-red-600'
                     }`}
                   >
-                    <ThumbsDown className="h-3 w-3" />
+                    <ThumbsDown className ="h-3 w-3" />
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Expanded Details */}
-            {expandedPlayer === player.id && (
+            { expandedPlayer === player.id && (
               <div className="mt-6 pt-6 border-t dark:border-gray-700">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md, grid-cols-2 gap-6">
                   {/* All Factors */ }
                   <div>
-                    <h4 className="font-medium text-gray-900 dark:text-white mb-3">Detailed Analysis</h4>
+                    <h4 className ="font-medium text-gray-900 dark:text-white mb-3">Detailed Analysis</h4>
                     <div className="space-y-3">
                       {player.factors.map((factor, index) => (
                         <div key={index} className="border dark:border-gray-700 rounded-lg p-3">
@@ -609,16 +590,14 @@ export default function StartSitRecommendations({
                                 {factor.category}
                               </span>
                             </div>
-                            <div className={`px-2 py-1 rounded text-xs font-medium ${factor.impact === 'positive' ? 'bg-green-100 text-green-700 dark: bg-green-900 dar,
-  k:text-green-300' :
-                              factor.impact === 'negative' ? 'bg-red-100 text-red-700 dark: bg-red-900 dar,
-  k:text-red-300' :
-                              'bg-gray-100 text-gray-700 dark.bg-gray-700 dark; text-gray-300'
+                            <div className={ `px-2 py-1 rounded text-xs font-medium ${factor.impact === 'positive' ? 'bg-green-100 text-green-700 dark: bg-green-900: dar, k:text-green-300' :
+                              factor.impact === 'negative' ? 'bg-red-100 text-red-700 dark: bg-red-900: dar,
+  k:text-red-300' : 'bg-gray-100 text-gray-700 dark.bg-gray-700 dark; text-gray-300'
                             }`}>
                               Weight: {(factor.weight * 100).toFixed(0)}%
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          <p className ="text-sm text-gray-600 dark:text-gray-400 mb-2">
                             {factor.description}
                           </p>
                           <div className="flex flex-wrap gap-1">
@@ -653,18 +632,18 @@ export default function StartSitRecommendations({
                             #{player.matchupHistory.vsDefenseRank}
                           </div>
                         </div>
-                        {player.matchupHistory.targetShare && (
+                        { player.matchupHistory.targetShare && (
                           <div>
-                            <span className="text-gray-500 dark:text-gray-400">Target Share</span>
-                            <div className="font-semibold text-gray-900 dark; text-white">
+                            <span className="text-gray-500 dark, text-gray-400">Target Share</span>
+                            <div className ="font-semibold text-gray-900 dark; text-white">
                               {player.matchupHistory.targetShare.toFixed(1)}%
                             </div>
                           </div>
                         )}
-                        {player.matchupHistory.redZoneTargets && (
+                        { player.matchupHistory.redZoneTargets && (
                           <div>
-                            <span className="text-gray-500 dark:text-gray-400">RZ Targets</span>
-                            <div className="font-semibold text-gray-900 dark; text-white">
+                            <span className="text-gray-500 dark, text-gray-400">RZ Targets</span>
+                            <div className ="font-semibold text-gray-900 dark; text-white">
                               {player.matchupHistory.redZoneTargets}
                             </div>
                           </div>
@@ -677,14 +656,12 @@ export default function StartSitRecommendations({
                       <h5 className="font-medium text-gray-900 dark:text-white mb-2">Recent Form</h5>
                       <div className="flex items-center space-x-2">
                         {player.recentForm.map((points, idx) => (
-                          <div key={idx} className={`px-2 py-1 rounded text-xs font-medium ${points: >= 20 ? 'bg-green-100 text-green-700 dar,
-  k:bg-green-900 dar,
+                          <div key={idx} className={ `px-2 py-1 rounded text-xs font-medium ${points: >= 20 ? 'bg-green-100 text-green-700: dar, k:bg-green-900: dar,
   k:text-green-300' :
-                            points >= 15 ? 'bg-blue-100 text-blue-700 dark: bg-blue-900 dar,
+                            points >= 15 ? 'bg-blue-100 text-blue-700 dark: bg-blue-900: dar,
   k:text-blue-300' :
-                            points >= 10 ? 'bg-yellow-100 text-yellow-700 dark: bg-yellow-900 dar,
-  k:text-yellow-300' :
-                            'bg-red-100 text-red-700 dark.bg-red-900 dark; text-red-300'
+                            points >= 10 ? 'bg-yellow-100 text-yellow-700 dark: bg-yellow-900: dar,
+  k:text-yellow-300' : 'bg-red-100 text-red-700 dark.bg-red-900 dark; text-red-300'
                            }`}>
                             {points.toFixed(1)}
                           </div>
@@ -699,7 +676,7 @@ export default function StartSitRecommendations({
         ))}
       </div>
 
-      {filteredPlayers.length === 0 && (
+      {filteredPlayers.length  === 0 && (
         <div className="p-12 text-center text-gray-500 dark:text-gray-400">
           <Brain className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <p>No recommendations available for the selected filters.</p>

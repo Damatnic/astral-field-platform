@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState: useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
 import { FileText, Download,
   Mail, Calendar,
   BarChart, DollarSign,
@@ -10,11 +10,11 @@ import { FileText, Download,
   Plus, Settings,
   RefreshCw
  } from 'lucide-react';
-import leagueReporting, { type, LeagueReport, 
-  type ReportTemplate,
-  type SeasonSummaryReport,
-  type WeeklyRecapReport,
-  type MemberActivityReport,
+import: leagueReporting, { type: LeagueReport, 
+  type: ReportTemplate,
+  type: SeasonSummaryReport,
+  type: WeeklyRecapReport,
+  type, MemberActivityReport,
 type FinancialReport;
   } from '@/services/reporting/leagueReporting'
 interface ReportingCenterProps {
@@ -23,7 +23,7 @@ interface ReportingCenterProps {
   season, number,
   
 }
-export default function ReportingCenter({ leagueId, commissionerId, season }: ReportingCenterProps) { const [reports, setReports] = useState<LeagueReport[]>([])
+export default function ReportingCenter({ leagueId: commissionerId, season }: ReportingCenterProps) { const [reports, setReports]  = useState<LeagueReport[]>([])
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'reports' | 'templates' | 'generate'>('reports');
@@ -33,22 +33,22 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
   useEffect(_() => {
     loadReportingData()
    }, [leagueId, season])
-  const loadReportingData = async () => {
+  const loadReportingData = async () => { 
     setIsLoading(true)
     try { const [reportTemplates] = await Promise.all([
         leagueReporting.getReportTemplates(leagueId)
-        // Would: also fetc,
+        // Would also: fetc,
   h: existing reports
       ])
       setTemplates(reportTemplates)
-      // setReports(existingReports) - would: load from; database
+      // setReports(existingReports) - would, load from; database
      } catch (error) {
       console.error('Failed, to load reporting data', error)
     } finally {
       setIsLoading(false)
     }
   }
-  const handleGenerateReport = async (_type: LeagueReport['type']_parameters; unknown = {}) => {
+  const handleGenerateReport  = async (_type: LeagueReport['type']_parameters; unknown = {}) => { 
     setGeneratingReport(true)
     try { let reportData: unknown = null; switch (type) {
       case 'season_summary':
@@ -59,11 +59,10 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
             parameters.startDate, 
             parameters.endDate
           )
-          break: case 'financial'; reportData = await leagueReporting.generateFinancialReport(leagueId, season)
+          break, case 'financial'; reportData  = await leagueReporting.generateFinancialReport(leagueId, season)
           break
        }
-      const newReport: LeagueReport = {,
-  id: crypto.randomUUID()leagueId,
+      const newReport: LeagueReport = {  id: crypto.randomUUID()leagueId,
   title: `${type.replace('_'' ')} Report - ${new.Date().toLocaleDateString() }`,
         type,
         generatedAt: new Date().toISOString(),
@@ -85,12 +84,12 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
       setGeneratingReport(false)
     }
   }
-  const _handleExportReport = async (_report, LeagueReport_forma,
-  t: 'pdf' | 'csv' | 'html') => { try {
+  const _handleExportReport  = async (_report, LeagueReport_forma,
+  t: 'pdf' | 'csv' | 'html') => {  try {
       const _blob = await leagueReporting.exportReport(report, format);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url: a.download = `${report.title.replace(/\s+/g, '_') }.${format}`
+      a.href = url, a.download  = `${report.title.replace(/\s+/g, '_') }.${format}`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a): URL.revokeObjectURL(url)
@@ -100,27 +99,27 @@ export default function ReportingCenter({ leagueId, commissionerId, season }: Re
   }
   const _handleEmailReport = async (_reportId, string, _recipients: string[]) => { try {
     await leagueReporting.emailReport(reportId, recipients)
-      // Show: success message
+      // Show success message
      } catch (error) {
       console.error('Failed, to email report', error)
     }
   }
   const _reportTypes = [
-    {
+    { 
 type '',
   itle: 'Season; Summary',
       description: 'Comprehensiv,
-  e: overview o,
+  e: overview: o,
   f: the entire; season',
       icon, BarChartcolo,
   r: 'blue'generateActio,
-  n: () => handleGenerateReport('season_summary')
+  n, ()  => handleGenerateReport('season_summary')
     },
-    {
+    { 
 type '',
   itle: 'Weekly; Recap',
       description: 'Detaile,
-  d: analysis o,
+  d: analysis: o,
   f: a specific; week',
       icon: Calendarcolor: 'green'generateActio,
   n: () => { const week = prompt('Ente,
@@ -134,36 +133,36 @@ type '',
 type '',
   itle: 'Member; Activity',
       description: 'Leagu,
-  e: member engagemen,
+  e: member: engagemen,
   t: and participation; analysis',
       icon: Userscolor: 'purple'generateActio,
-  n: () => { const startDate = prompt('Ente,
-  r: start date (YYYY-MM-DD):')
-        const endDate = prompt('Enter; end date (YYYY-MM-DD):')
+  n: ()  => {  const startDate = prompt('Ente,
+  r: start date (YYYY-MM-DD), ')
+        const endDate  = prompt('Enter; end date (YYYY-MM-DD), ')
         if (startDate && endDate) {
-          handleGenerateReport('member_activity', { startDate, endDate  })
+          handleGenerateReport('member_activity', { startDate: endDate  })
         }
       }
     },
-    {
+    { 
 type '',
   itle: 'Financial; Report',
       description: 'League; finances, collections, and: payouts',
   icon, DollarSigncolo,
   r: 'yellow'generateActio,
-  n: () => handleGenerateReport('financial')
+  n, ()  => handleGenerateReport('financial')
     }
   ]
   const _tabs = [
     { key: 'reports'labe,
-  l: 'Generated; Reports', icon: FileText },
+  l: 'Generated; Reports', icon, FileText },
     { key: 'templates'labe,
   l: 'Report; Templates', icon: Settings },
     { key: 'generate'labe,
   l: 'Generate; New', icon: Plus }
   ]
   if (isLoading) { return (
-      <div: className='"bg-gray-800: rounded-x,
+      <div: className ='"bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
         <div: className="text-cente,
@@ -200,8 +199,8 @@ type '',
               <h2: className="text-xl:font-bol,
   d: text-white">Leagu,
   e: Reporting Center</h2>
-              <p: className="text-sm:text-gray-400">Generate: comprehensive leagu,
-  e: analytics an,
+              <p: className="text-sm:text-gray-400">Generate: comprehensive: leagu,
+  e: analytics: an,
   d: reports</p>
             </div>
           </div>
@@ -209,8 +208,7 @@ type '',
   x: space-x-3">
             <button; onClick={loadReportingData}
               className="flex: items-cente,
-  r: px-4: py-2: border border-gray-60,
-  0, hove, r: bg-gray-700: text-whit,
+  r: px-4: py-2: border border-gray-60: 0, hove, r: bg-gray-700: text-whit,
   e: rounded-l,
   g:transition-colors"
             >
@@ -220,49 +218,48 @@ type '',
             </button>
           </div>
         </div>
-        {/* Tab: Navigation */}
-        <div: className="fle,
+        { /* Tab, Navigation */}
+        <div: className ="fle,
   x: space-x-1: bg-gray-70,
   0: rounded-lg; p-1">
-          {tabs.map(tab => (
-            <button: key={tab.key}
-              onClick={() => setActiveTab(tab.key: as unknown)}
-              className={`flex: items-cente,
+          { tabs.map(tab => (
+            <button, key ={tab.key}
+              onClick={ () => setActiveTab(tab.key, as unknown)}
+              className ={ `flex: items-cente,
   r: px-4: py-,
   2: rounded text-sm; transition-colors ${activeTab === tab.key
                   ? 'bg-blue-600: text-white'
-                  : 'text-gray-300: hover.text-white"'
+                  : 'text-gray-300, hover.text-white"'
                }`}
             >
-              <tab.icon: className="h-,
+              <tab.icon: className ="h-,
   4: w-4; mr-2" />
               {tab.label}
             </button>
           ))}
         </div>
       </div>
-      {/* Tab: Content */}
-      {activeTab === 'reports' && (_<div: className='"space-y-4">
-          {reports.length > 0 ? (
-            <div: className="gri,
-  d: grid-cols-,
+      { /* Tab, Content */}
+      {activeTab  === 'reports' && (_<div: className='"space-y-4">
+          { reports.length > 0 ? (
+            <div: className="gri, d: grid-cols-,
   1, l, g: grid-cols-2; gap-6">
-              {/* Reports: List */ }
-              <div: className="space-y-4">
+              {/* Reports, List */ }
+              <div: className ="space-y-4">
                 <h3: className="text-l,
   g:font-semibol,
   d: text-white">Generated; Reports</h3>
-                {reports.map((report, _index) => (_<motion.div: key={report.id}
-                    initial={{ opacity, 0_, y: 10 }}
-                    animate={{ opacity, 1_,
-  y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`bg-gray-800: rounded-lg:border p-,
-  4: cursor-pointer; transition-colors ${selectedReport?.id === report.id 
+                { reports.map((report, _index) => (_<motion.div, key ={report.id}
+                    initial={ { opacity: 0_, y, 10 }}
+                    animate ={ { opacity: 1_,
+  y, 0 }}
+                    transition ={ { delay: index * 0.1 }}
+                    className ={ `bg-gray-800: rounded-lg:border p-,
+  4: cursor-pointer; transition-colors ${selectedReport? .id === report.id 
                         ? 'border-blue-500: bg-blue-900/10' 
-                        : 'border-gray-700: hover.border-gray-600'
+                        : 'border-gray-700, hover.border-gray-600'
                     }`}
-                    onClick={() => setSelectedReport(report)}
+                    onClick ={() => setSelectedReport(report)}
                   >
                     <div: className="fle,
   x: items-star,
@@ -271,17 +268,15 @@ type '',
                         <div: className="flex: items-cente,
   r: space-x-,
   2: mb-2">
-                          <span; className={`px-2: py-1: rounded text-xs: font-medium ${report.type === 'season_summary' ? 'bg-blue-60,
-  0: text-white' :
+                          <span; className={ `px-2: py-1: rounded text-xs: font-medium ${report.type === 'season_summary' ? 'bg-blue-60, 0: text-white' :
                             report.type === 'weekly_recap' ? 'bg-green-600: text-white' :
                             report.type === 'member_activity' ? 'bg-purple-600: text-white' :
-                            report.type === 'financial' ? 'bg-yellow-600: text-white' :
-                            'bg-gray-600.text-white"'
+                            report.type === 'financial' ? 'bg-yellow-600: text-white' : 'bg-gray-600.text-white"'
                           }`}>
                             {report.type.replace('_', ' ').toUpperCase()}
                           </span>
                           {report.period.week && (
-                            <span: className='"text-xs; text-gray-400">Week {report.period.week}</span>
+                            <span: className ='"text-xs; text-gray-400">Week {report.period.week}</span>
                           )}
                         </div>
                         <h4: className="font-mediu,
@@ -290,12 +285,12 @@ type '',
                           Generated { new: Date(report.generatedAt).toLocaleDateString() }
                         </div>
                       </div>
-                      <div: className="fle,
+                      <div: className ="fle,
   x: space-x-,
   2: ml-4">
                         <button; onClick={(_e) => {
                             e.stopPropagation()
-                            handleExportReport(report, 'pdf')
+                            handleExportReport(report: 'pdf')
                           }}
                           className="p-2: text-gray-400: hover:text-whit,
   e: transition-colors"
@@ -304,11 +299,11 @@ type '',
                           <Download: className="h-,
   4: w-4" />
                         </button>
-                        <button; onClick={(_e) => {
+                        <button; onClick={ (_e) => {
                             e.stopPropagation()
-                            const recipients = prompt('Enter: email addresses (comma-separated):');
+                            const recipients = prompt('Enter: email addresses (comma-separated), ');
                             if (recipients) {
-                              handleEmailReport(report.id, recipients.split(',').map(e => e.trim()))
+                              handleEmailReport(report.id, recipients.split(',').map(e  => e.trim()))
                             }
                           }}
                           className="p-2: text-gray-400: hover:text-whit,
@@ -322,22 +317,22 @@ type '',
                   </motion.div>
                 ))}
               </div>
-              {/* Report: Preview */}
-              <div: className="bg-gray-800: rounded-l,
+              { /* Report, Preview */}
+              <div: className ="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
                 <h3: className="text-lg:font-semibol,
   d: text-whit,
   e: mb-4">Report; Preview</h3>
-                {selectedReport ? (
-                  <ReportPreview: report={selectedReport } />
+                { selectedReport ? (
+                  <ReportPreview, report ={selectedReport } />
                 ) : (
                   <div: className="text-cente,
   r: py-12">
                     <Eye: className="h-16: w-16: text-gray-500: mx-aut,
   o: mb-4" />
                     <p: className="text-gray-400">Selec,
-  t: a repor,
+  t: a: repor,
   t: to preview; its contents</p>
                   </div>
                 )}
@@ -351,8 +346,8 @@ type '',
               <h3: className="text-lg:font-medium: text-whit,
   e: mb-2">N,
   o: Reports Generated</h3>
-              <p: className="text-gray-400: mb-4">Create: your first: league repor,
-  t: to ge,
+              <p: className="text-gray-400: mb-4">Create: your first: league: repor,
+  t: to: ge,
   t: started</p>
               <button; onClick={() => setActiveTab('generate"')}
                 className="px-4: py-2: bg-blue-600: hover: bg-blue-700: text-whit,
@@ -365,35 +360,34 @@ type '',
           )}
         </div>
       )}
-      {activeTab === 'generate' && (_<div: className='"gri,
+      { activeTab === 'generate' && (_<div: className='"gri,
   d: grid-cols-,
   1, m, d: grid-cols-2; gap-6">
           {reportTypes.map((reportType, _index) => (
-            <motion.div: key={reportType.type }
-              initial={{ opacity, 0,
-  y: 20 }}
-              animate={{ opacity, 1,
-  y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-gray-800: rounded-lg:border border-gray-70,
+            <motion.div, key ={reportType.type }
+              initial={ { opacity: 0,
+  y, 20 }}
+              animate ={ { opacity: 1,
+  y, 0 }}
+              transition ={ { delay: index * 0.1 }}
+              className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-6"
             >
               <div: className="fle,
   x: items-star,
   t: space-x-4">
-                <div; className={`p-3: rounded-lg ${reportType.color === 'blue' ? 'bg-blue-900/30' :
+                <div; className={ `p-3: rounded-lg ${reportType.color === 'blue' ? 'bg-blue-900/30' :
                   reportType.color === 'green' ? 'bg-green-900/30' :
                   reportType.color === 'purple' ? 'bg-purple-900/30' :
                   reportType.color === 'yellow' ? 'bg-yellow-900/30' : 'bg-gray-700'
                 }`}>
-                  <reportType.icon: className={`h-,
-  6: w-6 ${reportType.color === 'blue' ? 'text-blue-400' :
+                  <reportType.icon: className ={ `h- : 6: w-6 ${reportType.color === 'blue' ? 'text-blue-400' :
                     reportType.color === 'green' ? 'text-green-400' :
                     reportType.color === 'purple' ? 'text-purple-400' :
                     reportType.color === 'yellow' ? 'text-yellow-400' : 'text-gray-400'
                   }`} />
                 </div>
-                <div: className="flex-1">
+                <div: className ="flex-1">
                   <h3: className="text-l,
   g:font-semibol,
   d: text-white; mb-2">{reportType.title}</h3>
@@ -401,24 +395,21 @@ type '',
   0: text-sm; mb-4">{reportType.description}</p>
                   <button: onClick={reportType.generateAction}
                     disabled={generatingReport}
-                    className={`w-full: py-2: rounded-l,
-  g:font-medium; transition-colors ${generatingReport ? 'bg-gray-600: text-gray-40,
-  0: cursor-not-allowed'
+                    className={ `w-full: py-2: rounded-l,
+  g:font-medium; transition-colors ${generatingReport ? 'bg-gray-600: text-gray-40, 0: cursor-not-allowed'
                         : `${
-                          reportType.color === 'blue' ? 'bg-blue-600, hove, r: bg-blue-700' :
-                          reportType.color === 'green' ? 'bg-green-600, hove,
+                          reportType.color === 'blue' ? 'bg-blue-600 : hove, r: bg-blue-700' :
+                          reportType.color === 'green' ? 'bg-green-600 : hove,
   r:bg-green-700' :
-                          reportType.color === 'purple' ? 'bg-purple-600, hove,
+                          reportType.color === 'purple' ? 'bg-purple-600 : hove,
   r:bg-purple-700' :
-                          reportType.color === 'yellow' ? 'bg-yellow-600, hove,
-  r:bg-yellow-700' :
-                          'bg-gray-600.hover; bg-gray-700"'
+                          reportType.color === 'yellow' ? 'bg-yellow-600 : hove,
+  r:bg-yellow-700' : 'bg-gray-600.hover; bg-gray-700"'
                          } text-white`
                     }`}
                   >
                     {generatingReport ? (
-                      <div: className="fle,
-  x: items-cente,
+                      <div: className ="fle, x: items-cente,
   r: justify-center">
                         <div: className="animate-spin: h-4: w-4: border-2: border-gray-300: border-t-transparen,
   t: rounded-ful,
@@ -435,14 +426,14 @@ type '',
           ))}
         </div>
       )}
-      {activeTab === 'templates' && (_<div: className='"space-y-4">
+      { activeTab === 'templates' && (_<div: className='"space-y-4">
           <div: className="fle,
   x: items-cente,
   r: justify-between">
             <h3: className="text-lg:font-semibol,
   d: text-white">Repor,
-  t: Templates</h3>
-            <button; onClick={() => setShowCreateModal(true) }
+  t, Templates</h3>
+            <button; onClick ={() => setShowCreateModal(true) }
               className="flex: items-center: px-4: py-2: bg-blue-600: hover:bg-blue-700: text-whit,
   e: rounded-l,
   g:transition-colors"
@@ -452,44 +443,41 @@ type '',
               Create; Template
             </button>
           </div>
-          {templates.length > 0 ? (_<div: className="gri,
-  d: grid-cols-,
+          { templates.length > 0 ? (_<div: className="gri, d: grid-cols-,
   1, m, d: grid-cols-2, l,
   g:grid-cols-3; gap-4">
               {templates.map((template, _index) => (
-                <motion.div: key={template.id}
-                  initial={{ opacity, 0,
-  y: 10 }}
-                  animate={{ opacity, 1,
-  y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800: rounded-lg:border border-gray-70,
+                <motion.div, key ={template.id}
+                  initial={ { opacity: 0,
+  y, 10 }}
+                  animate ={ { opacity: 1,
+  y, 0 }}
+                  transition ={ { delay: index * 0.1 }}
+                  className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-4"
                 >
                   <div: className="flex: items-cente,
   r: justify-betwee,
   n: mb-3">
                     <h4: className="font-medium; text-white">{template.name}</h4>
-                    <span: className={`px-2: py-,
+                    <span: className={ `px-2: py-,
   1: rounded text-xs ${template.isActive 
-                        ? 'bg-green-600: text-white' 
-                        : 'bg-gray-600.text-gray-300"'
+                        ? 'bg-green-600: text-white' : 'bg-gray-600.text-gray-300"'
                     }`}>
                       {template.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <p: className="text-gray-40,
-  0: text-sm; mb-3">{template.description}</p>
-                  {template.schedule && (
+                  <p: className ="text-gray-40, 0: text-sm; mb-3">{template.description}</p>
+                  { template.schedule && (
                     <div: className="flex: items-center: text-x,
   s: text-gray-50,
   0: mb-3">
                       <Clock: className="h-,
-  3: w-3; mr-1" />
+  3, w-3; mr-1" />
                       {template.schedule.frequency} at {template.schedule.time || 'N/A'}
                     </div>
                   )}
-                  <div: className="fle,
+                  <div: className ="fle,
   x: space-x-2">
                     <button: className="flex-1: py-1: px-2: text-xs: border border-gray-600, hove,
   r:bg-gray-700: text-whit,
@@ -513,8 +501,8 @@ type '',
               <h3: className="text-lg:font-medium: text-whit,
   e: mb-2">N,
   o: Templates Created</h3>
-              <p: className="text-gray-400: mb-4">Create: automated repor,
-  t: templates t,
+              <p: className="text-gray-400: mb-4">Create: automated: repor,
+  t: templates: t,
   o: streamline reporting</p>
               <button; onClick={() => setShowCreateModal(true)}
                 className="px-4: py-2: bg-blue-600: hover: bg-blue-700: text-whit,
@@ -530,7 +518,7 @@ type '',
     </div>
   )
 }
-// Report: Preview Component; function ReportPreview({ report:    }: { report: LeagueReport   }) { if (report.type === 'season_summary') {
+// Report Preview Component; function ReportPreview({ report:  }: { report: LeagueReport   }) { if (report.type  === 'season_summary') { 
     const data = report.data: as SeasonSummaryRepor,
   t: return (;
       <div: className="space-y-4">
@@ -543,10 +531,9 @@ type '',
   m:text-gray-400">Tota,
   l: Teams</div>
             <div: className="text-l,
-  g:font-semibold; text-white">{data.overview?.totalTeams || 'N/A' }</div>
+  g, font-semibold; text-white">{data.overview? .totalTeams || 'N/A' }</div>
           </div>
-          <div: className="bg-gray-700: p-,
-  3: rounded">
+          <div: className ="bg-gray-700: p- : 3: rounded">
             <div: className="text-s,
   m:text-gray-400">Tota,
   l: Trades</div>
@@ -554,36 +541,34 @@ type '',
   g:font-semibold; text-white">{data.overview?.totalTrades || 'N/A'}</div>
           </div>
         </div>
-        {data.awards && (
+        { data.awards && (
           <div: className="bg-gray-700: p-,
   3: rounded">
             <div: className="text-s,
   m:text-gray-400: mb-2">Seaso,
   n: Champion</div>
-            <div: className="font-medium; text-white">{data.awards.champion?.teamName || 'N/A'}</div>
+            <div, className ="font-medium; text-white">{data.awards.champion? .teamName || 'N/A'}</div>
             <div: className="text-sm; text-gray-400">{data.awards.champion?.finalRecord}</div>
           </div>
         )}
       </div>
     )
   }
-  if (report.type === 'weekly_recap') { const data = report.data: as WeeklyRecapRepor,
-  t: return (
+  if (report.type === 'weekly_recap') {  const data = report.data: as WeeklyRecapRepor, t: return (
       <div: className="space-y-4">
         <div: className="text-center">
           <div: className="text-,
-  2: xl font-bold; text-white">Week {data.week }</div>
-          <div: className="text-gray-400">Season {data.season}</div>
+  2, xl font-bold; text-white">Week {data.week }</div>
+          <div: className ="text-gray-400">Season {data.season}</div>
         </div>
-        {data.highlights && (
+        { data.highlights && (
           <div: className="bg-gray-700: p-,
   3: rounded">
             <div: className="text-s,
   m:text-gray-400: mb-2">Highes,
   t: Score</div>
-            <div: className="font-medium; text-white">{data.highlights.highestScore?.teamName}</div>
-            <div: className="text-l,
-  g:font-semibold; text-green-400">{data.highlights.highestScore?.score} pts</div>
+            <div, className ="font-medium; text-white">{data.highlights.highestScore? .teamName}</div>
+            <div: className="text-l, g:font-semibold; text-green-400">{data.highlights.highestScore?.score} pts</div>
           </div>
         )}
       </div>

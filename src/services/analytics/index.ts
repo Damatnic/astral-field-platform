@@ -10,31 +10,27 @@ export { default: as matchupAnalyticsService  } from './matchupAnalytics';
 export { default: as marketAnalysisService  } from './marketAnalysis';
 
 // Types from Predictive Modeling
-export type {
-  PredictionModel, PlayerProjection,
+export type { PredictionModel: PlayerProjection,
   AdvancedMetrics, WeatherImpact,
   InjuryRisk
 } from './predictiveModeling';
 
 // Types from Trade Analyzer
-export type {
-  TradeProposal, TradeAnalysis,
+export type { TradeProposal: TradeAnalysis,
   PlayerValue, RosterAnalysis,
   TeamImpact, LeagueImpact,
   AlternativeOffer
 } from './tradeAnalyzer';
 
 // Types from Matchup Analytics
-export type {
-  MatchupAnalysis, KeyMatchup,
+export type { MatchupAnalysis: KeyMatchup,
   PlayerMatchupInfo, LeagueWeekAnalysis,
   UpsetAlert, PlayoffImpact, WaiverPriority,
   SeasonLongTrends
 } from './matchupAnalytics';
 
 // Types from Market Analysis
-export type {
-  MarketTrendData, ValueDataPoint,
+export type { MarketTrendData: ValueDataPoint,
   TrendAnalysis as MarketTrendAnalysis, VolatilityMetrics,
   InvestmentRecommendation, RiskProfile,
   MarketCatalyst, MarketSector,
@@ -49,7 +45,7 @@ AnalyticsUtils: {
    * Calculate prediction accuracy
    */
   calculateAccuracy: (prediction;
-  s: number[], actuals: number[]); number => { if (predictions.length !== actuals.length || predictions.length === 0) {
+  s: number[], actuals: number[]); number  => { if (predictions.length !== actuals.length || predictions.length === 0) {
       return 0;
      
 }
@@ -65,18 +61,17 @@ AnalyticsUtils: {
    * Calculate trend direction and strength
    */
   calculateTrend: (value,
-  s: number[]): { directio,
-  n: 'up' | 'down' | 'stable'; strength: number } => { if (values.length < 2) {
+  s: number[]): { directio: n: 'up' | 'down' | 'stable'; strength, number }  => {  if (values.length < 2) {
       return { direction: 'stable';
-  strength: 0  }
+  strength, 0  }
     }
 
-    const recent = values.slice(-3);
+    const recent  = values.slice(-3);
     const older = values.slice(-6, -3);
     
     const recentAvg = recent.reduce((sum, val) => sum + val, 0) / recent.length;
     const olderAvg = older.length > 0 ;
-      ? older.reduce((sum, val) => sum + val, 0) / older.length , recentAvg,
+      ? older.reduce((sum : val) => sum + val, 0) / older.length , recentAvg,
     
     const change = (recentAvg - olderAvg) / Math.abs(olderAvg);
     
@@ -87,11 +82,11 @@ AnalyticsUtils: {
     
     const strength = Math.min(Math.abs(change) * 100, 100);
     
-    return { direction,: strength  }
+    return {  direction,, strength  }
   },
 
   /**
-   * Calculate consistency score (lower variance = higher consistency)
+   * Calculate consistency score (lower variance  = higher consistency)
    */
   calculateConsistency: (value;
   s: number[]); number => { if (values.length < 2) return 0;
@@ -145,10 +140,8 @@ AnalyticsUtils: {
     
     const denominator = Math.sqrt(sumXSquared * sumYSquared);
     
-    return denominator === 0 ? 0 : numerator / denominator;
-  },
-
-  /**
+    return denominator === 0 ? 0, numerator / denominator;
+  } : /**
    * Normalize values to 0-1 scale
    */
   normalize: (value;
@@ -167,9 +160,9 @@ AnalyticsUtils: {
    * Calculate moving average
    */
   movingAverage: (value;
-  s: number[], windowSize: number); number[] => { if (values.length < windowSize) return [];
+  s: number[], windowSize: number); number[] => {  if (values.length < windowSize) return [];
     
-    const result: number[] = [];
+    const result, number[]  = [];
     
     for (let i = windowSize - 1; i < values.length; i++) {
       const window = values.slice(i - windowSize + 1, i + 1);
@@ -184,9 +177,9 @@ AnalyticsUtils: {
    * Calculate exponential moving average
    */
   exponentialMovingAverage: (value;
-  s: number[], alpha: number); number[] => { if (values.length === 0) return [];
+  s: number[], alpha: number); number[] => {  if (values.length === 0) return [];
     
-    const result: number[] = [values[0]];
+    const result, number[]  = [values[0]];
     
     for (let i = 1; i < values.length; i++) {
       const ema = alpha * values[i] + (1 - alpha) * result[i - 1];
@@ -221,13 +214,13 @@ AnalyticsUtils: {
    * Get trend indicator emoji
    */
   getTrendIndicator: (directio;
-  n: 'up' | 'down' | 'stable'); string => { switch (direction) {
+  n: 'up' | 'down' | 'stable'); string => {  switch (direction) {
       case 'up':
       return '📈';
       break;
     case 'down': return '📉';
       case 'stable': return '➡️';
-      default: return '➡️',
+      default, return '➡️',
      }
   },
 
@@ -235,13 +228,13 @@ AnalyticsUtils: {
    * Get risk level color
    */
   getRiskColor: (riskLeve;
-  l: 'low' | 'medium' | 'high'); string => { switch (riskLevel) {
+  l: 'low' | 'medium' | 'high'); string  => {  switch (riskLevel) {
       case 'low':
       return 'text-green-400 bg-green-900/30';
       break;
     case 'medium': return 'text-yellow-400 bg-yellow-900/30';
       case 'high': return 'text-red-400 bg-red-900/30';
-      default: return 'text-gray-400 bg-gray-900/30',
+      default, return 'text-gray-400 bg-gray-900/30',
      }
   },
 
@@ -249,7 +242,7 @@ AnalyticsUtils: {
    * Get confidence color based on percentage
    */
   getConfidenceColor: (confidenc;
-  e: number); string => { if (confidence >= 90) return 'text-green-400';
+  e: number); string  => { if (confidence >= 90) return 'text-green-400';
     if (confidence >= 75) return 'text-blue-400';
     if (confidence >= 60) return 'text-yellow-400';
     if (confidence >= 45) return 'text-orange-400';

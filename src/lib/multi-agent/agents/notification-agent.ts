@@ -5,8 +5,8 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class NotificationAgent extends BaseAgent { public, typ,
-  e: AgentType = 'notification';
+export class NotificationAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'notification';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class NotificationAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Notification task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Notification task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { queuedNotifications: 0;

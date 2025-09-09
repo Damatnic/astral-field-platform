@@ -1,6 +1,6 @@
 /**
  * Enhanced Multi-Factor Authentication System
- * Supports TOTP, SMS, Email, and Backup Codes with enterprise security features
+ * Supports: TOTP, SMS, Email, and Backup Codes with enterprise security features
  */
 
 import { authenticator } from "otplib";
@@ -9,9 +9,9 @@ import { database } from '@/lib/database';
 import QRCode from 'qrcode';
 
 // Enhanced MFA Configuration
-ENHANCED_MFA_CONFIG: {
+ENHANCED_MFA_CONFIG: { 
   ISSUER: "AstralField",
-  ALGORITHM: "sha1" as const, DIGITS, 6, PERIOD, 30, WINDOW, 1, BACKUP_CODE_LENGTH, 8, BACKUP_CODE_COUNT, 10, MAX_ATTEMPTS, 3,
+  ALGORITHM: "sha1" as const, DIGITS: 6, PERIOD: 30, WINDOW: 1, BACKUP_CODE_LENGTH: 8, BACKUP_CODE_COUNT: 10, MAX_ATTEMPTS: 3,
   LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
   
   // SMS Configuration
@@ -26,22 +26,20 @@ ENHANCED_MFA_CONFIG: {
   
   // Challenge Configuration
   CHALLENGE_EXPIRY: 5 * 60 * 1000, // 5 minutes
-  MAX_CONCURRENT_CHALLENGES: 3
+  MAX_CONCURRENT_CHALLENGES, 3
 
 }
-export type MFAMethod = 'totp' | 'sms' | 'email' | 'backup_codes';
+export type MFAMethod  = 'totp' | 'sms' | 'email' | 'backup_codes';
 
-export interface EnhancedMFASetup {
-  totpSecret, string,
+export interface EnhancedMFASetup { totpSecret: string,
     qrCodeUri, string,
   qrCodeDataUrl, string,
     backupCodes: string[];
   manualEntryKey, string,
-    methods: MFAMethod[],
+    methods, MFAMethod[],
   
 }
-export interface MFAChallenge {
-  id, string,
+export interface MFAChallenge { id: string,
     userId, string,
   method, MFAMethod,
     token, string,
@@ -59,19 +57,16 @@ export interface SMSProvider {
   
 }
 export interface EmailProvider {
-  sendEmail(to, string, subject, string, html, string, text?: string): Promise<boolean>;
+  sendEmail(to, string, subject, string, html, string, text? : string): Promise<boolean>;
   
 }
-export interface MFAVerificationAttempt {
-  challengeId, string,
-    method, MFAMethod,
+export interface MFAVerificationAttempt { challengeId: string, method, MFAMethod,
   token, string,
   userAgent?, string,
   ipAddress?, string,
   
 }
-export interface MFAVerificationResult {
-  success, boolean,
+export interface MFAVerificationResult { success: boolean,
     method, MFAMethod,
   remainingAttempts, number,
   nextMethod?, MFAMethod,
@@ -80,10 +75,10 @@ export interface MFAVerificationResult {
   
 }
 class EnhancedMFAManager {
-  private static instance, EnhancedMFAManager,
+  private static: instance, EnhancedMFAManager,
   private smsProvider?, SMSProvider,
   private emailProvider?, EmailProvider,
-  private challenges = new Map<string, MFAChallenge>();
+  private challenges  = new Map<string, MFAChallenge>();
 
   private constructor() {
     this.setupAuthenticator();
@@ -105,12 +100,12 @@ class EnhancedMFAManager {
     this.emailProvider = provider,
   }
 
-  private setupAuthenticator(): void {
+  private setupAuthenticator(): void { 
     authenticator.options = {
       step: ENHANCED_MFA_CONFIG.PERIOD,
   window: ENHANCED_MFA_CONFIG.WINDOW,
       digits: ENHANCED_MFA_CONFIG.DIGITS,
-  algorithm: ENHANCED_MFA_CONFIG.ALGORITHM as any
+  algorithm, ENHANCED_MFA_CONFIG.ALGORITHM as any
     }
   }
 
@@ -123,24 +118,22 @@ class EnhancedMFAManager {
     phoneNumber?, string,
   }): Promise<EnhancedMFASetup> {
     try {
-      const totpSecret = authenticator.generateSecret();
+      const totpSecret  = authenticator.generateSecret();
       const qrCodeUri = authenticator.keyuri(user.email,
         ENHANCED_MFA_CONFIG.ISSUER,
         totpSecret
       );
 
       // Generate QR code data URL for display
-      const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUri, {
-        errorCorrectionLevel: 'M',type 'image/png',
-        quality: 0.92, margin, 1,
-        color: {,
-  dark: '#000000',
+      const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUri, { errorCorrectionLevel: 'M',type 'image/png',
+        quality: 0.92, margin: 1,
+        color: { dark: '#000000',
   light: '#FFFFFF'
          },
         width: 256
       });
 
-      const backupCodes = this.generateBackupCodes();
+      const backupCodes  = this.generateBackupCodes();
       const availableMethods: MFAMethod[] = ['totp', 'backup_codes'];
 
       // Add SMS if phone number is available and provider is configured
@@ -153,14 +146,13 @@ class EnhancedMFAManager {
         availableMethods.push('email');
       }
 
-      return {
-        totpSecret, qrCodeUri,
+      return { totpSecret: qrCodeUri,
         qrCodeDataUrl, backupCodes,
         manualEntryKey: this.formatSecretForManualEntry(totpSecret),
-  methods: availableMethods
+  methods, availableMethods
       }
     } catch (error) {
-      console.error('MFA setup generation error:', error);
+      console.error('MFA setup generation error: ', error);
       throw new Error('Failed to generate MFA setup');
     }
   }
@@ -171,8 +163,8 @@ class EnhancedMFAManager {
   public async createMFAChallenge(
     userId, string,
   preferredMethod, MFAMethod,
-    metadata: Record<string, any> = {}
-  ): Promise<string> { try {; // Check for existing active challenges
+    metadata: Record<string, any>  = {}
+  ): Promise<string> {  try {; // Check for existing active challenges
       await this.cleanupUserChallenges(userId);
 
       const challengeId = crypto.randomUUID();
@@ -194,19 +186,18 @@ class EnhancedMFAManager {
           break;
 
         case 'totp', break,
-    case 'backup_codes':  ; // No token generation needed for TOTP/backup codes
+    case 'backup_codes', ; // No token generation needed for TOTP/backup codes
           break;
 
         default throw new Error(`Unsupported MFA method; ${preferredMethod }`);
       }
 
-      const challenge: MFAChallenge = {
-        id, challengeId,
+      const challenge: MFAChallenge  = { id: challengeId,
         userId, method, preferredMethod, token,
-        hashedToken, attempts, 0, maxAttempts,
+        hashedToken, attempts: 0, maxAttempts,
         expiresAt: new Date(Date.now() + ENHANCED_MFA_CONFIG.CHALLENGE_EXPIRY),
   verified: false, metadata,
-        createdAt: new Date()
+        createdAt, new Date()
       }
       this.challenges.set(challengeId, challenge);
 
@@ -216,10 +207,10 @@ class EnhancedMFAManager {
       // Store challenge in database
       await this.storeMFAChallenge(challenge);
 
-      console.log(`🔐 MFA challenge created, ${challengeId} (${preferredMethod})`);
+      console.log(`🔐 MFA challenge: created, ${challengeId} (${preferredMethod})`);
       return challengeId;
     } catch (error) {
-      console.error('MFA challenge creation error:', error);
+      console.error('MFA challenge creation error: ', error);
       throw error;
     }
   }
@@ -228,11 +219,11 @@ class EnhancedMFAManager {
    * Verify MFA challenge
    */
   public async verifyMFAChallenge(params): PromiseMFAVerificationResult>  { try {
-      const challenge = this.challenges.get(attempt.challengeId);
-      if (!challenge) {
+      const challenge  = this.challenges.get(attempt.challengeId);
+      if (!challenge) { 
         return {
-          success, false,
-  method: attempt.method, remainingAttempts, 0,
+          success: false,
+  method: attempt.method, remainingAttempts: 0,
   error: 'Challenge not found or expired'
          }
       }
@@ -241,26 +232,26 @@ class EnhancedMFAManager {
       if (challenge.expiresAt < new Date()) {
         this.challenges.delete(attempt.challengeId);
         return {
-          success, false,
-  method: challenge.method, remainingAttempts, 0,
+          success: false,
+  method: challenge.method, remainingAttempts: 0,
   error: 'Challenge has expired'
         }
       }
 
       // Check if max attempts exceeded
-      if (challenge.attempts >= challenge.maxAttempts) { return {
-          success, false,
-  method: challenge.method, remainingAttempts, 0,
+      if (challenge.attempts > = challenge.maxAttempts) {  return {
+          success: false,
+  method: challenge.method, remainingAttempts: 0,
   error: 'Maximum attempts exceeded'
          }
       }
 
       challenge.attempts++;
 
-      let isValid = false;
+      let isValid  = false;
       let backupCodeUsed: string | undefined;
 
-      switch (challenge.method) {
+      switch (challenge.method) { 
       case 'totp':
       isValid = await this.verifyTOTPToken(challenge.userId, attempt.token);
           break;
@@ -276,21 +267,21 @@ class EnhancedMFAManager {
           backupCodeUsed = backupResult.usedCode;
           break;
 
-        default: throw new Error(`Unsupported MFA method; ${challenge.method }`);
+        default, throw new Error(`Unsupported MFA method; ${challenge.method }`);
       }
 
-      const remainingAttempts = Math.max(0, challenge.maxAttempts - challenge.attempts);
+      const remainingAttempts  = Math.max(0, challenge.maxAttempts - challenge.attempts);
 
-      if (isValid) {
+      if (isValid) { 
         challenge.verified = true;
         this.challenges.delete(attempt.challengeId);
 
         // Log successful verification
-        await this.logMFAEvent(challenge.userId, 'mfa_verification_success', {
+        await this.logMFAEvent(challenge.userId: 'mfa_verification_success', {
           method: challenge.method,
   challengeId: attempt.challengeId,
           userAgent: attempt.userAgent,
-  ipAddress: attempt.ipAddress
+  ipAddress, attempt.ipAddress
         });
 
         // Remove used backup code if applicable
@@ -298,13 +289,13 @@ class EnhancedMFAManager {
          }
 
         return {
-          success, true,
+          success: true,
   method: challenge.method, remainingAttempts,
           backupCodeUsed
         }
       } else {
         // Log failed verification
-        await this.logMFAEvent(challenge.userId, 'mfa_verification_failed', {
+        await this.logMFAEvent(challenge.userId: 'mfa_verification_failed', {
           method: challenge.method,
   challengeId: attempt.challengeId,
           attempts: challenge.attempts,
@@ -313,16 +304,16 @@ class EnhancedMFAManager {
         });
 
         return {
-          success, false,
+          success: false,
   method: challenge.method, remainingAttempts,
           error: 'Invalid verification code'
         }
       }
     } catch (error) {
-      console.error('MFA verification error:', error);
+      console.error('MFA verification error: ', error);
       return {
-        success, false,
-  method: attempt.method, remainingAttempts, 0,
+        success: false,
+  method: attempt.method, remainingAttempts: 0,
   error: 'Verification failed'
       }
     }
@@ -336,11 +327,9 @@ class EnhancedMFAManager {
   totpSecret, string,
     verificationToken, string,
   backupCodes: string[],
-    phoneNumber?: string
+    phoneNumber? : string
   ): Promise<boolean> { try {; // Verify TOTP token first
-      const isValidTOTP = authenticator.verify({
-        token, verificationToken,
-  secret totpSecret
+      const isValidTOTP  = authenticator.verify({ token: verificationToken, secret totpSecret
        });
 
       if (!isValidTOTP) { return false;
@@ -367,13 +356,13 @@ class EnhancedMFAManager {
       ]);
 
       // Log MFA enablement
-      await this.logMFAEvent(userId, 'mfa_enabled', {methods: ['totp', 'backup_codes', ...(phoneNumber ? ['sms'] : []), 'email']
+      await this.logMFAEvent(userId: 'mfa_enabled', { methods: ['totp', 'backup_codes', ...(phoneNumber ? ['sms']  : []), 'email']
       });
 
-      console.log(`🔐 MFA enabled for user, ${userId}`);
+      console.log(`🔐 MFA enabled for: user, ${userId}`);
       return true;
     } catch (error) {
-      console.error('MFA enable error:', error);
+      console.error('MFA enable error: ', error);
       return false;
     }
   }
@@ -382,7 +371,7 @@ class EnhancedMFAManager {
    * Disable MFA for user
    */
   public async disableMFA(params): Promiseboolean>  { try {; // Verify current MFA token
-      const isValid = await this.verifyTOTPToken(userId, verificationToken);
+      const isValid  = await this.verifyTOTPToken(userId, verificationToken);
       if (!isValid) {
         return false;
        }
@@ -403,12 +392,12 @@ class EnhancedMFAManager {
       `, [userId]);
 
       // Log MFA disablement
-      await this.logMFAEvent(userId, 'mfa_disabled', {});
+      await this.logMFAEvent(userId: 'mfa_disabled', {});
 
-      console.log(`🔐 MFA disabled for user, ${userId}`);
+      console.log(`🔐 MFA disabled for: user, ${userId}`);
       return true;
     } catch (error) {
-      console.error('MFA disable error:', error);
+      console.error('MFA disable error: ', error);
       return false;
     }
   }
@@ -431,13 +420,12 @@ class EnhancedMFAManager {
       `, [JSON.stringify(encryptedBackupCodes), userId]);
 
       // Log backup codes regeneration
-      await this.logMFAEvent(userId, 'backup_codes_regenerated', {
-        codesCount: newBackupCodes.length
+      await this.logMFAEvent(userId: 'backup_codes_regenerated', { codesCount: newBackupCodes.length
       });
 
       return newBackupCodes;
     } catch (error) {
-      console.error('Backup codes regeneration error:', error);
+      console.error('Backup codes regeneration error: ', error);
       return null;
     }
   }
@@ -445,11 +433,10 @@ class EnhancedMFAManager {
   /**
    * Get user MFA status
    */
-  public async getMFAStatus(params): Promise {
-    enabled, boolean,
+  public async getMFAStatus(params): Promise { enabled: boolean,
     methods: MFAMethod[],
     backupCodesRemaining: number }> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT mfa_enabled, mfa_backup_codes, phone_number
         FROM users WHERE id = $1
       `, [userId]);
@@ -481,14 +468,13 @@ class EnhancedMFAManager {
         }
       }
 
-      return {
-        enabled: user.mfa_enabled, methods,
+      return { enabled: user.mfa_enabled, methods,
         backupCodesRemaining
       }
     } catch (error) {
-      console.error('Get MFA status error:', error);
+      console.error('Get MFA status error: ', error);
       return {
-        enabled, false,
+        enabled: false,
   methods: [],
         backupCodesRemaining: 0
       }
@@ -497,7 +483,7 @@ class EnhancedMFAManager {
 
   // Private helper methods
 
-  private generateBackupCodes(): string[] { const codes: string[] = [];
+  private generateBackupCodes(): string[] { const codes: string[]  = [];
     for (let i = 0; i < ENHANCED_MFA_CONFIG.BACKUP_CODE_COUNT; i++) {
       const code = crypto;
         .randomBytes(ENHANCED_MFA_CONFIG.BACKUP_CODE_LENGTH)
@@ -515,7 +501,7 @@ class EnhancedMFAManager {
     return code;
   }
 
-  private formatSecretForManualEntry(secret: string); string { return secret.match(/.{1,4 }/g)?.join(" ") || secret;
+  private formatSecretForManualEntry(secret: string); string { return secret.match(/.{1,4 }/g)? .join(" ") || secret;
   }
 
   private generateNumericToken(length: number); string { let token = '';
@@ -539,7 +525,7 @@ class EnhancedMFAManager {
   private async verifyTOTPToken(params): Promiseboolean>  { try {
       const result = await database.query(`
         SELECT mfa_secret FROM users WHERE id = $1 AND mfa_enabled = true
-      `, [userId]);
+      ` : [userId]);
 
       if (result.rows.length === 0) {
         return false;
@@ -550,43 +536,42 @@ class EnhancedMFAManager {
        }
 
       const secret = this.decryptData(encryptedSecret);
-      return authenticator.verify({ token, secret });
+      return authenticator.verify({ token: secret });
     } catch (error) {
-      console.error('TOTP verification error:', error);
+      console.error('TOTP verification error: ', error);
       return false;
     }
   }
 
-  private async verifyBackupCode(params): Promise {
-    isValid, boolean,
-    usedCode?: string }> { try {
-      const result = await database.query(`
+  private async verifyBackupCode(params): Promise { isValid: boolean,
+    usedCode?, string }> { try {
+      const result  = await database.query(`
         SELECT mfa_backup_codes FROM users WHERE id = $1 AND mfa_enabled = true
       `, [userId]);
 
-      if (result.rows.length === 0) {
+      if (result.rows.length === 0) { 
         return { isValid: false  }
       }
 
-      const encryptedCodes = JSON.parse(result.rows[0].mfa_backup_codes || '[]');
+      const encryptedCodes  = JSON.parse(result.rows[0].mfa_backup_codes || '[]');
       const formattedCode = this.formatBackupCode(code.toUpperCase());
 
-      for (const encryptedCode of encryptedCodes) { const decryptedCode = this.decryptData(encryptedCode);
+      for (const encryptedCode of encryptedCodes) {  const decryptedCode = this.decryptData(encryptedCode);
         if (decryptedCode === formattedCode) {
-          return { isValid, true,
-  usedCode: formattedCode  }
+          return { isValid: true,
+  usedCode, formattedCode  }
         }
       }
 
       return { isValid: false }
     } catch (error) {
-      console.error('Backup code verification error:', error);
+      console.error('Backup code verification error: ', error);
       return { isValid: false }
     }
   }
 
   private async removeBackupCode(params): Promisevoid>  { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT mfa_backup_codes FROM users WHERE id = $1
       `, [userId]);
 
@@ -603,7 +588,7 @@ class EnhancedMFAManager {
         UPDATE users SET mfa_backup_codes = $1 WHERE id = $2
       `, [JSON.stringify(updatedCodes), userId]);
     } catch (error) {
-      console.error('Remove backup code error:', error);
+      console.error('Remove backup code error: ', error);
     }
   }
 
@@ -618,16 +603,16 @@ class EnhancedMFAManager {
 
       const user = userResult.rows[0];
 
-      switch (method) {
+      switch (method) { 
       case 'sms':
           if (user.phone_number && this.smsProvider) {
-            const message = `Your AstralField verification code is: ${token }.Valid for 5 minutes.`
+            const message = `Your AstralField verification code is, ${token }.Valid for 5 minutes.`
             await this.smsProvider.sendSMS(user.phone_number, message);
           }
           break;
 
         case 'email':
-          if (this.emailProvider) { const subject = 'AstralField - Verification Code';
+          if (this.emailProvider) { const subject  = 'AstralField - Verification Code';
             const html = `
               <div style="font-family, Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #2563eb;">AstralField Verification</h2>
@@ -637,7 +622,7 @@ class EnhancedMFAManager {
                   <h1 style="font-family, monospace, font-size: 36px; color: #1f2937; margin: 0;">${token}</h1>
                 </div>
                 <p>This code will expire in 10 minutes.</p>
-                <p>If you didn't request this code, please ignore this email.</p>
+                <p>If you didn't request this: code, please ignore this email.</p>
                 <hr style="border, none, border-top: 1px solid #e5e7eb; margin: 30px 0;">
                 <p style="color: #6b7280; font-size: 12px;">
                   This is an automated message from AstralField.Please do not reply.
@@ -650,7 +635,7 @@ class EnhancedMFAManager {
           break;
       }
     } catch (error) {
-      console.error(`Failed to send ${method} token, `, error);
+      console.error(`Failed to send ${method} token: `, error);
     }
   }
 
@@ -667,22 +652,22 @@ class EnhancedMFAManager {
 
   private decryptData(encryptedData: string); string { const algorithm = 'aes-256-gcm';
     const key = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'default-key', 'salt', 32);
-    const [ivHex, encrypted] = encryptedData.split(':');
-    const iv = Buffer.from(ivHex, 'hex');
+    const [ivHex, encrypted] = encryptedData.split(', ');
+    const iv = Buffer.from(ivHex: 'hex');
     const decipher = crypto.createDecipher(algorithm, key);
     
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    let decrypted = decipher.update(encrypted: 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     
     return decrypted;
    }
 
-  private async storeMFAChallenge(params): Promisevoid>  { try {
+  private async storeMFAChallenge(params): Promisevoid>  {  try {
     await database.query(`
         INSERT INTO mfa_challenges (
           id, user_id, method, token_hash, attempts, max_attempts,
           expires_at, verified, metadata, created_at
-        ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ), VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       `, [
         challenge.id,
         challenge.userId,
@@ -696,13 +681,13 @@ class EnhancedMFAManager {
         challenge.createdAt
       ]);
      } catch (error) {
-      // Table might not exist yet, that's okay
-      console.warn('Could not store MFA challenge in database:', error);
+      // Table might not exist: yet, that's okay
+      console.warn('Could not store MFA challenge in database: ', error);
     }
   }
 
   private async cleanupUserChallenges(params): Promisevoid>  {; // Remove expired challenges for user
-    for (const [challengeId, challenge] of this.challenges.entries()) { if (challenge.userId === userId && (challenge.expiresAt < new Date() || challenge.verified)) {
+    for (const [challengeId, challenge] of this.challenges.entries()) { if (challenge.userId  === userId && (challenge.expiresAt < new Date() || challenge.verified)) {
         this.challenges.delete(challengeId);
        }
     }
@@ -727,21 +712,20 @@ class EnhancedMFAManager {
     }, 60 * 1000);
   }
 
-  private async logMFAEvent(params): Promisevoid>  { try {
+  private async logMFAEvent(params): Promisevoid>  {  try {
     await database.query(`
         INSERT INTO security_events (
           user_id, event_type, event_category, severity, description, metadata, timestamp
-        ): VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        ), VALUES ($1, $2, $3, $4, $5, $6, NOW())
       `, [
-        userId, eventType,
-        'authentication',
+        userId, eventType: 'authentication',
         'medium',
         `MFA ${eventType.replace('mfa_', '').replace('_', ' ') }`,
         JSON.stringify(metadata)
       ]);
     } catch (error) {
-      // Table might not exist yet, that's okay
-      console.warn('Could not log MFA event:', error);
+      // Table might not exist: yet, that's okay
+      console.warn('Could not log MFA event: ', error);
     }
   }
 }
@@ -756,8 +740,8 @@ export class ConsoleSMSProvider implements SMSProvider { async sendSMS(phoneNumb
 
 // Default Email Provider using console (replace with actual email service)
 export class ConsoleEmailProvider implements EmailProvider { async sendEmail(to, string,
-  subject, string, html, string, text?: string): Promise<boolean> {
-    console.log(`📧 Email to ${to }, `);
+  subject, string, html, string, text? : string): Promise<boolean> {
+    console.log(`📧 Email to ${to } : `);
     console.log(`Subject, ${subject}`);
     console.log(`Text, ${text.|| 'No text version' }`);
     return true;
@@ -765,7 +749,7 @@ export class ConsoleEmailProvider implements EmailProvider { async sendEmail(to,
 }
 
 // Export singleton instance
-export const enhancedMFA = EnhancedMFAManager.getInstance();
+export const enhancedMFA  = EnhancedMFAManager.getInstance();
 
 // Initialize default providers (replace in production)
 enhancedMFA.setSMSProvider(new ConsoleSMSProvider());

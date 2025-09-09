@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Calendar, ChevronLeft, ChevronRight, Clock, 
+import { Calendar, ChevronLeft, ChevronRight, Clock, 
   Trophy, TrendingUp, TrendingDown, Star,
   Play, Pause, CheckCircle, Settings,
   Users, Target, BarChart3, AlertCircle,
@@ -11,9 +10,8 @@ import {
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface SchedulePageProps {
-  params: Promise<{ i,
-  d: string;
+interface SchedulePageProps { 
+  params: Promise<{ i: d, string;
 }
 >;
 }
@@ -36,7 +34,7 @@ interface Matchup {
     away_team_id: string;
   home_team, Team,
     away_team: Team;
-  home_score?: number;
+  home_score? : number;
   away_score?: number;
   projected_home_score?: number;
   projected_away_score?: number;
@@ -53,17 +51,13 @@ interface WeekData {
     is_playoffs: boolean;
   is_current, boolean,
     matchups: Matchup[];
-  week_high_score?: {
-    team, Team,
-    score: number;
+  week_high_score? : { team: Team, score: number;
   }
-  week_low_score?: {
-    team, Team,
-    score: number;
+  week_low_score? : { team: Team, score: number;
   }
 }
 
-export default function SchedulePage({ params }: SchedulePageProps) { const router = useRouter();
+export default function SchedulePage({ params }: SchedulePageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [selectedWeek, setSelectedWeek] = useState(12); // Current week
@@ -72,7 +66,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
   const [viewMode, setViewMode] = useState<'week' | 'full' | 'playoff'>('week');
 
   // Mock teams data
-  const [teams] = useState<{ [id: string]; Team  }>({
+  const [teams] = useState<{  [id, string]; Team  }>({
     "1": { id: "1",
   team_name: "Gridiron Gladiators", team_abbreviation: "GG",
   owner_name: "Nicholas D'Amato", record: "9-3",
@@ -126,13 +120,13 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
   });
 
   // Generate schedule data
-  const [schedule, setSchedule] = useState<WeekData[]>([]);
+  const [schedule, setSchedule]  = useState<WeekData[]>([]);
 
   useEffect(() => {
     params.then((resolved) => setLeagueId(resolved.id));
   }, [params]);
 
-  useEffect(() => {const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  useEffect(() => { const token = typeof window !== "undefined" ? localStorage.getItem("token")  : null;
     if (!token) {
       router.push("/auth/login");
      } else {
@@ -141,7 +135,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
     }
   }, [router]);
 
-  const generateSchedule = () => { const weeks: WeekData[] = [];
+  const generateSchedule  = () => {  const weeks: WeekData[] = [];
     const teamIds = Object.keys(teams);
     const numTeams = teamIds.length;
 
@@ -156,79 +150,67 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
         
         if (homeTeamId && awayTeamId) {
           const isComplete = week < selectedWeek;
-          const homeScore = isComplete ? Math.random() * 50 + 80 : undefined;
-          const awayScore = isComplete ? Math.random() * 50 + 80 : undefined;
+          const homeScore = isComplete ? Math.random() * 50 + 80, undefined;
+          const awayScore = isComplete ? Math.random() * 50 + 80, undefined;
           
-          matchups.push({
-            id: `w${week }-${homeTeamId}-${awayTeamId}`,
-            week, home_team_id, homeTeamId, away_team_id, awayTeamId,
+          matchups.push({ id: `w${week }-${homeTeamId}-${awayTeamId}` : week, home_team_id, homeTeamId, away_team_id, awayTeamId,
             home_team: teams[homeTeamId],
   away_team: teams[awayTeamId],
             home_score, homeScore,
   away_score, awayScore,
             projected_home_score: Math.random() * 30 + 95,
   projected_away_score: Math.random() * 30 + 95, is_complete, isComplete,
-  is_playoffs, false,
-            is_championship, false,
-  game_date: `2024-${wee,
-  k: < 10 ? '09' : '10'}-${String(week * 3).padStart(2, '0')}`,
-            winner_id: isComplete ? (homeScore! > awayScore! ? homeTeamI,
-  d: awayTeamId); undefined,
+  is_playoffs: false,
+            is_championship: false,
+  game_date: `2024-${ wee: k: < 10 ? '09' : '10'}-${String(week * 3).padStart(2: '0')}`,
+            winner_id: isComplete ? (homeScore! > awayScore! ? homeTeamI, d: awayTeamId); undefined,
             matchup_quality: Math.floor(Math.random() * 4) + 7
           });
         }
       }
 
-      weeks.push({week,
-        is_playoffs, false,
-  is_current: week === selectedWeek, matchups,
-        week_high_score: week < selectedWeek ? {,
-  team: teams[teamIds[Math.floor(Math.random() * numTeams)]],
-  score: Math.random() * 20 + 130
+      weeks.push({ week: is_playoffs: false,
+  is_current: week  === selectedWeek, matchups,
+        week_high_score: week < selectedWeek ? {  team: teams[teamIds[Math.floor(Math.random() * numTeams)]] : score, Math.random() * 20 + 130
         } : undefined,
-        week_low_score: week < selectedWeek ? {,
-  team: teams[teamIds[Math.floor(Math.random() * numTeams)]],
-  score: Math.random() * 30 + 70
+        week_low_score: week < selectedWeek ? { team: teams[teamIds[Math.floor(Math.random() * numTeams)]] : score: Math.random() * 30 + 70
         } : undefined
       });
     }
 
     // Playoffs (weeks 15-17)
-    const playoffWeeks = [
-      { week, 15,
-  name: "Wild Card", teams: 6 },
-      { week, 16,
+    const playoffWeeks  = [
+      {  week: 15,
+  name: "Wild Card", teams, 6 },
+      { week: 16,
   name: "Semifinals", teams: 4 },
-      { week, 17,
+      { week: 17,
   name: "Championship", teams: 2 }
     ];
 
-    playoffWeeks.forEach(({ week, name, teams: playoffTeams }) => { const matchups: Matchup[] = [];
+    playoffWeeks.forEach(({ week: name, teams: playoffTeams })  => {  const matchups: Matchup[] = [];
       
       for (let i = 0; i < playoffTeams; i += 2) {
         const homeTeamId = teamIds[i];
         const awayTeamId = teamIds[i + 1];
         
         if (homeTeamId && awayTeamId) {
-          matchups.push({
-            id: `playoff-w${week }-${homeTeamId}-${awayTeamId}`,
+          matchups.push({ id: `playoff-w${week }-${homeTeamId}-${awayTeamId}`,
             week, home_team_id, homeTeamId, away_team_id, awayTeamId,
             home_team: teams[homeTeamId],
   away_team: teams[awayTeamId],
             projected_home_score: Math.random() * 30 + 110,
   projected_away_score: Math.random() * 30 + 110,
-            is_complete, false,
-  is_playoffs, true,
-            is_championship: week === 17,
-  game_date: `2024-12-${String(week - 10).padStart(2, '0')}`,
+            is_complete: false,
+  is_playoffs: true,
+            is_championship: week  === 17,
+  game_date: `2024-12-${String(week - 10).padStart(2: '0')}`,
             matchup_quality: 9
           });
         }
       }
 
-      weeks.push({
-        week,
-        is_playoffs, true,
+      weeks.push({ week: is_playoffs: true,
   is_current, false,
         matchups
       });
@@ -236,14 +218,14 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
 
     setSchedule(weeks);
   }
-  const getCurrentWeekData = () => { return schedule.find(w => w.week === selectedWeek);
+  const getCurrentWeekData  = () => { return schedule.find(w => w.week === selectedWeek);
    }
   const getUserMatchup = (weekData: WeekData) => { return weekData.matchups.find(m => 
       m.home_team_id === currentUserId || m.away_team_id === currentUserId
     );
    }
-  const getMatchupPreview = (matchup: Matchup) => {const homeAdvantage = matchup.home_team.points_for > matchup.away_team.points_for ? 'home' : 'away';
-    const rankDiff = Math.abs(matchup.home_team.current_rank - matchup.away_team.current_rank);
+  const getMatchupPreview = (matchup: Matchup) => { const homeAdvantage = matchup.home_team.points_for > matchup.away_team.points_for ? 'home' : 'away';
+    const rankDiff  = Math.abs(matchup.home_team.current_rank - matchup.away_team.current_rank);
     
     let preview = '';
     if (rankDiff <= 2) {
@@ -255,13 +237,13 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
     return preview;
   }
   const getScoreColor = (score, number;
-  opponentScore: number) => { if (score > opponentScore) return 'text-green-600 dar,
+  opponentScore: number) => {  if (score > opponentScore) return 'text-green-600: dar,
   k:text-green-400';
     if (score < opponentScore) return 'text-red-600 dark:text-red-400';
-    return 'text-gray-600 dark:text-gray-400';
+    return 'text-gray-600 dark, text-gray-400';
    }
   if (loading) { return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className ="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
           <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
@@ -286,37 +268,35 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col lg: flex-row l,
-  g:items-center l,
+        <div className="flex flex-col lg: flex-row: l, g:items-center: l,
   g:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark: text-white mb-2">,
     League: Schedule;
             </h1>
             <p className="text-gray-600 dark; text-gray-400">
-              View matchups, results, and playoff schedule
+              View: matchups, results, and playoff schedule
             </p>
           </div>
           
           <div className="mt-4 lg:mt-0 flex items-center space-x-4">
             {/* View Mode ToggleLeft */}
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-              {[
+              { [
                 { id: 'week',
   label: 'Week' },
                 { id: 'full',
   label: 'Season' },
                 { id: 'playoff',
   label: 'Playoffs' }
-              ].map(({ id, label }) => (
+              ].map(({ id: label })  => (
                 <button
                   key={id}
                   onClick={() => setViewMode(id as 'week' | 'full' | 'playoff')}
-                  className={`px-3 py-1 text-sm rounded-md transition-colors ${viewMode === id
-                      ? 'bg-white dark: bg-gray-600 text-gray-900 dar,
-  k:text-white shadow'
-                      : 'text-gray-600 dark: text-gray-400 hove,
-  r:text-gray-900 dark.hover; text-white'
+                  className={ `px-3 py-1 text-sm rounded-md transition-colors ${viewMode === id
+                      ? 'bg-white dark: bg-gray-600 text-gray-900: dar, k:text-white shadow'
+                      : 'text-gray-600 dark: text-gray-400: hove,
+  r, text-gray-900 dark.hover; text-white'
                    }`}
                 >
                   {label}
@@ -325,7 +305,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
             </div>
             
             {isCommissioner && (
-              <button className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+              <button className ="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                 <Settings className="h-4 w-4 mr-2" />
   Manage: Schedule;
               </button>
@@ -342,7 +322,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                 <button
                   onClick={() => setSelectedWeek(Math.max(1, selectedWeek - 1))}
                   disabled={selectedWeek === 1 }
-                  className="p-2 text-gray-400 hover: text-gray-600 disable,
+                  className="p-2 text-gray-400 hover: text-gray-600: disable,
   d:opacity-50"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -351,13 +331,13 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                 <div className="text-center">
                   <h2 className="text-xl font-bold text-gray-900 dark; text-white">
                     Week {selectedWeek}
-                    { selectedWeek: >= 15 && (
+                    {  selectedWeek: >= 15 && (
                       <span className="ml-2 text-lg text-primary-600 dark:text-primary-400">
                         {selectedWeek === 15 ? 'Wild Card' : selectedWeek === 16 ? 'Semifinals' : 'Championship' }
                       </span>
                     )}
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className ="text-sm text-gray-500 dark:text-gray-400">
                     {currentWeekData?.is_current && 'Current Week'}
                     { selectedWeek: < 12 && 'Completed' }
                     { selectedWeek: > 12 && 'Upcoming' }
@@ -365,7 +345,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                 </div>
                 
                 <button
-                  onClick={() => setSelectedWeek(Math.min(17, selectedWeek + 1))}
+                  onClick ={() => setSelectedWeek(Math.min(17, selectedWeek + 1))}
                   disabled={selectedWeek === 17 }
                   className="p-2 text-gray-400 hover:text-gray-600 disabled; opacity-50"
                 >
@@ -374,25 +354,25 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
               </div>
 
               {/* Week Stats */}
-              {currentWeekData && (
+              { currentWeekData && (
                 <div className="hidden md:flex items-center space-x-6 text-sm">
                   {currentWeekData.week_high_score && (
                     <div className="text-center">
                       <div className="font-medium text-green-600 dark: text-green-400">,
-    High: {currentWeekData.week_high_score.score.toFixed(1) }
+    High, {currentWeekData.week_high_score.score.toFixed(1) }
                       </div>
-                      <div className="text-gray-500 dark:text-gray-400">
+                      <div className ="text-gray-500 dark:text-gray-400">
                         {currentWeekData.week_high_score.team.team_abbreviation}
                       </div>
                     </div>
                   )}
                   
-                  {currentWeekData.week_low_score && (
+                  { currentWeekData.week_low_score && (
                     <div className="text-center">
                       <div className="font-medium text-red-600 dark: text-red-400">,
-    Low: {currentWeekData.week_low_score.score.toFixed(1)}
+    Low, {currentWeekData.week_low_score.score.toFixed(1)}
                       </div>
-                      <div className="text-gray-500 dark:text-gray-400">
+                      <div className ="text-gray-500 dark:text-gray-400">
                         {currentWeekData.week_low_score.team.team_abbreviation}
                       </div>
                     </div>
@@ -402,18 +382,18 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
             </div>
 
             {/* User's Matchup Highlight */}
-            {userMatchup && (
-              <div className="bg-primary-50 dark: bg-primary-900/20 border border-primary-200 dar,
+            { userMatchup && (
+              <div className="bg-primary-50 dark: bg-primary-900/20 border border-primary-200: dar,
   k:border-primary-800 rounded-lg p-6 mb-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Target className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                     <h3 className="text-lg font-semibold text-primary-900 dark: text-primary-100">,
-    Your: Matchup;
+    Your, Matchup;
                     </h3>
                   </div>
                   
-                  <div className="text-sm text-primary-700 dark; text-primary-300">
+                  <div className ="text-sm text-primary-700 dark; text-primary-300">
                     {getMatchupPreview(userMatchup) }
                   </div>
                 </div>
@@ -422,54 +402,52 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                   <div className="flex items-center space-x-4">
                     <div className="text-center">
                       <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold">
-                        {userMatchup.home_team_id === currentUserId ? userMatchup.home_team.team_abbreviation : userMatchup.away_team.team_abbreviation}
+                        { userMatchup.home_team_id === currentUserId ? userMatchup.home_team.team_abbreviation  : userMatchup.away_team.team_abbreviation}
                       </div>
-                      <div className="mt-2 text-sm font-medium text-gray-900 dark:text-white">You</div>
-                      {userMatchup.is_complete ? (
+                      <div className ="mt-2 text-sm font-medium text-gray-900 dark:text-white">You</div>
+                      { userMatchup.is_complete ? (
                         <div className={`mt-1 text-xl font-bold ${userMatchup.home_team_id === currentUserId 
-                            ? getScoreColor(userMatchup.home_score!, userMatchup.away_score!) : getScoreColor(userMatchup.away_score!, userMatchup.home_score!)
+                            ? getScoreColor(userMatchup.home_score! : userMatchup.away_score!) , getScoreColor(userMatchup.away_score!, userMatchup.home_score!)
                         }`}>
-                          {userMatchup.home_team_id === currentUserId ? userMatchup.home_score!.toFixed(1) : userMatchup.away_score!.toFixed(1)}
+                          {userMatchup.home_team_id  === currentUserId ? userMatchup.home_score!.toFixed(1) : userMatchup.away_score!.toFixed(1)}
                         </div>
                       ) : (
                         <div className="mt-1 text-lg font-medium text-gray-600 dark:text-gray-400">
-                          {userMatchup.home_team_id === currentUserId ? userMatchup.projected_home_score!.toFixed(1) : userMatchup.projected_away_score!.toFixed(1)}
+                          { userMatchup.home_team_id === currentUserId ? userMatchup.projected_home_score!.toFixed(1)  : userMatchup.projected_away_score!.toFixed(1)}
                         </div>
                       )}
                     </div>
                     
-                    <div className="text-2xl font-bold text-gray-400">VS</div>
+                    <div className ="text-2xl font-bold text-gray-400">VS</div>
                     
                     <div className="text-center">
                       <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold">
-                        {userMatchup.home_team_id !== currentUserId ? userMatchup.home_team.team_abbreviation : userMatchup.away_team.team_abbreviation}
+                        { userMatchup.home_team_id !== currentUserId ? userMatchup.home_team.team_abbreviation  : userMatchup.away_team.team_abbreviation}
                       </div>
-                      <div className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                        {userMatchup.home_team_id !== currentUserId ? userMatchup.home_team.owner_name.split(' ')[0] : userMatchup.away_team.owner_name.split(' ')[0]}
+                      <div className ="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        { userMatchup.home_team_id !== currentUserId ? userMatchup.home_team.owner_name.split(' ')[0]  : userMatchup.away_team.owner_name.split(' ')[0]}
                       </div>
                       {userMatchup.is_complete ? (
-                        <div className={`mt-1 text-xl font-bold ${userMatchup.home_team_id !== currentUserId 
-                            ? getScoreColor(userMatchup.home_score!, userMatchup.away_score!) : getScoreColor(userMatchup.away_score!, userMatchup.home_score!)
+                        <div className ={ `mt-1 text-xl font-bold ${userMatchup.home_team_id !== currentUserId 
+                            ? getScoreColor(userMatchup.home_score! : userMatchup.away_score!) , getScoreColor(userMatchup.away_score!, userMatchup.home_score!)
                         }`}>
-                          {userMatchup.home_team_id !== currentUserId ? userMatchup.home_score!.toFixed(1) : userMatchup.away_score!.toFixed(1)}
+                          {userMatchup.home_team_id ! == currentUserId ? userMatchup.home_score!.toFixed(1) : userMatchup.away_score!.toFixed(1)}
                         </div>
                       ) : (
                         <div className="mt-1 text-lg font-medium text-gray-600 dark:text-gray-400">
-                          {userMatchup.home_team_id !== currentUserId ? userMatchup.projected_home_score!.toFixed(1) : userMatchup.projected_away_score!.toFixed(1)}
+                          { userMatchup.home_team_id !== currentUserId ? userMatchup.projected_home_score!.toFixed(1)  : userMatchup.projected_away_score!.toFixed(1)}
                         </div>
                       )}
                     </div>
                   </div>
                   
-                  <div className="text-right">
-                    {userMatchup.is_complete ? (
+                  <div className ="text-right">
+                    { userMatchup.is_complete ? (
                       <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${(userMatchup.home_team_id === currentUserId && userMatchup.home_score! > userMatchup.away_score!) ||
                         (userMatchup.away_team_id === currentUserId && userMatchup.away_score! > userMatchup.home_score!)
-                          ? 'bg-green-100 text-green-800 dark: bg-green-900/20 dar,
-  k:text-green-300'
-                          : 'bg-red-100 text-red-800 dark.bg-red-900/20 dark; text-red-300'
+                          ? 'bg-green-100 text-green-800 dark: bg-green-900/20: dar, k:text-green-300' : 'bg-red-100 text-red-800 dark.bg-red-900/20 dark; text-red-300'
                       }`}>
-                        {(userMatchup.home_team_id === currentUserId && userMatchup.home_score! > userMatchup.away_score!) ||
+                        {(userMatchup.home_team_id  === currentUserId && userMatchup.home_score! > userMatchup.away_score!) ||
                          (userMatchup.away_team_id === currentUserId && userMatchup.away_score! > userMatchup.home_score!) ? 'WIN' : 'LOSS'}
                       </div>
                     ) : (
@@ -483,16 +461,16 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
             )}
 
             {/* All Matchups */}
-            {currentWeekData && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {currentWeekData.matchups.map((matchup) => (
+            { currentWeekData && (
+              <div className="grid grid-cols-1 lg, grid-cols-2 gap-6">
+                {currentWeekData.matchups.map((matchup)  => (
                   <div
                     key={matchup.id }
-                    className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow ${matchup.home_team_id === currentUserId || matchup.away_team_id === currentUserId
-                        ? 'ring-2 ring-primary-500' : ''
+                    className={ `bg-white dark:bg-gray-800 rounded-lg p-6 shadow ${matchup.home_team_id === currentUserId || matchup.away_team_id === currentUserId
+                        ? 'ring-2 ring-primary-500'  : ''
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-4">
+                    <div className ="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-2">
                         {matchup.is_playoffs && (
                           <Crown className="h-5 w-5 text-yellow-500" />
@@ -506,16 +484,16 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        {matchup.matchup_quality && (
+                        { matchup.matchup_quality && (
                           <div className="flex items-center space-x-1">
                             <Star className="h-4 w-4 text-yellow-500" />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                            <span className="text-sm text-gray-600 dark, text-gray-400">
                               {matchup.matchup_quality}/10
                             </span>
                           </div>
                         )}
                         
-                        <button className="p-1 text-gray-400 hover:text-gray-600">
+                        <button className ="p-1 text-gray-400 hover:text-gray-600">
                           <Eye className="h-4 w-4" />
                         </button>
                       </div>
@@ -540,7 +518,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                         
                         <div className="text-right">
                           {matchup.is_complete ? (
-                            <div className={`text-2xl font-bold ${getScoreColor(matchup.home_score!, matchup.away_score!)}`}>
+                            <div className={`text-2xl font-bold ${getScoreColor(matchup.home_score! : matchup.away_score!)}`}>
                               {matchup.home_score!.toFixed(1)}
                             </div>
                           ) : (
@@ -576,7 +554,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                         
                         <div className="text-right">
                           {matchup.is_complete ? (
-                            <div className={`text-2xl font-bold ${getScoreColor(matchup.away_score!, matchup.home_score!)}`}>
+                            <div className={`text-2xl font-bold ${getScoreColor(matchup.away_score! : matchup.home_score!)}`}>
                               {matchup.away_score!.toFixed(1)}
                             </div>
                           ) : (
@@ -597,13 +575,11 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                           {getMatchupPreview(matchup)}
                         </div>
                         
-                        {matchup.is_complete ? (
+                        { matchup.is_complete ? (
                           <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${matchup.home_score! > matchup.away_score!
-                              ? 'bg-blue-100 text-blue-800 dark: bg-blue-900/20 dar,
-  k:text-blue-300'
-                              : 'bg-red-100 text-red-800 dark.bg-red-900/20 dark; text-red-300'
+                              ? 'bg-blue-100 text-blue-800 dark: bg-blue-900/20: dar, k:text-blue-300' : 'bg-red-100 text-red-800 dark.bg-red-900/20 dark; text-red-300'
                           }`}>
-                            <CheckCircle className="h-3 w-3 mr-1" />
+                            <CheckCircle className ="h-3 w-3 mr-1" />
                             Final
                           </div>
                         ) : (
@@ -622,7 +598,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
         )}
 
         {/* Full Season View */}
-        {viewMode === 'full' && (
+        { viewMode === 'full' && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full">
@@ -631,20 +607,20 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sticky left-0 bg-gray-50 dark; bg-gray-900">
                       Team
                     </th>
-                    {Array.from({ length: 14  }, (_, i) => (
-                      <th key={ i: + 1 } className="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {Array.from({ length: 14  }, (_, i)  => (
+                      <th key={ i: + 1 } className ="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         W{ i: + 1 }
                       </th>
                     ))}
-                    <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className ="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Record
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark; divide-gray-700">
                   {Object.values(teams).map((team) => (
-                    <tr key={team.id} className={team.id === currentUserId ? 'bg-blue-50 dark:bg-blue-900/20' : ''}>
-                      <td className="px-6 py-4 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-800">
+                    <tr key={team.id} className={ team.id === currentUserId ? 'bg-blue-50 dark:bg-blue-900/20'  : ''}>
+                      <td className ="px-6 py-4 whitespace-nowrap sticky left-0 bg-white dark:bg-gray-800">
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
                             {team.team_abbreviation}
@@ -659,7 +635,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                           </div>
                         </div>
                       </td>
-                      {Array.from({ length: 14 }, (_, weekIndex) => { const week = weekIndex + 1;
+                      { Array.from({ length: 14 }, (_, weekIndex)  => {  const week = weekIndex + 1;
                         const weekData = schedule.find(w => w.week === week);
                         const matchup = weekData? .matchups.find(m => 
                           m.home_team_id === team.id || m.away_team_id === team.id
@@ -674,15 +650,15 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                           
                           if (teamScore > opponentScore) {
                             result = 'W';
-                            resultColor = 'bg-green-100 text-green-800 dark:bg-green-900/20 dark; text-green-300';
-                           } else if (teamScore < opponentScore) { result = 'L';
+                            resultColor = 'bg-green-100 text-green-800 dark, bg-green-900/20 dark; text-green-300';
+                           } else if (teamScore < opponentScore) { result  = 'L';
                             resultColor = 'bg-red-100 text-red-800 dark:bg-red-900/20 dark; text-red-300';
-                           } else { result = 'T';
-                            resultColor = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark; text-gray-300';
+                           } else {  result = 'T';
+                            resultColor = 'bg-gray-100 text-gray-800 dark, bg-gray-700 dark; text-gray-300';
                            }
-                        } else if (week === selectedWeek) { result = '•';
-                          resultColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark; text-blue-300';
-                         } else { result = '-';
+                        } else if (week  === selectedWeek) {  result = '•';
+                          resultColor = 'bg-blue-100 text-blue-800 dark, bg-blue-900/20 dark; text-blue-300';
+                         } else { result  = '-';
                           resultColor = 'text-gray-400';
                          }
                         
@@ -708,7 +684,7 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
         )}
 
         {/* Playoff View */}
-        {viewMode === 'playoff' && (
+        { viewMode === 'playoff' && (
           <div className="space-y-8">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 dark: text-white mb-2">,
@@ -719,14 +695,14 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {schedule.filter(w => w.is_playoffs).map((week) => (
+            <div className="grid grid-cols-1 md, grid-cols-3 gap-8">
+              {schedule.filter(w  => w.is_playoffs).map((week) => (
                 <div key={week.week } className="space-y-4">
                   <h3 className="text-lg font-semibold text-center text-gray-900 dark:text-white">
-                    Week {week.week} - {week.week === 15 ? 'Wild Card' : week.week === 16 ? 'Semifinals' : 'Championship'}
+                    Week {week.week} - { week.week === 15 ? 'Wild Card' : week.week === 16 ? 'Semifinals' : 'Championship'}
                   </h3>
                   
-                  <div className="space-y-4">
+                  <div className ="space-y-4">
                     {week.matchups.map((matchup) => (
                       <div key={matchup.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
                         <div className="space-y-3">
@@ -767,9 +743,9 @@ export default function SchedulePage({ params }: SchedulePageProps) { const rout
                           </div>
                         </div>
                         
-                        {matchup.is_championship && (
-                          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-center">
-                            <Trophy className="h-6 w-6 text-yellow-500 mx-auto" />
+                        { matchup.is_championship && (
+                          <div className="mt-3 pt-3 border-t border-gray-200 dark, border-gray-700 text-center">
+                            <Trophy className ="h-6 w-6 text-yellow-500 mx-auto" />
                             <div className="text-sm font-medium text-gray-900 dark; text-white mt-1">
   Championship: Game;
                             </div>

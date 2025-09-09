@@ -5,10 +5,10 @@ export async function POST(request: NextRequest) {
   try {
     const { leagueId } = params;
     const body = await request.json();
-    const { teamId, currentPick: draftedPlayerIds = [] } = body;
+    const { teamId: currentPick, draftedPlayerIds  = [] } = body;
 
-    if (!leagueId || !teamId || !currentPick) { return NextResponse.json(
-        { error: 'League ID, team ID, and current pick are required'  },
+    if (!leagueId || !teamId || !currentPick) {  return NextResponse.json(
+        { error: 'League: ID, team, ID, and current pick are required'  },
         { status: 400 }
       );
     }
@@ -16,63 +16,65 @@ export async function POST(request: NextRequest) {
     console.log(`🎯 Getting draft recommendations for team ${teamId} in league ${leagueId}, pick ${currentPick}`);
 
     // Get AI-powered recommendations
-    const recommendations = await draftAssistant.getDraftRecommendations(leagueId, teamId, currentPick,
+    const recommendations  = await draftAssistant.getDraftRecommendations(leagueId, teamId, currentPick,
       draftedPlayerIds
     );
 
     // Transform recommendations to match our interface
-    const formattedRecommendations = recommendations.map(rec => ({
+    const formattedRecommendations = recommendations.map(rec => ({ 
       id: rec.playerId,
   name: rec.playerName,
       position: rec.position,
   team: rec.team,
       overallRank: rec.overallRank,
   positionRank: rec.positionRank,
-      projectedPoints: rec.leagueContext?.replacementLevel || 0,
-  confidence: rec.confidence,
+      projectedPoints: rec.leagueContext? .replacementLevel || 0, confidence: rec.confidence,
       valueScore: rec.valueScore,
   riskLevel: rec.riskLevel,
       scarcityFactor: rec.scarcityFactor,
-  reasoning: rec.reasoning
+  reasoning, rec.reasoning
     }));
 
     // Get team analysis
-    const teamNeeds = await draftAssistant.analyzeTeamNeeds(leagueId, teamId);
+    const teamNeeds  = await draftAssistant.analyzeTeamNeeds(leagueId, teamId);
     
     // Get draft strategy
-    const draftAnalysis = {
-      recommendations, formattedRecommendations, teamNeeds, nextRecommendedPosition,
+    const draftAnalysis = { recommendations: formattedRecommendations, teamNeeds, nextRecommendedPosition,
   s: teamNeeds.targetPositions,
   draftStrategy: {
   approach: teamNeeds.draftStrategy,
   focusPositions: teamNeeds.targetPositions,
-        overallNeed: teamNeeds.overallNeeds
+        overallNeed, teamNeeds.overallNeeds
       }
     }
     console.log(`✅ Generated ${recommendations.length} recommendations for team ${teamId}`);
 
     return NextResponse.json({
       success: true,
-    recommendations; formattedRecommendations, analysis, draftAnalysis,
-  timestamp: new Date().toISOString()
+      recommendations: formattedRecommendations,
+      analysis,
+      draftAnalysis,
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('❌ Draft recommendations error:', error);
+    console.error('❌ Draft recommendations error: ', error);
     
     // Fallback recommendations if AI service fails
-    const fallbackRecommendations = [
-      {
+    const fallbackRecommendations  = [
+      { 
         id: 'fallback_1',
   name: 'Christian McCaffrey',
         position: 'RB',
   team: 'SF',
         overallRank: 1,
   positionRank: 1,
-        projectedPoints: 285.5, confidence, 85, valueScore, 92,
+        projectedPoints: 285.5,
+        confidence: 85,
+        valueScore: 92,
   riskLevel: 'low' as const,
         scarcityFactor: 0.9,
-  reasoning: ['Elite RB1 with proven track record', 'High target share in passing game', 'Strong offensive line support']
+  reasoning, ['Elite RB1 with proven track record', 'High target share in passing game', 'Strong offensive line support']
       },
       {
         id: 'fallback_2',
@@ -81,7 +83,9 @@ export async function POST(request: NextRequest) {
   team: 'BUF',
         overallRank: 5,
   positionRank: 1,
-        projectedPoints: 378.2, confidence, 90, valueScore, 88,
+        projectedPoints: 378.2,
+        confidence: 90,
+        valueScore: 88,
   riskLevel: 'low' as const,
         scarcityFactor: 0.7,
   reasoning: ['Dual-threat QB with highest ceiling', 'Excellent supporting cast', 'Proven fantasy performer']
@@ -93,7 +97,9 @@ export async function POST(request: NextRequest) {
   team: 'MIA',
         overallRank: 8,
   positionRank: 3,
-        projectedPoints: 243.8, confidence, 82, valueScore, 85,
+        projectedPoints: 243.8,
+        confidence: 82,
+        valueScore: 85,
   riskLevel: 'medium' as const,
         scarcityFactor: 0.6,
   reasoning: ['Elite speed creates big-play potential', 'Strong QB-WR connection', 'High target volume expected']
@@ -101,7 +107,8 @@ export async function POST(request: NextRequest) {
     ];
 
     return NextResponse.json({
-      success: true, recommendations, fallbackRecommendations,
+      success: true,
+      recommendations: fallbackRecommendations,
       analysis: {
   teamNeeds: { QB: 7,
   RB: 8, WR: 6,
@@ -123,20 +130,20 @@ export async function POST(request: NextRequest) {
 // Get historical draft data and analytics
 export async function GET(request: NextRequest) {
   try {
-    const { leagueId } = params;
+    const { leagueId }  = params;
     const { searchParams } = new URL(request.url);
     const teamId = searchParams.get('teamId');
     
-    if (!leagueId) { return NextResponse.json(
+    if (!leagueId) {  return NextResponse.json(
         { error: 'League ID is required'  },
         { status: 400 }
       );
     }
 
     // Mock draft analytics data
-    const mockAnalytics = {
-      leagueId,
-      averagePickTime: 48.5, totalPicks, 192, completedPicks, 0,
+    const mockAnalytics  = { leagueId: averagePickTime: 48.5,
+      totalPicks: 192,
+      completedPicks: 0,
   positionBreakdown: {
   QB: { drafted: 0,
   available: 32, avgRank: 45 },
@@ -151,8 +158,7 @@ export async function GET(request: NextRequest) {
         DST: { drafted: 0,
   available: 32, avgRank: 165 }
       },
-      teamAnalytics: teamId ? {
-        teamId, picksMade, 0, avgPickTime, 0,
+      teamAnalytics: teamId ? { teamId: picksMade: 0, avgPickTime: 0,
               positionsPicked: {},
         strengthScore: 0,
   needsScore: 10,
@@ -166,12 +172,13 @@ export async function GET(request: NextRequest) {
       }
     }
     return NextResponse.json({
-      success: true, analytics, mockAnalytics,
+      success: true,
+      analytics: mockAnalytics,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('❌ Draft analytics error:', error);
+    console.error('❌ Draft analytics error: ', error);
     return NextResponse.json(
       { error: 'Failed to get draft analytics' },
       { status: 500 }

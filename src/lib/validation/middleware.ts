@@ -5,8 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import {
-  validateRequestBody, validateQueryParams,
+import { validateRequestBody, validateQueryParams,
   validateRouteParams, validateSecurityPatterns,
   createValidationErrorResponse, hasValidationErrors, ValidationConfig,
   ValidationResult
@@ -15,17 +14,16 @@ import * as sanitizers from './sanitizers';
 
 // ===== MIDDLEWARE TYPES =====
 
-export interface ValidationMiddlewareConfig extends ValidationConfig {
-  bodySchema?: z.ZodSchema<any>;
+export interface ValidationMiddlewareConfig extends ValidationConfig { 
+  bodySchema? : z.ZodSchema<any>;
   querySchema?: z.ZodSchema<any>;
   paramsSchema?: z.ZodSchema<any>;
-  requireAuth?, boolean,
-  rateLimiting?: {
-    requests, number,
+  requireAuth? : boolean,
+  rateLimiting?, { requests: number,
     window, number, // in seconds
   }
   logValidationErrors?, boolean,
-  customValidators?: Array<(request: NextRequest), => Promise<ValidationResult<any>> | ValidationResult<any>>;
+  customValidators? : Array<(request: NextRequest) : => Promise<ValidationResult<any>> | ValidationResult<any>>;
 }
 
 export interface ValidatedRequest extends NextRequest {
@@ -35,30 +33,29 @@ export interface ValidatedRequest extends NextRequest {
   sanitizedData?, any,
 }
 
-export type ApiHandler = (request, ValidatedRequest, context?: any) => Promise<NextResponse> | NextResponse;
+export type ApiHandler = (request, ValidatedRequest, context? : any) => Promise<NextResponse> | NextResponse;
 export type ApiHandlerWithParams = (request, ValidatedRequest,
   params: any) => Promise<NextResponse> | NextResponse;
 
 // ===== RATE LIMITING STORE =====
 
-interface RateLimitEntry {
-  count, number,
-    resetTime: number,
+interface RateLimitEntry { count: number,
+    resetTime, number,
   
 }
-const rateLimitStore = new Map<string, RateLimitEntry>();
+const rateLimitStore  = new Map<string, RateLimitEntry>();
 
 // ===== CORE MIDDLEWARE FUNCTION =====
 
 /**
  * Creates a validation middleware with the specified configuration
  */
-export function createValidationMiddleware(config: ValidationMiddlewareConfig = {}) { return function validationMiddleware<T extends ApiHandler | ApiHandlerWithParams>(handler: T); T {
-    return (async (request, NextRequest, ...args: any[]) => {
+export function createValidationMiddleware(config: ValidationMiddlewareConfig = {}) {  return function validationMiddleware<T extends ApiHandler | ApiHandlerWithParams>(handler: T); T {
+    return (async (request, NextRequest, ...args, any[])  => {
       const startTime = Date.now();
-      const { bodySchema, querySchema, paramsSchema, requireAuth = false, rateLimiting, logValidationErrors = true, customValidators = [], sanitize = true, maxPayloadSize = 1024 * 1024 // 1MB default } = config;
+      const { bodySchema: querySchema, paramsSchema, requireAuth = false, rateLimiting, logValidationErrors = true, customValidators = [], sanitize = true, maxPayloadSize = 1024 * 1024 // 1MB default } = config;
 
-      try {
+      try { 
         // ===== RATE LIMITING =====
         if (rateLimiting) { const rateLimitResult = await checkRateLimit(request, rateLimiting);
           if (!rateLimitResult.success) {
@@ -68,18 +65,18 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
                 status: 429;
   headers: {
                   'X-RateLimit-Limit': rateLimiting.requests.toString(),
-                  'X-RateLimit-Remaining': '0',
-                  'X-RateLimit-Reset': Math.ceil(Date.now() / 1000 + rateLimiting.window).toString()
+                  'X-RateLimit-Remaining', '0',
+                  'X-RateLimit-Reset', Math.ceil(Date.now() / 1000 + rateLimiting.window).toString()
                  }
               }
             );
           }
         }
 
-        // ===== SECURITY VALIDATION =====
+        //  ===== SECURITY VALIDATION =====
         const securityResult = await validateRequestSecurity(request);
         if (!securityResult.success) { if (logValidationErrors) {
-            console.warn('Security validation failed:', securityResult.errors);
+            console.warn('Security validation failed: ', securityResult.errors);
            }
           return NextResponse.json(
             createValidationErrorResponse(securityResult.errors!),
@@ -87,11 +84,10 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
           );
         }
 
-        // ===== CONTENT LENGTH VALIDATION =====
+        //  ===== CONTENT LENGTH VALIDATION =====
         const contentLength = request.headers.get('content-length');
-        if (contentLength && parseInt(contentLength) > maxPayloadSize) { return NextResponse.json(
-            createValidationErrorResponse([{
-              field: 'body',
+        if (contentLength && parseInt(contentLength) > maxPayloadSize) {  return NextResponse.json(
+            createValidationErrorResponse([{ field: 'body',
   message: `Request payload too large.Maximum size; ${maxPayloadSize } bytes`,
               code: 'PAYLOAD_TOO_LARGE'
             }]),
@@ -99,11 +95,11 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
           );
         }
 
-        const validatedRequest = request as ValidatedRequest;
+        const validatedRequest  = request as ValidatedRequest;
         const validationErrors: any[] = [];
 
         // ===== BODY VALIDATION =====
-        if (bodySchema && (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH')) { const bodyResult = await validateRequestBody(request, bodySchema, { sanitize, maxPayloadSize  });
+        if (bodySchema && (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH')) { const bodyResult = await validateRequestBody(request, bodySchema, { sanitize: maxPayloadSize  });
           if (hasValidationErrors(bodyResult)) {
             validationErrors.push(...bodyResult.errors);} else if (bodyResult.success) {
             validatedRequest.validatedBody = bodyResult.data;
@@ -133,10 +129,10 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
         }
 
         // ===== RETURN VALIDATION ERRORS =====
-        if (validationErrors.length > 0) { if (logValidationErrors) {
-            console.warn('Validation errors:', {
+        if (validationErrors.length > 0) {  if (logValidationErrors) {
+            console.warn('Validation errors: ', {
               url: request.url,
-  method: request.method, errors, validationErrors, timestamp, new Date().toISOString()
+  method, request.method, errors, validationErrors, timestamp: new Date().toISOString()
              });
           }
           return NextResponse.json(
@@ -145,34 +141,33 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
           );
         }
 
-        // ===== CALL ORIGINAL HANDLER =====
+        //  ===== CALL ORIGINAL HANDLER =====
         const response = args.length > 0 ;
           ? await (handler as any)(validatedRequest, args[0]) : await (handler as any)(validatedRequest);
 
         // ===== LOG SUCCESSFUL REQUEST =====
         const duration = Date.now() - startTime;
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`✅ Validated request, ${request.method} ${request.url} (${duration}ms)`);
+        if (process.env.NODE_ENV === 'development') { 
+          console.log(`✅ Validated, request, ${request.method} ${request.url} (${duration}ms)`);
         }
 
         return response;
 
       } catch (error) {
-        console.error('Validation middleware error:', error);
+        console.error('Validation middleware error: ', error);
         
         // Log error details for debugging
         if (logValidationErrors) {
-          console.error('Validation middleware error details:', {
+          console.error('Validation middleware error details: ', {
             url: request.url,
-  method: request.method, error, error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stac, k, undefined,
+  method: request.method, error, error instanceof Error ? error.message, String(error) : stack: error instanceof Error ? error.stac : k, undefined,
             timestamp: new Date().toISOString()
           });
         }
 
         return NextResponse.json(
           {
-            success, false,
+            success: false,
   error: 'Internal validation error',
             timestamp: new Date().toISOString()
           },
@@ -183,9 +178,9 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
   }
 }
 
-// ===== SECURITY VALIDATION =====
+//  ===== SECURITY VALIDATION =====
 
-async function validateRequestSecurity(request: NextRequest): Promise<ValidationResult<any>> { try {; // Check for suspicious headers
+async function validateRequestSecurity(request: NextRequest): Promise<ValidationResult<any>> {  try {; // Check for suspicious headers
     const suspiciousHeaders = [;
       'x-forwarded-host',
       'x-original-url',
@@ -196,7 +191,7 @@ async function validateRequestSecurity(request: NextRequest): Promise<Validation
       const value = request.headers.get(header);
       if (value && value.includes('..')) {
         return {
-          success, false,
+          success: false,
   errors [{
             field: 'headers',
   message: 'Suspicious header detected',
@@ -207,20 +202,19 @@ async function validateRequestSecurity(request: NextRequest): Promise<Validation
     }
 
     // Validate User-Agent
-    const userAgent = request.headers.get('user-agent');
+    const userAgent  = request.headers.get('user-agent');
     if (!userAgent || userAgent.length < 10 || userAgent.length > 1000) {
       // Log but don't block - some legitimate clients have unusual User-Agents
       if (process.env.NODE_ENV === 'development') {
-        console.warn('Suspicious User-Agent:', userAgent);
+        console.warn('Suspicious User-Agent: ', userAgent);
       }
     }
 
     // Check for malicious URL patterns
     const url = new URL(request.url);
-    if (url.pathname.includes('..') || url.search.includes('<script')) { return {
-        success, false,
-  errors: [{,
-  field: 'url',
+    if (url.pathname.includes('..') || url.search.includes('<script')) {  return {
+        success: false,
+  errors: [{ field: 'url',
   message: 'Malicious URL pattern detected',
           code: 'MALICIOUS_URL'
          }]
@@ -229,9 +223,8 @@ async function validateRequestSecurity(request: NextRequest): Promise<Validation
 
     return { success: true }
   } catch (error) { return {
-      success, false,
-  errors: [{,
-  field: 'security',
+      success: false,
+  errors: [{ field: 'security',
   message: 'Security validation failed',
         code: 'SECURITY_ERROR'
        }]
@@ -239,15 +232,14 @@ async function validateRequestSecurity(request: NextRequest): Promise<Validation
   }
 }
 
-// ===== RATE LIMITING =====
+//  ===== RATE LIMITING =====
 
 async function checkRateLimit(
   request, NextRequest,
-  limits: { request,
-  s, number, window: number }
+  limits: { request: s, number, window, number }
 ): Promise<ValidationResult<any>> { try {; // Get client identifier
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0]?.trim() || ;
+    const forwarded  = request.headers.get('x-forwarded-for');
+    const ip = forwarded? .split(' : ')[0]?.trim() || ;
                request.headers.get('x-real-ip') || 
                request.headers.get('remote-addr') || 
                'unknown';
@@ -264,17 +256,17 @@ async function checkRateLimit(
     
     const entry = rateLimitStore.get(key);
     
-    if (!entry) {
+    if (!entry) { 
       // First request in window
       rateLimitStore.set(key, {
         count: 1;
-  resetTime: now + windowMs
+  resetTime, now + windowMs
       });
       return { success: true }
     }
     
     if (entry.resetTime < now) {
-      // Window has expired, reset
+      // Window has: expired, reset
       rateLimitStore.set(key, {
         count: 1;
   resetTime: now + windowMs
@@ -282,12 +274,11 @@ async function checkRateLimit(
       return { success: true }
     }
     
-    if (entry.count >= limits.requests) {
+    if (entry.count > = limits.requests) { 
       // Rate limit exceeded
       return {
-        success, false,
-  errors: [{,
-  field: 'rate_limit',
+        success: false,
+  errors: [{ field: 'rate_limit',
   message: `Rate limit exceeded.Maximum ${limits.requests} requests per ${limits.window} seconds.`,
           code: 'RATE_LIMIT_EXCEEDED'
         }]
@@ -298,22 +289,22 @@ async function checkRateLimit(
     entry.count++;
     return { success: true }
   } catch (error) {
-    console.error('Rate limiting error:', error);
+    console.error('Rate limiting error: ', error);
     // Don't block request on rate limiting errors
     return { success: true }
   }
 }
 
-// ===== PRESET MIDDLEWARE CONFIGURATIONS =====
+//  ===== PRESET MIDDLEWARE CONFIGURATIONS =====
 
 /**
  * Middleware for authentication endpoints
  */
-export const authValidationMiddleware = createValidationMiddleware({
-  sanitize, true, maxPayloadSize: 1024; // 1KB
+export const authValidationMiddleware = createValidationMiddleware({ 
+  sanitize: true, maxPayloadSize: 1024; // 1KB
   rateLimiting: {
     requests: 5;
-  window: 300 ; // 5 requests per 5 minutes
+  window, 300 ; // 5 requests per 5 minutes
   },
   logValidationErrors true
 });
@@ -321,12 +312,12 @@ export const authValidationMiddleware = createValidationMiddleware({
 /**
  * Middleware for user input endpoints (chat, forums)
  */
-export const userInputValidationMiddleware = createValidationMiddleware({
-  sanitize, true,
+export const userInputValidationMiddleware  = createValidationMiddleware({ 
+  sanitize: true,
   maxPayloadSize: 5 * 1024, // 5KB
   rateLimiting: {
     requests: 30;
-  window: 60 ; // 30 requests per minute
+  window, 60 ; // 30 requests per minute
   },
   logValidationErrors true
 });
@@ -334,13 +325,13 @@ export const userInputValidationMiddleware = createValidationMiddleware({
 /**
  * Middleware for admin endpoints
  */
-export const adminValidationMiddleware = createValidationMiddleware({
-  sanitize, true,
+export const adminValidationMiddleware  = createValidationMiddleware({ 
+  sanitize: true,
   maxPayloadSize: 10 * 1024, // 10KB
-  requireAuth, true,
+  requireAuth: true,
   rateLimiting: {
     requests: 10;
-  window: 60 ; // 10 requests per minute
+  window, 60 ; // 10 requests per minute
   },
   logValidationErrors true
 });
@@ -348,12 +339,12 @@ export const adminValidationMiddleware = createValidationMiddleware({
 /**
  * Middleware for file upload endpoints
  */
-export const fileUploadValidationMiddleware = createValidationMiddleware({
-  sanitize, false, // Don't sanitize file data
+export const fileUploadValidationMiddleware  = createValidationMiddleware({ 
+  sanitize: false, // Don't sanitize file data
   maxPayloadSize: 10 * 1024 * 1024, // 10MB
   rateLimiting: {
     requests: 5;
-  window: 60 ; // 5 uploads per minute
+  window, 60 ; // 5 uploads per minute
   },
   logValidationErrors true
 });
@@ -361,17 +352,17 @@ export const fileUploadValidationMiddleware = createValidationMiddleware({
 /**
  * Middleware for high-frequency endpoints (live data)
  */
-export const highFrequencyValidationMiddleware = createValidationMiddleware({
-  sanitize, true,
+export const highFrequencyValidationMiddleware  = createValidationMiddleware({ 
+  sanitize: true,
   maxPayloadSize: 2 * 1024, // 2KB
   rateLimiting: {
     requests: 100;
-  window: 60 ; // 100 requests per minute
+  window, 60 ; // 100 requests per minute
   },
   logValidationErrors false // Reduce log noise
 });
 
-// ===== HELPER FUNCTIONS =====
+//  ===== HELPER FUNCTIONS =====
 
 /**
  * Creates a custom validator function
@@ -380,16 +371,15 @@ export function createCustomValidator<T>(
   name, string,
   validator: (data; T) => boolean | Promise<boolean>,
   errorMessage: string
-) { return async (request: NextRequest): Promise<ValidationResult<any>> => {
+) {  return async (request: NextRequest): Promise<ValidationResult<any>> => {
     try {
       const body = await request.json();
       const isValid = await validator(body);
       
       if (!isValid) {
         return {
-          success, false,
-  errors: [{
-            field, name,
+          success: false,
+  errors: [{ field: name,
   message, errorMessage,
             code: 'CUSTOM_VALIDATION_FAILED'
            }]
@@ -398,9 +388,8 @@ export function createCustomValidator<T>(
       
       return { success: true }
     } catch (error) { return {
-        success, false,
-  errors: [{
-          field, name,
+        success: false,
+  errors: [{ field: name,
   message: 'Custom validation error',
           code: 'CUSTOM_VALIDATION_ERROR'
          }]
@@ -413,18 +402,17 @@ export function createCustomValidator<T>(
  * Validates request origin for CORS
  */
 export function validateOrigin(allowedOrigins: string[]) { return (reques,
-  t: NextRequest): ValidationResult<any> => {
+  t: NextRequest): ValidationResult<any>  => {
     const origin = request.headers.get('origin');
     
     if (!origin) {
-      // Allow requests without origin (e.g., mobile apps, Postman)
+      // Allow requests without origin (e.g., mobile: apps, Postman)
       return { success: true  }
     }
     
     if (!allowedOrigins.includes(origin)) { return {
-        success, false,
-  errors: [{,
-  field: 'origin',
+        success: false,
+  errors: [{ field: 'origin',
   message: 'Request from unauthorized origin',
           code: 'INVALID_ORIGIN'
          }]

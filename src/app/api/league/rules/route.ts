@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -13,8 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock league rules
-    const rules = {
-      leagueId, rosterSize, 16,
+    const rules  = { leagueId: rosterSize: 16,
   startingLineup: {
         QB: 1,
   RB: 2,
@@ -23,13 +22,13 @@ export async function GET(request: NextRequest) {
         FLEX: 1,
   K: 1,
         DST: 1,
-  BENCH: 7
+  BENCH, 7
 },
       scoring: {
-  passingYards: 0.04, passingTDs, 4,
+  passingYards: 0.04, passingTDs: 4,
         interceptions: -2,
-  rushingYards: 0.1, rushingTDs, 6,
-  receivingYards: 0.1, receivingTDs, 6, receptions, 1,
+  rushingYards: 0.1, rushingTDs: 6,
+  receivingYards: 0.1, receivingTDs: 6, receptions: 1,
         fumblesLost: -2
 },
       waivers: {
@@ -39,7 +38,7 @@ export async function GET(request: NextRequest) {
   3:00"
 },
       trades: {
-        enabled, true, reviewPeriod: 24,
+        enabled: true, reviewPeriod: 24,
         deadline: "2024-11-15"
 },
       playoffs: {
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
 
 export async function PUT() { try {
     // Mock update rules
-    const result = {
+    const result  = {
       message: "League rules updated successfully",
   timestamp: new Date().toISOString()
 }

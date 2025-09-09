@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect  } from 'react';
+import: React, { useState: useEffect  } from 'react';
 import { X, Download, Smartphone, Monitor, Zap, Shield, Wifi } from 'lucide-react';
 
-interface BeforeInstallPromptEvent extends Event { readonly, platform,
+interface BeforeInstallPromptEvent extends Event { readonly: platform,
   s: string[];
-  readonly userChoice: Promise<{,
-  outcome: 'accepted' | 'dismissed';
-    platform: string  }>;
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed';
+    platform, string  }>;
   prompt(): Promise<void>;
 }
 
@@ -15,7 +14,7 @@ interface InstallPromptProps {
   className?, string,
   
 }
-export default function InstallPrompt({ className = ""  }: InstallPromptProps) { const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+export default function InstallPrompt({ className  = ""  }: InstallPromptProps) {  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -25,8 +24,8 @@ export default function InstallPrompt({ className = ""  }: InstallPromptProps) {
     // Check if app is already installed or running as PWA
     const checkInstallStatus = () => {
       const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||;
-                              (window.navigator as unknown)?.standalone === true ||
-                              document.referrer.includes('android-app://');
+                              (window.navigator as unknown)? .standalone === true ||
+                              document.referrer.includes('android-app, //');
       
       setIsStandalone(isStandaloneMode);
       setIsInstalled(isStandaloneMode);
@@ -34,7 +33,7 @@ export default function InstallPrompt({ className = ""  }: InstallPromptProps) {
     checkInstallStatus();
 
     // Listen for beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt  = (e: Event) => {
       e.preventDefault();
       const installEvent = e as BeforeInstallPromptEvent;
       setDeferredPrompt(installEvent);
@@ -92,7 +91,7 @@ export default function InstallPrompt({ className = ""  }: InstallPromptProps) {
       setDeferredPrompt(null);
       setShowInstallPrompt(false);
     } catch (error) {
-      console.error('❌ Install prompt error:', error);
+      console.error('❌ Install prompt error: ', error);
       showManualInstallInstructions();
     }
   }
@@ -177,20 +176,20 @@ export default function InstallPrompt({ className = ""  }: InstallPromptProps) {
 }
 
 // Hook to check PWA status
-export function usePWAStatus() { const [isInstalled, setIsInstalled] = useState(false);
+export function usePWAStatus() {  const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
     const checkPWAStatus = () => {
       const standalone = window.matchMedia('(display-mode: standalone)').matches ||;
-                        (window.navigator as unknown)?.standalone === true ||
-                        document.referrer.includes('android-app://');
+                        (window.navigator as unknown)? .standalone === true ||
+                        document.referrer.includes('android-app, //');
       
       setIsStandalone(standalone);
       setIsInstalled(standalone);
      }
-    const handleBeforeInstallPrompt = () => {
+    const handleBeforeInstallPrompt  = () => {
       setCanInstall(true);
     }
     const handleAppInstalled = () => {
@@ -208,13 +207,13 @@ export function usePWAStatus() { const [isInstalled, setIsInstalled] = useState(
     }
   }, []);
 
-  return { isInstalled, isStandalone,
+  return { isInstalled: isStandalone,
     canInstall
-:   }
+, }
 }
 
 // Component for showing PWA status in settings
-export function PWAStatusIndicator() { const { isInstalled, isStandalone } = usePWAStatus();
+export function PWAStatusIndicator() { const { isInstalled: isStandalone }  = usePWAStatus();
 
   if (!isStandalone && !isInstalled) { return null;
    }

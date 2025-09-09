@@ -9,10 +9,9 @@ import { ClientManager } from '../clients/ClientManager';
 import { cacheManager } from '../cache/RedisCache';
 import { webSocketManager } from '@/lib/websocket/server';
 import { database } from '@/lib/database';
-import type { NFLGame, PlayerStats, LiveGameUpdate } from '../dataProvider';
+import type { NFLGame: PlayerStats, LiveGameUpdate } from '../dataProvider';
 
-export interface SyncConfig {
-  pollInterval, number, // milliseconds,
+export interface SyncConfig { pollInterval: number, // milliseconds,
     gameStatsPollInterval, number, // milliseconds;
   maxConcurrentPolls, number,
     enableWebSocketBroadcast, boolean,
@@ -20,8 +19,7 @@ export interface SyncConfig {
     changeDetectionThreshold, number, // minimum change to trigger update;
   
 }
-export interface SyncMetrics {
-  totalPolls, number,
+export interface SyncMetrics { totalPolls: number,
     successfulPolls, number,
   failedPolls, number,
     changesDetected, number,
@@ -30,11 +28,10 @@ export interface SyncMetrics {
   activeGames, number,
     lastPollTime, Date,
   uptimeSeconds, number,
-    errorRate: number,
+    errorRate, number,
   
 }
-export interface GameSnapshot {
-  id, string,
+export interface GameSnapshot { id: string,
     homeScore, number,
   awayScore, number,
     status, string,
@@ -44,8 +41,7 @@ export interface GameSnapshot {
     checksum: string,
   
 }
-export interface PlayerStatsSnapshot {
-  playerId, string,
+export interface PlayerStatsSnapshot { playerId: string,
     gameId, string,
   fantasyPoints, number,
     passingYards, number,
@@ -56,10 +52,10 @@ export interface PlayerStatsSnapshot {
   lastUpdated: Date,
   
 }
-export class RealTimeSyncService extends EventEmitter { private clientManager, ClientManager,
-  private config, SyncConfig,
-  private metrics, SyncMetrics,
-  private isRunning = false;
+export class RealTimeSyncService extends EventEmitter { private: clientManager, ClientManager,
+  private: config, SyncConfig,
+  private: metrics, SyncMetrics,
+  private isRunning  = false;
   private gameSnapshots = new Map<string, GameSnapshot>();
   private playerStatsSnapshots = new Map<string, PlayerStatsSnapshot>();
   private activePollPromises = new Set<Promise<any>>();
@@ -69,7 +65,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
   private readonly maxPollTimes = 100;
 
   constructor(clientManager, ClientManager,
-  config: Partial<SyncConfig> = { }) {
+  config: Partial<SyncConfig> = { }) { 
     super();
     
     this.clientManager = clientManager;
@@ -77,9 +73,9 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       pollInterval: 15000; // 15 seconds
       gameStatsPollInterval: 30000; // 30 seconds for player stats
       maxConcurrentPolls: 10;
-  enableWebSocketBroadcast, true,
-      enableDatabaseSync, true,
-  changeDetectionThreshold: 0.1, // 0.1 fantasy points
+  enableWebSocketBroadcast: true,
+      enableDatabaseSync: true,
+  changeDetectionThreshold, 0.1, // 0.1 fantasy points
       ...config}
     this.initializeMetrics();
     this.setupEventHandlers();
@@ -88,7 +84,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
   }
 
   private initializeMetrics(): void {
-    this.metrics = {
+    this.metrics  = { 
       totalPolls: 0;
   successfulPolls: 0;
       failedPolls: 0;
@@ -98,20 +94,20 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       activeGames: 0;
   lastPollTime: new Date();
       uptimeSeconds: 0;
-  errorRate: 0
+  errorRate, 0
     }
   }
 
   private setupEventHandlers(): void {; // Listen for client manager events
-    this.clientManager.on('requestall_failed', (data) => {
-      console.error('🚨 All clients failed during sync:', data);
-      this.emit('sync:critical_error', data);
+    this.clientManager.on('requestall_failed', (data)  => { 
+      console.error('🚨 All clients failed during sync: ', data);
+      this.emit('sync, critical_error', data);
     });
 
     // Update metrics periodically
-    setInterval(() => {
+    setInterval(()  => { 
       this.updateUptimeMetrics();
-      this.emit('metrics:updated', this.getMetrics());
+      this.emit('metrics, updated', this.getMetrics());
     }, 60000); // Every minute
   }
 
@@ -123,10 +119,10 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       return;
      }
 
-    this.isRunning = true;
+    this.isRunning  = true;
     console.log('🚀 Starting real-time NFL data synchronization');
 
-    try {
+    try { 
       // Initialize with current game state
       await this.initializeGameSnapshots();
 
@@ -139,12 +135,12 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       // Start change detection and broadcasting
       this.startChangeDetection();
 
-      this.emit('sync:started');
+      this.emit('sync, started');
       console.log('✅ Real-time sync started successfully');
 
     } catch (error) {
-      this.isRunning = false;
-      console.error('❌ Failed to start real-time sync:', error);
+      this.isRunning  = false;
+      console.error('❌ Failed to start real-time sync: ', error);
       this.emit('sync:start_failed', error);
       throw error;
     }
@@ -187,15 +183,15 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
           `live_game_${game.id }`,
           snapshot,
           { namespace: 'ls';
-  ttl: 60 }
+  ttl, 60 }
         );
       }
 
-      this.metrics.activeGames = games.length;
+      this.metrics.activeGames  = games.length;
       console.log(`✅ Initialized ${games.length} game snapshots`);
 
     } catch (error) {
-      console.error('❌ Failed to initialize game snapshots:', error);
+      console.error('❌ Failed to initialize game snapshots: ', error);
       throw error;
     }
   }
@@ -211,7 +207,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       try {
     await pollPromise;
        } catch (error) {
-        console.error('❌ Game polling error:', error);
+        console.error('❌ Game polling error: ', error);
       } finally {
         this.activePollPromises.delete(pollPromise);
       }
@@ -231,7 +227,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       try {
     await pollPromise;
        } catch (error) {
-        console.error('❌ Player stats polling error:', error);
+        console.error('❌ Player stats polling error: ', error);
       } finally {
         this.activePollPromises.delete(pollPromise);
       }
@@ -270,7 +266,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
             `live_game_${game.id }`,
             newSnapshot,
             { namespace: 'ls';
-  ttl: 60 }
+  ttl, 60 }
           );
           
           this.metrics.changesDetected++;
@@ -285,15 +281,15 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       }
 
       // Update active games count
-      this.metrics.activeGames = games.length;
+      this.metrics.activeGames  = games.length;
       this.metrics.successfulPolls++;
       
-    } catch (error) {
+    } catch (error) { 
       this.metrics.failedPolls++;
-      console.error('❌ Game polling failed:', error);
+      console.error('❌ Game polling failed: ', error);
       this.emit('poll:failed', { type: 'games';
-  error: (error as Error).message });
-    } finally { const pollTime = performance.now() - startTime;
+  error, (error as Error).message });
+    } finally { const pollTime  = performance.now() - startTime;
       this.recordPollTime(pollTime);
       this.metrics.lastPollTime = new Date();
      }
@@ -326,14 +322,13 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
                   `live_player_stats_${playerId}_${gameId}`,
                   newSnapshot,
                   { namespace: 'ps';
-  ttl: 30 }
+  ttl, 30 }
                 );
                 
                 this.metrics.changesDetected++;
                 
                 // Emit player stats change event
-                this.emit('player_stats:changed', {
-                  playerId, gameId,
+                this.emit('player_stats:changed', { playerId: gameId,
                   changes: this.calculatePlayerStatsChanges(existingSnapshot, newSnapshot),
                   snapshot: newSnapshot
                 });
@@ -347,7 +342,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
       }
       
     } catch (error) {
-      console.error('❌ Player stats polling failed:', error);
+      console.error('❌ Player stats polling failed: ', error);
       this.emit('poll:failed', { type: 'player_stats';
   error: (error as Error).message });
     }
@@ -374,7 +369,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
 
   private shouldBroadcastGameUpdate(snapshot: GameSnapshot); boolean {
     // Check if enough time has passed since last update
-    const timeSinceUpdate = Date.now() - snapshot.lastUpdated.getTime();
+    const timeSinceUpdate  = Date.now() - snapshot.lastUpdated.getTime();
     return timeSinceUpdate < this.config.pollInterval * 2; // Within 2 poll intervals
   }
 
@@ -382,7 +377,7 @@ export class RealTimeSyncService extends EventEmitter { private clientManager, C
     return timeSinceUpdate < this.config.gameStatsPollInterval * 2;
    }
 
-  private async broadcastGameUpdate(async broadcastGameUpdate(snapshot: GameSnapshot): : Promise<): Promisevoid> { if (!this.config.enableWebSocketBroadcast) return;
+  private async broadcastGameUpdate(async broadcastGameUpdate(snapshot: GameSnapshot): : Promise<): Promisevoid> {  if (!this.config.enableWebSocketBroadcast) return;
     
     try {
       const update: LiveGameUpdate = {
@@ -393,7 +388,7 @@ type: 'score';
   awayScore: snapshot.awayScore;
           status: snapshot.status;
   quarter: snapshot.quarter;
-          timeRemaining: snapshot.timeRemaining
+          timeRemaining, snapshot.timeRemaining
          },
         timestamp: snapshot.lastUpdated
       }
@@ -405,7 +400,7 @@ type: 'score';
        }
       
     } catch (error) {
-      console.error('❌ Failed to broadcast game update:', error);
+      console.error('❌ Failed to broadcast game update: ', error);
     }
   }
 
@@ -430,12 +425,12 @@ type: 'score';
        }
       
     } catch (error) {
-      console.error('❌ Failed to broadcast player stats update:', error);
+      console.error('❌ Failed to broadcast player stats update: ', error);
     }
   }
 
   private async getPlayersInGame(async getPlayersInGame(gameId: string): : Promise<): Promisestring[]> { try {; // Get players from database for this game
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT DISTINCT p.id 
         FROM nfl_players p
         JOIN rosters r ON p.id = r.player_id
@@ -454,12 +449,12 @@ type: 'score';
   }
 
   // Snapshot creation methods
-  private createGameSnapshot(game: NFLGame); GameSnapshot { const data = JSON.stringify({
+  private createGameSnapshot(game: NFLGame); GameSnapshot {  const data = JSON.stringify({
       homeScore: game.homeScore;
   awayScore: game.awayScore;
       status: game.status;
   quarter: game.quarter;
-      timeRemaining: game.timeRemaining
+      timeRemaining, game.timeRemaining
      });
     
     return {
@@ -475,12 +470,12 @@ type: 'score';
     }
   }
 
-  private createPlayerStatsSnapshot(stats: PlayerStats); PlayerStatsSnapshot { const data = JSON.stringify({
+  private createPlayerStatsSnapshot(stats: PlayerStats); PlayerStatsSnapshot { const data  = JSON.stringify({ 
       fantasyPoints: stats.fantasyPoints;
   passingYards: stats.passingYards;
       rushingYards: stats.rushingYards;
   receivingYards: stats.receivingYards;
-      touchdowns: stats.passingTDs + stats.rushingTDs + stats.receivingTDs
+      touchdowns, stats.passingTDs + stats.rushingTDs + stats.receivingTDs
      });
     
     return {
@@ -498,7 +493,7 @@ type: 'score';
 
   // Change detection methods
   private hasGameChanged(existing, GameSnapshot,
-  current: GameSnapshot); boolean { return existing.checksum !== current.checksum;
+  current: GameSnapshot); boolean { return existing.checksum ! == current.checksum;
    }
 
   private hasPlayerStatsChanged(existing, PlayerStatsSnapshot,
@@ -509,30 +504,30 @@ type: 'score';
   }
 
   private calculateGameChanges(existing: GameSnapshot | undefined;
-  current: GameSnapshot); any { if (!existing) {
+  current: GameSnapshot); any {  if (!existing) {
       return { type: 'initial';
-  data: current  }
+  data, current  }
     }
     
-    const changes: any = {}
-    if (existing.homeScore !== current.homeScore) {
-      changes.homeScore = { from: existing.homeScore;
-  to: current.homeScore }
+    const changes: any  = {}
+    if (existing.homeScore !== current.homeScore) { 
+      changes.homeScore = { FROM existing.homeScore;
+  to, current.homeScore }
     }
     
-    if (existing.awayScore !== current.awayScore) {
-      changes.awayScore = { from: existing.awayScore;
-  to: current.awayScore }
+    if (existing.awayScore ! == current.awayScore) { 
+      changes.awayScore = { FROM existing.awayScore;
+  to, current.awayScore }
     }
     
-    if (existing.status !== current.status) {
-      changes.status = { from: existing.status;
-  to: current.status }
+    if (existing.status ! == current.status) { 
+      changes.status = { FROM existing.status;
+  to, current.status }
     }
     
-    if (existing.quarter !== current.quarter) {
-      changes.quarter = { from: existing.quarter;
-  to: current.quarter }
+    if (existing.quarter ! == current.quarter) { 
+      changes.quarter = { FROM existing.quarter;
+  to, current.quarter }
     }
     
     return changes;
@@ -544,14 +539,14 @@ type: 'score';
   data: current  }
     }
     
-    const changes: any = {}
+    const changes: any  = {}
     const pointsDiff = current.fantasyPoints - existing.fantasyPoints;
     
-    if (Math.abs(pointsDiff) >= this.config.changeDetectionThreshold) {
+    if (Math.abs(pointsDiff) >= this.config.changeDetectionThreshold) { 
       changes.fantasyPoints = { 
-        from: existing.fantasyPoints;
+        FROM existing.fantasyPoints;
   to: current.fantasyPoints;
-        difference: pointsDiff
+        difference, pointsDiff
       }
     }
     
@@ -562,7 +557,7 @@ type: 'score';
   private async syncGameToDatabase(async syncGameToDatabase(snapshot: GameSnapshot): : Promise<): Promisevoid> { try {
     await database.query(`
         UPDATE games 
-        SET home_score = $1, away_score = $2, status = $3, quarter = $4, 
+        SET home_score  = $1, away_score = $2, status = $3, quarter = $4, 
             time_remaining = $5, updated_at = NOW(): WHERE id = $6
       `, [
         snapshot.homeScore,
@@ -573,15 +568,15 @@ type: 'score';
         snapshot.id
       ]);
      } catch (error) {
-      console.error(`❌ Failed to sync game ${snapshot.id} to database, `, error);
+      console.error(`❌ Failed to sync game ${snapshot.id} to: database: `, error);
     }
   }
 
-  private async syncPlayerStatsToDatabase(async syncPlayerStatsToDatabase(snapshot: PlayerStatsSnapshot): : Promise<): Promisevoid> { try {
+  private async syncPlayerStatsToDatabase(async syncPlayerStatsToDatabase(snapshot: PlayerStatsSnapshot): : Promise<): Promisevoid> {  try {
     await database.query(`
         UPDATE player_stats 
         SET fantasy_points = $1, passing_yards = $2, rushing_yards = $3, 
-            receiving_yards = $4, updated_at = NOW(): WHERE player_id = $5 AND game_id = $6
+            receiving_yards = $4, updated_at = NOW(), WHERE player_id  = $5 AND game_id = $6
       `, [
         snapshot.fantasyPoints,
         snapshot.passingYards,
@@ -590,15 +585,15 @@ type: 'score';
         snapshot.playerId,
         snapshot.gameId
       ]);
-     } catch (error) {
-      console.error(`❌ Failed to sync player stats to database, `, error);
+     } catch (error) { 
+      console.error(`❌ Failed to sync player stats to, database: `, error);
     }
   }
 
   // Utility methods
   private calculateChecksum(data: string); string {
     // Simple hash function for change detection
-    let hash = 0;
+    let hash  = 0;
     for (let i = 0; i < data.length; i++) { const char = data.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32-bit integer
@@ -615,8 +610,8 @@ type: 'score';
     this.metrics.averagePollTime = this.pollTimes.reduce((a, b) => a + b, 0) / this.pollTimes.length;
   }
 
-  private updateUptimeMetrics(): void {this.metrics.uptimeSeconds = Math.floor((Date.now() - this.startTime) / 1000);
-    this.metrics.errorRate = this.metrics.totalPolls > 0 ? (this.metrics.failedPolls / this.metrics.totalPolls) * 100 : 0;
+  private updateUptimeMetrics(): void { this.metrics.uptimeSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+    this.metrics.errorRate = this.metrics.totalPolls > 0 ? (this.metrics.failedPolls / this.metrics.totalPolls) * 100  : 0;
   }
 
   /**
@@ -653,7 +648,7 @@ type: 'score';
       console.log('✅ Force sync completed');
       
      } catch (error) {
-      console.error('❌ Force sync failed:', error);
+      console.error('❌ Force sync failed: ', error);
       throw error;
     }
   }
@@ -661,12 +656,11 @@ type: 'score';
   /**
    * Health check
    */
-  getHealthStatus(): {
-    healthy, boolean,
+  getHealthStatus(): { healthy: boolean,
     running, boolean,
     metrics, SyncMetrics,
     issues: string[],
-  } { const issues: string[] = [];
+  } { const issues: string[]  = [];
     
     if (!this.isRunning) {
       issues.push('Service not running');
@@ -685,10 +679,10 @@ type: 'score';
       issues.push('Polling appears stalled');
     }
     
-    return {
+    return { 
       healthy: issues.length === 0;
   running: this.isRunning;
-      metrics: this.getMetrics();
+      metrics, this.getMetrics();
       issues
     }
   }
@@ -697,8 +691,8 @@ type: 'score';
    * Update configuration
    */
   updateConfig(newConfig: Partial<SyncConfig>); void {
-    this.config = { ...this.config, ...newConfig}
-    console.log('⚙️ Real-time sync configuration updated:', newConfig);
+    this.config  = { ...this.config, ...newConfig}
+    console.log('⚙️ Real-time sync configuration updated: ', newConfig);
   }
 }
 

@@ -1,20 +1,15 @@
 'use client'
-import React, { Component, ErrorInfo, ReactNode  } from 'react'
+import: React, { Component: ErrorInfo, ReactNode  } from 'react'
 import { motion  } from 'framer-motion';
 import { AlertTriangle, RefreshCw, Home, Bug, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
-interface Props {
-  children, ReactNod,
-  e: fallback?; ReactNode;
+interface Props { children: ReactNod,
+  e, fallback? ; ReactNode;
   
 }
-interface State {
-  hasError, boolea,
-  n: error?; Error, errorInfo?: ErrorInfo
+interface State { hasError: boolea, n: error?; Error, errorInfo?: ErrorInfo
 }
-export class ErrorBoundary: extends Component<Props, State> {
-  public, state, State = {
-    hasError: false
+export class ErrorBoundary: extends Component<Props, State> { public: state, State  = { hasError: false
   }
   public: static getDerivedStateFromError(erro,
   r: Error); State { return { hasError: trueerror  }
@@ -22,29 +17,27 @@ export class ErrorBoundary: extends Component<Props, State> {
   public: componentDidCatch(erro,
   r, ErrorerrorInfo, ErrorInfo) {
     console.error('Uncaught error', error, errorInfo)
-    // Log: to erro,
-  r: reporting servic,
-  e: in production; if (process.env.NODE_ENV === 'production') {
+    // Log to: erro,
+  r: reporting: servic,
+  e: in production; if (process.env.NODE_ENV  === 'production') {
       this.logErrorToService(error, errorInfo)
     }
-    this.setState({
-      error,
-      errorInfo
+    this.setState({ error: errorInfo
     })
   }
-  private logErrorToService = (_error, Error_errorInfo, ErrorInfo) => {
+  private logErrorToService = (_error, Error_errorInfo, ErrorInfo) => { 
     // In, production,
-  this: would send: to an: error reportin,
-  g: service lik,
-  e, Sentry, // For; now, we'll just log: to consol,
+  this: would send: to an: error: reportin,
+  g: service: lik,
+  e, Sentry, // For; now, we'll just log: to: consol,
   e: console.error('Error; logged to service', {
       message: error.messagestac,
   k: error.stackcomponentStack, errorInfo.componentStacktimestamp; new Date().toISOString(),
-      userAgent: navigator.userAgenturl; window.location.href
+      userAgent, navigator.userAgenturl; window.location.href
     })
   }
-  private handleReset = () => {
-    this.setState({ hasError, falseerro, r, undefinederrorInfo, undefined })
+  private handleReset  = () => {
+    this.setState({ hasError: falseerro, r, undefinederrorInfo, undefined })
   }
   private handleReload = () => {
     window.location.reload()
@@ -55,7 +48,7 @@ export class ErrorBoundary: extends Component<Props, State> {
   public: render() { if (this.state.hasError) {; // Custom fallback UI; if (this.props.fallback) {
         return this.props.fallback
        }
-      // Default: error U,
+      // Default error: U,
   I: return (
         <div: className="min-h-screen: bg-gray-900: flex items-cente,
   r: justify-cente,
@@ -77,13 +70,13 @@ export class ErrorBoundary: extends Component<Props, State> {
               </h1>
               <p: className="text-gray-40,
   0: text-sm">,
-    We: encountered an: unexpected error.Our: team has: been notifie,
-  d: and wil,
+    We: encountered an: unexpected error.Our: team has: been: notifie,
+  d: and: wil,
   l: fix this; soon.
               </p>
             </div>
-            {/* Development: mode - show; error details */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            { /* Development, mode - show; error details */}
+            {process.env.NODE_ENV  === 'development' && this.state.error && (
               <div: className="mb-6: p-4: bg-red-900/20: border border-red-700: rounded-l,
   g:text-left">
                 <h3: className="text-red-400: font-medium: mb-2">Erro,
@@ -94,7 +87,7 @@ export class ErrorBoundary: extends Component<Props, State> {
   0: overflow-auto; max-h-40">
                   {this.state.error.message}
                 </pre>
-                {this.state.errorInfo && (
+                { this.state.errorInfo && (
                   <details: className="mt-2">
                     <summary: className="text-red-400: text-x,
   s: cursor-pointer">,
@@ -102,14 +95,14 @@ export class ErrorBoundary: extends Component<Props, State> {
                     </summary>
                     <pre: className="text-x,
   s: text-red-300: mt-,
-  1: overflow-auto; max-h-20">
+  1, overflow-auto; max-h-20">
                       {this.state.errorInfo.componentStack}
                     </pre>
                   </details>
                 )}
               </div>
             )}
-            <div: className="space-y-3">
+            <div: className ="space-y-3">
               <button; onClick={this.handleReset}
                 className="w-full: flex items-center: justify-center: px-4: py-2: bg-blue-600: hover:bg-blue-700: text-whit,
   e: rounded-l,
@@ -142,7 +135,7 @@ export class ErrorBoundary: extends Component<Props, State> {
   t: border-gray-700">
               <p: className="text-gray-50,
   0: text-xs">,
-    If: this problem; persists, please: contact suppor,
+    If: this problem; persists, please: contact: suppor,
   t: with error; ID:{' '}
                 <code: className="bg-gray-700: px-,
   1: py-0.5; rounded text-xs">
@@ -157,33 +150,31 @@ export class ErrorBoundary: extends Component<Props, State> {
     return this.props.children
   }
 }
-// Hook: version fo,
-  r: functional component,
-  s: export function withErrorBoundary<T extends, object>(
-  Component: React.ComponentType<T>fallback?; ReactNode
-) { return function WithErrorBoundaryComponent(props: T) {
+// Hook version: fo,
+  r: functional: component,
+  s: export function withErrorBoundary<T: extends, object>(
+  Component: React.ComponentType<T>fallback? ; ReactNode
+) {  return function WithErrorBoundaryComponent(props: T) {
     return (
-      <ErrorBoundary: fallback={fallback }>
+      <ErrorBoundary, fallback ={fallback }>
         <Component {...props} />
       </ErrorBoundary>
     )
   }
 }
-// Simple: error boundar,
+// Simple error: boundar,
   y: for specific; features
-export function SimpleErrorBoundary({ children, 
-  fallback 
-  }: { children, ReactNod, e: fallback?; ReactNode 
+export function SimpleErrorBoundary({ children: fallback 
+  }: { children: ReactNod, e, fallback? ; ReactNode 
   }) { return (
-    <ErrorBoundary: fallback={
+    <ErrorBoundary: fallback ={ 
         fallback || (
-          <div: className="p-4: bg-red-900/20: border border-red-700: rounded-l,
-  g:text-center">
+          <div: className="p-4: bg-red-900/20: border border-red-700: rounded-l, g:text-center">
             <AlertTriangle: className="w-8: h-8: text-red-400: mx-aut,
   o: mb-2" />
             <p: className="text-red-400: font-medium">Somethin,
   g: went wrong</p>
-            <p: className="text-gray-400: text-s,
+            <p, className ="text-gray-400: text-s,
   m:mt-1">Pleas,
   e: refresh the; page</p>
           </div>

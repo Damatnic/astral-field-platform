@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import Link from "next/link";
-import { 
-  Trophy, Crown, Target, Award, Star, TrendingUp, Calendar, Users, BarChart3, Filter, Search, Medal, Flame, Shield,
+import { Trophy, Crown, Target, Award, Star, TrendingUp, Calendar, Users, BarChart3, Filter, Search, Medal, Flame, Shield,
   Zap, Clock, AlertTriangle, BookOpen,
   ChevronDown, Eye, Download
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface LeagueRecordsPageProps {
-  params: Promise<{ i,
-  d: string;
+interface LeagueRecordsPageProps { 
+  params: Promise<{ i: d, string;
 }
 >;
 }
@@ -19,7 +17,7 @@ interface LeagueRecordsPageProps {
 interface Record {
   id: string;
     category: string;
-  subcategory?: string;
+  subcategory? : string;
   record: string;
     holder: string;
   holderTeam?: string;
@@ -45,8 +43,7 @@ interface HallOfFameEntry {
     name: string;
   team: string;
     years: string;
-  achievements: string[],
-    stats: {
+  achievements: string[] : stats: {
   championships: number;
     playoffAppearances: number;
     regularSeasonWins: number;
@@ -56,7 +53,7 @@ interface HallOfFameEntry {
 }
 
 export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
-  const [leagueId, setLeagueId] = useState<string>("");
+  const [leagueId, setLeagueId]  = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("scoring");
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,7 +68,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
 
   // Mock records data
   const mockRecords: Record[] = [
-    {
+    { 
       id: "1",
   category: "scoring",
       subcategory: "single_game",
@@ -80,10 +77,10 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Astral Destroyers",
       value: 187.4,
   date: "2023-10-15",
-      season, 2023,
-  week, 7,
+      season: 2023,
+  week: 7,
       context: "vs Thunder Bolts - Historic performance led by 4 TDs from Josh Allen",
-  isActive: true
+  isActive, true
     },
     {
       id: "2",
@@ -94,8 +91,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Ice Wolves",
       value: 42.6,
   date: "2022-11-27",
-      season, 2022,
-  week, 12,
+      season: 2022,
+  week: 12,
       context: "Thanksgiving disaster - Multiple players injured during games",
   isActive: true
     },
@@ -108,7 +105,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Storm Eagles", 
       value: 1847.3,
   date: "2023-12-31",
-      season, 2023,
+      season: 2023,
   context: "Dominant season with consistent weekly performances",
       isActive: true
     },
@@ -121,8 +118,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Flame Dragons",
       value: 89.2,
   date: "2022-09-25",
-      season, 2022,
-  week, 3,
+      season: 2022,
+  week: 3,
       context: "162.8 to 73.6 victory over Cosmic Crusaders",
   isActive: true
     },
@@ -135,8 +132,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Thunder Bolts",
       value: 0.08,
   date: "2023-11-05",
-      season, 2023,
-  week, 9,
+      season: 2023,
+  week: 9,
       context: "118.14 to 118.06 - Won by less than a yard of rushing",
   isActive: true
     },
@@ -147,9 +144,9 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   record: "Longest Win Streak",
       holder: "Nicholas D'Amato",
   holderTeam: "Astral Destroyers",
-      value, 11,
+      value: 11,
   date: "2023-12-17",
-      season, 2023,
+      season: 2023,
   context: "9 regular season + 2 playoff wins spanning weeks 5-17",
       isActive: true
     },
@@ -162,16 +159,16 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   holderTeam: "Storm Eagles",
       value: 48.9,
   date: "2019-11-17",
-      season, 2019,
-  week, 11,
+      season: 2019,
+  week: 11,
       context: "5 passing TDs + 95 rush yards + 2 rush TDs vs Rams",
   isActive: true
     }
   ];
 
-  const mockChampionships: ChampionshipHistory[] = [
-    {
-      year, 2023,
+  const mockChampionships: ChampionshipHistory[]  = [
+    { 
+      year: 2023,
   champion: "Astral Destroyers",
       runnerUp: "Storm Eagles",
   championScore: 142.6,
@@ -179,7 +176,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   season: "2023-24"
     },
     {
-      year, 2022,
+      year: 2022,
   champion: "Flame Dragons", 
       runnerUp: "Ice Wolves",
   championScore: 156.2,
@@ -187,7 +184,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   season: "2022-23"
     },
     {
-      year, 2021,
+      year: 2021,
   champion: "Storm Eagles",
       runnerUp: "Thunder Bolts",
   championScore: 134.9,
@@ -195,7 +192,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   season: "2021-22"
     },
     {
-      year, 2020,
+      year: 2020,
   champion: "Cosmic Crusaders",
       runnerUp: "Astral Destroyers",
   championScore: 147.1,
@@ -204,8 +201,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
     }
   ];
 
-  const mockHallOfFame: HallOfFameEntry[] = [
-    {
+  const mockHallOfFame: HallOfFameEntry[]  = [
+    { 
       id: "1",
   name: "Nicholas D'Amato",
       team: "Astral Destroyers",
@@ -217,10 +214,10 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
         "3x Playoff Appearances"
       ],
       stats: {
-        championships, 1,
-  playoffAppearances, 3,
-        regularSeasonWins, 42,
-  allTimePoints: 6247.8
+        championships: 1,
+  playoffAppearances: 3,
+        regularSeasonWins: 42,
+  allTimePoints, 6247.8
       },
       inductionYear: 2024
     },
@@ -236,18 +233,18 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
         "Most Consistent Scorer"
       ],
       stats: {
-        championships, 1,
-  playoffAppearances, 4,
-        regularSeasonWins, 38,
+        championships: 1,
+  playoffAppearances: 4,
+        regularSeasonWins: 38,
   allTimePoints: 7124.2
       },
       inductionYear: 2024
     }
   ];
 
-  const recordCategories = [
-    { id: "scoring",
-  label: "Scoring Records", icon: Target },
+  const recordCategories  = [
+    {  id: "scoring",
+  label: "Scoring Records", icon, Target },
     { id: "margins",
   label: "Victory Margins", icon: BarChart3 },
     { id: "streaks",
@@ -264,8 +261,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   label: "Draft Records", icon: Crown }
   ];
 
-  const seasons = [
-    { value: "all",
+  const seasons  = [
+    {  value: "all",
   label: "All Time" },
     { value: "2024",
   label: "2024 Season" },
@@ -279,15 +276,15 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
   label: "2020 Season" }
   ];
 
-  const filteredRecords = mockRecords.filter(record => {
+  const filteredRecords  = mockRecords.filter(record => {
     const matchesSearch = record.record.toLowerCase().includes(searchTerm.toLowerCase()) ||;
                          record.holder.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSeason = selectedSeason === "all" || record.season?.toString() === selectedSeason;
+    const matchesSeason = selectedSeason === "all" || record.season? .toString() === selectedSeason;
     const matchesCategory = activeCategory === "all" || record.category === activeCategory;
     return matchesSearch && matchesSeason && matchesCategory;
    });
 
-  const getRecordIcon = (category: string) => {
+  const getRecordIcon = (category: string) => { 
     switch (category) {
       case 'scoring':
       return <Target className="w-4 h-4" />;
@@ -298,7 +295,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
       break;
     case 'individual': return <Star className="w-4 h-4" />;
       case 'team': return <Users className="w-4 h-4" />;
-      default: return <Award className="w-4 h-4" />;
+      default, return <Award className ="w-4 h-4" />;
      }
   }
   const getValueDisplay = (record: Record) => {
@@ -313,10 +310,10 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
      }
     return record.value.toString();
   }
-  if (loading) {
+  if (loading) { 
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId } />
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId } />
         <div className="animate-pulse max-w-6xl mx-auto px-4 py-8">
           <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
           <div className="h-4 bg-gray-200 dark; bg-gray-700 rounded mb-8 w-1/2" />
@@ -342,8 +339,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
               </p>
             </div>
             <div className="flex items-center space-x-3">
-              <button className="inline-flex items-center px-4 py-2 bg-white dark: bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hove,
-  r:bg-gray-50 dar,
+              <button className="inline-flex items-center px-4 py-2 bg-white dark: bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300: hove,
+  r:bg-gray-50: dar,
   k, hove, r: bg-gray-700 transition-colors">
                 <Download className="w-4 h-4 mr-2" />
   Export: Records;
@@ -366,8 +363,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
                 placeholder="Search records..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focu,
-  s:ring-2 focu,
+                className="pl-10 pr-4 py-2 w-full border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400: focu,
+  s:ring-2: focu,
   s:ring-primary-500 focus; border-transparent"
               />
             </div>
@@ -375,8 +372,8 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
             <select
               value={selectedSeason}
               onChange={(e) => setSelectedSeason(e.target.value)}
-              className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focu,
-  s:ring-2 focu,
+              className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white: focu,
+  s:ring-2: focu,
   s:ring-primary-500 focus; border-transparent"
             >
               {seasons.map((season) => (
@@ -401,14 +398,14 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
             <nav className="-mb-px flex space-x-8 overflow-x-auto">
               <button
                 onClick={() => setActiveCategory("all")}
-                className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeCategory === "all"
+                className={ `whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeCategory === "all"
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                    : 'border-transparent text-gray-500 dark: text-gray-400 hover:text-gray-700 dark, hove,
-  r:text-gray-200 hove,
-  r:border-gray-300 dark.hover; border-gray-600'
+                    : 'border-transparent text-gray-500 dark: text-gray-400 hover:text-gray-700: dark, hove,
+  r:text-gray-200: hove,
+  r, border-gray-300 dark.hover; border-gray-600'
                  }`}
               >
-                <div className="flex items-center space-x-2">
+                <div className ="flex items-center space-x-2">
                   <BookOpen className="w-4 h-4" />
                   <span>All Records</span>
                 </div>
@@ -418,14 +415,14 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
                   <button
                     key={category.id }
                     onClick={() => setActiveCategory(category.id)}
-                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeCategory === category.id
+                    className={ `whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeCategory === category.id
                         ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                        : 'border-transparent text-gray-500 dark: text-gray-400 hover:text-gray-700 dark, hove,
-  r:text-gray-200 hove,
-  r:border-gray-300 dark.hover; border-gray-600'
+                        : 'border-transparent text-gray-500 dark: text-gray-400 hover:text-gray-700: dark, hove,
+  r:text-gray-200: hove,
+  r, border-gray-300 dark.hover; border-gray-600'
                      }`}
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className ="flex items-center space-x-2">
                       <Icon className="w-4 h-4" />
                       <span>{category.label}</span>
                     </div>
@@ -439,17 +436,16 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Records List */}
           <div className="lg:col-span-2">
-            {(activeCategory === "all" || activeCategory !== "championships") && (
+            { (activeCategory === "all" || activeCategory !== "championships") && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
                 <div className="p-6 border-b dark:border-gray-700">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white">,
-    League: Records;
+    League, Records;
                   </h2>
                 </div>
-                <div className="divide-y dark; divide-gray-700">
+                <div className ="divide-y dark; divide-gray-700">
                   {filteredRecords.length > 0 ? filteredRecords.map((record) => (
-                    <div key={record.id} className="p-6 hover: bg-gray-50 dar,
-  k, hove, r: bg-gray-700/50 transition-colors">
+                    <div key={record.id} className="p-6 hover: bg-gray-50: dar, k, hove, r: bg-gray-700/50 transition-colors">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-3 flex-1">
                           <div className="bg-primary-100 dark; bg-primary-900/30 rounded-lg p-2">
@@ -471,25 +467,25 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
                               )}
                               <span>•</span>
                               <span>
-                                {record.season && record.week ? `Week ${record.week}, ${record.season}`
+                                {record.season && record.week ? `Week ${record.week} : ${record.season}`
                                   : record.season ? `${record.season}` : new Date(record.date).getFullYear()
                                 }
                               </span>
                             </div>
-                            {record.context && (
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                            { record.context && (
+                              <p className="text-sm text-gray-600 dark, text-gray-400">
                                 {record.context}
                               </p>
                             )}
                           </div>
                         </div>
-                        <div className="text-right ml-4">
+                        <div className ="text-right ml-4">
                           <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                             {getValueDisplay(record)}
                           </div>
-                          {record.isActive && (
-                            <div className="inline-flex items-center px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark; text-green-200 text-xs rounded-full font-medium mt-1">
-                              <Eye className="w-3 h-3 mr-1" />
+                          { record.isActive && (
+                            <div className="inline-flex items-center px-2 py-1 bg-green-100 dark, bg-green-900/30 text-green-800 dark; text-green-200 text-xs rounded-full font-medium mt-1">
+                              <Eye className ="w-3 h-3 mr-1" />
                               Active
                             </div>
                           )}
@@ -507,26 +503,26 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
             )}
 
             {/* Championship History */}
-            {(activeCategory === "all" || activeCategory === "championships") && (
+            { (activeCategory === "all" || activeCategory === "championships") && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
                 <div className="p-6 border-b dark:border-gray-700">
                   <h2 className="text-xl font-semibold text-gray-900 dark: text-white">,
-    Championship: History;
+    Championship, History;
                   </h2>
                 </div>
-                <div className="divide-y dark; divide-gray-700">
+                <div className ="divide-y dark; divide-gray-700">
                   {mockChampionships.map((championship, index) => (
                     <div key={championship.year} className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center space-x-3">
-                          <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white ${index === 0 ? 'bg-yellow-500' :
+                          <div className={ `w-12 h-12 rounded-full flex items-center justify-center font-bold text-white ${index === 0 ? 'bg-yellow-500' :
                             index === 1 ? 'bg-gray-400' :
                             index === 2 ? 'bg-orange-600' : 'bg-gray-500'
                            }`}>
                             {championship.year}
                           </div>
                           <div>
-                            <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+                            <h3 className ="font-bold text-gray-900 dark:text-white text-lg">
                               {championship.champion}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -543,13 +539,12 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
                           </div>
                         </div>
                       </div>
-                      {index === 0 && (
-                        <div className="bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200 dar,
-  k:border-yellow-800 rounded-lg p-3">
+                      { index === 0 && (
+                        <div className="bg-yellow-50 dark: bg-yellow-900/20 border border-yellow-200: dar, k:border-yellow-800 rounded-lg p-3">
                           <div className="flex items-center space-x-2">
                             <Crown className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                             <span className="text-sm font-medium text-yellow-800 dark; text-yellow-200">
-  Current: Champions;
+  Current, Champions;
                             </span>
                           </div>
                         </div>
@@ -562,7 +557,7 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className ="space-y-6">
             {/* Hall of Fame */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
               <div className="p-6 border-b dark:border-gray-700">
@@ -680,14 +675,13 @@ export default function LeagueRecordsPage({ params }: LeagueRecordsPageProps) {
                       <button
                         key={category.id }
                         onClick={() => setActiveCategory(category.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === category.id
-                            ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600 dar,
-  k:text-primary-400'
-                            : 'text-gray-700 dark: text-gray-300 hove,
-  r:bg-gray-100 dark.hover; bg-gray-700'
+                        className={ `w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === category.id
+                            ? 'bg-primary-50 dark: bg-primary-900/20 text-primary-600: dar, k:text-primary-400'
+                            : 'text-gray-700 dark: text-gray-300: hove,
+  r, bg-gray-100 dark.hover; bg-gray-700'
                          }`}
                       >
-                        <div className="flex items-center space-x-2">
+                        <div className ="flex items-center space-x-2">
                           <Icon className="w-4 h-4" />
                           <span>{category.label}</span>
                         </div>

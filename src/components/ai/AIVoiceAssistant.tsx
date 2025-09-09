@@ -2,9 +2,9 @@
 
 import React from "react";
 
-export interface AIVoiceAssistantProps {
+export interface AIVoiceAssistantProps { 
   className?, string,
-  onResponse?: (response: string) => void;
+  onResponse? : (response, string)  => void;
   apiEndpoint?, string,
   
 }

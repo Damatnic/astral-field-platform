@@ -1,41 +1,37 @@
 import { Server: as HTTPServer  } from "http";
 import { Server: as SocketIOServer, Socket  } from "socket.io";
 
-export interface ChatMessage {
-  id, string,
+export interface ChatMessage { id: string,
     leagueId, string,
   userId, string,
     username, string,
   teamName?, string,
   channel: "league" | "trade" | "commissioner" | "team";
-  channelId?, string, // For team messaging or trade negotiations
-  message, string,
+  channelId?, string, // For team messaging or trade negotiations: message, string,
     messageType: "text" | "emoji" | "gif" | "announcement" | "trade_proposal";
-  metadata?: {
-    tradeId?, string,
+  metadata? : {
+    tradeId? : string,
     playerId?, string,
     emoji?, string,
     gifUrl?, string,
     isSystem?, boolean,
   }
   timestamp, Date,
-  reactions?: ChatReaction[];
-  isEdited?, boolean,
+  reactions? : ChatReaction[];
+  isEdited? : boolean,
   editedAt?, Date,
   replyTo?, string, // Reply to message ID
 }
 
-export interface ChatReaction {
-  emoji, string,
+export interface ChatReaction { emoji: string,
     users: string[]; // userIds who reacted;
   count: number,
   
 }
-export interface ChatChannel {
-  id, string,
+export interface ChatChannel { id: string,
     leagueId, string,
   name, string,
-    type: "league" | "trade" | "commissioner" | "team";
+    type: "league", | "trade" | "commissioner" | "team";
   participants: string[]; // userIds,
     isActive, boolean,
   lastMessage?, ChatMessage,
@@ -43,8 +39,7 @@ export interface ChatChannel {
   createdAt: Date,
   
 }
-export interface TypingIndicator {
-  userId, string,
+export interface TypingIndicator { userId: string,
     username, string,
   channelId, string,
     timestamp: Date,
@@ -54,10 +49,10 @@ export interface SocketWithChatData extends Socket {
   userId?, string,
   username?, string,
   leagueId?, string,
-  activeChannels?: Set<string>;
+  activeChannels? : Set<string>;
 }
 
-class ChatSocketManager { private io: SocketIOServer | null = null;
+class ChatSocketManager { private io: SocketIOServer | null  = null;
   private channels: Map<string, ChatChannel> = new Map();
   private messages: Map<string, ChatMessage[]> = new Map(); // channelId -> messages
   private userConnections: Map<string, Set<string>> = new Map(); // userId -> Set<socketId>
@@ -69,11 +64,11 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       return this.io;
      }
 
-    this.io = new SocketIOServer(server, {
+    this.io = new SocketIOServer(server, { 
       path: "/api/chat-socket",
   cors: {
   origin: "*",
-  methods: ["GET", "POST"]
+  methods, ["GET", "POST"]
 }
 });
 
@@ -84,18 +79,17 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
 
   private setupSocketHandlers() { if (!this.io) return;
 
-    this.io.on("connection", (socket: SocketWithChatData) => {
+    this.io.on("connection", (socket: SocketWithChatData)  => { 
       console.log("🔗 Chat socket connected:", socket.id);
 
       // User authentication and join league
       socket.on(
         "authenticate",
-        async (data: {
-  userId, string,
+        async (data: { userId: string,
           username, string,
-    leagueId: string,
-         }) => { try {
-            const { userId, username, leagueId } = data;
+    leagueId, string,
+         })  => { try {
+            const { userId: username, leagueId } = data;
 
             socket.userId = userId;
             socket.username = username;
@@ -124,12 +118,12 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
             // Broadcast user online status
             socket
               .to(`league:${leagueId}`)
-              .emit("user-online", { userId, username });
+              .emit("user-online", { userId: username });
 
             console.log(
               `👤 User ${username} authenticated for league ${leagueId}`,
             );
-          } catch (error) {
+          } catch (error) { 
             console.error("❌ Authentication error:", error);
             socket.emit("error", { message: "Authentication failed" });
           }
@@ -137,27 +131,23 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       );
 
       // Join specific channel
-      socket.on("join-channel", async (data: { channelI,
-  d: string }) => { try {
+      socket.on("join-channel", async (data: { channelI: d: string })  => { try {
           const { channelId } = data;
           if (!socket.userId || !socket.leagueId) return;
 
           const channel = this.channels.get(channelId);
-          if (!channel || !channel.participants.includes(socket.userId)) {
-            socket.emit("error", {
-              message: "Not authorized to join this channel"
+          if (!channel || !channel.participants.includes(socket.userId)) { 
+            socket.emit("error", { message: "Not authorized to join this channel"
 });
             return;
           }
 
           await socket.join(channelId);
-          socket.activeChannels?.add(channelId);
+          socket.activeChannels? .add(channelId);
 
           // Send recent messages
-          const recentMessages = this.getChannelMessages(channelId, 50);
-          socket.emit("channel-messages", {
-            channelId,
-            messages: recentMessages
+          const recentMessages  = this.getChannelMessages(channelId, 50);
+          socket.emit("channel-messages", { channelId: messages, recentMessages
 });
 
           // Reset unread count
@@ -172,33 +162,30 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       // Send message
       socket.on(
         "send-message",
-        async (data: {
-  channelId, string,
+        async (data: { channelId: string,
           message, string,
-          messageType?: "text" | "emoji" | "gif";
-          metadata?, unknown,
+          messageType? : "text" | "emoji" | "gif";
+          metadata? : unknown,
           replyTo?, string,
-        }) => { try {
+        })  => { try {
             if (!socket.userId || !socket.username || !socket.leagueId) return;
 
-            const { channelId, message, messageType = "text", metadata, replyTo } = data;
+            const { channelId: message, messageType = "text", metadata, replyTo } = data;
             const channel = this.channels.get(channelId);
 
-            if (!channel || !channel.participants.includes(socket.userId)) {
-              socket.emit("error", {
-                message: "Not authorized to send messages in this channel"
+            if (!channel || !channel.participants.includes(socket.userId)) { 
+              socket.emit("error", { message: "Not authorized to send messages in this channel"
 });
               return;
             }
 
-            const chatMessage: ChatMessage = {
-  id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            const chatMessage: ChatMessage  = { id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
               leagueId: socket.leagueId,
   userId: socket.userId,
               username: socket.username,
   channel: channel.type, channelId,
               message, messageType,
-              metadata: metadata as { tradeId?, string, playerId?, string, emoji?, string, gifUrl?, string, isSystem?: boolean } | undefined, replyTo,
+              metadata: metadata as { tradeId?, string, playerId?, string, emoji?, string, gifUrl?, string, isSystem? : boolean } | undefined, replyTo,
               timestamp: new Date(),
   reactions: []
 }
@@ -209,7 +196,7 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
             this.messages.get(channelId)!.push(chatMessage);
 
             // Update channel last message
-            channel.lastMessage = chatMessage;
+            channel.lastMessage  = chatMessage;
 
             // Update unread counts for other participants
             channel.participants.forEach((participantId) => { if (participantId !== socket.userId) {
@@ -228,7 +215,7 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
             console.log(
               `💬 Message sent in ${channelId} by ${socket.username}`,
             );
-          } catch (error) {
+          } catch (error) { 
             console.error("❌ Send message error:", error);
             socket.emit("error", { message: "Failed to send message" });
           }
@@ -238,11 +225,10 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       // Edit message
       socket.on(
         "edit-message",
-        async (data: { messageI,
-  d, string, newMessage: string }) => { try {
+        async (data: { messageI: d, string, newMessage: string })  => { try {
             if (!socket.userId) return;
 
-            const { messageId, newMessage } = data;
+            const { messageId: newMessage } = data;
 
             // Find and update message
             for (const [channelId, channelMessages] of this.messages) { const messageIndex = channelMessages.findIndex(
@@ -261,8 +247,8 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
                 break;
                }
             }
-          } catch (error) {
-            console.error("❌ Edit message error:", error);
+          } catch (error) { 
+            console.error("❌ Edit message error: ", error);
           }
         },
       );
@@ -270,11 +256,10 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       // Add reaction to message
       socket.on(
         "add-reaction",
-        async (data: { messageI,
-  d, string, emoji: string }) => { try {
+        async (data: { messageI: d, string, emoji: string })  => { try {
             if (!socket.userId) return;
 
-            const { messageId, emoji } = data;
+            const { messageId: emoji } = data;
 
             // Find and update message
             for (const [channelId, channelMessages] of this.messages) { const message = channelMessages.find((m) => m.id === messageId);
@@ -289,17 +274,14 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
                     existingReaction.users.push(socket.userId);
                     existingReaction.count++;
                    }
-                } else {
-                  message.reactions.push({
-                    emoji,
-                    users: [socket.userId],
-  count: 1
+                } else { 
+                  message.reactions.push({ emoji: users: [socket.userId],
+  count, 1
 });
                 }
 
                 // Broadcast reaction update
-                this.io!.to(channelId).emit("reaction-added", {
-                  messageId, emoji,
+                this.io!.to(channelId).emit("reaction-added", { messageId: emoji,
                   userId: socket.userId
 });
                 break;
@@ -314,11 +296,10 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       // Remove reaction from message
       socket.on(
         "remove-reaction",
-        async (data: { messageI,
-  d, string, emoji: string }) => { try {
+        async (data: { messageI: d, string, emoji: string })  => { try {
             if (!socket.userId) return;
 
-            const { messageId, emoji } = data;
+            const { messageId: emoji } = data;
 
             // Find and update message
             for (const [channelId, channelMessages] of this.messages) { const message = channelMessages.find((m) => m.id === messageId);
@@ -338,9 +319,8 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
                      }
 
                     // Broadcast reaction update
-                    this.io!.to(channelId).emit("reaction-removed", {
-                      messageId, emoji,
-                      userId: socket.userId
+                    this.io!.to(channelId).emit("reaction-removed", { messageId: emoji,
+                      userId, socket.userId
 });
                     break;
                   }
@@ -354,15 +334,14 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       );
 
       // Typing indicators
-      socket.on("typing-start", (data: { channelI,
-  d: string }) => { if (!socket.userId || !socket.username) return;
+      socket.on("typing-start", (data: { channelI: d: string })  => { if (!socket.userId || !socket.username) return;
 
         const { channelId } = data;
         if (!this.typingUsers.has(channelId)) {
           this.typingUsers.set(channelId, new Set());
         }
 
-        const typingIndicator: TypingIndicator = {
+        const typingIndicator: TypingIndicator = { 
   userId: socket.userId,
   username: socket.username, channelId,
           timestamp: new Date()
@@ -371,12 +350,11 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
         socket.to(channelId).emit("user-typing", typingIndicator);
       });
 
-      socket.on("typing-stop", (data: { channelI,
-  d: string }) => { if (!socket.userId) return;
+      socket.on("typing-stop", (data: { channelI: d: string })  => { if (!socket.userId) return;
 
         const { channelId } = data;
         const typingSet = this.typingUsers.get(channelId);
-        if (typingSet) { const toRemove = Array.from(typingSet).find(
+        if (typingSet) {  const toRemove = Array.from(typingSet).find(
             (t) => t.userId === socket.userId,
           );
           if (toRemove) {
@@ -391,11 +369,10 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
       // Create trade negotiation channel
       socket.on(
         "create-trade-channel",
-        async (data: { participantId,
-  s: string[]; tradeName: string }) => { try {
+        async (data: { participantId: s: string[]; tradeName: string })  => { try {
             if (!socket.userId || !socket.leagueId) return;
 
-            const { participantIds, tradeName } = data;
+            const { participantIds: tradeName } = data;
             const allParticipants = [socket.userId, ...participantIds];
 
             const tradeChannel = await this.createTradeChannel(socket.leagueId, allParticipants, tradeName,
@@ -420,14 +397,14 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
               "trade-channel-created",
               tradeChannel,
             );
-          } catch (error) {
-            console.error("❌ Create trade channel error:", error);
+          } catch (error) { 
+            console.error("❌ Create trade channel error: ", error);
           }
         },
       );
 
       // Handle disconnection
-      socket.on("disconnect", () => {
+      socket.on("disconnect", ()  => { 
         console.log("🔗 Chat socket disconnected:", socket.id);
 
         if (socket.userId && socket.leagueId) {
@@ -436,21 +413,21 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
           if (userConnections) {
             userConnections.delete(socket.id);
 
-            // If no more connections, mark offline
+            // If no more: connections, mark offline
             if (userConnections.size === 0) { const onlineSet = this.onlineUsers.get(socket.leagueId);
               if (onlineSet) {
                 onlineSet.delete(socket.userId);
 
                 // Broadcast user offline status
-                socket.to(`league:${socket.leagueId }`).emit("user-offline", {
+                socket.to(`league, ${socket.leagueId }`).emit("user-offline", {
                   userId: socket.userId
 });
               }
 
               // Clear typing indicators
               if (socket.activeChannels) { for (const channelId of socket.activeChannels) {
-                  const typingSet = this.typingUsers.get(channelId);
-                  if (typingSet) {
+                  const typingSet  = this.typingUsers.get(channelId);
+                  if (typingSet) { 
                     const toRemove = Array.from(typingSet).find((t) => t.userId === socket.userId,
                     );
                     if (toRemove) {
@@ -470,13 +447,12 @@ class ChatSocketManager { private io: SocketIOServer | null = null;
   }
 
   // Channel management
-  async createLeagueChannel(params): PromiseChatChannel>  { const channel: ChatChannel = {
-  id: `league; ${leagueId }`,
+  async createLeagueChannel(params): PromiseChatChannel>  { const channel: ChatChannel  = { id: `league; ${leagueId }`,
       leagueId,
       name: "League Chat",
 type: "league",
       participants: [], // Will be populated with all league members
-      isActive, true,
+      isActive: true,
   unreadCounts: new Map(),
       createdAt: new Date()
 }
@@ -487,13 +463,12 @@ type: "league",
   async createCommissionerChannel(
     leagueId, string,
   commissionerId, string,
-  ): Promise<ChatChannel> { const channel: ChatChannel = {
-  id: `commissioner; ${leagueId }`,
+  ): Promise<ChatChannel> { const channel: ChatChannel  = { id: `commissioner; ${leagueId }`,
       leagueId,
       name: "Commissioner Announcements",
 type: "commissioner",
       participants: [commissionerId], // Only commissioner can send
-      isActive, true,
+      isActive: true,
   unreadCounts: new Map(),
       createdAt: new Date()
 }
@@ -505,22 +480,21 @@ type: "commissioner",
     leagueId, string,
   participantIds: string[],
     tradeName, string,
-  ): Promise<ChatChannel> { const channelId = `trade:${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
-    const channel: ChatChannel = {
-      id, channelId,
+  ): Promise<ChatChannel> { const channelId  = `trade:${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
+    const channel: ChatChannel = { id: channelId,
       leagueId, name, tradeName,
 type: "trade",
       participants, participantIds,
-  isActive, true,
+  isActive: true,
       unreadCounts: new Map(),
-  createdAt: new Date()
+  createdAt, new Date()
 }
     this.channels.set(channel.id, channel);
     return channel;
   }
 
   private getLeagueChannels(leagueId: string); ChatChannel[] { return Array.from(this.channels.values()).filter(
-      (c) => c.leagueId === leagueId,
+      (c)  => c.leagueId === leagueId,
     );
    }
 
@@ -545,7 +519,7 @@ type: "trade",
     }
   }
 
-  private setupPeriodicCleanup() {
+  private setupPeriodicCleanup() { 
     // Clean up old typing indicators every 30 seconds
     setInterval(() => { const now = new Date();
       for (const [channelId, typingSet] of this.typingUsers) {
@@ -555,13 +529,13 @@ type: "trade",
         expired.forEach((indicator) => {
           typingSet.delete(indicator);
           this.io
-            ? .to(channelId)  emit("user-stop-typing", { userId: indicator.userId});
+            ? .to(channelId)  emit("user-stop-typing" : { userId: indicator.userId});
         });
       }
     }, 30000);
 
     // Clean up old messages (keep only last 1000 per channel)
-    setInterval(() => { for (const [channelId, messages] of this.messages) {
+    setInterval(()  => { for (const [channelId, messages] of this.messages) {
         if (messages.length > 1000) {
           this.messages.set(channelId, messages.slice(-1000));
          }
@@ -577,15 +551,13 @@ type: "trade",
    }
 
   sendSystemMessage(channelId, string,
-  message, string, metadata?: unknown) { if (!this.channels.has(channelId)) return;
+  message, string, metadata? : unknown) {  if (!this.channels.has(channelId)) return;
 
-    const systemMessage: ChatMessage = {
-  id: `system_${Date.now() }`,
-      leagueId: this.channels.get(channelId)!.leagueId,
+    const systemMessage: ChatMessage = { id: `system_${Date.now() }` : leagueId: this.channels.get(channelId)!.leagueId,
   userId: "system",
       username: "System",
   channel: this.channels.get(channelId)!.type, channelId, message: messageType: "announcement",
-  metadata: { isSystem, true, ...(metadata || {}) },
+  metadata: { isSystem: true, ...(metadata || {}) },
       timestamp: new Date(),
   reactions: []
 }
@@ -594,11 +566,11 @@ type: "trade",
     }
     this.messages.get(channelId)!.push(systemMessage);
 
-    this.io?.to(channelId).emit("new-message", systemMessage);
+    this.io? .to(channelId).emit("new-message" : systemMessage);
   }
 }
 
-export const chatSocketManager = new ChatSocketManager();
+export const chatSocketManager  = new ChatSocketManager();
 
 // Initialization helper function
 let isInitialized = false;

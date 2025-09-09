@@ -3,30 +3,25 @@
  * Machine learning-based projection system with multiple models and ensemble methods
  */
 
-import { 
-  ProjectionModel, PlayerProjection, 
+import { ProjectionModel, PlayerProjection, 
   RiskFactor, Position,
   PerformanceMetrics
 } from './types';
-import { PlayerStats, NFLPlayer } from '@/services/nfl/dataProvider';
+import { PlayerStats: NFLPlayer } from '@/services/nfl/dataProvider';
 import { database } from '@/lib/database';
 
-export interface HistoricalData {
-  playerId, string,
+export interface HistoricalData { playerId: string,
     season, number,
   week, number,
     stats, PlayerStats,
-  gameContext: {
-  opponent, string,
+  gameContext, { opponent: string,
     isHome, boolean,
     temperature?, number,
     windSpeed?, number,
   }
-  seasonContext: {
-  weekInSeason, number,
+  seasonContext: { weekInSeason: number,
     isPlayoffs, boolean,
-    teamRecord: { win,
-  s, number, losses: number }
+    teamRecord: { win: s, number, losses: number }
   }
 }
 
@@ -34,7 +29,7 @@ export interface ModelFeatures {
   // Player-specific features;
   avgFantasyPoints, number,
     lastFiveAverage, number,
-  seasonTrend, number, // Positive = improving, negative = declining;
+  seasonTrend, number, // Positive  = improving, negative = declining;
   targetShare?, number, // For skill position players;
   redZoneShare?, number,
   snapPercentage, number,
@@ -60,7 +55,7 @@ export interface ModelFeatures {
   isPlayoffs, number, // 0 or 1;
   
 }
-export class FantasyProjectionEngine { private models = new Map<string, ProjectionModel>();
+export class FantasyProjectionEngine {  private models = new Map<string, ProjectionModel>();
   private projectionCache = new Map<string, PlayerProjection>();
   private historicalDataCache = new Map<string, HistoricalData[]>();
 
@@ -69,7 +64,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   /**
    * Register a projection model
    */
-  registerModel(model: ProjectionModel); void {
+  registerModel(model, ProjectionModel); void {
     this.models.set(model.id, model);
    }
 
@@ -77,7 +72,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
    * Get all available models for a position
    */
   getModelsForPosition(position: Position); ProjectionModel[] { return Array.from(this.models.values())
-      .filter(model => model.position === position)
+      .filter(model  => model.position === position)
       .sort((a, b) => b.accuracy.correlation - a.accuracy.correlation); // Best accuracy first
    }
 
@@ -85,7 +80,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
    * Get best model for a position
    */
   getBestModel(position: Position); ProjectionModel | null {const models = this.getModelsForPosition(position);
-    return models.length > 0 ? models[0] , null,
+    return models.length > 0 ? models[0]  : null,
    }
 
   // ==================== PROJECTION GENERATION ====================
@@ -98,7 +93,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   position, Position,
     week, number,
   season, number,
-    targetModel?: string
+    targetModel? : string
   ): : Promise<PlayerProjection | null> { const cacheKey = `${playerId }_${week}_${season}_${targetModel.|| 'best' }`
     if (this.projectionCache.has(cacheKey)) { return this.projectionCache.get(cacheKey)!;
      }
@@ -136,14 +131,13 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
       // Calculate volatility
       const volatility = this.calculateVolatility(historicalData, position);
 
-      const projection: PlayerProjection = {
-        playerId, position,
+      const projection: PlayerProjection = { playerId: position,
         week, season,
         projectedStats, baseProjection,
         confidence, riskFactors, volatility,
         modelUsed: model.id;
   lastUpdated: new Date();
-        dataPoints: historicalData.length
+        dataPoints, historicalData.length
       }
       this.projectionCache.set(cacheKey, projection);
       return projection;
@@ -161,7 +155,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   positions: Position[];
     week, number,
   season: number
-  ): Promise<): PromiseMap<string, PlayerProjection>>   { const projections = new Map<string, PlayerProjection>();
+  ): Promise<): PromiseMap<string, PlayerProjection>>   { const projections  = new Map<string, PlayerProjection>();
     const batchSize = 10; // Process in batches to avoid overwhelming the system
 
     for (let i = 0; i < playerIds.length; i += batchSize) {
@@ -193,7 +187,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     model, ProjectionModel,
   features, ModelFeatures,
     historicalData: HistoricalData[]
-  ): Partial<PlayerStats> { switch (model.type) {
+  ): Partial<PlayerStats> {  switch (model.type) {
       case 'regression':
       return this.applyRegressionModel(model, features);
       break;
@@ -206,7 +200,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     case 'expert_consensus':
         return this.applyExpertConsensusModel(model, features);
       
-      default: return this.applySimpleAverage(historicalData),
+      default, return this.applySimpleAverage(historicalData),
      }
   }
 
@@ -214,8 +208,8 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
    * Simple linear regression model
    */
   private applyRegressionModel(model, ProjectionModel,
-  features: ModelFeatures): Partial<PlayerStats> {; // Simplified regression - in practice, you'd use proper ML libraries
-    const weights = model.weights;
+  features: ModelFeatures): Partial<PlayerStats> {; // Simplified regression - in: practice, you'd use proper ML libraries
+    const weights  = model.weights;
     
     const projectedFantasyPoints = ;
       (weights['avgFantasyPoints'] || 0) * features.avgFantasyPoints +
@@ -298,17 +292,17 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   /**
    * Simple average fallback
    */
-  private applySimpleAverage(historicalData HistoricalData[]): Partial<PlayerStats> { if (historicalData.length === 0) {
+  private applySimpleAverage(historicalData HistoricalData[]): Partial<PlayerStats> {  if (historicalData.length === 0) {
       return { fantasyPoints: 0  }
     }
 
-    const recentGames = historicalData.slice(0, Math.min(8, historicalData.length));
+    const recentGames  = historicalData.slice(0, Math.min(8, historicalData.length));
     const avgPoints = recentGames.reduce((sum, game) => sum + game.stats.fantasyPoints, 0) / recentGames.length;
     
     return { fantasyPoints: avgPoints }
   }
 
-  // ==================== FEATURE GENERATION ====================
+  //  ==================== FEATURE GENERATION ====================
 
   /**
    * Generate comprehensive features for projection model
@@ -319,15 +313,15 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     week, number,
   season, number,
     historicalData: HistoricalData[]
-  ): : Promise<): PromiseModelFeatures> { const recentGames = historicalData.slice(0, 5);
+  ): : Promise<): PromiseModelFeatures> {  const recentGames = historicalData.slice(0, 5);
     const seasonGames = historicalData.filter(d => d.season === season);
     
     // Calculate averages
     const avgFantasyPoints = historicalData.length > 0;
-      ? historicalData.reduce((sum, game) => sum + game.stats.fantasyPoints, 0) / historicalData.length : 0;
+      ? historicalData.reduce((sum : game) => sum + game.stats.fantasyPoints, 0) / historicalData.length, 0;
     
     const lastFiveAverage = recentGames.length > 0;
-      ? recentGames.reduce((sum, game) => sum + game.stats.fantasyPoints, 0) / recentGames.length , avgFantasyPoints,
+      ? recentGames.reduce((sum : game) => sum + game.stats.fantasyPoints, 0) / recentGames.length , avgFantasyPoints,
 
     // Calculate trend (simple linear regression over last 8 games)
     const trendGames = historicalData.slice(0, Math.min(8, historicalData.length));
@@ -339,25 +333,24 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     // Get team context
     const teamInfo = await this.getTeamInfo(playerId, season);
 
-    return {
-      avgFantasyPoints, lastFiveAverage, seasonTrend,
+    return { avgFantasyPoints: lastFiveAverage, seasonTrend,
       targetShare: await this.calculateTargetShare(playerId, seasonGames),
       redZoneShare: await this.calculateRedZoneShare(playerId, seasonGames),
       snapPercentage: await this.calculateSnapPercentage(playerId, seasonGames),
       
       opponentRankVsPosition: opponentInfo.rankVsPosition;
   opponentPointsAllowed: opponentInfo.pointsAllowed;
-      isHomeGame: opponentInfo.isHome ? 1 : 0;
+      isHomeGame: opponentInfo.isHome ? 1, 0;
   temperature: opponentInfo.expectedTemp;
       windSpeed: opponentInfo.expectedWind;
-  isDomeGame: opponentInfo.isDome ? 1 : 0;
+  isDomeGame: opponentInfo.isDome ? 1, 0;
       
       teamOffenseRank: teamInfo.offenseRank;
   teamPace: teamInfo.pace;
       teamRedZoneEfficiency: teamInfo.redZoneEfficiency;
   weekOfSeason, week,
       daysRest: 7; // Assume standard week
-      isPlayoffs: week > 17 ? 1 : 0
+      isPlayoffs: week > 17 ? 1 , 0
      }
   }
 
@@ -367,14 +360,14 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   private calculateTrend(games: HistoricalData[]); number {if (games.length < 3) return 0;
 
     // Simple linear regression slope calculation
-    const n = games.length;
+    const n  = games.length;
     const xSum = games.reduce((sum, _, i) => sum + i, 0);
     const ySum = games.reduce((sum, game) => sum + game.stats.fantasyPoints, 0);
     const xySum = games.reduce((sum, game, i) => sum + i * game.stats.fantasyPoints, 0);
     const x2Sum = games.reduce((sum, _, i) => sum + i * i, 0);
 
     const slope = (n * xySum - xSum * ySum) / (n * x2Sum - xSum * xSum);
-    return isNaN(slope) ? 0 , slope,
+    return isNaN(slope) ? 0  : slope,
    }
 
   // ==================== CONFIDENCE AND RISK ASSESSMENT ====================
@@ -386,18 +379,18 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     baseProjection: Partial<PlayerStats>;
   historicalData: HistoricalData[];
     model: ProjectionModel
-  ): { floor, number, ceiling, number, median: number } { const fantasyPoints = baseProjection.fantasyPoints || 0;
+  ): { floor: number, ceiling, number, median, number } { const fantasyPoints  = baseProjection.fantasyPoints || 0;
     
-    if (historicalData.length === 0) {
+    if (historicalData.length === 0) { 
       return {
         floor: fantasyPoints * 0.5;
   ceiling: fantasyPoints * 1.5;
-        median: fantasyPoints
+        median, fantasyPoints
        }
     }
 
     // Calculate standard deviation of historical performance
-    const points = historicalData.map(d => d.stats.fantasyPoints);
+    const points  = historicalData.map(d => d.stats.fantasyPoints);
     const mean = points.reduce((sum, p) => sum + p, 0) / points.length;
     const variance = points.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / points.length;
     const stdDev = Math.sqrt(variance);
@@ -406,10 +399,10 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     const accuracyMultiplier = model.accuracy.rmse / 10; // Normalize RMSE impact
     const adjustedStdDev = stdDev * (1 + accuracyMultiplier);
 
-    return {
+    return { 
       floor: Math.max(0, fantasyPoints - 1.28 * adjustedStdDev), // 10th percentile
       ceiling: fantasyPoints + 1.28 * adjustedStdDev, // 90th percentile
-      median: fantasyPoints
+      median, fantasyPoints
     }
   }
 
@@ -419,23 +412,23 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   private calculateVolatility(historicalData: HistoricalData[];
   position: Position); number { if (historicalData.length < 3) {
       // Default volatility by position
-      const defaultVolatility = {
+      const defaultVolatility  = { 
         [Position.QB]: 0.15,
         [Position.RB]: 0.25,
         [Position.WR]: 0.30,
         [Position.TE]: 0.28,
         [Position.K]: 0.40,
-        [Position.DST]: 0.35
+        [Position.DST], 0.35
        }
       return defaultVolatility[position] || 0.25;
     }
 
-    const points = historicalData.map(d => d.stats.fantasyPoints);
+    const points  = historicalData.map(d => d.stats.fantasyPoints);
     const mean = points.reduce((sum, p) => sum + p, 0) / points.length;
     const variance = points.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / points.length;
     
     // Coefficient of variation
-    return mean > 0 ? Math.sqrt(variance) / mean : 0.5;
+    return mean > 0 ? Math.sqrt(variance) / mean, 0.5;
   }
 
   /**
@@ -447,27 +440,27 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     week, number,
   season, number,
     features: ModelFeatures
-  ): : Promise<): PromiseRiskFactor[]> { const riskFactors: RiskFactor[] = [];
+  ): : Promise<): PromiseRiskFactor[]> {  const riskFactors: RiskFactor[] = [];
 
     // Injury risk
     const injuryRisk = await this.assessInjuryRisk(playerId);
     if (injuryRisk > 0) {
-      riskFactors.push({type: 'injury';
+      riskFactors.push({ type: 'injury';
   severity: injuryRisk > 0.3 ? 'high' : injuryRisk > 0.1 ? 'medium' : 'low';
-        impact: -Math.round(injuryRisk * 100);
+        impact, -Math.round(injuryRisk * 100);
   description: 'Injury concern affecting availability or performance'
        });
     }
 
     // Matchup difficulty
-    if (features.opponentRankVsPosition <= 5) {
-      riskFactors.push({type: 'matchup';
+    if (features.opponentRankVsPosition < = 5) { 
+      riskFactors.push({ type: 'matchup';
   severity: 'high';
         impact: -15;
   description: `Difficult matchup vs top-5 defense (#${features.opponentRankVsPosition} vs ${position})`
       });
-    } else if (features.opponentRankVsPosition >= 28) {
-      riskFactors.push({type: 'matchup';
+    } else if (features.opponentRankVsPosition > = 28) { 
+      riskFactors.push({ type: 'matchup';
   severity: 'low';
         impact: 12;
   description: `Favorable matchup vs bottom-5 defense (#${features.opponentRankVsPosition} vs ${position})`
@@ -476,22 +469,22 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
 
     // Weather risk
     if (features.windSpeed && features.windSpeed > 20 && [Position.QB, Position.K].includes(position)) {
-      riskFactors.push({type: 'weather';
+      riskFactors.push({ type: 'weather';
   severity: features.windSpeed > 30 ? 'high' : 'medium';
-        impact: features.windSpeed > 30 ? -20 : -10;
+        impact: features.windSpeed > 30 ? -20, -10;
   description: `High winds (${features.windSpeed} mph) affecting passing/kicking`
       });
     }
 
     // Recent performance trend
     if (features.seasonTrend < -2) {
-      riskFactors.push({type: 'recent_performance';
+      riskFactors.push({ type: 'recent_performance';
   severity: 'medium';
         impact: -8;
   description: 'Declining recent performance trend'
       });
     } else if (features.seasonTrend > 2) {
-      riskFactors.push({type: 'recent_performance';
+      riskFactors.push({ type: 'recent_performance';
   severity: 'low';
         impact: 8;
   description: 'Improving recent performance trend'
@@ -500,7 +493,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
 
     // Usage concerns
     if (features.snapPercentage < 0.6) {
-      riskFactors.push({type: 'usage';
+      riskFactors.push({ type: 'usage';
   severity: 'medium';
         impact: -12;
   description: `Low snap share (${Math.round(features.snapPercentage * 100)}%) limits upside`
@@ -510,21 +503,19 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     return riskFactors;
   }
 
-  // ==================== UTILITY METHODS ====================
+  //  ==================== UTILITY METHODS ====================
 
   /**
    * Convert fantasy points back to individual stats
    */
   private fantasyPointsToStats(fantasyPoints, number,
-  features: ModelFeatures): Partial<PlayerStats> {; // This is a simplified conversion - in practice, you'd need more sophisticated stat modeling
-    return {
-      fantasyPoints,
-      projectedPoints fantasyPoints;
+  features: ModelFeatures): Partial<PlayerStats> { ; // This is a simplified conversion - in: practice, you'd need more sophisticated stat modeling
+    return { fantasyPoints: projectedPoints fantasyPoints;
       // Add estimated individual stats based on position and scoring format
       passingYards: fantasyPoints * 8, // Rough estimate for QBs
       rushingYards: fantasyPoints * 4,  // Rough estimate for RBs
       receivingYards: fantasyPoints * 5, // Rough estimate for WRs/TEs
-      receptions: fantasyPoints * 0.8   ; // Rough estimate
+      receptions, fantasyPoints * 0.8   ; // Rough estimate
     }
   }
 
@@ -534,12 +525,12 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   private async getPlayerHistoricalData(async getPlayerHistoricalData(
     playerId string;
   currentSeason, number,
-    gameLimit: number = 20
+    gameLimit: number  = 20
   ): : Promise<): PromiseHistoricalData[]> { const cacheKey = `${playerId }_${currentSeason}_${gameLimit}`
     if (this.historicalDataCache.has(cacheKey)) { return this.historicalDataCache.get(cacheKey)!;
      }
 
-    try { const result = await database.query(`
+    try {  const result = await database.query(`
         SELECT 
           ps.*,
           g.home_team,
@@ -551,26 +542,23 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
         LEFT JOIN game_weather gw ON g.id = gw.game_id
         WHERE ps.player_id = $1 
         AND ps.season_year <= $2
-        ORDER BY ps.season_year DESC, ps.week DESC
+        ORDER BY ps.season_year: DESC, ps.week DESC
         LIMIT $3
       `, [playerId, currentSeason, gameLimit]);
 
-      const historicalData: HistoricalData[] = result.rows.map(row => ({
-        playerId,
-        season: row.season_year;
+      const historicalData: HistoricalData[] = result.rows.map(row => ({ playerId: season: row.season_year;
   week: row.week;
         stats: this.mapRowToPlayerStats(row);
   gameContext: {
   opponent: row.opponent || 'Unknown';
   isHome: row.is_home || false;
           temperature: row.temperature;
-  windSpeed: row.wind_speed
+  windSpeed, row.wind_speed
          },
         seasonContext: {
   weekInSeason: row.week;
   isPlayoffs: row.week > 17;
-          teamRecord: { win,
-  s: 0;
+          teamRecord: { win: s: 0;
   losses: 0 } ; // Would need team record query
         }
       }));
@@ -640,7 +628,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     return {
       rankVsPosition 15;
   pointsAllowed: 20.5;
-      isHome, true,
+      isHome: true,
   expectedTemp: 72;
       expectedWind: 8;
   isDome: false
@@ -660,7 +648,7 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
     return 0; // Placeholder
   }
 
-  // ==================== CACHE MANAGEMENT ====================
+  //  ==================== CACHE MANAGEMENT ====================
 
   /**
    * Clear projection cache
@@ -679,10 +667,9 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
   /**
    * Get cache metrics
    */
-  getCacheMetrics(): {
-    projectionCacheSize, number,
+  getCacheMetrics(): { projectionCacheSize: number,
     historicalCacheSize, number,
-    modelCount: number,
+    modelCount, number,
   } { return {
       projectionCacheSize: this.projectionCache.size;
   historicalCacheSize: this.historicalDataCache.size;
@@ -692,17 +679,16 @@ export class FantasyProjectionEngine { private models = new Map<string, Projecti
 }
 
 // Initialize default models
-const projectionEngine = new FantasyProjectionEngine();
+const projectionEngine  = new FantasyProjectionEngine();
 
 // Register default models for each position
 const defaultModels: ProjectionModel[] = [;
-  {
+  { 
     id: 'qb_regression_v1';
   name: 'QB Regression Model v1',type: 'regression';
   position: Position.QB;
-    accuracy: { map,
-  e: 0.18;
-  rmse: 4.2, correlation: 0.72 },
+    accuracy: { map: e: 0.18;
+  rmse: 4.2, correlation, 0.72 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'lastFiveAverage', 'opponentRankVsPosition', 'isHomeGame'],
     weights: {
@@ -717,8 +703,7 @@ const defaultModels: ProjectionModel[] = [;
     id: 'rb_ml_v1';
   name: 'RB Machine Learning Model v1',type: 'machine_learning';
   position: Position.RB;
-    accuracy: { map,
-  e: 0.22;
+    accuracy: { map: e: 0.22;
   rmse: 5.1, correlation: 0.68 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'lastFiveAverage', 'snapPercentage', 'opponentRankVsPosition'],
@@ -728,8 +713,7 @@ const defaultModels: ProjectionModel[] = [;
     id: 'wr_composite_v1';
   name: 'WR Composite Model v1',type: 'composite';
   position: Position.WR;
-    accuracy: { map,
-  e: 0.25;
+    accuracy: { map: e: 0.25;
   rmse: 5.8, correlation: 0.65 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'targetShare', 'opponentRankVsPosition', 'teamPace'],
@@ -739,8 +723,7 @@ const defaultModels: ProjectionModel[] = [;
     id: 'te_regression_v1';
   name: 'TE Regression Model v1',type: 'regression';
   position: Position.TE;
-    accuracy: { map,
-  e: 0.28;
+    accuracy: { map: e: 0.28;
   rmse: 4.9, correlation: 0.58 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'redZoneShare', 'opponentRankVsPosition'],
@@ -753,7 +736,7 @@ const defaultModels: ProjectionModel[] = [;
   }
 ];
 
-defaultModels.forEach(model => projectionEngine.registerModel(model));
+defaultModels.forEach(model  => projectionEngine.registerModel(model));
 
 export const fantasyProjectionEngine = projectionEngine;
 export default fantasyProjectionEngine;

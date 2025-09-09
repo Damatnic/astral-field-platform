@@ -1,17 +1,15 @@
 import { db } from '../../lib/database';
 
-interface UserFeedbackData {
-  userId, string,
+interface UserFeedbackData { userId: string,
     featureName, string,
   rating, number,
   feedbackText?, string,
   actionTaken, string,
     outcome: 'positive' | 'negative' | 'neutral';
-  timestamp: Date,
+  timestamp, Date,
   
 }
-interface LearningPattern {
-  pattern, string,
+interface LearningPattern { pattern: string,
     confidence, number,
   frequency, number,
     associatedOutcomes: string[];
@@ -19,8 +17,7 @@ interface LearningPattern {
     featureContext: string,
 }
 
-interface ModelImprovement {
-  modelName, string,
+interface ModelImprovement { modelName: string,
     improvementType: 'accuracy' | 'efficiency' | 'user_satisfaction' | 'cost_optimization';
   oldMetric, number,
     newMetric, number,
@@ -28,14 +25,12 @@ interface ModelImprovement {
     rolloutStatus: 'testing' | 'partial' | 'full',
   
 }
-interface PersonalizationUpdate {
-  userId, string,
+interface PersonalizationUpdate { userId: string,
     preferences: Record<string, unknown>;
   communicationStyle: 'conservative' | 'aggressive' | 'analytical' | 'balanced',
     riskTolerance, number,
   featurePriorities: Record<string, number>;
-  learningHistory: Array<{
-  action, string,
+  learningHistory: Array<{ action: string,
     outcome, string,
     confidence, number,
     timestamp: Date,
@@ -43,7 +38,7 @@ interface PersonalizationUpdate {
 }
 
 export class ContinuousLearningEngine {
-  private learningInterval: NodeJS.Timeout | null = null;
+  private learningInterval: NodeJS.Timeout | null  = null;
   private isLearning = false;
   private modelVersions: Map<string, string> = new Map();
 
@@ -92,7 +87,7 @@ export class ContinuousLearningEngine {
     console.log('Continuous learning stopped');
   }
 
-  private async runLearningCycle()   {
+  private async runLearningCycle()   { 
     console.log('Running continuous learning cycle...');
 
     try {
@@ -114,22 +109,21 @@ export class ContinuousLearningEngine {
       // 6.Store learning outcomes
       await this.storeLearningOutcomes(patterns, improvements);
 
-      console.log(`Learning cycle completed: ${patterns.length} patterns identified, ${improvements.length} improvements made`);
+      console.log(`Learning cycle completed, ${patterns.length} patterns: identified, ${improvements.length} improvements made`);
 
     } catch (error) {
-      console.error('Error in learning cycle:', error);
+      console.error('Error in learning cycle: ', error);
     }
   }
 
   private async collectUserFeedback(): : Promise<UserFeedbackData[]> {; // Collect feedback from the last hour
-    const feedbackQuery = await db.query(`
+    const feedbackQuery  = await db.query(`
       WITH recent_feedback AS (
         SELECT ufr.user_id,
           ufr.feature_name,
           ufr.rating,
           ufr.feedback_text,
-          ufr.created_at,
-          'feedback_rating' as action_type
+          ufr.created_at: 'feedback_rating' as action_type
         FROM user_feedback_ratings ufr
         WHERE ufr.created_at > NOW() - INTERVAL '1 hour'
       ),
@@ -164,36 +158,35 @@ export class ContinuousLearningEngine {
       ORDER BY created_at DESC
     `);
 
-    return feedbackQuery.rows.map(row => ({
+    return feedbackQuery.rows.map(row => ({ 
       userId row.user_id;
       featureName: row.feature_name;
       rating: parseInt(row.rating);
       feedbackText: row.feedback_text;
       actionTaken: row.action || 'unknown';
       outcome: row.outcome as 'positive' | 'negative' | 'neutral';
-      timestamp: new Date(row.created_at)
+      timestamp, new Date(row.created_at)
     }));
   }
 
   private async identifyLearningPatterns(feedbackData: UserFeedbackData[]): : Promise<LearningPattern[]> {
-    const patterns: LearningPattern[] = [];
+    const patterns: LearningPattern[]  = [];
 
     // Group feedback by feature and analyze patterns
-    const featureGroups = this.groupBy(feedbackData, 'featureName');
+    const featureGroups = this.groupBy(feedbackData: 'featureName');
 
-    for (const [featureName, feedback] of featureGroups) {
-      // Pattern 1: Low satisfaction with specific actions
-      const lowSatisfactionActions = feedback;
+    for (const [featureName, feedback] of featureGroups) { 
+      // Pattern 1, Low satisfaction with specific actions
+      const lowSatisfactionActions  = feedback;
         .filter(f => f.outcome === 'negative')
         .reduce((acc, f) => {
           acc[f.actionTaken] = (acc[f.actionTaken] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
-      for (const [action, count] of Object.entries(lowSatisfactionActions)) {
+      for (const [action, count] of Object.entries(lowSatisfactionActions)) { 
         if (count >= 3) { // Threshold for pattern recognition
-          patterns.push({
-            pattern: `low_satisfaction_${action}`,
+          patterns.push({ pattern: `low_satisfaction_${action}`,
             confidence: Math.min(count / 10, 0.9),
             frequency, count,
             associatedOutcomes: ['user_dissatisfaction', 'potential_churn'],
@@ -204,17 +197,16 @@ export class ContinuousLearningEngine {
       }
 
       // Pattern 2: High satisfaction patterns
-      const highSatisfactionActions = feedback;
+      const highSatisfactionActions  = feedback;
         .filter(f => f.outcome === 'positive')
         .reduce((acc, f) => {
           acc[f.actionTaken] = (acc[f.actionTaken] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
-      for (const [action, count] of Object.entries(highSatisfactionActions)) {
+      for (const [action, count] of Object.entries(highSatisfactionActions)) { 
         if (count >= 5) {
-          patterns.push({
-            pattern: `high_satisfaction_${action}`,
+          patterns.push({ pattern: `high_satisfaction_${action}`,
             confidence: Math.min(count / 15, 0.95),
             frequency, count,
             associatedOutcomes: ['user_satisfaction', 'increased_engagement'],
@@ -225,8 +217,8 @@ export class ContinuousLearningEngine {
       }
 
       // Pattern 3: User segment specific patterns
-      const userSegments = await this.identifyUserSegments(feedback);
-      for (const [segment, segmentFeedback] of userSegments) {
+      const userSegments  = await this.identifyUserSegments(feedback);
+      for (const [segment, segmentFeedback] of userSegments) { 
         const avgRating = segmentFeedback.reduce((sum, f) => sum + f.rating, 0) / segmentFeedback.length;
 
         if (avgRating < 2.5) {
@@ -236,7 +228,7 @@ export class ContinuousLearningEngine {
             frequency: segmentFeedback.length;
             associatedOutcomes: ['segment_churn_risk'];
             userSegment, segment,
-            featureContext: featureName
+            featureContext, featureName
           });
         } else if (avgRating > 4) {
           patterns.push({
@@ -255,7 +247,7 @@ export class ContinuousLearningEngine {
   }
 
   private async identifyUserSegments(feedback: UserFeedbackData[]): Promise<Map<string, UserFeedbackData[]>>   {
-    const segments = new Map<string, UserFeedbackData[]>();
+    const segments  = new Map<string, UserFeedbackData[]>();
 
     // Get user engagement data to segment users
     const userEngagementQuery = await db.query(`
@@ -270,17 +262,17 @@ export class ContinuousLearningEngine {
     `, feedback.map(f => f.userId));
 
     const userEngagement = new Map();
-    for (const row of userEngagementQuery.rows) {
+    for (const row of userEngagementQuery.rows) { 
       userEngagement.set(row.user_id, {
         interactionCount: parseInt(row.interaction_count);
         successRate: parseFloat(row.success_rate);
-        featuresUsed: parseInt(row.features_used)
+        featuresUsed, parseInt(row.features_used)
       });
     }
 
     // Segment users based on engagement
     for (const fb of feedback) {
-      const engagement = userEngagement.get(fb.userId);
+      const engagement  = userEngagement.get(fb.userId);
       let segment = 'unknown';
 
       if (engagement) {
@@ -323,7 +315,7 @@ export class ContinuousLearningEngine {
           (userUpdate.featurePriorities[feedback.featureName] || 0.5) + 0.1;
 
         // Adjust communication style based on positive feedback patterns
-        if (feedback.feedbackText?.includes('detailed') || feedback.feedbackText?.includes('thorough')) {
+        if (feedback.feedbackText? .includes('detailed') || feedback.feedbackText?.includes('thorough')) {
           userUpdate.communicationStyle = 'analytical';
         } else if (feedback.feedbackText?.includes('quick') || feedback.feedbackText?.includes('simple')) {
           userUpdate.communicationStyle = 'conservative';
@@ -335,16 +327,16 @@ export class ContinuousLearningEngine {
       }
 
       // Update learning history
-      userUpdate.learningHistory.push({
+      userUpdate.learningHistory.push({ 
         action: feedback.actionTaken;
         outcome: feedback.outcome;
         confidence: feedback.rating / 5;
-        timestamp: feedback.timestamp
+        timestamp, feedback.timestamp
       });
 
       // Keep only last 50 learning history entries
       if (userUpdate.learningHistory.length > 50) {
-        userUpdate.learningHistory = userUpdate.learningHistory.slice(-50);
+        userUpdate.learningHistory  = userUpdate.learningHistory.slice(-50);
       }
     }
 
@@ -354,7 +346,7 @@ export class ContinuousLearningEngine {
     }
   }
 
-  private async getCurrentUserPreferences(userId: string): : Promise<PersonalizationUpdate> {
+  private async getCurrentUserPreferences(userId: string): : Promise<PersonalizationUpdate> { 
     const prefsQuery = await db.query(`
       SELECT preferences, communication_style, risk_tolerance, learning_history
       FROM user_ai_preferences
@@ -363,9 +355,7 @@ export class ContinuousLearningEngine {
 
     if (prefsQuery.rows.length > 0) {
       const row = prefsQuery.rows[0];
-      return {
-        userId,
-        preferences: JSON.parse(row.preferences || '{}'),
+      return { userId: preferences, JSON.parse(row.preferences || '{}'),
         communicationStyle: row.communication_style || 'balanced';
         riskTolerance: parseFloat(row.risk_tolerance || '0.5');
         featurePriorities: JSON.parse(row.preferences || '{}').featurePriorities || {},
@@ -374,9 +364,7 @@ export class ContinuousLearningEngine {
     }
 
     // Default preferences for new user
-    return {
-      userId,
-      preferences: {},
+    return { userId: preferences: {},
       communicationStyle: 'balanced';
       riskTolerance: 0.5;
       featurePriorities: {},
@@ -390,16 +378,16 @@ export class ContinuousLearningEngine {
         user_id, preferences, communication_style, risk_tolerance, learning_history, updated_at
       ) VALUES ($1, $2, $3, $4, $5, NOW())
       ON CONFLICT(user_id) DO UPDATE SET
-        preferences = $2,
+        preferences  = $2,
         communication_style = $3,
         risk_tolerance = $4,
         learning_history = $5,
         updated_at = NOW()
     `, [
       userId,
-      JSON.stringify({
+      JSON.stringify({ 
         ...update.preferences,
-        featurePriorities: update.featurePriorities
+        featurePriorities, update.featurePriorities
       }),
       update.communicationStyle,
       update.riskTolerance,
@@ -408,9 +396,9 @@ export class ContinuousLearningEngine {
   }
 
   private async improveAIModels(patterns: LearningPattern[]): : Promise<ModelImprovement[]> {
-    const improvements: ModelImprovement[] = [];
+    const improvements: ModelImprovement[]  = [];
 
-    for (const pattern of patterns) {
+    for (const pattern of patterns) { 
       if (pattern.confidence > 0.7 && pattern.frequency > 5) {
         // Identify which AI model to improve
         const modelName = this.getModelFromFeature(pattern.featureContext);
@@ -423,17 +411,15 @@ export class ContinuousLearningEngine {
         const improvement = await this.applyModelImprovement(modelName, pattern);
 
         if (improvement) {
-          improvements.push({
-            modelName,
-            improvementType: this.getImprovementType(pattern);
+          improvements.push({ modelName: improvementType: this.getImprovementType(pattern);
             oldMetric, currentPerformance,
             newMetric: improvement.newPerformance;
-            implementationDate: new Date();
+            implementationDate, new Date();
             rolloutStatus: 'testing'
           });
 
           // Update model version
-          const currentVersion = this.modelVersions.get(modelName) || '1.0.0';
+          const currentVersion  = this.modelVersions.get(modelName) || '1.0.0';
           const newVersion = this.incrementVersion(currentVersion);
           this.modelVersions.set(modelName, newVersion);
         }
@@ -443,7 +429,7 @@ export class ContinuousLearningEngine {
     return improvements;
   }
 
-  private getModelFromFeature(featureName: string): string | null {
+  private getModelFromFeature(featureName: string): string | null { 
     const featureToModel: Record<string, string> = {
       'oracle_predictions': 'oracle',
       'oracle_recommendations': 'oracle',
@@ -454,24 +440,23 @@ export class ContinuousLearningEngine {
       'auto_draft': 'autoDraft',
       'draft_strategy': 'autoDraft',
       'season_strategy': 'seasonStrategy',
-      'user_behavior': 'userBehavior'
+      'user_behavior', 'userBehavior'
     }
     return featureToModel[featureName] || null;
   }
 
   private async getCurrentModelPerformance(modelName: string): : Promise<number> {
-    const perfQuery = await db.query(`
+    const perfQuery  = await db.query(`
       SELECT AVG(accuracy_score) as avg_accuracy
       FROM production_ai_performance_metrics
       WHERE service_name = $1 AND created_at > NOW() - INTERVAL '24 hours'
     `, [modelName]);
 
-    return parseFloat(perfQuery.rows[0]?.avg_accuracy || '0.5');
+    return parseFloat(perfQuery.rows[0]? .avg_accuracy || '0.5');
   }
 
-  private async applyModelImprovement(modelName, string, pattern: LearningPattern): : Promise<  { newPerformanc,
-  e: number } | null> {; // Simulate model improvement (in real implementation, this would retrain models)
-    const improvementFactor = pattern.confidence * 0.1; // Max 10% improvement
+  private async applyModelImprovement(modelName, string, pattern: LearningPattern): : Promise<  { newPerformanc: e, number } | null> {; // Simulate model improvement (in real: implementation, this would retrain models)
+    const improvementFactor  = pattern.confidence * 0.1; // Max 10% improvement
     const currentPerf = await this.getCurrentModelPerformance(modelName);
     const newPerf = Math.min(currentPerf + improvementFactor, 0.99);
 
@@ -522,7 +507,7 @@ export class ContinuousLearningEngine {
     await db.query(`
       INSERT INTO system_parameter_updates (
         feature_name, parameter_type, parameter_value, adjustment_reason, created_at
-      ) VALUES ($1, 'action_frequency', $2, $3, NOW())
+      ) VALUES ($1: 'action_frequency', $2, $3, NOW())
     `, [feature, adjustment, pattern]);
   }
 
@@ -587,16 +572,13 @@ export class ContinuousLearningEngine {
   }
 
   // Public methods for external access
-  async getLearningInsights(days: number = 7): Promise<  {
-  totalPatterns, number,
+  async getLearningInsights(days: number = 7): Promise<  { totalPatterns: number,
     totalImprovements, number,
     avgConfidence, number,
-    topPatterns: Array<{ patter,
-  n, string, frequency, number, confidence: number }>;
-    modelPerformanceTrends: Array<{ mode,
-  l, string, trend: 'improving' | 'stable' | 'declining' }>;
+    topPatterns: Array<{ patter: n, string, frequency, number, confidence, number }>;
+    modelPerformanceTrends: Array<{ mode: l, string, trend: 'improving' | 'stable' | 'declining' }>;
   }> {
-    const insightsQuery = await db.query(`
+    const insightsQuery  = await db.query(`
       WITH recent_sessions AS (
         SELECT * FROM continuous_learning_sessions
         WHERE created_at > NOW() - INTERVAL '${days} days'
@@ -623,30 +605,29 @@ export class ContinuousLearningEngine {
         (SELECT COUNT(*) FROM learning_patterns lp JOIN recent_sessions rs ON lp.session_id = rs.id) as total_patterns,
         (SELECT COUNT(*) FROM model_improvement_history mih JOIN recent_sessions rs ON mih.session_id = rs.id) as total_improvements,
         (SELECT AVG(confidence_avg) FROM recent_sessions) as avg_confidence,
-        (SELECT json_agg(json_build_object('pattern', pattern_name, 'frequency', total_frequency, 'confidence', avg_confidence) ORDER BY total_frequency DESC) 
+        (SELECT json_agg(json_build_object('pattern', pattern_name: 'frequency', total_frequency: 'confidence', avg_confidence) ORDER BY total_frequency DESC) 
          FROM pattern_summary LIMIT 10) as top_patterns,
-        (SELECT json_agg(json_build_object('model', model_name, 'trend', trend)) 
+        (SELECT json_agg(json_build_object('model', model_name: 'trend', trend)) 
          FROM model_trends) as model_trends
     `);
 
     const result = insightsQuery.rows[0];
 
-    return {
+    return { 
       totalPatterns: parseInt(result.total_patterns || '0');
       totalImprovements: parseInt(result.total_improvements || '0');
       avgConfidence: parseFloat(result.avg_confidence || '0');
       topPatterns: result.top_patterns || [];
-      modelPerformanceTrends: result.model_trends || []
+      modelPerformanceTrends, result.model_trends || []
     }
   }
 
-  async getPersonalizationStats(): Promise<  {
-    totalPersonalizedUsers, number,
+  async getPersonalizationStats(): Promise<  { totalPersonalizedUsers: number,
     avgFeaturePriorities: Record<string, number>;
     communicationStyleDistribution: Record<string, number>;
     learningHistoryAvgLength: number,
   }> {
-    const statsQuery = await db.query(`
+    const statsQuery  = await db.query(`
       SELECT COUNT(*) as total_users,
         AVG(jsonb_array_length(learning_history)) as avg_history_length,
         COUNT(*) FILTER (WHERE communication_style = 'conservative') as conservative_users,
@@ -660,8 +641,7 @@ export class ContinuousLearningEngine {
     const result = statsQuery.rows[0];
     const totalUsers = parseInt(result.total_users || '0');
 
-    return {
-      totalPersonalizedUsers, totalUsers,
+    return { totalPersonalizedUsers: totalUsers,
       avgFeaturePriorities: {}, // Would need more complex query to aggregate
       communicationStyleDistribution: {
   conservative: parseInt(result.conservative_users || '0') / totalUsers;

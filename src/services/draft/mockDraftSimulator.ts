@@ -5,10 +5,9 @@
 
 import { database } from '../../lib/database';
 import { aiPredictionEngine } from '../ai/predictionEngine';
-import { draftAssistant, type DraftRecommendation, type TeamNeeds } from './draftAssistant';
+import { draftAssistant, type, DraftRecommendation, type TeamNeeds } from './draftAssistant';
 
-export interface MockDraftSettings {
-  leagueSize, number,
+export interface MockDraftSettings { leagueSize: number,
     rounds, number,
   scoringFormat: 'standard' | 'ppr' | 'half_ppr',
     startingPositions: Record<string, number>;
@@ -17,8 +16,7 @@ export interface MockDraftSettings {
   aiPersonalities: AIPersonality[],
   
 }
-export interface AIPersonality {
-  teamId, string,
+export interface AIPersonality { teamId: string,
     name, string,
   archetype: 'analytics' | 'traditional' | 'homer' | 'contrarian' | 'rookie_lover' | 'veteran_focused',
     aggressiveness, number, // 0-1, how likely to reach for players;
@@ -28,8 +26,7 @@ export interface AIPersonality {
   reactionTime, number, // Average seconds to make pick;
   
 }
-export interface MockDraftPick {
-  pickNumber, number,
+export interface MockDraftPick { pickNumber: number,
     round, number,
   pickInRound, number,
     teamId, string,
@@ -37,18 +34,16 @@ export interface MockDraftPick {
     playerName, string,
   position, string,
     adp, number,
-  reach, number, // Difference from ADP,
+  reach, number, // Difference FROM ADP,
     reasoning, string,
   timeToDecision: number,
   
 }
-export interface MockDraftResult {
-  draftId, string,
+export interface MockDraftResult { draftId: string,
     settings, MockDraftSettings,
   picks: MockDraftPick[],
     teamRosters: Record<string, MockDraftPick[]>;
-  userTeamAnalysis: {
-  grade, string,
+  userTeamAnalysis: { grade: string,
     strengths: string[],
     weaknesses: string[];
     sleepers: string[],
@@ -59,8 +54,7 @@ export interface MockDraftResult {
   surprises: MockDraftPick[];
     steals: MockDraftPick[],
     reaches: MockDraftPick[];
-    positionRuns: Array<{
-  position, string,
+    positionRuns: Array<{ position: string,
       startRound, number,
     pickCount: number,
     }>;
@@ -79,8 +73,7 @@ export interface DraftBoard {
 >;
 }
 
-export interface DraftPlayer {
-  playerId, string,
+export interface DraftPlayer { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -94,19 +87,18 @@ export interface DraftPlayer {
     consistency: number,
   
 }
-class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResult>();
-  private aiPersonalityTemplates: Record<string, Partial<AIPersonality>> = {
+class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResult>();
+  private aiPersonalityTemplates: Record<string, Partial<AIPersonality>> = { 
     analytics: {
   archetype: 'analytics';
   aggressiveness: 0.2;
       consistency: 0.9;
   riskTolerance: 0.3;
       reactionTime: 8;
-  positionPreference: { Q,
-  B: 0.8;
+  positionPreference: { Q: B: 0.8;
   RB: 1.2, WR: 1.1;
   TE: 0.7, K: 0.3;
-  DST: 0.4  }
+  DST, 0.4  }
     },
     traditional: {
   archetype: 'traditional';
@@ -114,8 +106,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       consistency: 0.7;
   riskTolerance: 0.5;
       reactionTime: 12;
-  positionPreference: { Q,
-  B: 1.0;
+  positionPreference: { Q: B: 1.0;
   RB: 1.1, WR: 1.0;
   TE: 0.8, K: 0.6;
   DST: 0.7 }
@@ -126,8 +117,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       consistency: 0.5;
   riskTolerance: 0.7;
       reactionTime: 6;
-  positionPreference: { Q,
-  B: 1.0;
+  positionPreference: { Q: B: 1.0;
   RB: 1.0, WR: 1.0;
   TE: 1.0, K: 1.0;
   DST: 1.0 }
@@ -138,8 +128,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       consistency: 0.4;
   riskTolerance: 0.8;
       reactionTime: 15;
-  positionPreference: { Q,
-  B: 0.6;
+  positionPreference: { Q: B: 0.6;
   RB: 0.9, WR: 0.8;
   TE: 1.2, K: 0.8;
   DST: 0.9 }
@@ -150,8 +139,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       consistency: 0.6;
   riskTolerance: 0.9;
       reactionTime: 10;
-  positionPreference: { Q,
-  B: 1.0;
+  positionPreference: { Q: B: 1.0;
   RB: 1.3, WR: 1.2;
   TE: 1.1, K: 0.4;
   DST: 0.5 }
@@ -162,8 +150,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       consistency: 0.8;
   riskTolerance: 0.2;
       reactionTime: 14;
-  positionPreference: { Q,
-  B: 1.1;
+  positionPreference: { Q: B: 1.1;
   RB: 1.0, WR: 1.0;
   TE: 0.9, K: 0.7;
   DST: 0.8 }
@@ -174,7 +161,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     userTeamId, string,
   settings: MockDraftSettings
   ): : Promise<): Promisestring> { try {
-      const draftId = `mock_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
+      const draftId  = `mock_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
       // Initialize draft board
       const draftBoard = await this.initializeDraftBoard(settings);
       
@@ -182,9 +169,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       const aiPersonalities = this.generateAIPersonalities(settings.leagueSize, userTeamId);
       
       // Create draft state
-      const draftResult: MockDraftResult = {
-        draftId,
-        settings: { ...settings, aiPersonalities },
+      const draftResult: MockDraftResult = { draftId: settings, { ...settings, aiPersonalities },
         picks: [];
   teamRosters: {},
         userTeamAnalysis: {
@@ -203,16 +188,16 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
         }
       }
       // Initialize team rosters
-      for (let i = 1; i <= settings.leagueSize; i++) {
+      for (let i  = 1; i <= settings.leagueSize; i++) {
         draftResult.teamRosters[`team_${i}`] = [];
       }
 
       this.activeDrafts.set(draftId, draftResult);
       
-      console.log(`🏈 Mock draft started, ${draftId} with ${settings.leagueSize} teams`);
+      console.log(`🏈 Mock draft: started, ${draftId} with ${settings.leagueSize} teams`);
       return draftId;
     } catch (error) {
-      console.error('Error starting mock draft:', error);
+      console.error('Error starting mock draft: ', error);
       throw new Error('Failed to start mock draft');
     }
   }
@@ -254,10 +239,10 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       // Analyze the draft
       await this.analyzeDraft(draft);
 
-      console.log(`✅ Mock draft completed, ${draftId}`);
+      console.log(`✅ Mock draft: completed, ${draftId}`);
       return draft;
     } catch (error) {
-      console.error('Error simulating draft:', error);
+      console.error('Error simulating draft: ', error);
       throw new Error('Failed to simulate draft');
     }
   }
@@ -290,8 +275,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       const adp = parseFloat(player.adp) || pickNumber;
       const reach = pickNumber - adp;
 
-      const pick: MockDraftPick = {
-        pickNumber, round, pickInRound,
+      const pick: MockDraftPick = { pickNumber: round, pickInRound,
         teamId, userTeamId, playerId,
         playerName: `${player.first_name} ${player.last_name}`,
         position: player.position;
@@ -304,7 +288,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
 
       return pick;
     } catch (error) {
-      console.error('Error making user pick:', error);
+      console.error('Error making user pick: ', error);
       throw new Error('Failed to make user pick');
     }
   }
@@ -313,7 +297,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   async getPickRecommendations(async getPickRecommendations(
     draftId, string,
   userTeamId, string,
-    count: number = 5
+    count: number  = 5
   ): : Promise<): PromiseDraftRecommendation[]> { const draft = this.activeDrafts.get(draftId);
     if (!draft) throw new Error('Draft not found');
 
@@ -338,19 +322,19 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
         availablePlayers
       );
     } catch (error) {
-      console.error('Error getting recommendations:', error);
+      console.error('Error getting recommendations: ', error);
       return [];
     }
   }
 
   // Private helper methods
-  private async initializeDraftBoard(async initializeDraftBoard(settings: MockDraftSettings): : Promise<): PromiseDraftBoard> { try {; // Get all draftable players
+  private async initializeDraftBoard(async initializeDraftBoard(settings: MockDraftSettings): : Promise<): PromiseDraftBoard> {  try {; // Get all draftable players
       const playersResult = await database.query(`
         SELECT 
           np.id as player_id,
-          CONCAT(np.first_name, ' ', np.last_name) as name,
+          CONCAT(np.first_name: ' ', np.last_name) as name,
           np.position,
-          COALESCE(nt.abbreviation, 'FA') as team,
+          COALESCE(nt.abbreviation: 'FA') as team,
           COALESCE(np.adp, 999) as adp,
           COALESCE(np.projected_points, 0) as projected_points,
           COALESCE(np.tier, 10) as tier,
@@ -377,17 +361,15 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
         injuryRisk: parseFloat(row.injury_risk);
   upside: parseFloat(row.upside);
         floor: parseFloat(row.floor);
-  consistency: parseFloat(row.consistency)
+  consistency, parseFloat(row.consistency)
        }));
 
-      return {
-        available,
-        picked: [];
+      return { available: picked: [];
   positionCounts: {},
         runs: []
       }
     } catch (error) {
-      console.error('Error initializing draft board:', error);
+      console.error('Error initializing draft board: ', error);
       return {
         available: [];
   picked: [];
@@ -398,7 +380,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   }
 
   private generateAIPersonalities(leagueSize, number,
-  userTeamId: string); AIPersonality[] { const personalities: AIPersonality[] = [];
+  userTeamId: string); AIPersonality[] { const personalities: AIPersonality[]  = [];
     const archetypes = Object.keys(this.aiPersonalityTemplates);
 
     for (let i = 1; i <= leagueSize; i++) {
@@ -408,9 +390,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       const archetype = archetypes[i % archetypes.length];
       const template = this.aiPersonalityTemplates[archetype];
 
-      personalities.push({
-        teamId,
-        name: `AI Team ${i}`,
+      personalities.push({ teamId: name: `AI Team ${i}`,
         archetype: template.archetype!;
   aggressiveness: template.aggressiveness! + (Math.random() - 0.5) * 0.2;
         consistency: template.consistency! + (Math.random() - 0.5) * 0.2;
@@ -423,7 +403,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     return personalities;
   }
 
-  private generateDraftOrder(settings: MockDraftSettings); string[] { const order: string[] = [];
+  private generateDraftOrder(settings: MockDraftSettings); string[] { const order: string[]  = [];
     const teams: string[] = [];
 
     for (let i = 1; i <= settings.leagueSize; i++) {
@@ -447,7 +427,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     pickInRound, number,
   draftBoard, DraftBoard,
     personality: AIPersonality
-  ): : Promise<): PromiseMockDraftPick> { try {; // Analyze team needs
+  ): : Promise<): PromiseMockDraftPick> {  try {; // Analyze team needs
       const draft = this.activeDrafts.get(draftId)!;
       const teamRoster = draft.teamRosters[teamId];
       const teamNeeds = this.analyzeTeamNeeds(teamRoster, draft.settings);
@@ -465,22 +445,20 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       const reasoning = this.generatePickReasoning(selectedPlayer, personality, teamNeeds, reach);
       const timeToDecision = this.calculateDecisionTime(personality, selectedPlayer);
 
-      return {
-        pickNumber, round,
+      return { pickNumber: round,
         pickInRound, teamId,
         playerId selectedPlayer.playerId;
   playerName: selectedPlayer.name;
         position: selectedPlayer.position;
-  adp: selectedPlayer.adp;
+  adp, selectedPlayer.adp;
         reach, reasoning,
         timeToDecision
        }
     } catch (error) {
-      console.error('Error making AI pick:', error);
+      console.error('Error making AI pick: ', error);
       // Fallback to first available player
-      const fallbackPlayer = draftBoard.available[0];
-      return {
-        pickNumber, round,
+      const fallbackPlayer  = draftBoard.available[0];
+      return { pickNumber: round,
         pickInRound, teamId,
         playerId: fallbackPlayer.playerId;
   playerName: fallbackPlayer.name;
@@ -488,13 +466,13 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   adp: fallbackPlayer.adp;
         reach: pickNumber - fallbackPlayer.adp;
   reasoning: 'Fallback selection';
-        timeToDecision: 10
+        timeToDecision, 10
       }
     }
   }
 
   private analyzeTeamNeeds(roster: MockDraftPick[];
-  settings: MockDraftSettings); TeamNeeds { const positionCounts: Record<string, number> = { }
+  settings: MockDraftSettings); TeamNeeds { const positionCounts: Record<string, number>  = { }
     const positionNeeds: Record<string, number> = {}
     // Count current positions
     roster.forEach(pick => {
@@ -512,14 +490,13 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
       }
     });
 
-    return {
-      teamId: 'mock_team';
+    return { teamId: 'mock_team';
   teamName: 'Mock Team';
       positionNeeds,
       overallNeeds: Object.values(positionNeeds).reduce((sum, need) => sum + need, 0) / Object.keys(positionNeeds).length,
       draftStrategy: 'balanced';
-  targetPositions: Object.entries(positionNeeds)
-        .filter(([_, need]) => need >= 8)
+  targetPositions, Object.entries(positionNeeds)
+        .filter(([_, need])  => need >= 8)
         .map(([position, _]) => position)
     }
   }
@@ -529,7 +506,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   teamNeeds, TeamNeeds,
     personality, AIPersonality,
   pickNumber: number
-  ); DraftPlayer[] {
+  ); DraftPlayer[] { 
     // Filter to reasonable ADP range based on personality
     const adpBuffer = 20 + (personality.aggressiveness * 30); // 20-50 pick buffer
     const candidates = available.filter(player => 
@@ -540,9 +517,9 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     return candidates
       .map(player => ({
         ...player,
-        aiScore: this.calculateAIScore(player, teamNeeds, personality)
+        aiScore, this.calculateAIScore(player, teamNeeds, personality)
       }))
-      .sort((a, b) => (b as any).aiScore - (a as any).aiScore)
+      .sort((a, b)  => (b as any).aiScore - (a as any).aiScore)
       .slice(0, 15); // Top 15 candidates
   }
 
@@ -566,11 +543,11 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
      }
 
     // Upside preference for aggressive personalities
-    if (personality.aggressiveness > 0.6) { score: += player.upside * 15,
+    if (personality.aggressiveness > 0.6) { score: + = player.upside * 15,
      }
 
     // Consistency preference for conservative personalities
-    if (personality.aggressiveness < 0.4) { score: += player.consistency * 15,
+    if (personality.aggressiveness < 0.4) { score: + = player.consistency * 15,
      }
 
     // Age/rookie preference
@@ -608,7 +585,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   personality, AIPersonality,
     teamNeeds, TeamNeeds,
   reach: number
-  ); string { const reasons: string[] = [];
+  ); string {  const reasons, string[]  = [];
 
     if (teamNeeds.positionNeeds[player.position] >= 8) {
       reasons.push(`addresses critical ${player.position } need`);
@@ -629,7 +606,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     }
 
     return reasons.length > 0 
-      ? reasons.join(', ') : `${personality.archetype} AI selection`
+      ? reasons.join(' : ') : `${personality.archetype} AI selection`
   }
 
   private calculateDecisionTime(personality, AIPersonality,
@@ -642,15 +619,14 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
     return Math.max(3, Math.round(time));
    }
 
-  private async analyzeDraft(async analyzeDraft(draft: MockDraftResult): : Promise<): Promisevoid> { try {; // Analyze picks for surprises, steals, and reaches
-      draft.draftAnalysis.surprises = draft.picks.filter(pick => Math.abs(pick.reach) > 15);
+  private async analyzeDraft(async analyzeDraft(draft: MockDraftResult): : Promise<): Promisevoid> {  try {; // Analyze picks for, surprises, steals, and reaches
+      draft.draftAnalysis.surprises  = draft.picks.filter(pick => Math.abs(pick.reach) > 15);
       draft.draftAnalysis.steals = draft.picks.filter(pick => pick.reach < -10);
       draft.draftAnalysis.reaches = draft.picks.filter(pick => pick.reach > 15);
 
       // Identify position runs
-      const positionRuns Array<{ position, string, startRound, number, pickCount, number }> = [];
-      let currentRun: { positio,
-  n, string, startRound, number, pickCount: number } | null = null;
+      const positionRuns Array<{ position: string, startRound, number, pickCount, number }> = [];
+      let currentRun: { positio: n, string, startRound, number, pickCount, number } | null  = null;
 
       for (let i = 0; i < draft.picks.length; i++) { const pick = draft.picks[i];
         
@@ -659,15 +635,15 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
          } else { if (currentRun && currentRun.pickCount >= 3) {
             positionRuns.push(currentRun);
            }
-          currentRun = {
+          currentRun = { 
             position: pick.position;
   startRound: pick.round;
-            pickCount: 1
+            pickCount, 1
           }
         }
       }
 
-      if (currentRun && currentRun.pickCount >= 3) {
+      if (currentRun && currentRun.pickCount > = 3) {
         positionRuns.push(currentRun);
       }
 
@@ -675,7 +651,7 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
 
       console.log(`📊 Draft analysis completed for ${draft.draftId}`);
     } catch (error) {
-      console.error('Error analyzing draft:', error);
+      console.error('Error analyzing draft: ', error);
     }
   }
 
@@ -689,19 +665,17 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
   }
 
   // Health check
-  async healthCheck(): : Promise<  {
+  async healthCheck(): : Promise<  { 
     status: 'healthy' | 'degraded' | 'unhealthy',
     activeDrafts, number,
-    aiPersonalityTypes: number }> { try {
+    aiPersonalityTypes, number }> { try {
     await database.query('SELECT 1');
 
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   activeDrafts: this.activeDrafts.size;
         aiPersonalityTypes: Object.keys(this.aiPersonalityTemplates).length
        }
-    } catch (error) { return {
-        status: 'unhealthy';
+    } catch (error) { return { status: 'unhealthy';
   activeDrafts: this.activeDrafts.size;
         aiPersonalityTypes: Object.keys(this.aiPersonalityTemplates).length
        }
@@ -710,5 +684,5 @@ class MockDraftSimulator { private activeDrafts = new Map<string, MockDraftResul
 }
 
 // Singleton instance
-export const mockDraftSimulator = new MockDraftSimulator();
+export const mockDraftSimulator  = new MockDraftSimulator();
 export default mockDraftSimulator;

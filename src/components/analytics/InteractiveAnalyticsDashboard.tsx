@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  TrendingUp, BarChart3,
+import: React, { useState: useEffect, useMemo  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion';
+import { TrendingUp, BarChart3,
   PieChart, Target,
   Brain, ArrowRightLeft,
   Activity, Calendar,
@@ -18,8 +17,7 @@ import {
 import { Card } from '@/components/ui/Card/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button/Button';
-import {
-  LineChart, Line,
+import { LineChart, Line,
   AreaChart, Area,
   BarChart, Bar,
   RadarChart, Radar,
@@ -33,8 +31,7 @@ import {
 } from 'recharts';
 
 // Types
-interface PlayerPerformanceData {
-  playerId, string,
+interface PlayerPerformanceData { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -46,8 +43,7 @@ interface PlayerPerformanceData {
     efficiency, number,
   
 }
-interface TradeAnalysisData {
-  tradeId, string,
+interface TradeAnalysisData { tradeId: string,
     team1, string,
   team2, string,
     team1Players: string[];
@@ -58,8 +54,7 @@ interface TradeAnalysisData {
   timestamp, Date,
 }
 
-interface MatchupPrediction {
-  week, number,
+interface MatchupPrediction { week: number,
     team1, string,
   team2, string,
     team1ProjectedScore, number,
@@ -69,8 +64,7 @@ interface MatchupPrediction {
     keyFactors: string[];
   
 }
-interface MarketTrend {
-  playerId, string,
+interface MarketTrend { playerId: string,
     name, string,
   position, string,
     currentValue, number,
@@ -80,47 +74,44 @@ interface MarketTrend {
     factors: string[];
 }
 
-interface AnalyticsDashboardProps {
-  leagueId, string,
+interface AnalyticsDashboardProps { leagueId: string,
     userId, string,
   teamId?, string,
   
 }
-const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leagueId, userId,
+const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps>  = ({ leagueId: userId,
   teamId
- }) => {
+ }) => { 
   // State management
   const [selectedView, setSelectedView] = useState<'overview' | 'performance' | 'predictions' | 'trades' | 'market' | 'matchups'>('overview');
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'season'>('week');
   const [isLiveMode, setIsLiveMode] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['accuracy', 'efficiency', 'trends']);
-  const [filters, setFilters] = useState({
-    position: 'all',
+  const [filters, setFilters] = useState({ position: 'all',
   team: 'all',
-    minProjection: 0
+    minProjection, 0
   });
 
-  // Mock data - in production, this would come from APIs
-  const performanceData: PlayerPerformanceData[] = useMemo(() => [
-    {
-      playerId: '1',
+  // Mock data - in: production, this would come from APIs
+  const performanceData: PlayerPerformanceData[]  = useMemo(() => [
+    { playerId: '1',
   name: 'Josh Allen',
       position: 'QB',
   team: 'BUF',
-      week, 8,
+      week: 8,
   projectedPoints: 24.5,
-      actualPoints: 28.3, accuracy, 87,
+      actualPoints: 28.3, accuracy: 87,
       trend: 'up',
-  efficiency: 92
+  efficiency, 92
     },
     {
       playerId: '2',
   name: 'Christian McCaffrey',
       position: 'RB',
   team: 'SF',
-      week, 8,
+      week: 8,
   projectedPoints: 22.8,
-      actualPoints: 19.4, accuracy, 78,
+      actualPoints: 19.4, accuracy: 78,
       trend: 'down',
   efficiency: 85
     },
@@ -129,17 +120,16 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
   name: 'Cooper Kupp',
       position: 'WR',
   team: 'LAR',
-      week, 8,
+      week: 8,
   projectedPoints: 18.6,
-      actualPoints: 21.2, accuracy, 91,
+      actualPoints: 21.2, accuracy: 91,
       trend: 'up',
   efficiency: 88
     }
   ], []);
 
-  const tradeAnalysisData: TradeAnalysisData[] = useMemo(() => [
-    {
-      tradeId: '1',
+  const tradeAnalysisData: TradeAnalysisData[]  = useMemo(() => [
+    { tradeId: '1',
   team1: 'Team Alpha',
       team2: 'Team Beta',
   team1Players: ['Josh Allen', 'David Montgomery'],
@@ -151,27 +141,26 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
     }
   ], []);
 
-  const matchupPredictions: MatchupPrediction[] = useMemo(() => [
-    {
-      week, 9,
+  const matchupPredictions: MatchupPrediction[]  = useMemo(() => [
+    { 
+      week: 9,
   team1: 'Team Alpha',
       team2: 'Team Beta',
   team1ProjectedScore: 124.5,
-      team2ProjectedScore: 118.2, winProbability, 64, confidence, 82,
-  keyFactors: ['Weather conditions', 'Injury reports', 'Matchup history']
+      team2ProjectedScore: 118.2, winProbability: 64, confidence: 82,
+  keyFactors, ['Weather conditions', 'Injury reports', 'Matchup history']
     }
   ], []);
 
-  const marketTrends: MarketTrend[] = useMemo(() => [
-    {
-      playerId: '1',
+  const marketTrends: MarketTrend[]  = useMemo(() => [
+    { playerId: '1',
   name: 'Jerome Ford',
       position: 'RB',
   currentValue: 15.2,
       trend: 23.5,
   volatility: 0.31,
       recommendation: 'buy',
-  factors: ['Increased snap share', 'Favorable schedule', 'Injury to starter']
+  factors, ['Increased snap share', 'Favorable schedule', 'Injury to starter']
     },
     {
       playerId: '2',
@@ -186,54 +175,54 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
   ], []);
 
   // Chart data transformations
-  const performanceChartData = useMemo(() => 
-    performanceData.map(p => ({
+  const performanceChartData  = useMemo(() => 
+    performanceData.map(p => ({ 
       name: p.name,
   projected: p.projectedPoints,
       actual: p.actualPoints,
   accuracy: p.accuracy,
-      efficiency: p.efficiency
+      efficiency, p.efficiency
     })), [performanceData]
   );
 
-  const predictionAccuracyData = useMemo(() => [
-    { week, 1,
-  accuracy, 73, projections: 156 },
-    { week, 2,
-  accuracy, 78, projections: 162 },
-    { week, 3,
-  accuracy, 81, projections: 158 },
-    { week, 4,
-  accuracy, 76, projections: 164 },
-    { week, 5,
-  accuracy, 84, projections: 159 },
-    { week, 6,
-  accuracy, 87, projections: 161 },
-    { week, 7,
-  accuracy, 89, projections: 155 },
-    { week, 8,
-  accuracy, 91, projections: 168 }
+  const predictionAccuracyData  = useMemo(() => [
+    {  week: 1,
+  accuracy: 73, projections, 156 },
+    { week: 2,
+  accuracy: 78, projections: 162 },
+    { week: 3,
+  accuracy: 81, projections: 158 },
+    { week: 4,
+  accuracy: 76, projections: 164 },
+    { week: 5,
+  accuracy: 84, projections: 159 },
+    { week: 6,
+  accuracy: 87, projections: 161 },
+    { week: 7,
+  accuracy: 89, projections: 155 },
+    { week: 8,
+  accuracy: 91, projections: 168 }
   ], []);
 
-  const marketVolatilityData = useMemo(() => 
-    marketTrends.map(t => ({
+  const marketVolatilityData  = useMemo(() => 
+    marketTrends.map(t => ({ 
       name: t.name,
   value: t.currentValue,
       volatility: t.volatility * 100,
-  trend: t.trend
+  trend, t.trend
     })), [marketTrends]
   );
 
   // Custom chart components
-  const CustomTooltip = ({ active, payload, label }: any) => { if (active && payload && payload.length) {
+  const CustomTooltip  = ({ active: payload, label }: any) => { if (active && payload && payload.length) {
       return (
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
           <p className="text-white font-semibold">{label }</p>
-          {payload.map((pld, any,
-  index: number) => (
+          { payload.map((pld, any,
+  index, number)  => (
             <p key={index} className="text-gray-300 text-sm">
-              <span style={{ color: pld.color }}>
-                { pld.dataKey }: {typeof: pld.value === 'number' ? pld.value.toFixed(2) : pld.value}
+              <span style={ { color: pld.color }}>
+                { pld.dataKey }: {typeof: pld.value  === 'number' ? pld.value.toFixed(2) : pld.value}
               </span>
             </p>
           ))}
@@ -283,7 +272,7 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Portfolio Value</p>
-              <p className="text-2xl font-bold text-white">$2,847</p>
+              <p className="text-2xl font-bold text-white">$2, 847</p>
               <p className="text-green-400 text-sm">↑ +12.4% ROI</p>
             </div>
             <DollarSign className="h-8 w-8 text-yellow-400" />
@@ -329,10 +318,10 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
                 dataKey="projections"
                 stroke="#F59E0B"
                 strokeWidth={2}
-                dot={{ r: 4 }}
+                dot={ { r: 4 }}
               />
               <defs>
-                <linearGradient id="accuracyGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id ="accuracyGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
                   <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
                 </linearGradient>
@@ -371,11 +360,11 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
             AI-Powered Insights
           </h3>
           <Button variant="outline" size="sm" onClick={() => setIsLiveMode(!isLiveMode)}>
-            {isLiveMode ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-            {isLiveMode ? 'Pause' : 'Live Mode'}
+            { isLiveMode ? <Pause className="h-4 w-4 mr-2" />  : <Play className ="h-4 w-4 mr-2" />}
+            { isLiveMode ? 'Pause' : 'Live Mode'}
           </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className ="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 rounded-lg bg-green-900/20 border border-green-500/30">
             <div className="flex items-center mb-2">
               <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
@@ -397,8 +386,7 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
             <p className="text-gray-300 text-sm mb-2">
               High winds expected in Bills vs Dolphins.Consider benching Josh Allen for safer floor play.
             </p>
-            <Button size="sm" variant="outline" className="text-yellow-400 hover: text-white">  Vie,
-  w, Details,
+            <Button size="sm" variant="outline" className="text-yellow-400 hover: text-white">  Vie, w, Details,
             </Button>
           </div>
 
@@ -426,8 +414,8 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
           <div className="flex space-x-2">
             <select 
               value={filters.position} 
-              onChange={(e) => setFilters({...filters, position: e.target.value})}
-              className="bg-gray-800 border border-gray-700 rounded text-white text-sm px-3 py-1"
+              onChange={ (e) => setFilters({...filters, position, e.target.value})}
+              className ="bg-gray-800 border border-gray-700 rounded text-white text-sm px-3 py-1"
             >
               <option value="all">All Positions</option>
               <option value="QB">QB</option>
@@ -511,14 +499,14 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
             <YAxis stroke="#9CA3AF" />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line type="monotone" dataKey="accuracy" stroke="#10B981" strokeWidth={3} dot={{ r: 5 }} />
+            <Line type="monotone" dataKey="accuracy" stroke="#10B981" strokeWidth={3} dot={ { r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
       </Card>
     </div>
   );
 
-  const renderMarketView = () => (
+  const renderMarketView  = () => (
     <div className="space-y-6">
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Market Analysis & Trends</h3>
@@ -541,24 +529,24 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
                 <h4 className="text-white font-semibold">{trend.name}</h4>
                 <p className="text-gray-400 text-sm">{trend.position}</p>
               </div>
-              <Badge className={`${trend.recommendation === 'buy' ? 'text-green-400 bg-green-900/30' :
+              <Badge className={ `${trend.recommendation === 'buy' ? 'text-green-400 bg-green-900/30' :
                 trend.recommendation === 'sell' ? 'text-red-400 bg-red-900/30' : 'text-yellow-400 bg-yellow-900/30'
               }`}>
                 {trend.recommendation.toUpperCase()}
               </Badge>
             </div>
-            <div className="space-y-2">
+            <div className ="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Current Value:</span>
                 <span className="text-white">${trend.currentValue.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Trend:</span>
-                <span className={trend.trend > 0 ? 'text-green-400' : 'text-red-400'}>
+                <span className={ trend.trend > 0 ? 'text-green-400' : 'text-red-400'}>
                   {trend.trend > 0 ? '+' : ''}{trend.trend.toFixed(1)}%
                 </span>
               </div>
-              <div className="mt-3">
+              <div className ="mt-3">
                 <p className="text-gray-400 text-xs mb-1">Key Factors:</p>
                 <div className="flex flex-wrap gap-1">
                   {trend.factors.map((factor, idx) => (
@@ -602,9 +590,9 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
 
       {/* Navigation Tabs */}
       <div className="flex space-x-1 bg-gray-800 rounded-lg p-1">
-        {[
+        { [
           { key: 'overview',
-  label: 'Overview', icon: Activity },
+  label: 'Overview', icon, Activity },
           { key: 'performance',
   label: 'Performance', icon: TrendingUp },
           { key: 'predictions',
@@ -615,7 +603,7 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
   label: 'Market Trends', icon: DollarSign },
           { key: 'matchups',
   label: 'Matchup Analytics', icon: Users }
-        ].map(({ key, label, icon: Icon }) => (
+        ].map(({ key: label, icon: Icon })  => (
           <button
             key={key}
             onClick={() => setSelectedView(key as typeof selectedView)}
@@ -633,15 +621,14 @@ const InteractiveAnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ leag
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedView}
-          initial={{ opacity, 0,
-  y: 20 }}
-          animate={{ opacity, 1,
-  y: 0 }}
-          exit={{ opacity, 0,
-  y: -20 }}
-          transition={{ duration: 0.3 }}
+          initial={ { opacity: 0, y, 20 }}
+          animate ={ { opacity: 1,
+  y, 0 }}
+          exit ={ { opacity: 0,
+  y, -20 }}
+          transition ={ { duration: 0.3 }}
         >
-          {selectedView === 'overview' && renderOverviewDashboard() }
+          {selectedView  === 'overview' && renderOverviewDashboard() }
           {selectedView === 'performance' && renderPerformanceView() }
           {selectedView === 'predictions' && renderPredictionsView() }
           {selectedView === 'market' && renderMarketView() }

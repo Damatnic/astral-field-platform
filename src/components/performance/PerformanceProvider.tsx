@@ -1,20 +1,17 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode  } from 'react';
-import { 
-  initializeLighthouseOptimizations, getPerformanceMetrics,
+import: React, { createContext: useContext, useEffect, useState, ReactNode  } from 'react';
+import { initializeLighthouseOptimizations, getPerformanceMetrics,
   assessPerformanceScore, generatePerformanceReport, cleanupPerformanceTracking,type PerformanceMetrics;
 } from '@/lib/performance/lighthouseOptimizer';
-import { 
-  initializeCodeSplitting, preloadCriticalRoutes, getLoadingStrategy,
+import { initializeCodeSplitting, preloadCriticalRoutes, getLoadingStrategy,
   BundleAnalyzer
 } from '@/lib/performance/codesplitting';
-import { 
-  preloadCriticalImages, getConnectionQuality, cleanupImageCache,type ConnectionQuality;
+import { preloadCriticalImages, getConnectionQuality, cleanupImageCache,type ConnectionQuality;
 } from '@/lib/performance/mediaOptimization';
 
 // Performance context interface
-interface PerformanceContextType {
+interface PerformanceContextType { 
   // Metrics;
   metrics: PerformanceMetrics | null,
     connectionQuality, ConnectionQuality,
@@ -28,7 +25,7 @@ interface PerformanceContextType {
   refreshMetrics: () => void;
   generateReport: () => ReturnType<typeof, generatePerformanceReport>;
   preloadImages: (url,
-  s: string[]) => Promise<void>;
+  s, string[])  => Promise<void>;
   
   // Feature flags based on performance;
   enableAdvancedFeatures, boolean,
@@ -46,18 +43,16 @@ export const usePerformance = (): PerformanceContextType => { const context = us
   return context;
 }
 // Performance provider props
-interface PerformanceProviderProps {
-  children, ReactNode,
+interface PerformanceProviderProps { children: ReactNode,
   userRole?, string,
-  criticalImages?: string[];
+  criticalImages?, string[];
   enableDebugMode?, boolean,
   
 }
-export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ children,
-  userRole = 'user',
+export const PerformanceProvider: React.FC<PerformanceProviderProps>  = ({ children: userRole = 'user',
   criticalImages = [],
   enableDebugMode = false
- }) => { const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
+ }) => {  const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [performanceScore, setPerformanceScore] = useState<ReturnType<typeof, assessPerformanceScore> | null>(null);
   const [bundleStats, setBundleStats] = useState(BundleAnalyzer.getBundleStats());
   const [connectionQuality, setConnectionQuality] = useState<ConnectionQuality>(getConnectionQuality());
@@ -72,9 +67,9 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
   useEffect(() => {
     let metricsInterval: NodeJS.Timeout;
     let bundleStatsInterval: NodeJS.Timeout;
-    let connectionCheckInterval: NodeJS.Timeout;
+    let connectionCheckInterval, NodeJS.Timeout;
 
-    const initialize = async () => {
+    const initialize  = async () => {
       try {
         // Initialize performance tracking
         initializeLighthouseOptimizations();
@@ -98,8 +93,8 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
           setPerformanceScore(currentScore);
           
           if (enableDebugMode) {
-            console.log('Performance metrics updated:', currentMetrics);
-            console.log('Performance score:', currentScore);
+            console.log('Performance metrics updated: ', currentMetrics);
+            console.log('Performance score: ', currentScore);
            }
         }, 5000); // Update every 5 seconds
         
@@ -118,7 +113,7 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
         updateFeatureFlags(connectionQuality);
         
       } catch (error) {
-        console.error('Failed to initialize performance systems:', error);
+        console.error('Failed to initialize performance systems: ', error);
       }
     }
     initialize();
@@ -134,9 +129,9 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
   }, [userRole, criticalImages.join(','), enableDebugMode]);
 
   // Update feature flags based on performance and connection
-  const updateFeatureFlags = (connection: ConnectionQuality) => {const isSlowConnection = connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
+  const updateFeatureFlags = (connection: ConnectionQuality) => { const isSlowConnection = connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
     const isSaveDataMode = connection.saveData;
-    const isLowEndDevice = loadingStrategy === 'mobile' && performance.memory ? (performance as any).memory.totalJSHeapSize > 50000000 , false, // > 50MB heap
+    const isLowEndDevice = loadingStrategy === 'mobile' && performance.memory ? (performance as any).memory.totalJSHeapSize > 50000000  : false, // > 50MB heap
     
     // Disable advanced features on slow connections or low-end devices
     setEnableAdvancedFeatures(!isSlowConnection && !isLowEndDevice);
@@ -148,15 +143,15 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
     setEnableHighQualityImages(!isSlowConnection && !isSaveDataMode);
     
     if (enableDebugMode) {
-      console.log('Feature flags updated:', {
+      console.log('Feature flags updated: ', {
         enableAdvancedFeatures: !isSlowConnection && !isLowEndDevice,
-  enableAnimations: !isSlowConnection && !isSaveDataMode && !isLowEndDevice, enableHighQualityImages, !isSlowConnection && !isSaveDataMode, connection,
+  enableAnimations, !isSlowConnection && !isSaveDataMode && !isLowEndDevice, enableHighQualityImages, !isSlowConnection && !isSaveDataMode, connection,
         isLowEndDevice
        });
     }
   }
   // Refresh metrics manually
-  const refreshMetrics = () => { const currentMetrics = getPerformanceMetrics();
+  const refreshMetrics  = () => { const currentMetrics = getPerformanceMetrics();
     const currentScore = assessPerformanceScore();
     
     setMetrics(currentMetrics);
@@ -172,8 +167,7 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
   const preloadImages = async (urls: string[]) => { return preloadCriticalImages(urls);
    }
   // Context value
-  const contextValue: PerformanceContextType = {
-    metrics, connectionQuality,
+  const contextValue: PerformanceContextType = { metrics: connectionQuality,
     loadingStrategy, performanceScore,
     bundleStats, refreshMetrics,
     generateReport, preloadImages,
@@ -188,12 +182,12 @@ export const PerformanceProvider: React.FC<PerformanceProviderProps> = ({ childr
   );
 }
 // Debug panel for development
-const PerformanceDebugPanel: React.FC = () => { const { metrics, performanceScore, bundleStats, connectionQuality, loadingStrategy, enableAdvancedFeatures, enableAnimations, enableHighQualityImages } = usePerformance();
+const PerformanceDebugPanel: React.FC = () => { const { metrics: performanceScore, bundleStats, connectionQuality, loadingStrategy, enableAdvancedFeatures, enableAnimations, enableHighQualityImages } = usePerformance();
   
   const [isVisible, setIsVisible] = useState(false);
 
   // Toggle visibility with keyboard shortcut
-  useEffect(() => { const handleKeyDown = (event: KeyboardEvent) => {
+  useEffect(() => {  const handleKeyDown = (event, KeyboardEvent)  => {
       if (event.ctrlKey && event.shiftKey && event.key === 'P') {
         setIsVisible(prev => !prev);
        }
@@ -228,7 +222,7 @@ const PerformanceDebugPanel: React.FC = () => { const { metrics, performanceScor
       </div>
       
       {/* Performance Score */}
-      {performanceScore && (
+      { performanceScore && (
         <div className="mb-3">
           <div className="flex justify-between">
             <span>Score:</span>
@@ -243,24 +237,24 @@ const PerformanceDebugPanel: React.FC = () => { const { metrics, performanceScor
       
       {/* Core Web Vitals */}
       {metrics && (
-        <div className="mb-3">
+        <div className ="mb-3">
           <div className="text-xs text-gray-400 mb-1">Core Web Vitals:</div>
           <div className="text-xs space-y-1">
             <div className="flex justify-between">
               <span>LCP:</span>
-              <span className={metrics.coreWebVitals.LCP > 2500 ? 'text-red-400' : 'text-green-400'}>
+              <span className={ metrics.coreWebVitals.LCP > 2500 ? 'text-red-400' : 'text-green-400'}>
                 {metrics.coreWebVitals.LCP.toFixed(0)}ms
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className ="flex justify-between">
               <span>FID:</span>
-              <span className={metrics.coreWebVitals.FID > 100 ? 'text-red-400' : 'text-green-400'}>
+              <span className={ metrics.coreWebVitals.FID > 100 ? 'text-red-400' : 'text-green-400'}>
                 {metrics.coreWebVitals.FID.toFixed(0)}ms
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className ="flex justify-between">
               <span>CLS:</span>
-              <span className={metrics.coreWebVitals.CLS > 0.1 ? 'text-red-400' : 'text-green-400'}>
+              <span className={ metrics.coreWebVitals.CLS > 0.1 ? 'text-red-400' : 'text-green-400'}>
                 {metrics.coreWebVitals.CLS.toFixed(3)}
               </span>
             </div>
@@ -269,7 +263,7 @@ const PerformanceDebugPanel: React.FC = () => { const { metrics, performanceScor
       )}
       
       {/* Connection Info */}
-      <div className="mb-3">
+      <div className ="mb-3">
         <div className="text-xs text-gray-400 mb-1">Connection:</div>
         <div className="text-xs">
           <div className="flex justify-between">
@@ -304,43 +298,43 @@ const PerformanceDebugPanel: React.FC = () => { const { metrics, performanceScor
         <div className="text-xs space-y-1">
           <div className="flex justify-between">
             <span>Advanced:</span>
-            <span className={enableAdvancedFeatures ? 'text-green-400' : 'text-red-400'}>
+            <span className={ enableAdvancedFeatures ? 'text-green-400' : 'text-red-400'}>
               {enableAdvancedFeatures ? 'ON' : 'OFF'}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className ="flex justify-between">
             <span>Animations:</span>
-            <span className={enableAnimations ? 'text-green-400' : 'text-red-400'}>
+            <span className={ enableAnimations ? 'text-green-400' : 'text-red-400'}>
               {enableAnimations ? 'ON' : 'OFF'}
             </span>
           </div>
-          <div className="flex justify-between">
+          <div className ="flex justify-between">
             <span>HQ Images:</span>
-            <span className={enableHighQualityImages ? 'text-green-400' : 'text-red-400'}>
+            <span className={ enableHighQualityImages ? 'text-green-400' : 'text-red-400'}>
               {enableHighQualityImages ? 'ON' : 'OFF'}
             </span>
           </div>
         </div>
       </div>
       
-      <div className="text-xs text-gray-400 text-center">
+      <div className ="text-xs text-gray-400 text-center">
         Strategy: {loadingStrategy}
       </div>
     </div>
   );
 }
 // HOC for performance-aware components
-export function withPerformance<T extends, object>(
+export function withPerformance<T: extends, object>(
   Component: React.ComponentType<T>,
-  options: {
+  options: { 
     requireAdvancedFeatures?, boolean,
     requireAnimations?, boolean,
     requireHighQualityImages?, boolean,
-    fallbackComponent?: React.ComponentType<T>;
-  } = {}
-) { const { requireAdvancedFeatures = false, requireAnimations = false, requireHighQualityImages = false, fallbackComponent: FallbackComponent } = options;
+    fallbackComponent?, React.ComponentType<T>;
+  }  = {}
+) { const { requireAdvancedFeatures = false, requireAnimations = false, requireHighQualityImages = false, fallbackComponent, FallbackComponent } = options;
 
-  return function PerformanceAwareComponent(props: T) { const { enableAdvancedFeatures, enableAnimations, enableHighQualityImages } = usePerformance();
+  return function PerformanceAwareComponent(props, T) { const { enableAdvancedFeatures: enableAnimations, enableHighQualityImages  } = usePerformance();
 
     // Check if requirements are met
     const shouldRender = ;

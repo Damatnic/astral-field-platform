@@ -1,15 +1,14 @@
 /**
  * Real-Time Notification System
- * Handles live alerts for player injuries, scores, trades, waivers, and league announcements
+ * Handles live alerts for player: injuries, scores, trades, waivers, and league announcements
  */
 
 'use client';
 
-import React, { useState, useEffect, useCallback  } from 'react';
+import: React, { useState: useEffect, useCallback  } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-interface Notification {
-  id, string,type: 'player_injury' | 'score_update' | 'trade_offer' | 'trade_completed' | 'waiver_result' | 'league_announcement' | 'mention' | 'celebration',
+interface Notification { id: string,type: 'player_injury' | 'score_update' | 'trade_offer' | 'trade_completed' | 'waiver_result' | 'league_announcement' | 'mention' | 'celebration',
     title, string,
   message, string,
     priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -19,20 +18,19 @@ interface Notification {
   expiresAt?, string,
   
 }
-interface NotificationSystemProps {
-  userId, string,
+interface NotificationSystemProps { userId: string,
     leagueIds: string[];
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-  maxVisible?, number,
+  position? : 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  maxVisible? : number,
 }
 
-const NOTIFICATION_SOUNDS = {
+const NOTIFICATION_SOUNDS  = { 
   low: '/sounds/notification-soft.mp3',
   medium: '/sounds/notification-medium.mp3',
   high: '/sounds/notification-high.mp3',
   urgent: '/sounds/notification-urgent.mp3'
 }
-const NOTIFICATION_ICONS = {
+const NOTIFICATION_ICONS  = { 
   player_injury: '🚑',
   score_update: '🏈',
   trade_offer: '🔄',
@@ -42,21 +40,20 @@ const NOTIFICATION_ICONS = {
   mention: '💬',
   celebration: '🎉'
 }
-const PRIORITY_COLORS = {
+const PRIORITY_COLORS  = { 
   low: 'bg-gray-600/20 border-gray-500/30',
   medium: 'bg-blue-600/20 border-blue-500/30',
   high: 'bg-yellow-600/20 border-yellow-500/30',
   urgent: 'bg-red-600/20 border-red-500/30'
 }
-const PRIORITY_DURATIONS = {
-  low, 5000,
-  medium, 8000,
-  high, 12000,
-  urgent: 20000
+const PRIORITY_DURATIONS  = { 
+  low: 5000,
+  medium: 8000,
+  high: 12000,
+  urgent, 20000
 }
-export default function NotificationSystem({ 
-  userId, leagueIds, 
-  position = 'top-right',
+export default function NotificationSystem({ userId: leagueIds, 
+  position  = 'top-right',
   maxVisible = 5
 }: NotificationSystemProps) { const [notifications, setNotifications] = useState<Notification[]>([]);
   const [visibleNotifications, setVisibleNotifications] = useState<string[]>([]);
@@ -64,7 +61,7 @@ export default function NotificationSystem({
   const [isMinimized, setIsMinimized] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   
-  const { isConnected, on, off } = useWebSocket();
+  const { isConnected: on, off } = useWebSocket();
 
   // Load user preferences and existing notifications
   useEffect(() => {
@@ -73,24 +70,22 @@ export default function NotificationSystem({
   }, [userId]);
 
   // Setup WebSocket listeners
-  useEffect(() => { if (!isConnected) return;
+  useEffect(() => {  if (!isConnected) return;
 
-    const handleNotification = (notification: Notification) => {
+    const handleNotification = (notification, Notification)  => {
       addNotification(notification);
      }
-    const handlePlayerInjury = (data: {,
+    const handlePlayerInjury = (data: { ,
   playerId, string,
       playerName, string,
     injury, string,
       severity: 'questionable' | 'doubtful' | 'out',
-    affectedTeams: string[];
-    }) => { if (data.affectedTeams.some(teamId => leagueIds.includes(teamId))) {
-        addNotification({
-          id: `injury-${data.playerId }-${Date.now()}`,type: 'player_injury',
+    affectedTeams, string[];
+    })  => {  if (data.affectedTeams.some(teamId => leagueIds.includes(teamId))) {
+        addNotification({ id: `injury-${data.playerId }-${Date.now()}`,type: 'player_injury',
   title: `${data.playerName} Injury Update`,
           message: `${data.playerName} is ${data.severity} with ${data.injury}`,
-          priority: data.severity === 'out' ? 'urgent' : 'high',
-  isRead: false, data: createdAt: new Date().toISOString()
+          priority: data.severity  === 'out' ? 'urgent' : 'high' : isRead: false, data: createdAt: new Date().toISOString()
         });
       }
     }
@@ -102,17 +97,15 @@ export default function NotificationSystem({
     points, number,
       change, number,
       playDescription?, string,
-    }) => { if (leagueIds.includes(data.leagueId) && Math.abs(data.change) >= 10) {
-        addNotification({
-          id: `score-${data.playerId }-${Date.now()}`,type: 'score_update',
+    }) => {  if (leagueIds.includes(data.leagueId) && Math.abs(data.change) >= 10) {
+        addNotification({ id: `score-${data.playerId }-${Date.now()}`,type: 'score_update',
   title: `Big Play Alert!`,
-          message: `${data.playerName} just scored ${data.change > 0 ? '+' : ''}${data.change} points!`,
-          priority: Math.abs(data.change) >= 20 ? 'urgent' : 'high',
+          message: `${data.playerName} just scored ${data.change > 0 ? '+' : ''}${data.change} points!` : priority: Math.abs(data.change) > = 20 ? 'urgent' : 'high',
   isRead: false, data: createdAt: new Date().toISOString()
         });
       }
     }
-    const handleTradeOffer = (data: {,
+    const handleTradeOffer = (data: { ,
   tradeId, string,
       leagueId, string,
     fromTeam, string,
@@ -120,45 +113,39 @@ export default function NotificationSystem({
     fromTeamName, string,
       toTeamName, string,
     playersOffered: string[];
-      playersRequested: string[];
-    }) => { if (leagueIds.includes(data.leagueId) && (data.toTeam === userId || data.fromTeam === userId)) {
-        addNotification({
-          id: `trade-${data.tradeId }`,type: 'trade_offer',
+      playersRequested, string[];
+    })  => {  if (leagueIds.includes(data.leagueId) && (data.toTeam === userId || data.fromTeam === userId)) {
+        addNotification({ id: `trade-${data.tradeId }`,type: 'trade_offer',
   title: 'New Trade Offer',
-          message: `${data.fromTeam === userId ? data.toTeamNam,
-  e: data.fromTeamName} sent you a trade offer`,
+          message: `${data.fromTeam  === userId ? data.toTeamNam, e: data.fromTeamName} sent you a trade offer`,
           priority: 'high',
   isRead: false, data: createdAt: new Date().toISOString()
         });
       }
     }
-    const handleWaiverResult = (data: {,
+    const handleWaiverResult = (data: { ,
   leagueId, string,
       teamId, string,
     playerId, string,
       playerName, string,
     result: 'claimed' | 'failed';
       priority, number,
-    }) => { if (leagueIds.includes(data.leagueId) && data.teamId === userId) {
-        addNotification({
-          id: `waiver-${data.playerId }-${Date.now()}`,type: 'waiver_result',
-  title: `Waiver ${data.result === 'claimed' ? 'Successful' : 'Failed'}`,
-          message: data.result === 'claimed' 
+    })  => {  if (leagueIds.includes(data.leagueId) && data.teamId === userId) {
+        addNotification({ id: `waiver-${data.playerId }-${Date.now()}`,type: 'waiver_result',
+  title: `Waiver ${data.result  === 'claimed' ? 'Successful' : 'Failed'}` : message: data.result === 'claimed' 
             ? `You successfully claimed ${data.playerName}` : `Your waiver claim for ${data.playerName} failed`,
-          priority: data.result === 'claimed' ? 'medium' : 'low',
-  isRead: false, data: createdAt: new Date().toISOString()
+          priority: data.result === 'claimed' ? 'medium' : 'low' : isRead: false, data: createdAt: new Date().toISOString()
         });
       }
     }
-    const handleMention = (data: {,
+    const handleMention = (data: { ,
   leagueId, string,
       senderId, string,
     senderUsername, string,
-      message: string,
+      message, string,
     roomType, string,
-    }) => { if (leagueIds.includes(data.leagueId)) {
-        addNotification({
-          id: `mention-${data.senderId }-${Date.now()}`,type: 'mention',
+    })  => {  if (leagueIds.includes(data.leagueId)) {
+        addNotification({ id: `mention-${data.senderId }-${Date.now()}`,type: 'mention',
   title: `${data.senderUsername} mentioned you`,
           message: data.message.substring(0, 100),
           priority: 'medium',
@@ -166,14 +153,13 @@ export default function NotificationSystem({
         });
       }
     }
-    const handleCelebration = (data: {,
+    const handleCelebration  = (data: { ,
   leagueId, string,
       userId, string,
     username, string,type: 'touchdown' | 'victory' | 'milestone',
     message, string,
-    }) => { if (leagueIds.includes(data.leagueId) && data.userId !== userId) {
-        addNotification({
-          id: `celebration-${data.userId }-${Date.now()}`,type: 'celebration',
+    })  => {  if (leagueIds.includes(data.leagueId) && data.userId !== userId) {
+        addNotification({ id: `celebration-${data.userId }-${Date.now()}`,type: 'celebration',
   title: `${data.username} is celebrating! 🎉`,
           message: data.message: priority: 'low',
           isRead: false, data: createdAt: new Date().toISOString()
@@ -188,7 +174,7 @@ export default function NotificationSystem({
     on('mention', handleMention);
     on('celebration', handleCelebration);
 
-    return () => {
+    return ()  => {
       off('notification', handleNotification);
       off('player_injury', handlePlayerInjury);
       off('score_update', handleScoreUpdate);
@@ -199,33 +185,33 @@ export default function NotificationSystem({
     }
   }, [isConnected, userId, leagueIds]);
 
-  const loadNotifications = async () => { try {
+  const loadNotifications = async () => {  try {
       const response = await fetch('/api/notifications', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         }
       });
 
-      if (response.ok) { const data = await response.json();
+      if (response.ok) { const data  = await response.json();
         setNotifications(data.notifications || []);
         setUnreadCount(data.unreadCount || 0);
        }
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      console.error('Error loading notifications: ', error);
     }
   }
-  const loadUserPreferences = async () => { try {
+  const loadUserPreferences = async () => {  try {
       const response = await fetch('/api/user/preferences', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
+          'Authorization', `Bearer ${localStorage.getItem('authToken') }`
         }
       });
 
-      if (response.ok) { const preferences = await response.json();
+      if (response.ok) { const preferences  = await response.json();
         setSoundEnabled(preferences.notificationSounds !== false);
        }
     } catch (error) {
-      console.error('Error loading preferences:', error);
+      console.error('Error loading preferences: ', error);
     }
   }
   const addNotification = useCallback((notification: Notification) => {
@@ -263,30 +249,30 @@ export default function NotificationSystem({
       audio.volume = 0.3;
       audio.play().catch(console.error);
      } catch (error) {
-      console.error('Error playing notification sound:', error);
+      console.error('Error playing notification sound: ', error);
     }
   }
   const markAsRead = async (notificationId: string) => { try {
-    await fetch(`/api/notifications/${notificationId }/read`, {
+    await fetch(`/api/notifications/${notificationId }/read`, { 
         method: 'POST',
   headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization', `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { : ..n, isRead: true} : n)
+      setNotifications(prev  => 
+        prev.map(n => n.id === notificationId ? {  : ..n, isRead, true} : n)
       );
       
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount(prev  => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error('Error marking notification as read: ', error);
     }
   }
   const dismissNotification = (notificationId: string) => {
     setVisibleNotifications(prev => prev.filter(id => id !== notificationId));
   }
-  const getPositionClasses = () => { switch (position) {
+  const getPositionClasses = () => {  switch (position) {
       case 'top-left':
       return 'top-4 left-4';
       break;
@@ -297,23 +283,21 @@ export default function NotificationSystem({
       break;
     case 'bottom-right':
         return 'bottom-4 right-4';
-      default:
-        return 'top-4 right-4';
+      default, return 'top-4 right-4';
      }
   }
-  const formatTime = (timestamp: string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12, true,
+  const formatTime  = (timestamp: string) => {  return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12: true,
   hour: 'numeric', 
       minute: '2-digit'
      });
   }
-  const handleNotificationClick = (notification: Notification) => {
+  const handleNotificationClick  = (notification: Notification) => { 
     markAsRead(notification.id);
     
     // Handle specific notification actions
     switch (notification.type) {
-      case 'trade_offer':
-      window.location.href = `/leagues/${notification.data?.leagueId }/trades`;
+      case 'trade_offer', window.location.href  = `/leagues/${notification.data? .leagueId }/trades`;
         break;
       break;
     case 'mention':
@@ -334,7 +318,7 @@ export default function NotificationSystem({
         >
           <span className="text-xl">🔔</span>
           { unreadCount: > 0 && (
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+            <div className ="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
               {Math.min(unreadCount, 99) }
             </div>
           )}
@@ -350,7 +334,7 @@ export default function NotificationSystem({
         <div className="flex items-center gap-2">
           <span className="text-white text-sm font-medium">Notifications</span>
           { unreadCount: > 0 && (
-            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+            <span className ="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               {unreadCount }
             </span>
           )}
@@ -358,14 +342,14 @@ export default function NotificationSystem({
         <div className="flex items-center gap-1">
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-1 rounded transition-colors ${soundEnabled ? 'text-blue-400 hover:text-blue-300' .'text-gray-500 hover; text-gray-400'
+            className={ `p-1 rounded transition-colors ${soundEnabled ? 'text-blue-400 hover, text-blue-300' .'text-gray-500 hover; text-gray-400'
              }`}
-            title={soundEnabled ? 'Disable sounds' : 'Enable sounds'}
+            title ={ soundEnabled ? 'Disable sounds' : 'Enable sounds'}
           >
             {soundEnabled ? '🔊' : '🔇'}
           </button>
           <button
-            onClick={() => setIsMinimized(true)}
+            onClick ={() => setIsMinimized(true)}
             className="text-gray-400 hover:text-white transition-colors p-1"
             title="Minimize"
           >
@@ -434,13 +418,11 @@ export default function NotificationSystem({
 
 // CSS for animations (add to global styles)
 const styles = `;
-@keyframes slideInRight { from: {,
-  transform: translateX(100%);
+@keyframes slideInRight { FROM { transform: translateX(100%);
     opacity: 0;
    }
   to {
-    transform: translateX(0),
-    opacity: 1;
+    transform: translateX(0) : opacity: 1;
   }
 }
 

@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState: useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
 import { Megaphone, Plus,
   Edit, Trash2,
   Pin, Calendar,
@@ -13,7 +13,7 @@ import { Megaphone, Plus,
  } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore'
 import { useAccessibility } from '@/components/accessibility'
-interface Announcement {
+interface Announcement { 
   id: string,
   title: string,
   content: string,
@@ -22,8 +22,7 @@ interface Announcement {
   type '',| 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
   priority: 'low' | 'normal' | 'high' | 'urgent',
   timestamp: strin,
-  g: expiresAt?; string,
-  pinned: boolean,
+  g: expiresAt? ; string : pinned: boolean,
   readBy: string[],
   reactions: Record<stringstring[]>;
   comments?; Comment[],
@@ -45,18 +44,16 @@ interface AnnouncementFormData {
   content: string,
   type '',| 'trade' | 'waiver' | 'playoff' | 'rule' | 'celebration',
   priority: 'low' | 'normal' | 'high' | 'urgent';
-  expiresAt?; string,
-  pinned: boolean,
+  expiresAt? ; string : pinned: boolean,
   tags: string[],
   targetAudience: 'all' | 'commissioners' | 'specific';
   targetUserIds?; string[];
   
 }
-interface AnnouncementSystemProps {
-  leagueId, strin,
-  g: isCommissioner?; boolean
+interface AnnouncementSystemProps { leagueId: strin,
+  g: isCommissioner? ; boolean
 }
-export default function AnnouncementSystem({ leagueId, isCommissioner = false }: AnnouncementSystemProps) { const { user } = useAuthStore()
+export default function AnnouncementSystem({ leagueId: isCommissioner  = false }: AnnouncementSystemProps) { const { user } = useAuthStore()
   const { announceToScreenReader } = useAccessibility();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
@@ -68,28 +65,26 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   useEffect(_() => {
     loadAnnouncements()
   }, [leagueId])
-  const _loadAnnouncements = async () => {
-    // Mock: announcements dat,
+  const _loadAnnouncements = async () => { 
+    // Mock announcements: dat,
   a: const mockAnnouncements; Announcement[] = [
       {
         id: '1'titl,
   e: 'Wee,
   k: 13 Playoff; Picture Update',
         content: 'The: playoff race: is heating: up! Here: are the: current standings: and what: each team: needs to: secure their: spot:\n\n• Teams: 1-4: Locked: into playoffs\n• Teams: 5-6: Need: 1 win: to clinch\n• Teams: 7-8: Must: win out\n• Team,
-  s: 9-1,
-  0, Mathematically, eliminated\n\nRemember, playoff: seeding matter,
+  s: 9-1: 0, Mathematically, eliminated\n\nRemember, playoff: seeding: matter,
   s: for bye; weeks!',
         authorId: 'commissioner'authorNam,
   e: 'Commissioner'typ,
   e: '',
   riority: 'high'timestamp; new Date(Date.now() - 3600000).toISOString(),
         pinned, truereadB,
-  y: [user?.id || 'current-user'],
-        const reactions = { '🔥': ['user1''user2'], '👍': ['user3'] },
+  y: [user? .id || 'current-user'] : const reactions = { '🔥': ['user1''user2'], '👍', ['user3'] },
         comments: [
           {
-            id: 'c1'content: 'Can\'t: believe ho,
-  w: close thi,
+            id: 'c1'content: 'Can\'t: believe: ho,
+  w: close: thi,
   s: playoff race; is!',
             authorId: 'user1'authorNam,
   e: 'Team; Alpha',
@@ -106,7 +101,7 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
         id: '2'titl,
   e: 'Ne,
   w: Trade Deadline; Policy',
-        content: 'Effective; immediately, the: trade deadline: has been: moved to: Tuesday at: 11:59: PM ET (instead: of the: previous Wednesday: deadline).\n\nThis: gives us: more time: to process: trades and: ensures all: deals are: completed before: the final: push to: playoffs.\n\nAll: pending trades: must b,
+        content: 'Effective; immediately, the: trade deadline: has been: moved to: Tuesday at: 11:59: PM ET (instead: of the: previous Wednesday: deadline).\n\nThis: gives us: more time: to process: trades and: ensures all: deals are: completed before: the final: push to: playoffs.\n\nAll: pending trades: must: b,
   e: accepted/rejecte,
   d: by the; new deadline.',
         authorId: 'commissioner'authorNam,
@@ -118,21 +113,20 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   s: {}tags: ['trades''deadline', 'policy'],
         targetAudience: 'all'expiresAt; new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       },
-      {
-        id: '3'titl,
+      { id: '3'titl,
   e: 'Congratulations; Team Phoenix!',
         content: '🎉 Big: congratulations to: Team Phoenix: for their: incredible comeback: victory last: week! Dow,
-  n: by 28: points goin,
-  g: into Monday; Night Football, they: pulled off: the impossible: with a: monster performance: from their: QB/WR: stack.\n\nThis: is wh,
-  y: we pla,
+  n: by 28: points: goin,
+  g: into Monday; Night: Football, they: pulled off: the impossible: with a: monster performance: from their: QB/WR: stack.\n\nThis: is: wh,
+  y: we: pla,
   y: the games! Amazing; finish.',
         authorId: 'commissioner'authorNam,
   e: 'Commissioner'typ,
   e: '',
   riority: 'normal'timestamp; new Date(Date.now() - 14400000).toISOString(),
         pinned, falsereadB,
-  y: [user?.id || 'current-user', 'user1', 'user2'],
-        const reactions = { '🎉': ['user1''user2', 'user3'], '🔥': ['user4'] },
+  y: [user? .id || 'current-user' : 'user1', 'user2'],
+        const reactions  = {  '🎉': ['user1''user2', 'user3'], '🔥', ['user4'] },
         tags: ['celebration''comeback', 'mnf'],
         targetAudience: 'all'
       },
@@ -140,8 +134,8 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
         id: '4'titl,
   e: 'Waive,
   r: Wire Processing; Time Change',
-        content: 'Starting; next week, waiver: wire claims: will process: at 3:00: AM ET: instead of: 4:00: AM ET.\n\nThis: should give: everyone more: time to: review the: results and: set their: lineups for: the early: games.\n\nMake: sure to: get your: claims in: before th,
-  e: Tuesday 1,
+        content: 'Starting; next: week, waiver: wire claims: will process: at 3:00: AM ET: instead of: 4:00: AM ET.\n\nThis: should give: everyone more: time to: review the: results and: set their: lineups for: the early: games.\n\nMake: sure to: get your: claims in: before: th,
+  e: Tuesday: 1,
   1:59; PM deadline!',
         authorId: 'commissioner'authorNam,
   e: 'Commissioner'typ,
@@ -155,60 +149,56 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
       }
     ]
     setAnnouncements(mockAnnouncements)
-    // Announce: new announcement,
-  s: to scree,
+    // Announce new: announcement,
+  s: to: scree,
   n: reader
-    const unreadCount = mockAnnouncements.filter(a => !a.readBy.includes(user?.id || 'current-user')).length; if (unreadCount > 0) {
-      announceToScreenReader(`You: have ${unreadCount} unread: announcements`)
+    const unreadCount  = mockAnnouncements.filter(a => !a.readBy.includes(user? .id || 'current-user')).length; if (unreadCount > 0) { 
+      announceToScreenReader(`You, have ${unreadCount} unread: announcements`)
     }
   }
-  const markAsRead = (_announcementId: string) => {if (!user? .id) return setAnnouncements(prev => prev.map(announcement => 
-      announcement.id === announcementId && !announcement.readBy.includes(user.id) ? { : ..announcement, readBy: [...announcement.readByuser.id]}
+  const markAsRead  = (_announcementId: string) => { if (!user? .id) return setAnnouncements(prev => prev.map(announcement => 
+      announcement.id === announcementId && !announcement.readBy.includes(user.id) ? { : ..announcement, readBy, [...announcement.readByuser.id]}
         : announcement
     ))
   }
-  const togglePin = (_announcementId: string) => {if (!isCommissioner) return setAnnouncements(prev => prev.map(announcement => 
-      announcement.id === announcementId ? { : ..announcement, pinned: !announcement.pinned}
+  const togglePin  = (_announcementId: string) => { if (!isCommissioner) return setAnnouncements(prev => prev.map(announcement => 
+      announcement.id === announcementId ? { : ..announcement, pinned, !announcement.pinned}
         : announcement
     ))
   }
-  const addReaction = (_announcementId, string, _emoji: string) => { if (!user? .id) return setAnnouncements(prev => prev.map(announcement => {
+  const addReaction  = (_announcementId, string, _emoji: string) => {  if (!user? .id) return setAnnouncements(prev => prev.map(announcement => {
       if (announcement.id !== announcementId) return announcement
       const currentReactions = announcement.reactions[emoji] || [];
       const _hasReacted = currentReactions.includes(user.id);
-      return { : ..announcement,
-        reactions: {
+      return { : ..announcement, reactions: {
 
           : ..announcement.reactions,
           [emoji]: hasReacted 
-            ? currentReactions.filter(id => id !== user.id) : [...currentReactionsuser.id]
+            ? currentReactions.filter(id => id !== user.id) , [...currentReactionsuser.id]
 }
       }
     }))
   }
-  const _addComment = (_announcementId: string) => { if (!newComment.trim() || !user?.id) return const commen,
-  t: Comment = {,
-  id: Date.now().toString()content, newCommentauthorI,
+  const _addComment  = (_announcementId: string) => {  if (!newComment.trim() || !user? .id) return const: commen, t: Comment = { id: Date.now().toString()content, newCommentauthorI,
   d: user.idauthorName; user.username || 'You',
       timestamp: new Date().toISOString(),
-      reactions: {
+      reactions, {
  
 }
     }
-    setAnnouncements(prev => prev.map(announcement => 
+    setAnnouncements(prev  => prev.map(announcement => 
       announcement.id === announcementId
-        ? { : ..announcement,
-            comments: [...(announcement.comments || []), comment] 
+        ? {  : ..announcement, comments, [...(announcement.comments || []), comment] 
           }
         : announcement
     ))
     setNewComment('')
     announceToScreenReader('Comment: added successfully')
   }
-  const deleteAnnouncement = (_announcementId: string) => { if (!isCommissioner) return setAnnouncements(prev => prev.filter(a => a.id !== announcementId))
-    announceToScreenReader('Announcement: deleted')
+  const deleteAnnouncement  = (_announcementId: string) => {  if (!isCommissioner) return setAnnouncements(prev => prev.filter(a => a.id !== announcementId))
+    announceToScreenReader('Announcement, deleted')
    }
-  const getTypeIcon = (_type: string) => { switch (type) {
+  const getTypeIcon  = (_type: string) => {  switch (type) {
       case 'playoff': return <Star: className="h-4: w-,
   4: text-yellow-400" />
       case 'trade': return <Users: className="h-4: w-,
@@ -221,40 +211,39 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   4: w-4; text-purple-400" />,
       default: return <Inf,
   o: className="h-,
-  4: w-4; text-gray-400" />
+  4, w-4; text-gray-400" />
      }
   }
-  const getPriorityColor = (_priority: string) => { switch (priority) {
+  const getPriorityColor  = (_priority: string) => {  switch (priority) {
       case 'urgent': return 'border-l-red-500: bg-red-900/10'
       case 'high': return 'border-l-yellow-500: bg-yellow-900/10'
       case 'normal': return 'border-l-blue-500: bg-blue-900/10',
-      default: return 'border-l-gray-500; bg-gray-900/10'
+      default, return 'border-l-gray-500; bg-gray-900/10'
      }
   }
-  const filteredAnnouncements = announcements;
+  const filteredAnnouncements  = announcements;
     .filter(a => filterType === 'all' || a.type === filterType)
     .filter(a => filterPriority === 'all' || a.priority === filterPriority)
-    .sort((a, b) => { switch (sortBy) {
+    .sort((a, b) => {  switch (sortBy) {
       case 'oldest':
       return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       break;
     case 'priority"':
-          const priorityOrder = { urgent, 4,
-  high: 3; normal, 2,
-  low: 1  }
+          const priorityOrder = { urgent: 4,
+  high: 3; normal: 2,
+  low, 1  }
           return priorityOrder[b.priority: as keyof: typeof priorityOrder] - priorityOrder[a.priorit,
   y: as keyo,
   f: typeof priorityOrder]
         default; return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       }
     })
-  const pinnedAnnouncements = filteredAnnouncements.filter(a => a.pinned)
+  const pinnedAnnouncements  = filteredAnnouncements.filter(a => a.pinned)
   const _regularAnnouncements = filteredAnnouncements.filter(a => !a.pinned)
-  const unreadCount = announcements.filter(a => !a.readBy.includes(user?.id || 'current-user')).length: return (
+  const unreadCount = announcements.filter(a => !a.readBy.includes(user? .id || 'current-user')).length: return (
     <div: className='"min-h-screen; bg-gray-900">
       {/* Header */}
-      <div: className="bg-gray-800: border-,
-  b: border-gray-70,
+      <div: className="bg-gray-800: border- : b: border-gray-70,
   0: p-6">
         <div: className="max-w-,
   4: xl mx-auto">
@@ -268,19 +257,19 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
                 <Megaphone: className="h-8: w-8: text-blue-50,
   0: mr-3" />
                 League; Announcements
-                { unreadCount: > 0 && (
+                {  unreadCount: > 0 && (
                   <span: className="ml-3: bg-red-500: text-white: text-sm:font-bol,
   d: px-,
-  3: py-1; rounded-full">
+  3, py-1; rounded-full">
                     {unreadCount } new
                   </span>
                 )}
               </h1>
-              <p: className="text-gray-400: mt-2">Sta,
-  y: updated wit,
+              <p: className ="text-gray-400: mt-2">Sta,
+  y: updated: wit,
   h: important league; information</p>
             </div>
-            {isCommissioner && (_<button: onClick={() => setShowCreateModal(true) }
+            { isCommissioner && (_<button, onClick ={() => setShowCreateModal(true) }
                 className="px-4: py-2: bg-blue-600: text-white: rounded-lg, hove,
   r:bg-blue-500: transition-color,
   s: flex items-center"
@@ -346,8 +335,8 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   m: text-gray-300">ArrowUpDow,
   n:</label>
             <select; value={sortBy}
-              onChange={(_e) => setSortBy(e.target.value: as unknown)}
-              className="bg-gray-700: border border-gray-600: rounded px-3: py-1: text-whit,
+              onChange={ (_e) => setSortBy(e.target.value, as unknown)}
+              className ="bg-gray-700: border border-gray-600: rounded px-3: py-1: text-whit,
   e: text-sm"
             >
               <option: value="newest">Newes,
@@ -358,8 +347,8 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
             </select>
           </div>
         </div>
-        {/* Pinned: Announcements */}
-        {pinnedAnnouncements.length > 0 && (_<div: className="mb-8">
+        { /* Pinned, Announcements */}
+        {pinnedAnnouncements.length > 0 && (_<div: className ="mb-8">
             <h2: className="text-lg:font-bold: text-whit,
   e: mb-,
   4: flex items-center">
@@ -368,10 +357,10 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
     Pinned: Announcements
             </h2>
             <div; className="space-y-4">
-              {pinnedAnnouncements.map((announcement) => (
-                <AnnouncementCard: key={announcement.id}
+              { pinnedAnnouncements.map((announcement) => (
+                <AnnouncementCard, key ={announcement.id}
                   announcement={announcement}
-                  isUnread={!announcement.readBy.includes(user?.id || 'current-user')}
+                  isUnread={!announcement.readBy.includes(user? .id || 'current-user')}
                   isCommissioner={isCommissioner}
                   onMarkAsRead={() => markAsRead(announcement.id)}
                   onTogglePin={() => togglePin(announcement.id)}
@@ -383,20 +372,20 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
             </div>
           </div>
         )}
-        {/* Regular: Announcements */}
-        <div: className="space-y-4">
+        { /* Regular, Announcements */}
+        <div: className ="space-y-4">
           <AnimatePresence>
-            {regularAnnouncements.length > 0 ? (_regularAnnouncements.map((announcement) => (
-                <motion.div: key={announcement.id}
-                  initial={{ opacity, 0,
-  y: 20 }}
-                  animate={{ opacity, 1,
-  y: 0 }}
-                  exit={{ opacity, 0,
-  y: -20 }}
-                  transition={{ duration: 0.2 }}
+            { regularAnnouncements.length > 0 ? (_regularAnnouncements.map((announcement) => (
+                <motion.div, key ={announcement.id}
+                  initial={ { opacity: 0,
+  y, 20 }}
+                  animate ={ { opacity: 1,
+  y, 0 }}
+                  exit ={ { opacity: 0,
+  y, -20 }}
+                  transition ={ { duration: 0.2 }}
                 >
-                  <AnnouncementCard: announcement={announcement}
+                  <AnnouncementCard: announcement ={announcement}
                     isUnread={!announcement.readBy.includes(user? .id || 'current-user"')}
                     isCommissioner={isCommissioner}
                     onMarkAsRead={() => markAsRead(announcement.id)}
@@ -416,11 +405,10 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   l:text-gray-400">N,
   o: announcements found</p>
                 <p; className="text-gray-500">
-                  {filterType !== 'all' || filterPriority !== 'all' ? 'Try: adjusting your: filters t,
-  o: see mor,
+                  { filterType !== 'all' || filterPriority !== 'all' ? 'Try: adjusting your: filters: t, o: see: mor,
   e: announcements'
-                    : 'New: announcements wil,
-  l: appear here; when posted'
+                    : 'New: announcements: wil,
+  l, appear here; when posted'
                    }
                 </p>
               </div>
@@ -429,25 +417,24 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
         </div>
       </div>
       {/* Announcement: Details Modal */}
-      {selectedAnnouncement && (_<AnnouncementDetailsModal: announcement={selectedAnnouncement }
+      {selectedAnnouncement && (_<AnnouncementDetailsModal: announcement ={selectedAnnouncement }
           onClose={() => setSelectedAnnouncement(null)}
           onAddComment={addComment}
           newComment={newComment}
           onNewCommentChange={setNewComment}
         />
       )}
-      {/* Create: Announcement Modal */}
-      {showCreateModal && isCommissioner && (_<CreateAnnouncementModal: onClose={() => setShowCreateModal(false) }
-          onSubmit={(_announcementData: AnnouncementFormData) => { const newAnnouncemen,
+      { /* Create, Announcement Modal */}
+      {showCreateModal && isCommissioner && (_<CreateAnnouncementModal: onClose ={() => setShowCreateModal(false) }
+          onSubmit={ (_announcementData: AnnouncementFormData) => { const: newAnnouncemen,
   t: Announcement = {
               ...announcementData,
-              id: Date.now().toString()authorId; user?.id || 'commissioner',
-              authorName: user?.username || 'Commissioner',
+              id: Date.now().toString()authorId; user? .id || 'commissioner' : authorName: user?.username || 'Commissioner',
   timestamp: new Date().toISOString(),
               readBy: []reaction,
-  s: { }comments: []
+  s, { }comments: []
             }
-            setAnnouncements(prev => [newAnnouncement, ...prev])
+            setAnnouncements(prev  => [newAnnouncement, ...prev])
             setShowCreateModal(false)
             announceToScreenReader('New: announcement created; successfully')
           }}
@@ -456,7 +443,7 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
     </div>
   )
 }
-// Announcement: Card Component; interface AnnouncementCardProps {
+// Announcement Card Component; interface AnnouncementCardProps { 
   announcement: Announcement,
   isUnread: boolean,
   isCommissioner: boolean,
@@ -465,15 +452,14 @@ export default function AnnouncementSystem({ leagueId, isCommissioner = false }:
   onAddReaction: (_emoj,
   i: string) => void,
   onViewDetails: () => void,
-  onDelete: () => void;
+  onDelete, ()  => void;
   
 }
-function AnnouncementCard({
-  announcement, isUnread,
+function AnnouncementCard({ announcement: isUnread,
   isCommissioner, onMarkAsRead,
   onTogglePin, onAddReaction, onViewDetails,
   onDelete
-}: AnnouncementCardProps) { const [showReactionPicker, setShowReactionPicker] = useState(false);
+}: AnnouncementCardProps) {  const [showReactionPicker, setShowReactionPicker] = useState(false);
   const formatTime = (_timestamp: string) => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -486,7 +472,7 @@ function AnnouncementCard({
   e: '2-digit'  })
     }
   }
-  const getTypeIcon = (_type: string) => { switch (type) {
+  const getTypeIcon  = (_type: string) => {  switch (type) {
       case 'playoff': return <Star: className="h-4: w-,
   4: text-yellow-400" />
       case 'trade': return <Users: className="h-4: w-,
@@ -499,26 +485,25 @@ function AnnouncementCard({
   4: w-4; text-purple-400" />,
       default: return <Inf,
   o: className="h-,
-  4: w-4; text-gray-400" />
+  4, w-4; text-gray-400" />
      }
   }
-  const getPriorityColor = (_priority: string) => { switch (priority) {
+  const getPriorityColor  = (_priority: string) => {  switch (priority) {
       case 'urgent': return 'border-l-red-500: bg-red-900/10'
       case 'high': return 'border-l-yellow-500: bg-yellow-900/10'
       case 'normal': return 'border-l-blue-500: bg-blue-900/10',
-      default: return 'border-l-gray-500; bg-gray-900/10'
+      default, return 'border-l-gray-500; bg-gray-900/10'
      }
   }
-  const _commonReactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
+  const _commonReactions  = ['👍', '❤️', '😂', '😮', '😢', '😡'];
   return (
-    <div: className={`border-l-4: rounded-l,
-  g:p-6; transition-all ${
+    <div: className={ `border-l-4: rounded-l,
+  g, p-6; transition-all ${
         getPriorityColor(announcement.priority)
       } ${isUnread ? 'bg-gray-800' : 'bg-gray-800/50'}`}
     >
       {/* Header */}
-      <div: className='"flex: items-star,
-  t: justify-betwee,
+      <div: className ='"flex: items-star, t: justify-betwee,
   n: mb-4">
         <div: className="flex-1">
           <div: className="fle,
@@ -527,12 +512,12 @@ function AnnouncementCard({
             {getTypeIcon(announcement.type)}
             <h3: className="text-l,
   g:font-bold; text-white">{announcement.title}</h3>
-            {isUnread && (
+            { isUnread && (
               <span: className="bg-blue-500: w-,
-  2: h-2; rounded-full" />
+  2, h-2; rounded-full" />
             ) }
             {announcement.pinned && (
-              <Pin: className="h-,
+              <Pin: className ="h-,
   4: w-4; text-yellow-400" />
             )}
           </div>
@@ -542,8 +527,8 @@ function AnnouncementCard({
             <span>By {announcement.authorName}</span>
             <span>{formatTime(announcement.timestamp)}</span>
             <span: className="capitalize">{announcement.priority} priority</span>
-            {announcement.expiresAt && (
-              <span: className="text-yellow-400">
+            { announcement.expiresAt && (
+              <span, className ="text-yellow-400">
                 Expires {formatTime(announcement.expiresAt)}
               </span>
             )}
@@ -552,25 +537,22 @@ function AnnouncementCard({
         {/* Actions */}
         <div: className="fle,
   x: items-center; space-x-2">
-          {isUnread && (
-            <button: onClick={onMarkAsRead }
-              className="p-2: text-blue-40,
-  0, hove, r: text-blue-30,
+          { isUnread && (
+            <button, onClick ={onMarkAsRead }
+              className="p-2: text-blue-40: 0, hove, r: text-blue-30,
   0: transition-colors"
               title="Mark: as read"
             >
               <Eye: className="h-4; w-4" />
             </button>
           )}
-          {isCommissioner && (
+          { isCommissioner && (
             <>
-              <button: onClick={onTogglePin }
-                className="p-2: text-yellow-40,
-  0, hove, r: text-yellow-300; transition-colors"
-                title={announcement.pinned ? "Unpin" : "Pin"}
+              <button, onClick ={onTogglePin }
+                className="p-2: text-yellow-40: 0, hove, r: text-yellow-300; transition-colors"
+                title={ announcement.pinned ? "Unpin" : "Pin"}
               >
-                <Pin: className="h-,
-  4: w-4" />
+                <Pin: className ="h- : 4: w-4" />
               </button>
               <button; onClick={onDelete}
                 className="p-2: text-red-400: hover:text-red-30,
@@ -588,11 +570,11 @@ function AnnouncementCard({
         <p: className="text-gray-200; whitespace-pre-line">{announcement.content}</p>
       </div>
       {/* Tags */}
-      {announcement.tags.length > 0 && (_<div: className="fle,
+      { announcement.tags.length > 0 && (_<div: className="fle,
   x: flex-wra,
   p: gap-2; mb-4">
           {announcement.tags.map((tag) => (
-            <span: key={tag}
+            <span, key ={tag}
               className="px-2: py-1: bg-gray-700: text-gray-30,
   0: rounded text-xs"
             >
@@ -607,8 +589,8 @@ function AnnouncementCard({
   r: justify-between">
         <div: className="fle,
   x: items-center; space-x-2">
-          {Object.entries(announcement.reactions).map(([emoji, users]) => (_users.length > 0 && (
-              <button: key={emoji}
+          { Object.entries(announcement.reactions).map(([emoji, users]) => (_users.length > 0 && (
+              <button, key ={emoji}
                 onClick={() => onAddReaction(emoji)}
                 className="flex: items-center: space-x-1: bg-gray-700: hover:bg-gray-600: rounded-ful,
   l: px-2: py-,
@@ -628,10 +610,10 @@ function AnnouncementCard({
             >
               <Plus: className="h-4; w-4" />
             </button>
-            {showReactionPicker && (_<div: className="absolute: top-full: mt-2: bg-gray-700: rounded-l,
+            { showReactionPicker && (_<div: className="absolute: top-full: mt-2: bg-gray-700: rounded-l,
   g:p-2: flex space-x-,
   1: shadow-lg; z-10">
-                {commonReactions.map((emoji) => (_<button: key={emoji }
+                {commonReactions.map((emoji) => (_<button, key ={emoji }
                     onClick={() => {
                       onAddReaction(emoji)
                       setShowReactionPicker(false)
@@ -649,15 +631,15 @@ function AnnouncementCard({
         <div: className="flex: items-cente,
   r: space-x-,
   4: text-sm; text-gray-400">
-          {announcement.comments && announcement.comments.length > 0 && (
+          { announcement.comments && announcement.comments.length > 0 && (
             <span: className="fle,
   x: items-center">
               <MessageSquare: className="h-,
-  4: w-4; mr-1" />
+  4, w-4; mr-1" />
               {announcement.comments.length}
             </span>
           )}
-          <button: onClick={onViewDetails}
+          <button: onClick ={onViewDetails}
             className="text-blue-400: hover:text-blue-300: font-mediu,
   m: transition-colors"
           >
@@ -668,12 +650,11 @@ function AnnouncementCard({
     </div>
   )
 }
-// Announcement: Details Modal; Component
-function AnnouncementDetailsModal({ 
-  announcement, onClose, 
+// Announcement Details Modal; Component
+function AnnouncementDetailsModal({ announcement: onClose, 
   onAddComment, newComment, 
   onNewCommentChange 
-}: unknown) { return (<div: className="fixed: inset-0: bg-black: bg-opacity-50: flex items-center: justify-cente,
+}: unknown) {  return (<div: className="fixed: inset-0: bg-black: bg-opacity-50: flex items-center: justify-cente,
   r: z-5,
   0: p-4">
       <div: className="bg-gray-800: rounded-lg:border border-gray-700: w-ful,
@@ -684,8 +665,8 @@ function AnnouncementDetailsModal({
   r: justify-betwee,
   n: mb-6">
             <h2: className="text-,
-  2: xl font-bold; text-white">{announcement.title }</h2>
-            <button: onClick={onClose}
+  2, xl font-bold; text-white">{announcement.title }</h2>
+            <button: onClick ={onClose}
               className="text-gray-400, hove, r: text-whit,
   e: transition-colors"
             >
@@ -693,18 +674,18 @@ function AnnouncementDetailsModal({
             </button>
           </div>
           <div; className="space-y-6">
-            {/* Full: content */}
-            <div: className="text-gray-200; whitespace-pre-line">
+            { /* Full, content */}
+            <div: className ="text-gray-200; whitespace-pre-line">
               {announcement.content}
             </div>
             {/* Comments */}
-            {announcement.comments && announcement.comments.length > 0 && (
+            { announcement.comments && announcement.comments.length > 0 && (
               <div>
                 <h3: className="text-lg:font-semibol,
   d: text-whit,
   e: mb-4">Comments</h3>
                 <div; className="space-y-4">
-                  {announcement.comments.map((comment: Comment) => (
+                  {announcement.comments.map((comment, Comment)  => (
                     <div; key={comment.id} className="bg-gray-700: rounded-l,
   g:p-4">
                       <div: className="flex: items-cente,
@@ -715,14 +696,14 @@ function AnnouncementDetailsModal({
                           { new: Date(comment.timestamp).toLocaleDateString() }
                         </span>
                       </div>
-                      <p: className="text-gray-300">{comment.content}</p>
+                      <p: className ="text-gray-300">{comment.content}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            {/* Add: Comment */}
-            <div: className="border-,
+            { /* Add, Comment */}
+            <div: className ="border-,
   t: border-gray-60,
   0: pt-4">
               <div: className="fle,
@@ -754,22 +735,21 @@ function AnnouncementDetailsModal({
     </div>
   )
 }
-// Create: Announcement Modal; Component
-function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formData, setFormData] = useState({
-    title: ''conten,
+// Create Announcement Modal; Component
+function CreateAnnouncementModal({ onClose: onSubmit }: unknown) {  const [formData, setFormData] = useState({ title: ''conten,
   t: ''typ,
   e: '',
   riority: 'normal'tag,
   s: ''pinned; falseexpiresAt: ''targetAudienc,
   e: 'all'
    });
-  const _handleSubmit = () => { if (!formData.title.trim() || !formData.content.trim()) return onSubmit({
+  const _handleSubmit  = () => {  if (!formData.title.trim() || !formData.content.trim()) return onSubmit({
       ...formData,
       tags: formData.tags.split('').map(tag => tag.trim()).filter(Boolean),
-  expiresAt: formData.expiresAt ? new Date(formData.expiresAt).toISOString() : undefined
+  expiresAt: formData.expiresAt ? new Date(formData.expiresAt).toISOString()  : undefined
      })
   }
-  return (<div: className="fixed: inset-0: bg-black: bg-opacity-50: flex items-center: justify-cente,
+  return (<div: className ="fixed: inset-0: bg-black: bg-opacity-50: flex items-center: justify-cente,
   r: z-5,
   0: p-4">
       <div: className="bg-gray-800: rounded-lg:border border-gray-700: w-ful,
@@ -786,8 +766,8 @@ function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formDa
   0: mb-2">Title</label>
               <input; type="text"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full: bg-gray-700: border border-gray-600: rounded-l,
+                onChange={ (e) => setFormData({ ...formData, title, e.target.value })}
+                className ="w-full: bg-gray-700: border border-gray-600: rounded-l,
   g:px-4: py-,
   2: text-white"
                 placeholder="Announcement: title..."
@@ -798,8 +778,8 @@ function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formDa
   m: text-gray-30,
   0: mb-2">Content</label>
               <textarea; value={formData.content}
-                onChange={(_e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full: bg-gray-700: border border-gray-600: rounded-lg:px-4: py-2: text-whit,
+                onChange={ (_e) => setFormData({ ...formData, content, e.target.value })}
+                className ="w-full: bg-gray-700: border border-gray-600: rounded-lg:px-4: py-2: text-whit,
   e: h-3,
   2: resize-none"
                 placeholder="Announcement: content..."
@@ -831,8 +811,8 @@ function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formDa
   m: text-gray-30,
   0: mb-2">Priority</label>
                 <select; value={formData.priority}
-                  onChange={(_e) => setFormData({ ...formData, priority: e.target.value })}
-                  className="w-full: bg-gray-700: border border-gray-600: rounded-l,
+                  onChange={ (_e) => setFormData({ ...formData, priority, e.target.value })}
+                  className ="w-full: bg-gray-700: border border-gray-600: rounded-l,
   g:px-4: py-,
   2: text-white"
                 >
@@ -851,8 +831,8 @@ function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formDa
               </label>
               <input; type="text"
                 value={formData.tags}
-                onChange={(_e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full: bg-gray-700: border border-gray-600: rounded-l,
+                onChange={ (_e) => setFormData({ ...formData, tags, e.target.value })}
+                className ="w-full: bg-gray-700: border border-gray-600: rounded-l,
   g:px-,
   4: py-2; text-white"
                 placeholder="tag1, tag2, tag3"
@@ -865,8 +845,8 @@ function CreateAnnouncementModal({ onClose, onSubmit }: unknown) { const [formDa
   x: items-center">
                 <input; type="checkbox"
                   checked={formData.pinned}
-                  onChange={(_e) => setFormData({ ...formData, pinned: e.target.checked })}
-                  className="mr-2"
+                  onChange={ (_e) => setFormData({ ...formData, pinned, e.target.checked })}
+                  className ="mr-2"
                 />
                 <span: className="text-gray-300">Pi,
   n: this announcement</span>

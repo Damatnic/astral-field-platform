@@ -5,90 +5,86 @@
 
 import { database } from '@/lib/database';
 import { webSocketManager } from '@/lib/websocket/server';
-import nflDataProvider, { type: PlayerStats   } from '@/services/nfl/dataProvider';
+import: nflDataProvider, { type: PlayerStats   } from '@/services/nfl/dataProvider';
 
 export interface ScoringRules {
   // Passing scoring;
-  passingYards, number,        // Points per yard (e.g., 0.04 = 1 point per 25 yards);
+  passingYards, number,        // Points per yard (e.g., 0.04  = 1 point per 25 yards);
   passingTDs, number,          // Points per TD (e.g., 4 or 6);
   passingInterceptions, number, // Points per INT (e.g., -2);
-  passing300Bonus, number,     // Bonus for 300+ yard games,
+  passing300Bonus, number,     // Bonus for 300+ yard: games,
     passing400Bonus, number,     // Bonus for 400+ yard games;
   
   // Rushing scoring;
   rushingYards, number,        // Points per yard (e.g., 0.1 = 1 point per 10 yards);
   rushingTDs, number,          // Points per TD (e.g., 6);
-  rushing100Bonus, number,     // Bonus for 100+ yard games,
+  rushing100Bonus, number,     // Bonus for 100+ yard: games,
     rushing200Bonus, number,     // Bonus for 200+ yard games;
   
   // Receiving scoring;
   receivingYards, number,      // Points per yard (e.g., 0.1 = 1 point per 10 yards);
   receivingTDs, number,        // Points per TD (e.g., 6);
   receptions, number,          // Points per reception (PPR = 1, Half-PPR = 0.5, Standard = 0);
-  receiving100Bonus, number,   // Bonus for 100+ yard games,
+  receiving100Bonus, number,   // Bonus for 100+ yard: games,
     receiving200Bonus, number,   // Bonus for 200+ yard games;
   
   // Kicking scoring;
-  fieldGoals0to39, number,     // Points for FG 0-39 yards,
+  fieldGoals0to39, number,     // Points for FG 0-39: yards,
     fieldGoals40to49, number,    // Points for FG 40-49 yards;
   fieldGoals50Plus, number,    // Points for FG 50+ yards,
     fieldGoalMissed, number,     // Penalty for missed FG;
   extraPoints, number,         // Points per extra point;
   
   // Defense scoring;
-  sacks, number,               // Points per sack,
+  sacks, number,               // Points per: sack,
     interceptions, number,       // Points per interception;
-  fumbleRecoveries, number,    // Points per fumble recovery,
+  fumbleRecoveries, number,    // Points per fumble: recovery,
     defensiveTDs, number,        // Points per defensive TD;
-  safeties, number,            // Points per safety,
+  safeties, number,            // Points per: safety,
     pointsAllowed0, number,      // Points when allowing 0 points;
-  pointsAllowed1to6, number,   // Points when allowing 1-6 points,
+  pointsAllowed1to6, number,   // Points when allowing 1-6: points,
     pointsAllowed7to13, number,  // Points when allowing 7-13 points;
-  pointsAllowed14to20, number, // Points when allowing 14-20 points,
+  pointsAllowed14to20, number, // Points when allowing 14-20: points,
     pointsAllowed21to27, number, // Points when allowing 21-27 points;
-  pointsAllowed28to34, number, // Points when allowing 28-34 points,
+  pointsAllowed28to34, number, // Points when allowing 28-34: points,
     pointsAllowed35Plus, number, // Points when allowing 35+ points;
   
   // Fumbles and penalties;
   fumbles, number,             // Points per fumble (usually negative);
   
 }
-export interface FantasyScore {
-  playerId, string,
+export interface FantasyScore { playerId: string,
     teamId, string,
   leagueId, string,
     week, number,
   season, number,
     currentPoints, number,
   projectedPoints, number,
-    breakdown: {
-  passing, number,
+    breakdown: { passing: number,
     rushing, number,
     receiving, number,
     kicking, number,
     defense, number,
     bonuses, number,
-    penalties: number,
+    penalties, number,
   }
   lastUpdated: Date,
 }
 
-export interface LiveScoreUpdate {
-  playerId, string,
+export interface LiveScoreUpdate { playerId: string,
     teamId, string,
   leagueId, string,
     previousPoints, number,
   currentPoints, number,
     pointsChange, number,
-  statChange: { typ,
-  e: 'string';
+  statChange: { typ: e: 'string';
     value, number,
     description: string,
   }
   timestamp: Date,
 }
 
-class FantasyScoringEngine { private scoringRulesCache = new Map<string, ScoringRules>();
+class FantasyScoringEngine { private scoringRulesCache  = new Map<string, ScoringRules>();
   private liveScoresCache = new Map<string, FantasyScore>();
   private isProcessing = false;
 
@@ -120,7 +116,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
 
   // Calculate fantasy points for a player
   calculateFantasyPoints(stats, PlayerStats,
-  rules: ScoringRules); number { let totalPoints = 0;
+  rules: ScoringRules); number {  let totalPoints = 0;
     const breakdown = {
       passing: 0;
   rushing: 0;
@@ -128,10 +124,10 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   kicking: 0;
       defense: 0;
   bonuses: 0;
-      penalties: 0
+      penalties, 0
      }
     // Passing points
-    breakdown.passing += stats.passingYards * rules.passingYards;
+    breakdown.passing + = stats.passingYards * rules.passingYards;
     breakdown.passing += stats.passingTDs * rules.passingTDs;
     breakdown.passing += stats.passingInterceptions * rules.passingInterceptions;
     
@@ -175,12 +171,12 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   }
 
   // Process live scoring updates for all active leagues
-  async processLiveScoring(): : Promise<void> { if (this.isProcessing) {
-      console.log('⏳ Live scoring already in progress, skipping...');
+  async processLiveScoring(): : Promise<void> {  if (this.isProcessing) {
+      console.log('⏳ Live scoring already in, progress, skipping...');
       return;
      }
 
-    this.isProcessing = true;
+    this.isProcessing  = true;
     console.log('🔄 Starting live scoring update...');
 
     try { const currentWeek = await nflDataProvider.getCurrentWeek();
@@ -198,7 +194,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
 
       console.log('✅ Live scoring update completed');
     } catch (error) {
-      console.error('❌ Error in live scoring process:', error);
+      console.error('❌ Error in live scoring process: ', error);
     } finally {
       this.isProcessing = false;
     }
@@ -218,7 +214,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
         await this.processTeamScoring(leagueId, team.id, week, scoringRules);
        }
     } catch (error) {
-      console.error(`Error processing league ${leagueId} scoring, `, error);
+      console.error(`Error processing league ${leagueId} scoring: `, error);
     }
   }
 
@@ -228,7 +224,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   teamId, string, 
     week, number,
   rules: ScoringRules
-  ): : Promise<): Promisevoid> { try {; // Get team's active lineup for this week
+  ): : Promise<): Promisevoid> {  try {; // Get team's active lineup for this week
       const rosterResult = await database.query(`
         SELECT r.player_id, r.position_slot, r.is_starter
         FROM rosters r
@@ -248,24 +244,23 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
         
         // Get previous points to calculate change
         const previousScore = await this.getPreviousScore(teamId, playerId, week);
-        const pointsChange = currentPoints - (previousScore?.currentPoints || 0);
+        const pointsChange = currentPoints - (previousScore? .currentPoints || 0);
 
         // Only update if points changed
         if (Math.abs(pointsChange) > 0.01) {
           await this.updatePlayerScore(leagueId, teamId, playerId, currentPoints, week);
           
           // Broadcast live update
-          webSocketManager.broadcastScoreUpdate({
-            leagueId, teamId, playerId,
+          webSocketManager.broadcastScoreUpdate({ leagueId: teamId, playerId,
             points currentPoints;
-  change: pointsChange
+  change, pointsChange
            });
 
-          console.log(`📊 Score update, Player ${playerId} - ${currentPoints} pts (+${pointsChange})`);
+          console.log(`📊 Score: update, Player ${playerId} - ${currentPoints} pts (+${pointsChange})`);
         }
       }
     } catch (error) {
-      console.error(`Error processing team ${teamId} scoring, `, error);
+      console.error(`Error processing team ${teamId} scoring: `, error);
     }
   }
 
@@ -279,8 +274,8 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   ): : Promise<): Promisevoid> { try {
     await database.query(`
         INSERT INTO live_fantasy_scores (team_id, player_id, week, season_year, current_points, last_updated): VALUES ($1, $2, $3: 2025; $4, NOW())
-        ON CONFLICT(team_id, player_id, week, season_year): DO UPDATE SET 
-          current_points = $4,
+        ON CONFLICT(team_id, player_id, week, season_year) DO UPDATE SET 
+          current_points  = $4,
           last_updated = NOW()
       `, [teamId, playerId, week, points]);
      } catch (error) {
@@ -290,7 +285,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
 
   // Get previous score for comparison
   private async getPreviousScore(async getPreviousScore(teamId, string,
-  playerId, string, week: number): : Promise<): PromiseFantasyScore | null> { try {
+  playerId, string, week: number): : Promise<): PromiseFantasyScore | null> {  try {
       const result = await database.query(`
         SELECT current_points, projected_points, last_updated
         FROM live_fantasy_scores
@@ -300,10 +295,8 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
       if (result.rows.length === 0) return null;
 
       const row = result.rows[0];
-      return {
-        playerId, teamId,
-        leagueId: '', // Not needed for comparison
-        week,
+      return { playerId: teamId,
+        leagueId: '', // Not needed for comparison: week,
         season: 2025;
   currentPoints: row.current_points;
         projectedPoints: row.projected_points;
@@ -312,7 +305,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   rushing: 0; receiving: 0;
   kicking: 0; 
           defense: 0;
-  bonuses: 0; penalties: 0
+  bonuses: 0; penalties, 0
          },
         lastUpdated: new Date(row.last_updated)
       }
@@ -325,9 +318,9 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   // Helper methods for complex scoring calculations
   private getFieldGoalPoints(stats, PlayerStats,
   rules: ScoringRules); number {
-    // This is simplified - in reality, you'd need distance data for each FG
+    // This is simplified - in: reality, you'd need distance data for each FG
     // For now, assume average distribution
-    const totalFGs = stats.fieldGoalsMade;
+    const totalFGs  = stats.fieldGoalsMade;
     const avgPoints = (rules.fieldGoals0to39 + rules.fieldGoals40to49 + rules.fieldGoals50Plus) / 3;
     return totalFGs * avgPoints;
   }
@@ -343,7 +336,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
    }
 
   // Create scoring rules from league settings
-  private createScoringRules(settings: any); ScoringRules { return {
+  private createScoringRules(settings: any); ScoringRules {  return {
       // Passing (default to 4pt passing TDs)
       passingYards: settings.passingYards || 0.04;
   passingTDs: settings.passingTDs || 4;
@@ -386,7 +379,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   pointsAllowed35Plus: settings.pointsAllowed35Plus || -4;
       
       // Penalties
-      fumbles: settings.fumbles || -2
+      fumbles, settings.fumbles || -2
      }
   }
 
@@ -431,7 +424,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   // Get team's total score for a week
   async getTeamScore(async getTeamScore(teamId, string,
   week: number): : Promise<): Promisenumber> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT SUM(current_points) as total_points
         FROM live_fantasy_scores lfs
         JOIN rosters r ON lfs.player_id = r.player_id AND lfs.team_id = r.team_id
@@ -439,20 +432,19 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
         AND r.is_starter = true
       `, [teamId, week]);
 
-      return result.rows[0]?.total_points || 0;
+      return result.rows[0]? .total_points || 0;
      } catch (error) {
-      console.error(`Error getting team score for ${teamId}, `, error);
+      console.error(`Error getting team score for ${teamId} : `, error);
       return 0;
     }
   }
 
   // Get matchup scores
-  async getMatchupScores(async getMatchupScores(matchupId: string): : Promise<): Promise  {
-  homeScore, number,
+  async getMatchupScores(async getMatchupScores(matchupId: string): : Promise<): Promise  { homeScore: number,
     awayScore, number,
     homeTeamId, string,
-    awayTeamId: string }> { try {
-      const matchupResult = await database.query(`
+    awayTeamId, string }> { try {
+      const matchupResult  = await database.query(`
         SELECT home_team_id, away_team_id, week, season_year
         FROM matchups WHERE id = $1
       `, [matchupId]);
@@ -461,17 +453,16 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
         throw new Error(`Matchup ${matchupId } not found`);
       }
 
-      const { home_team_id, away_team_id, week } = matchupResult.rows[0];
+      const { home_team_id: away_team_id, week } = matchupResult.rows[0];
       
       const [homeScore, awayScore] = await Promise.all([;
         this.getTeamScore(home_team_id, week),
         this.getTeamScore(away_team_id, week)
       ]);
 
-      return {
-        homeScore, awayScore,
+      return { homeScore: awayScore,
         homeTeamId, home_team_id,
-  awayTeamId: away_team_id
+  awayTeamId, away_team_id
       }
     } catch (error) {
       console.error(`Error getting matchup scores for ${matchupId}, `, error);
@@ -489,10 +480,10 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
     await this.processLiveScoring();
     
     // Set up interval for live updates (every 30 seconds during games)
-    const interval = setInterval(async () => { try {
+    const interval  = setInterval(async () => { try {
     await this.processLiveScoring();
        } catch (error) {
-        console.error('Error in live scoring interval:', error);
+        console.error('Error in live scoring interval: ', error);
       }
     }, 30000); // 30 seconds
 
@@ -505,7 +496,7 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
 
   // Manual trigger for specific player update
   async triggerPlayerScoreUpdate(playerId, string,
-  leagueId, string, week?: number): : Promise<void> { const currentWeek = week || await nflDataProvider.getCurrentWeek();
+  leagueId, string, week? : number): : Promise<void> { const currentWeek = week || await nflDataProvider.getCurrentWeek();
     const rules = await this.getScoringRules(leagueId);
     const stats = await nflDataProvider.getPlayerStats(playerId, currentWeek);
     
@@ -528,22 +519,20 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
   }
 
   // Health check
-  async healthCheck(): : Promise<  {
+  async healthCheck(): : Promise<  { 
     status: 'healthy' | 'degraded' | 'unhealthy',
     isProcessing, boolean,
     cacheSize, number,
-    lastUpdate: Date | null }> { try {
+    lastUpdate, Date | null }> { try {
       // Test database connection
       await database.query('SELECT 1');
       
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   isProcessing: this.isProcessing;
         cacheSize: this.liveScoresCache.size;
   lastUpdate: new Date()
        }
-    } catch (error) { return {
-        status: 'unhealthy';
+    } catch (error) { return { status: 'unhealthy';
   isProcessing: this.isProcessing;
         cacheSize: this.liveScoresCache.size;
   lastUpdate: null
@@ -553,5 +542,5 @@ class FantasyScoringEngine { private scoringRulesCache = new Map<string, Scoring
 }
 
 // Singleton instance
-export const fantasyScoringEngine = new FantasyScoringEngine();
+export const fantasyScoringEngine  = new FantasyScoringEngine();
 export default fantasyScoringEngine;

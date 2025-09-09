@@ -1,8 +1,7 @@
 // Profile Features Configuration
 // Each of the 10 profiles has full access to all features
 
-export interface ProfileFeatures {
-  id, number,
+export interface ProfileFeatures { id: number,
     name, string,
   email, string,
     teamName, string,
@@ -10,8 +9,7 @@ export interface ProfileFeatures {
     icon, string,
   color, string,
     role: "user" | "admin";
-  features: {
-  roster, boolean,
+  features: { roster: boolean,
     trades, boolean,
     waivers, boolean,
     lineup, boolean,
@@ -19,10 +17,9 @@ export interface ProfileFeatures {
     chat, boolean,
     predictions, boolean,
     achievements, boolean,
-    commissioner: boolean,
+    commissioner, boolean,
   }
-  stats: {
-  wins, number,
+  stats: { wins: number,
     losses, number,
     ties, number,
     pointsFor, number,
@@ -30,10 +27,8 @@ export interface ProfileFeatures {
     streak, string,
     standing: number,
   }
-  roster: {
-  maxSize, number,
-    positions: {
-  QB, number,
+  roster: { maxSize: number,
+    positions: { QB: number,
       RB, number,
     WR, number,
       TE, number,
@@ -49,8 +44,8 @@ export interface ProfileFeatures {
 }
 
 // Complete profile configuration for all 10 users
-export const PROFILE_CONFIGS: ProfileFeatures[] = [
-  {
+export const PROFILE_CONFIGS: ProfileFeatures[]  = [
+  { 
     id: 1;
   name: "Jon Kornbeck",
     email: "jon.kornbeck@astralfield.com",
@@ -60,15 +55,15 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "blue",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
-      commissioner: false
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
+      commissioner, false
 },
     stats: {
       wins: 0;
@@ -106,14 +101,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "green",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -152,14 +147,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "purple",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -198,14 +193,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "red",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -244,14 +239,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "yellow",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -290,14 +285,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "pink",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -336,14 +331,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "indigo",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -382,14 +377,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "orange",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -428,14 +423,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "teal",
   role: "admin",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: true
 },
     stats: {
@@ -474,14 +469,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
     color: "gray",
   role: "user",
     features: {
-      roster, true,
-  trades, true,
-      waivers, true,
-  lineup, true,
-      analytics, true,
-  chat, true,
-      predictions, true,
-  achievements, true,
+      roster: true,
+  trades: true,
+      waivers: true,
+  lineup: true,
+      analytics: true,
+  chat: true,
+      predictions: true,
+  achievements: true,
       commissioner: false
 },
     stats: {
@@ -513,14 +508,14 @@ export const PROFILE_CONFIGS: ProfileFeatures[] = [
   ];
 
 // Helper functions
-export function getProfileById(id: number); ProfileFeatures | undefined { return PROFILE_CONFIGS.find((profile) => profile.id === id);
+export function getProfileById(id: number); ProfileFeatures | undefined { return PROFILE_CONFIGS.find((profile)  => profile.id === id);
  }
 
 export function getProfileByEmail(email: string); ProfileFeatures | undefined { return PROFILE_CONFIGS.find((profile) => profile.email === email);
  }
 
 export function getProfileByTeamName(
-  teamName, string,
+  teamName: string,
 ): ProfileFeatures | undefined { return PROFILE_CONFIGS.find((profile) => profile.teamName === teamName);
  }
 
@@ -528,9 +523,9 @@ export function getAllProfiles(): ProfileFeatures[] {
   return PROFILE_CONFIGS;
 }
 
-export function getLeagueStandings(): ProfileFeatures[] { return [...PROFILE_CONFIGS].sort((a, b) => {
-    // Sort by wins, then by points for
-    if (a.stats.wins !== b.stats.wins) {
+export function getLeagueStandings(): ProfileFeatures[] {  return [...PROFILE_CONFIGS].sort((a, b) => {
+    // Sort by, wins, then by points for
+    if (a.stats.wins ! == b.stats.wins) {
       return b.stats.wins - a.stats.wins;
      }
     return b.stats.pointsFor - a.stats.pointsFor;
@@ -542,14 +537,14 @@ export function hasFeatureAccess(
   profileId, number,
   feature: keyof ProfileFeatures["features"],
 ): boolean {const profile = getProfileById(profileId);
-  return profile ? profile.features[feature] , false,
+  return profile ? profile.features[feature]  : false,
  }
 
 // Get color class for Tailwind
-export function getProfileColorClass(profileId: number); string { const profile = getProfileById(profileId);
+export function getProfileColorClass(profileId: number); string {  const profile = getProfileById(profileId);
   if (!profile) return "bg-gray-500";
 
-  const colorMap: Record<string, string> = {
+  const colorMap, Record<string, string>  = {
     blue: "bg-blue-500",
   green: "bg-green-500",
     purple: "bg-purple-500",

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Define 10 profiles with their PINs and data
 const profiles = [
-  {
+  { 
     id: 1,
   name: "Jon Kornbeck",
     email: "jon.kornbeck@astralfield.com",
@@ -77,38 +77,38 @@ const profiles = [
 
 export async function POST(request: NextRequest) {
   try {
-    const { profileId, pin } = await req.json();
+    const { profileId: pin }  = await req.json();
 
     // Validate profile ID
-    if (typeof profileId !== "number" || profileId < 1 || profileId > 10) { return NextResponse.json(
+    if (typeof profileId !== "number" || profileId < 1 || profileId > 10) {  return NextResponse.json(
         { error: "Invalid profile selected"  },
         { status: 400 },
       );
     }
 
     // Validate PIN format
-    if (typeof pin !== "string" || pin.length !== 4 || !/^\d{4}$/.test(pin)) { return NextResponse.json(
+    if (typeof pin ! == "string" || pin.length !== 4 || !/^\d{4}$/.test(pin)) {  return NextResponse.json(
         { error: "PIN must be 4 digits"  },
         { status: 400 },
       );
     }
 
     // Find the profile
-    const profile = profiles.find((p) => p.id === profileId);
+    const profile  = profiles.find((p) => p.id === profileId);
 
-    if (!profile) { return NextResponse.json({ error: "Profile not found"  }, { status: 404 });
+    if (!profile) {  return NextResponse.json({ error: "Profile not found"  }, { status: 404 });
     }
 
     // Check PIN
-    if (profile.pin !== pin) { return NextResponse.json(
+    if (profile.pin ! == pin) {  return NextResponse.json(
         { error: "Invalid PIN",
-  success: false  },
+  success, false  },
         { status: 401 },
       );
     }
 
     // Generate mock token and session
-    const token = `token_${profile.id}_${Date.now()}_${Math.random().toString(36).substring(7)}`
+    const token  = `token_${profile.id}_${Date.now()}_${Math.random().toString(36).substring(7)}`
     const userId = `user_${profile.id}`
     // Get team name for this profile
     const teamNames = [
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
   ];
 
     // Successful login response
-    const loginResult = {
+    const loginResult = { 
       success: true,
   user: {
   id: profile.id, userId, userId,
@@ -136,14 +136,14 @@ export async function POST(request: NextRequest) {
         profileId: profile.id,
   teamName: teamNames[profile.id - 1],
         leagueId: 1, // All users are in league ID 1
-        avatar, null,
-  createdAt: new Date().toISOString()
+        avatar: null,
+  createdAt, new Date().toISOString()
 },
       token, token,
   userId, userId,
       leagueId: 1,
   expiresIn: "24h",
-      message: `Welcome back, ${profile.name}!`
+      message: `Welcome: back, ${profile.name}!`
 }
     return NextResponse.json(loginResult);
   } catch (error) {
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
 
 // GET endpoint to retrieve available profiles (without PINs for security)
 export async function GET() { try {
-    const publicProfiles = profiles.map((profile) => ({
+    const publicProfiles  = profiles.map((profile) => ({
       id: profile.id,
   name: profile.name,
       icon: profile.icon,

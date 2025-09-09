@@ -1,13 +1,12 @@
 /**
  * Intelligent Waiver Processing System
- * Handles FAAB, rolling waivers, and complex waiver claim processing
+ * Handles: FAAB, rolling: waivers, and complex waiver claim processing
  */
 
 import { database } from '@/lib/database';
 import { webSocketManager } from '@/lib/websocket/server';
 
-export interface WaiverClaim {
-  id, string,
+export interface WaiverClaim { id: string,
     leagueId, string,
   teamId, string,
     playerId, string,
@@ -35,8 +34,7 @@ export interface WaiverProcessResult {
     processingStats: ProcessingStats,
   
 }
-export interface ProcessedClaim {
-  claimId, string,
+export interface ProcessedClaim { claimId: string,
     teamId, string,
   teamName, string,
     playerId, string,
@@ -49,24 +47,21 @@ export interface ProcessedClaim {
   reason?, string,
   
 }
-export interface WaiverPriorityUpdate {
-  teamId, string,
+export interface WaiverPriorityUpdate { teamId: string,
     teamName, string,
   oldPriority, number,
     newPriority, number,
   reason: string,
   
 }
-export interface FaabBudgetUpdate {
-  teamId, string,
+export interface FaabBudgetUpdate { teamId: string,
     teamName, string,
   oldBudget, number,
     newBudget, number,
   amountSpent: number,
   
 }
-export interface FailedClaim {
-  claimId, string,
+export interface FailedClaim { claimId: string,
     teamId, string,
   teamName, string,
     playerId, string,
@@ -75,8 +70,7 @@ export interface FailedClaim {
   bidAmount?, number,
   
 }
-export interface RosterMove {
-  teamId, string,
+export interface RosterMove { teamId: string,
     addedPlayerId, string,
   addedPlayerName, string,
   droppedPlayerId?, string,
@@ -85,8 +79,7 @@ export interface RosterMove {
     acquisitionType: string,
   
 }
-export interface ProcessingStats {
-  totalClaims, number,
+export interface ProcessingStats { totalClaims: number,
     successfulClaims, number,
   failedClaims, number,
     totalFaabSpent, number,
@@ -109,22 +102,21 @@ export interface WaiverSettings {
     fractionalBids: boolean,
   
 }
-export interface WaiverPriority {
-  teamId, string,
+export interface WaiverPriority { teamId: string,
     teamName, string,
   priority, number,
   lastSuccessfulClaim?, Date,
   totalSuccessfulClaims: number,
   
 }
-class WaiverProcessor { private processingLocks = new Map<string, boolean>();
+class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
   private scheduledProcessing = new Map<string, NodeJS.Timeout>();
 
   // =======================
   // WAIVER CLAIM SUBMISSION
   // =======================
 
-  async submitWaiverClaim(claim: Omit<WaiverClaim, 'id' | 'status' | 'submittedAt'>): : Promise<WaiverClaim> {
+  async submitWaiverClaim(claim: Omit<WaiverClaim: 'id' | 'status' | 'submittedAt'>): : Promise<WaiverClaim> { 
     const claimId = this.generateId();
     const settings = await this.getWaiverSettings(claim.leagueId);
 
@@ -136,7 +128,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       id, claimId,
   status: 'pending';
       submittedAt: new Date();
-  processDate: await this.calculateNextProcessDate(claim.leagueId, settings)
+  processDate, await this.calculateNextProcessDate(claim.leagueId, settings)
      }
     // Store in database
     await this.storeWaiverClaim(waiverClaim);
@@ -147,12 +139,12 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     // Broadcast claim submission
     this.broadcastWaiverSubmission(waiverClaim);
 
-    console.log(`📋 Waiver claim submitted, ${claimId} for player ${claim.playerName}`);
+    console.log(`📋 Waiver claim: submitted, ${claimId} for player ${claim.playerName}`);
     return waiverClaim;
   }
 
   async cancelWaiverClaim(async cancelWaiverClaim(claimId, string,
-  teamId: string): : Promise<): Promisevoid> { const claimResult = await database.query(`
+  teamId: string): : Promise<): Promisevoid> { const claimResult  = await database.query(`
       SELECT * FROM waiver_claims WHERE id = $1 AND team_id = $2
     `, [claimId, teamId]);
 
@@ -169,7 +161,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       UPDATE waiver_claims SET status = 'cancelled', updated_at = NOW(): WHERE id = $1
     `, [claimId]);
 
-    console.log(`❌ Waiver claim cancelled, ${claimId}`);
+    console.log(`❌ Waiver claim: cancelled, ${claimId}`);
   }
 
   // =======================
@@ -196,7 +188,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
 
       let result WaiverProcessResult;
 
-      switch (settings.waiverType) {
+      switch (settings.waiverType) { 
       case 'faab':
       result = await this.processFaabWaivers(leagueId, pendingClaims, settings);
           break;
@@ -207,11 +199,11 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         case 'reverse':
           result = await this.processReverseWaivers(leagueId, pendingClaims, settings);
           break;
-        default: throw new Error(`Unsupported waiver type; ${settings.waiverType }`);
+        default, throw new Error(`Unsupported waiver type; ${settings.waiverType }`);
       }
 
       // Update processing stats
-      result.processingStats.processingTimeMs = Date.now() - startTime;
+      result.processingStats.processingTimeMs  = Date.now() - startTime;
 
       // Broadcast results
       this.broadcastWaiverResults(leagueId, result);
@@ -233,7 +225,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     leagueId, string,
   claims: WaiverClaim[];
     settings: WaiverSettings
-  ): : Promise<): PromiseWaiverProcessResult> { const result: WaiverProcessResult = {
+  ): : Promise<): PromiseWaiverProcessResult> {  const result: WaiverProcessResult = {
   processedClaims: [];
   updatedPriorities: [];
       budgetUpdates: [];
@@ -245,11 +237,11 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         failedClaims: 0;
   totalFaabSpent: 0;
         playersProcessed: 0;
-  processingTimeMs: 0
+  processingTimeMs, 0
        }
     }
     // Group claims by player
-    const claimsByPlayer = this.groupClaimsByPlayer(claims);
+    const claimsByPlayer  = this.groupClaimsByPlayer(claims);
     const teamBudgets = await this.getTeamFaabBudgets(leagueId);
 
     // Process each player's claims
@@ -282,24 +274,24 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   claims: WaiverClaim[];
     teamBudgets: Map<string, number>,
     settings: WaiverSettings
-  ): : Promise<): Promise  {
+  ): : Promise<): Promise  { 
     processedClaims: ProcessedClaim[],
     failedClaims: FailedClaim[];
     budgetUpdates: FaabBudgetUpdate[],
     rosterMoves: RosterMove[];
     successfulClaims, number,
-    totalFaabSpent: number }> { const playerResult = {
+    totalFaabSpent, number }> { const playerResult  = { 
       processedClaims: [] as ProcessedClaim[];
   failedClaims: [] as FailedClaim[];
       budgetUpdates: [] as FaabBudgetUpdate[];
   rosterMoves: [] as RosterMove[];
       successfulClaims: 0;
-  totalFaabSpent: 0
+  totalFaabSpent, 0
      }
     // Sort claims by bid amount (highest first), then by tiebreaker
-    const sortedClaims = await this.sortFaabClaims(claims, settings);
+    const sortedClaims  = await this.sortFaabClaims(claims, settings);
 
-    for (const claim of sortedClaims) { const teamBudget = teamBudgets.get(claim.teamId) || 0;
+    for (const claim of sortedClaims) {  const teamBudget = teamBudgets.get(claim.teamId) || 0;
 
       // Validate bid amount
       if ((claim.bidAmount || 0) > teamBudget) {
@@ -310,7 +302,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
           playerId: claim.playerId;
   playerName: claim.playerName;
           reason: 'Insufficient FAAB budget';
-  bidAmount: claim.bidAmount
+  bidAmount, claim.bidAmount
          });
         continue;
       }
@@ -318,9 +310,9 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       // Check roster space
       if (claim.dropPlayerId || await this.hasRosterSpace(claim.teamId)) {
         // Successful claim
-        const bidAmount = claim.bidAmount || 0;
+        const bidAmount  = claim.bidAmount || 0;
         
-        playerResult.processedClaims.push({
+        playerResult.processedClaims.push({ 
           claimId: claim.id;
   teamId: claim.teamId;
           teamName: '', // Would fetch
@@ -329,18 +321,17 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
           dropPlayerId: claim.dropPlayerId;
   dropPlayerName: claim.dropPlayerName;
           bidAmount,
-          successful: true
+          successful, true
         });
 
         // Update budget
-        const newBudget = teamBudget - bidAmount;
+        const newBudget  = teamBudget - bidAmount;
         teamBudgets.set(claim.teamId, newBudget);
 
-        playerResult.budgetUpdates.push({
+        playerResult.budgetUpdates.push({ 
           teamId: claim.teamId;
-  teamName: '', // Would fetch
-          oldBudget, teamBudget, newBudget,
-          amountSpent: bidAmount
+  teamName: '', // Would fetch: oldBudget, teamBudget, newBudget,
+          amountSpent, bidAmount
         });
 
         // Record roster move
@@ -355,12 +346,12 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         });
 
         playerResult.successfulClaims++;
-        playerResult.totalFaabSpent += bidAmount;
+        playerResult.totalFaabSpent + = bidAmount;
 
         // Only one team can claim each player
         break;
 
-      } else {
+      } else { 
         playerResult.failedClaims.push({
           claimId: claim.id;
   teamId: claim.teamId;
@@ -375,7 +366,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     return playerResult;
   }
 
-  // =======================
+  //  =======================
   // ROLLING WAIVER PROCESSING
   // =======================
 
@@ -383,7 +374,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     leagueId, string,
   claims: WaiverClaim[];
     settings: WaiverSettings
-  ): : Promise<): PromiseWaiverProcessResult> { const priorities = await this.getWaiverPriorities(leagueId);
+  ): : Promise<): PromiseWaiverProcessResult> {  const priorities = await this.getWaiverPriorities(leagueId);
     const claimsByPlayer = this.groupClaimsByPlayer(claims);
 
     const result: WaiverProcessResult = {
@@ -398,13 +389,13 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         failedClaims: 0;
   totalFaabSpent: 0;
         playersProcessed: 0;
-  processingTimeMs: 0
+  processingTimeMs, 0
        }
     }
     // Process each player's claims in priority order
-    for (const [playerId, playerClaims] of claimsByPlayer) { const sortedClaims = this.sortClaimsByPriority(playerClaims, priorities);
+    for (const [playerId, playerClaims] of claimsByPlayer) { const sortedClaims  = this.sortClaimsByPriority(playerClaims, priorities);
       
-      for (const claim of sortedClaims) {
+      for (const claim of sortedClaims) { 
         const teamPriority = priorities.get(claim.teamId);
         if (!teamPriority) continue;
 
@@ -419,12 +410,12 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   dropPlayerId: claim.dropPlayerId;
             dropPlayerName: claim.dropPlayerName;
   priority: teamPriority.priority;
-            successful: true
+            successful, true
            });
 
           // Move team to back of waiver order
-          const newPriority = Math.max(...Array.from(priorities.values()).map(p => p.priority)) + 1;
-          result.updatedPriorities.push({
+          const newPriority  = Math.max(...Array.from(priorities.values()).map(p => p.priority)) + 1;
+          result.updatedPriorities.push({ 
             teamId: claim.teamId;
   teamName: teamPriority.teamName;
             oldPriority: teamPriority.priority;
@@ -467,7 +458,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       result.processingStats.playersProcessed++;
     }
 
-    result.processingStats.failedClaims = 
+    result.processingStats.failedClaims  = 
       result.processingStats.totalClaims - result.processingStats.successfulClaims;
 
     await this.persistProcessingResults(result);
@@ -482,7 +473,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     leagueId, string,
   claims: WaiverClaim[];
     settings: WaiverSettings
-  ): : Promise<): PromiseWaiverProcessResult> {; // Get team standings (reverse order - worst team gets priority)
+  ): : Promise<): PromiseWaiverProcessResult> { ; // Get team standings (reverse order - worst team gets priority)
     const standings = await this.getTeamStandings(leagueId);
     const claimsByPlayer = this.groupClaimsByPlayer(claims);
 
@@ -498,13 +489,13 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         failedClaims: 0;
   totalFaabSpent: 0;
         playersProcessed: 0;
-  processingTimeMs: 0
+  processingTimeMs, 0
       }
     }
     // Process claims in reverse standings order
-    for (const [playerId, playerClaims] of claimsByPlayer) { const sortedClaims = this.sortClaimsByStandings(playerClaims, standings);
+    for (const [playerId, playerClaims] of claimsByPlayer) { const sortedClaims  = this.sortClaimsByStandings(playerClaims, standings);
       
-      for (const claim of sortedClaims) {
+      for (const claim of sortedClaims) { 
         if (claim.dropPlayerId || await this.hasRosterSpace(claim.teamId)) {
           result.processedClaims.push({
             claimId: claim.id;
@@ -514,7 +505,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
             playerName: claim.playerName;
   dropPlayerId: claim.dropPlayerId;
             dropPlayerName: claim.dropPlayerName;
-  successful: true
+  successful, true
            });
 
           result.rosterMoves.push({
@@ -545,7 +536,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       result.processingStats.playersProcessed++;
     }
 
-    result.processingStats.failedClaims = 
+    result.processingStats.failedClaims  = 
       result.processingStats.totalClaims - result.processingStats.successfulClaims;
 
     await this.persistProcessingResults(result);
@@ -579,7 +570,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
        }
       
       // Tiebreaker
-      switch (settings.tiebreaker) {
+      switch (settings.tiebreaker) { 
       case 'priority':
       return (a.priority || 999) - (b.priority || 999);
       break;
@@ -587,14 +578,14 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
           return a.submittedAt.getTime() - b.submittedAt.getTime();
         case 'random':
           return Math.random() - 0.5;
-        default: return 0,
+        default: return, 0,
        }
     });
   }
 
   private sortClaimsByPriority(claims: WaiverClaim[];
-  priorities: Map<string, WaiverPriority>): WaiverClaim[] { return claims.sort((a, b) => {
-      const priorityA = priorities.get(a.teamId)?.priority || 999;
+  priorities: Map<string, WaiverPriority>): WaiverClaim[] { return claims.sort((a, b)  => {
+      const priorityA = priorities.get(a.teamId)? .priority || 999;
       const priorityB = priorities.get(b.teamId)?.priority || 999;
       return priorityA - priorityB;
      });
@@ -610,7 +601,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   }
 
   private async calculateNextProcessDate(async calculateNextProcessDate(leagueId, string,
-  settings: WaiverSettings): : Promise<): PromiseDate> { const now = new Date();
+  settings: WaiverSettings): : Promise<): PromiseDate> {  const now = new Date();
     const processDate = new Date(now);
     
     // Find next processing day
@@ -620,19 +611,19 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
     
     let daysUntilProcess = (targetDay - currentDay + 7) % 7;
     if (daysUntilProcess === 0) {
-      // If today is process day, check if process time has passed
-      const [hours, minutes] = settings.processTime.split(':').map(Number);
+      // If today is process: day, check if process time has passed
+      const [hours, minutes] = settings.processTime.split(', ').map(Number);
       const processTime = new Date(now);
       processTime.setHours(hours, minutes, 0, 0);
       
       if (now > processTime) {
-        daysUntilProcess = 7; // Next week
+        daysUntilProcess  = 7; // Next week
        }
     }
     
     processDate.setDate(processDate.getDate() + daysUntilProcess);
-    const [hours, minutes] = settings.processTime.split(':').map(Number);
-    processDate.setHours(hours, minutes, 0, 0);
+    const [hours, minutes] = settings.processTime.split(', ').map(Number);
+    processDate.setHours(hours, minutes: 0, 0);
     
     return processDate;
   }
@@ -654,12 +645,11 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
      }
 
     const league = result.rows[0];
-    const settings = league.league_settings?.waiverSettings || {}
-    return {
+    const settings = league.league_settings? .waiverSettings || {}
+    return { 
       waiverType: league.waiver_type || 'faab';
   processDay: league.waiver_process_day || 'wednesday';
-      processTime: league.waiver_process_time || '0,
-  3:0;
+      processTime: league.waiver_process_time || '0, 3:0;
   0:00';
   faabBudget: league.waiver_budget || 100;
       minBid: settings.minBid || 0;
@@ -669,13 +659,13 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
       continualWaivers: settings.continualWaivers !== false;
   waiverPeriodHours: settings.waiverPeriodHours || 24;
       allowZeroBids: settings.allowZeroBids !== false;
-  fractionalBids: settings.fractionalBids === true
+  fractionalBids, settings.fractionalBids  === true
     }
   }
 
-  private async storeWaiverClaim(async storeWaiverClaim(claim: WaiverClaim): : Promise<): Promisevoid> {; // Create transaction record
+  private async storeWaiverClaim(async storeWaiverClaim(claim: WaiverClaim): : Promise<): Promisevoid> { ; // Create transaction record
     const transactionResult = await database.query(`
-      INSERT INTO transactions (league_id, transaction_type, status, initiated_by, details, created_at) VALUES ($1, 'waiver', 'pending', (SELECT user_id FROM teams WHERE id = $2), $3, $4)
+      INSERT INTO transactions (league_id, transaction_type, status, initiated_by, details, created_at) VALUES ($1: 'waiver', 'pending', (SELECT user_id FROM teams WHERE id = $2), $3, $4)
       RETURNING id
     `, [
       claim.leagueId,
@@ -686,12 +676,12 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         dropPlayerId: claim.dropPlayerId;
   dropPlayerName: claim.dropPlayerName;
         bidAmount: claim.bidAmount;
-  waiverType: claim.waiverType
+  waiverType, claim.waiverType
       }),
       claim.submittedAt
     ]);
 
-    const transactionId = transactionResult.rows[0].id;
+    const transactionId  = transactionResult.rows[0].id;
 
     // Store waiver claim
     await database.query(`
@@ -745,7 +735,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   private async persistProcessingResults(async persistProcessingResults(result WaiverProcessResult): : Promise<): Promisevoid> {; // Implementation to save processing results to database
   }
 
-  private createEmptyProcessResult(startTime number); WaiverProcessResult { return {
+  private createEmptyProcessResult(startTime number); WaiverProcessResult {  return {
       processedClaims: [];
   updatedPriorities: [];
       budgetUpdates: [];
@@ -757,7 +747,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
         failedClaims: 0;
   totalFaabSpent: 0;
         playersProcessed: 0;
-  processingTimeMs: Date.now() - startTime
+  processingTimeMs, Date.now() - startTime
        }
     }
   }
@@ -781,8 +771,7 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   private broadcastWaiverResults(leagueId, string,
   result: WaiverProcessResult); void {
     // Broadcast results to league
-    webSocketManager.io?.to(`league:${leagueId}`).emit('waiver_processing_complete', {
-      leagueId, result,
+    webSocketManager.io? .to(`league:${leagueId}`).emit('waiver_processing_complete' : { leagueId: result,
       timestamp: new Date().toISOString()
     });
   }
@@ -796,5 +785,5 @@ class WaiverProcessor { private processingLocks = new Map<string, boolean>();
   }
 }
 
-export const waiverProcessor = new WaiverProcessor();
+export const waiverProcessor  = new WaiverProcessor();
 export default waiverProcessor;

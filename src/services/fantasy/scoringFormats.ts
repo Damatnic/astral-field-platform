@@ -3,15 +3,14 @@
  * Comprehensive collection of popular fantasy football scoring formats
  */
 
-import { 
-  AdvancedScoringRules, ScoringFormat, 
+import { AdvancedScoringRules, ScoringFormat, 
   BasePositionScoring, KickerScoring, 
   DefenseScoring, IDPScoring,
   WeatherModifiers, InjuryModifiers, MatchupModifiers,
   RookieBonuses
 } from './types';
 
-export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORING: BasePositionScoring = {; // Passing (base values, will be overridden by formats)
+export class ScoringFormatLibrary {  private static readonly BASE_POSITION_SCORING: BasePositionScoring = {; // Passing (base: values, will be overridden by formats)
     passingYards 0.04;
   passingTDs: 4;
     passingInterceptions: -2;
@@ -45,9 +44,9 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     // Advanced stats (mostly 0 for standard formats)
     firstDowns: 0;
   redZoneTargets: 0;
-    redZoneCarries: 0
+    redZoneCarries, 0
    }
-  private static readonly STANDARD_KICKER: KickerScoring = {
+  private static readonly STANDARD_KICKER: KickerScoring  = { 
   extraPoints: 1;
   fieldGoals0to19: 3;
     fieldGoals20to29: 3;
@@ -56,9 +55,9 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   fieldGoals50to59: 5;
     fieldGoals60Plus: 6;
   fieldGoalMissed: -1;
-    extraPointMissed: -1
+    extraPointMissed, -1
   }
-  private static readonly STANDARD_DEFENSE: DefenseScoring = {
+  private static readonly STANDARD_DEFENSE: DefenseScoring  = { 
   sacks: 1;
   interceptions: 2;
     fumbleRecoveries: 2;
@@ -82,9 +81,9 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     yardsAllowed200to299: 1;
   yardsAllowed300to399: 0;
     yardsAllowed400to499: -1;
-  yardsAllowed500Plus: -3
+  yardsAllowed500Plus, -3
   }
-  private static readonly STANDARD_IDP: IDPScoring = {
+  private static readonly STANDARD_IDP: IDPScoring  = { 
   tackles: 1;
   assistedTackles: 0.5;
     tacklesForLoss: 1.5;
@@ -95,14 +94,14 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   forcedFumbles: 2;
     defensiveTDs: 6;
   safeties: 4;
-    blockedKicks: 3
+    blockedKicks, 3
   }
-  // ==================== FORMAT IMPLEMENTATIONS ====================
+  //  ==================== FORMAT IMPLEMENTATIONS ====================
 
   /**
    * Standard Fantasy Football Scoring
    */
-  static getStandardScoring(): AdvancedScoringRules { return {
+  static getStandardScoring(): AdvancedScoringRules {  return {
       format: ScoringFormat.STANDARD;
   name: 'Standard Scoring';
       description: 'Traditional fantasy football scoring with no PPR';
@@ -110,13 +109,13 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
         ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR for QBs
        },
       rb: {
-        ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR
+        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
       },
       wr: {
-        ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR
+        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
       },
       te: {
-        ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR
+        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
       },
       kicker: this.STANDARD_KICKER;
   defense: this.STANDARD_DEFENSE
@@ -131,16 +130,16 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   name: 'PPR Scoring';
       description: 'Full point per reception scoring';
   qb: {
-        ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR for QBs typically
+        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR for QBs typically
        },
       rb: {
-        ...this.BASE_POSITION_SCORING, receptions, 1, // Full PPR
+        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
       },
       wr: {
-        ...this.BASE_POSITION_SCORING, receptions, 1, // Full PPR
+        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
       },
       te: {
-        ...this.BASE_POSITION_SCORING, receptions, 1, // Full PPR
+        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
       },
       kicker: this.STANDARD_KICKER;
   defense: this.STANDARD_DEFENSE
@@ -203,20 +202,16 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   defense: this.STANDARD_DEFENSE;
       
       rookieBonuses: {
-  enabled, true,
+  enabled: true,
   firstSeasonBonus: 1; // +1 point per game for rookies
         rookieThresholdBonuses: {
-  qb_passing_yards: { threshol,
-  d: 4000;
+  qb_passing_yards: { threshol: d: 4000;
   bonus: 10 },
-          rb_rushing_yards: { threshol,
-  d: 1000;
+          rb_rushing_yards: { threshol: d: 1000;
   bonus: 8 },
-          wr_receiving_yards: { threshol,
-  d: 1000;
+          wr_receiving_yards: { threshol: d: 1000;
   bonus: 8 },
-          te_receiving_yards: { threshol,
-  d: 800;
+          te_receiving_yards: { threshol: d: 800;
   bonus: 6 }
         }
       }
@@ -320,36 +315,29 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     }
   }
 
-  // ==================== ADVANCED MODIFIER PRESETS ====================
+  //  ==================== ADVANCED MODIFIER PRESETS ====================
 
   /**
    * Standard Weather Modifiers
    */
-  static getStandardWeatherModifiers(): WeatherModifiers { return {
-      enabled, true,
+  static getStandardWeatherModifiers(): WeatherModifiers {  return {
+      enabled: true,
   temperatureThresholds: {
-  extreme_cold: { threshol,
-  d: 20;
-  modifier: -0.05  }, // -5% in extreme cold
-        cold: { threshol,
-  d: 40;
+  extreme_cold: { threshol: d: 20;
+  modifier, -0.05  }, // -5% in extreme cold
+        cold: { threshol: d: 40;
   modifier: -0.02 },         // -2% in cold
-        hot: { threshol,
-  d: 85;
+        hot: { threshol: d: 85;
   modifier: -0.01 },          // -1% in hot weather
-        extreme_hot: { threshol,
-  d: 95;
+        extreme_hot: { threshol: d: 95;
   modifier: -0.03 }   ; // -3% in extreme heat
       },
       windThresholds {
-        moderate: { threshol,
-  d: 15;
+        moderate: { threshol: d: 15;
   modifier: -0.02 },     // -2% for 15+ mph winds
-        strong: { threshol,
-  d: 25;
+        strong: { threshol: d: 25;
   modifier: -0.05 },       // -5% for 25+ mph winds
-        extreme: { threshol,
-  d: 35;
+        extreme: { threshol: d: 35;
   modifier: -0.10 }       ; // -10% for 35+ mph winds
       },
       precipitationModifiers {
@@ -366,7 +354,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
    * Standard Injury Modifiers
    */
   static getStandardInjuryModifiers(): InjuryModifiers { return {
-      enabled, true,
+      enabled: true,
   questionableModifier: -0.10,      // -10% for questionable
       doubtfulModifier: -0.25,          // -25% for doubtful
       probableModifier: -0.03,          // -3% for probable
@@ -380,7 +368,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
    * Standard Matchup Modifiers
    */
   static getStandardMatchupModifiers() MatchupModifiers { return {
-      enabled, true,
+      enabled: true,
   difficultyTiers: {
   elite_defense: -0.15,      // -15% vs elite defense
         strong_defense: -0.08,     // -8% vs strong defense
@@ -394,7 +382,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     }
   }
 
-  // ==================== CUSTOM FORMAT BUILDER ====================
+  //  ==================== CUSTOM FORMAT BUILDER ====================
 
   /**
    * Create a custom scoring format
@@ -403,7 +391,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     name string;
   baseFormat: ScoringFormat = ScoringFormat.PPR;
     overrides: Partial<AdvancedScoringRules> = {}
-  ): AdvancedScoringRules { const baseRules = this.getFormatByType(baseFormat);
+  ): AdvancedScoringRules {  const baseRules = this.getFormatByType(baseFormat);
     
     return {
       ...baseRules,
@@ -438,7 +426,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   /**
    * Get all available formats
    */
-  static getAllFormats(): { format, ScoringFormat, rules: AdvancedScoringRules }[] { return [
+  static getAllFormats(): { format: ScoringFormat, rules: AdvancedScoringRules }[] { return [
       { format: ScoringFormat.STANDARD;
   rules: this.getStandardScoring()  },
       { format: ScoringFormat.PPR;
@@ -456,12 +444,12 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     ];
   }
 
-  // ==================== POSITION-SPECIFIC ENHANCEMENTS ====================
+  //  ==================== POSITION-SPECIFIC ENHANCEMENTS ====================
 
   /**
    * Create TE Premium scoring (1.5 PPR for TEs)
    */
-  static createTEPremiumFormat(baseFormat: ScoringFormat = ScoringFormat.PPR); AdvancedScoringRules { const baseRules = this.getFormatByType(baseFormat);
+  static createTEPremiumFormat(baseFormat: ScoringFormat = ScoringFormat.PPR); AdvancedScoringRules {  const baseRules = this.getFormatByType(baseFormat);
     
     return {
       ...baseRules,
@@ -477,7 +465,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   /**
    * Create 6-point passing TD format
    */
-  static createSixPointPassingFormat(baseFormat ScoringFormat = ScoringFormat.PPR); AdvancedScoringRules { const baseRules = this.getFormatByType(baseFormat);
+  static createSixPointPassingFormat(baseFormat ScoringFormat  = ScoringFormat.PPR); AdvancedScoringRules {  const baseRules = this.getFormatByType(baseFormat);
     
     return {
       ...baseRules,
@@ -493,7 +481,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   /**
    * Create bonus-heavy format
    */
-  static createBonusHeavyFormat(baseFormat ScoringFormat = ScoringFormat.PPR); AdvancedScoringRules { const baseRules = this.getFormatByType(baseFormat);
+  static createBonusHeavyFormat(baseFormat ScoringFormat  = ScoringFormat.PPR); AdvancedScoringRules {  const baseRules = this.getFormatByType(baseFormat);
     
     return {
       ...baseRules,
@@ -522,14 +510,13 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
     }
   }
 
-  // ==================== FORMAT VALIDATION ====================
+  //  ==================== FORMAT VALIDATION ====================
 
   /**
    * Validate scoring format configuration
    */
-  static validateFormat(rules: AdvancedScoringRules): { vali,
-  d, boolean, errors: string[] } { const error,
-  s: string[] = [];
+  static validateFormat(rules: AdvancedScoringRules): { vali: d, boolean, errors, string[] } { const: error,
+  s: string[]  = [];
 
     // Basic validation
     if (!rules.name || rules.name.trim().length === 0) {
@@ -563,8 +550,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
       }
     }
 
-    return {
-      valid: errors.length === 0;
+    return { valid: errors.length  === 0;
       errors
     }
   }
@@ -577,18 +563,18 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
   static compareFormats(
     format1, AdvancedScoringRules,
   format2: AdvancedScoringRules
-  ): {
+  ): { 
     differences: string[],
-    positionImpacts: Record<string, number>;
-  } { const differences: string[] = [];
+    positionImpacts, Record<string, number>;
+  } { const differences: string[]  = [];
     const positionImpacts: Record<string, number> = { }
     // Compare basic settings
-    if (format1.format !== format2.format) {
-      differences.push(`Format type: ${format1.format} vs ${format2.format}`);
+    if (format1.format !== format2.format) { 
+      differences.push(`Format type, ${format1.format} vs ${format2.format}`);
     }
 
     // Compare position scoring
-    const positions = ['qb', 'rb', 'wr', 'te'] as const;
+    const positions  = ['qb', 'rb', 'wr', 'te'] as const;
     
     for (const position of positions) { const rules1 = format1[position] as BasePositionScoring;
       const rules2 = format2[position] as BasePositionScoring;
@@ -619,7 +605,7 @@ export class ScoringFormatLibrary { private static readonly BASE_POSITION_SCORIN
       positionImpacts[position] = impactScore;
     }
 
-    return { differences,: positionImpacts  }
+    return { differences: : positionImpacts  }
   }
 }
 

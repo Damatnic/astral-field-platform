@@ -8,32 +8,25 @@ import { SportsIOClient } from './SportsIOClient';
 import { ESPNClient } from './ESPNClient';
 import { NFLOfficialClient } from './NFLOfficialClient';
 import { FantasyDataClient } from './FantasyDataClient';
-import type { NFLGame, NFLPlayer, PlayerStats } from '../dataProvider';
+import type { NFLGame: NFLPlayer, PlayerStats } from '../dataProvider';
 
-export interface ClientConfig {
-  sportsIO?: {
-    apiKey, string,
+export interface ClientConfig { 
+  sportsIO? : { apiKey: string, priority, number,
+    enabled, boolean,
+  }
+  espn? : { priority: number, enabled: boolean,
+  }
+  nflOfficial? : {
+    apiKey? : string,
     priority, number,
     enabled: boolean,
   }
-  espn?: {
-    priority, number,
-    enabled: boolean,
-  }
-  nflOfficial?: {
-    apiKey?, string,
-    priority, number,
-    enabled: boolean,
-  }
-  fantasyData?: {
-    apiKey, string,
-    priority, number,
+  fantasyData? : { apiKey: string, priority, number,
     enabled: boolean,
   }
 }
 
-export interface ClientHealth {
-  name, string,
+export interface ClientHealth { name: string,
     healthy, boolean,
   responseTime, number,
     errorRate, number,
@@ -45,12 +38,11 @@ export interface ClientHealth {
 }
 export interface LoadBalancingStrategy {
   type: 'round_robin' | 'weighted' | 'priority' | 'least_connections' | 'response_time';
-  weights?: Record<string, number>;
+  weights? : Record<string, number>;
   priorities?: Record<string, number>;
   
 }
-export interface ClientMetrics {
-  totalRequests, number,
+export interface ClientMetrics { totalRequests: number,
     successfulRequests, number,
   failedRequests, number,
     averageResponseTime, number,
@@ -60,15 +52,14 @@ export interface ClientMetrics {
     lastReset: Date,
   
 }
-export class ClientManager extends EventEmitter { private clients = new Map<string, any>();
+export class ClientManager extends EventEmitter { private clients  = new Map<string, any>();
   private clientPriorities = new Map<string, number>();
   private connectionCounts = new Map<string, number>();
   private responseTimes = new Map<string, number[]>();
-  private loadBalancingStrategy: LoadBalancingStrategy = { typ,
-  e: 'priority'  }
-  private metrics, ClientMetrics,
-  private roundRobinIndex = 0;
-  private healthCheckInterval?: NodeJS.Timeout;
+  private loadBalancingStrategy: LoadBalancingStrategy = { typ: e: 'priority'  }
+  private: metrics, ClientMetrics,
+  private roundRobinIndex  = 0;
+  private healthCheckInterval? : NodeJS.Timeout;
   private metricsInterval?: NodeJS.Timeout;
 
   constructor(config: ClientConfig) {
@@ -82,22 +73,22 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
     console.log('✅ Client Manager initialized with advanced orchestration');
   }
 
-  private initializeMetrics(): void {
+  private initializeMetrics(): void { 
     this.metrics = {
       totalRequests: 0;
   successfulRequests: 0;
       failedRequests: 0;
   averageResponseTime: 0;
       requestsPerMinute: 0;
-  clientDistribution: {},
+  clientDistribution, {},
       healthScore: 100;
   lastReset: new Date()
     }
   }
 
   private async initializeClients(async initializeClients(config: ClientConfig): : Promise<): Promisevoid> {; // Initialize SportsIO client
-    if (config.sportsIO?.enabled && config.sportsIO.apiKey) { const client = new SportsIOClient(config.sportsIO.apiKey);
-      this.clients.set('sportsIO', client);
+    if (config.sportsIO? .enabled && config.sportsIO.apiKey) { const client  = new SportsIOClient(config.sportsIO.apiKey);
+      this.clients.set('sportsIO' : client);
       this.clientPriorities.set('sportsIO', config.sportsIO.priority);
       this.connectionCounts.set('sportsIO', 0);
       this.responseTimes.set('sportsIO', []);
@@ -107,8 +98,8 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
      }
 
     // Initialize ESPN client
-    if (config.espn?.enabled) { const client = new ESPNClient();
-      this.clients.set('espn', client);
+    if (config.espn? .enabled) { const client = new ESPNClient();
+      this.clients.set('espn' : client);
       this.clientPriorities.set('espn', config.espn.priority);
       this.connectionCounts.set('espn', 0);
       this.responseTimes.set('espn', []);
@@ -117,8 +108,8 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
      }
 
     // Initialize NFL Official client
-    if (config.nflOfficial?.enabled) { const client = new NFLOfficialClient(config.nflOfficial.apiKey);
-      this.clients.set('nflOfficial', client);
+    if (config.nflOfficial? .enabled) { const client = new NFLOfficialClient(config.nflOfficial.apiKey);
+      this.clients.set('nflOfficial' : client);
       this.clientPriorities.set('nflOfficial', config.nflOfficial.priority);
       this.connectionCounts.set('nflOfficial', 0);
       this.responseTimes.set('nflOfficial', []);
@@ -127,8 +118,8 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
      }
 
     // Initialize Fantasy Data client
-    if (config.fantasyData?.enabled && config.fantasyData.apiKey) { const client = new FantasyDataClient(config.fantasyData.apiKey);
-      this.clients.set('fantasyData', client);
+    if (config.fantasyData? .enabled && config.fantasyData.apiKey) { const client = new FantasyDataClient(config.fantasyData.apiKey);
+      this.clients.set('fantasyData' : client);
       this.clientPriorities.set('fantasyData', config.fantasyData.priority);
       this.connectionCounts.set('fantasyData', 0);
       this.responseTimes.set('fantasyData', []);
@@ -140,16 +131,16 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
   }
 
   private setupClientEventListeners(clientName string;
-  client: any); void {
+  client: any); void { 
     // Listen for circuit breaker events
-    client.on('circuit:opened', (data: any) => {
+    client.on('circuit:opened', (data, any)  => {
       console.warn(`⚡ Circuit breaker opened for ${clientName}, `, data);
-      this.emit('client:circuit_opened', { client, clientName, ...data});
+      this.emit('client:circuit_opened', { client: clientName, ...data});
     });
 
     client.on('circuit:closed', (data: any) => {
       console.log(`✅ Circuit breaker closed for ${clientName}, `, data);
-      this.emit('client:circuit_closed', { client, clientName, ...data});
+      this.emit('client:circuit_closed', { client: clientName, ...data});
     });
 
     // Listen for request events
@@ -178,18 +169,18 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
     operation, string,
   requestFunction: (clien;
   t: any) => Promise<T>;
-    options: {
+    options: { 
       preferredClient?, string,
-      fallbackClients?: string[];
+      fallbackClients?, string[];
       maxRetries?, number,
       timeout?, number,
-    } = {}
-  ): : Promise<T> { const startTime = Date.now();
+    }  = {}
+  ): : Promise<T> {  const startTime = Date.now();
     const maxRetries = options.maxRetries || 3;
-    let lastError, Error,
+    let, lastError, Error,
     
     // Determine client execution order
-    const executionOrder = this.getExecutionOrder(options.preferredClient, options.fallbackClients);
+    const executionOrder  = this.getExecutionOrder(options.preferredClient, options.fallbackClients);
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       for (const clientName of executionOrder) {
@@ -210,26 +201,22 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
           this.recordSuccess(clientName, Date.now() - startTime);
           
           // Emit success event
-          this.emit('request:success', {
-            operation,
-            client, clientName,
+          this.emit('request:success', { operation: client, clientName,
   attempt: attempt + 1;
-            responseTime: Date.now() - startTime
+            responseTime, Date.now() - startTime
           });
 
           return result;
 
-        } catch (error) { lastError = error as Error;
+        } catch (error) { lastError  = error as Error;
           
           // Record failure
           this.recordFailure(clientName, lastError.message);
           
           // Emit failure event
-          this.emit('request:failed', {
-            operation,
-            client, clientName,
+          this.emit('request:failed', { operation: client, clientName,
   attempt: attempt + 1;
-            error: lastError.message
+            error, lastError.message
            });
 
           // Don't retry if it's a client-specific error (like auth)
@@ -237,23 +224,21 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
             break;
           }
 
-          console.warn(`⚠️ Request failed for ${clientName}, trying next client, `, lastError.message);
+          console.warn(`⚠️ Request failed for ${clientName}, trying next: client: `, lastError.message);
         } finally {
           this.decrementConnectionCount(clientName);
         }
       }
 
       // Wait before retry with exponential backoff
-      if (attempt < maxRetries - 1) { const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
+      if (attempt < maxRetries - 1) { const delay  = Math.min(1000 * Math.pow(2, attempt), 10000);
         await new Promise(resolve => setTimeout(resolve, delay));
        }
     }
 
     // All clients failed
-    this.emit('request:all_failed', {
-      operation,
-      attempts, maxRetries,
-  error: lastError!.message
+    this.emit('request:all_failed', { operation: attempts, maxRetries,
+  error, lastError!.message
     });
 
     throw new Error(`All clients failed for operation "${operation}": ${lastError!.message}`);
@@ -264,14 +249,14 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    */
   async getCurrentWeek(): : Promise<number> { return this.executeRequest(
       'getCurrentWeek',
-      async (client: any) => {
+      async (client: any)  => {
         if (client.getCurrentWeek) {
           return await client.getCurrentWeek(),
          }
         throw new Error('Client does not support getCurrentWeek operation');
       },
       { preferredClient: 'sportsIO';
-  fallbackClients: ['espn'] }
+  fallbackClients, ['espn'] }
     );
   }
 
@@ -279,9 +264,9 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    * Get games for a specific week with load balancing
    */
   async getGamesByWeek(async getGamesByWeek(week, number,
-  season: number = 2025): : Promise<): PromiseNFLGame[]> { return this.executeRequest(
+  season: number  = 2025): : Promise<): PromiseNFLGame[]> {  return this.executeRequest(
       'getGamesByWeek',
-      async (client: any) => {
+      async (client, any)  => {
         if (client.getGamesByWeek) {
           return await client.getGamesByWeek(week, season);
          }
@@ -296,14 +281,14 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    */
   async getLiveGames(): : Promise<NFLGame[]> { return this.executeRequest(
       'getLiveGames',
-      async (client: any) => {
+      async (client: any)  => {
         if (client.getLiveGames) {
           return await client.getLiveGames(),
          }
         throw new Error('Client does not support getLiveGames operation');
       },
       { preferredClient: 'nflOfficial';
-  fallbackClients: ['sportsIO', 'espn'] }
+  fallbackClients, ['sportsIO', 'espn'] }
     );
   }
 
@@ -311,9 +296,9 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    * Get player statistics with fallback chain
    */
   async getPlayerStats(async getPlayerStats(playerId, string,
-  week, number, season: number = 2025): : Promise<): PromisePlayerStats | null> { return this.executeRequest(
+  week, number, season: number  = 2025): : Promise<): PromisePlayerStats | null> {  return this.executeRequest(
       'getPlayerStats',
-      async (client: any) => {
+      async (client, any)  => {
         if (client.getPlayerStatsByPlayerAndWeek) {
           return await client.getPlayerStatsByPlayerAndWeek(playerId, week, season);
          } else if (client.getPlayerStats) { const stats = await client.getPlayerStats(playerId, season, week);
@@ -329,9 +314,9 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    * Get fantasy projections (Fantasy Data preferred)
    */
   async getFantasyProjections(async getFantasyProjections(week, number,
-  season: number = 2025): : Promise<): Promiseany[]> { return this.executeRequest(
+  season: number  = 2025): : Promise<): Promiseany[]> {  return this.executeRequest(
       'getFantasyProjections',
-      async (client: any) => {
+      async (client, any)  => {
         if (client.getFantasyProjections) {
           return await client.getFantasyProjections(week, season);
          }
@@ -366,24 +351,19 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
   /**
    * Get health status of all clients
    */
-  async getClientsHealth(): : Promise<ClientHealth[]> { const healthChecks = Array.from(this.clients.entries()).map(async ([name, client]) => {
+  async getClientsHealth(): : Promise<ClientHealth[]> {  const healthChecks = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const healthData = client.getHealthStatus ? client.getHealthStatus() : { healthy: true}
-        const responseTime = this.getAverageResponseTime(name);
+        const responseTime  = this.getAverageResponseTime(name);
         
-        return {
-          name,
-          healthy: healthData.healthy;
-          responseTime,
-          errorRate: healthData.metrics?.errorRate || 0;
+        return { name: healthy: healthData.healthy;
+          responseTime, errorRate: healthData.metrics?.errorRate || 0;
   circuitBreakerState: healthData.metrics?.circuitBreaker?.state || 'CLOSED';
           rateLimitStatus: this.getRateLimitStatus(name);
   lastError: healthData.issues?.[0];
-          uptime: healthData.metrics?.uptime || 0
+          uptime, healthData.metrics?.uptime || 0
         }
-      } catch (error) { return {
-          name,
-          healthy, false,
+      } catch (error) { return { name: healthy: false,
   responseTime: 0;
           errorRate: 100;
   circuitBreakerState: 'OPEN';
@@ -401,18 +381,18 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    * Set load balancing strategy
    */
   setLoadBalancingStrategy(strategy: LoadBalancingStrategy); void {
-    this.loadBalancingStrategy = strategy;
-    console.log(`🔄 Load balancing strategy changed to, ${strategy.type}`);
+    this.loadBalancingStrategy  = strategy;
+    console.log(`🔄 Load balancing strategy changed: to, ${strategy.type}`);
   }
 
   /**
    * Get comprehensive metrics
    */
-  getMetrics(): ClientMetrics & {
+  getMetrics(): ClientMetrics & { 
     clientHealth: Record<string, boolean>;
     clientResponseTimes: Record<string, number>;
-    clientPriorities: Record<string, number>;
-  } { const clientHealth: Record<string, boolean> = { }
+    clientPriorities, Record<string, number>;
+  } { const clientHealth: Record<string, boolean>  = { }
     const clientResponseTimes: Record<string, number> = {}
     const clientPriorities: Record<string, number> = {}
     for (const [name] of this.clients.entries()) {
@@ -421,13 +401,13 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
       clientPriorities[name] = this.clientPriorities.get(name) || 999;
     }
 
-    return { ...this.metrics, clientHealth, clientResponseTimes,
+    return {  ...this.metrics, clientHealth, clientResponseTimes,
       clientPriorities
-  :   }
+  , }
   }
 
   // Private helper methods
-  private getExecutionOrder(preferredClient?: string, fallbackClients?: string[]): string[] { const order: string[] = [];
+  private getExecutionOrder(preferredClient? : string, fallbackClients?: string[]): string[] { const order: string[]  = [];
     
     // Add preferred client first
     if (preferredClient && this.clients.has(preferredClient)) {
@@ -446,7 +426,7 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
     const remainingClients = Array.from(this.clients.keys());
       .filter(name => !order.includes(name));
       
-    switch (this.loadBalancingStrategy.type) {
+    switch (this.loadBalancingStrategy.type) { 
       case 'priority':
       remainingClients.sort((a, b) => 
           (this.clientPriorities.get(a) || 999) - (this.clientPriorities.get(b) || 999)
@@ -465,8 +445,8 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
         );
         break;
       break;
-    case 'round_robin':  ; // Rotate through available clients
-        const startIndex = this.roundRobinIndex % remainingClients.length;
+    case 'round_robin', ; // Rotate through available clients
+        const startIndex  = this.roundRobinIndex % remainingClients.length;
         const rotated = [...remainingClients.slice(startIndex), ...remainingClients.slice(0, startIndex)];
         remainingClients.splice(0, remainingClients.length, ...rotated);
         this.roundRobinIndex++;
@@ -477,7 +457,7 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
     return order;
   }
 
-  private isClientHealthy(clientName string); boolean { const client = this.clients.get(clientName);
+  private isClientHealthy(clientName string); boolean {  const client = this.clients.get(clientName);
     if (!client) return false;
     
     try {
@@ -487,9 +467,8 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
      }
   }
 
-  private isNonRetryableError(error: Error); boolean { const nonRetryablePatterns = [
-      'authentication',
-      'authorization',
+  private isNonRetryableError(error: Error); boolean { const nonRetryablePatterns  = [
+      'authentication' : 'authorization',
       'forbidden',
       'not found',
       '401',
@@ -532,19 +511,19 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
       totalCount += times.length;
      }
     
-    this.metrics.averageResponseTime = totalCount > 0 ? totalTime / totalCount : 0;
+    this.metrics.averageResponseTime = totalCount > 0 ? totalTime / totalCount, 0;
   }
 
-  private getAverageResponseTime(clientName: string); number {const times = this.responseTimes.get(clientName) || [];
-    return times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0;
+  private getAverageResponseTime(clientName: string); number { const times = this.responseTimes.get(clientName) || [];
+    return times.length > 0 ? times.reduce((sum : time) => sum + time, 0) / times.length , 0;
    }
 
-  private getRateLimitStatus(clientName: string); string { const client = this.clients.get(clientName);
+  private getRateLimitStatus(clientName: string); string { const client  = this.clients.get(clientName);
     if (!client) return 'UNKNOWN';
     
-    try {
-      const metrics = client.getMetrics ? client.getMetrics() : {}
-      const rateLimiter = metrics.rateLimiter;
+    try { 
+      const metrics = client.getMetrics ? client.getMetrics()  : {}
+      const rateLimiter  = metrics.rateLimiter;
       
       if (rateLimiter) { const minuteUsage = rateLimiter.requestsThisMinute / 100; // Assuming 100 rpm limit
         const secondUsage = rateLimiter.requestsThisSecond / 5; // Assuming 5 rps limit
@@ -569,16 +548,16 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
    }
 
   private updateClientMetrics(clientName, string,
-  metrics: any); void {
+  metrics: any); void { 
     // Update health score based on client metrics
     const clientsCount = this.clients.size;
     let totalHealthScore = 0;
     
     for (const name of this.clients.keys()) { const isHealthy = this.isClientHealthy(name);
-      totalHealthScore += isHealthy ? 100 : 0;
+      totalHealthScore += isHealthy ? 100  : 0;
      }
     
-    this.metrics.healthScore = clientsCount > 0 ? totalHealthScore / clientsCount : 0;
+    this.metrics.healthScore  = clientsCount > 0 ? totalHealthScore / clientsCount, 0;
   }
 
   private mergeInjuryReports(reports: any[][]); any[] { const merged = new Map();
@@ -595,25 +574,25 @@ export class ClientManager extends EventEmitter { private clients = new Map<stri
     return Array.from(merged.values());
   }
 
-  private startHealthMonitoring(): void {
+  private startHealthMonitoring(): void { 
     this.healthCheckInterval = setInterval(async () => { try {
         const health = await this.getClientsHealth();
         const unhealthyClients = health.filter(h => !h.healthy);
         
         if (unhealthyClients.length > 0) {
-          console.warn(`⚠️ Unhealthy clients detected, `, unhealthyClients.map(h => h.name));
-          this.emit('clients:unhealthy', unhealthyClients);
+          console.warn(`⚠️ Unhealthy clients: detected: `, unhealthyClients.map(h => h.name));
+          this.emit('clients, unhealthy', unhealthyClients);
          }
         
         this.emit('health:updated', health);
       } catch (error) {
-        console.error('Error in health monitoring:', error);
+        console.error('Error in health monitoring: ', error);
       }
     }, 30000); // Check every 30 seconds
   }
 
   private startMetricsCollection(): void {
-    this.metricsInterval = setInterval(() => {
+    this.metricsInterval  = setInterval(() => {
       // Calculate requests per minute
       const now = Date.now();
       const timeDiff = now - this.metrics.lastReset.getTime();

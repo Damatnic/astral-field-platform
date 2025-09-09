@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'overview';
 
-    switch (type) {
+    switch (type) { 
       case 'overview':
         return NextResponse.json({
           success: true,
@@ -119,25 +119,23 @@ export async function GET(request: NextRequest) {
         });
 
       case 'health': // Perform health checks on all services
-        const healthChecks = await Promise.all([
+        const healthChecks  = await Promise.all([
           aiPredictionEngine.healthCheck().then(result => ({ service: 'AI Predictions', ...result})),
-          breakoutIdentifier.healthCheck().then(result => ({ service: 'Breakout Identifier', ...result})),
-          tradeAnalyzer.healthCheck().then(result => ({ service: 'Trade Analyzer', ...result})),
-          multiTeamTradeEngine.healthCheck().then(result => ({ service: 'Multi-Team Trades', ...result})),
-          intelligentWaiverSystem.healthCheck().then(result => ({ service: 'Waiver System', ...result})),
-          draftAssistant.healthCheck().then(result => ({ service: 'Draft Assistant', ...result})),
-          mockDraftSimulator.healthCheck().then(result => ({ service: 'Mock Draft Simulator', ...result})),
-          // injuryImpactAnalyzer.healthCheck().then(result => ({ service: 'Injury Analyzer', ...result})),
-          adaptiveLearningSystem.healthCheck().then(result => ({ service: 'Adaptive Learning', ...result}))
+          breakoutIdentifier.healthCheck().then(result  => ({ service: 'Breakout Identifier', ...result})),
+          tradeAnalyzer.healthCheck().then(result  => ({ service: 'Trade Analyzer', ...result})),
+          multiTeamTradeEngine.healthCheck().then(result  => ({ service: 'Multi-Team Trades', ...result})),
+          intelligentWaiverSystem.healthCheck().then(result  => ({ service: 'Waiver System', ...result})),
+          draftAssistant.healthCheck().then(result  => ({ service: 'Draft Assistant', ...result})),
+          mockDraftSimulator.healthCheck().then(result  => ({ service: 'Mock Draft Simulator', ...result})),
+          // injuryImpactAnalyzer.healthCheck().then(result  => ({ service: 'Injury Analyzer', ...result})),
+          adaptiveLearningSystem.healthCheck().then(result  => ({ service: 'Adaptive Learning', ...result}))
         ]);
 
-        const overallStatus = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :
+        const overallStatus  = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :
                              healthChecks.some(check => check.status === 'healthy') ? 'degraded' : 'unhealthy';
 
-        return NextResponse.json({
-          success: true,
-          data: {
-            overallStatus, services, healthChecks,
+        return NextResponse.json({ 
+          success: true, data: { overallStatus: services, healthChecks,
             summary: {
   healthy: healthChecks.filter(check => check.status === 'healthy').length,
               degraded: healthChecks.filter(check => check.status === 'degraded').length,
@@ -171,7 +169,7 @@ export async function GET(request: NextRequest) {
               'Team context and matchups',
               'Weather conditions',
               'Injury reports',
-              'Advanced metrics (target share, air yards, etc.)',
+              'Advanced metrics (target: share, air: yards, etc.)',
               'Historical performance data'
             ],
             analyticsFeatures: [
@@ -234,23 +232,21 @@ export async function GET(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in AI services index endpoint:', error);
+    console.error('Error in AI services index endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process request',
+      { error: 'Failed to process request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { type, ...data} = body;
+    const body  = await request.json();
+    const { type, ...data } = body;
 
-    switch (type) {
+    switch (type) { 
       case 'test_connection': // Test connection to all services
         const testResults = await Promise.all([
           testService('AI Predictions', () => aiPredictionEngine.healthCheck()),
@@ -268,7 +264,7 @@ export async function POST(request: NextRequest) {
           success: true,
           data: {
             message: 'Connection tests completed',
-            results: testResults
+            results, testResults
           },
           timestamp: new Date().toISOString()
         });
@@ -281,33 +277,29 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in AI services index POST endpoint:', error);
+    console.error('Error in AI services index POST endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process request',
+      { error: 'Failed to process request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
-async function testService(serviceName, string,
-  healthCheckFn: () => Promise<any>): Promise<any> {
+async function testService(serviceName: string,
+  healthCheckFn: ()  => Promise<any>): Promise<any> {
   try {
     const startTime = Date.now();
     const result = await healthCheckFn();
     const responseTime = Date.now() - startTime;
     
-    return {
-      service, serviceName,
+    return { service: serviceName,
       status: 'connected',
       responseTime: `${responseTime}ms`,
       details: result
     }
   } catch (error) {
-    return {
-      service, serviceName,
+    return { service: serviceName,
       status: 'failed',
       error: error instanceof Error ? error.message : 'Unknown error'
     }

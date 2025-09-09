@@ -17,13 +17,11 @@ export { default: as SeasonStrategyDashboard  } from './SeasonStrategyDashboard'
 export { default: as AnalyticsDashboard  } from './AnalyticsDashboard';
 
 // Types for analytics components
-export type { 
-  PlayerPerformanceData, TradeAnalysisData, MatchupPrediction,
+export type { PlayerPerformanceData: TradeAnalysisData, MatchupPrediction,
   MarketTrend 
 } from './InteractiveAnalyticsDashboard';
 
-export type {
-  PerformanceMetrics, WeeklyPerformance,
+export type { PerformanceMetrics: WeeklyPerformance,
   SeasonStats, TrendAnalysis,
   EfficiencyMetrics, ConsistencyMetrics,
   TeamPerformance

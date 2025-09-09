@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect: useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Activity, Trophy, TrendingUp, Target, BarChart3, PieChart,
+import { Activity, Trophy, TrendingUp, Target, BarChart3, PieChart,
   Users, Clock, Star, Zap, Shield, Brain, Calculator, ChevronDown, ChevronUp, Info, ArrowUp, ArrowDown, AlertTriangle
 } from "lucide-react";
-import { 
-  LineChart, Line, AreaChart, Area, BarChart, Bar, 
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, 
   PieChart as RechartsPieChart, Cell, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ScatterChart, Scatter
 } from 'recharts';
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
-interface AnalyticsPageProps {
-  params: Promise<{ i,
-  d: string;
+interface AnalyticsPageProps { 
+  params: Promise<{ i: d, string;
 }
 >;
 }
@@ -88,9 +85,9 @@ interface AdvancedAnalyticsData {
   }
 }
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0'];
+const COLORS  = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0'];
 
-export default function AnalyticsPage({ params }: AnalyticsPageProps) {
+export default function AnalyticsPage({ params }: AnalyticsPageProps) { 
   const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [analytics, setAnalytics] = useState<AdvancedAnalyticsData | null>(null);
@@ -101,7 +98,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     {
       id: "efficiency",
       label: "Team Efficiency",
-      icon: BarChart3
+      icon, BarChart3
     },
     {
       id: "trades",
@@ -130,15 +127,15 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     }
   ];
 
-  useEffect(() => {
+  useEffect(()  => {
     params.then((resolved) => {
       setLeagueId(resolved.id);
     });
   }, [params]);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (leagueId) {
-      // Mock data - in production, fetch from API
+      // Mock data - in: production, fetch from API
       setTimeout(() => {
         setAnalytics({
           teamEfficiency: [
@@ -148,7 +145,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               optimalPoints: 1450.2,
               actualPoints: 1341.5,
               wastedBenchPoints: 285.3,
-              startSitAccuracy: 78.2
+              startSitAccuracy, 78.2
             },
             {
               teamName: "Gridiron Gladiators",
@@ -191,7 +188,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               playerName: "Tank Dell",
               position: "WR",
               claimedBy: "Thunder Bolts",
-              cost, 25,
+              cost: 25,
               pointsScored: 89.4,
               roi: 3.58,
               hitRate: 85.2
@@ -201,7 +198,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               playerName: "Jordan Mason",
               position: "RB",
               claimedBy: "Dynasty Warriors",
-              cost, 35,
+              cost: 35,
               pointsScored: 124.7,
               roi: 3.56,
               hitRate: 92.1
@@ -235,35 +232,35 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
           ],
           weeklyTrends: [
             {
-              week, 1,
+              week: 1,
               avgScore: 112.5,
               highScore: 145.2,
               lowScore: 89.3,
               variance: 18.7
             },
             {
-              week, 2,
+              week: 2,
               avgScore: 108.3,
               highScore: 138.7,
               lowScore: 85.1,
               variance: 22.1
             },
             {
-              week, 3,
+              week: 3,
               avgScore: 115.8,
               highScore: 152.4,
               lowScore: 92.6,
               variance: 19.3
             },
             {
-              week, 4,
+              week: 4,
               avgScore: 102.1,
               highScore: 128.9,
               lowScore: 78.5,
               variance: 25.2
             },
             {
-              week, 5,
+              week: 5,
               avgScore: 118.7,
               highScore: 156.3,
               lowScore: 95.2,
@@ -301,8 +298,8 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             }
           ],
           leagueMetrics: {
-            totalTrades, 24,
-            avgTradeValue: 42.5, totalWaiverSpent, 850,
+            totalTrades: 24,
+            avgTradeValue: 42.5, totalWaiverSpent: 850,
             competitiveness: 87.3,
             parityIndex: 0.74,
             activityLevel: 92.1
@@ -313,7 +310,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     }
   }, [leagueId]);
 
-  const renderEfficiencyTab = () => (
+  const renderEfficiencyTab  = () => (
     <div className="space-y-6">
       {/* Team Efficiency Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -353,7 +350,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Team Efficiency Comparison</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={analytics?.teamEfficiency}>
+          <BarChart data={analytics? .teamEfficiency}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="teamName" angle={-45} textAnchor="end" height={80} />
             <YAxis />
@@ -384,15 +381,15 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               <tr key={index} className="border-b dark:border-gray-700">
                 <td className="py-3 font-medium text-gray-900 dark:text-white">{team.teamName}</td>
                 <td className="text-right py-3">
-                  <span className={`font-semibold ${team.efficiency >= 90 ? 'text-green-600' : team.efficiency >= 80 ? 'text-yellow-600' : 'text-red-600'}`}>
+                  <span className={ `font-semibold ${team.efficiency >= 90 ? 'text-green-600' : team.efficiency >= 80 ? 'text-yellow-600' : 'text-red-600'}`}>
                     {team.efficiency}%
                   </span>
                 </td>
-                <td className="text-right py-3 text-gray-600 dark:text-gray-400">{team.optimalPoints}</td>
+                <td className ="text-right py-3 text-gray-600 dark:text-gray-400">{team.optimalPoints}</td>
                 <td className="text-right py-3 text-gray-600 dark:text-gray-400">{team.actualPoints}</td>
                 <td className="text-right py-3 text-red-500">{team.wastedBenchPoints}</td>
                 <td className="text-right py-3">
-                  <span className={`${team.startSitAccuracy >= 75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <span className={ `${team.startSitAccuracy >= 75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {team.startSitAccuracy}%
                   </span>
                 </td>
@@ -404,7 +401,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     </div>
   );
 
-  const renderTradesTab = () => (
+  const renderTradesTab  = () => (
     <div className="space-y-6">
       {/* Trade Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -436,15 +433,13 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             <YAxis dataKey="winProbabilityChange" type="number" name="Win Probability Change %" />
             <Tooltip />
             <Scatter 
-              data={analytics?.tradeAnalysis.flatMap(trade => 
-                trade.participants.map((team, index) => ({
-                  team,
-                  pointsGained: trade.pointsGained[index],
+              data={ analytics?.tradeAnalysis.flatMap(trade => 
+                trade.participants.map((team, index) => ({ team: pointsGained: trade.pointsGained[index],
                   winProbabilityChange: trade.winProbabilityChange[index],
-                  date: trade.date.toDateString()
+                  date, trade.date.toDateString()
                 }))
               )} 
-              fill="#8884d8" 
+              fill ="#8884d8" 
             />
           </ScatterChart>
         </ResponsiveContainer>
@@ -454,7 +449,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Recent Trade Analysis</h3>
         <div className="space-y-4">
-          {analytics?.tradeAnalysis.map((trade, index) => (
+          {analytics? .tradeAnalysis.map((trade, index) => (
             <div key={index} className="border dark:border-gray-700 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-gray-900 dark:text-white">
@@ -467,14 +462,14 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <span className="text-xs text-gray-500 dark:text-gray-400">Success Rate</span>
-                  <p className={`font-semibold ${trade.successRate >= 80 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p className={ `font-semibold ${trade.successRate >= 80 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {trade.successRate}%
                   </p>
                 </div>
                 <div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Points Impact</span>
+                  <span className ="text-xs text-gray-500 dark:text-gray-400">Points Impact</span>
                   <p className="font-semibold text-blue-600">
-                    {trade.pointsGained.map(p => `+${p}`).join(', ')}
+                    {trade.pointsGained.map(p => `+${p}`).join(' : ')}
                   </p>
                 </div>
                 <div>
@@ -499,7 +494,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100">Total FAAB Spent</p>
-              <p className="text-3xl font-bold">${analytics?.leagueMetrics.totalWaiverSpent}</p>
+              <p className="text-3xl font-bold">${analytics? .leagueMetrics.totalWaiverSpent}</p>
             </div>
             <Target className="h-12 w-12 text-green-200" />
           </div>
@@ -567,11 +562,11 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                 <td className="text-right py-3">${pickup.cost}</td>
                 <td className="text-right py-3 text-blue-600">{pickup.pointsScored}</td>
                 <td className="text-right py-3">
-                  <span className={`font-semibold ${pickup.roi >= 3 ? 'text-green-600' : pickup.roi >= 2 ? 'text-yellow-600' : 'text-red-600'}`}>
+                  <span className={ `font-semibold ${pickup.roi >= 3 ? 'text-green-600' : pickup.roi >= 2 ? 'text-yellow-600' : 'text-red-600'}`}>
                     {pickup.roi.toFixed(2)}x
                   </span>
                 </td>
-                <td className="text-right py-3">
+                <td className ="text-right py-3">
                   <span className={`${pickup.hitRate >= 85 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {pickup.hitRate}%
                   </span>
@@ -615,11 +610,11 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-3">
                 <div 
                   className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${team.playoffProbability}%` }}
+                  style={ { width: `${team.playoffProbability}%` }}
                  />
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className ="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <span className="text-gray-500 dark:text-gray-400">Championship Odds</span>
                   <p className="font-semibold text-yellow-600">{team.championshipOdds.toFixed(1)}%</p>
@@ -630,12 +625,12 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                 </div>
                 <div>
                   <span className="text-gray-500 dark:text-gray-400">Strength of Schedule</span>
-                  <p className={`font-semibold ${team.strengthOfSchedule > 0.5 ? 'text-red-600' : 'text-green-600'}`}>
+                  <p className={ `font-semibold ${team.strengthOfSchedule > 0.5 ? 'text-red-600' : 'text-green-600'}`}>
                     {team.strengthOfSchedule.toFixed(2)}
                   </p>
                 </div>
-                <div className="flex items-center">
-                  {team.playoffProbability >= 80 ? (
+                <div className ="flex items-center">
+                  { team.playoffProbability >= 80 ? (
                     <div className="flex items-center text-green-600">
                       <ArrowUp className="h-4 w-4 mr-1" />
                       <span className="text-sm font-medium">Strong</span>
@@ -644,8 +639,8 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                     <div className="flex items-center text-yellow-600">
                       <span className="text-sm font-medium">Bubble</span>
                     </div>
-                  ) : (
-                    <div className="flex items-center text-red-600">
+                  )  : (
+                    <div className ="flex items-center text-red-600">
                       <ArrowDown className="h-4 w-4 mr-1" />
                       <span className="text-sm font-medium">Unlikely</span>
                     </div>
@@ -663,16 +658,15 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
         <ResponsiveContainer width="100%" height={300}>
           <RechartsPieChart>
             <Pie
-              data={analytics?.playoffSimulation.map(team => ({
-                name: team.teamName,
-                value: team.championshipOdds
+              data={ analytics? .playoffSimulation.map(team => ({
+                name: team.teamName, value, team.championshipOdds
               }))}
-              cx="50%"
+              cx ="50%"
               cy="50%"
               outerRadius={100}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, value }) => `${name} ${value?.toFixed(1) ?? 0}%`}
+              label={({ name: value }) => `${name} ${value? .toFixed(1) ?? 0}%`}
             >
               {analytics?.playoffSimulation.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -691,7 +685,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Weekly Scoring Trends</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={analytics?.weeklyTrends}>
+          <LineChart data={analytics? .weeklyTrends}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="week" />
             <YAxis />
@@ -754,7 +748,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             <div className="mt-2">
               <div className="flex justify-between text-xs">
                 <span className="text-gray-500 dark:text-gray-400">Consistency</span>
-                <span className={`font-semibold ${position.consistency >= 75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                <span className={ `font-semibold ${position.consistency >= 75 ? 'text-green-600' : 'text-yellow-600'}`}>
                   {position.consistency}%
                 </span>
               </div>
@@ -764,7 +758,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
       </div>
 
       {/* Position Performance Chart */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
+      <div className ="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Position Performance Analysis</h3>
         <ResponsiveContainer width="100%" height={300}>
           <RadarChart data={analytics?.positionAnalysis}>
@@ -787,7 +781,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             Top Performers by Position
           </h3>
           <div className="space-y-3">
-            {analytics?.positionAnalysis.map((position, index) => (
+            {analytics? .positionAnalysis.map((position, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded">
                 <div>
                   <span className="font-medium text-gray-900 dark:text-white">{position.topPerformer}</span>
@@ -805,7 +799,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             Underperformers by Position
           </h3>
           <div className="space-y-3">
-            {analytics?.positionAnalysis.map((position, index) => (
+            {analytics? .positionAnalysis.map((position, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded">
                 <div>
                   <span className="font-medium text-gray-900 dark:text-white">{position.underperformer}</span>
@@ -820,10 +814,10 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     </div>
   );
 
-  if (loading) {
+  if (loading) { 
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <LeagueNavigation leagueId={leagueId} />
+      <div className="min-h-screen bg-gray-50 dark, bg-gray-900">
+        <LeagueNavigation leagueId ={leagueId} />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/3" />
@@ -852,7 +846,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             Advanced Analytics Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Deep insights into team performance, trades, and league trends powered by advanced analytics
+            Deep insights into team: performance, trades, and league trends powered by advanced analytics
           </p>
         </div>
 
@@ -866,15 +860,14 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${activeTab === tab.id
-                        ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
-  k:text-primary-300'
-                        : 'text-gray-600 hover: text-gray-900 dark:text-gray-400 dar,
+                    className={ `flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${activeTab === tab.id
+                        ? 'bg-primary-100 text-primary-700 dark: bg-primary-900: dar, k:text-primary-300'
+                        : 'text-gray-600 hover: text-gray-900 dark:text-gray-400: dar,
   k, hove,
-  r:text-gray-200'
+  r, text-gray-200'
                      }`}
                   >
-                    <Icon className="w-4 h-4 mr-2" />
+                    <Icon className ="w-4 h-4 mr-2" />
                     {tab.label}
                   </button>
                 );

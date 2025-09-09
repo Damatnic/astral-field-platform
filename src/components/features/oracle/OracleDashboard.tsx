@@ -1,24 +1,23 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
+import: React, { useState: useEffect  } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card/Card';
 import { Button } from '@/components/ui/Button/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, TrendingUp, TrendingDown, Activity, Brain, AlertTriangle, Target, BarChart3 } from 'lucide-react';
-import { oracleService, type PlayerPrediction, type PlayerComparison } from '@/services/ai/oracleService';
+import { oracleService, type, PlayerPrediction, type PlayerComparison } from '@/services/ai/oracleService';
 import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert: AlertDescription } from '@/components/ui/alert';
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
   
 }
-const mockPlayers: Player[] = [
-  { id: 'p1',
+const mockPlayers: Player[]  = [
+  {  id: 'p1',
   name: 'Patrick Mahomes', position: 'QB',
   team: 'KC' },
   { id: 'p2',
@@ -44,7 +43,7 @@ const mockPlayers: Player[] = [
   team: 'BAL' }
 ];
 
-export default function OracleDashboard() { const [selectedWeek, setSelectedWeek] = useState(1);
+export default function OracleDashboard() { const [selectedWeek, setSelectedWeek]  = useState(1);
   const [predictions, setPredictions] = useState<PlayerPrediction[]>([]);
   const [comparisons, setComparisons] = useState<PlayerComparison[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,10 +58,10 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
   const checkServiceStatus = () => { const status = oracleService.getServiceStatus();
     setServiceStatus(status);
    }
-  const loadPredictions = async () => {
+  const loadPredictions = async () => { 
     setLoading(true);
     try { const playersToPredict = selectedPosition === 'ALL' 
-        ? mockPlayers : mockPlayers.filter(p => p.position === selectedPosition);
+        ? mockPlayers  : mockPlayers.filter(p  => p.position === selectedPosition);
 
       const preds = await Promise.all(playersToPredict.map(player =>
           oracleService.generatePlayerPrediction(
@@ -86,7 +85,7 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
         setComparisons([comp1]);
        }
     } catch (error) {
-      console.error('Failed to load predictions:', error);
+      console.error('Failed to load predictions: ', error);
     } finally {
       setLoading(false);
     }
@@ -134,8 +133,8 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
       <div className="flex gap-4">
         <div className="flex gap-2">
           <Button
-            variant={selectedPosition === 'ALL' ? 'primary' : 'outline'}
-            onClick={() => setSelectedPosition('ALL')}
+            variant={ selectedPosition === 'ALL' ? 'primary' : 'outline'}
+            onClick ={() => setSelectedPosition('ALL')}
           >
             All
           </Button>
@@ -168,28 +167,28 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
           <Button
             variant="outline"
             onClick={() => setSelectedWeek(Math.max(1, selectedWeek - 1))}
-            disabled={ selectedWeek: <= 1 }
+            disabled={ selectedWeek: < = 1 }
           >
             ← Week { selectedWeek: - 1 }
           </Button>
-          <Button variant="primary">
+          <Button variant ="primary">
             Week {selectedWeek}
           </Button>
           <Button
             variant="outline"
             onClick={() => setSelectedWeek(Math.min(17, selectedWeek + 1))}
-            disabled={ selectedWeek: >= 17 }
+            disabled={ selectedWeek: > = 17 }
           >
             Week { selectedWeek: + 1 } →
           </Button>
         </div>
-        <Button onClick={loadPredictions} disabled={loading}>
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Refresh'}
+        <Button onClick ={loadPredictions} disabled={loading}>
+          { loading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Refresh'}
         </Button>
       </div>
 
       {/* Main Content */}
-      <Tabs defaultValue="predictions" className="space-y-4">
+      <Tabs defaultValue ="predictions" className="space-y-4">
         <TabsList>
           <TabsTrigger value="predictions">Player Predictions</TabsTrigger>
           <TabsTrigger value="comparisons">Head-to-Head</TabsTrigger>
@@ -197,15 +196,15 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
         </TabsList>
 
         <TabsContent value="predictions" className="space-y-4">
-          {loading ? (
+          { loading ? (
             <Card className="p-8">
               <div className="flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
                 <p className="text-muted-foreground">Running ensemble models...</p>
               </div>
             </Card>
-          ) : (
-            <div className="grid gap-4">
+          )  : (
+            <div className ="grid gap-4">
               {predictions.map((prediction, index) => (
                 <Card key={prediction.playerId } className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
@@ -215,7 +214,7 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
                           #{ index: + 1 }
                         </div>
                         <div>
-                          <CardTitle className="text-xl">
+                          <CardTitle className ="text-xl">
                             {prediction.playerName}
                           </CardTitle>
                           <div className="flex gap-2 mt-1">
@@ -340,8 +339,8 @@ export default function OracleDashboard() { const [selectedWeek, setSelectedWeek
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className={comp.recommendation === 'player1' ? 'ring-2 ring-green-500 rounded-lg p-4' : 'p-4'}>
-                    <h3 className="font-semibold text-lg mb-2">{comp.player1.playerName}</h3>
+                  <div className={ comp.recommendation === 'player1' ? 'ring-2 ring-green-500 rounded-lg p-4' : 'p-4'}>
+                    <h3 className ="font-semibold text-lg mb-2">{comp.player1.playerName}</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Projected</span>

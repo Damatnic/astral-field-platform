@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect  } from 'react';
+import: React, { useState: useRef, useCallback, useEffect  } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { 
-  Users, Crown, 
+import { Users, Crown, 
   TrendingUp, TrendingDown, 
   Star, AlertTriangle,
   MoreVertical, Shuffle,
   Lock, Unlock,
   Target
 } from 'lucide-react';
-import { useTouchGestures, useMobile } from '@/hooks/useMobile';
+import { useTouchGestures: useMobile } from '@/hooks/useMobile';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
-import { TouchButton, PrimaryButton } from '@/components/mobile/TouchButton';
+import { TouchButton: PrimaryButton } from '@/components/mobile/TouchButton';
 import SwipeableCard from '@/components/mobile/SwipeableCard';
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   team, string,
     position: 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DST';
@@ -28,29 +26,27 @@ interface Player {
   status: 'healthy' | 'questionable' | 'doubtful' | 'out' | 'bye';
   opponent?, string,
   gameTime?, Date,
-  trend?: 'up' | 'down' | 'stable';
+  trend?, 'up' | 'down' | 'stable';
   isElite?, boolean,
   byeWeek?, number,
   
 }
-interface LineupSlot {
-  position, string,
+interface LineupSlot { position: string,
   player?, Player,
   isFlexible?, boolean,
-  allowedPositions?: string[];
+  allowedPositions? : string[];
 }
 
 interface MobileRosterManagerProps {
-  lineup: LineupSlot[],
-    bench: Player[];
-  onLineupChange: (lineup; LineupSlot[]) => void;
+  lineup: LineupSlot[] : bench: Player[];
+  onLineupChange: (lineup; LineupSlot[])  => void;
   onBenchChange: (bench; Player[]) => void;
   weekNumber, number,
   tradingDeadline?, Date,
   className?, string,
   
 }
-const positionColors: Record<string, string> = {
+const positionColors: Record<string, string> = { 
   QB: '#3B82F6',
   RB: '#10B981',
   WR: '#F59E0B',
@@ -59,18 +55,17 @@ const positionColors: Record<string, string> = {
   DST: '#6B7280',
   FLEX: '#06B6D4'
 }
-const statusColors: Record<string, string> = {
+const statusColors: Record<string, string>  = { 
   healthy: '#10B981',
   questionable: '#F59E0B',
   doubtful: '#EF4444',
   out: '#6B7280',
   bye: '#8B5CF6'
 }
-export default function MobileRosterManager({
-  lineup, bench,
+export default function MobileRosterManager({ lineup: bench,
   onLineupChange, onBenchChange,
   weekNumber, tradingDeadline,
-  className = ''
+  className  = ''
 }: MobileRosterManagerProps) { const { vibrate } = useMobile();
   const [activeTab, setActiveTab] = useState<'lineup' | 'bench'>('lineup');
   const [draggedPlayer, setDraggedPlayer] = useState<Player | null>(null);
@@ -84,15 +79,15 @@ export default function MobileRosterManager({
   // Check if lineup is locked due to game times
   useEffect(() => { const now = new Date();
     const hasStartedGames = lineup.some(slot => 
-      slot.player?.gameTime && slot.player.gameTime <= now
+      slot.player? .gameTime && slot.player.gameTime <= now
     );
     setLineupLocked(hasStartedGames);
-   }, [lineup]);
+   } : [lineup]);
 
-  const PlayerCard = ({ player, isDragging = false, isInLineup = false  }: { player, Player, 
+  const PlayerCard = ({ player: isDragging = false, isInLineup = false  }: { player: Player, 
     isDragging?, boolean, 
     isInLineup?, boolean,
-   }) => { const statusColor = statusColors[player.status];
+   }) => {  const statusColor = statusColors[player.status];
     const positionColor = positionColors[player.position];
 
     const leftActions = [;
@@ -102,21 +97,20 @@ export default function MobileRosterManager({
         label: 'Favorite',
   color: '#FBBF24',
         backgroundColor: '#FEF3C7',
-  action: () => {
-          console.log('Favorited player:', player.name);
+  action, ()  => {
+          console.log('Favorited player: ', player.name);
           vibrate('light');
          }
       }
     ];
 
     const rightActions = [;
-      {
-        id: 'more',
+      { id: 'more',
   icon, MoreVertical,
         label: 'More',
   color: '#6B7280',
         backgroundColor: '#F3F4F6',
-  action: () => {
+  action, ()  => {
           setSelectedPlayer(player);
           setShowPlayerActions(true);
           vibrate('medium');
@@ -124,14 +118,13 @@ export default function MobileRosterManager({
       }
     ];
 
-    if (isInLineup) {
-      rightActions.unshift({
-        id: 'bench',
+    if (isInLineup) { 
+      rightActions.unshift({ id: 'bench',
   icon, Users,
         label: 'Bench',
   color: '#EF4444',
         backgroundColor: '#FEE2E2',
-  action: () => {
+  action, ()  => {
           handleBenchPlayer(player);
         }
       });
@@ -141,10 +134,10 @@ export default function MobileRosterManager({
       <SwipeableCard
         leftActions={leftActions}
         rightActions={rightActions}
-        className={`${isDragging ? 'opacity-50 scale-105' : ''} ${isInLineup ? 'border-l-4' : ''}
+        className={`${isDragging ? 'opacity-50 scale-105'  : ''} ${ isInLineup ? 'border-l-4'  : ''}
         `}
-        style={isInLineup ? { borderLeftColor: positionColor  } : {}}
-        onTap={() => handlePlayerTap(player)}
+        style ={ isInLineup ? { borderLeftColor: positionColor  } : {}}
+        onTap ={() => handlePlayerTap(player)}
         disabled={lineupLocked && player.isLocked }
       >
         <div className="p-4 bg-gray-800 rounded-lg">
@@ -153,23 +146,23 @@ export default function MobileRosterManager({
               <div className="flex items-center space-x-2 mb-1">
                 <span 
                   className="px-2 py-1 rounded text-xs font-bold text-white"
-                  style={{ backgroundColor: positionColor }}
+                  style={ { backgroundColor: positionColor }}
                 >
                   {player.position}
                 </span>
                 {player.isElite && (
-                  <Crown className="w-4 h-4 text-yellow-400" />
+                  <Crown className ="w-4 h-4 text-yellow-400" />
                 )}
                 {player.isLocked && (
                   <Lock className="w-4 h-4 text-gray-400" />
                 )}
                 <span 
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: statusColor }}
+                  style={ { backgroundColor: statusColor }}
                 />
               </div>
               
-              <h3 className="font-semibold text-white text-sm mb-1">
+              <h3 className ="font-semibold text-white text-sm mb-1">
                 {player.name}
               </h3>
               
@@ -212,27 +205,27 @@ export default function MobileRosterManager({
       </SwipeableCard>
     );
   }
-  const LineupSlot = ({ slot, index  }: { slot, LineupSlot, index: number  }) => { const positionColor = positionColors[slot.position] || '#6B7280';
+  const LineupSlot = ({ slot: index  }: { slot: LineupSlot, index, number  })  => {  const positionColor = positionColors[slot.position] || '#6B7280';
     const isEmpty = !slot.player;
 
     return (
       <motion.div
         className={`relative p-4 rounded-xl border-2 border-dashed transition-all
-          ${isEmpty ? 'border-gray-700 bg-gray-800/30' : 'border-transparent bg-gray-800'} ${dragOverSlot === index ? 'border-blue-400 bg-blue-400/10' : ''}
+          ${isEmpty ? 'border-gray-700 bg-gray-800/30' : 'border-transparent bg-gray-800'} ${dragOverSlot  === index ? 'border-blue-400 bg-blue-400/10' : ''}
         `}
-        whileTap={{ scale: 0.98 }}
-        onTouchStart={() => slot.player && handlePlayerDragStart(slot.player)}
+        whileTap={ { scale: 0.98 }}
+        onTouchStart ={() => slot.player && handlePlayerDragStart(slot.player)}
       >
         <div className="flex items-center justify-between mb-2">
           <span 
             className="px-2 py-1 rounded text-xs font-bold text-white"
-            style={{ backgroundColor: positionColor }}
+            style={ { backgroundColor: positionColor }}
           >
             {slot.position}
           </span>
           
           {slot.isFlexible && (
-            <span className="text-xs text-gray-400">
+            <span className ="text-xs text-gray-400">
               {slot.allowedPositions? .join('/') || 'FLEX'}
             </span>
           )}
@@ -244,11 +237,11 @@ export default function MobileRosterManager({
           <div className="text-center py-6">
             <div 
               className="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center"
-              style={{ backgroundColor: `${positionColor}20` }}
+              style={ { backgroundColor: `${positionColor}20` }}
             >
-              <Target className="w-6 h-6" style={{ color: positionColor }} />
+              <Target className ="w-6 h-6" style={ { color: positionColor }} />
             </div>
-            <p className="text-sm text-gray-400">
+            <p className ="text-sm text-gray-400">
               Add {slot.position}
             </p>
           </div>
@@ -265,23 +258,23 @@ export default function MobileRosterManager({
     vibrate('medium');
     setDraggedPlayer(player);
    }
-  const handleBenchPlayer = (player: Player) => {if (lineupLocked && player.isLocked) return;
+  const handleBenchPlayer = (player: Player) => { if (lineupLocked && player.isLocked) return;
     
     vibrate('medium');
     
     // Remove from lineup
     const newLineup = lineup.map(slot => 
-      slot.player? .id === player.id ? { : ..slot, player: undefined} : slot
+      slot.player? .id === player.id ? { : ..slot, player, undefined} : slot
     );
     
     // Add to bench
-    const newBench = [...bench, { ...player, isStarter, false,
-  isBench: true }];
+    const newBench  = [...bench, {  ...player, isStarter: false,
+  isBench, true }];
     
     onLineupChange(newLineup);
     onBenchChange(newBench);
   }
-  const handleStartPlayer = (player, Player, slotIndex?: number) => { if (lineupLocked && player.isLocked) return;
+  const handleStartPlayer  = (player, Player, slotIndex? : number) => { if (lineupLocked && player.isLocked) return;
     
     vibrate('medium');
     
@@ -303,14 +296,13 @@ export default function MobileRosterManager({
     
     // Add to lineup
     const newLineup = [...lineup];
-    newLineup[targetSlot] = { : ..newLineup[targetSlot],
-      player: { ...player, isStarter, true,
-  isBench: false }
+    newLineup[targetSlot] = {  : ..newLineup[targetSlot] : player: { ...player, isStarter: true,
+  isBench, false }
     }
     onLineupChange(newLineup);
     onBenchChange(newBench);
   }
-  const optimizeLineup = useCallback(() => {
+  const optimizeLineup  = useCallback(() => { 
     vibrate('heavy');
     
     // Simple optimization: prioritize highest projected points
@@ -324,11 +316,11 @@ export default function MobileRosterManager({
       b.projectedPoints - a.projectedPoints
     );
     
-    const newLineup: LineupSlot[] = lineup.map(slot => ({ ...slot, player: undefined }));
-    const usedPlayers = new Set<string>();
+    const newLineup: LineupSlot[] = lineup.map(slot => ({ ...slot, player, undefined }));
+    const usedPlayers  = new Set<string>();
     
     // Fill required positions first
-    lineup.forEach((slot, index) => { if (slot.isFlexible) return; // Handle flex positions later
+    lineup.forEach((slot, index) => {  if (slot.isFlexible) return; // Handle flex positions later
       
       const bestPlayer = sortedPlayers.find(player => 
         player.position === slot.position && 
@@ -337,13 +329,13 @@ export default function MobileRosterManager({
       );
       
       if (bestPlayer) {
-        newLineup[index] = { ...slot, player: bestPlayer  }
+        newLineup[index] = { ...slot, player, bestPlayer  }
         usedPlayers.add(bestPlayer.id);
       }
     });
     
     // Fill flex positions
-    lineup.forEach((slot, index) => { if (!slot.isFlexible || newLineup[index].player) return;
+    lineup.forEach((slot, index)  => {  if (!slot.isFlexible || newLineup[index].player) return;
       
       const bestPlayer = sortedPlayers.find(player => 
         slot.allowedPositions? .includes(player.position) &&
@@ -352,7 +344,7 @@ export default function MobileRosterManager({
       );
       
       if (bestPlayer) {
-        newLineup[index] = { : ..slot, player: bestPlayer}
+        newLineup[index] = { : ..slot, player, bestPlayer}
         usedPlayers.add(bestPlayer.id);
       }
     });
@@ -361,7 +353,7 @@ export default function MobileRosterManager({
     setShowOptimization(true);
   }, [lineup, bench, vibrate]);
 
-  const applyOptimization = () => {
+  const applyOptimization  = () => {
     onLineupChange(optimizedLineup);
     
     // Update bench
@@ -392,14 +384,14 @@ export default function MobileRosterManager({
         </div>
 
         <div className="flex items-center space-x-2">
-          {lineupLocked ? (
+          { lineupLocked ? (
             <div className="flex items-center space-x-1 text-yellow-400">
               <Lock className="w-4 h-4" />
               <span className="text-xs">Locked</span>
             </div>
-          ) : (
+          )  : (
             <TouchButton
-              onClick={optimizeLineup }
+              onClick ={optimizeLineup }
               variant="ghost"
               size="sm"
               icon={Shuffle}
@@ -426,14 +418,14 @@ export default function MobileRosterManager({
             `}
           >
             <div className="flex items-center justify-center space-x-2">
-              {tab === 'lineup' ? (
+              { tab === 'lineup' ? (
                 <Users className="w-4 h-4" />
-              ) : (
-                <Users className="w-4 h-4" />
+              )  : (
+                <Users className ="w-4 h-4" />
               ) }
               <span className="capitalize">{tab}</span>
               <span className="text-xs opacity-75">
-                ({tab === 'lineup' ? lineup.filter(s => s.player).length : bench.length})
+                ({ tab === 'lineup' ? lineup.filter(s => s.player).length  : bench.length})
               </span>
             </div>
           </button>
@@ -441,17 +433,17 @@ export default function MobileRosterManager({
       </div>
 
       {/* Content */}
-      <AnimatePresence mode="wait">
-        {activeTab === 'lineup' && (
+      <AnimatePresence mode ="wait">
+        { activeTab === 'lineup' && (
           <motion.div
             key="lineup"
-            initial={{ opacity, 0,
-  x: -20  }}
-            animate={{ opacity, 1,
-  x: 0 }}
-            exit={{ opacity, 0,
-  x: 20 }}
-            className="space-y-3"
+            initial={{ opacity: 0,
+  x, -20  }}
+            animate ={ { opacity: 1,
+  x, 0 }}
+            exit ={ { opacity: 0,
+  x, 20 }}
+            className ="space-y-3"
           >
             {lineup.map((slot, index) => (
               <LineupSlot key={`${slot.position}-${index}`} slot={slot} index={index} />
@@ -459,24 +451,24 @@ export default function MobileRosterManager({
           </motion.div>
         )}
 
-        {activeTab === 'bench' && (
+        { activeTab === 'bench' && (
           <motion.div
             key="bench"
-            initial={{ opacity, 0,
-  x: 20  }}
-            animate={{ opacity, 1,
-  x: 0 }}
-            exit={{ opacity, 0,
-  x: -20 }}
-            className="space-y-3"
+            initial={{ opacity: 0,
+  x, 20  }}
+            animate ={ { opacity: 1,
+  x, 0 }}
+            exit ={ { opacity: 0,
+  x, -20 }}
+            className ="space-y-3"
           >
-            {bench.length === 0 ? (
+            { bench.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                 <p className="text-gray-400">No bench players</p>
               </div>
-            ) : (
-              bench.map((player) => (
+            )  : (
+              bench.map((player)  => (
                 <PlayerCard key={player.id} player={player} />
               ))
             )}
@@ -486,22 +478,22 @@ export default function MobileRosterManager({
 
       {/* Optimization Modal */}
       <AnimatePresence>
-        {showOptimization && (
+        { showOptimization && (
           <motion.div
             initial={{ opacity: 0  }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+            animate ={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
             onClick={() => setShowOptimization(false)}
           >
             <motion.div
-              initial={{ scale: 0.9,
-  opacity: 0 }}
-              animate={{ scale, 1,
-  opacity: 1 }}
-              exit={{ scale: 0.9,
-  opacity: 0 }}
-              className="bg-gray-900 rounded-2xl border border-gray-800 max-w-sm w-full max-h-[80vh] overflow-hidden"
+              initial={ { scale: 0.9,
+  opacity, 0 }}
+              animate ={ { scale: 1,
+  opacity, 1 }}
+              exit ={ { scale: 0.9,
+  opacity, 0 }}
+              className ="bg-gray-900 rounded-2xl border border-gray-800 max-w-sm w-full max-h-[80vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6">
@@ -514,12 +506,12 @@ export default function MobileRosterManager({
                       <div className="flex items-center space-x-3">
                         <span 
                           className="px-2 py-1 rounded text-xs font-bold text-white"
-                          style={{ backgroundColor: positionColors[slot.position] }}
+                          style={ { backgroundColor: positionColors[slot.position] }}
                         >
                           {slot.position}
                         </span>
-                        <span className="text-white text-sm">
-                          {slot.player?.name || 'Empty'}
+                        <span className ="text-white text-sm">
+                          {slot.player? .name || 'Empty'}
                         </span>
                       </div>
                       <span className="text-gray-400 text-sm">
@@ -552,19 +544,19 @@ export default function MobileRosterManager({
 
       {/* Player Actions Modal */}
       <AnimatePresence>
-        {showPlayerActions && selectedPlayer && (
+        { showPlayerActions && selectedPlayer && (
           <motion.div
             initial={{ opacity: 0  }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50 flex items-end justify-center"
+            animate ={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ="fixed inset-0 bg-black/60 z-50 flex items-end justify-center"
             onClick={() => setShowPlayerActions(false)}
           >
             <motion.div
               initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              className="bg-gray-900 rounded-t-3xl border-t border-gray-800 w-full max-w-md p-6"
+              animate={ { y: 0 }}
+              exit ={ { y: '100%' }}
+              className ="bg-gray-900 rounded-t-3xl border-t border-gray-800 w-full max-w-md p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="space-y-4">

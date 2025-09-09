@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -15,8 +15,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock waiver fairness analysis
-    const fairnessAnalysis = {
-      leagueId, overallFairness, 87,
+    const fairnessAnalysis  = { leagueId: overallFairness: 87,
   waiverOrder: [
         { teamId: "team_1",
   position: 1, waiverBudget: 85,

@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect: useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface User {
+interface User { 
   id: number;
     name: string;
   teamName: string;
     leagueId: number;
-  icon: string;
+  icon, string;
   
 }
 interface Team {
@@ -30,7 +30,7 @@ interface League {
   teams: Team[];
   
 }
-export default function DashboardPage() { const router = useRouter();
+export default function DashboardPage() { const router  = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [league, setLeague] = useState<League | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,19 +49,19 @@ export default function DashboardPage() { const router = useRouter();
        }
 
       // Get user data from localStorage (set during login)
-      const userData = {
+      const userData = { 
         id: parseInt(profileId || '1'),
   name: getUserName(parseInt(profileId || '1')),
         teamName: getTeamName(parseInt(profileId || '1')),
-  leagueId, 1,
-        icon: getIcon(parseInt(profileId || '1'))
+  leagueId: 1,
+        icon, getIcon(parseInt(profileId || '1'))
       }
       setUser(userData);
     }
     checkAuth();
   }, [router]);
 
-  useEffect(() => {
+  useEffect(()  => {
     // Load league data
     const loadLeagueData = async () => { if (!user) return;
       
@@ -71,31 +71,31 @@ export default function DashboardPage() { const router = useRouter();
         
         if (data.initialized && data.league) {
           setLeague(data.league);
-         } else {
+         } else { 
           // Create mock league data if not initialized
           setLeague({
-            id, 1,
+            id: 1,
   name: 'Astral Field Championship League',
-            season, 2025,
-  team_count, 10,
-            teams: get2025Standings()
+            season: 2025,
+  team_count: 10,
+            teams, get2025Standings()
           });
         }
       } catch (error) {
-        console.error('Error loading league:', error);
+        console.error('Error loading league: ', error);
         // Use mock data on error
         // Load real 2025 league data
-        const response = await fetch('/api/leagues/current');
+        const response  = await fetch('/api/leagues/current');
         if (response.ok) { const leagueData = await response.json();
           setLeague(leagueData);
-         } else {
+         } else { 
           // Fallback to 2025 data structure
           setLeague({
-            id, 1,
+            id: 1,
   name: 'Astral Field 2025 Championship League',
-            season, 2025,
-  team_count, 10,
-            teams: get2025Standings()
+            season: 2025,
+  team_count: 10,
+            teams, get2025Standings()
           });
         }
       } finally {
@@ -108,7 +108,7 @@ export default function DashboardPage() { const router = useRouter();
   }, [user]);
 
   // Helper functions
-  function getUserName(profileId: number); string { const names = [
+  function getUserName(profileId: number); string { const names  = [
       'Nicholas D\'Amato', // Crown 👑 - moved to position 1
       'Jon Kornbeck',
       'Jack McCaigue',
@@ -142,63 +142,63 @@ export default function DashboardPage() { const router = useRouter();
     return icons[profileId - 1] || '👤';
    }
 
-  function get2025Standings(): Team[] {; // Real 2025 standings after Week 1 - using original team names and owners
+  function get2025Standings(): Team[] { ; // Real 2025 standings after Week 1 - using original team names and owners
     return [
-      { id, 1,
+      { id: 1,
   team_name 'D\'Amato Dynasty', abbreviation: 'DAM',
-  wins, 1, losses, 0,
-  ties, 0, points_for: 128.7,
+  wins: 1, losses: 0,
+  ties: 0, points_for: 128.7,
   owner_name: 'Nicholas D\'Amato' },
-      { id, 2,
+      { id: 2,
   team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN',
-  wins, 1, losses, 0,
-  ties, 0, points_for: 124.3,
+  wins: 1, losses: 0,
+  ties: 0, points_for: 124.3,
   owner_name: 'Jon Kornbeck' },
-      { id, 3,
+      { id: 3,
   team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC',
-  wins, 1, losses, 0,
-  ties, 0, points_for: 121.8,
+  wins: 1, losses: 0,
+  ties: 0, points_for: 121.8,
   owner_name: 'Jack McCaigue' },
-      { id, 4,
+      { id: 4,
   team_name: 'Hartley\'s Heroes', abbreviation: 'HRT',
-  wins, 1, losses, 0,
-  ties, 0, points_for: 119.2,
+  wins: 1, losses: 0,
+  ties: 0, points_for: 119.2,
   owner_name: 'Nick Hartley' },
-      { id, 5,
+      { id: 5,
   team_name: 'Kaity\'s Knights', abbreviation: 'KAI',
-  wins, 1, losses, 0,
-  ties, 0, points_for: 116.5,
+  wins: 1, losses: 0,
+  ties: 0, points_for: 116.5,
   owner_name: 'Kaity Lorbecki' },
-      { id, 6,
+      { id: 6,
   team_name: 'Jarvey\'s Giants', abbreviation: 'JRV',
-  wins, 0, losses, 1,
-  ties, 0, points_for: 114.1,
+  wins: 0, losses: 1,
+  ties: 0, points_for: 114.1,
   owner_name: 'David Jarvey' },
-      { id, 7,
+      { id: 7,
   team_name: 'Minor League', abbreviation: 'MIN',
-  wins, 0, losses, 1,
-  ties, 0, points_for: 110.8,
+  wins: 0, losses: 1,
+  ties: 0, points_for: 110.8,
   owner_name: 'Cason Minor' },
-      { id, 8,
+      { id: 8,
   team_name: 'Bergum\'s Blitz', abbreviation: 'BRG',
-  wins, 0, losses, 1,
-  ties, 0, points_for: 107.4,
+  wins: 0, losses: 1,
+  ties: 0, points_for: 107.4,
   owner_name: 'Brittany Bergum' },
-      { id, 9,
+      { id: 9,
   team_name: 'Larry\'s Legends', abbreviation: 'LAR',
-  wins, 0, losses, 1,
-  ties, 0, points_for: 103.9,
+  wins: 0, losses: 1,
+  ties: 0, points_for: 103.9,
   owner_name: 'Larry McCaigue' },
-      { id, 10,
+      { id: 10,
   team_name: 'Renee\'s Raiders', abbreviation: 'REN',
-  wins, 0, losses, 1,
-  ties, 0, points_for: 98.6,
+  wins: 0, losses: 1,
+  ties: 0, points_for: 98.6,
   owner_name: 'Renee McCaigue' }
     ];
   }
 
   if (!user || isLoading) { return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className ="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
         <div className="text-white text-xl">Loading...</div>
       </div>
     );
@@ -258,11 +258,11 @@ export default function DashboardPage() { const router = useRouter();
                   {league?.teams.map((team, index) => (
                     <tr 
                       key={team.id} 
-                      className={`border-t border-gray-700 ${team.team_name === user.teamName ? 'bg-blue-600/20' : ''
+                      className={`border-t border-gray-700 ${team.team_name === user.teamName ? 'bg-blue-600/20'  : ''
                       }`}
                     >
                       <td className="px-4 py-3 text-gray-400">{ index: + 1 }</td>
-                      <td className="px-4 py-3">
+                      <td className ="px-4 py-3">
                         <div>
                           <div className="text-white font-medium">{team.team_name}</div>
                           <div className="text-gray-400 text-xs">{team.owner_name}</div>
@@ -272,7 +272,7 @@ export default function DashboardPage() { const router = useRouter();
                         {team.wins}-{team.losses}-{team.ties}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-300">
-                        {(typeof team.points_for === 'number' ? team.points_for : 0).toFixed(1)}
+                        { (typeof team.points_for === 'number' ? team.points_for  : 0).toFixed(1)}
                       </td>
                     </tr>
                   ))}
@@ -282,7 +282,7 @@ export default function DashboardPage() { const router = useRouter();
           </div>
 
           {/* Quick Actions */}
-          <div className="space-y-6">
+          <div className ="space-y-6">
             {/* Team Actions */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
               <h3 className="text-lg font-bold text-white mb-4">Quick Actions</h3>

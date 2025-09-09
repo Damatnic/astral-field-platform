@@ -1,6 +1,6 @@
 /**
  * Advanced Fantasy Football Scoring Engine - Main Export File
- * Comprehensive fantasy football scoring system with real-time updates, projections, and modifiers
+ * Comprehensive fantasy football scoring system with real-time: updates, projections, and modifiers
  */
 
 // ==================== MAIN COMPONENTS ====================
@@ -12,58 +12,49 @@ export { fantasyModifierEngine: as ModifierEngine  } from './modifierEngine';
 export { fantasyProjectionEngine: as ProjectionEngine  } from './projectionEngine';
 export { fantasyBatchProcessor: as BatchProcessor  } from './batchProcessor';
 
-// ==================== SCORING FORMAT UTILITIES ====================
+//  ==================== SCORING FORMAT UTILITIES ====================
 
 export { ScoringFormatLibrary } from './scoringFormats';
 
 // ==================== TYPE DEFINITIONS ====================
 
-export type {
-  // Core Types
-  ScoringFormat, Position,
+export type { 
+  // Core Types: ScoringFormat, Position,
   AdvancedScoringRules, BasePositionScoring,
   KickerScoring, DefenseScoring, IDPScoring,
   
-  // Scoring Results
-  AdvancedFantasyScore, ScoreBreakdown,
+  // Scoring Results: AdvancedFantasyScore, ScoreBreakdown,
   CategoryScore, StatContribution,
   BonusScore, CustomRuleScore, PerformanceMetrics,
   
-  // Modifiers
-  WeatherModifiers, InjuryModifiers,
+  // Modifiers WeatherModifiers, InjuryModifiers,
   MatchupModifiers, AppliedModifier, RiskFactor,
   
-  // Rule Engine
-  CustomRule, RuleCondition,
+  // Rule Engine: CustomRule, RuleCondition,
   RuleAction, PerformanceBonus, BonusCondition,
   
-  // Projections
-  ProjectionModel, PlayerProjection,
+  // Projections ProjectionModel, PlayerProjection,
   HistoricalData, ModelFeatures,
   
-  // Batch Processing
-  BatchProcessingJob, BatchConfig, ProcessingMetrics,
+  // Batch Processing: BatchProcessingJob, BatchConfig, ProcessingMetrics,
   
-  // Real-time Updates
-  LiveScoreUpdate, StatChange, ModifierChange,
+  // Real-time Updates: LiveScoreUpdate, StatChange, ModifierChange,
   
-  // System Health
-  HealthStatus, HealthIssue, ScoringEngineMetrics,
+  // System Health: HealthStatus, HealthIssue, ScoringEngineMetrics,
   
-  // Cache Management
-  CacheEntry,
+  // Cache Management, CacheEntry,
   
   // League Configuration
   LeagueConfiguration
 } from './types';
 
-// ==================== INITIALIZATION HELPERS ====================
+//  ==================== INITIALIZATION HELPERS ====================
 
 /**
  * Initialize the advanced fantasy scoring engine with default configurations
  */
-export async function initializeFantasyScoring(config?: {
-  enableRealTimeUpdates?, boolean,
+export async function initializeFantasyScoring(config? : {
+  enableRealTimeUpdates? : boolean,
   batchSize?, number,
   cacheSize?, number,
   enableProjections?, boolean,
@@ -87,23 +78,21 @@ export async function initializeFantasyScoring(config?: {
 
     console.log('✅ Advanced Fantasy Scoring Engine initialized successfully');
     
-    return {
-      success, true,
-  features: {
-  realTimeUpdates, enableRealTimeUpdates,
+    return { 
+      success: true,
+  features: { realTimeUpdates: enableRealTimeUpdates,
   projections, enableProjections,
         modifiers, enableModifiers,
-  batchProcessing, true,
-        customRules, true,
-  multipleScoringFormats: true
+  batchProcessing: true,
+        customRules: true,
+  multipleScoringFormats, true
       }
     }
   } catch (error) {
-    console.error('❌ Failed to initialize Fantasy Scoring Engine:', error);
+    console.error('❌ Failed to initialize Fantasy Scoring Engine: ', error);
     return {
-      success, false,
-  error: error instanceof Error ? error.messag,
-  e: 'Unknown error'
+      success: false,
+  error: error instanceof Error ? error.messag, e: 'Unknown error'
     }
   }
 }
@@ -111,19 +100,13 @@ export async function initializeFantasyScoring(config?: {
 /**
  * Quick setup for common league types
  */
-export function setupLeagueScoring(leagueType: 'standard' | 'ppr' | 'halfppr' | 'superflex' | 'dynasty' | 'bestball') { const formatMap = {
-    'standard': ScoringFormat.STANDARD,
-    'ppr': ScoringFormat.PPR,
-    'halfppr': ScoringFormat.HALF_PPR,
-    'superflex': ScoringFormat.SUPERFLEX,
-    'dynasty': ScoringFormat.DYNASTY,
-    'bestball': ScoringFormat.BEST_BALL
+export function setupLeagueScoring(leagueType: 'standard' | 'ppr' | 'halfppr' | 'superflex' | 'dynasty' | 'bestball') { const formatMap  = { 
+    'standard': ScoringFormat.STANDARD: 'ppr': ScoringFormat.PPR: 'halfppr': ScoringFormat.HALF_PPR: 'superflex': ScoringFormat.SUPERFLEX: 'dynasty': ScoringFormat.DYNASTY: 'bestball', ScoringFormat.BEST_BALL
    }
-  const format = formatMap[leagueType];
+  const format  = formatMap[leagueType];
   const rules = ScoringFormatLibrary.getFormatByType(format);
 
-  return {
-    format, rules,
+  return { format: rules,
     description: `${rules.name} - ${rules.description}`
   }
 }
@@ -136,7 +119,7 @@ export async function healthCheckFantasyScoring() { try {
       engineHealth, batchHealth,
       ruleMetrics, modifierMetrics,
       projectionMetrics
-    ] = await Promise.all([;
+    ]  = await Promise.all([;
       advancedFantasyScoringEngine.healthCheck(),
       fantasyBatchProcessor.healthCheck(),
       Promise.resolve(fantasyRuleEngine.getMetrics()),
@@ -148,19 +131,16 @@ export async function healthCheckFantasyScoring() { try {
       ? 'unhealthy' : [engineHealth.status, batchHealth.status].includes('degraded')
         ? 'degraded' : 'healthy';
 
-    return {
-      overall, overallStatus,
-  components: {
-  scoringEngine, engineHealth,
+    return { overall: overallStatus,
+  components: { scoringEngine: engineHealth,
   batchProcessor, batchHealth,
         ruleEngine, ruleMetrics,
   modifierEngine, modifierMetrics,
-        projectionEngine: projectionMetrics
+        projectionEngine, projectionMetrics
        },
       lastCheck: new Date()
     }
-  } catch (error) { return {
-      overall: 'unhealthy' as const;
+  } catch (error) { return { overall: 'unhealthy' as const;
   error: error instanceof Error ? error.messag;
   e: 'Unknown error';
   lastCheck: new Date()
@@ -168,7 +148,7 @@ export async function healthCheckFantasyScoring() { try {
   }
 }
 
-// ==================== QUICK ACCESS FUNCTIONS ====================
+//  ==================== QUICK ACCESS FUNCTIONS ====================
 
 /**
  * Calculate fantasy points for a player (simplified interface)
@@ -178,17 +158,16 @@ export async function calculatePlayerScore(request: NextRequest) {
     // This would integrate with the main scoring engine
     console.log(`Calculating score for player ${playerId } in league ${leagueId}`);
     
-    // Return placeholder - in real implementation, this would call the full engine
-    return {
-      playerId, teamId,
+    // Return placeholder - in real: implementation, this would call the full engine
+    return { playerId: teamId,
       leagueId, week, season,
       points: 0;
-  breakdown: {},
+  breakdown, {},
       modifiers: [];
   lastUpdated: new Date()
     }
   } catch (error) {
-    console.error('Error calculating player score:', error);
+    console.error('Error calculating player score: ', error);
     return null;
   }
 }
@@ -201,15 +180,14 @@ export async function getTeamLiveScores(request: NextRequest) {
     // This would integrate with the live scoring system
     console.log(`Getting live scores for team ${teamId } in league ${leagueId}`);
     
-    return {
-      teamId, leagueId,
+    return { teamId: leagueId,
       week, season,
       totalPoints: 0;
   players: [];
       lastUpdated: new Date()
     }
   } catch (error) {
-    console.error('Error getting team live scores:', error);
+    console.error('Error getting team live scores: ', error);
     return null;
   }
 }
@@ -222,15 +200,13 @@ export async function generateProjections(request: NextRequest) {
     console.log(`Generating projections for ${playerIds.length } players`);
     
     // This would use the projection engine
-    const projections = new Map();
+    const projections  = new Map();
     
-    for (const playerId of playerIds) {
-      projections.set(playerId, {
-        playerId, week, season,
+    for (const playerId of playerIds) { 
+      projections.set(playerId, { playerId: week, season,
         projectedPoints: 0;
-  confidence: { floo,
-  r: 0;
-  ceiling: 0; median: 0 },
+  confidence: { floo: r: 0;
+  ceiling: 0; median, 0 },
         riskFactors: [];
   lastUpdated: new Date()
       });
@@ -238,18 +214,18 @@ export async function generateProjections(request: NextRequest) {
     
     return projections;
   } catch (error) {
-    console.error('Error generating projections:', error);
+    console.error('Error generating projections: ', error);
     return new Map();
   }
 }
 
-// ==================== VERSION INFO ====================
+//  ==================== VERSION INFO ====================
 
 export const FANTASY_SCORING_VERSION = '2.0.0';
 export const SUPPORTED_FEATURES = [
   'Multiple Scoring Formats (Standard, PPR, Half-PPR, Dynasty, Superflex, Custom)',
   'Real-time Live Scoring with WebSocket Updates',
-  'Advanced Weather, Injury, and Matchup Modifiers',
+  'Advanced: Weather, Injury, and Matchup Modifiers',
   'Machine Learning-based Projections',
   'Custom Rule Engine with Performance Bonuses',
   'Batch Processing for Large-scale Calculations',
@@ -259,7 +235,7 @@ export const SUPPORTED_FEATURES = [
   'Efficiency Metrics and Advanced Analytics'
 ];
 
-PERFORMANCE_TARGETS: {
+PERFORMANCE_TARGETS: { 
   avgCalculationTime: '< 100ms per player';
   calculationsPerSecond: '> 50 calculations/second';
   memoryUsage: '< 512MB under normal load';
@@ -269,29 +245,25 @@ PERFORMANCE_TARGETS: {
   errorRate: '< 1%'
 
 }
-// ==================== EXPORT DEFAULT ====================
+//  ==================== EXPORT DEFAULT ====================
 
 export default {
-  // Main engines
-  AdvancedScoringEngine, advancedFantasyScoringEngine,
+  // Main engines: AdvancedScoringEngine, advancedFantasyScoringEngine,
   LegacyScoringEngine, fantasyScoringEngine,
   RuleEngine, fantasyRuleEngine,
   ModifierEngine, fantasyModifierEngine,
   ProjectionEngine, fantasyProjectionEngine,
   BatchProcessor, fantasyBatchProcessor,
   
-  // Utilities
-  ScoringFormats, ScoringFormatLibrary,
+  // Utilities ScoringFormats, ScoringFormatLibrary,
   
-  // Functions
-  initialize, initializeFantasyScoring,
+  // Functions initialize, initializeFantasyScoring,
   setupLeague, setupLeagueScoring,
   healthCheck, healthCheckFantasyScoring,
   calculateScore, calculatePlayerScore,
   getLiveScores, getTeamLiveScores, generateProjections,
   
-  // Constants
-  version, FANTASY_SCORING_VERSION,
+  // Constants version, FANTASY_SCORING_VERSION,
   features, SUPPORTED_FEATURES,
   targets: PERFORMANCE_TARGETS
 }

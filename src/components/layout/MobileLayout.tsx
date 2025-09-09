@@ -3,15 +3,14 @@
 import { useEffect, useState, useRef } from 'react';
 import { getDeviceCapabilities, getSafeAreaInsets, createVirtualKeyboardDetector, PWAInstallPrompt } from '@/lib/mobile/touchOptimization';
 import { Download, X, Menu, Home, BarChart3, Settings } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion: AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-interface MobileLayoutProps {
-  children: React.ReactNode;
+interface MobileLayoutProps { children: React.ReactNode;
   
 }
-export default function MobileLayout({ children }: MobileLayoutProps) { const [deviceInfo, setDeviceInfo] = useState(getDeviceCapabilities());
+export default function MobileLayout({ children }: MobileLayoutProps) { const [deviceInfo, setDeviceInfo]  = useState(getDeviceCapabilities());
   const [safeArea, setSafeArea] = useState(getSafeAreaInsets());
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [showPWAPrompt, setShowPWAPrompt] = useState(false);
@@ -40,7 +39,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
       setDeviceInfo(getDeviceCapabilities());
       setSafeArea(getSafeAreaInsets());
     }
-    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener('resize' : handleOrientationChange);
     window.addEventListener('orientationchange', handleOrientationChange);
     
     return () => {
@@ -60,7 +59,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
   }
   const navigationItems = [
     { href: '/dashboard',
-  label: 'Dashboard', icon: Home },
+  label: 'Dashboard', icon, Home },
     { href: '/leagues',
   label: 'Leagues', icon: BarChart3 },
     { href: '/settings',
@@ -72,9 +71,8 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 relative"
-      style={{
-        paddingTop: `${safeArea.top}px`,
+    <div className ="min-h-screen bg-gray-900 relative"
+      style={ { paddingTop: `${safeArea.top}px`,
         paddingBottom: keyboardVisible ? 0 : `max(${safeArea.bottom}px, env(safe-area-inset-bottom))`,
         paddingLeft: `${safeArea.left}px`,
         paddingRight: `${safeArea.right}px`
@@ -84,16 +82,16 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
       <AnimatePresence>
         {showPWAPrompt && (
           <motion.div
-            initial={{ y: -100,
-  opacity: 0  }}
-            animate={{ y, 0,
-  opacity: 1 }}
-            exit={{ y: -100,
-  opacity: 0 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 p-4 shadow-lg"
-            style={{ top: `${safeArea.top}px` }}
+            initial ={ { y: -100,
+  opacity, 0  }}
+            animate ={ { y: 0,
+  opacity, 1 }}
+            exit ={ { y: -100,
+  opacity, 0 }}
+            className ="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 p-4 shadow-lg"
+            style={ { top: `${safeArea.top}px` }}
           >
-            <div className="flex items-center justify-between">
+            <div className ="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Download className="h-6 w-6 text-white" />
                 <div>
@@ -143,26 +141,25 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
           <>
             {/* Overlay */ }
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowMobileMenu(false)}
+              initial={ { opacity: 0 }}
+              animate ={ { opacity: 1 }}
+              exit ={ { opacity: 0 }}
+              onClick ={() => setShowMobileMenu(false)}
               className="fixed inset-0 z-50 bg-black/50"
             />
             {/* Menu */}
             <motion.div
               initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring',
-  duration: 0.3 }}
-              className="fixed right-0 top-0 bottom-0 z-50 w-64 bg-gray-800 shadow-xl"
-              style={{ 
-                top: `${safeArea.top}px`,
+              animate={ { x: 0 }}
+              exit ={ { x: '100%' }}
+              transition ={ { type: 'spring',
+  duration, 0.3 }}
+              className ="fixed right-0 top-0 bottom-0 z-50 w-64 bg-gray-800 shadow-xl"
+              style={ { top: `${safeArea.top}px`,
                 paddingBottom: `${safeArea.bottom}px`
               }}
             >
-              <div className="p-4">
+              <div className ="p-4">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-white font-semibold text-lg">Menu</h2>
                   <button
@@ -195,9 +192,8 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
 
       {/* Main Content */}
       <main 
-        className={`flex-1 ${keyboardVisible ? 'pb-0' : 'pb-safe'}`}
-        style={{
-          minHeight: keyboardVisible 
+        className={ `flex-1 ${keyboardVisible ? 'pb-0' : 'pb-safe'}`}
+        style ={ { minHeight: keyboardVisible 
             ? `calc(100vh - ${safeArea.top}px - 64px)` : `calc(100vh - ${safeArea.top}px - ${safeArea.bottom}px - 64px)`
         }}
       >
@@ -207,10 +203,10 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
       {/* Mobile Bottom Navigation (if not in PWA mode) */}
       {deviceInfo.isMobile && !deviceInfo.isStandalone && !keyboardVisible && (
         <div 
-          className="fixed bottom-0 left-0 right-0 z-40 bg-gray-800/95 backdrop-blur-sm border-t border-gray-700"
-          style={{ paddingBottom: `${safeArea.bottom}px` }}
+          className ="fixed bottom-0 left-0 right-0 z-40 bg-gray-800/95 backdrop-blur-sm border-t border-gray-700"
+          style={ { paddingBottom: `${safeArea.bottom}px` }}
         >
-          <div className="flex items-center justify-around px-4 py-2">
+          <div className ="flex items-center justify-around px-4 py-2">
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
@@ -228,7 +224,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
       )}
 
       {/* Development Info (only in development) */}
-      {process.env.NODE_ENV === 'development' && (
+      { process.env.NODE_ENV === 'development' && (
         <div className="fixed top-4 left-4 z-30 bg-black/80 text-white text-xs p-2 rounded">
           <div>Mobile: {deviceInfo.isMobile ? 'Yes' : 'No'}</div>
           <div>Touch: {deviceInfo.hasTouch ? 'Yes' : 'No'}</div>
@@ -252,8 +248,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
           padding-bottom: calc(${safeArea.bottom}px + env(safe-area-inset-bottom));
         }
         /* Improve touch targets on mobile */
-        @media (max-width: 768px) {
-          button, .button, [role="button"] {
+        @media (max-width: 768px) { button: .button, [role ="button"] {
             min-height: 44px;
             min-width: 44px;
           }
@@ -276,8 +271,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) { const [d
         }
         /* Custom scrollbar for mobile */
         @media (max-width: 768px) {
-          ::-webkit-scrollbar {
-            display, none,
+          ::-webkit-scrollbar { display: none,
           }
           * {
             -ms-overflow-style, none,

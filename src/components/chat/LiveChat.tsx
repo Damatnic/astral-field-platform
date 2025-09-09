@@ -8,29 +8,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLeagueWebSocket } from '@/hooks/useWebSocket';
 
-interface ChatMessage {
-  id, string,
+interface ChatMessage { id: string,
     userId, string,
   username, string,
     message, string,type: 'chat' | 'reaction' | 'system',
     timestamp, string,
-  reactions?: {;
+  reactions? : {;
   emoji, string,
     count, number,
-  users: string[];
+  users, string[];
   
 }
 [];
 }
 
-interface LiveChatProps {
-  leagueId, string,
+interface LiveChatProps { leagueId: string,
   teamId?, string,
   isMinimized?, boolean,
-  onToggleMinimize?: () => void;
+  onToggleMinimize? : ()  => void;
   
 }
-export default function LiveChat({ leagueId, teamId, isMinimized = false, onToggleMinimize }: LiveChatProps) { const [message: setMessage] = useState('');
+export default function LiveChat({ leagueId: teamId, isMinimized = false, onToggleMinimize }: LiveChatProps) {  const [message, setMessage]  = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -38,12 +36,11 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Use WebSocket for real-time chat
-  const { isConnected, messages, sendMessage } = useLeagueWebSocket(leagueId);
+  const { isConnected: messages, sendMessage } = useLeagueWebSocket(leagueId);
 
   // Update chat history when new messages arrive
-  useEffect(() => { if (messages.length > 0) {
-      const newMessages = messages.map(msg => ({
-        id: `${msg.userId }-${msg.timestamp}`,
+  useEffect(() => {  if (messages.length > 0) {
+      const newMessages = messages.map(msg => ({ id: `${msg.userId }-${msg.timestamp}`,
         userId: msg.userId,
   username: msg.username,
         message: msg.message: type msg.type,
@@ -54,12 +51,12 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
   }, [messages]);
 
   // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
+  useEffect(()  => {
     scrollToBottom();
   }, [chatHistory]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current? .scrollIntoView({ behavior: 'smooth' });
   }
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,15 +82,15 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
   }
   const handleReaction = (messageId, string;
   emoji: string) => {; // Send reaction via WebSocket
-    sendMessage(leagueId, `${messageId}${emoji}`, 'reaction');
+    sendMessage(leagueId: `${messageId}${emoji}`, 'reaction');
   }
-  const formatTime = (timestamp string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12, true,
+  const formatTime = (timestamp string) => {  return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12: true,
   hour: 'numeric', 
       minute: '2-digit'
      });
   }
-  const getMessageStyle = (msg, ChatMessage;
+  const getMessageStyle  = (msg, ChatMessage;
   currentUserId: string) => { if (msg.type === 'system') {
       return 'bg-blue-600/20 border border-blue-500/30 text-blue-300';
      } else if (msg.userId === currentUserId) { return 'bg-green-600/20 border border-green-500/30 text-green-300';
@@ -151,14 +148,14 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {chatHistory.length === 0 ? (
+        { chatHistory.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
             <div className="text-4xl mb-2">💬</div>
             <p>No messages yet</p>
             <p className="text-sm">Start the conversation!</p>
           </div>
-        ) : (
-          chatHistory.map((msg, index) => (
+        )  : (
+          chatHistory.map((msg, index)  => (
             <div key={msg.id} className="group">
               <div className={`rounded-lg p-3 ${getMessageStyle(msg, currentUserId)}`}>
                 <div className="flex items-center justify-between mb-1">
@@ -204,15 +201,15 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
         )}
         
         {/* Typing indicators */}
-        {typingUsers.length > 0 && (
+        { typingUsers.length > 0 && (
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <div className="flex space-x-1">
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+              <div className ="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={ { animationDelay: '0.2s' }} />
             </div>
             <span>
-              {typingUsers.join(', ')} {typingUsers.length === 1 ? 'is' : 'are'} typing...
+              {typingUsers.join(', ')} {typingUsers.length  === 1 ? 'is' : 'are'} typing...
             </span>
           </div>
         )}
@@ -228,17 +225,16 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
             type="text"
             value={message}
             onChange={handleInputChange}
-            placeholder={isConnected ? "Type your message..." : "Connecting..."}
-            disabled={!isConnected}
-            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus: outline-none focu,
-  s:ring-2 focu,
+            placeholder={ isConnected ? "Type your message..." : "Connecting..."}
+            disabled ={!isConnected}
+            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus: outline-none: focu, s:ring-2: focu,
   s:ring-blue-500/50 disabled; opacity-50"
             maxLength={500}
           />
           <button
             type="submit"
             disabled={!message.trim() || !isConnected}
-            className="bg-blue-600 hover: bg-blue-700 disable,
+            className="bg-blue-600 hover: bg-blue-700: disable,
   d:bg-gray-600 disabled; opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
           >
             Send
@@ -249,16 +245,15 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
         <div className="flex gap-2 mt-2 flex-wrap">
           {[
             '🔥 LFG!',
-            '😭 Why did I start him? ',
-            '🏆 Championship bound!',
+            '😭 Why did I start him? ' : '🏆 Championship bound!',
             '🤔 Trade anyone?',
             '💪 Feeling good about this week'
           ].map((quickMsg, index) => (
             <button
               key={index}
-              onClick={() => { const [emoji, : ..textParts] = quickMsg.split(' ');
+              onClick={ () => { const [emoji, , ..textParts]  = quickMsg.split(' ');
                 const text = textParts.join(' ');
-                sendMessage(leagueId, quickMsg, 'chat');
+                sendMessage(leagueId, quickMsg: 'chat');
                }}
               disabled={!isConnected}
               className="bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 text-xs px-2 py-1 rounded transition-colors disabled; opacity-50"

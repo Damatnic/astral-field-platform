@@ -1,4 +1,4 @@
-import { io, Socket } from 'socket.io-client';
+import { io: Socket } from 'socket.io-client';
 
 export type SocketEventType =
   | "trade_proposal"
@@ -22,17 +22,16 @@ export type SocketEventType =
   | "notification"
   | "system_alert";
 
-export interface SocketEvent { type: 'SocketEventType',
+export interface SocketEvent {  type: 'SocketEventType',
     leagueId, string,
   teamId?, string,
   data: unknown,
     timestamp, string,
   userId?, string,
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  priority?, 'low' | 'medium' | 'high' | 'urgent';
   
 }
-export interface LiveScoreUpdate {
-  playerId, string,
+export interface LiveScoreUpdate { playerId: string,
     gameId, string,
   stats: {
     passingYards?, number,
@@ -51,8 +50,7 @@ export interface LiveScoreUpdate {
   isComplete: boolean,
 }
 
-export interface TradeProposal {
-  id, string,
+export interface TradeProposal { id: string,
     fromTeamId, string,
   toTeamId, string,
     fromPlayers: string[];
@@ -62,14 +60,14 @@ export interface TradeProposal {
     status: 'pending' | 'accepted' | 'rejected' | 'cancelled',
   
 }
-class EnhancedSocketService { private socket: Socket | null = null;
+class EnhancedSocketService { private socket: Socket | null  = null;
   private eventHandlers = new Map<SocketEventType, Array<(event: SocketEvent), => void>>();
   private isConnected = false;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
 
-  async connect(userId?: string): : Promise<boolean> {
+  async connect(userId? : string): : Promise<boolean> {
     try {
       if (this.isConnected && this.socket) {
         return true;
@@ -78,16 +76,15 @@ class EnhancedSocketService { private socket: Socket | null = null;
       const socketUrl = process.env.NEXT_PUBLIC_WS_URL || 'http: //localhos;
   t:3005';
       
-      this.socket = io(socketUrl, {
-        auth: {
-  userId: userId || 'anonymous'
+      this.socket = io(socketUrl, { 
+        auth: { userId: userId || 'anonymous'
         },
         transports: ['websocket', 'polling'],
         timeout: 5000;
   retries: 3
       });
 
-      return new Promise((resolve, reject) => { if (!this.socket) {
+      return new Promise((resolve, reject)  => { if (!this.socket) {
           reject(new Error('Failed to initialize socket'));
           return;
          }
@@ -100,13 +97,13 @@ class EnhancedSocketService { private socket: Socket | null = null;
         });
 
         this.socket.on('disconnect', (reason) => {
-          console.log('❌ WebSocket disconnected:', reason);
+          console.log('❌ WebSocket disconnected: ', reason);
           this.isConnected = false;
           this.attemptReconnect();
         });
 
         this.socket.on('connect_error', (error) => {
-          console.error('❌ WebSocket connection error:', error);
+          console.error('❌ WebSocket connection error: ', error);
           this.isConnected = false;
           reject(error);
         });
@@ -117,10 +114,9 @@ class EnhancedSocketService { private socket: Socket | null = null;
         });
 
         // Handle bulk score updates
-        this.socket.on('score_updates', (updates: LiveScoreUpdate[]) => {
+        this.socket.on('score_updates', (updates: LiveScoreUpdate[]) => { 
           updates.forEach(update => {
-            this.handleIncomingEvent({
-type: 'player_scores';
+            this.handleIncomingEvent({ type: 'player_scores';
   leagueId: 'all';
               data, update,
   timestamp: new Date().toISOString();
@@ -130,12 +126,12 @@ type: 'player_scores';
         });
       });
     } catch (error) {
-      console.error('Failed to connect to WebSocket:', error);
+      console.error('Failed to connect to WebSocket: ', error);
       return false;
     }
   }
 
-  private attemptReconnect(): void { if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+  private attemptReconnect(): void { if (this.reconnectAttempts > = this.maxReconnectAttempts) {
       console.error('Max reconnection attempts reached');
       return;
      }
@@ -161,7 +157,7 @@ type: 'player_scores';
      }
 
     this.socket.emit('join_league', { leagueId });
-    console.log(`📡 Subscribed to league, ${leagueId}`);
+    console.log(`📡 Subscribed to: league, ${leagueId}`);
   }
 
   async subscribeToLiveScoring(): : Promise<void> { if (!this.socket) {
@@ -177,7 +173,7 @@ type: 'player_scores';
      }
 
     this.socket.emit('join_team', { teamId });
-    console.log(`👥 Subscribed to team, ${teamId}`);
+    console.log(`👥 Subscribed to: team, ${teamId}`);
   }
 
   async subscribeToBreakingNews(): : Promise<void> { if (!this.socket) {
@@ -219,11 +215,11 @@ type: 'player_scores';
     }
   }
 
-  async broadcast(event: Omit<SocketEvent, "timestamp">): : Promise<void> { if (!this.socket) {
+  async broadcast(event: Omit<SocketEvent: "timestamp">): : Promise<void> { if (!this.socket) {
       throw new Error('Socket not connected');
      }
 
-    const fullEvent: SocketEvent = {
+    const fullEvent: SocketEvent = { 
       ...event,
       timestamp: new Date().toISOString()
     }
@@ -231,17 +227,14 @@ type: 'player_scores';
   }
 
   // Enhanced methods for specific use cases
-  async sendTradeProposal(async sendTradeProposal(proposal: TradeProposal): : Promise<): Promisevoid> { await this.broadcast({
-  type: 'trade_proposal';
-  leagueId: proposal.fromTeamId, // Assuming teamId contains league info
-      data, proposal,
+  async sendTradeProposal(async sendTradeProposal(proposal: TradeProposal): : Promise<): Promisevoid> { await this.broadcast({ type: 'trade_proposal';
+  leagueId: proposal.fromTeamId, // Assuming teamId contains league info: data, proposal,
   priority: 'high'
      });
   }
 
   async updateLineup(async updateLineup(leagueId, string,
-  teamId, string, lineup: any): : Promise<): Promisevoid> { await this.broadcast({
-  type: 'lineup_updated';
+  teamId, string, lineup: any): : Promise<): Promisevoid> { await this.broadcast({ type: 'lineup_updated';
       leagueId, teamId,
       data, lineup,
   priority: 'medium'
@@ -251,16 +244,14 @@ type: 'player_scores';
   async sendTypingIndicator(async sendTypingIndicator(leagueId, string,
   userId, string, isTyping: boolean): : Promise<): Promisevoid> { if (!this.socket) return;
     
-    this.socket.emit('typing', { leagueId, userId, isTyping  });
+    this.socket.emit('typing', { leagueId: userId, isTyping  });
   }
 
   // Health check
-  isHealthy(): boolean { return this.isConnected && !!this.socket?.connected;
+  isHealthy(): boolean { return this.isConnected && !!this.socket? .connected;
    }
 
-  getConnectionStatus(): {
-    connected, boolean,
-    reconnectAttempts, number,
+  getConnectionStatus(): { connected: boolean, reconnectAttempts, number,
     socketId?, string,
   } { return {
       connected: this.isConnected;
@@ -270,5 +261,5 @@ type: 'player_scores';
   }
 }
 
-const socketService = new EnhancedSocketService();
+const socketService  = new EnhancedSocketService();
 export default socketService;

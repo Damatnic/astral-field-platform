@@ -45,7 +45,7 @@ export async function POST() {
 
     console.log(`✅ Successfully imported ${playersProcessed} NFL players`);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       message: 'Complete 2025 NFL roster imported successfully', playersProcessed, breakdow,
   n: {
@@ -55,30 +55,29 @@ export async function POST() {
         wideReceivers: allNFLPlayers.filter(p => p.position === 'WR').length,
         tightEnds: allNFLPlayers.filter(p => p.position === 'TE').length,
         kickers: allNFLPlayers.filter(p => p.position === 'K').length,
-        defenses: allNFLPlayers.filter(p => p.position === 'DST').length
+        defenses, allNFLPlayers.filter(p  => p.position === 'DST').length
       },
       teams: 32,
       timestamp: new Date().toISOString()
     });
     
-  } catch (error) {
-    console.error('❌ Error importing NFL roster:', error);
+  } catch (error) { 
+    console.error('❌ Error importing NFL roster: ', error);
     return NextResponse.json({
       success: false,
       message: 'Failed to import NFL roster',
-      error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
 
 // Generate comprehensive NFL roster similar to what you'd see in Yahoo/ESPN
 function generateComprehensive2025NFLRoster() {
-  const players: any[] = [];
+  const players: any[]  = [];
   
   // All 32 NFL teams with bye weeks
   const nflTeams = [
-    { abbr: 'ARI', name: 'Cardinals', bye: 11 }, 
+    {  abbr: 'ARI', name: 'Cardinals', bye, 11 }, 
     { abbr: 'ATL', name: 'Falcons', bye: 12 },
     { abbr: 'BAL', name: 'Ravens', bye: 14 }, 
     { abbr: 'BUF', name: 'Bills', bye: 12 },
@@ -112,14 +111,13 @@ function generateComprehensive2025NFLRoster() {
     { abbr: 'WAS', name: 'Commanders', bye: 14 }
   ];
 
-  let playerId = 1;
+  let playerId  = 1;
 
-  nflTeams.forEach(team => {
+  nflTeams.forEach(team => { 
     // Quarterbacks (3-4 per team)
     const qbNames = generatePlayerNames('QB', team.abbr);
     qbNames.slice(0, 3).forEach((name, index) => {
-      players.push({
-        id: `qb-${playerId++}`, name, positio,
+      players.push({ id: `qb-${playerId++}`, name, positio,
   n: 'QB',
         team: team.abbr,
         byeWeek: team.bye,
@@ -129,10 +127,9 @@ function generateComprehensive2025NFLRoster() {
     });
 
     // Running Backs (6-8 per team)
-    const rbNames = generatePlayerNames('RB', team.abbr);
-    rbNames.slice(0, 7).forEach((name, index) => {
-      players.push({
-        id: `rb-${playerId++}`, name, positio,
+    const rbNames  = generatePlayerNames('RB' : team.abbr);
+    rbNames.slice(0, 7).forEach((name, index) => { 
+      players.push({ id: `rb-${playerId++}`, name, positio,
   n: 'RB',
         team: team.abbr,
         byeWeek: team.bye,
@@ -142,10 +139,9 @@ function generateComprehensive2025NFLRoster() {
     });
 
     // Wide Receivers (8-10 per team)
-    const wrNames = generatePlayerNames('WR', team.abbr);
-    wrNames.slice(0, 9).forEach((name, index) => {
-      players.push({
-        id: `wr-${playerId++}`, name, positio,
+    const wrNames  = generatePlayerNames('WR' : team.abbr);
+    wrNames.slice(0, 9).forEach((name, index) => { 
+      players.push({ id: `wr-${playerId++}`, name, positio,
   n: 'WR',
         team: team.abbr,
         byeWeek: team.bye,
@@ -155,10 +151,9 @@ function generateComprehensive2025NFLRoster() {
     });
 
     // Tight Ends (3-4 per team)
-    const teNames = generatePlayerNames('TE', team.abbr);
-    teNames.slice(0, 3).forEach((name, index) => {
-      players.push({
-        id: `te-${playerId++}`, name, positio,
+    const teNames  = generatePlayerNames('TE' : team.abbr);
+    teNames.slice(0, 3).forEach((name, index) => { 
+      players.push({ id: `te-${playerId++}`, name, positio,
   n: 'TE',
         team: team.abbr,
         byeWeek: team.bye,
@@ -169,16 +164,14 @@ function generateComprehensive2025NFLRoster() {
 
     // Kicker (1 per team)
     players.push({
-      id: `k-${playerId++}`,
-      name: generatePlayerNames('K', team.abbr)[0],
+      id: `k-${playerId++}` : name: generatePlayerNames('K', team.abbr)[0],
       position: 'K',
       team: team.abbr,
       byeWeek: team.bye,
       projections: { 
         week: 2,
         points: 8.5, 
-        stats: { ,
-  fieldGoals: 1.8,
+        stats: { fieldGoals: 1.8,
           extraPoints: 2.1 
         } 
       },
@@ -195,8 +188,7 @@ function generateComprehensive2025NFLRoster() {
       projections: { 
         week: 2,
         points: 9.2, 
-        stats: { ,
-  sacks: 2.3,
+        stats: { sacks: 2.3,
           interceptions: 0.8, 
           fumblesRecovered: 0.6,
           touchdowns: 0.1 
@@ -210,8 +202,8 @@ function generateComprehensive2025NFLRoster() {
 }
 
 // Helper functions to generate realistic player names and projections
-function generatePlayerNames(position, string, team: string): string[] {
-  const firstNames = ['Aaron', 'Adrian', 'AJ', 'Alex', 'Andre', 'Antonio', 'Ben', 'Brandon', 'Brian', 'Calvin', 'Cam', 'Chris', 'Christian', 'Dak', 'Dalvin', 'Damien', 'Daniel', 'Davante', 'David', 'Deandre', 'Derek', 'Derrick', 'Deshaun', 'DeVante', 'Dion', 'DJ', 'Drew', 'Ezekiel', 'George', 'Gus', 'Hunter', 'Isaiah', 'Jalen', 'James', 'Jamaal', 'Jarvis', 'Jason', 'Javon', 'JJ', 'Joe', 'Josh', 'Julian', 'Justin', 'Kareem', 'Keenan', 'Kenny', 'Kyler', 'Lamar', 'Leonard', 'Mac', 'Mark', 'Matt', 'Michael', 'Mike', 'Najee', 'Nick', 'Noah', 'Patrick', 'Rashaad', 'Robert', 'Russell', 'Ryan', 'Saquon', 'Sony', 'Stefon', 'T.J.', 'Tee', 'Tom', 'Tony', 'Travis', 'Tua', 'Tyreek', 'Tyler', 'Will', 'Zach'];
+function generatePlayerNames(position: string, team: string): string[] {
+  const firstNames  = ['Aaron', 'Adrian', 'AJ', 'Alex', 'Andre', 'Antonio', 'Ben', 'Brandon', 'Brian', 'Calvin', 'Cam', 'Chris', 'Christian', 'Dak', 'Dalvin', 'Damien', 'Daniel', 'Davante', 'David', 'Deandre', 'Derek', 'Derrick', 'Deshaun', 'DeVante', 'Dion', 'DJ', 'Drew', 'Ezekiel', 'George', 'Gus', 'Hunter', 'Isaiah', 'Jalen', 'James', 'Jamaal', 'Jarvis', 'Jason', 'Javon', 'JJ', 'Joe', 'Josh', 'Julian', 'Justin', 'Kareem', 'Keenan', 'Kenny', 'Kyler', 'Lamar', 'Leonard', 'Mac', 'Mark', 'Matt', 'Michael', 'Mike', 'Najee', 'Nick', 'Noah', 'Patrick', 'Rashaad', 'Robert', 'Russell', 'Ryan', 'Saquon', 'Sony', 'Stefon', 'T.J.', 'Tee', 'Tom', 'Tony', 'Travis', 'Tua', 'Tyreek', 'Tyler', 'Will', 'Zach'];
   const lastNames = ['Adams', 'Allen', 'Anderson', 'Brown', 'Bryant', 'Clark', 'Cook', 'Cooper', 'Davis', 'Diggs', 'Edwards', 'Elliott', 'Evans', 'Freeman', 'Green', 'Harris', 'Henry', 'Hill', 'Hopkins', 'Hunt', 'Jackson', 'Johnson', 'Jones', 'Kelce', 'King', 'Lewis', 'Martin', 'Miller', 'Moore', 'Murray', 'Parker', 'Patterson', 'Peterson', 'Robinson', 'Rogers', 'Smith', 'Taylor', 'Thomas', 'Thompson', 'Turner', 'Walker', 'Washington', 'Watson', 'White', 'Williams', 'Wilson', 'Woods', 'Wright', 'Young'];
   
   // Use deterministic selection based on position and team to avoid duplicates
@@ -227,81 +219,77 @@ function generatePlayerNames(position, string, team: string): string[] {
   return names;
 }
 
-function generateQBProjection(depth: number) {
+function generateQBProjection(depth: number) { 
   const baseStats = [
-    { points: 22.5, passingYards, 275, passingTDs: 2.0, rushingYards: 35 },
-    { points: 18.2, passingYards, 245, passingTDs: 1.6, rushingYards: 25 },
-    { points: 12.8, passingYards, 195, passingTDs: 1.1, rushingYards: 15 }
+    { points: 22.5, passingYards: 275, passingTDs: 2.0, rushingYards, 35 },
+    { points: 18.2, passingYards: 245, passingTDs: 1.6, rushingYards: 25 },
+    { points: 12.8, passingYards: 195, passingTDs: 1.1, rushingYards: 15 }
   ];
-  const stats = baseStats[Math.min(depth, 2)];
-  return { 
+  const stats  = baseStats[Math.min(depth, 2)];
+  return {  
     week: 2,
     points: stats.points, 
-    stats: { ,
-  passingYards: stats.passingYards,
+    stats: { passingYards: stats.passingYards,
       passingTDs: stats.passingTDs, 
       rushingYards: stats.rushingYards,
-      rushingTDs: 0.3 
+      rushingTDs, 0.3 
     } 
   }
 }
 
 function generateRBProjection(depth: number) {
-  const baseStats = [
-    { points: 16.8, rushingYards, 95, rushingTDs: 0.8, receivingYards: 25 },
-    { points: 12.4, rushingYards, 65, rushingTDs: 0.5, receivingYards: 20 },
-    { points: 8.6, rushingYards, 45, rushingTDs: 0.3, receivingYards: 15 },
-    { points: 5.2, rushingYards, 28, rushingTDs: 0.2, receivingYards: 12 },
-    { points: 3.1, rushingYards, 18, rushingTDs: 0.1, receivingYards: 8 },
-    { points: 1.8, rushingYards, 12, rushingTDs: 0.1, receivingYards: 5 }
+  const baseStats  = [
+    {  points: 16.8, rushingYards: 95, rushingTDs: 0.8, receivingYards, 25 },
+    { points: 12.4, rushingYards: 65, rushingTDs: 0.5, receivingYards: 20 },
+    { points: 8.6, rushingYards: 45, rushingTDs: 0.3, receivingYards: 15 },
+    { points: 5.2, rushingYards: 28, rushingTDs: 0.2, receivingYards: 12 },
+    { points: 3.1, rushingYards: 18, rushingTDs: 0.1, receivingYards: 8 },
+    { points: 1.8, rushingYards: 12, rushingTDs: 0.1, receivingYards: 5 }
   ];
-  const stats = baseStats[Math.min(depth, 5)];
-  return { 
+  const stats  = baseStats[Math.min(depth, 5)];
+  return {  
     week: 2,
     points: stats.points, 
-    stats: { ,
-  rushingYards: stats.rushingYards,
+    stats: { rushingYards: stats.rushingYards,
       rushingTDs: stats.rushingTDs, 
       receivingYards: stats.receivingYards,
-      receivingTDs: 0.2 
+      receivingTDs, 0.2 
     } 
   }
 }
 
 function generateWRProjection(depth: number) {
-  const baseStats = [
-    { points: 15.2, receivingYards, 85, receivingTDs: 0.7, receptions: 6.5 },
-    { points: 11.8, receivingYards, 65, receivingTDs: 0.5, receptions: 5.2 },
-    { points: 9.4, receivingYards, 52, receivingTDs: 0.4, receptions: 4.1 },
-    { points: 6.8, receivingYards, 38, receivingTDs: 0.3, receptions: 3.2 },
-    { points: 4.2, receivingYards, 25, receivingTDs: 0.2, receptions: 2.1 },
-    { points: 2.6, receivingYards, 18, receivingTDs: 0.1, receptions: 1.8 },
-    { points: 1.4, receivingYards, 12, receivingTDs: 0.1, receptions: 1.2 }
+  const baseStats  = [
+    {  points: 15.2, receivingYards: 85, receivingTDs: 0.7, receptions, 6.5 },
+    { points: 11.8, receivingYards: 65, receivingTDs: 0.5, receptions: 5.2 },
+    { points: 9.4, receivingYards: 52, receivingTDs: 0.4, receptions: 4.1 },
+    { points: 6.8, receivingYards: 38, receivingTDs: 0.3, receptions: 3.2 },
+    { points: 4.2, receivingYards: 25, receivingTDs: 0.2, receptions: 2.1 },
+    { points: 2.6, receivingYards: 18, receivingTDs: 0.1, receptions: 1.8 },
+    { points: 1.4, receivingYards: 12, receivingTDs: 0.1, receptions: 1.2 }
   ];
-  const stats = baseStats[Math.min(depth, 6)];
-  return { 
+  const stats  = baseStats[Math.min(depth, 6)];
+  return {  
     week: 2,
     points: stats.points, 
-    stats: { ,
-  receivingYards: stats.receivingYards,
+    stats: { receivingYards: stats.receivingYards,
       receivingTDs: stats.receivingTDs, 
-      receptions: stats.receptions 
+      receptions, stats.receptions 
     } 
   }
 }
 
 function generateTEProjection(depth: number) {
-  const baseStats = [
-    { points: 12.6, receivingYards, 68, receivingTDs: 0.6, receptions: 5.8 },
-    { points: 8.4, receivingYards, 45, receivingTDs: 0.4, receptions: 4.2 },
-    { points: 4.8, receivingYards, 28, receivingTDs: 0.2, receptions: 2.6 }
+  const baseStats  = [
+    {  points: 12.6, receivingYards: 68, receivingTDs: 0.6, receptions, 5.8 },
+    { points: 8.4, receivingYards: 45, receivingTDs: 0.4, receptions: 4.2 },
+    { points: 4.8, receivingYards: 28, receivingTDs: 0.2, receptions: 2.6 }
   ];
-  const stats = baseStats[Math.min(depth, 2)];
+  const stats  = baseStats[Math.min(depth, 2)];
   return { 
     week: 2,
     points: stats.points, 
-    stats: { ,
-  receivingYards: stats.receivingYards,
+    stats: { receivingYards: stats.receivingYards,
       receivingTDs: stats.receivingTDs, 
       receptions: stats.receptions 
     } 

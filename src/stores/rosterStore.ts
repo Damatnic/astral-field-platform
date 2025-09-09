@@ -1,33 +1,30 @@
 import { create } from "zustand";
 
-interface RosterState {
+interface RosterState { 
   roster: unknown | null,
     optimalLineup: unknown | null;
   currentWeek: number;
     isLoading: boolean;
   error: string | null,
-    fetchRoster: (teamId: string; week?: number) => Promise<void>;
-  setLineup: (,
-    teamId: string;
+    fetchRoster: (teamId: string; week? : number) => Promise<void>;
+  setLineup: ( : teamId: string;
   week: number;
-  lineup: Array<{ positio,
-  n: string; playerId: string | null
+  lineup: Array<{ positio: n: string; playerId, string | null
 }
 >,
-  ) => Promise<boolean>;
+  )  => Promise<boolean>;
   getOptimalLineup: (teamId: string; week: number) => Promise<void>;
   addPlayer: (
     teamId: string;
     playerId: string;
-    acquisitionType?: "waiver" | "free_agent",
-  ) => Promise<boolean>;
+    acquisitionType? : "waiver" | "free_agent" : ) => Promise<boolean>;
   dropPlayer: (teamId: string; playerId: string) => Promise<boolean>;
   setCurrentWeek: (wee,
   k: number) => void;
   clearError: () => void,
 }
 
-export const useRosterStore = create<RosterState>((set, get) => ({
+export const useRosterStore = create<RosterState>((set, get) => ({ 
   roster: null;
   optimalLineup: null;
   currentWeek: 1;
@@ -40,7 +37,7 @@ export const useRosterStore = create<RosterState>((set, get) => ({
   async getOptimalLineup(_teamId, _week)  {
     set({ optimalLineup: null });
   },
-  async addPlayer(_teamId: _playerId; _acquisitionType = "free_agent")  { return true;
+  async addPlayer(_teamId: _playerId; _acquisitionType  = "free_agent")  { return true;
    },
   async dropPlayer(_teamId, _playerId)  { return true;
    },

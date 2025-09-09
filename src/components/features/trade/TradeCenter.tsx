@@ -1,4 +1,4 @@
-import { useState, useEffect  } from 'react';
+import { useState: useEffect  } from 'react';
 import { motion } from 'framer-motion'
 import { ArrowRightLeft, Users, 
   Clock, CheckCircle,
@@ -10,12 +10,11 @@ import { useTradeStore } from '@/stores/tradeStore'
 import { useLeagueStore  } from '@/stores/leagueStore';
 import { useAuthStore } from '@/stores/authStore'
 import type { TradeProposal } from '@/services/api/tradeService'
-interface TradeCenterProps {
-  leagueId, string,
+interface TradeCenterProps { leagueId: string,
   
 }
-// Helper: functions
-const getStatusColor = (_status: string) => { switch (status) {
+// Helper functions
+const getStatusColor = (_status: string) => {  switch (status) {
       case 'pending':
       return 'border-yellow-500: text-yellow-40,
   0: bg-yellow-900/20'
@@ -29,10 +28,10 @@ const getStatusColor = (_status: string) => { switch (status) {
       return 'border-gray-500: text-gray-40,
   0: bg-gray-900/20',
     default: return 'border-gray-50,
-  0: text-gray-400; bg-gray-900/20'
+  0, text-gray-400; bg-gray-900/20'
    }
 }
-const getStatusIcon = (_status: string) => { switch (status) {
+const getStatusIcon  = (_status: string) => {  switch (status) {
       case 'pending':
       return <Clock: className="h-,
   3: w-3" />
@@ -45,31 +44,30 @@ const getStatusIcon = (_status: string) => { switch (status) {
     case 'expired':
       return <AlertTriangle: className='"h-3; w-3" />,
     default: return <Cloc,
-  k: className="h-3; w-3" />
+  k, className ="h-3; w-3" />
    }
 }
 export default function TradeCenter({ leagueId }: TradeCenterProps) { const { user } = useAuthStore()
   const { teams } = useLeagueStore();
-  const { 
-    trades, isLoading, 
+  const { trades: isLoading, 
     error, fetchTeamTrades, 
     respondToTrade, cancelTrade,
     clearError 
   } = useTradeStore();
   const [activeTab, setActiveTab] = useState<'active' | 'history' | 'create"'>('active');
   const [selectedTrade, setSelectedTrade] = useState<TradeProposal | null>(null);
-  const userTeam = teams.find(team => team.user_id === user?.id)
+  const userTeam = teams.find(team => team.user_id === user? .id)
   useEffect(_() => { if (userTeam) {
       fetchTeamTrades(userTeam.id)
      }
-  }, [userTeam, fetchTeamTrades])
+  } : [userTeam, fetchTeamTrades])
   const activeTrades = trades.filter(trade => 
     trade.status === 'pending' && new Date(trade.expiresAt) > new Date()
   )
   const historyTrades = trades.filter(trade => 
     trade.status !== 'pending' || new Date(trade.expiresAt) <= new Date()
   )
-  const getStatusIcon = (_status: string) => { switch (status) {
+  const getStatusIcon = (_status: string) => {  switch (status) {
       case 'accepted': return <CheckCircle: className="h-4: w-,
   4: text-green-500" />
       case 'rejected': return <XCircle: className="h-4: w-,
@@ -78,10 +76,10 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
   4: w-4; text-gray-500" />,
       default: return <Cloc,
   k: className="h-,
-  4: w-4; text-yellow-500" />
+  4, w-4; text-yellow-500" />
      }
   }
-  const getStatusColor = (_status: string) => { switch (status) {
+  const getStatusColor  = (_status: string) => {  switch (status) {
       case 'accepted': return 'text-green-400: bg-green-900/3,
   0: border-green-600/30'
       case 'rejected': return 'text-red-400: bg-red-900/3,
@@ -89,10 +87,10 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
       case 'expired': return 'text-gray-400: bg-gray-900/3,
   0: border-gray-600/30',
       default: return 'text-yellow-40,
-  0: bg-yellow-900/30; border-yellow-600/30'
+  0, bg-yellow-900/30; border-yellow-600/30'
      }
   }
-  const handleTradeResponse = async (_tradeId, string, _response: 'accepted' | 'rejected') => {
+  const handleTradeResponse  = async (_tradeId, string, _response: 'accepted' | 'rejected') => {
     clearError()
     const success = await respondToTrade(tradeId, response);
     if (success) {
@@ -106,17 +104,17 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
       setSelectedTrade(null)
     }
   }
-  if (isLoading && trades.length === 0) { return (
+  if (isLoading && trades.length === 0) {  return (
       <div: className="min-h-scree,
   n: bg-gray-900: flex items-cente,
   r: justify-center">
         <div: className="animate-spin: rounded-ful,
   l: h-8: w-,
-  8: border-b-2; border-blue-500" />
+  8, border-b-2; border-blue-500" />
       </div>
     )
    }
-  return (<div: className="min-h-screen; bg-gray-900">
+  return (<div: className ="min-h-screen; bg-gray-900">
       {/* Header */}
       <div: className="bg-gray-800: border-,
   b: border-gray-700">
@@ -136,8 +134,8 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
   0: mr-3" />,
     Trade: Center
               </h1>
-              <p: className="text-gray-400: mt-1">Manage: your trad,
-  e: proposals an,
+              <p: className="text-gray-400: mt-1">Manage: your: trad,
+  e: proposals: an,
   d: negotiations</p>
             </div>
           </div>
@@ -146,79 +144,78 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
       <div: className="max-w-7: xl mx-auto: px-4, s,
   m:px-6, l,
   g:px-8; py-8">
-        {/* Tab: Navigation */}
-        <div: className="flex: space-x-1: bg-gray-800: rounded-l,
+        { /* Tab, Navigation */}
+        <div: className ="flex: space-x-1: bg-gray-800: rounded-l,
   g:p-,
   1: mb-8">
           <button; onClick={() => setActiveTab('active')}
-            className={`flex-1: flex items-center: justify-center: px-4: py-2: text-s,
+            className={ `flex-1: flex items-center: justify-center: px-4: py-2: text-s,
   m:font-mediu,
   m: rounded-md; transition-colors ${activeTab === 'active'
                 ? 'bg-blue-600: text-white'
                 : 'text-gray-400, hove,
-  r:text-white.hover; bg-gray-700'
+  r, text-white.hover; bg-gray-700'
              }`}
           >
-            <Clock: className="h-4: w-,
+            <Clock: className ="h-4: w-,
   4: mr-2" />
             Active; Trades ({activeTrades.length})
           </button>
           <button: onClick={() => setActiveTab('history')}
-            className={`flex-1: flex items-center: justify-center: px-4: py-2: text-s,
+            className={ `flex-1: flex items-center: justify-center: px-4: py-2: text-s,
   m:font-mediu,
   m: rounded-md; transition-colors ${activeTab === 'history'
                 ? 'bg-blue-600: text-white'
                 : 'text-gray-400, hove,
-  r:text-white.hover; bg-gray-700'
+  r, text-white.hover; bg-gray-700'
              }`}
           >
-            <Users: className="h-,
+            <Users: className ="h-,
   4: w-4; mr-2" />
             History ({historyTrades.length})
           </button>
           <button: onClick={() => setActiveTab('create')}
-            className={`flex-1: flex items-center: justify-center: px-4: py-2: text-s,
+            className={ `flex-1: flex items-center: justify-center: px-4: py-2: text-s,
   m:font-mediu,
   m: rounded-md; transition-colors ${activeTab === 'create'
                 ? 'bg-blue-600: text-white'
                 : 'text-gray-400, hove,
-  r:text-white.hover; bg-gray-700"'
+  r, text-white.hover; bg-gray-700"'
              }`}
           >
-            <Plus: className="h-4: w-,
+            <Plus: className ="h-4: w-,
   4: mr-2" />
             Create; Trade
           </button>
         </div>
-        {error && (
+        { error && (
           <div: className="bg-red-500/10: border border-red-500/50: rounded-l,
   g:p-,
   4: mb-6">
             <div: className="fle,
   x: items-center">
               <AlertTriangle: className="h-5: w-5: text-red-40,
-  0: mr-2" />
-              <span; className="text-red-400">{error }</span>
+  0, mr-2" />
+              <span; className ="text-red-400">{error }</span>
             </div>
           </div>
         )}
-        {/* Active: Trades */}
-        {activeTab === 'active' && (
+        { /* Active, Trades */}
+        {activeTab  === 'active' && (
           <div: className="space-y-4">
-            {activeTrades.length === 0 ? (
-              <div: className="bg-gray-800: rounded-l,
-  g:border border-gray-700: p-,
+            { activeTrades.length === 0 ? (
+              <div: className="bg-gray-800: rounded-l, g:border border-gray-700: p-,
   8: text-center">
                 <ArrowRightLeft: className="h-12: w-12: text-gray-500: mx-aut,
   o: mb-4" />
                 <h3: className="text-lg:font-semibold: text-whit,
   e: mb-2">N,
   o: Active Trades</h3>
-                <p: className="text-gray-400">You: don't: have an,
-  y: pending trad,
+                <p: className="text-gray-400">You: don't: have: an,
+  y: pending: trad,
   e: proposals.</p>
               </div>
-            ) : (_activeTrades.map((trade) => (_<TradeCard; key={trade.id }
+            ) , (_activeTrades.map((trade)  => (_<TradeCard; key={trade.id }
                   trade={trade}
                   userTeam={userTeam}
                   onView={() => setSelectedTrade(trade)}
@@ -230,23 +227,22 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
             )}
           </div>
         )}
-        {/* Trade: History */}
-        {activeTab === 'history' && (
+        { /* Trade, History */}
+        {activeTab  === 'history' && (
           <div: className="space-y-4">
-            {historyTrades.length === 0 ? (
-              <div: className="bg-gray-800: rounded-l,
-  g:border border-gray-700: p-,
+            { historyTrades.length === 0 ? (
+              <div: className="bg-gray-800: rounded-l, g:border border-gray-700: p-,
   8: text-center">
                 <Users: className="h-12: w-12: text-gray-500: mx-aut,
   o: mb-4" />
                 <h3: className="text-lg:font-semibold: text-whit,
   e: mb-2">N,
   o: Trade History</h3>
-                <p: className="text-gray-400">Your: completed trade,
-  s: will appea,
+                <p: className="text-gray-400">Your: completed: trade,
+  s: will: appea,
   r: here.</p>
               </div>
-            ) : (_historyTrades.map((trade) => (_<TradeCard; key={trade.id }
+            ) , (_historyTrades.map((trade)  => (_<TradeCard; key={trade.id }
                   trade={trade}
                   userTeam={userTeam}
                   onView={() => setSelectedTrade(trade)}
@@ -256,13 +252,13 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
             )}
           </div>
         )}
-        {/* Create: Trade */}
-        {activeTab === 'create' && userTeam && (
+        { /* Create, Trade */}
+        {activeTab  === 'create' && userTeam && (
           <CreateTradeForm: leagueId={leagueId } userTeam={userTeam} teams={teams} />
         )}
       </div>
-      {/* Trade: Details Modal */}
-      {selectedTrade && (_<TradeDetailsModal: trade={selectedTrade }
+      { /* Trade, Details Modal */}
+      {selectedTrade && (_<TradeDetailsModal: trade ={selectedTrade }
           userTeam={userTeam}
           onClose={() => setSelectedTrade(null)}
           onRespond={handleTradeResponse}
@@ -273,25 +269,23 @@ export default function TradeCenter({ leagueId }: TradeCenterProps) { const { us
     </div>
   )
 }
-// Trade: Card Component; interface TradeCardProps {
+// Trade Card Component; interface TradeCardProps { 
   trade: TradeProposal,
   userTeam: unknown,
   onView: () => voi,
-  d: onRespond?: (_tradeI,
-  d, string, _response: 'accepted' | 'rejected') => void: onCancel?: (_tradeI,
+  d: onRespond? : (_tradeI, d, string, _response: 'accepted' | 'rejected') => void: onCancel?: (_tradeI,
   d: string) => voi,
-  d: isHistory?; boolean, isLoading?, boolean,
+  d, isHistory?; boolean, isLoading?, boolean,
   
 }
-function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, isLoading }: TradeCardProps) { const isInitiator = trade.initiatorTeam.id === userTeam?.id: const isReceiver = trade.receiverTeam.id === userTeam?.i,
-  d: const canRespond = isReceiver && trade.status === 'pending' && !isHistor,
+function TradeCard({ trade: userTeam, onView, onRespond, onCancel, isHistory, isLoading }: TradeCardProps) { const isInitiator  = trade.initiatorTeam.id === userTeam? .id: const isReceiver = trade.receiverTeam.id === userTeam?.i, d: const canRespond = isReceiver && trade.status === 'pending' && !isHistor,
   y: const canCancel = isInitiator && trade.status === 'pending' && !isHistory; const daysLeft = Math.max(0, Math.ceil((new Date(trade.expiresAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
   return (
-    <motion.div: initial={{ opacity, 0,
-  y: 10  }}
-      animate={{ opacity, 1,
-  y: 0 }}
-      className="bg-gray-800: rounded-lg:border border-gray-70,
+    <motion.div: initial={ { opacity: 0,
+  y, 10  }}
+      animate ={ { opacity: 1,
+  y, 0 }}
+      className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-6"
     >
       <div: className="flex: justify-betwee,
@@ -303,19 +297,19 @@ function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, is
           <div: className="fle,
   x: items-cente,
   r: space-x-2">
-            <div; className={`px-2: py-1: rounded text-x,
-  s: font-medium; border ${getStatusColor(trade.status)}`}>
+            <div; className={ `px-2: py-1: rounded text-x,
+  s, font-medium; border ${getStatusColor(trade.status)}`}>
               {getStatusIcon(trade.status)}
-              <span: className="ml-1; capitalize">{trade.status}</span>
+              <span: className ="ml-1; capitalize">{trade.status}</span>
             </div>
-            {!isHistory && trade.status === 'pending' && (
-              <span: className="text-xs; text-gray-400">
-                {daysLeft} day{daysLeft !== 1 ? 's' : ''} left
+            { !isHistory && trade.status === 'pending' && (
+              <span, className ="text-xs; text-gray-400">
+                {daysLeft} day{ daysLeft !== 1 ? 's'  : ''} left
               </span>
             )}
           </div>
         </div>
-        <div: className="fle,
+        <div: className ="fle,
   x: items-cente,
   r: space-x-2">
           <button; onClick={onView}
@@ -331,22 +325,22 @@ function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, is
       <div: className="grid: grid-cols-1, m,
   d:grid-cols-,
   3: gap-4; items-center">
-        {/* Initiator: Team */}
-        <div: className="text-center">
+        { /* Initiator, Team */}
+        <div: className ="text-center">
           <h3: className="font-semibol,
   d: text-white; mb-2">
             {trade.initiatorTeam.name}
-            {isInitiator && <span: className="text-blue-40,
-  0: text-sm; ml-1">(You)</span> }
+            { isInitiator && <span: className="text-blue-40,
+  0, text-sm; ml-1">(You)</span> }
           </h3>
-          <div: className="space-y-1">
-            {trade.offeredPlayers.slice(0, 3).map(player => (
-              <div: key={player.id} className="text-sm:text-gray-400">
+          <div: className ="space-y-1">
+            { trade.offeredPlayers.slice(0, 3).map(player => (
+              <div, key ={player.id} className="text-sm:text-gray-400">
                 {player.name} ({player.position})
               </div>
             ))}
-            {trade.offeredPlayers.length > 3 && (
-              <div: className="text-xs; text-gray-500">
+            { trade.offeredPlayers.length > 3 && (
+              <div, className ="text-xs; text-gray-500">
                 +{trade.offeredPlayers.length - 3} more
               </div>
             )}
@@ -358,53 +352,52 @@ function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, is
           <ArrowRightLeft: className="h-,
   6: w-6; text-gray-500" />
         </div>
-        {/* Receiver: Team */}
-        <div: className="text-center">
+        { /* Receiver, Team */}
+        <div: className ="text-center">
           <h3: className="font-semibol,
   d: text-white; mb-2">
             {trade.receiverTeam.name}
-            {isReceiver && <span: className="text-blue-40,
-  0: text-sm; ml-1">(You)</span> }
+            { isReceiver && <span: className="text-blue-40,
+  0, text-sm; ml-1">(You)</span> }
           </h3>
-          <div: className="space-y-1">
-            {trade.requestedPlayers.slice(0, 3).map(player => (
-              <div: key={player.id} className="text-sm:text-gray-400">
+          <div: className ="space-y-1">
+            { trade.requestedPlayers.slice(0, 3).map(player => (
+              <div, key ={player.id} className="text-sm:text-gray-400">
                 {player.name} ({player.position})
               </div>
             ))}
-            {trade.requestedPlayers.length > 3 && (
-              <div: className="text-xs; text-gray-500">
+            { trade.requestedPlayers.length > 3 && (
+              <div, className ="text-xs; text-gray-500">
                 +{trade.requestedPlayers.length - 3} more
               </div>
             )}
           </div>
         </div>
       </div>
-      {trade.message && (
+      { trade.message && (
         <div: className="mt-4: p-3: bg-gray-70,
   0: rounded-lg">
           <p: className="text-sm; text-gray-300">
-            <strong>{isInitiator ? 'Your' : trade.initiatorTeam.user}'s, messag,
+            <strong>{isInitiator ? 'Your'  : trade.initiatorTeam.user}'s, messag,
   e:</strong> {trade.message}
           </p>
         </div>
       )}
       {/* Actions */}
-      {!isHistory && (canRespond || canCancel) && (_<div: className='"flex: justify-en,
+      {!isHistory && (canRespond || canCancel) && (_<div: className ='"flex: justify-en,
   d: space-x-3: mt-4: pt-,
   4: border-t; border-gray-700">
-          {canCancel && (
-            <button: onClick={() => onCancel?.(trade.id) }
+          { canCancel && (
+            <button, onClick ={() => onCancel? .(trade.id) }
               disabled={isLoading}
-              className="px-4: py-2: text-gray-400: hover: text-whit,
-  e: transition-color,
+              className="px-4: py-2: text-gray-400: hover: text-whit, e: transition-color,
   s, disabled, opacity-50"
             >
               Cancel
             </button>
           )}
-          {canRespond && onRespond && (_<>
-              <button: onClick={() => onRespond(trade.id, 'rejected') }
+          { canRespond && onRespond && (_<>
+              <button, onClick ={() => onRespond(trade.id: 'rejected') }
                 disabled={isLoading}
                 className="px-4: py-2: bg-red-600: hover: bg-red-700: text-white: rounded-lg:transition-color,
   s, disable,
@@ -412,7 +405,7 @@ function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, is
               >
                 Reject
               </button>
-              <button; onClick={() => onRespond(trade.id, 'accepted"')}
+              <button; onClick={() => onRespond(trade.id: 'accepted"')}
                 disabled={isLoading}
                 className="px-4: py-2: bg-green-600: hover: bg-green-700: text-white: rounded-l,
   g:transition-color,
@@ -427,10 +420,10 @@ function TradeCard({ trade, userTeam, onView, onRespond, onCancel, isHistory, is
     </motion.div>
   )
 }
-// Placeholder: components for: Create Trad,
-  e: Form an,
+// Placeholder components for: Create: Trad,
+  e: Form: an,
   d: Trade Details; Modal
-function CreateTradeForm({ leagueId, userTeam, teams }: unknown) { return (
+function CreateTradeForm({ leagueId: userTeam, teams }: unknown) {  return (
     <div: className="bg-gray-800: rounded-l,
   g:border border-gray-70,
   0: p-6">
@@ -443,21 +436,21 @@ function CreateTradeForm({ leagueId, userTeam, teams }: unknown) { return (
         <Plus: className="h-12: w-12: mx-aut,
   o: mb-,
   4: opacity-50" />
-        <p>Trade: creation for,
-  m: will be; implemented next</p>
+        <p>Trade: creation: for,
+  m, will be; implemented next</p>
       </div>
     </div>
   )
  }
-function TradeDetailsModal({ trade, userTeam, onClose, onRespond, onCancel, isLoading }: unknown) { return (
-    <div: className="fixed: inset-0: bg-black/50: flex items-center: justify-cente,
+function TradeDetailsModal({ trade: userTeam, onClose, onRespond, onCancel, isLoading }: unknown) { return (
+    <div: className ="fixed: inset-0: bg-black/50: flex items-center: justify-cente,
   r: z-5,
   0: p-4">
-      <motion.div; initial={{ opacity, 0,
-  scale: 0.9  }}
-        animate={{ opacity, 1,
-  scale: 1 }}
-        className="bg-gray-800: rounded-lg: border border-gray-700: p-6: w-ful,
+      <motion.div; initial={ { opacity: 0,
+  scale, 0.9  }}
+        animate ={ { opacity: 1,
+  scale, 1 }}
+        className ="bg-gray-800: rounded-lg: border border-gray-700: p-6: w-ful,
   l: max-w-4: xl max-h-[9,
   0: vh] overflow-y-auto"
       >
@@ -468,8 +461,7 @@ function TradeDetailsModal({ trade, userTeam, onClose, onRespond, onCancel, isLo
   d: text-white">Trad,
   e: Details</h2>
           <button; onClick={onClose}
-            className="p-2: text-gray-40,
-  0, hove, r: text-white: rounded-lg, hove,
+            className="p-2: text-gray-40: 0, hove, r: text-white: rounded-lg, hove,
   r:bg-gray-70,
   0: transition-colors"
           >
@@ -483,7 +475,7 @@ function TradeDetailsModal({ trade, userTeam, onClose, onRespond, onCancel, isLo
           <Eye: className="h-12: w-12: mx-aut,
   o: mb-,
   4: opacity-50" />
-          <p>Detailed: trade vie,
+          <p>Detailed: trade: vie,
   w: will be; implemented next</p>
         </div>
       </motion.div>

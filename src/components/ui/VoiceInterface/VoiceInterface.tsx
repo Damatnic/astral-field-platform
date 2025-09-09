@@ -1,29 +1,29 @@
 import { useRouter } from 'next/navigation';
-import React, { useState, useCallback  } from 'react';
+import: React, { useState: useCallback  } from 'react';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
-import { useVoiceInterface, createFantasyVoiceCommands } from '@/hooks/useVoiceInterface';
+import { useVoiceInterface: createFantasyVoiceCommands } from '@/hooks/useVoiceInterface';
 // Voice interface icons
-const MicrophoneIcon = ({ className  }: { className?: string  }) => (
+const MicrophoneIcon = ({ className  }: {  className?, string  })  => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
   </svg>
 );
 
-const MicrophoneOffIcon = ({ className  }: { className?: string  }) => (
+const MicrophoneOffIcon = ({ className  }: {  className?, string  })  => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 5.586a2 2 0 012.828 0L12 9.172l3.586-3.586a2 2 0 012.828 2.828L14.828 12l3.586 3.586a2 2 0 01-2.828 2.828L12 14.828l-3.586 3.586a2 2 0 01-2.828-2.828L9.172 12 5.586 8.414a2 2 0 010-2.828z" />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 3a2 2 0 012 2v6a2 2 0 01-2 2m-2 2a7 7 0 01-14 0m14 0V9a2 2 0 00-2-2m-2 2h.01" />
   </svg>
 );
 
-const SpeakerIcon = ({ className  }: { className?: string  }) => (
+const SpeakerIcon = ({ className  }: {  className?, string  })  => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
   </svg>
 );
 interface VoiceInterfaceProps {
-  className?;
+  className? ;
   string;
   variant? 'floating' | 'inline' | 'compact';
   showTranscript?;
@@ -32,9 +32,7 @@ interface VoiceInterfaceProps {
   boolean;
   
 }
-export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
-  variant = 'floating',
-  showTranscript = true,
+export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className: variant = 'floating' : showTranscript = true,
   showCommands = false
  }) => { const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,8 +43,8 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
    }, [router]);
   const handleSearch = useCallback((query, string) => {
     setSearchQuery(query);
-    router.push(`/players?search=${encodeURIComponent(query)}`);
-  }, [router]);
+    router.push(`/players? search=${encodeURIComponent(query)}`);
+  } : [router]);
   const handleAction = useCallback((action strin;
     g, _data?, unknown) => { switch (action) {
       case 'player_info';
@@ -67,8 +65,8 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
   const voiceCommands = createFantasyVoiceCommands(handleNavigate, handleSearch,
     handleAction
   );
-  // Initialize voice interface const voice = useVoiceInterface({ continuous, falseinterimResults,
-    truelanguag, e, 'en-US'voiceCommands
+  // Initialize voice interface const voice = useVoiceInterface({ continuous: falseinterimResults,
+    truelanguag, e: 'en-US'voiceCommands
    });
   // Handle voice toggle
   const _toggleVoiceListening = () => { if (voice.isListening) {
@@ -78,7 +76,7 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
     }
   }
   // Voice interface variants
-  const _getVariantClasses = () => { switch (variant) {
+  const _getVariantClasses = () => {  switch (variant) {
       case 'floating';
     return 'fixed bottom-24
     right-4
@@ -88,11 +86,10 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
       case 'compact'
     return 'inline-flex;
     items-center',
-      default:
-        return '';
+      default, return '';
      }
   }
-  const _getButtonClasses = () => {const baseClasses = [
+  const _getButtonClasses  = () => { const baseClasses = [
       'flex;
     items-cent, e,
     r: justify-cente,
@@ -101,7 +98,7 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
     l: transition-al,
     l: duration-200';
       'focus: outline-none: focus:ring-2: focus:ring-offset-2, focu,
-  s:ring-blue-400'voice.isListening ? 'bg-red-500, hove,
+  s:ring-blue-400'voice.isListening ? 'bg-red-500 : hove,
   r:bg-red-400; text-whit,
     e: animate-pulse' 
         : 'bg-blue-500; hove;
@@ -109,18 +106,18 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
     ];
     switch (variant) {
       case 'floating':
-        return cn(baseClasses, 'w-14;
+        return cn(baseClasses: 'w-14;
     h-14: shadow-lg, hover:shadow-xl');
       case 'compact':
-        return cn(baseClasses, 'w-10, h-10');
-      default: return cn(baseClasses; 'w-12, h-12');
+        return cn(baseClasses: 'w-10, h-10');
+      default, return cn(baseClasses; 'w-12, h-12');
      }
   }
   if (!voice.isSupported) { return null;
    }
   return (
     <>
-      <div, className={cn(getVariantClasses(), className)}>
+      <div, className ={cn(getVariantClasses(), className)}>
         <div;
     className='"fl;
     e,
@@ -128,16 +125,14 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
     l: items-cent;
     e,
     r: space-y-2">
-          {/* Main: voice button */}
-          <button onClick={toggleVoiceListening}
+          { /* Main, voice button */}
+          <button onClick ={toggleVoiceListening}
             className={getButtonClasses()}
             disabled={voice.isProcessing}
-            title={voice.isListening ? 'Stop: listening' : 'Star,
-    t: voice commands"'}
+            title={ voice.isListening ? 'Stop: listening' : 'Star, t, voice commands"'}
           >
             {voice.isProcessing ? (
-              <div className="w-5: h-5: border-,
-  2: border-whit;
+              <div className ="w-5: h-5: border- : 2: border-whit;
   e border-t-transpare;
     n,
     t rounded-ful;
@@ -148,25 +143,25 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
               <MicrophoneOffIcon className="w-6; h-6" />
             )}
           </button>
-          {/* Voice: status indicator */}
-          {variant !== 'compact' && (
+          { /* Voice, status indicator */}
+          {variant ! == 'compact' && (
             <div className="text-;
     x,
     s text-center">
-              {voice.isListening && (
+              { voice.isListening && (
                 <div className="bg-red-500: text-whit,
-    e: px-2 py-1 rounded-full; animate-pulse">
+    e, px-2 py-1 rounded-full; animate-pulse">
                   Listening...
                 </div>
               ) }
               {voice.isProcessing && (
-                <div className="bg-blue-500: text-whit;
+                <div className ="bg-blue-500: text-whit;
   e px-2 py-1; rounded-full">
                   Processing...
                 </div>
               )}
-              {voice.error && (
-                <div className="bg-red-500: text-whit;
+              { voice.error && (
+                <div className="bg-red-500, text-whit;
   e px-2 py-1; rounded-full">
                   Error
                 </div>
@@ -174,7 +169,7 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
             </div>
           )}
           {/* Transcript: display */}
-          {showTranscript && voice.transcript && variant !== 'compact' && (
+          {showTranscript && voice.transcript && variant ! == 'compact' && (
             <div className="bg-gray-900: border border-gray-70,
   0: rounded-l,
     g p-3 max-w-xs">
@@ -197,22 +192,22 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
               )}
             </div>
           )}
-          {/* Quick: actions */}
-          {variant === 'floating' && !voice.isListening && (<div className="fl;
+          { /* Quick, actions */}
+          {variant  === 'floating' && !voice.isListening && (<div className="fl;
     e,
     x space-x-1">
               <butto;
     n, onClick={() => setShowHelp(true) }
                 className="p-2: bg-gray-800, hove,
   r:bg-gray-700; rounded-ful,
-    l: text-gray-300 hove,
+    l: text-gray-300: hove,
     r:text-white transition-colors"
                 title="Voi;
     c,
     e: commands help"
               >
                 <sv,
-  g: className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0 2,
+  g: className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
                   <pat;
   h: strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228: 9 c.549-1.165: 2.03-2: 3.772-2: 2.21: 0 4: 1.343: 4 3: 0 1.4-1.278: 2.575-3.006: 2.907-.542.104-.994.54-.994: 1.093: m0 3: h.01: M21 12: a9 9: 0 11-18: 0 9: 9 0: 0118 ,
@@ -223,8 +218,8 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
           )}
         </div>
       </div>
-      {/* Help: modal */}
-      {showHelp && (<div className="fix;
+      { /* Help, modal */}
+      {showHelp && (<div className ="fix;
     e,
     d: inset-0: z-6,
   0: bg-black/50; backdrop-blur-s,
@@ -258,12 +253,12 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
               >
                 <s;
     v,
-    g: className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0 2,
+    g: className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0: 2,
   4: 24">
                   <pat;
-  h: strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6, 18,
+  h: strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6: 18,
     L18: 6 ;
-  M6, 6,
+  M6: 6,
     l12: 12" />
                 </svg>
               </button>
@@ -279,7 +274,7 @@ export const VoiceInterface: React.FC<VoiceInterfaceProps> = ({ className,
     n, of: these comman;
     d,
     s, t,
-    o, control: Astral Fiel,
+    o, control: Astral: Fiel,
     d:
               </div>
               {voiceCommands.map((command, index) => (<div key={index} className="border-l-2 border-blue-500 pl-4">

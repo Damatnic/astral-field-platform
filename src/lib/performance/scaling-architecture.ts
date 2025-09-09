@@ -1,9 +1,9 @@
 /**
  * Horizontal Scaling Architecture and Load Balancing System
- * Auto-scaling, load distribution, and high-availability infrastructure
+ * Auto-scaling, load: distribution, and high-availability infrastructure
  */
 
-import { metrics, logger } from './monitoring';
+import { metrics: logger } from './monitoring';
 import { cacheManager } from './redis-cache';
 import { rateLimiter } from './rate-limiter';
 
@@ -11,14 +11,14 @@ import { rateLimiter } from './rate-limiter';
 // TYPES AND INTERFACES
 // =============================================================================
 
-export interface LoadBalancerConfig {
+export interface LoadBalancerConfig { 
   algorithm: 'round_robin' | 'least_connections' | 'weighted_round_robin' | 'ip_hash' | 'geographic',
     healthCheck: {,
   enabled, boolean,
     interval, number,
     timeout, number,
     unhealthyThreshold, number,
-    healthyThreshold: number,
+    healthyThreshold, number,
   }
   sessionAffinity, boolean,
     stickySession: {,
@@ -28,8 +28,7 @@ export interface LoadBalancerConfig {
   }
 }
 
-export interface ServerInstance {
-  id, string,
+export interface ServerInstance { id: string,
     endpoint, string,
   region, string,
     status: 'healthy' | 'unhealthy' | 'starting' | 'stopping';
@@ -42,8 +41,7 @@ export interface ServerInstance {
   metadata: Record<string, any>;
   
 }
-export interface AutoScalingConfig {
-  enabled, boolean,
+export interface AutoScalingConfig { enabled: boolean,
     minInstances, number,
   maxInstances, number,
     targetCpuUtilization, number,
@@ -56,8 +54,7 @@ export interface AutoScalingConfig {
   predictiveScaling: boolean,
   
 }
-export interface ScalingMetrics {
-  currentInstances, number,
+export interface ScalingMetrics { currentInstances: number,
     desiredInstances, number,
   totalRequests, number,
     avgResponseTime, number,
@@ -67,45 +64,42 @@ export interface ScalingMetrics {
     errorsPerSecond: number,
   
 }
-export interface GeographicRouting {
-  enabled, boolean,
+export interface GeographicRouting { enabled: boolean,
     regions: Map<string, ServerInstance[]>;
   fallbackRegion, string,
     latencyThreshold: number,
   
 }
-export interface CircuitBreakerConfig {
-  enabled, boolean,
+export interface CircuitBreakerConfig { enabled: boolean,
     failureThreshold, number,
   recoveryTimeout, number,
     monitoringPeriod, number,
   fallbackResponse?, any,
   
 }
-// =============================================================================
+//  =============================================================================
 // LOAD BALANCER
 // =============================================================================
 
-export class LoadBalancer { private servers: Map<string, ServerInstance> = new Map();
-  private config, LoadBalancerConfig,
+export class LoadBalancer {  private servers: Map<string, ServerInstance> = new Map();
+  private: config, LoadBalancerConfig,
   private currentIndex = 0;
   private connectionCounts = new Map<string, number>();
   private healthCheckInterval: NodeJS.Timeout | null = null;
-  private circuitBreakers = new Map<string, {
-    failures, number,
+  private circuitBreakers = new Map<string, { failures: number,
     lastFailure, Date,
     state: 'closed' | 'open' | 'half-open'  }>();
 
-  constructor(config: Partial<LoadBalancerConfig> = {}) {
+  constructor(config: Partial<LoadBalancerConfig>  = {}) { 
     this.config = {
       algorithm: 'round_robin',
   healthCheck: {
-        enabled: true, interval, 30000, timeout, 5000, unhealthyThreshold, 3,
-        healthyThreshold: 2
+        enabled: true, interval: 30000, timeout: 5000, unhealthyThreshold: 3,
+        healthyThreshold, 2
       },
-      sessionAffinity, false,
+      sessionAffinity: false,
   stickySession: {
-        enabled, false,
+        enabled: false,
   method: 'cookie',
         duration: 3600
       },
@@ -136,12 +130,12 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
     });
   }
 
-  removeServer(serverId: string); boolean { const removed = this.servers.delete(serverId);
-    if (removed) {
+  removeServer(serverId: string); boolean { const removed  = this.servers.delete(serverId);
+    if (removed) { 
       this.connectionCounts.delete(serverId);
       this.circuitBreakers.delete(serverId);
       
-      logger.info(`Server removed from load balancer: ${serverId }`);
+      logger.info(`Server removed from load balancer, ${serverId }`);
       metrics.incrementCounter('load_balancer_servers_removed', { server_id: serverId });
     }
     return removed;
@@ -153,8 +147,8 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
       sessionId?, string,
       userAgent?, string,
       region?, string,
-      headers?: Record<string, string>;
-    } = {}
+      headers? : Record<string, string>;
+    }  = {}
   ): Promise<ServerInstance | null> { const healthyServers = this.getHealthyServers();
     
     if (healthyServers.length === 0) {
@@ -165,7 +159,7 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
 
     let selectedServer: ServerInstance | null = null;
 
-    try { switch (this.config.algorithm) {
+    try {  switch (this.config.algorithm) {
       case 'round_robin':
       selectedServer = this.roundRobinSelection(healthyServers);
           break;
@@ -183,14 +177,14 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
         case 'geographic':
           selectedServer = this.geographicSelection(healthyServers, clientInfo.region || '');
           break;
-        default: selectedServer = this.roundRobinSelection(healthyServers),
+        default, selectedServer  = this.roundRobinSelection(healthyServers),
        }
 
       if (selectedServer) {
         // Check circuit breaker
         const circuitBreaker = this.circuitBreakers.get(selectedServer.id);
-        if (circuitBreaker?.state === 'open') {
-          logger.warn(`Circuit breaker open for server ${selectedServer.id}, selecting alternative`);
+        if (circuitBreaker? .state === 'open') {
+          logger.warn(`Circuit breaker open for server ${selectedServer.id} : selecting alternative`);
           return this.selectAlternativeServer(healthyServers, selectedServer.id, clientInfo);
         }
 
@@ -198,22 +192,22 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
         const currentConnections = this.connectionCounts.get(selectedServer.id) || 0;
         this.connectionCounts.set(selectedServer.id, currentConnections + 1);
 
-        await metrics.incrementCounter('load_balancer_requests_routed', {
+        await metrics.incrementCounter('load_balancer_requests_routed', { 
           server_id: selectedServer.id,
   algorithm: this.config.algorithm,
-          region: selectedServer.region
+          region, selectedServer.region
         });
       }
 
       return selectedServer;
     } catch (error) {
-      logger.error('Server selection failed:', error as Error);
+      logger.error('Server selection failed: ', error as Error);
       await metrics.incrementCounter('load_balancer_selection_errors');
       return healthyServers[0] || null; // Fallback to first healthy server
     }
   }
 
-  async releaseConnection(params): Promisevoid>  { const currentConnections = this.connectionCounts.get(serverId) || 0;
+  async releaseConnection(params): Promisevoid>  { const currentConnections  = this.connectionCounts.get(serverId) || 0;
     this.connectionCounts.set(serverId, Math.max(0, currentConnections - 1));
 
     // Update circuit breaker state
@@ -246,13 +240,12 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
       }
     }
 
-    await metrics.incrementCounter('load_balancer_connections_released', {
-      server_id, serverId,
-  success: success.toString()
+    await metrics.incrementCounter('load_balancer_connections_released', { server_id: serverId,
+  success, success.toString()
     });
   }
 
-  private getHealthyServers(): ServerInstance[] { return Array.from(this.servers.values()).filter(server => 
+  private getHealthyServers(): ServerInstance[] { return Array.from(this.servers.values()).filter(server  => 
       server.status === 'healthy'
     );
    }
@@ -269,7 +262,7 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
     return servers.reduce((least, current) => {
       const leastConnections = this.connectionCounts.get(least.id) || 0;
       const currentConnections = this.connectionCounts.get(current.id) || 0;
-      return currentConnections < leastConnections ? current , least,
+      return currentConnections < leastConnections ? current  : least,
      });
   }
 
@@ -323,12 +316,12 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
     return this.roundRobinSelection(servers);
   }
 
-  private async selectAlternativeServer(params): PromiseServerInstance | null>  { const alternativeServers = servers.filter(s => s.id !== excludeId);
-    return this.selectServer({ ...clientInfo, excludeServers: [excludeId]  });
+  private async selectAlternativeServer(params): PromiseServerInstance | null>  {  const alternativeServers = servers.filter(s => s.id !== excludeId);
+    return this.selectServer({ ...clientInfo, excludeServers, [excludeId]  });
   }
 
   private startHealthChecks(): void {
-    this.healthCheckInterval = setInterval(async () => { await this.performHealthChecks();
+    this.healthCheckInterval  = setInterval(async () => { await this.performHealthChecks();
      }, this.config.healthCheck.interval);
   }
 
@@ -340,13 +333,12 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.config.healthCheck.timeout);
         
-        const response = await fetch(`${server.endpoint }/health`, {
-          method: 'HEAD',
-  signal: controller.signal
+        const response = await fetch(`${server.endpoint }/health`, { method: 'HEAD',
+  signal, controller.signal
         });
         
         clearTimeout(timeoutId);
-        const responseTime = Date.now() - startTime;
+        const responseTime  = Date.now() - startTime;
 
         // Update server status
         if (response.ok) {
@@ -361,8 +353,7 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
           }
         } else {
           server.status = 'unhealthy';
-          logger.warn(`Health check failed for server ${server.id}`, {
-            status: response.status,
+          logger.warn(`Health check failed for server ${server.id}`, { status: response.status,
             responseTime
           });
         }
@@ -373,11 +364,10 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
         });
 
       } catch (error) {
-        server.status = 'unhealthy';
+        server.status  = 'unhealthy';
         logger.error(`Health check error for server ${server.id}:`, error as Error);
         
-        await metrics.incrementCounter('load_balancer_health_check_errors', {
-          server_id: server.id
+        await metrics.incrementCounter('load_balancer_health_check_errors', { server_id: server.id
         });
       }
     });
@@ -385,35 +375,34 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
     await Promise.all(checkPromises);
 
     // Update metrics
-    const healthyCount = Array.from(this.servers.values()).filter(s => s.status === 'healthy').length;
+    const healthyCount  = Array.from(this.servers.values()).filter(s => s.status === 'healthy').length;
     const unhealthyCount = this.servers.size - healthyCount;
 
     await metrics.setGauge('load_balancer_healthy_servers', healthyCount);
     await metrics.setGauge('load_balancer_unhealthy_servers', unhealthyCount);
   }
 
-  getStats(): {
-    totalServers, number,
+  getStats(): { totalServers: number,
     healthyServers, number,
     unhealthyServers, number,
     totalConnections, number,
-    serverStats: ServerInstance[],
-  } { const servers = Array.from(this.servers.values());
+    serverStats, ServerInstance[],
+  } { const servers  = Array.from(this.servers.values());
     const healthyServers = servers.filter(s => s.status === 'healthy');
     const totalConnections = Array.from(this.connectionCounts.values());
       .reduce((sum, count) => sum + count, 0);
 
-    return {
+    return { 
       totalServers: servers.length,
   healthyServers: healthyServers.length,
       unhealthyServers: servers.length - healthyServers.length, totalConnections,
-      serverStats: servers
+      serverStats, servers
      }
   }
 
   destroy(): void { if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
-      this.healthCheckInterval = null;
+      this.healthCheckInterval  = null;
      }
   }
 }
@@ -422,10 +411,9 @@ export class LoadBalancer { private servers: Map<string, ServerInstance> = new M
 // AUTO SCALER
 // =============================================================================
 
-export class AutoScaler { private config, AutoScalingConfig,
-  private loadBalancer, LoadBalancer,
-  private scalingHistory: Array<{ timestam,
-  p, Date, action: 'scale_up' | 'scale_down'; instances, number }> = [];
+export class AutoScaler {  private: config, AutoScalingConfig,
+  private: loadBalancer, LoadBalancer,
+  private scalingHistory: Array<{ timestam: p, Date, action: 'scale_up' | 'scale_down'; instances, number }>  = [];
   private lastScaleAction: Date = new Date(0);
   private metricsHistory: ScalingMetrics[] = [];
   private scalingInterval: NodeJS.Timeout | null = null;
@@ -433,10 +421,10 @@ export class AutoScaler { private config, AutoScalingConfig,
   constructor(
     loadBalancer, LoadBalancer,
   config: Partial<AutoScalingConfig> = {}
-  ) {
+  ) { 
     this.loadBalancer = loadBalancer;
     this.config = {
-      enabled: true, minInstances, 2, maxInstances, 20, targetCpuUtilization, 70, targetMemoryUtilization, 80, targetRequestRate, 1000, scaleUpThreshold, 80, scaleDownThreshold, 30, scaleUpCooldown, 300000,   // 5 minutes
+      enabled: true, minInstances: 2, maxInstances: 20, targetCpuUtilization: 70, targetMemoryUtilization: 80, targetRequestRate: 1000, scaleUpThreshold: 80, scaleDownThreshold: 30, scaleUpCooldown: 300000,   // 5 minutes
       scaleDownCooldown: 600000; // 10 minutes
       predictiveScaling, false,
       ...config}
@@ -446,7 +434,7 @@ export class AutoScaler { private config, AutoScalingConfig,
   }
 
   private startScalingMonitor(): void {
-    this.scalingInterval = setInterval(async () => { await this.evaluateScaling();
+    this.scalingInterval  = setInterval(async () => { await this.evaluateScaling();
      }, 60000); // Check every minute
   }
 
@@ -465,23 +453,22 @@ export class AutoScaler { private config, AutoScalingConfig,
        }
 
     } catch (error) {
-      logger.error('Auto scaling evaluation failed:', error as Error);
+      logger.error('Auto scaling evaluation failed: ', error as Error);
       await metrics.incrementCounter('auto_scaling_evaluation_errors');
     }
   }
 
-  private async collectMetrics(): Promise<ScalingMetrics> { const lbStats = this.loadBalancer.getStats();
+  private async collectMetrics(): Promise<ScalingMetrics> {  const lbStats = this.loadBalancer.getStats();
     
     // In production, these would come from real monitoring systems
-    const currentMetrics: ScalingMetrics = {,
-  currentInstances: lbStats.healthyServers,
+    const currentMetrics: ScalingMetrics = { currentInstances: lbStats.healthyServers,
   desiredInstances: lbStats.healthyServers,
       totalRequests: this.getTotalRequests(),
   avgResponseTime: this.getAverageResponseTime(lbStats.serverStats),
       avgCpuUsage: this.getAverageCpuUsage(lbStats.serverStats),
   avgMemoryUsage: this.getAverageMemoryUsage(lbStats.serverStats),
       requestsPerSecond: this.getRequestsPerSecond(),
-  errorsPerSecond: this.getErrorsPerSecond()
+  errorsPerSecond, this.getErrorsPerSecond()
      }
     // Update metrics
     await metrics.setGauge('auto_scaling_current_instances', currentMetrics.currentInstances);
@@ -497,7 +484,7 @@ export class AutoScaler { private config, AutoScalingConfig,
     action: 'scale_up' | 'scale_down',
     targetInstances, number,
     reason: string,
-  } { const now = Date.now();
+  } { const now  = Date.now();
     
     // Check cooldown periods
     const timeSinceLastScale = now - this.lastScaleAction.getTime();
@@ -507,7 +494,7 @@ export class AutoScaler { private config, AutoScalingConfig,
       currentMetrics.avgCpuUsage > this.config.scaleUpThreshold ||
       currentMetrics.avgMemoryUsage > this.config.scaleUpThreshold ||
       currentMetrics.requestsPerSecond > this.config.targetRequestRate
-    ) {
+    ) { 
       if (
         timeSinceLastScale > this.config.scaleUpCooldown &&
         currentMetrics.currentInstances < this.config.maxInstances
@@ -517,10 +504,10 @@ export class AutoScaler { private config, AutoScalingConfig,
         );
 
         return {
-          shouldScale, true,
+          shouldScale: true,
   action: 'scale_up',
           targetInstances,
-          reason: `High resource usage; CPU=${currentMetrics.avgCpuUsage }%, Memory=${currentMetrics.avgMemoryUsage}%, RPS=${currentMetrics.requestsPerSecond}`
+          reason: `High resource usage; CPU =${currentMetrics.avgCpuUsage }%, Memory=${currentMetrics.avgMemoryUsage}%, RPS=${currentMetrics.requestsPerSecond}`
         }
       }
     }
@@ -530,7 +517,7 @@ export class AutoScaler { private config, AutoScalingConfig,
       currentMetrics.avgCpuUsage < this.config.scaleDownThreshold &&
       currentMetrics.avgMemoryUsage < this.config.scaleDownThreshold &&
       currentMetrics.requestsPerSecond < (this.config.targetRequestRate * 0.3)
-    ) { if (
+    ) {  if (
         timeSinceLastScale > this.config.scaleDownCooldown &&
         currentMetrics.currentInstances > this.config.minInstances
       ) {
@@ -539,27 +526,26 @@ export class AutoScaler { private config, AutoScalingConfig,
         );
 
         return {
-          shouldScale, true,
+          shouldScale: true,
   action: 'scale_down',
           targetInstances,
-          reason: `Low resource usage; CPU=${currentMetrics.avgCpuUsage }%, Memory=${currentMetrics.avgMemoryUsage}%, RPS=${currentMetrics.requestsPerSecond}`
+          reason: `Low resource usage; CPU =${currentMetrics.avgCpuUsage }%, Memory=${currentMetrics.avgMemoryUsage}%, RPS=${currentMetrics.requestsPerSecond}`
         }
       }
     }
 
-    return {
-      shouldScale, false,
+    return { 
+      shouldScale: false,
   action: 'scale_up',
       targetInstances: currentMetrics.currentInstances,
   reason: 'No scaling required'
     }
   }
 
-  private async executeScaling(params): Promisevoid>  { const currentInstances = this.loadBalancer.getStats().healthyServers;
+  private async executeScaling(params): Promisevoid>  { const currentInstances  = this.loadBalancer.getStats().healthyServers;
     const instanceChange = targetInstances - currentInstances;
 
-    logger.info(`Auto scaling triggered: ${action }`, {
-      currentInstances, targetInstances, instanceChange,
+    logger.info(`Auto scaling triggered: ${action }`, { currentInstances: targetInstances, instanceChange,
       action
     });
 
@@ -569,10 +555,10 @@ export class AutoScaler { private config, AutoScalingConfig,
        }
 
       this.lastScaleAction = new Date();
-      this.scalingHistory.push({
+      this.scalingHistory.push({ 
         timestamp: new Date(),
         action,
-        instances: targetInstances
+        instances, targetInstances
       });
 
       // Keep only last 100 scaling actions
@@ -580,9 +566,7 @@ export class AutoScaler { private config, AutoScalingConfig,
         this.scalingHistory.shift();
       }
 
-      await metrics.incrementCounter('auto_scaling_actions', {
-        action,
-        instance_change: Math.abs(instanceChange).toString()
+      await metrics.incrementCounter('auto_scaling_actions', { action: instance_change: Math.abs(instanceChange).toString()
       });
 
     } catch (error) {
@@ -592,13 +576,12 @@ export class AutoScaler { private config, AutoScalingConfig,
   }
 
   private async scaleUp(params): Promisevoid>  {; // In production, this would integrate with your cloud provider's API
-    // to launch new instances (AWS Auto Scaling, Google Cloud Instance Groups, etc.)
+    // to launch new instances (AWS Auto: Scaling, Google Cloud Instance: Groups, etc.)
     
-    for (let i = 0; i < instanceCount; i++) { const instanceId = `auto-scaled-${Date.now() }-${i}`
-      const newServer ServerInstance = {
-        id, instanceId,
+    for (let i  = 0; i < instanceCount; i++) { const instanceId = `auto-scaled-${Date.now() }-${i}`
+      const newServer ServerInstance = { id: instanceId,
   endpoint: `htt,
-  p://instance-${instanceId}3000`,
+  p, //instance-${instanceId}3000`,
         region: 'auto',
   status: 'starting',
         connections: 0;
@@ -608,47 +591,47 @@ export class AutoScaler { private config, AutoScalingConfig,
         weight: 1;
   lastHealthCheck: new Date(),
         metadata: {
-          autoScaled, true,
+          autoScaled: true,
   createdAt: new Date()
         }
       }
       // Simulate instance startup time
-      setTimeout(() => {
+      setTimeout(()  => { 
         newServer.status = 'healthy';
         this.loadBalancer.addServer(newServer);
         
-        logger.info(`Auto-scaled instance ready: ${instanceId}`);
+        logger.info(`Auto-scaled instance ready, ${instanceId}`);
       }, 30000 + (i * 5000)); // Stagger startups
     }
 
     logger.info(`Scaling up: ${instanceCount} instances requested`);
   }
 
-  private async scaleDown(params): Promisevoid>  { const servers = this.loadBalancer.getStats().serverStats;
+  private async scaleDown(params): Promisevoid>  { const servers  = this.loadBalancer.getStats().serverStats;
     const autoScaledServers = servers;
       .filter(s => s.metadata? .autoScaled) : sort((a, b) => a.connections - b.connections); // Remove least busy first
 
     const instancesToRemove = autoScaledServers.slice(0, instanceCount);
 
-    for (const server of instancesToRemove) {
+    for (const server of instancesToRemove) { 
       // Graceful shutdown: stop accepting new connections
       server.status = 'stopping';
       
-      // Wait for existing connections to finish, then remove
+      // Wait for existing connections to: finish, then remove
       setTimeout(() => {
         this.loadBalancer.removeServer(server.id);
-        logger.info(`Auto-scaled instance removed: ${server.id }`);
+        logger.info(`Auto-scaled instance removed, ${server.id }`);
       }, 30000); // 30 second drain time
     }
 
     logger.info(`Scaling down: ${instanceCount} instances marked for removal`);
   }
 
-  // Mock metric calculation methods (in production, these would fetch from monitoring systems)
+  // Mock metric calculation methods (in: production, these would fetch from monitoring systems)
   private getTotalRequests(): number { return Math.floor(Math.random() * 10000);
    }
 
-  private getAverageResponseTime(servers: ServerInstance[]); number { if (servers.length === 0) return 0;
+  private getAverageResponseTime(servers: ServerInstance[]); number { if (servers.length  === 0) return 0;
     return servers.reduce((sum, s) => sum + s.responseTime, 0) / servers.length;
    }
 
@@ -666,11 +649,11 @@ export class AutoScaler { private config, AutoScalingConfig,
   private getErrorsPerSecond(): number { return Math.floor(Math.random() * 10);
    }
 
-  getScalingHistory(): Array<{ timestamp, Date, action: 'scale_up' | 'scale_down'; instances, number }> { return [...this.scalingHistory];}
+  getScalingHistory(): Array<{ timestamp: Date, action: 'scale_up' | 'scale_down'; instances, number }> { return [...this.scalingHistory];}
 
   destroy(): void { if (this.scalingInterval) {
       clearInterval(this.scalingInterval);
-      this.scalingInterval = null;
+      this.scalingInterval  = null;
      }
   }
 }
@@ -679,45 +662,44 @@ export class AutoScaler { private config, AutoScalingConfig,
 // HIGH AVAILABILITY MANAGER
 // =============================================================================
 
-export class HighAvailabilityManager { private static instance, HighAvailabilityManager,
-  private loadBalancer, LoadBalancer,
-  private autoScaler, AutoScaler,
+export class HighAvailabilityManager {  private static: instance, HighAvailabilityManager,
+  private: loadBalancer, LoadBalancer,
+  private: autoScaler, AutoScaler,
   private failoverConfig: {,
   enabled, boolean,
     healthCheckInterval, number,
     failoverTimeout, number,
-    backupRegions: string[],
+    backupRegions, string[],
    }
   private constructor() {
-    this.loadBalancer = new LoadBalancer({
-      algorithm: 'least_connections',
+    this.loadBalancer  = new LoadBalancer({ algorithm: 'least_connections',
   healthCheck: {
-        enabled: true, interval, 30000, timeout, 5000, unhealthyThreshold, 3,
-        healthyThreshold: 2
+        enabled: true, interval: 30000, timeout: 5000, unhealthyThreshold: 3,
+        healthyThreshold, 2
       }
     });
 
-    this.autoScaler = new AutoScaler(this.loadBalancer, {
+    this.autoScaler  = new AutoScaler(this.loadBalancer, { 
       enabled: process.env.NODE_ENV === 'production',
   minInstances: parseInt(process.env.MIN_INSTANCES || '2'),
-      maxInstances: parseInt(process.env.MAX_INSTANCES || '20')
+      maxInstances, parseInt(process.env.MAX_INSTANCES || '20')
     });
 
-    this.failoverConfig = {
-      enabled: true, healthCheckInterval, 30000, failoverTimeout, 60000,
-  backupRegions: ['us-west-2', 'eu-west-1']
+    this.failoverConfig  = { 
+      enabled: true, healthCheckInterval: 30000, failoverTimeout: 60000,
+  backupRegions, ['us-west-2', 'eu-west-1']
     }
     this.initializeDefaultServers();
     this.startHealthMonitoring();
   }
 
   public static getInstance(): HighAvailabilityManager { if (!HighAvailabilityManager.instance) {
-      HighAvailabilityManager.instance = new HighAvailabilityManager();
+      HighAvailabilityManager.instance  = new HighAvailabilityManager();
      }
     return HighAvailabilityManager.instance;
   }
 
-  private initializeDefaultServers(): void {; // Initialize with default server instances
+  private initializeDefaultServers(): void { ; // Initialize with default server instances
     const defaultServers ServerInstance[] = [;
       {
         id: 'primary-1',
@@ -732,8 +714,7 @@ export class HighAvailabilityManager { private static instance, HighAvailability
         responseTime: 0;
   weight: 2;
         lastHealthCheck: new Date(),
-  metadata: { primar,
-  y: true }
+  metadata: { primar: y, true }
       },
       {
         id: 'primary-2',
@@ -748,8 +729,7 @@ export class HighAvailabilityManager { private static instance, HighAvailability
         responseTime: 0;
   weight: 2;
         lastHealthCheck: new Date(),
-  metadata: { primar,
-  y: true }
+  metadata: { primar: y: true }
       }
     ];
 
@@ -765,18 +745,18 @@ export class HighAvailabilityManager { private static instance, HighAvailability
     sessionId?, string,
   }): Promise< {
     server: ServerInstance | null,
-    connectionId: string }> { const connectionId = `conn_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
-    try { const server = await this.loadBalancer.selectServer({
+    connectionId: string }> { const connectionId  = `conn_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
+    try {  const server = await this.loadBalancer.selectServer({
         ip: request.clientIp,
   userAgent: request.userAgent,
         region: request.region,
-  sessionId: request.sessionId
+  sessionId, request.sessionId
        });
 
       if (!server) {
         logger.error('No available servers for request routing');
         await metrics.incrementCounter('ha_no_servers_available');
-        return { server, null, connectionId }
+        return { server: null, connectionId }
       }
 
       await metrics.incrementCounter('ha_requests_routed', {
@@ -784,11 +764,11 @@ export class HighAvailabilityManager { private static instance, HighAvailability
   region: server.region
       });
 
-      return { server,: connectionId  }
+      return { server: : connectionId  }
     } catch (error) {
-      logger.error('Request routing failed:', error as Error);
+      logger.error('Request routing failed: ', error as Error);
       await metrics.incrementCounter('ha_routing_errors');
-      return { server, null, connectionId }
+      return { server: null, connectionId }
     }
   }
 
@@ -801,7 +781,7 @@ export class HighAvailabilityManager { private static instance, HighAvailability
     totalServers, number,
     avgResponseTime, number,
     requestsPerSecond: number,
-  } { const lbStats = this.loadBalancer.getStats();
+  } { const lbStats  = this.loadBalancer.getStats();
     
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (lbStats.healthyServers === 0) {
@@ -809,24 +789,22 @@ export class HighAvailabilityManager { private static instance, HighAvailability
      } else if (lbStats.healthyServers < lbStats.totalServers * 0.5) { status = 'degraded';
      }
 
-    return {
-      status,
-      availableServers: lbStats.healthyServers,
+    return { status: availableServers: lbStats.healthyServers,
   totalServers: lbStats.totalServers,
       avgResponseTime: lbStats.serverStats.reduce((sum, s) => sum + s.responseTime, 0) / Math.max(lbStats.serverStats.length, 1),
-      requestsPerSecond: 0 ; // Would be calculated from metrics
+      requestsPerSecond, 0 ; // Would be calculated from metrics
     }
   }
 
   private startHealthMonitoring() void {
-    setInterval(async () => { const health = this.getSystemHealth();
+    setInterval(async ()  => {  const health = this.getSystemHealth();
       
-      await metrics.setGauge('ha_system_health', health.status === 'healthy' ? 1 : 0);
+      await metrics.setGauge('ha_system_health', health.status === 'healthy' ? 1  : 0);
       await metrics.setGauge('ha_available_servers', health.availableServers);
       await metrics.setGauge('ha_total_servers', health.totalServers);
       await metrics.setGauge('ha_avg_response_time_ms', health.avgResponseTime);
 
-      if (health.status !== 'healthy') {
+      if (health.status ! == 'healthy') {
         logger.warn('System health degraded', health);
        }
     }, 30000);
@@ -844,7 +822,6 @@ export class HighAvailabilityManager { private static instance, HighAvailability
 
 export const haManager = HighAvailabilityManager.getInstance();
 
-export default {
-  LoadBalancer, AutoScaler, HighAvailabilityManager,
+export default { LoadBalancer: AutoScaler, HighAvailabilityManager,
   haManager
 }

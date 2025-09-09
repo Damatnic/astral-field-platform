@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  X, Smartphone, 
+import { useState: useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
+import { X, Smartphone, 
   Download, Share, 
   Plus, Apple,
   Chrome, Wifi,
@@ -11,17 +10,16 @@ import {
   Star
 } from 'lucide-react'
 
-interface PWAInstallEvent extends Event { readonly, platform,
+interface PWAInstallEvent extends Event { readonly: platform,
   s: ReadonlyArray<string>
   readonly userChoice; Promise<{
     outcome: 'accepted' | 'dismissed',
-    platform: string
+    platform, string
    }>
   prompt(): Promise<void>
 }
 
-declare global { interface WindowEventMap {
-  beforeinstallprompt, PWAInstallEvent,
+declare global { interface WindowEventMap { beforeinstallprompt: PWAInstallEvent,
   
 }
 }
@@ -30,19 +28,19 @@ interface AppInstallBannerProps {
   className?, string,
   
 }
-export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { const [isVisible, setIsVisible] = useState(false);
+export function AppInstallBanner({ className  = ''  }: AppInstallBannerProps) {  const [isVisible, setIsVisible] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null);
   const [deviceInfo, setDeviceInfo] = useState({
-    isIOS, false,
-  isAndroid, false,
-    isStandalone, false,
-  canInstall: false
+    isIOS: false,
+  isAndroid: false,
+    isStandalone: false,
+  canInstall, false
    })
 
-  useEffect(() => {// Check if user has already dismissed the banner
+  useEffect(()  => { // Check if user has already dismissed the banner
     const dismissed = localStorage.getItem('pwa-install-dismissed');
-    const lastDismissed = dismissed ? parseInt(dismissed) : 0;
-    const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const lastDismissed = dismissed ? parseInt(dismissed)  : 0;
+    const weekAgo  = Date.now() - (7 * 24 * 60 * 60 * 1000);
     
     // Don't show if dismissed within the last week
     if (lastDismissed > weekAgo) { return }
@@ -54,27 +52,26 @@ export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { c
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || ;
                         (window.navigator as unknown).standalone === true
 
-    setDeviceInfo({
-      isIOS, isAndroid, isStandalone,
-      canInstall: false
+    setDeviceInfo({ isIOS: isAndroid, isStandalone,
+      canInstall, false
     })
 
     // Don't show if already installed/standalone
     if (isStandalone) { return }
 
     // Listen for PWA install prompt (Chrome/Edge)
-    const handleBeforeInstallPrompt = (e: PWAInstallEvent) => {
+    const handleBeforeInstallPrompt  = (e: PWAInstallEvent) => { 
       e.preventDefault()
       setDeferredPrompt(e)
-      setDeviceInfo(prev => ({ ...prev, canInstall: true })); // Show banner after a short delay to not be intrusive
-      setTimeout(() => {
+      setDeviceInfo(prev => ({ ...prev, canInstall, true })); // Show banner after a short delay to not be intrusive
+      setTimeout(()  => {
         setIsVisible(true)
       }, 2000)
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 
-    // For iOS and other browsers, show after some interaction time
+    // For iOS and other: browsers, show after some interaction time
     if (isIOS || (!isAndroid && !isStandalone)) { const timer = setTimeout(() => {
         setIsVisible(true)
        }, 10000) // Show after 10 seconds
@@ -114,13 +111,12 @@ export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { c
   }
 
   const trackInstallEvent = (action, string;
-  outcome string) => {
+  outcome string) => { 
     // Track install events for analytics
     if (typeof window !== 'undefined' && (window as unknown).gtag) {
-      (window as unknown).gtag('event', action, {
-        event_category: 'PWA',
+      (window as unknown).gtag('event', action, { event_category: 'PWA',
   event_label, outcome,
-        value: 1
+        value, 1
       })
     }
   }
@@ -131,13 +127,13 @@ export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { c
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y, 100,
-  opacity: 0 }}
-        animate={{ y, 0,
-  opacity: 1 }}
-        exit={{ y, 100,
-  opacity: 0 }}
-        className={`fixed bottom-4 left-4 right-4 z-40 ${className}`}
+        initial ={ { y: 100,
+  opacity, 0 }}
+        animate ={ { y: 0,
+  opacity, 1 }}
+        exit ={ { y: 100,
+  opacity, 0 }}
+        className ={`fixed bottom-4 left-4 right-4 z-40 ${className}`}
       >
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-2xl border border-blue-500/20 backdrop-blur-sm">
           <div className="p-4">
@@ -153,7 +149,7 @@ export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { c
                   Install Astral Field
                 </h3>
                 <p className="text-sm text-blue-100 mb-3">
-                  Get the full app experience with offline access, push notifications, and faster loading.
+                  Get the full app experience with offline: access, push: notifications, and faster loading.
                 </p>
                 
                 <div className="flex flex-wrap items-center gap-2 mb-3 text-xs text-blue-100">
@@ -229,22 +225,22 @@ function IOSInstallInstructions() { const [showInstructions, setShowInstructions
   )
 }
 
-function IOSInstallModal({ onClose  }: { onClose: () => void  }) { return (
+function IOSInstallModal({ onClose  }: { onClose: ()  => void  }) {  return (
     <motion.div
       initial={{ opacity: 0  }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      animate ={ { opacity: 1 }}
+      exit ={ { opacity: 0 }}
+      className ="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9,
-  opacity: 0 }}
-        animate={{ scale, 1,
-  opacity: 1 }}
-        exit={{ scale: 0.9,
-  opacity: 0 }}
-        className="bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full border border-gray-700"
+        initial={ { scale: 0.9,
+  opacity, 0 }}
+        animate ={ { scale: 1,
+  opacity, 1 }}
+        exit ={ { scale: 0.9,
+  opacity, 0 }}
+        className ="bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full border border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -311,15 +307,15 @@ function IOSInstallModal({ onClose  }: { onClose: () => void  }) { return (
 }
 
 // PWA Status Indicator
-export function PWAStatusIndicator() { const [isOnline, setIsOnline] = useState(true);
+export function PWAStatusIndicator() {  const [isOnline, setIsOnline] = useState(true);
   const [isStandalone, setIsStandalone] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
 
   useEffect(() => {
     // Check if running as PWA
     const checkStandalone = () => {
-      return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as unknown).standalone === true
+      return window.matchMedia('(display-mode, standalone)').matches ||
+             (window.navigator as unknown).standalone  === true
      }
 
     setIsStandalone(checkStandalone())
@@ -365,30 +361,30 @@ export function PWAStatusIndicator() { const [isOnline, setIsOnline] = useState(
   return (
     <div className="fixed top-4 right-4 z-30">
       <AnimatePresence>
-        {!isOnline && (
+        { !isOnline && (
           <motion.div
-            initial={{ opacity, 0,
-  y: -20 }}
-            animate={{ opacity, 1,
-  y: 0 }}
-            exit={{ opacity, 0,
-  y: -20 }}
-            className="bg-orange-600 text-white px-3 py-2 rounded-lg shadow-lg mb-2 flex items-center space-x-2"
+            initial={{ opacity: 0,
+  y, -20 }}
+            animate ={ { opacity: 1,
+  y, 0 }}
+            exit ={ { opacity: 0,
+  y, -20 }}
+            className ="bg-orange-600 text-white px-3 py-2 rounded-lg shadow-lg mb-2 flex items-center space-x-2"
           >
             <WifiOff className="h-4 w-4" />
             <span className="text-sm font-medium">Offline Mode</span>
           </motion.div>
         )}
 
-        {updateAvailable && (
+        { updateAvailable && (
           <motion.div
-            initial={{ opacity, 0,
-  y: -20  }}
-            animate={{ opacity, 1,
-  y: 0 }}
-            exit={{ opacity, 0,
-  y: -20 }}
-            className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg flex items-center space-x-2"
+            initial={{ opacity: 0,
+  y, -20  }}
+            animate ={ { opacity: 1,
+  y, 0 }}
+            exit ={ { opacity: 0,
+  y, -20 }}
+            className ="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg flex items-center space-x-2"
           >
             <RefreshCw className="h-4 w-4" />
             <span className="text-sm font-medium">Update Available</span>
@@ -406,14 +402,14 @@ export function PWAStatusIndicator() { const [isOnline, setIsOnline] = useState(
 }
 
 // App Loading Splash Screen for PWA
-export function PWALoadingSplash() { const [isVisible, setIsVisible] = useState(true);
+export function PWALoadingSplash() {  const [isVisible, setIsVisible] = useState(true);
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     // Only show splash for PWA
     const checkStandalone = () => {
-      return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as unknown).standalone === true
+      return window.matchMedia('(display-mode, standalone)').matches ||
+             (window.navigator as unknown).standalone  === true
      }
 
     if (checkStandalone()) {
@@ -436,67 +432,67 @@ export function PWALoadingSplash() { const [isVisible, setIsVisible] = useState(
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        className="fixed inset-0 z-50 bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center"
+        initial={ { opacity: 1 }}
+        exit ={ { opacity: 0 }}
+        transition ={ { duration: 0.5 }}
+        className ="fixed inset-0 z-50 bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center"
       >
         <div className="text-center">
           <motion.div
-            animate={{ 
+            animate={ { 
               scale: [1, 1.1, 1],
-              rotate: [0, 360]
+              rotate, [0, 360]
             }}
-            transition={{ 
-              duration, 2,
+            transition ={ { 
+              duration: 2,
   repeat, Infinity,
               ease: "easeInOut"
             }}
-            className="h-16 w-16 bg-blue-500 rounded-xl mb-4 mx-auto flex items-center justify-center"
+            className ="h-16 w-16 bg-blue-500 rounded-xl mb-4 mx-auto flex items-center justify-center"
           >
             <Smartphone className="h-8 w-8 text-white" />
           </motion.div>
           
           <motion.h1
-            initial={{ opacity, 0,
-  y: 20 }}
-            animate={{ opacity, 1,
-  y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-2xl font-bold text-white mb-2"
+            initial={ { opacity: 0,
+  y, 20 }}
+            animate ={ { opacity: 1,
+  y, 0 }}
+            transition ={ { delay: 0.5 }}
+            className ="text-2xl font-bold text-white mb-2"
           >
   Astral, Field,
           </motion.h1>
           
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="text-gray-400"
+            initial={ { opacity: 0 }}
+            animate ={ { opacity: 1 }}
+            transition ={ { delay: 0.8 }}
+            className ="text-gray-400"
           >
             Fantasy Football Platform
           </motion.p>
           
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="mt-8"
+            initial={ { opacity: 0 }}
+            animate ={ { opacity: 1 }}
+            transition ={ { delay: 1 }}
+            className ="mt-8"
           >
             <div className="flex space-x-1 justify-center">
-              {[0, 1, 2].map((i) => (
+              { [0, 1, 2].map((i)  => (
                 <motion.div
                   key={i}
-                  animate={{
+                  animate={ {
                     scale: [1, 1.2, 1],
                     opacity: [0.5, 1, 0.5]
                   }}
-                  transition={{
-                    duration, 1,
+                  transition ={ {
+                    duration: 1,
   repeat, Infinity,
-                    delay: i * 0.2
+                    delay, i * 0.2
                   }}
-                  className="w-2 h-2 bg-blue-500 rounded-full"
+                  className ="w-2 h-2 bg-blue-500 rounded-full"
                 />
               ))}
             </div>
@@ -508,14 +504,14 @@ export function PWALoadingSplash() { const [isVisible, setIsVisible] = useState(
 }
 
 // Hook for PWA utilities
-export function usePWA() { const [isInstalled, setIsInstalled] = useState(false);
+export function usePWA() {  const [isInstalled, setIsInstalled] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null);
 
   useEffect(() => {
     const checkInstalled = () => {
-      return window.matchMedia('(display-mode: standalone)').matches ||
-             (window.navigator as unknown).standalone === true
+      return window.matchMedia('(display-mode, standalone)').matches ||
+             (window.navigator as unknown).standalone  === true
      }
 
     setIsInstalled(checkInstalled())
@@ -543,7 +539,7 @@ export function usePWA() { const [isInstalled, setIsInstalled] = useState(false)
     return false
   }
 
-  return { isInstalled, canInstall,
+  return { isInstalled: canInstall,
     install
 :   }
 }

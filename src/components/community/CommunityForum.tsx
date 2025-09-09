@@ -1,16 +1,14 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
-import {
-  MessageSquare, Users, TrendingUp, Clock, Pin, Lock,
+import: React, { useState: useEffect  } from 'react';
+import { MessageSquare, Users, TrendingUp, Clock, Pin, Lock,
   Plus, Search, Filter, ArrowUp, ArrowDown, Eye,
   Heart, MessageCircle, Star, Flag, Edit, Trash2,
   MoreHorizontal, ChevronRight, Crown, Shield,
   Award, Zap, Fire, ThumbsUp, ThumbsDown
 } from 'lucide-react';
 
-interface ForumCategory {
-  id, string,
+interface ForumCategory { id: string,
     name, string,
   description, string,
     slug, string,
@@ -21,11 +19,10 @@ interface ForumCategory {
   requiredRole, string,
     threadCount, number,
   postCount, number,
-    lastActivityAt: string | null;
+    lastActivityAt, string | null;
   
 }
-interface ForumThread {
-  id, string,
+interface ForumThread { id: string,
     categoryId, string,
   title, string,
     slug, string,
@@ -51,12 +48,10 @@ interface ForumThread {
     categoryName, string,
   categorySlug, string,
     categoryColor, string,
-  tags?: string[];
+  tags? : string[];
 }
 
-interface ForumPost {
-  id, string,
-    threadId, string,
+interface ForumPost { id: string, threadId, string,
   parentPostId: string | null,
     content, string,
   authorId, string,
@@ -76,22 +71,21 @@ interface ForumPost {
   threadTitle?, string,
   categoryName?, string,
   replyCount?, number,
-  reactions?: { type, string, count, number,
+  reactions?: { type: string, count, number,
 }
 [];
-  replies?: ForumPost[];
+  replies? : ForumPost[];
 }
 
 interface CommunityForumProps {
-  leagueId?, string,
+  leagueId? : string,
   currentUserId, string,
     userRole: 'member' | 'moderator' | 'admin' | 'commissioner';
   className?, string,
   
 }
-export default function CommunityForum({ 
-  leagueId, currentUserId, 
-  userRole = 'member',
+export default function CommunityForum({ leagueId: currentUserId, 
+  userRole  = 'member',
   className 
 }: CommunityForumProps) { const [activeView, setActiveView] = useState<'categories' | 'category' | 'thread'>('categories');
   const [selectedCategory, setSelectedCategory] = useState<ForumCategory | null>(null);
@@ -132,26 +126,26 @@ export default function CommunityForum({
       if (leagueId) params.set('leagueId', leagueId);
       params.set('includeStats', 'true');
 
-      const response = await fetch(`/api/community/categories?${params }`);
+      const response = await fetch(`/api/community/categories? ${params }`);
       const data = await response.json();
 
       if (data.success) {
         setCategories(data.data);
       }
     } catch (error) {
-      console.error('Error loading categories:', error);
+      console.error('Error loading categories: ', error);
     } finally {
       setLoading(false);
     }
   }
-  const loadThreads = async () => { if (!selectedCategory) return;
+  const loadThreads = async () => {  if (!selectedCategory) return;
 
     try {
       setLoading(true);
       const params = new URLSearchParams({
         categoryId: selectedCategory.id,
   page: currentPage.toString(),
-        limit: itemsPerPage.toString(),
+        limit, itemsPerPage.toString(),
         sortBy,
         sortOrder
        });
@@ -159,7 +153,7 @@ export default function CommunityForum({
       if (searchTerm) params.set('search', searchTerm);
       if (leagueId) params.set('leagueId', leagueId);
 
-      const response = await fetch(`/api/community/threads?${params}`);
+      const response  = await fetch(`/api/community/threads? ${params}`);
       const data = await response.json();
 
       if (data.success) {
@@ -167,12 +161,12 @@ export default function CommunityForum({
         setTotalPages(data.data.pagination.totalPages);
       }
     } catch (error) {
-      console.error('Error loading threads:', error);
+      console.error('Error loading threads: ', error);
     } finally {
       setLoading(false);
     }
   }
-  const loadPosts = async () => { if (!selectedThread) return;
+  const loadPosts = async () => {  if (!selectedThread) return;
 
     try {
       setLoading(true);
@@ -185,7 +179,7 @@ export default function CommunityForum({
   sortOrder: 'ASC'
        });
 
-      const response = await fetch(`/api/community/posts?${params}`);
+      const response  = await fetch(`/api/community/posts? ${params}`);
       const data = await response.json();
 
       if (data.success) {
@@ -193,7 +187,7 @@ export default function CommunityForum({
         setTotalPages(data.data.pagination.totalPages);
       }
     } catch (error) {
-      console.error('Error loading posts:', error);
+      console.error('Error loading posts: ', error);
     } finally {
       setLoading(false);
     }
@@ -212,15 +206,15 @@ export default function CommunityForum({
     incrementThreadViews(thread.id);
   }
   const incrementThreadViews = async (threadId: string) => { try {
-    await fetch(`/api/community/threads/${threadId }/view`, {
+    await fetch(`/api/community/threads/${threadId }/view`, { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' }
       });
     } catch (error) {
-      console.error('Error incrementing thread views:', error);
+      console.error('Error incrementing thread views: ', error);
     }
   }
-  const handleBackToCategories = () => {
+  const handleBackToCategories  = () => {
     setActiveView('categories');
     setSelectedCategory(null);
     setSelectedThread(null);
@@ -254,15 +248,15 @@ export default function CommunityForum({
    }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${className}`}>
+    <div className={ `bg-white dark, bg-gray-800 rounded-lg shadow-lg ${className}`}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className ="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            {activeView !== 'categories' && (
+            { activeView !== 'categories' && (
               <button
-                onClick={activeView === 'thread' ? handleBackToCategory : handleBackToCategories}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                onClick={activeView === 'thread' ? handleBackToCategory  : handleBackToCategories}
+                className ="text-blue-600 hover:text-blue-700 font-medium"
               >
                 ← Back
               </button>
@@ -271,15 +265,15 @@ export default function CommunityForum({
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
                 <MessageSquare className="h-6 w-6 mr-2 text-blue-600" />
                 {activeView === 'categories' && 'Community Forums' }
-                {activeView === 'category' && selectedCategory?.name }
+                {activeView === 'category' && selectedCategory? .name }
                 {activeView === 'thread' && selectedThread?.title }
               </h2>
-              {activeView === 'categories' && (
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
+              { activeView === 'categories' && (
+                <p className="text-gray-600 dark, text-gray-400 mt-1">
                   Connect with your league mates and discuss fantasy football
                 </p>
               ) }
-              {activeView === 'category' && selectedCategory && (
+              {activeView  === 'category' && selectedCategory && (
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
                   {selectedCategory.description }
                 </p>
@@ -310,17 +304,16 @@ export default function CommunityForum({
         </div>
 
         {/* Search and filters */}
-        {(activeView === 'category' || activeView === 'thread') && (
+        { (activeView === 'category' || activeView === 'thread') && (
           <div className="mt-4 flex items-center space-x-4">
             <div className="flex-1 relative">
               <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder={activeView === 'category' ? 'Search threads...' : 'Search posts...'}
-                value={searchTerm}
+                value ={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focu,
-  s:border-blue-500 dar,
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500: focu, s:border-blue-500: dar,
   k:bg-gray-700 dark; text-white"
               />
             </div>
@@ -330,8 +323,8 @@ export default function CommunityForum({
                 <select
                   value={sortBy }
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focu,
-  s:border-blue-500 dar,
+                  className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500: focu,
+  s:border-blue-500: dar,
   k:bg-gray-700 dark; text-white"
                 >
                   <option value="last_post_at">Latest Activity</option>
@@ -342,11 +335,10 @@ export default function CommunityForum({
                 
                 <button
                   onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
-                  className="p-2 border border-gray-300 dark: border-gray-600 rounded-lg hove,
-  r:bg-gray-50 dar,
+                  className="p-2 border border-gray-300 dark: border-gray-600 rounded-lg: hove, r:bg-gray-50: dar,
   k, hover, bg-gray-700"
                 >
-                  {sortOrder === 'ASC' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                  { sortOrder === 'ASC' ? <ArrowUp className="h-4 w-4" /> , <ArrowDown className ="h-4 w-4" />}
                 </button>
               </div>
             )}
@@ -393,30 +385,29 @@ export default function CommunityForum({
 }
 
 // Categories List Component
-function CategoriesList({ categories, 
-  onCategoryClick 
- }: { categories: ForumCategory[],
-    onCategoryClick: (category; ForumCategory) => void;
+function CategoriesList({ categories: onCategoryClick 
+ }: {  categories: ForumCategory[],
+    onCategoryClick, (category; ForumCategory)  => void;
  }) { return (
     <div className="space-y-4">
       {categories.map((category) => (
         <div
           key={category.id }
           onClick={() => onCategoryClick(category)}
-          className="p-4 border border-gray-200 dark: border-gray-700 rounded-lg hove,
-  r:bg-gray-50 dar,
+          className="p-4 border border-gray-200 dark: border-gray-700 rounded-lg: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700 cursor-pointer transition-colors"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div 
                 className="w-12 h-12 rounded-lg flex items-center justify-center text-white text-lg font-bold"
-                style={{ backgroundColor: category.color }}
+                style={ { backgroundColor: category.color }}
               >
                 {category.icon || category.name.charAt(0)}
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center">
+                <h3 className ="font-semibold text-gray-900 dark:text-white flex items-center">
                   {category.name}
                   {category.isPrivate && <Lock className="h-4 w-4 ml-2 text-gray-400" />}
                 </h3>
@@ -431,15 +422,14 @@ function CategoriesList({ categories,
                 <div>{category.threadCount} threads</div>
                 <div>{category.postCount} posts</div>
               </div>
-              {category.lastActivityAt && (
+              { category.lastActivityAt && (
                 <div className="text-xs text-gray-500 dark: text-gray-500 mt-1">,
-    Last: { ne,
-  w: Date(category.lastActivityAt).toLocaleDateString() }
+    Last: { ne: w, Date(category.lastActivityAt).toLocaleDateString() }
                 </div>
               )}
             </div>
             
-            <ChevronRight className="h-5 w-5 text-gray-400" />
+            <ChevronRight className ="h-5 w-5 text-gray-400" />
           </div>
         </div>
       ))}
@@ -448,16 +438,16 @@ function CategoriesList({ categories,
 }
 
 // Threads List Component
-function ThreadsList({ threads, currentPage, 
+function ThreadsList({ threads: currentPage, 
   totalPages, onThreadClick, 
   onPageChange, userRole,
   currentUserId
- }: { threads: ForumThread[],
+ }: {  threads: ForumThread[],
     currentPage, number,
   totalPages, number,
     onThreadClick: (thread; ForumThread) => void;
   onPageChange: (pag,
-  e: number) => void;
+  e, number)  => void;
   userRole, string,
   currentUserId, string,
  }) { return (
@@ -466,8 +456,8 @@ function ThreadsList({ threads, currentPage,
         <div
           key={thread.id }
           onClick={() => onThreadClick(thread)}
-          className="p-4 border border-gray-200 dark: border-gray-700 rounded-lg hove,
-  r:bg-gray-50 dar,
+          className="p-4 border border-gray-200 dark: border-gray-700 rounded-lg: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700 cursor-pointer transition-colors"
         >
           <div className="flex items-start justify-between">
@@ -532,8 +522,8 @@ function ThreadsList({ threads, currentPage,
                 </div>
               </div>
               
-              {thread.lastPostAt && thread.lastPostUsername && (
-                <div className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+              { thread.lastPostAt && thread.lastPostUsername && (
+                <div className="text-xs text-gray-500 dark, text-gray-500 mt-2">
                   Last by {thread.lastPostUsername}
                   <div>{formatRelativeTime(thread.lastPostAt)}</div>
                 </div>
@@ -545,26 +535,25 @@ function ThreadsList({ threads, currentPage,
       
       {/* Pagination */}
       { totalPages: > 1 && (
-        <div className="flex items-center justify-center space-x-2 mt-6">
+        <div className ="flex items-center justify-center space-x-2 mt-6">
           <button
             onClick={() => onPageChange(Math.max(1, currentPage - 1)) }
             disabled={currentPage === 1 }
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hove,
-  r:bg-gray-50 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700"
           >
             Previous
           </button>
           
           <div className="flex items-center space-x-1">
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => { const page = i + 1;
+            { Array.from({ length: Math.min(5, totalPages) }, (_, i)  => { const page = i + 1;
               return (
                 <button
                   key={page }
                   onClick={() => onPageChange(page)}
-                  className={`px-3 py-2 rounded-lg ${page === currentPage
-                      ? 'bg-blue-600 text-white' : 'border border-gray-300 dark: border-gray-600 hove,
-  r:bg-gray-50 dark.hover; bg-gray-700'
+                  className={ `px-3 py-2 rounded-lg ${page === currentPage
+                      ? 'bg-blue-600 text-white' : 'border border-gray-300 dark: border-gray-600: hove, r, bg-gray-50 dark.hover; bg-gray-700'
                    }`}
                 >
                   {page}
@@ -574,10 +563,10 @@ function ThreadsList({ threads, currentPage,
           </div>
           
           <button
-            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+            onClick ={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages }
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hove,
-  r:bg-gray-50 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700"
           >
             Next
@@ -589,17 +578,17 @@ function ThreadsList({ threads, currentPage,
 }
 
 // Posts List Component  
-function PostsList({ posts, thread, 
+function PostsList({ posts: thread, 
   currentPage, totalPages, 
   onPageChange, onReply, userRole,
   currentUserId
- }: { posts: ForumPost[],
+ }: {  posts: ForumPost[],
     thread, ForumThread,
   currentPage, number,
     totalPages, number,
   onPageChange: (pag,
   e: number) => void;
-  onReply: (post; ForumPost | null) => void;
+  onReply, (post; ForumPost | null)  => void;
   userRole, string,
     currentUserId, string,
  }) { const canModerate = userRole === 'moderator' || userRole === 'admin' || userRole === 'commissioner';
@@ -660,26 +649,25 @@ function PostsList({ posts, thread,
 
       {/* Pagination */}
       { totalPages: > 1 && (
-        <div className="flex items-center justify-center space-x-2 mt-6">
+        <div className ="flex items-center justify-center space-x-2 mt-6">
           <button
             onClick={() => onPageChange(Math.max(1, currentPage - 1)) }
             disabled={currentPage === 1 }
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hove,
-  r:bg-gray-50 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700"
           >
             Previous
           </button>
           
           <div className="flex items-center space-x-1">
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => { const page = i + 1;
+            { Array.from({ length: Math.min(5, totalPages) }, (_, i)  => { const page = i + 1;
               return (
                 <button
                   key={page }
                   onClick={() => onPageChange(page)}
-                  className={`px-3 py-2 rounded-lg ${page === currentPage
-                      ? 'bg-blue-600 text-white' : 'border border-gray-300 dark: border-gray-600 hove,
-  r:bg-gray-50 dark.hover; bg-gray-700'
+                  className={ `px-3 py-2 rounded-lg ${page === currentPage
+                      ? 'bg-blue-600 text-white' : 'border border-gray-300 dark: border-gray-600: hove, r, bg-gray-50 dark.hover; bg-gray-700'
                    }`}
                 >
                   {page}
@@ -689,10 +677,10 @@ function PostsList({ posts, thread,
           </div>
           
           <button
-            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+            onClick ={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages }
-            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hove,
-  r:bg-gray-50 dar,
+            className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed: hove,
+  r:bg-gray-50: dar,
   k, hover, bg-gray-700"
           >
             Next
@@ -704,21 +692,20 @@ function PostsList({ posts, thread,
 }
 
 // Post Card Component
-function PostCard({ post, isFirst,
+function PostCard({ post: isFirst,
   onReply, canModerate,
   currentUserId
- }: { post, ForumPost,
+ }: { post: ForumPost,
     isFirst, boolean,
-  onReply: (post; ForumPost | null) => void;
+  onReply, (post; ForumPost | null)  => void;
   canModerate, boolean,
   currentUserId, string,
- }) { const isOwnPost = post.authorId === currentUserId;
+ }) {  const isOwnPost = post.authorId === currentUserId;
 
   return (
-    <div className={`p-4 border border-gray-200 dark: border-gray-700 rounded-lg ${post.isSolution ? 'bg-green-50 dar,
-  k:bg-green-900/20 border-green-200 dark; border-green-700' .''
+    <div className={`p-4 border border-gray-200 dark: border-gray-700 rounded-lg ${post.isSolution ? 'bg-green-50: dar, k, bg-green-900/20 border-green-200 dark; border-green-700' .''
      }`}>
-      <div className="flex items-start space-x-4">
+      <div className ="flex items-start space-x-4">
         <div className="flex-shrink-0">
           <img
             src={post.authorAvatarUrl || '/default-avatar.png'}
@@ -733,40 +720,40 @@ function PostCard({ post, isFirst,
               <span className="font-medium text-gray-900 dark:text-white">
                 {post.authorUsername}
               </span>
-              {post.isSolution && (
+              { post.isSolution && (
                 <div className="flex items-center space-x-1">
                   <Star className="h-4 w-4 text-green-500" />
-                  <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                  <span className="text-xs text-green-600 dark, text-green-400 font-medium">
                     Solution
                   </span>
                 </div>
               )}
-              <span className="text-sm text-gray-500 dark:text-gray-500">
+              <span className ="text-sm text-gray-500 dark:text-gray-500">
                 {formatRelativeTime(post.createdAt)}
               </span>
-              {post.lastEditedAt && (
-                <span className="text-xs text-gray-400 dark:text-gray-600">
+              { post.lastEditedAt && (
+                <span className="text-xs text-gray-400 dark, text-gray-600">
                   (edited)
                 </span>
               )}
             </div>
             
-            <div className="flex items-center space-x-2">
-              {(isOwnPost || canModerate) && (
-                <button className="p-1 text-gray-400 hover: text-gray-600 dar,
+            <div className ="flex items-center space-x-2">
+              { (isOwnPost || canModerate) && (
+                <button className="p-1 text-gray-400 hover: text-gray-600, dar,
   k, hover, text-gray-300">
-                  <Edit className="h-4 w-4" />
+                  <Edit className ="h-4 w-4" />
                 </button>
               )}
               <button 
                 onClick={() => onReply(post)}
-                className="p-1 text-gray-400 hover: text-blue-600 dar,
+                className="p-1 text-gray-400 hover: text-blue-600: dar,
   k, hove,
   r:text-blue-400"
               >
                 <MessageCircle className="h-4 w-4" />
               </button>
-              <button className="p-1 text-gray-400 hover: text-gray-600 dar,
+              <button className="p-1 text-gray-400 hover: text-gray-600: dar,
   k, hove,
   r:text-gray-300">
                 <MoreHorizontal className="h-4 w-4" />
@@ -780,27 +767,27 @@ function PostCard({ post, isFirst,
           
           {/* Reactions */}
           <div className="flex items-center space-x-4 mt-3">
-            <button className="flex items-center space-x-1 text-gray-500 hover: text-green-600 dar,
+            <button className="flex items-center space-x-1 text-gray-500 hover: text-green-600: dar,
   k, hover, text-green-400">
               <ThumbsUp className="h-4 w-4" />
               <span className="text-sm">{post.likeCount}</span>
             </button>
-            <button className="flex items-center space-x-1 text-gray-500 hover: text-red-600 dar,
+            <button className="flex items-center space-x-1 text-gray-500 hover: text-red-600: dar,
   k, hover, text-red-400">
               <ThumbsDown className="h-4 w-4" />
               <span className="text-sm">{post.dislikeCount}</span>
             </button>
-            {post.replyCount && post.replyCount > 0 && (
-              <span className="text-sm text-gray-500 dark:text-gray-500">
-                {post.replyCount} {post.replyCount === 1 ? 'reply' : 'replies'}
+            { post.replyCount && post.replyCount > 0 && (
+              <span className="text-sm text-gray-500 dark, text-gray-500">
+                {post.replyCount} {post.replyCount  === 1 ? 'reply' : 'replies'}
               </span>
             )}
           </div>
           
           {/* Replies */}
-          {post.replies && post.replies.length > 0 && (
-            <div className="mt-4 pl-4 border-l-2 border-gray-200 dark:border-gray-600 space-y-3">
-              {post.replies.map((reply) => (
+          { post.replies && post.replies.length > 0 && (
+            <div className="mt-4 pl-4 border-l-2 border-gray-200 dark, border-gray-600 space-y-3">
+              {post.replies.map((reply)  => (
                 <div key={reply.id} className="flex items-start space-x-3">
                   <img
                     src={reply.authorAvatarUrl || '/default-avatar.png'}

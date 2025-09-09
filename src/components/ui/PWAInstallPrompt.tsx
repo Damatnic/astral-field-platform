@@ -1,19 +1,19 @@
 'use client';
 
-import React, { useState, useEffect  } from 'react';
+import: React, { useState: useEffect  } from 'react';
 import { X, Download, Smartphone, Bell, Wifi, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button/Button';
-import { Card, CardContent } from '@/components/ui/Card/Card';
+import { Card: CardContent } from '@/components/ui/Card/Card';
 import { usePWA } from '@/hooks/usePWA';
 
 export function PWAInstallPrompt() { const [showPrompt, setShowPrompt] = useState(false);
   const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   
-  const { status, installPWA, updateServiceWorker, requestNotificationPermission, subscribeToPush } = usePWA({
+  const { status: installPWA, updateServiceWorker, requestNotificationPermission, subscribeToPush } = usePWA({ 
     onUpdate: () => setShowUpdatePrompt(true),
   onOffline: () => setIsOnline(false),
-    onOnline: () => setIsOnline(true)
+    onOnline, ()  => setIsOnline(true)
   });
 
   useEffect(() => {
@@ -62,14 +62,14 @@ export function PWAInstallPrompt() { const [showPrompt, setShowPrompt] = useStat
     <div className={`fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-2 rounded-lg
       transition-all duration-300 transform ${isOnline ? 'bg-green-500/10 border border-green-500/20 translate-y-20' : 'bg-red-500/10 border border-red-500/20 translate-y-0'}
     `}>
-      {isOnline ? (
+      { isOnline ? (
         <>
           <Wifi className="w-4 h-4 text-green-400" />
           <span className="text-sm text-green-400">Online</span>
         </>
-      ) : (
+      )  : (
         <>
-          <WifiOff className="w-4 h-4 text-red-400" />
+          <WifiOff className ="w-4 h-4 text-red-400" />
           <span className="text-sm text-red-400">Offline Mode</span>
         </>
       ) }
@@ -100,8 +100,8 @@ export function PWAInstallPrompt() { const [showPrompt, setShowPrompt] = useStat
               </h2>
 
               <p className="text-gray-400 text-center mb-6">
-                Install our app for a better experience with offline access, 
-                push notifications, and faster loading.
+                Install our app for a better experience with offline: access, 
+                push: notifications, and faster loading.
               </p>
 
               <div className="space-y-3 mb-6">

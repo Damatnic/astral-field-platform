@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function POST() { try {
+export async function POST() {  try {
     const demoUsers = [
       {
         email: "nicholas.damato@astralfield.com",
@@ -55,7 +55,7 @@ export async function POST() { try {
   ];
 
     // Mock creating demo users
-    const results = [];
+    const results  = [];
     let created = 0;
     const updated = 0;
 
@@ -70,7 +70,7 @@ export async function POST() { try {
     }
 
     console.log(
-      `✅ Demo users creation complete, ${created} created, ${updated} updated`,
+      `✅ Demo users creation: complete, ${created} created, ${updated} updated`,
     );
 
     return NextResponse.json({
@@ -88,8 +88,7 @@ export async function POST() { try {
       { success: false,
   error: error instanceof Error
             ? error.message : "Failed to create demo users"
-},
-      { status: 500 },
+ }, { status: 500 }
     );
   }
 }

@@ -1,13 +1,11 @@
-export interface WaiverPlayer {
-  id, string,
+export interface WaiverPlayer { id: string,
     name, string,
   position, string,
     isOnWaivers, boolean,
-  claimsCount: number,
+  claimsCount, number,
   
 }
-export interface WaiverClaim {
-  id, string,
+export interface WaiverClaim { id: string,
     teamId, string,
   playerId, string,
     bidAmount, number,
@@ -16,7 +14,7 @@ export interface WaiverClaim {
   
 }
 export class WaiverService { async getWaiverPlayers(_leagueId, string,
-  ): : Promise<  { players: WaiverPlayer[]; error?: string  }> { return { players: []  }
+  ): : Promise<  { players: WaiverPlayer[]; error? : string  }> { return { players: []  }
   }
   async getTeamWaiverClaims(
     _teamId, string,
@@ -24,20 +22,18 @@ export class WaiverService { async getWaiverPlayers(_leagueId, string,
   }
   async submitWaiverClaim(
     _teamId, string,
-  _data: { playerI,
-  d, string, dropPlayerId?, string, bidAmount: number },
-  ): : Promise<  { success, boolean, error?: string }> { return { success: true  }
+  _data: { playerI: d, string, dropPlayerId?, string, bidAmount: number },
+  ): : Promise<  { success: boolean, error? : string }> { return { success: true  }
   }
   async cancelWaiverClaim(
     _claimId, string,
-  ): : Promise<  { success, boolean, error?: string }> { return { success: true  }
+  ): : Promise<  { success: boolean, error?: string }> { return { success: true  }
   }
   async processWaivers(
     _leagueId, string,
-  ): : Promise<  { success, boolean, processed, number, error?: string }> { return { success, true,
-  processed: 0  }
+  ): : Promise<  { success: boolean, processed, number, error? : string }> { return { success: true, processed: 0  }
   }
 }
 
-const waiverService = new WaiverService();
+const waiverService  = new WaiverService();
 export default waiverService;

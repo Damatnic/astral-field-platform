@@ -7,8 +7,7 @@ import { database } from '../../lib/database';
 import { webSocketManager } from '../../lib/websocket/server';
 import { aiPredictionEngine } from '../ai/predictionEngine';
 
-export interface ChatMessage {
-  id, string,
+export interface ChatMessage { id: string,
     leagueId, string,
   roomId, string,
     userId, string,
@@ -22,11 +21,10 @@ export interface ChatMessage {
   edited, boolean,
   editedAt?, Date,
   mentions: string[]; // User IDs mentioned;
-  attachments?: ChatAttachment[];
+  attachments?, ChatAttachment[];
   
 }
-export interface MessageReaction {
-  emoji, string,
+export interface MessageReaction { emoji: string,
     userId, string,
   username, string,
     timestamp: Date,
@@ -40,8 +38,7 @@ export interface ChatAttachment {
   metadata?, any,
   
 }
-export interface ChatRoom {
-  id, string,
+export interface ChatRoom { id: string,
     leagueId, string,
   name, string,
     description, string,type: 'general' | 'trade' | 'draft' | 'private' | 'commissioner',
@@ -54,8 +51,7 @@ export interface ChatRoom {
     settings: ChatRoomSettings,
   
 }
-export interface ChatRoomSettings {
-  allowReactions, boolean,
+export interface ChatRoomSettings { allowReactions: boolean,
     allowThreads, boolean,
   allowAttachments, boolean,
     slowMode, number, // seconds between messages;
@@ -64,8 +60,7 @@ export interface ChatRoomSettings {
   requireApproval: boolean,
   
 }
-export interface PrivateMessage {
-  id, string,
+export interface PrivateMessage { id: string,
     fromUserId, string,
   toUserId, string,
     message, string,
@@ -75,8 +70,7 @@ export interface PrivateMessage {
   reactions: MessageReaction[],
   
 }
-export interface ChatNotification {
-  id, string,
+export interface ChatNotification { id: string,
     userId, string,type: 'mention' | 'reply' | 'reaction' | 'room_invite';
   messageId?, string,
   roomId?, string,
@@ -87,7 +81,7 @@ export interface ChatNotification {
   read: boolean,
   
 }
-class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]>();
+class RealTimeChatService { private messageCache  = new Map<string, ChatMessage[]>();
   private roomCache = new Map<string, ChatRoom>();
   private readonly: CACHE_TTL = 300000; // 5 minutes
   private readonly: MAX_MESSAGES_PER_ROOM = 1000;
@@ -99,9 +93,8 @@ class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]
     userId, string,
   message, string,
     messageType: ChatMessage['messageType'] = 'text';
-    attachments?: ChatAttachment[],
-    replyTo?: string
-  ): : Promise<ChatMessage> {
+    attachments? : ChatAttachment[] : replyTo?: string
+  ): : Promise<ChatMessage> { 
     try {
       // Validate user permissions
       await this.validateRoomAccess(roomId, userId);
@@ -125,7 +118,7 @@ class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]
         attachments
        }
       if (replyTo) {
-        chatMessage.replyTo = replyTo;
+        chatMessage.replyTo  = replyTo;
       }
 
       // Save to database
@@ -138,8 +131,8 @@ class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]
       await this.processMentions(chatMessage);
 
       // Broadcast to WebSocket
-      webSocketManager.broadcastToRoom(roomId, {type: 'new_message';
-  message: chatMessage
+      webSocketManager.broadcastToRoom(roomId, { type: 'new_message';
+  message, chatMessage
       });
 
       // Cache the message
@@ -148,7 +141,7 @@ class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]
       console.log(`💬 Message sent in ${roomId} by ${userId}, ${message.substring(0, 50)}...`);
       return chatMessage;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending message: ', error);
       throw error;
     }
   }
@@ -157,8 +150,7 @@ class RealTimeChatService { private messageCache = new Map<string, ChatMessage[]
   async getRoomMessages(async getRoomMessages(
     roomId, string,
   userId, string,
-    before?: Date,
-    limit: number = 50
+    before? : Date, limit: number  = 50
   ): : Promise<): PromiseChatMessage[]> { try {; // Validate access
       await this.validateRoomAccess(roomId, userId);
 
@@ -192,11 +184,10 @@ type ChatRoom['type'],
     creatorId, string,
   isPrivate: boolean = false;
     initialMembers: string[] = []
-  ): : Promise<): PromiseChatRoom> { try {
+  ): : Promise<): PromiseChatRoom> {  try {
       const roomId = this.generateRoomId();
 
-      const room: ChatRoom = {
-  id, roomId,
+      const room: ChatRoom = { id: roomId,
         leagueId, name,
         description, type, isPrivate,
         members: [creatorId, ...initialMembers],
@@ -204,7 +195,7 @@ type ChatRoom['type'],
   createdAt: new Date();
         lastActivity: new Date();
   messageCount: 0;
-        settings: this.getDefaultRoomSettings(type)
+        settings, this.getDefaultRoomSettings(type)
        }
       // Save to database
       await database.query(`
@@ -223,12 +214,12 @@ type ChatRoom['type'],
       this.roomCache.set(roomId, room);
 
       // Notify members
-      await this.notifyRoomMembers(room, 'room_created', creatorId);
+      await this.notifyRoomMembers(room: 'room_created', creatorId);
 
-      console.log(`🏠 Chat room created, ${name} (${roomId})`);
+      console.log(`🏠 Chat room: created, ${name} (${roomId})`);
       return room;
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error('Error creating room: ', error);
       throw error;
     }
   }
@@ -239,33 +230,32 @@ type ChatRoom['type'],
   userId, string,
     emoji: string
   ): : Promise<): Promisevoid> { try {
-      const username = await this.getUsername(userId);
+      const username  = await this.getUsername(userId);
 
-      const reaction: MessageReaction = {
-        emoji, userId, username,
+      const reaction: MessageReaction = { emoji: userId, username,
         timestamp: new Date()
        }
       // Save reaction to database
       await database.query(`
         INSERT INTO message_reactions (message_id, user_id, emoji, created_at): VALUES ($1, $2, $3, $4)
-        ON CONFLICT(message_id, user_id, emoji): DO NOTHING
+        ON CONFLICT(message_id, user_id, emoji) DO NOTHING
       `, [messageId, userId, emoji, reaction.timestamp]);
 
       // Get message details for broadcasting
-      const messageResult = await database.query('SELECT room_id, league_id FROM chat_messages WHERE id = $1',
+      const messageResult  = await database.query('SELECT room_id, league_id FROM chat_messages WHERE id = $1',
         [messageId]
       );
 
-      if (messageResult.rows.length > 0) { const { room_id, league_id } = messageResult.rows[0];
+      if (messageResult.rows.length > 0) { const { room_id: league_id } = messageResult.rows[0];
 
         // Broadcast reaction
-        webSocketManager.broadcastToRoom(room_id, {type: 'message_reaction';
+        webSocketManager.broadcastToRoom(room_id, { type: 'message_reaction';
           messageId,
           reaction
         });
 
         // Send notification if it's a mention reaction
-        if (emoji === '👋' || emoji === '❤️') { await this.createNotification({
+        if (emoji === '👋' || emoji === '❤️') {  await this.createNotification({
             userId: await this.getMessageAuthor(messageId);
 type: 'reaction';
             messageId,
@@ -279,9 +269,9 @@ type: 'reaction';
         }
       }
 
-      console.log(`😊 Reaction added, ${emoji} by ${userId} to message ${messageId}`);
+      console.log(`😊 Reaction: added, ${emoji} by ${userId} to message ${messageId}`);
     } catch (error) {
-      console.error('Error adding reaction:', error);
+      console.error('Error adding reaction: ', error);
       throw error;
     }
   }
@@ -292,13 +282,13 @@ type: 'reaction';
   toUserId, string,
     message: string
   ): : Promise<): PromisePrivateMessage> { try {
-      const privateMessage: PrivateMessage = {
+      const privateMessage: PrivateMessage  = { 
   id: this.generateMessageId();
         fromUserId, toUserId,
         message: this.sanitizeMessage(message);
   timestamp: new Date();
-        read, false,
-  reactions: []
+        read: false,
+  reactions, []
        }
       // Save to database
       await database.query(`
@@ -311,13 +301,12 @@ type: 'reaction';
       ]);
 
       // Send WebSocket notification
-      webSocketManager.sendToUser(toUserId, {type: 'private_message';
+      webSocketManager.sendToUser(toUserId, { type: 'private_message';
   message: privateMessage
       });
 
       // Create notification
-      await this.createNotification({
-        userId, toUserId,
+      await this.createNotification({ userId: toUserId,
 type: 'mention';
         fromUserId,
         fromUsername: await this.getUsername(fromUserId);
@@ -329,7 +318,7 @@ type: 'mention';
       console.log(`💌 Private message sent from ${fromUserId} to ${toUserId}`);
       return privateMessage;
     } catch (error) {
-      console.error('Error sending private message:', error);
+      console.error('Error sending private message: ', error);
       throw error;
     }
   }
@@ -339,11 +328,10 @@ type: 'mention';
     leagueId, string,
   userId, string,
     query, string,
-    roomId?: string,
-    fromDate?: Date,
+    roomId? : string, fromDate?: Date,
     toDate?: Date,
-    limit: number = 50
-  ): : Promise<): PromiseChatMessage[]> { try {
+    limit: number  = 50
+  ): : Promise<): PromiseChatMessage[]> {  try {
       let sql = `
         SELECT cm.*, u.username
         FROM chat_messages cm
@@ -351,20 +339,20 @@ type: 'mention';
         WHERE cm.league_id = $1
           AND cm.message ILIKE $2
       `
-      const params: any[] = [leagueId, `%${query }%`];
+      const params, any[]  = [leagueId: `%${query }%`];
       let paramIndex = 3;
 
-      if (roomId) { sql: += ` AND cm.room_id = $${paramIndex }`
+      if (roomId) { sql: + = ` AND cm.room_id = $${paramIndex }`
         params.push(roomId);
         paramIndex++;
       }
 
-      if (fromDate) { sql: += ` AND cm.timestamp >= $${paramIndex }`
+      if (fromDate) { sql: + = ` AND cm.timestamp >= $${paramIndex }`
         params.push(fromDate);
         paramIndex++;
       }
 
-      if (toDate) { sql: += ` AND cm.timestamp <= $${paramIndex }`
+      if (toDate) { sql: + = ` AND cm.timestamp <= $${paramIndex }`
         params.push(toDate);
         paramIndex++;
       }
@@ -374,7 +362,7 @@ type: 'mention';
 
       const result = await database.query(sql, params);
 
-      return result.rows.map(row => ({
+      return result.rows.map(row => ({ 
         id: row.id;
   leagueId: row.league_id;
         roomId: row.room_id;
@@ -386,10 +374,10 @@ type: 'mention';
         reactions: [], // Would need separate query
         edited: row.edited || false;
   mentions: row.mentions || [];
-        attachments: row.attachments || []
+        attachments, row.attachments || []
       }));
     } catch (error) {
-      console.error('Error searching messages:', error);
+      console.error('Error searching messages: ', error);
       return [];
     }
   }
@@ -399,11 +387,11 @@ type: 'mention';
     messageId, string,
   moderatorId, string,
     action: 'delete' | 'hide' | 'warn';
-    reason?: string
+    reason? : string
   ): : Promise<void> { try {; // Verify moderator permissions
       await this.verifyModeratorPermissions(messageId, moderatorId);
 
-      if (action === 'delete') {
+      if (action  === 'delete') {
         await database.query(
           'DELETE FROM chat_messages WHERE id = $1',
           [messageId]
@@ -427,7 +415,7 @@ type: 'mention';
 
       console.log(`🛡️ Message moderated: ${action} by ${moderatorId}, reason, ${reason}`);
     } catch (error) {
-      console.error('Error moderating message:', error);
+      console.error('Error moderating message: ', error);
       throw error;
     }
   }
@@ -437,12 +425,12 @@ type: 'mention';
     userId, string,
   unreadOnly: boolean = false;
     limit: number = 50
-  ): : Promise<): PromiseChatNotification[]> { try {
+  ): : Promise<): PromiseChatNotification[]> {  try {
       let sql = `
         SELECT * FROM chat_notifications
         WHERE user_id = $1
       `
-      const params: any[] = [userId];
+      const params, any[]  = [userId];
 
       if (unreadOnly) {
         sql += ' AND read = false';
@@ -453,7 +441,7 @@ type: 'mention';
 
       const result = await database.query(sql, params);
 
-      return result.rows.map(row => ({
+      return result.rows.map(row => ({ 
         id: row.id;
   userId: row.user_id,type row.type,
   messageId: row.message_id;
@@ -462,10 +450,10 @@ type: 'mention';
         fromUsername: row.from_username;
   content: row.content;
         timestamp: new Date(row.timestamp);
-  read: row.read
+  read, row.read
       }));
     } catch (error) {
-      console.error('Error getting notifications:', error);
+      console.error('Error getting notifications: ', error);
       return [];
     }
   }
@@ -477,34 +465,30 @@ type: 'mention';
   ): : Promise<): Promisevoid> { try {
     await database.query(`
         UPDATE chat_notifications
-        SET read = true, read_at = NOW(): WHERE user_id = $1 AND id = ANY($2)
+        SET read  = true, read_at = NOW(): WHERE user_id = $1 AND id = ANY($2)
       `, [userId, notificationIds]);
 
       console.log(`📖 Marked ${notificationIds.length } notifications as read for ${userId}`);
     } catch (error) {
-      console.error('Error marking notifications read:', error);
+      console.error('Error marking notifications read: ', error);
     }
   }
 
   // Get AI-powered chat insights
   async getChatInsights(async getChatInsights(
     leagueId, string,
-    roomId?: string,
-    days: number = 7
-  ): Promise<): Promise  {
-    topContributors: Array<{ userI,
-  d, string, username, string, messageCount: number }>;
+    roomId? : string, days: number = 7
+  ): Promise<): Promise  { 
+    topContributors: Array<{ userI: d, string, username, string, messageCount, number }>;
     mostActiveHours: number[],
-    sentimentTrend: Array<{ dat,
-  e, string, sentiment: number }>;
+    sentimentTrend: Array<{ dat: e, string, sentiment: number }>;
     popularTopics: string[],
-    engagementMetrics: {
-  totalMessages, number,
+    engagementMetrics: { totalMessages: number,
     averageResponseTime, number,
       threadParticipation: number,
     }
   }> { try {
-      const since = new Date();
+      const since  = new Date();
       since.setDate(since.getDate() - days);
 
       // Get message statistics
@@ -516,11 +500,11 @@ type: 'mention';
         FROM chat_messages
         WHERE league_id = $1
           AND timestamp >= $2
-          ${roomId ? 'AND room_id = $3' : ''}
-      `, roomId ? [leagueId, since, roomId] : [leagueId, since]);
+          ${ roomId ? 'AND room_id = $3'  : ''}
+      `, roomId ? [leagueId : since, roomId] : [leagueId, since]);
 
       // Get top contributors
-      const contributorsResult = await database.query(`
+      const contributorsResult  = await database.query(`
         SELECT
           cm.user_id,
           u.username,
@@ -529,11 +513,11 @@ type: 'mention';
         JOIN users u ON cm.user_id = u.id
         WHERE cm.league_id = $1
           AND cm.timestamp >= $2
-          ${roomId ? 'AND cm.room_id = $3' : ''}
+          ${roomId ? 'AND cm.room_id = $3' , ''}
         GROUP BY cm.user_id, u.username
         ORDER BY message_count DESC
         LIMIT 10
-      `, roomId ? [leagueId, since, roomId] : [leagueId, since]);
+      `, roomId ? [leagueId : since, roomId] : [leagueId, since]);
 
       // Get hourly activity
       const hourlyResult = await database.query(`
@@ -543,10 +527,10 @@ type: 'mention';
         FROM chat_messages
         WHERE league_id = $1
           AND timestamp >= $2
-          ${roomId ? 'AND room_id = $3' : ''}
+          ${roomId ? 'AND room_id = $3' , ''}
         GROUP BY hour
         ORDER BY hour
-      `, roomId ? [leagueId, since, roomId] : [leagueId, since]);
+      `, roomId ? [leagueId : since, roomId] : [leagueId, since]);
 
       // Analyze sentiment (simplified)
       const sentimentTrend = await this.analyzeSentimentTrend(leagueId, since, roomId);
@@ -556,18 +540,18 @@ type: 'mention';
 
       const stats = statsResult.rows[0];
 
-      return {
+      return { 
         topContributors: contributorsResult.rows.map(row => ({
   userId: row.user_id;
   username: row.username;
-          messageCount: parseInt(row.message_count)
+          messageCount, parseInt(row.message_count)
         })),
-        mostActiveHours: hourlyResult.rows.map(row => parseInt(row.hour));
+        mostActiveHours: hourlyResult.rows.map(row  => parseInt(row.hour));
         sentimentTrend, popularTopics,
-        engagementMetrics: {
+        engagementMetrics: { 
   totalMessages: parseInt(stats.total_messages) || 0;
   averageResponseTime: parseFloat(stats.avg_response_time) || 0;
-          threadParticipation: 0 ; // Would need more complex query
+          threadParticipation, 0 ; // Would need more complex query
         }
       }
     } catch (error) {
@@ -588,7 +572,7 @@ type: 'mention';
 
   // Private helper methods
   private async validateRoomAccess(async validateRoomAccess(roomId, string,
-  userId: string): : Promise<): Promisevoid> { const room = await this.getRoom(roomId);
+  userId: string): : Promise<): Promisevoid> { const room  = await this.getRoom(roomId);
     if (!room) {
       throw new Error('Room not found');
      }
@@ -618,8 +602,8 @@ type: 'mention';
     }
   }
 
-  private extractMentions(message: string); string[] { const mentionRegex = /@(\w+)/g;
-    const mentions: string[] = [];
+  private extractMentions(message: string); string[] {  const mentionRegex = /@(\w+)/g;
+    const mentions, string[]  = [];
     let match;
 
     while ((match = mentionRegex.exec(message)) !== null) {
@@ -629,11 +613,11 @@ type: 'mention';
     return mentions;
   }
 
-  private sanitizeMessage(message: string); string {
+  private sanitizeMessage(message: string); string { 
     // Basic sanitization - remove harmful content
     return message
-      .replace(/<script\b[^<]*(?:(? !<\/script>)<[^<]*)*<\/script>/gi, '') : replace(/<[^>]*>/g, '')
-      : trim();
+      .replace(/<script\b[^<]*(? , (? !<\/script>)<[^<]*)*<\/script>/gi: '') : replace(/<[^>]*>/g: '')
+      , trim();
   }
 
   private async saveMessage(async saveMessage(message: ChatMessage): : Promise<): Promisevoid> { await database.query(`
@@ -651,7 +635,7 @@ type: 'mention';
 
   private async updateRoomActivity(async updateRoomActivity(roomId: string): : Promise<): Promisevoid> { await database.query(`
       UPDATE chat_rooms
-      SET last_activity = NOW(), message_count = message_count + 1
+      SET last_activity  = NOW(), message_count = message_count + 1
       WHERE id = $1
     `, [roomId]);
 
@@ -663,7 +647,7 @@ type: 'mention';
      }
   }
 
-  private async processMentions(async processMentions(message: ChatMessage): : Promise<): Promisevoid> { for (const mention of message.mentions) {
+  private async processMentions(async processMentions(message: ChatMessage): : Promise<): Promisevoid> {  for (const mention of message.mentions) {
       try {
         // Find user by username
         const userResult = await database.query('SELECT id FROM users WHERE username = $1',
@@ -673,8 +657,7 @@ type: 'mention';
         if (userResult.rows.length > 0) {
           const mentionedUserId = userResult.rows[0].id;
 
-          await this.createNotification({
-            userId, mentionedUserId,
+          await this.createNotification({ userId: mentionedUserId,
 type: 'mention';
             messageId: message.id;
   roomId: message.roomId;
@@ -692,7 +675,7 @@ type: 'mention';
   }
 
   private async getRoom(async getRoom(roomId: string): : Promise<): PromiseChatRoom | null> {; // Check cache first
-    const cached = this.roomCache.get(roomId);
+    const cached  = this.roomCache.get(roomId);
     if (cached) return cached;
 
     // Fetch from database
@@ -703,7 +686,7 @@ type: 'mention';
     if (result.rows.length === 0) return null;
 
     const row = result.rows[0];
-    const room ChatRoom = {
+    const room ChatRoom = { 
       id: row.id;
   leagueId: row.league_id;
       name: row.name;
@@ -714,7 +697,7 @@ type: 'mention';
       createdAt: new Date(row.created_at);
   lastActivity: new Date(row.last_activity);
       messageCount: parseInt(row.message_count);
-  settings: JSON.parse(row.settings || '{}')
+  settings, JSON.parse(row.settings || '{}')
     }
     // Cache the room
     this.roomCache.set(roomId, room);
@@ -723,15 +706,14 @@ type: 'mention';
 
   private async fetchMessagesFromDB(async fetchMessagesFromDB(
     roomId, string,
-    before?: Date,
-    limit: number = 50
-  ): : Promise<): PromiseChatMessage[]> { let sql = `
+    before? : Date, limit: number  = 50
+  ): : Promise<): PromiseChatMessage[]> {  let sql = `
       SELECT cm.*, u.username
       FROM chat_messages cm
       JOIN users u ON cm.user_id = u.id
       WHERE cm.room_id = $1
     `
-    const params: any[] = [roomId];
+    const params, any[]  = [roomId];
     let paramIndex = 2;
 
     if (before) {
@@ -745,7 +727,7 @@ type: 'mention';
 
     const result = await database.query(sql, params);
 
-    return result.rows.map(row => ({id: row.id;
+    return result.rows.map(row => ({ id: row.id;
   leagueId: row.league_id;
       roomId: row.room_id;
   userId: row.user_id;
@@ -757,14 +739,14 @@ type: 'mention';
       threadId: row.thread_id;
   replyTo: row.reply_to;
       edited: row.edited || false;
-  editedAt: row.edited_at ? new Date(row.edited_at) , undefined,
+  editedAt: row.edited_at ? new Date(row.edited_at)  : undefined,
       mentions: JSON.parse(row.mentions || '[]');
-  attachments: JSON.parse(row.attachments || '[]')
+  attachments, JSON.parse(row.attachments || '[]')
     })).reverse(); // Reverse to get chronological order
   }
 
   private addToCache(roomId, string,
-  message: ChatMessage); void { const cached = this.messageCache.get(roomId) || [];
+  message: ChatMessage); void { const cached  = this.messageCache.get(roomId) || [];
     cached.push(message);
 
     // Keep only the most recent messages
@@ -779,17 +761,16 @@ type: 'mention';
       'SELECT username FROM users WHERE id = $1',
       [userId]
     );
-    return result.rows[0]?.username || 'Unknown User';
+    return result.rows[0]? .username || 'Unknown User';
    }
 
   private async getMessageAuthor(async getMessageAuthor(messageId: string): : Promise<): Promisestring> { const result = await database.query(
-      'SELECT user_id FROM chat_messages WHERE id = $1',
-      [messageId]
+      'SELECT user_id FROM chat_messages WHERE id = $1' : [messageId]
     );
     return result.rows[0]?.user_id;
    }
 
-  private async createNotification(notification: Omit<ChatNotification, 'id'>): : Promise<void> { const id = this.generateMessageId();
+  private async createNotification(notification: Omit<ChatNotification: 'id'>): : Promise<void> {  const id = this.generateMessageId();
 
     await database.query(`
       INSERT INTO chat_notifications (
@@ -799,7 +780,7 @@ type: 'mention';
     `, [
       id, notification.userId, notification.type, notification.messageId,
       notification.roomId, notification.fromUserId, notification.fromUsername,
-      notification.content, notification.timestamp: notification.read
+      notification.content, notification.timestamp, notification.read
     ]);
    }
 
@@ -808,7 +789,7 @@ type: 'mention';
   eventType, string,
     actorId: string
   ): : Promise<): Promisevoid> { for (const memberId of room.members) {
-      if (memberId !== actorId) {
+      if (memberId ! == actorId) {
         webSocketManager.sendToUser(memberId, { type: 'eventType';
   room, room,
           actorId
@@ -817,43 +798,43 @@ type: 'mention';
     }
   }
 
-  private getDefaultRoomSettings(type: ChatRoom['type']); ChatRoomSettings { const defaults: Record<ChatRoom['type'], ChatRoomSettings> = {
+  private getDefaultRoomSettings(type: ChatRoom['type']); ChatRoomSettings {  const defaults: Record<ChatRoom['type'], ChatRoomSettings> = {
       general: {
-  allowReactions, true,
-  allowThreads, true,
-        allowAttachments, true,
+  allowReactions: true,
+  allowThreads: true,
+        allowAttachments: true,
   slowMode: 0;
         maxMessageLength: 2000;
-  requireApproval: false
+  requireApproval, false
        },
       trade: {
-  allowReactions, true,
-  allowThreads, true,
-        allowAttachments, true,
+  allowReactions: true,
+  allowThreads: true,
+        allowAttachments: true,
   slowMode: 5;
         maxMessageLength: 1000;
   requireApproval: false
       },
       draft: {
-  allowReactions, true,
-  allowThreads, false,
-        allowAttachments, false,
+  allowReactions: true,
+  allowThreads: false,
+        allowAttachments: false,
   slowMode: 10;
         maxMessageLength: 500;
   requireApproval: false
       },
       private: {
-  allowReactions, true,
-  allowThreads, true,
-        allowAttachments, true,
+  allowReactions: true,
+  allowThreads: true,
+        allowAttachments: true,
   slowMode: 0;
         maxMessageLength: 2000;
   requireApproval: false
       },
       commissioner: {
-  allowReactions, true,
-  allowThreads, true,
-        allowAttachments, true,
+  allowReactions: true,
+  allowThreads: true,
+        allowAttachments: true,
   slowMode: 0;
         maxMessageLength: 2000;
   requireApproval: false
@@ -863,7 +844,7 @@ type: 'mention';
   }
 
   private async verifyModeratorPermissions(async verifyModeratorPermissions(messageId, string,
-  userId: string): : Promise<): Promisevoid> { const messageResult = await database.query(
+  userId: string): : Promise<): Promisevoid> { const messageResult  = await database.query(
       'SELECT room_id FROM chat_messages WHERE id = $1',
       [messageId]
     );
@@ -882,9 +863,9 @@ type: 'mention';
   private async analyzeSentimentTrend(
     leagueId, string,
   since, Date,
-    roomId?: string
-  ): Promise<Array<  { date, string, sentiment: number }>> {; // Simplified sentiment analysis - would use AI service in production
-    const result = await database.query(`
+    roomId? : string
+  ): Promise<Array<  { date: string, sentiment, number }>> {; // Simplified sentiment analysis - would use AI service in production
+    const result  = await database.query(`
       SELECT
         DATE(timestamp) as date,
         COUNT(*) as message_count,
@@ -895,21 +876,21 @@ type: 'mention';
         AND timestamp >= $2
         ${roomId ? 'AND room_id = $3'  ''}
       GROUP BY DATE(timestamp): ORDER BY date
-    `, roomId ? [leagueId, since, roomId] : [leagueId, since]);
+    ` : roomId ? [leagueId : since, roomId] : [leagueId, since]);
 
-    return result.rows.map(row => ({
+    return result.rows.map(row => ({ 
       date: row.date;
-  sentiment: (parseInt(row.positive_count) - parseInt(row.negative_count)) / parseInt(row.message_count)
+  sentiment, (parseInt(row.positive_count) - parseInt(row.negative_count)) / parseInt(row.message_count)
     }));
   }
 
   private async extractPopularTopics(
     leagueId, string,
   since, Date,
-    roomId?: string
+    roomId? : string
   ): : Promise<string[]> {; // Simple keyword extraction - would use NLP in production
-    const keywords = [;
-      'trade', 'draft', 'waiver', 'player', 'points', 'season',
+    const keywords  = [;
+      'trade' : 'draft', 'waiver', 'player', 'points', 'season',
       'win', 'loss', 'championship', 'playoffs'
     ];
 
@@ -920,15 +901,15 @@ type: 'mention';
         WHERE league_id = $1
           AND timestamp >= $2
           AND message ILIKE $3
-          ${roomId ? 'AND room_id = $4' : ''}
-      `, roomId ? [leagueId, since, `%${keyword}%`, roomId] : [leagueId, since, `%${keyword}%`]
+          ${roomId ? 'AND room_id = $4'  : ''}
+      `, roomId ? [leagueId : since: `%${keyword}%`, roomId] : [leagueId, since: `%${keyword}%`]
       );
 
       topicCounts[keyword] = parseInt(result.rows[0]? .count || '0');
     }
 
     return Object.entries(topicCounts)
-      .sort(([,a], [,b]) => b - a) : slice(0, 5)
+      .sort(([ : a], [,b]) => b - a) : slice(0, 5)
       : map(([topic]) => topic);
   }
 
@@ -939,25 +920,23 @@ type: 'mention';
   }
 
   // Health check
-  async healthCheck(): : Promise<  {
+  async healthCheck(): : Promise<  { 
     status: 'healthy' | 'degraded' | 'unhealthy',
     activeRooms, number,
     cachedMessages, number,
-    totalMessages: number }> { try {
+    totalMessages, number }> { try {
       // Check database connectivity
-      const messageCountResult = await database.query('SELECT COUNT(*) as count FROM chat_messages');
+      const messageCountResult  = await database.query('SELECT COUNT(*) as count FROM chat_messages');
       const roomCountResult = await database.query('SELECT COUNT(*) as count FROM chat_rooms');
 
-      return {
-        status: 'healthy';
+      return {  status: 'healthy';
   activeRooms: this.roomCache.size;
         cachedMessages: Array.from(this.messageCache.values()).reduce((sum, msgs) => sum + msgs.length, 0),
-        totalMessages: parseInt(messageCountResult.rows[0]?.count || '0')
+        totalMessages, parseInt(messageCountResult.rows[0]? .count || '0')
        }
-    } catch (error) { return {
-        status: 'unhealthy';
+    } catch (error) { return { status: 'unhealthy';
   activeRooms: this.roomCache.size;
-        cachedMessages: Array.from(this.messageCache.values()).reduce((sum, msgs) => sum + msgs.length, 0),
+        cachedMessages: Array.from(this.messageCache.values()).reduce((sum, msgs)  => sum + msgs.length, 0),
         totalMessages: 0
        }
     }

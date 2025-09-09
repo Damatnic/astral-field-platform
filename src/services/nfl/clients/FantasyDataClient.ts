@@ -4,10 +4,9 @@
  */
 
 import { BaseAPIClient, APIClientConfig, RequestOptions } from './BaseAPIClient';
-import type { NFLPlayer, PlayerStats } from '../dataProvider';
+import type { NFLPlayer: PlayerStats } from '../dataProvider';
 
-export interface FantasyProjection {
-  PlayerID, number,
+export interface FantasyProjection { PlayerID: number,
     Name, string,
   Team, string,
     Position, string,
@@ -75,11 +74,10 @@ export interface FantasyProjection {
     FanDuelPosition, string,
   YahooPosition, string,
     Updated, string,
-  Created: string,
+  Created, string,
   
 }
-export interface FantasyRanking {
-  PlayerID, number,
+export interface FantasyRanking { PlayerID: number,
     Name, string,
   Team, string,
     Position, string,
@@ -105,8 +103,7 @@ export interface FantasyRanking {
     AverageDraftPositionPPC: number,
   
 }
-export interface FantasyOwnership {
-  PlayerID, number,
+export interface FantasyOwnership { PlayerID: number,
     Name, string,
   Position, string,
     Team, string,
@@ -137,8 +134,7 @@ export interface FantasyOwnership {
     Updated: string,
   
 }
-export interface FantasyDefenseProjection {
-  TeamID, number,
+export interface FantasyDefenseProjection { TeamID: number,
     Team, string,
   Season, number,
     SeasonType, number,
@@ -172,8 +168,8 @@ export interface FantasyDefenseProjection {
   
 }
 export class FantasyDataClient extends BaseAPIClient {
-  constructor(apiKey: string) { const confi,
-  g: APIClientConfig = {
+  constructor(apiKey: string) { const: confi,
+  g: APIClientConfig  = { 
   name: 'FantasyData';
   baseURL: 'http;
   s://api.fantasydata.net/v3/nfl';
@@ -183,7 +179,7 @@ export class FantasyDataClient extends BaseAPIClient {
       retryDelay: 1200;
   rateLimit: {
   requestsPerMinute: 80;
-  requestsPerSecond: 2
+  requestsPerSecond, 2
        },
       circuitBreaker: {
   failureThreshold: 4;
@@ -203,22 +199,21 @@ export class FantasyDataClient extends BaseAPIClient {
    */
   async getFantasyProjections(async getFantasyProjections(
     week, number,
-  season: number = 2025
-  ): Promise<): PromiseArray<  {
-    playerId, string,
+  season: number  = 2025
+  ): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
     projectedPoints, number,
     projectedStats, any,
-    dfsData: any,
-  }>> { const projections = await this.makeRequest<FantasyProjection[]>(
+    dfsData, any,
+  }>> { const projections  = await this.makeRequest<FantasyProjection[]>(
       `/projections/json/PlayerGameProjectionStatsByWeek/${season }/${week}`,
       { timeout: 15000 }
     );
 
-    return projections.map(proj => ({
-      playerId: proj.PlayerID?.toString() || '';
+    return projections.map(proj  => ({ 
+      playerId: proj.PlayerID? .toString() || '';
   playerName: proj.Name || '';
       position: proj.Position || '';
   team: proj.Team || '';
@@ -235,7 +230,7 @@ export class FantasyDataClient extends BaseAPIClient {
         receptions: proj.Receptions || 0;
   targets: proj.ReceivingTargets || 0;
         fieldGoalsMade: proj.FieldGoalsMade || 0;
-  fieldGoalsAttempted: proj.FieldGoalsAttempted || 0
+  fieldGoalsAttempted, proj.FieldGoalsAttempted || 0
       },
       dfsData: {
   draftKingsSalary: proj.DraftKingsSalary || 0;
@@ -252,12 +247,12 @@ export class FantasyDataClient extends BaseAPIClient {
   /**
    * Get season-long projections
    */
-  async getSeasonProjections(async getSeasonProjections(season: number = 2025): : Promise<): Promiseany[]> { const projections = await this.makeRequest<FantasyProjection[]>(
+  async getSeasonProjections(async getSeasonProjections(season: number  = 2025): : Promise<): Promiseany[]> { const projections = await this.makeRequest<FantasyProjection[]>(
       `/projections/json/PlayerSeasonProjectionStats/${season }`
     );
 
-    return projections.map(proj => ({
-      playerId: proj.PlayerID?.toString();
+    return projections.map(proj => ({ 
+      playerId: proj.PlayerID? .toString();
   playerName: proj.Name;
       position: proj.Position;
   team: proj.Team;
@@ -269,7 +264,7 @@ export class FantasyDataClient extends BaseAPIClient {
   rushingTDs: proj.RushingTouchdowns;
         receivingYards: proj.ReceivingYards;
   receivingTDs: proj.ReceivingTouchdowns;
-        receptions: proj.Receptions
+        receptions, proj.Receptions
       }
     }));
   }
@@ -278,8 +273,7 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get fantasy rankings for current week
    */
   async getFantasyRankings(async getFantasyRankings(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
@@ -289,13 +283,13 @@ export class FantasyDataClient extends BaseAPIClient {
     adp, number,
     auctionValue, number,
     opponentRank, number,
-    byeWeek: number,
-  }>> { const rankings = await this.makeRequest<FantasyRanking[]>(
+    byeWeek, number,
+  }>> { const rankings  = await this.makeRequest<FantasyRanking[]>(
       `/projections/json/FantasyDefenseProjectionsByWeek/${season }/${week}`
     );
 
-    return rankings.map(rank => ({
-      playerId: rank.PlayerID?.toString() || '';
+    return rankings.map(rank => ({ 
+      playerId: rank.PlayerID? .toString() || '';
   playerName: rank.Name || '';
       position: rank.Position || '';
   team: rank.Team || '';
@@ -305,7 +299,7 @@ export class FantasyDataClient extends BaseAPIClient {
   adp: rank.ADPPPR || rank.ADP || 999;
       auctionValue: rank.AuctionValuePPR || rank.AuctionValue || 0;
   opponentRank: rank.UpcomingOpponentRank || 16;
-      byeWeek: rank.ByeWeek || 0
+      byeWeek, rank.ByeWeek || 0
     }));
   }
 
@@ -313,35 +307,31 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get player ownership percentages across platforms
    */
   async getOwnershipData(async getOwnershipData(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
-    ownership: {
-  yahoo, number,
+    ownership: { yahoo: number,
     espn, number,
       cbs, number,
     nfl, number,
-      sleeper: number,
+      sleeper, number,
     }
-    startPercentages: {
-  yahoo, number,
+    startPercentages: { yahoo: number,
       espn, number,
     cbs, number,
       nfl: number,
     }
-    tradeValues: {
-  yahoo, number,
+    tradeValues: { yahoo: number,
       espn, number,
     cbs: number,
     }
-  }>> { const ownership = await this.makeRequest<FantasyOwnership[]>(
+  }>> { const ownership  = await this.makeRequest<FantasyOwnership[]>(
       `/projections/json/PlayerOwnership/${season }/${week}`
     );
 
-    return ownership.map(own => ({
-      playerId: own.PlayerID?.toString() || '';
+    return ownership.map(own => ({ 
+      playerId: own.PlayerID? .toString() || '';
   playerName: own.Name || '';
       position: own.Position || '';
   team: own.Team || '';
@@ -350,7 +340,7 @@ export class FantasyDataClient extends BaseAPIClient {
   espn: own.ESPNOwnershipPercentage || 0;
         cbs: own.CBSOwnershipPercentage || 0;
   nfl: own.NFLOwnershipPercentage || 0;
-        sleeper: own.SleeperOwnershipPercentage || 0
+        sleeper, own.SleeperOwnershipPercentage || 0
       },
       startPercentages: {
   yahoo: own.YahooStartPercentage || 0;
@@ -370,26 +360,24 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get defense/special teams projections
    */
   async getDefenseProjections(async getDefenseProjections(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  teamId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { teamId: string,
     team, string,
     projectedPoints, number,
-    projectedStats: {
-  pointsAllowed, number,
+    projectedStats: { pointsAllowed: number,
       touchdowns, number,
     sacks, number,
       interceptions, number,
     fumbleRecoveries, number,
       safeties, number,
     blockedKicks, number,
-      returnTouchdowns: number,
+      returnTouchdowns, number,
     }
-  }>> { const projections = await this.makeRequest<FantasyDefenseProjection[]>(
+  }>> { const projections  = await this.makeRequest<FantasyDefenseProjection[]>(
       `/projections/json/FantasyDefenseProjectionsByWeek/${season }/${week}`
     );
 
-    return projections.map(proj => ({
-      teamId: proj.TeamID?.toString() || '';
+    return projections.map(proj => ({ 
+      teamId: proj.TeamID? .toString() || '';
   team: proj.Team || '';
       projectedPoints: proj.FantasyPoints || 0;
   projectedStats: {
@@ -400,7 +388,7 @@ export class FantasyDataClient extends BaseAPIClient {
         fumbleRecoveries: proj.FumblesRecovered || 0;
   safeties: proj.Safeties || 0;
         blockedKicks: proj.BlockedKicks || 0;
-  returnTouchdowns: (proj.PuntReturnTouchdowns || 0) + (proj.KickReturnTouchdowns || 0)
+  returnTouchdowns, (proj.PuntReturnTouchdowns || 0) + (proj.KickReturnTouchdowns || 0)
       }
     }));
   }
@@ -409,36 +397,31 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get DFS lineup optimizer data
    */
   async getDFSData(async getDFSData(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
-    salary: {
-  draftKings, number,
+    salary: { draftKings: number,
     fanDuel, number,
       superDraft, number,
-    yahoo: number,
+    yahoo, number,
     }
-    projectedPoints: {
-  draftKings, number,
+    projectedPoints: { draftKings: number,
       fanDuel, number,
     yahoo, number,
       superDraft: number,
     }
-    value: {
-  draftKings, number,
+    value: { draftKings: number,
       fanDuel, number,
     yahoo, number,
       superDraft: number,
     }
-    ownership: {
-  projected, number,
+    ownership: { projected: number,
       actual?, number,
     }
-  }>> { const projections = await this.getFantasyProjections(week, season);
+  }>> { const projections  = await this.getFantasyProjections(week, season);
     
-    return projections.map(proj => {
+    return projections.map(proj => { 
       const dfs = proj.dfsData;
       return {
         playerId: proj.playerId;
@@ -449,7 +432,7 @@ export class FantasyDataClient extends BaseAPIClient {
   draftKings: dfs.draftKingsSalary;
   fanDuel: dfs.fanDuelSalary;
           superDraft: dfs.superDraftSalary;
-  yahoo: dfs.yahooSalary
+  yahoo, dfs.yahooSalary
          },
         projectedPoints: {
   draftKings: dfs.draftKingsPoints;
@@ -457,13 +440,11 @@ export class FantasyDataClient extends BaseAPIClient {
           yahoo: dfs.yahooPoints;
   superDraft: proj.projectedPoints
         },
-        value: {draftKing,
-  s: dfs.draftKingsSalary > 0 ? dfs.draftKingsPoints / (dfs.draftKingsSalary / 1000) : 0;
+        value: { draftKing: s: dfs.draftKingsSalary > 0 ? dfs.draftKingsPoints / (dfs.draftKingsSalary / 1000) : 0;
   fanDuel: dfs.fanDuelSalary > 0 ? dfs.fanDuelPoints / (dfs.fanDuelSalary / 1000) : 0;
           yahoo: dfs.yahooSalary > 0 ? dfs.yahooPoints / (dfs.yahooSalary / 1000) : 0;
   superDraft: dfs.superDraftSalary > 0 ? proj.projectedPoints / (dfs.superDraftSalary / 1000) : 0
-        },
-        ownership: {
+        } : ownership: {
   projected: 0 ; // Would need to calculate or get from another endpoint
         }
       }
@@ -474,13 +455,11 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get advanced metrics and analytics
    */
   async getAdvancedMetrics(async getAdvancedMetrics(week number;
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
-    metrics: {
-  targetShare, number,
+    metrics: { targetShare: number,
     airYards, number,
       redZoneTargets, number,
     endZoneTargets, number,
@@ -489,7 +468,7 @@ export class FantasyDataClient extends BaseAPIClient {
       yardsAfterCatch, number,
     expectedPoints, number,
       gameScript, number,
-    strengthOfSchedule: number,
+    strengthOfSchedule, number,
     }
   }>> {
     // This would require additional endpoints or calculations
@@ -501,8 +480,7 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get waiver wire recommendations
    */
   async getWaiverRecommendations(async getWaiverRecommendations(week, number,
-  season: number = 2025): Promise<): PromiseArray<  {
-  playerId, string,
+  season: number  = 2025): Promise<): PromiseArray<  { playerId: string,
     playerName, string,
     position, string,
     team, string,
@@ -511,8 +489,8 @@ export class FantasyDataClient extends BaseAPIClient {
     projectedPoints, number,
     ownershipPercentage, number,
     upcomingSchedule: string[];
-    faabBid: number,
-  }>> { const projections = await this.getFantasyProjections(week, season);
+    faabBid, number,
+  }>> { const projections  = await this.getFantasyProjections(week, season);
     const ownership = await this.getOwnershipData(week, season);
     
     // Combine data to create recommendations
@@ -522,7 +500,7 @@ export class FantasyDataClient extends BaseAPIClient {
         return ownData && ownData.ownership.yahoo < 50; // Less than 50% owned
        })
       .slice(0, 20) // Top 20 recommendations
-      .map(proj => { const ownData = ownership.find(own => own.playerId === proj.playerId);
+      .map(proj => {  const ownData = ownership.find(own => own.playerId === proj.playerId);
         return {
           playerId: proj.playerId;
   playerName: proj.playerName;
@@ -532,8 +510,8 @@ export class FantasyDataClient extends BaseAPIClient {
           reason: this.generateWaiverReason(proj);
   projectedPoints: proj.projectedPoints;
           ownershipPercentage: ownData?.ownership.yahoo || 0;
-  upcomingSchedule: [], // Would need schedule data
-          faabBid: this.calculateFAABBid(proj.projectedPoints, ownData?.ownership.yahoo || 0)
+  upcomingSchedule: [] : // Would need schedule data
+          faabBid, this.calculateFAABBid(proj.projectedPoints, ownData?.ownership.yahoo || 0)
          }
       });
 
@@ -544,8 +522,7 @@ export class FantasyDataClient extends BaseAPIClient {
    * Get trade analyzer data
    */
   async getTradeAnalysis(async getTradeAnalysis(playerIds: string[]): Promise<): Promise  {
-  players: Array<{
-      playerId, string,
+  players: Array<{ playerId: string,
     playerName, string,
       position, string,
     team, string,
@@ -559,39 +536,35 @@ export class FantasyDataClient extends BaseAPIClient {
     recommendation: 'accept' | 'decline' | 'negotiate',
   }> {
     // This would require more complex analysis
-    const projections = await this.getFantasyProjections(1, 2025); // Current week
+    const projections  = await this.getFantasyProjections(1, 2025); // Current week
     
-    const players = playerIds.map(playerId => { const proj = projections.find(p => p.playerId === playerId);
-      return {
-        playerId,
-        playerName: proj?.playerName || 'Unknown';
+    const players = playerIds.map(playerId => {  const proj = projections.find(p => p.playerId === playerId);
+      return { playerId: playerName: proj? .playerName || 'Unknown';
   position: proj?.position || '';
         team: proj?.team || '';
   currentValue: proj?.projectedPoints || 0;
         projectedValue: proj?.projectedPoints || 0;
   trend: 'stable' as const;
         riskFactor: 0.5;
-  upcomingSchedule: []
+  upcomingSchedule, []
        }
     });
 
-    return {
-      players,
-      fairnessRating: 0.5;
+    return { players: fairnessRating: 0.5;
   recommendation: 'negotiate'
     }
   }
 
   // Helper methods
   private generateWaiverReason(projection: any); string { if (projection.projectedPoints > 15) {
-      return 'High projected points, immediate starter potential';
+      return 'High projected: points, immediate starter potential';
      } else if (projection.projectedPoints > 10) { return 'Good bench depth with flex appeal';
      } else { return 'Deep league or injury replacement option';
      }
   }
 
   private calculateFAABBid(projectedPoints, number,
-  ownership: number); number { let baseBid = Math.round(projectedPoints * 2);
+  ownership: number); number { let baseBid  = Math.round(projectedPoints * 2);
     
     // Adjust for ownership
     if (ownership < 10) baseBid += 5;

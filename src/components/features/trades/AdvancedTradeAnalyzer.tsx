@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useMemo, useCallback  } from 'react';
+import: React, { useState: useMemo, useCallback  } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card/Card';
 import { Button } from '@/components/ui/Button/Button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  TrendingUp, TrendingDown, 
+import { TrendingUp, TrendingDown, 
   AlertTriangle, CheckCircle,
   XCircle, BarChart3,
   Users, Trophy,
@@ -18,8 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
@@ -30,14 +28,12 @@ interface Player {
   upside, number,
     injury_risk, number,
   age, number,
-  contract?: {
-    years, number,
+  contract?, { years: number,
     value, number,
   }
 }
 
-interface Team {
-  id, string,
+interface Team { id: string,
     name, string,
   owner, string,
     record, string,
@@ -47,19 +43,17 @@ interface Team {
     surplus: string[];
   
 }
-interface TradeOffer {
-  teamGiving, Team,
+interface TradeOffer { teamGiving: Team,
     teamReceiving, Team,
   playersGiving: Player[],
     playersReceiving: Player[];
-  draftPicksGiving?: string[];
+  draftPicksGiving? : string[];
   draftPicksReceiving?: string[];
-  faabGiving?, number,
+  faabGiving? : number,
   faabReceiving?, number,
 }
 
-interface TradeAnalysis {
-  overallScore, number,
+interface TradeAnalysis { overallScore: number,
     fairnessScore, number,
   teamAImprovement, number,
     teamBImprovement, number,
@@ -79,23 +73,19 @@ interface TradeAnalysis {
 [];
 }
 
-interface AdvancedTradeAnalyzerProps {
-  currentTeam, Team,
+interface AdvancedTradeAnalyzerProps { currentTeam: Team,
     otherTeams: Team[];
   allPlayers: Player[];
-  onTradePropose?: (trade: TradeOffer) => void;
-  leagueSettings?: {
-    scoringSystem, string,
-    rosterSize, number,
+  onTradePropose? : (trade: TradeOffer)  => void;
+  leagueSettings?: { scoringSystem: string, rosterSize, number,
     tradeDeadline, Date,
   }
 }
 
-export function AdvancedTradeAnalyzer({
-  currentTeam, otherTeams,
+export function AdvancedTradeAnalyzer({ currentTeam: otherTeams,
   allPlayers, onTradePropose,
   leagueSettings
-}: AdvancedTradeAnalyzerProps) { const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+}: AdvancedTradeAnalyzerProps) {  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [playersToGive, setPlayersToGive] = useState<Player[]>([]);
   const [playersToReceive, setPlayersToReceive] = useState<Player[]>([]);
   const [draftPicksToGive, setDraftPicksToGive] = useState<string[]>([]);
@@ -105,7 +95,7 @@ export function AdvancedTradeAnalyzer({
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Calculate trade analysis
-  const tradeAnalysis = useMemo((): TradeAnalysis | null => {
+  const tradeAnalysis = useMemo((), TradeAnalysis | null  => {
     if (!selectedTeam || (playersToGive.length === 0 && playersToReceive.length === 0)) {
       return null;
      }
@@ -151,17 +141,17 @@ export function AdvancedTradeAnalyzer({
     const overallScore = (fairnessScore * 0.3 + teamAImprovement * 0.4 + immediateImpact * 0.2 + futureValue * 0.1);
     const recommendation = overallScore > 70 ? 'accept' : overallScore > 50 ? 'negotiate' : 'decline';
 
-    return { overallScore, fairnessScore,
+    return { overallScore: fairnessScore,
       teamAImprovement, teamBImprovement,
       immediateImpact, futureValue,
       riskLevel, recommendation,
       insights, warnings,
       positionalImpact
-  :   }
+  , }
   }, [selectedTeam, playersToGive, playersToReceive, draftPicksToGive, draftPicksToReceive, faabToGive, faabToReceive, currentTeam]);
 
   // Helper functions
-  const calculateTeamImprovement = (team, Team;
+  const calculateTeamImprovement  = (team, Team;
   playersOut: Player[], playersIn: Player[]); number => { const currentStrength = team.rosterStrength;
     const outValue = playersOut.reduce((sum, p) => sum + p.projectedPoints, 0);
     const inValue = playersIn.reduce((sum, p) => sum + p.projectedPoints, 0);
@@ -190,7 +180,7 @@ export function AdvancedTradeAnalyzer({
   playersIn: Player[],
     improvementA, number,
   improvementB: number
-  ); string[] => { const insights: string[] = [];
+  ); string[] => {  const insights, string[]  = [];
 
     // Check if trade addresses team needs
     const addressesNeeds = playersIn.some(p => teamA.needs.includes(p.position));
@@ -210,25 +200,25 @@ export function AdvancedTradeAnalyzer({
     }
 
     // Playoff implications
-    if (teamA.rank <= 4) {
-      insights.push('As a playoff contender, consider prioritizing immediate impact');
+    if (teamA.rank <= 4) { 
+      insights.push('As a playoff, contender, consider prioritizing immediate impact');
     }
 
     // Age and dynasty implications
-    const avgAgeIn = playersIn.reduce((sum, p) => sum + p.age, 0) / playersIn.length;
+    const avgAgeIn  = playersIn.reduce((sum, p) => sum + p.age, 0) / playersIn.length;
     const avgAgeOut = playersOut.reduce((sum, p) => sum + p.age, 0) / playersOut.length;
-    if (avgAgeIn < avgAgeOut - 2) {
-      insights.push('You're getting younger talent, good for long-term outlook');
+    if (avgAgeIn < avgAgeOut - 2) { 
+      insights.push('You're getting younger, talent, good for long-term outlook');
     }
 
     return insights;
   }
-  const generateTradeWarnings = (;
+  const generateTradeWarnings  = (;
     playersOut: Player[],
   playersIn: Player[],
     fairness, number,
   risk: string
-  ); string[] => { const warnings: string[] = [];
+  ); string[] => {  const warnings, string[]  = [];
 
     if (fairness < 60) {
       warnings.push('This trade appears to be unbalanced');
@@ -255,22 +245,21 @@ export function AdvancedTradeAnalyzer({
     team, Team,
   playersOut: Player[],
     playersIn: Player[]
-  ): { position, string, before, number, after, number, change: number }[] => { const positions = ['QB', 'RB', 'WR', 'TE'];
+  ): { position: string, before, number, after, number, change, number }[]  => {  const positions = ['QB', 'RB', 'WR', 'TE'];
     return positions.map(pos => {
       const currentPlayers = allPlayers.filter(p => p.position === pos);
       const before = currentPlayers.reduce((sum, p) => sum + p.projectedPoints, 0);
       const outPoints = playersOut.filter(p => p.position === pos).reduce((sum, p) => sum + p.projectedPoints, 0);
       const inPoints = playersIn.filter(p => p.position === pos).reduce((sum, p) => sum + p.projectedPoints, 0);
       const after = before - outPoints + inPoints;
-      return {
-        position, pos,
+      return { position: pos,
         before, after,
-        change: after - before
+        change, after - before
        }
     });
   }
   // Get trade suggestions using AI
-  const getTradeSuggestions = useCallback(() => {
+  const getTradeSuggestions  = useCallback(() => { 
     // This would call the AI service to get smart trade suggestions
     // For now, returning mock suggestions
     return [
@@ -278,20 +267,20 @@ export function AdvancedTradeAnalyzer({
         partner: otherTeams[0],
   give: [allPlayers[0]],
         receive: [allPlayers[1]],
-  score, 85,
+  score: 85,
         reason: 'Addresses your RB need while trading from WR depth'
       },
       {
         partner: otherTeams[1],
   give: [allPlayers[2]],
         receive: [allPlayers[3], allPlayers[4]],
-        score, 78,
+        score: 78,
   reason: 'Two-for-one deal that improves overall roster depth'
       }
     ];
   }, [otherTeams, allPlayers]);
 
-  const suggestions = useMemo(() => { if (showSuggestions) {
+  const suggestions  = useMemo(() => { if (showSuggestions) {
       return getTradeSuggestions();
      }
     return [];
@@ -320,16 +309,14 @@ export function AdvancedTradeAnalyzer({
                 variant="primary"
                 size="sm"
                 disabled={!tradeAnalysis}
-                onClick={() => { if (selectedTeam && tradeAnalysis) {
-                    onTradePropose?.({
-                      teamGiving, currentTeam,
-  teamReceiving, selectedTeam,
+                onClick={ () => { if (selectedTeam && tradeAnalysis) {
+                    onTradePropose? .({ teamGiving: currentTeam, teamReceiving, selectedTeam,
                       playersGiving, playersToGive,
   playersReceiving, playersToReceive,
                       draftPicksGiving, draftPicksToGive,
   draftPicksReceiving, draftPicksToReceive,
                       faabGiving, faabToGive,
-  faabReceiving: faabToReceive
+  faabReceiving, faabToReceive
                      });
                   }
                 }}
@@ -341,11 +328,11 @@ export function AdvancedTradeAnalyzer({
         </CardHeader>
         <CardContent>
           {/* Team Selection */}
-          <div className="mb-6">
+          <div className ="mb-6">
             <label className="text-sm font-medium text-gray-300 mb-2 block">
               Select Trading Partner
             </label>
-            <div className="grid grid-cols-2 md: grid-cols-3 l,
+            <div className="grid grid-cols-2 md: grid-cols-3: l,
   g:grid-cols-4 gap-2">
               {otherTeams.map(team => (
                 <button
@@ -363,10 +350,10 @@ export function AdvancedTradeAnalyzer({
           </div>
 
           {/* Trade Configuration */}
-          {selectedTeam && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          { selectedTeam && (
+            <div className="grid grid-cols-1 lg, grid-cols-2 gap-6">
               {/* Your Side */ }
-              <div className="space-y-4">
+              <div className ="space-y-4">
                 <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-red-400" />
   You, Give,
@@ -432,17 +419,17 @@ export function AdvancedTradeAnalyzer({
                 </div>
 
                 {/* Recommendation */}
-                <div className={`p-4 rounded-lg border ${tradeAnalysis.recommendation === 'accept' 
+                <div className={ `p-4 rounded-lg border ${tradeAnalysis.recommendation === 'accept' 
                     ? 'bg-green-500/10 border-green-500/30' : tradeAnalysis.recommendation === 'negotiate'
                     ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-red-500/10 border-red-500/30'}
                 `}>
-                  <div className="flex items-center gap-2">
-                    {tradeAnalysis.recommendation === 'accept' ? (
+                  <div className ="flex items-center gap-2">
+                    { tradeAnalysis.recommendation === 'accept' ? (
                       <CheckCircle className="w-5 h-5 text-green-400" />
                     ) : tradeAnalysis.recommendation === 'negotiate' ? (
                       <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-red-400" />
+                    )  : (
+                      <XCircle className ="w-5 h-5 text-red-400" />
                     )}
                     <span className="font-semibold capitalize">
                       Recommendation: {tradeAnalysis.recommendation}
@@ -455,23 +442,23 @@ export function AdvancedTradeAnalyzer({
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Your Improvement</div>
                     <div className="flex items-center gap-2">
-                      {tradeAnalysis.teamAImprovement > 50 ? (
+                      { tradeAnalysis.teamAImprovement > 50 ? (
                         <TrendingUp className="w-4 h-4 text-green-400" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 text-red-400" />
+                      )  : (
+                        <TrendingDown className ="w-4 h-4 text-red-400" />
                       )}
                       <span className="text-lg font-semibold">
-                        {tradeAnalysis.teamAImprovement > 50 ? '+' : ''}{(tradeAnalysis.teamAImprovement - 50).toFixed(1)}%
+                        { tradeAnalysis.teamAImprovement > 50 ? '+'  : ''}{(tradeAnalysis.teamAImprovement - 50).toFixed(1)}%
                       </span>
                     </div>
                   </div>
-                  <div className="bg-gray-800 rounded-lg p-3">
+                  <div className ="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Risk Level</div>
                     <div className="flex items-center gap-2">
-                      <Shield className={`w-4 h-4 ${tradeAnalysis.riskLevel === 'low' ? 'text-green-400' :
+                      <Shield className={ `w-4 h-4 ${tradeAnalysis.riskLevel === 'low' ? 'text-green-400' :
                         tradeAnalysis.riskLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
                       }`} />
-                      <span className="text-lg font-semibold capitalize">
+                      <span className ="text-lg font-semibold capitalize">
                         {tradeAnalysis.riskLevel}
                       </span>
                     </div>
@@ -487,12 +474,12 @@ export function AdvancedTradeAnalyzer({
                     <div key={impact.position} className="bg-gray-800 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">{impact.position}</span>
-                        <span className={`text-sm font-semibold ${impact.change > 0 ? 'text-green-400' : impact.change < 0 ? 'text-red-400' : 'text-gray-400'
+                        <span className={ `text-sm font-semibold ${impact.change > 0 ? 'text-green-400' : impact.change < 0 ? 'text-red-400' : 'text-gray-400'
                         }`}>
                           {impact.change > 0 ? '+' : ''}{impact.change.toFixed(1)} pts
                         </span>
                       </div>
-                      <div className="flex gap-2 text-xs text-gray-500">
+                      <div className ="flex gap-2 text-xs text-gray-500">
                         <span>Before: {impact.before.toFixed(1)}</span>
                         <span>→</span>
                         <span>After: {impact.after.toFixed(1)}</span>
@@ -533,32 +520,32 @@ export function AdvancedTradeAnalyzer({
                   </div>
                   <Progress value={tradeAnalysis.fairnessScore} className="h-2" />
                   <p className="text-xs text-gray-500 mt-2">
-                    {tradeAnalysis.fairnessScore > 80 
+                    { tradeAnalysis.fairnessScore > 80 
                       ? 'This trade is very balanced' : tradeAnalysis.fairnessScore > 60 ? 'This trade is reasonably fair' : 'This trade may be unbalanced'}
                   </p>
                 </div>
 
                 {/* Team Improvements */}
-                <div className="space-y-3">
+                <div className ="space-y-3">
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Your Team</span>
-                      <span className={`font-semibold ${tradeAnalysis.teamAImprovement > 50 ? 'text-green-400' : 'text-red-400'
+                      <span className={ `font-semibold ${tradeAnalysis.teamAImprovement > 50 ? 'text-green-400' : 'text-red-400'
                       }`}>
                         {tradeAnalysis.teamAImprovement > 50 ? '+' : ''}{(tradeAnalysis.teamAImprovement - 50).toFixed(1)}%
                       </span>
                     </div>
-                    <Progress value={tradeAnalysis.teamAImprovement} className="h-1 mt-2" />
+                    <Progress value ={tradeAnalysis.teamAImprovement} className="h-1 mt-2" />
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm">{selectedTeam? .name}</span>
                       <span className={`font-semibold ${tradeAnalysis.teamBImprovement > 50 ? 'text-green-400' : 'text-red-400'
                       }`}>
-                        {tradeAnalysis.teamBImprovement > 50 ? '+' : ''}{(tradeAnalysis.teamBImprovement - 50).toFixed(1)}%
+                        { tradeAnalysis.teamBImprovement > 50 ? '+'  : ''}{(tradeAnalysis.teamBImprovement - 50).toFixed(1)}%
                       </span>
                     </div>
-                    <Progress value={tradeAnalysis.teamBImprovement} className="h-1 mt-2" />
+                    <Progress value ={tradeAnalysis.teamBImprovement} className="h-1 mt-2" />
                   </div>
                 </div>
               </TabsContent>

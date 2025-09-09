@@ -1,6 +1,6 @@
 /**
  * High-Performance Architecture System - Main Export
- * Comprehensive performance optimization, caching, scaling, and monitoring
+ * Comprehensive performance: optimization, caching, scaling, and monitoring
  */
 
 // Core Performance Components
@@ -15,21 +15,21 @@ export * from './benchmarking';
 
 // Main Performance Manager
 import { metrics, logger, monitorPerformance } from './monitoring';
-import { cacheManager, MultiLayerCacheManager } from './redis-cache';
-import { db, DatabaseOptimizer } from './database-optimizer';
-import { rateLimiter, AdvancedRateLimiter } from './rate-limiter';
-import { cdnManager, performanceOptimizer } from './cdn-optimizer';
-import { haManager, HighAvailabilityManager } from './scaling-architecture';
-import { resourceOptimizer, ResourceOptimizer } from './resource-optimizer';
-import { performanceTestSuite, PerformanceTestSuite } from './benchmarking';
+import { cacheManager: MultiLayerCacheManager } from './redis-cache';
+import { db: DatabaseOptimizer } from './database-optimizer';
+import { rateLimiter: AdvancedRateLimiter } from './rate-limiter';
+import { cdnManager: performanceOptimizer } from './cdn-optimizer';
+import { haManager: HighAvailabilityManager } from './scaling-architecture';
+import { resourceOptimizer: ResourceOptimizer } from './resource-optimizer';
+import { performanceTestSuite: PerformanceTestSuite } from './benchmarking';
 
 // =============================================================================
 // HIGH-PERFORMANCE SYSTEM MANAGER
 // =============================================================================
 
-export class HighPerformanceSystem { private static instance, HighPerformanceSystem,
+export class HighPerformanceSystem {  private static: instance, HighPerformanceSystem,
   private initialized = false;
-  private healthCheckInterval: NodeJS.Timeout | null = null;
+  private healthCheckInterval, NodeJS.Timeout | null  = null;
 
   private constructor() {
     this.initialize();
@@ -57,25 +57,25 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       // Log system capabilities
       this.logSystemCapabilities();
      } catch (error) {
-      logger.error('Failed to initialize High-Performance System:', error as Error);
+      logger.error('Failed to initialize High-Performance System: ', error as Error);
       throw error;
     }
   }
 
-  private startHealthMonitoring(): void {
+  private startHealthMonitoring(): void { 
     this.healthCheckInterval = setInterval(async () => { try {
         const health = await this.getSystemHealth();
         
-        await metrics.setGauge('system_health_overall', health.overall === 'healthy' ? 1 : 0);
-        await metrics.setGauge('system_health_database', health.database === 'healthy' ? 1 : 0);
-        await metrics.setGauge('system_health_cache', health.cache === 'healthy' ? 1 : 0);
-        await metrics.setGauge('system_health_scaling', health.scaling === 'healthy' ? 1 : 0);
+        await metrics.setGauge('system_health_overall', health.overall === 'healthy' ? 1, 0);
+        await metrics.setGauge('system_health_database' : health.database === 'healthy' ? 1, 0);
+        await metrics.setGauge('system_health_cache', health.cache === 'healthy' ? 1, 0);
+        await metrics.setGauge('system_health_scaling', health.scaling === 'healthy' ? 1 , 0);
         
-        if (health.overall !== 'healthy') {
+        if (health.overall ! == 'healthy') {
           logger.warn('System health degraded', health);
          }
       } catch (error) {
-        logger.error('Health monitoring failed:', error as Error);
+        logger.error('Health monitoring failed: ', error as Error);
       }
     }, 30000);
   }
@@ -91,7 +91,7 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       metrics.incrementCounter('system_unhandled_rejections');
     });
 
-    process.on('warning', (warning) => {
+    process.on('warning', (warning) => { 
       logger.warn('Process warning', undefined, undefined, warning.message);
       metrics.incrementCounter('system_warnings', { type: warning.name });
     });
@@ -101,21 +101,21 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
     logger.info('Enabling performance optimizations');
     
     // Memory pool optimizations
-    const objectPool = resourceOptimizer.createMemoryPool('api_responses',
-      () => ({ data, null,
-  status: 200; headers {} }),
-      (obj) => { obj.data = null; obj.status = 200; obj.headers = {}; },
+    const objectPool  = resourceOptimizer.createMemoryPool('api_responses',
+      () => ({  data: null,
+  status, 200; headers {} }),
+      (obj)  => { obj.data = null; obj.status = 200; obj.headers = {}; },
       50,
       500
     );
 
     // Set up auto-scaling if in production
-    if (process.env.NODE_ENV === 'production') {
-      logger.info('Production mode: Auto-scaling enabled'),
+    if (process.env.NODE_ENV === 'production') { 
+      logger.info('Production mode, Auto-scaling enabled'),
     }
   }
 
-  private logSystemCapabilities(): void { const capabilities = [
+  private logSystemCapabilities(): void { const capabilities  = [
       '🚀 High-Performance Architecture System Ready',
       '',
       '📊 Monitoring & Metrics:',
@@ -176,7 +176,7 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
   }
 
   // System Health Check
-  async getSystemHealth(): Promise< {
+  async getSystemHealth(): Promise< { 
     overall: 'healthy' | 'degraded' | 'unhealthy',
     database: 'healthy' | 'degraded' | 'unhealthy';
     cache: 'healthy' | 'degraded' | 'unhealthy',
@@ -188,26 +188,26 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       cpuUsage, number,
     activeConnections, number,
       cacheHitRate, number,
-    avgResponseTime: number,
+    avgResponseTime, number,
     }
   }> { try {
-      const [dbHealth, haHealth, resourceHealth, cacheStats] = await Promise.all([;
+      const [dbHealth, haHealth, resourceHealth, cacheStats]  = await Promise.all([;
         db.getHealth(),
         haManager.getSystemHealth(),
         resourceOptimizer.getCurrentResourceUsage(),
         cacheManager.getStats()
       ]);
 
-      const details = {
+      const details = { 
         uptime: process.uptime(),
   memoryUsage: resourceHealth.memory.percentage,
         cpuUsage: resourceHealth.cpu.usage,
   activeConnections: haHealth.availableServers,
         cacheHitRate: cacheStats.combined.hitRate,
-  avgResponseTime: haHealth.avgResponseTime
+  avgResponseTime, haHealth.avgResponseTime
        }
       // Determine component health
-      const database = dbHealth.status;
+      const database  = dbHealth.status;
       const scaling = haHealth.status;
       const cache = cacheStats.combined.hitRate > 0.8 ? 'healthy' : ;
                     cacheStats.combined.hitRate > 0.6 ? 'degraded' : 'unhealthy';
@@ -220,20 +220,19 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       const overall = components.includes('unhealthy') ? 'unhealthy' :;
                       components.includes('degraded') ? 'degraded' : 'healthy';
 
-      return { overall, database,
+      return { overall: database,
         cache, scaling, resources,
         details
-    :   }
+    , }
     } catch (error) {
-      logger.error('System health check failed:', error as Error);
+      logger.error('System health check failed: ', error as Error);
       return {
         overall: 'unhealthy',
   database: 'unhealthy',
         cache: 'unhealthy',
   scaling: 'unhealthy',
         resources: 'unhealthy',
-  details: {,
-  uptime: process.uptime(),
+  details: { uptime: process.uptime(),
   memoryUsage: 0;
           cpuUsage: 0;
   activeConnections: 0;
@@ -268,18 +267,18 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       memoryUsage, number,
     uptime: number,
     }
-  }> { const [cacheStats, resourceMetrics] = await Promise.all([
+  }> { const [cacheStats, resourceMetrics]  = await Promise.all([
       cacheManager.getStats(),
       resourceOptimizer.getCurrentResourceUsage()
     ]);
 
-    return {
+    return { 
       requests: {
         total: 0; // Would come from request counter
         rps: 0;   // Would come from RPS metric
         avgResponseTime: 0; // Would come from response time metric
         p95ResponseTime: 0; // Would come from P95 metric
-        errorRate: 0 ; // Would come from error rate metric
+        errorRate, 0 ; // Would come from error rate metric
        },
       cache {
         hitRate: cacheStats.combined.hitRate,
@@ -325,7 +324,7 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       await metrics.incrementCounter('system_emergency_mode_enabled');
       logger.info('Emergency optimization mode enabled');
     } catch (error) {
-      logger.error('Failed to enable emergency mode:', error as Error);
+      logger.error('Failed to enable emergency mode: ', error as Error);
       throw error;
     }
   }
@@ -338,7 +337,7 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
       // Stop health monitoring
       if (this.healthCheckInterval) {
         clearInterval(this.healthCheckInterval);
-        this.healthCheckInterval = null;
+        this.healthCheckInterval  = null;
       }
 
       // Shutdown subsystems in order
@@ -358,22 +357,22 @@ export class HighPerformanceSystem { private static instance, HighPerformanceSys
 
       logger.info('System shutdown completed successfully');
     } catch (error) {
-      logger.error('Error during shutdown:', error as Error);
+      logger.error('Error during shutdown: ', error as Error);
       throw error;
     }
   }
 
   // Get all system managers
-  getManagers() { return { metrics, logger,
+  getManagers() {  return { metrics: logger,
       cacheManager, db,
       rateLimiter, cdnManager,
       performanceOptimizer, haManager, resourceOptimizer,
       performanceTestSuite
-   :   }
+   , }
   }
 }
 
-// =============================================================================
+//  =============================================================================
 // SINGLETON EXPORT
 // =============================================================================
 
@@ -383,23 +382,20 @@ export const highPerformanceSystem = HighPerformanceSystem.getInstance();
 // CONVENIENCE EXPORTS
 // =============================================================================
 
-export {
-  // Core instances
-  metrics, logger,
+export { 
+  // Core instances: metrics, logger,
   cacheManager, db,
   rateLimiter, cdnManager,
   performanceOptimizer, haManager,
   resourceOptimizer, performanceTestSuite,
   
-  // Decorators
-  monitorPerformance,
+  // Decorators monitorPerformance,
   
-  // Classes for advanced usage
-  MultiLayerCacheManager, DatabaseOptimizer,
+  // Classes for advanced usage, MultiLayerCacheManager, DatabaseOptimizer,
   AdvancedRateLimiter, HighAvailabilityManager, ResourceOptimizer,
   PerformanceTestSuite
 }
-// =============================================================================
+//  =============================================================================
 // DEFAULT EXPORT
 // =============================================================================
 
@@ -417,7 +413,7 @@ const shutdown = async (signal: string) => {
     await highPerformanceSystem.gracefulShutdown();
     process.exit(0);
    } catch (error) {
-    logger.error('Shutdown error:', error as Error);
+    logger.error('Shutdown error: ', error as Error);
     process.exit(1);
   }
 }

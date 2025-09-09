@@ -3,8 +3,7 @@ import { WebSocketManager } from '../websocket/manager';
 import { AIRouterService } from '../ai/router';
 import { UserBehaviorAnalysisService } from '../ai/userBehaviorAnalysis';
 
-interface RuleViolation {
-  id, string,
+interface RuleViolation { id: string,
     leagueId, string,
   teamId, string,
     violationType, string,
@@ -17,8 +16,7 @@ interface RuleViolation {
   penaltyApplied?, unknown,
   
 }
-interface LeagueRule {
-  id, string,
+interface LeagueRule { id: string,
     leagueId, string,
   ruleType, string,
     config, unknown,
@@ -28,8 +26,7 @@ interface LeagueRule {
   customLogic?, string,
 }
 
-interface ConflictResolution {
-  id, string,
+interface ConflictResolution { id: string,
     conflictType, string,
   parties: string[],
     context, unknown,
@@ -48,11 +45,11 @@ type: 'warning' | 'penalty' | 'correction' | 'escalation',
 }
 
 export class AutomatedRuleEnforcementService {
-  private pool, Pool,
-  private wsManager, WebSocketManager,
-  private aiRouter, AIRouterService,
-  private behaviorAnalysis, UserBehaviorAnalysisService,
-  private enforcementIntervals: Map<string, NodeJS.Timeout> = new Map();
+  private: pool, Pool,
+  private: wsManager, WebSocketManager,
+  private: aiRouter, AIRouterService,
+  private: behaviorAnalysis, UserBehaviorAnalysisService,
+  private enforcementIntervals: Map<string, NodeJS.Timeout>  = new Map();
 
   constructor(
     pool, Pool,
@@ -88,8 +85,8 @@ export class AutomatedRuleEnforcementService {
     }
   }
 
-  async performRuleEnforcementScan(leagueId: string): : Promise<RuleViolation[]> {
-    const violations: RuleViolation[] = [];
+  async performRuleEnforcementScan(leagueId: string): : Promise<RuleViolation[]> { 
+    const violations, RuleViolation[]  = [];
 
     try {
       // Get active rules for the league
@@ -107,17 +104,17 @@ export class AutomatedRuleEnforcementService {
 
       return violations;
     } catch (error) {
-      console.error('Error in rule enforcement scan:', error);
+      console.error('Error in rule enforcement scan: ', error);
       return violations;
     }
   }
 
-  async performComprehensiveRuleScan(leagueId: string): : Promise<  {
+  async performComprehensiveRuleScan(leagueId: string): : Promise<  { 
   violations: RuleViolation[];
     conflicts: ConflictResolution[],
-    recommendations: string[],
+    recommendations, string[],
   }> {
-    const [violations, conflicts] = await Promise.all([
+    const [violations, conflicts]  = await Promise.all([
       this.performRuleEnforcementScan(leagueId),
       this.detectConflicts(leagueId)
     ]);
@@ -126,16 +123,16 @@ export class AutomatedRuleEnforcementService {
       conflicts
     );
 
-    return { violations, conflicts,: recommendations  }
+    return { violations: conflicts,, recommendations  }
   }
 
   private async getActiveRules(leagueId: string): : Promise<LeagueRule[]> {
-    const client = await this.pool.connect();
+    const client  = await this.pool.connect();
     try {
       const { rows } = await client.query(`
         SELECT * FROM league_rules
         WHERE league_id = $1 AND active = true
-        ORDER BY enforcement_level DESC, rule_type
+        ORDER BY enforcement_level: DESC, rule_type
       `, [leagueId]);
 
       return rows;
@@ -144,7 +141,7 @@ export class AutomatedRuleEnforcementService {
     }
   }
 
-  private async checkRuleCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
+  private async checkRuleCompliance(rule: LeagueRule): : Promise<RuleViolation[]> { 
     const violations: RuleViolation[] = [];
 
     switch (rule.ruleType) {
@@ -184,8 +181,7 @@ export class AutomatedRuleEnforcementService {
       violations.push(...await this.checkInactiveManagerCompliance(rule));
         break;
       break;
-    case 'custom_rule':
-        violations.push(...await this.checkCustomRuleCompliance(rule));
+    case 'custom_rule', violations.push(...await this.checkCustomRuleCompliance(rule));
         break;
     }
 
@@ -193,9 +189,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkLineupDeadlineCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH current_week AS (
           SELECT current_week FROM leagues WHERE id = $1
         ),
@@ -226,14 +222,12 @@ export class AutomatedRuleEnforcementService {
         (rule.config as any).deadline || new Date()
       ]);
 
-      return violations.map(v => ({
-        id: `lineup_deadline_${v.team_id}_${Date.now()}`,
+      return violations.map(v => ({ id: `lineup_deadline_${v.team_id}_${Date.now()}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'lineup_deadline';
         severity: v.hours_past_deadline > 24 ? 'major' : 'minor' as const;
-        description: `Team ${v.team_name} failed to set complete lineup by deadline (${v.hours_past_deadline} hours late)`,
-        context: {
+        description: `Team ${v.team_name} failed to set complete lineup by deadline (${v.hours_past_deadline} hours late)` : context: {
   filledSlots: v.filled_slots;
           requiredSlots: v.required_slots;
           hoursPastDeadline: v.hours_past_deadline;
@@ -248,9 +242,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkRosterLimitCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH position_counts AS (
           SELECT t.id as team_id,
             t.team_name,
@@ -285,23 +279,20 @@ export class AutomatedRuleEnforcementService {
         SELECT * FROM violations
       `, [
         rule.leagueId,
-        (rule.config as any).limits?.QB || 999,
-        (rule.config as any).limits?.RB || 999,
+        (rule.config as any).limits? .QB || 999 : (rule.config as any).limits?.RB || 999,
         (rule.config as any).limits?.WR || 999,
         (rule.config as any).limits?.TE || 999,
         (rule.config as any).limits?.K || 999,
         (rule.config as any).limits?.DST || 999
       ]);
 
-      return violations.map(v => ({
-        id: `roster_limit_${v.team_id}_${v.position}_${Date.now()}`,
+      return violations.map(v => ({ id: `roster_limit_${v.team_id}_${v.position}_${Date.now()}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'roster_limits';
         severity: 'major' as const;
         description: `Team ${v.team_name} has ${v.player_count} ${v.position} players (limi,
-  t: ${(rule.config as any).limits?.[v.position]})`,
-        context: {
+  t: ${(rule.config as any).limits? .[v.position]})` : context: {
   position: v.position;
           currentCount: v.player_count;
           limit: (rule.config as any).limits?.[v.position];
@@ -316,9 +307,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkTradeDeadlineCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         SELECT t.id,
           t.proposing_team_id,
           t.receiving_team_id,
@@ -333,8 +324,7 @@ export class AutomatedRuleEnforcementService {
   2::timestamptz
       `, [rule.leagueId, (rule.config as any).deadline]);
 
-      return violations.map(v => ({
-        id: `trade_deadline_${v.id}`,
+      return violations.map(v => ({ id: `trade_deadline_${v.id}`,
         leagueId: rule.leagueId;
         teamId: v.proposing_team_id;
         violationType: 'trade_deadline';
@@ -356,9 +346,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkWaiverBudgetCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH budget_check AS (
           SELECT t.id as team_id,
             t.team_name,
@@ -375,8 +365,7 @@ export class AutomatedRuleEnforcementService {
         SELECT * FROM budget_check
       `, [rule.leagueId]);
 
-      return violations.map(v => ({
-        id: `waiver_budget_${v.claim_id}`,
+      return violations.map(v => ({ id: `waiver_budget_${v.claim_id}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'waiver_budget';
@@ -397,9 +386,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkStartingLineupCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH lineup_issues AS (
           SELECT t.id as team_id,
             t.team_name,
@@ -426,20 +415,18 @@ export class AutomatedRuleEnforcementService {
         SELECT * FROM lineup_issues
       `, [rule.leagueId]);
 
-      return violations.map(v => ({
-        id: `lineup_${v.team_id}_${v.position_type}_${Date.now()}`,
+      return violations.map(v => ({ id: `lineup_${v.team_id}_${v.position_type}_${Date.now()}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'starting_lineup';
-        severity: v.issue_type === 'injured_player_started' ? 'major' : 'minor' as const;
-        description: `Team ${v.team_name} has lineup issu,
-  e: ${v.issue_type} at ${v.position_type}`,
-        context: {
+        severity: v.issue_type  === 'injured_player_started' ? 'major' : 'minor' as const;
+        description: `Team ${v.team_name} has lineup: issu, e: ${v.issue_type} at ${v.position_type}`,
+        context: { 
   positionType: v.position_type;
           playerId: v.player_id;
           injuryStatus: v.injury_status;
           playerTeam: v.player_team;
-          issueType: v.issue_type
+          issueType, v.issue_type
         },
         detectedAt: new Date();
         autoResolved: false
@@ -450,9 +437,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkAddDropLimitCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH weekly_transactions AS (
           SELECT t.id as team_id,
             t.team_name,
@@ -468,8 +455,7 @@ export class AutomatedRuleEnforcementService {
         SELECT * FROM weekly_transactions
       `, [rule.leagueId, (rule.config as any).weeklyLimit || 999]);
 
-      return violations.map(v => ({
-        id: `add_drop_limit_${v.team_id}_${Date.now()}`,
+      return violations.map(v => ({ id: `add_drop_limit_${v.team_id}_${Date.now()}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'add_drop_limits';
@@ -489,9 +475,9 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkTradeReviewCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         SELECT t.id,
           t.proposing_team_id,
           t.receiving_team_id,
@@ -506,8 +492,7 @@ export class AutomatedRuleEnforcementService {
           AND t.created_at < NOW() - INTERVAL '24 hours'
       `, [rule.leagueId]);
 
-      return violations.map(v => ({
-        id: `trade_review_${v.id}`,
+      return violations.map(v => ({ id: `trade_review_${v.id}`,
         leagueId: rule.leagueId;
         teamId: v.proposing_team_id;
         violationType: 'trade_review';
@@ -529,14 +514,13 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkCollusionCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {; // Use AI behavior analysis to detect potential collusion
-    const violations RuleViolation[] = [];
+    const violations RuleViolation[]  = [];
     
-    try {
+    try { 
       const suspiciousActivities = await this.behaviorAnalysis.detectSuspiciousTradePatterns(rule.leagueId);
       
       for (const activity of suspiciousActivities) {
-        violations.push({
-          id: `collusion_${activity.id}_${Date.now()}`,
+        violations.push({ id: `collusion_${activity.id}_${Date.now()}`,
           leagueId: rule.leagueId;
           teamId: activity.teamId;
           violationType: 'collusion_detection';
@@ -549,16 +533,16 @@ export class AutomatedRuleEnforcementService {
         });
       }
     } catch (error) {
-      console.error('Error checking collusion compliance:', error);
+      console.error('Error checking collusion compliance: ', error);
     }
 
     return violations;
   }
 
   private async checkInactiveManagerCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: violations } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: violations }  = await client.query(`
         WITH manager_activity AS (
           SELECT t.id as team_id,
             t.team_name,
@@ -574,8 +558,7 @@ export class AutomatedRuleEnforcementService {
         WHERE days_inactive > $2
       `, [rule.leagueId, (rule.config as any).inactiveDays || 14]);
 
-      return violations.map(v => ({
-        id: `inactive_manager_${v.team_id}_${Date.now()}`,
+      return violations.map(v => ({ id: `inactive_manager_${v.team_id}_${Date.now()}`,
         leagueId: rule.leagueId;
         teamId: v.team_id;
         violationType: 'inactive_manager';
@@ -596,15 +579,15 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async checkCustomRuleCompliance(rule: LeagueRule): : Promise<RuleViolation[]> {; // Execute custom rule logic if provided
-    const violations RuleViolation[] = [];
+    const violations RuleViolation[]  = [];
     
-    if (rule.customLogic) {
+    if (rule.customLogic) { 
       try {
-        // In a real implementation, this would safely execute the custom logic
+        // In a real: implementation, this would safely execute the custom logic
         // For now, return empty array
-        console.log('Custom rule logic detected, but execution not implemented');
+        console.log('Custom rule logic, detected, but execution not implemented');
       } catch (error) {
-        console.error('Error executing custom rule logic:', error);
+        console.error('Error executing custom rule logic: ', error);
       }
     }
 
@@ -617,7 +600,7 @@ export class AutomatedRuleEnforcementService {
       await this.storeViolation(violation);
 
       // Determine action based on severity and rule configuration
-      const action = await this.determineEnforcementAction(violation);
+      const action  = await this.determineEnforcementAction(violation);
 
       // Execute the action
       await this.executeEnforcementAction(action, violation);
@@ -626,7 +609,7 @@ export class AutomatedRuleEnforcementService {
       await this.notifyViolation(violation, action);
 
     } catch (error) {
-      console.error('Error processing violation:', error);
+      console.error('Error processing violation: ', error);
     }
   }
 
@@ -656,15 +639,14 @@ export class AutomatedRuleEnforcementService {
     }
   }
 
-  private async determineEnforcementAction(violation: RuleViolation): : Promise<RuleEnforcementAction> {
+  private async determineEnforcementAction(violation: RuleViolation): : Promise<RuleEnforcementAction> { 
     const rule = await this.getRuleByType(violation.leagueId, violation.violationType);
     
     if (!rule) {
-      return {
-type: 'warning';
+      return { type: 'warning';
         target: violation.teamId;
         reason: violation.description;
-        requiresReview: true
+        requiresReview, true
       }
     }
 
@@ -683,18 +665,18 @@ type: 'penalty';
           target: violation.teamId;
           reason: violation.description;
           automaticAction: this.getPenaltyAction(violation);
-          requiresReview: violation.severity === 'critical'
+          requiresReview: violation.severity  === 'critical'
         }
-      default: return {
+      default: return { 
   type: 'warning';
           target: violation.teamId;
           reason: violation.description;
-          requiresReview: violation.severity !== 'minor'
+          requiresReview, violation.severity ! == 'minor'
         }
     }
   }
 
-  private async executeEnforcementAction(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> {
+  private async executeEnforcementAction(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> { 
     switch (action.type) {
       case 'correction':
       await this.applyAutomaticCorrection(action, violation);
@@ -708,8 +690,7 @@ type: 'penalty';
       await this.issueWarning(action, violation);
         break;
       break;
-    case 'escalation':
-        await this.escalateToCommissioner(action, violation);
+    case 'escalation', await this.escalateToCommissioner(action, violation);
         break;
     }
   }
@@ -729,7 +710,7 @@ type 'rule_violation';
 
   // Additional helper methods
   private async getRuleByType(leagueId, string, ruleType: string): : Promise<LeagueRule | null> {
-    const client = await this.pool.connect();
+    const client  = await this.pool.connect();
     try {
       const { rows } = await client.query(`
         SELECT * FROM league_rules
@@ -749,7 +730,7 @@ type 'rule_violation';
         return { action: 'drop_excess_players', position: (violation.context as any).position }
       case 'starting_lineup':
         return { action: 'bench_player', playerId: (violation.context as any).playerId }
-      default: return null,
+      default: return: null,
     }
   }
 
@@ -759,8 +740,7 @@ type 'rule_violation';
         return { type: 'point_deduction', amount: 10 }
       case 'major':
         return { type: 'point_deduction', amount: 5 }
-      default: return { typ,
-  e: 'warning' }
+      default: return { typ: e: 'warning' }
     }
   }
 

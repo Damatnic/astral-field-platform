@@ -1,0 +1,106 @@
+
+> astral-field@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.2
+   - Environments: .env.local, .env.production
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/admin/setup/page.tsx
+Error:   [31mx[0m Expected '</', got ':'
+     ,-[[36;1;4mC:\Users\damat\_REPOS\astral-field\src\app\admin\setup\page.tsx[0m:378:1]
+ [2m375[0m |             
+ [2m376[0m |             {results.type !== "2025-season" && (
+ [2m377[0m |               <pre className="whitespace-pre-wrap text-sm">
+ [2m378[0m |                 {JSON.stringify(results : null, 2)}
+     : [35;1m                                        ^[0m
+ [2m379[0m |               </pre>
+ [2m380[0m |             )}
+ [2m381[0m |           </div>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/admin/setup/page.tsx
+
+./src/app/api/admin/rate-limit-metrics/route.ts
+Error:   [31mx[0m Expected ',', got ':'
+    ,-[[36;1;4mC:\Users\damat\_REPOS\astral-field\src\app\api\admin\rate-limit-metrics\route.ts[0m:58:1]
+ [2m55[0m |     return NextResponse.json(
+ [2m56[0m |       { error: 'Failed to fetch rate limit metrics',
+ [2m57[0m |         details: error instanceof Error ? error.message : 'Unknown error'
+ [2m58[0m |       } : { status: 500 }
+    : [35;1m        ^[0m
+ [2m59[0m |     );
+ [2m60[0m |   }
+ [2m61[0m | });
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/api/admin/rate-limit-metrics/route.ts
+
+./src/app/api/ai/breakouts/route.ts
+Error:   [31mx[0m Expected ',', got ':'
+    ,-[[36;1;4mC:\Users\damat\_REPOS\astral-field\src\app\api\ai\breakouts\route.ts[0m:60:1]
+ [2m57[0m |     return NextResponse.json(
+ [2m58[0m |       { error: 'Failed to generate breakout analysis',
+ [2m59[0m |   details: error instanceof Error ? error.message : 'Unknown error'
+ [2m60[0m |       } : { status: 500 }
+    : [35;1m        ^[0m
+ [2m61[0m |     );
+ [2m62[0m |   }
+ [2m63[0m | }
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/api/ai/breakouts/route.ts
+
+./src/app/api/ai/chat/route.ts
+Error:   [31mx[0m Expected ',', got ':'
+    ,-[[36;1;4mC:\Users\damat\_REPOS\astral-field\src\app\api\ai\chat\route.ts[0m:31:1]
+ [2m28[0m |     switch (contextData) { 
+ [2m29[0m |       case "matchup":
+ [2m30[0m |         response = await openaiService.getCompletion(`Analyze this fantasy football matchup, ${lastMessage.content}`,
+ [2m31[0m |           contextData? .team1 || {} : contextData?.team2 || {},
+    : [35;1m                                    ^[0m
+ [2m32[0m |           contextData? .week || 1 : );
+ [2m33[0m |         break;
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/api/ai/chat/route.ts
+
+./src/app/api/ai/draft/route.ts
+Error:   [31mx[0m Expected ',', got ':'
+     ,-[[36;1;4mC:\Users\damat\_REPOS\astral-field\src\app\api\ai\draft\route.ts[0m:133:1]
+ [2m130[0m |     return NextResponse.json(
+ [2m131[0m |       { error: 'Failed to process draft request',
+ [2m132[0m |         details: error instanceof Error ? error.message : 'Unknown error'
+ [2m133[0m |       } : { status: 500 }
+     : [35;1m        ^[0m
+ [2m134[0m |     );
+ [2m135[0m |   }
+ [2m136[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/api/ai/draft/route.ts
+
+
+> Build failed because of webpack errors

@@ -1,21 +1,20 @@
-export interface SentimentData {
-  id, string,
+export interface SentimentData { id: string,
     source, string,
   content, string,
     sentimentScore, number, // -1..1;
-  timestamp: Date,
+  timestamp, Date,
   
 }
-export class RealTimeSentimentAnalyzer { private isRunning = false;
+export class RealTimeSentimentAnalyzer { private isRunning  = false;
   async startRealTimeMonitoring(): : Promise<void> {
     this.isRunning = true;
    }
   async stopRealTimeMonitoring(): : Promise<void> {
     this.isRunning = false;
   }
-  getStatus() { return { running: this.isRunning  }
+  getStatus() {  return { running: this.isRunning  }
   }
 }
 
-const analyzer = new RealTimeSentimentAnalyzer();
+const analyzer  = new RealTimeSentimentAnalyzer();
 export default analyzer;

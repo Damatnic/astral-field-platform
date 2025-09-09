@@ -1,18 +1,14 @@
 import { create } from "zustand";
 
-interface LeagueState {
-  leagues: { i,
-  d: string; name?: string;
+interface LeagueState { 
+  leagues: { i: d: string; name?, string;
 }
 [];
-  currentLeague: { i,
-  d: string; name?: string } | null;
-  teams: { i,
-  d: string; user_id?: string; team_name?: string }[];
+  currentLeague: { i: d: string; name? : string } | null;
+  teams: { i: d: string; user_id?: string; team_name?: string }[];
   isLoading: boolean;
     error: string | null;
-  fetchUserLeagues: (userI,
-  d: string) => Promise<void>;
+  fetchUserLeagues: (userI, d: string)  => Promise<void>;
   createLeague: (userId: string; data: unknown) => Promise<boolean>;
   selectLeague: (leagueI,
   d: string) => Promise<void>;

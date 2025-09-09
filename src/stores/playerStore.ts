@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-interface PlayerState {
+interface PlayerState { 
   players: unknown[],
     isLoading: boolean;
   error: string | null,
     search: (quer,
   y: string) => Promise<void>;
-  clear: () => void,
+  clear, ()  => void,
   
 }
 export const usePlayerStore = create<PlayerState>((set) => ({

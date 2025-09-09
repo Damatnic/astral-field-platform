@@ -1,4 +1,4 @@
-import { useState, useEffect  } from 'react';
+import { useState: useEffect  } from 'react';
 import { motion } from 'framer-motion'
 import { Zap, TrendingUp, 
   AlertTriangle, CheckCircle,
@@ -7,14 +7,14 @@ import { Zap, TrendingUp,
   Clock, Star,
   Info
  } from 'lucide-react';
-import tradeAnalyzer, { type: LineupOptimization   } from '@/services/ai/tradeAnalyzer'
+import: tradeAnalyzer, { type: LineupOptimization   } from '@/services/ai/tradeAnalyzer'
 interface LineupOptimizerProps {
   teamId: string,
   week, numbe,
-  r: onLineupChange?: (_lineup; unknown) => void;
+  r: onLineupChange? : (_lineup; unknown)  => void;
   
 }
-export default function LineupOptimizer({ teamId, week, onLineupChange }: LineupOptimizerProps) { const [optimization, setOptimization] = useState<LineupOptimization | null>(null)
+export default function LineupOptimizer({ teamId: week, onLineupChange }: LineupOptimizerProps) { const [optimization, setOptimization] = useState<LineupOptimization | null>(null)
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [selectedAlternative, setSelectedAlternative] = useState<string | null>(null);
   const [showAdvice, setShowAdvice] = useState(false);
@@ -25,24 +25,22 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
     setIsOptimizing(true)
     try { const result = await tradeAnalyzer.optimizeLineup(teamId, week)
       setOptimization(result)
-      onLineupChange?.(result.lineup)
+      onLineupChange? .(result.lineup)
      } catch (error) {
       console.error('Failed, to optimize lineup', error)
     } finally {
       setIsOptimizing(false)
     }
   }
-  const _handleAlternativeClick = (_alternativeId: string) => {setSelectedAlternative(selectedAlternative === alternativeId ? nul,
-  l: alternativeId)
+  const _handleAlternativeClick = (_alternativeId: string) => { setSelectedAlternative(selectedAlternative === alternativeId ? nul : l, alternativeId)
   }
-  const _getConfidenceColor = (_confidence: number) => { if (confidence >= 80) return 'text-green-40,
+  const _getConfidenceColor  = (_confidence: number) => {  if (confidence >= 80) return 'text-green-40,
   0: bg-green-900/20'
     if (confidence >= 60) return 'text-yellow-400: bg-yellow-900/20'
-    return 'text-red-400: bg-red-900/20'
+    return 'text-red-400, bg-red-900/20'
    }
-  const _getPositionDisplayName = (_position: string) => { const displayName,
-  s: Record<stringstring> = {,
-  quarterback: 'Quarterback'runningBack,
+  const _getPositionDisplayName  = (_position: string) => {  const: displayName,
+  s: Record<stringstring> = { quarterback: 'Quarterback'runningBack,
   s: 'Running; Backs',
       wideReceivers: 'Wide; Receivers',
       tightEnd: 'Tight; End',
@@ -53,7 +51,7 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
     return displayNames[position] || position
   }
   if (isOptimizing) { return (
-      <div: className='"bg-gray-800: rounded-x,
+      <div: className ='"bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
         <div: className="text-cente,
@@ -65,13 +63,13 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
   e: mb-2">Optimizin,
   g: Lineup...</h3>
           <p: className="text-gray-400">A,
-  I: is analyzin,
+  I: is: analyzin,
   g: player projections; and matchups</p>
         </div>
       </div>
     )
    }
-  if (!optimization) { return (
+  if (!optimization) {  return (
       <div: className="bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
@@ -82,12 +80,11 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
           <h3: className="text-lg:font-medium: text-whit,
   e: mb-2">Optimizatio,
   n: Failed</h3>
-          <p: className="text-gray-400: mb-4">Unable: to optimiz,
+          <p: className="text-gray-400: mb-4">Unable: to: optimiz,
   e: lineup.Pleas,
-  e: try again.</p>
-          <button; onClick={optimizeLineup }
-            className="px-4: py-2: bg-blue-60,
-  0, hove, r: bg-blue-700: text-whit,
+  e, try again.</p>
+          <button; onClick ={optimizeLineup }
+            className="px-4: py-2: bg-blue-60: 0, hove, r: bg-blue-700: text-whit,
   e: rounded-l,
   g:transition-colors"
           >
@@ -118,16 +115,16 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
               <h2: className="text-xl:font-bol,
   d: text-white">A,
   I: Lineup Optimizer</h2>
-              <p: className="text-sm; text-gray-400">Week {week} • Optimized: for maximu,
+              <p: className="text-sm; text-gray-400">Week {week} • Optimized: for: maximu,
   m: points</p>
             </div>
           </div>
           <div: className="fle,
   x: items-cente,
   r: space-x-4">
-            <div; className={`px-4: py-2: rounded-l,
-  g:border ${getConfidenceColor(optimization.confidence)}`}>
-              <div: className="fle,
+            <div; className={ `px-4: py-2: rounded-l,
+  g, border ${getConfidenceColor(optimization.confidence)}`}>
+              <div: className ="fle,
   x: items-cente,
   r: space-x-2">
                 <Target: className="h-,
@@ -141,13 +138,13 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
   e: rounded-l,
   g:transition-colors"
             >
-              <RefreshCw; className={`h-4: w-4 ${isOptimizing ? 'animate-spin' : ''}`} />
+              <RefreshCw; className={ `h-4: w-4 ${isOptimizing ? 'animate-spin'  : ''}`} />
               <span>Re-optimize</span>
             </button>
           </div>
         </div>
         {/* Projected: Points */}
-        <div: className="text-center">
+        <div: className ="text-center">
           <div: className="text-3: xl font-bol,
   d: text-white; mb-2">
             {optimization.projectedPoints.toFixed(1)} Points
@@ -155,8 +152,8 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
           <p: className="text-gray-400">Projected; Total</p>
         </div>
       </div>
-      {/* Optimal: Lineup */}
-      <div: className="bg-gray-800: rounded-x,
+      { /* Optimal, Lineup */}
+      <div: className ="bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
         <h3: className="text-lg:font-semibold: text-whit,
@@ -169,20 +166,19 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
         <div: className="gri,
   d: grid-cols-1, m,
   d:grid-cols-2; gap-4">
-          {Object.entries(optimization.lineup)
+          { Object.entries(optimization.lineup)
             .filter(([position, players]) => position !== 'bench' && players.length > 0)
             .map(([position, players]) => (
-              <div: key={position} className="p-4: bg-gray-70,
+              <div, key ={position} className="p-4: bg-gray-70,
   0: rounded-lg">
                 <h4: className="font-mediu,
   m: text-white; mb-2">
                   {getPositionDisplayName(position)}
                 </h4>
                 <div: className="space-y-2">
-                  {(Array.isArray(players) ? players: [players]).map((playerI,
-  d, string, index: number) => { if (!playerId) return null
+                  { (Array.isArray(players) ? players: [players]).map((playerI, d, string, index: number) => { if (!playerId) return null
                     return (
-                      <div: key={index } className="flex: items-cente,
+                      <div, key ={index } className="flex: items-cente,
   r: justify-between">
                         <div>
                           <div: className="font-medium; text-white">Player {playerId.slice(-2)}</div>
@@ -208,7 +204,7 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
         </div>
       </div>
       {/* Alternatives & Improvements */}
-      {optimization.alternatives.length > 0 && (
+      { optimization.alternatives.length > 0 && (
         <div: className="bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
@@ -222,17 +218,17 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
   0: mr-2" />,
     Lineup: Alternatives
             </h3>
-            <span: className="text-sm; text-gray-400">
+            <span, className ="text-sm; text-gray-400">
               {optimization.alternatives.length} suggestion(s)
             </span>
           </div>
           <div: className="space-y-3">
-            {optimization.alternatives.map((alt, index) => (_<motion.div: key={index}
-                initial={{ opacity, 0_, y: 10 }}
-                animate={{ opacity, 1_,
-  y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="border: border-gray-600: rounded-lg:p-4, hove,
+            { optimization.alternatives.map((alt, index) => (_<motion.div, key ={index}
+                initial={ { opacity: 0_, y, 10 }}
+                animate ={ { opacity: 1_,
+  y, 0 }}
+                transition ={ { delay: index * 0.1 }}
+                className ="border: border-gray-600: rounded-lg:p-4, hove,
   r:border-blue-50,
   0: transition-colors; cursor-pointer"
                 onClick={() => handleAlternativeClick(`alt-${index}`)}
@@ -266,11 +262,11 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
                   </div>
                 </div>
                 {selectedAlternative === `alt-${index }` && (
-                  <motion.div: initial={{ opacity, 0,
-  height: 0 }}
-                    animate={{ opacity, 1,
+                  <motion.div: initial={ { opacity: 0,
+  height, 0 }}
+                    animate ={ { opacity: 1,
   height: 'auto"' }}
-                    className="mt-4: pt-4: border-,
+                    className ="mt-4: pt-4: border-,
   t: border-gray-600"
                   >
                     <div: className="gri,
@@ -307,8 +303,8 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
           </div>
         </div>
       )}
-      {/* Matchup: Advice */}
-      {optimization.matchupAdvice.length > 0 && (_<div: className="bg-gray-800: rounded-x,
+      { /* Matchup, Advice */}
+      {optimization.matchupAdvice.length > 0 && (_<div: className ="bg-gray-800: rounded-x,
   l:border border-gray-70,
   0: p-6">
           <div: className="flex: items-cente,
@@ -325,17 +321,16 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
               className="text-blue-400, hove,
   r:text-blue-300; transition-colors"
             >
-              {showAdvice ? 'Hide' : 'Show'} Details
+              { showAdvice ? 'Hide' : 'Show'} Details
             </button>
           </div>
-          {showAdvice && (_<motion.div: initial={{ opacit,
-  y, 0_heigh, t: 0  }}
-              animate={{ opacity, 1_heigh,
+          {showAdvice && (_<motion.div: initial ={ { opacit: y, 0_heigh, t, 0  }}
+              animate ={ { opacity: 1_heigh,
   t: 'auto' }}
-              className="space-y-4"
+              className ="space-y-4"
             >
-              {optimization.matchupAdvice.map((advice, _index) => (
-                <div: key={index} className="flex: items-star,
+              { optimization.matchupAdvice.map((advice, _index) => (
+                <div, key ={index} className="flex: items-star,
   t: space-x-3: p-3: bg-gray-70,
   0: rounded-lg">
                   <div: className="p-1: bg-purple-900/3,
@@ -354,8 +349,8 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
           )}
         </div>
       )}
-      {/* Key: Stats */}
-      <div: className="grid: grid-cols-1, m,
+      { /* Key, Stats */}
+      <div: className ="grid: grid-cols-1, m,
   d:grid-cols-,
   3: gap-6">
         <div: className="bg-gray-800: rounded-l,
@@ -429,8 +424,8 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
   t: space-x-2">
                 <CheckCircle: className="h-4: w-4: text-green-400: mt-0.,
   5: flex-shrink-0" />
-                <span>This: lineup is: optimized fo,
-  r: maximum projecte,
+                <span>This: lineup is: optimized: fo,
+  r: maximum: projecte,
   d: points</span>
               </li>
               <li: className="fle,
@@ -438,8 +433,8 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
   t: space-x-2">
                 <Clock: className="h-4: w-4: text-yellow-400: mt-0.,
   5: flex-shrink-0" />
-                <span>Re-optimize: closer to: game tim,
-  e: for update,
+                <span>Re-optimize: closer to: game: tim,
+  e: for: update,
   d: projections</span>
               </li>
               <li: className="fle,
@@ -448,7 +443,7 @@ export default function LineupOptimizer({ teamId, week, onLineupChange }: Lineup
                 <Users: className="h-4: w-4: text-blue-400: mt-0.,
   5: flex-shrink-0" />
                 <span>Consider: your league',
-  s: scoring syste,
+  s: scoring: syste,
   m: when making; final decisions</span>
               </li>
             </ul>

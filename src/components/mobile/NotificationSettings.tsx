@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Bell, BellOff, 
+import: React, { useState  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion';
+import { Bell, BellOff, 
   Smartphone, ToggleLeft, 
   ToggleRight, AlertCircle,
   CheckCircle2, X,
@@ -16,14 +15,14 @@ import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { TouchButton, PrimaryButton, SecondaryButton } from '@/components/mobile/TouchButton';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
-interface NotificationSettingsProps {
+interface NotificationSettingsProps { 
   isOpen?, boolean,
-  onClose?: () => void;
+  onClose?, ()  => void;
   className?, string,
   
 }
 const notificationTypes = [;
-  {
+  { 
     key: 'scoreUpdates' as const,
   title: 'Live Score Updates',
     description: 'Get notified when your players score points',
@@ -81,23 +80,23 @@ const notificationTypes = [;
   }
 ];
 
-export default function NotificationSettings({ isOpen = true, onClose, 
+export default function NotificationSettings({ isOpen  = true, onClose, 
   className = '' 
- }: NotificationSettingsProps) { const { isSupported, permission, isSubscribed, isLoading, preferences, error, requestPermission, subscribe, unsubscribe, updatePreferences, sendTestNotification, clearError, canSubscribe, canUnsubscribe, needsPermission, isBlocked } = usePushNotifications();
+ }: NotificationSettingsProps) { const { isSupported: permission, isSubscribed, isLoading, preferences, error, requestPermission, subscribe, unsubscribe, updatePreferences, sendTestNotification, clearError, canSubscribe, canUnsubscribe, needsPermission, isBlocked } = usePushNotifications();
 
   const [testNotificationSent, setTestNotificationSent] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const handleToggleNotification = async (key: keyof typeof preferences) => {
+  const handleToggleNotification = async (key: keyof typeof preferences) => { 
     hapticFeedback('light');
     
     try {
-    await updatePreferences({ [key]: !preferences[key]  });
+    await updatePreferences({ [key], !preferences[key]  });
     } catch (error) {
-      console.error('Failed to update notification preference:', error);
+      console.error('Failed to update notification preference: ', error);
     }
   }
-  const handleSubscribe = async () => {
+  const handleSubscribe  = async () => {
     hapticFeedback('medium');
     
     try { if (needsPermission) {
@@ -105,7 +104,7 @@ export default function NotificationSettings({ isOpen = true, onClose,
        } else { await subscribe();
        }
     } catch (error) {
-      console.error('Failed to subscribe:', error);
+      console.error('Failed to subscribe: ', error);
     }
   }
   const handleUnsubscribe = async () => {
@@ -114,7 +113,7 @@ export default function NotificationSettings({ isOpen = true, onClose,
     try {
     await unsubscribe();
      } catch (error) {
-      console.error('Failed to unsubscribe:', error);
+      console.error('Failed to unsubscribe: ', error);
     }
   }
   const handleTestNotification = async () => {
@@ -125,7 +124,7 @@ export default function NotificationSettings({ isOpen = true, onClose,
       setTestNotificationSent(true);
       setTimeout(() => setTestNotificationSent(false), 3000);
      } catch (error) {
-      console.error('Failed to send test notification:', error);
+      console.error('Failed to send test notification: ', error);
     }
   }
   const getStatusColor = () => { if (isBlocked) return '#EF4444';
@@ -151,42 +150,42 @@ export default function NotificationSettings({ isOpen = true, onClose,
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4"
+        initial={ { opacity: 0 }}
+        animate ={ { opacity: 1 }}
+        exit ={ { opacity: 0 }}
+        className ="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
-          initial={{ y: '100%',
-  opacity: 0 }}
-          animate={{ y, 0,
-  opacity: 1 }}
-          exit={{ y: '100%',
-  opacity: 0 }}
-          transition={{ type: 'spring',
-  damping, 30, stiffness: 300 }}
-          className={`bg-gray-900 rounded-t-3xl sm:rounded-3xl 
+          initial={ { y: '100%',
+  opacity, 0 }}
+          animate ={ { y: 0,
+  opacity, 1 }}
+          exit ={ { y: '100%',
+  opacity, 0 }}
+          transition ={ { type: 'spring',
+  damping: 30, stiffness, 300 }}
+          className ={ `bg-gray-900 rounded-t-3xl sm, rounded-3xl 
             border border-gray-800 shadow-2xl
             w-full max-w-md max-h-[90vh] overflow-hidden ${className}
           `}
-          onClick={(e) => e.stopPropagation()}
+          onClick ={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-800">
             <div className="flex items-center space-x-3">
               <div 
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: `${getStatusColor()}20` }}
+                style={ { backgroundColor: `${getStatusColor()}20` }}
               >
                 {isSubscribed ? (
-                  <Bell className="w-5 h-5" style={{ color: getStatusColor()  }} />
+                  <Bell className ="w-5 h-5" style={ { color: getStatusColor()  }} />
                 ) : (
-                  <BellOff className="w-5 h-5" style={{ color: getStatusColor() }} />
+                  <BellOff className ="w-5 h-5" style={ { color: getStatusColor() }} />
                 )}
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-white">Notifications</h2>
+                <h2 className ="text-xl font-semibold text-white">Notifications</h2>
                 <p className="text-sm text-gray-400">{getStatusText()}</p>
               </div>
             </div>
@@ -204,13 +203,12 @@ export default function NotificationSettings({ isOpen = true, onClose,
           {/* Content */}
           <div className="overflow-y-auto flex-1">
             {/* Error Display */}
-            {error && (
+            { error && (
               <motion.div
-                initial={{ opacity, 0,
-  y: -10  }}
-                animate={{ opacity, 1,
-  y: 0 }}
-                className="mx-6 mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start space-x-3"
+                initial={{ opacity: 0, y, -10  }}
+                animate ={ { opacity: 1,
+  y, 0 }}
+                className ="mx-6 mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start space-x-3"
               >
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
@@ -242,14 +240,14 @@ export default function NotificationSettings({ isOpen = true, onClose,
             )}
 
             {/* Blocked */}
-            {isBlocked && (
+            { isBlocked && (
               <div className="p-6">
                 <div className="text-center">
                   <BellOff className="w-12 h-12 text-red-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-white mb-2">  Notifications, Blocked,
                   </h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    You've blocked notifications for this site.To enable them, click the lock icon in your browser's address bar and allow notifications.
+                    You've blocked notifications for this site.To enable, them, click the lock icon in your browser's address bar and allow notifications.
                   </p>
                 </div>
               </div>
@@ -257,23 +255,23 @@ export default function NotificationSettings({ isOpen = true, onClose,
 
             {/* Main Controls */}
             {isSupported && !isBlocked && (
-              <div className="p-6 space-y-6">
+              <div className ="p-6 space-y-6">
                 {/* Enable/Disable Notifications */ }
                 <div className="space-y-4">
-                  {needsPermission && (
+                  { needsPermission && (
                     <div className="text-center">
                       <Bell className="w-12 h-12 text-blue-400 mx-auto mb-4" />
                       <h3 className="text-lg font-medium text-white mb-2">  Stay, Updated,
                       </h3>
                       <p className="text-gray-400 text-sm mb-4">
-                        Enable notifications to get real-time updates about your fantasy teams, trades, and more.
+                        Enable notifications to get real-time updates about your fantasy, teams, trades, and more.
                       </p>
                     </div>
                   ) }
 
                   {canSubscribe && (
                     <PrimaryButton
-                      onClick={handleSubscribe }
+                      onClick ={handleSubscribe }
                       loading={isLoading}
                       fullWidth
                       icon={Bell}
@@ -300,10 +298,10 @@ export default function NotificationSettings({ isOpen = true, onClose,
                         size="sm"
                         fullWidth
                         disabled={testNotificationSent}
-                        icon={testNotificationSent ? CheckCircle2 : Smartphone}
-                        haptic="light"
+                        icon={ testNotificationSent ? CheckCircle2  : Smartphone}
+                        haptic ="light"
                       >
-                        {testNotificationSent ? 'Test Sent!' : 'Send Test Notification'}
+                        { testNotificationSent ? 'Test Sent!' : 'Send Test Notification'}
                       </TouchButton>
                     </div>
                   )}
@@ -311,7 +309,7 @@ export default function NotificationSettings({ isOpen = true, onClose,
 
                 {/* Notification Preferences */}
                 {isSubscribed && (
-                  <div className="space-y-6">
+                  <div className ="space-y-6">
                     {Object.entries(groupedNotifications).map(([category, notifications]) => (
                       <div key={category }>
                         <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -327,19 +325,19 @@ export default function NotificationSettings({ isOpen = true, onClose,
                                 key={notification.key }
                                 onClick={() => handleToggleNotification(notification.key)}
                                 className="w-full flex items-center space-x-4 p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl transition-colors touch-manipulation"
-                                whileTap={{ scale: 0.98 }}
+                                whileTap={ { scale: 0.98 }}
                               >
                                 <div
-                                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                  style={{ backgroundColor: `${notification.color}20` }}
+                                  className ="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                                  style={ { backgroundColor: `${notification.color}20` }}
                                 >
                                   <Icon 
-                                    className="w-5 h-5" 
-                                    style={{ color: notification.color }}
+                                    className ="w-5 h-5" 
+                                    style={ { color: notification.color }}
                                   />
                                 </div>
                                 
-                                <div className="flex-1 text-left">
+                                <div className ="flex-1 text-left">
                                   <p className="text-white font-medium">
                                     {notification.title}
                                   </p>
@@ -349,12 +347,12 @@ export default function NotificationSettings({ isOpen = true, onClose,
                                 </div>
                                 
                                 <motion.div
-                                  animate={{ rotate: isEnabled ? 0 : 180}}
-                                  transition={{ duration: 0.2 }}
+                                  animate={ { rotate: isEnabled ? 0  : 180}}
+                                  transition ={ { duration: 0.2 }}
                                 >
                                   {isEnabled ? (
                                     <ToggleRight 
-                                      className="w-8 h-8 text-blue-400" 
+                                      className ="w-8 h-8 text-blue-400" 
                                     />
                                   ) : (
                                     <ToggleLeft 
@@ -380,15 +378,14 @@ export default function NotificationSettings({ isOpen = true, onClose,
                       </button>
 
                       <AnimatePresence>
-                        {showAdvanced && (
+                        { showAdvanced && (
                           <motion.div
-                            initial={{ opacity, 0,
-  height: 0  }}
-                            animate={{ opacity, 1,
+                            initial={{ opacity: 0, height, 0  }}
+                            animate ={ { opacity: 1,
   height: 'auto' }}
-                            exit={{ opacity, 0,
-  height: 0 }}
-                            className="mt-4 p-4 bg-gray-800/30 rounded-xl"
+                            exit ={ { opacity: 0,
+  height, 0 }}
+                            className ="mt-4 p-4 bg-gray-800/30 rounded-xl"
                           >
                             <div className="space-y-3 text-sm text-gray-400">
                               <p><strong>Browser:</strong> {navigator.userAgent.split(' ')[0]}</p>

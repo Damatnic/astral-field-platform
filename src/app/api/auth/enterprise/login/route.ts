@@ -1,6 +1,6 @@
 /**
  * Enterprise Login API
- * Enhanced authentication with MFA, security checks, and audit logging
+ * Enhanced authentication with: MFA, security: checks, and audit logging
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,10 +12,10 @@ import { database } from '@/lib/database';
 import { generateJWT } from '@/lib/auth/jwt-config';
 import crypto from 'crypto';
 
-interface LoginRequest {
+interface LoginRequest { 
   email: string,
   password: string,
-  mfaToken?: string;
+  mfaToken? : string;
   challengeId?: string;
   rememberMe?: boolean;
   deviceInfo?: {
@@ -27,7 +27,7 @@ interface LoginRequest {
 }
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now();
+  const startTime  = Date.now();
   let userId: string | undefined;
 
   try {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || '';
 
     // Input validation
-    if (!email || !password) { 
+    if (!email || !password) {  
       await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip, 
         userAgent,
@@ -58,14 +58,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user
-    const userResult = await database.query(`
-      SELECT 
-        id, email, username, password_hash, first_name, last_name, role, mfa_enabled, email_verified, phone_number, phone_verified, login_attempts, locked_until, last_login, preferences
+    const userResult  = await database.query(`
+      SELECT id, email, username, password_hash, first_name, last_name, role, mfa_enabled, email_verified, phone_number, phone_verified, login_attempts, locked_until, last_login, preferences
       FROM users 
       WHERE email = $1
     `, [email.toLowerCase()]);
 
-    if (userResult.rows.length === 0) {
+    if (userResult.rows.length === 0) { 
       // Handle failed login attempt for IP
       await securityMiddleware.handleFailedLogin(ip, 'ip');
       
@@ -81,20 +80,20 @@ export async function POST(request: NextRequest) {
         }, { status: 401 });
     }
 
-    const user = userResult.rows[0];
+    const user  = userResult.rows[0];
     userId = user.id;
 
     // Check if account is locked
-    if (user.locked_until && new Date(user.locked_until) > new Date()) { 
+    if (user.locked_until && new Date(user.locked_until) > new Date()) {  
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip, 
         userAgent,
         failureReason: 'Account locked'
       });
 
-      const lockTimeRemaining = Math.ceil((new Date(user.locked_until).getTime() - Date.now()) / 60000);
+      const lockTimeRemaining  = Math.ceil((new Date(user.locked_until).getTime() - Date.now()) / 60000);
       return NextResponse.json(
-        { success: false,
+        {  success: false,
           error: `Account is temporarily locked. Try again in ${lockTimeRemaining} minutes.`,
           accountLocked: true,
           lockTimeRemaining
@@ -102,7 +101,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is suspended
-    if (user.role === 'suspended') { 
+    if (user.role  === 'suspended') {  
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
         ipAddress: ip, 
         userAgent,
@@ -117,11 +116,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify password
-    const isValidPassword = await enhancedPasswordSecurity.verifyPassword(password, 
+    const isValidPassword  = await enhancedPasswordSecurity.verifyPassword(password, 
       user.password_hash
     );
 
-    if (!isValidPassword) {
+    if (!isValidPassword) { 
       // Handle failed login
       const lockoutResult = await securityMiddleware.handleFailedLogin(email, 'email');
       await securityMiddleware.handleFailedLogin(ip, 'ip');
@@ -158,12 +157,12 @@ export async function POST(request: NextRequest) {
     if (user.mfa_enabled) {
       if (!challengeId && !mfaToken) {
         // Create MFA challenge
-        const mfaChallengeId = await enhancedMFA.createMFAChallenge(userId || '',
+        const mfaChallengeId  = await enhancedMFA.createMFAChallenge(userId || '',
           'totp', // Default method, could be user preference
-          { ip, userAgent  }
+          { ip: userAgent  }
         );
 
-        await auditLogger.logAuthentication(userId || '', 'login_failure', {
+        await auditLogger.logAuthentication(userId || '', 'login_failure', { 
           ipAddress: ip, 
           userAgent,
           failureReason: 'MFA required'
@@ -179,7 +178,7 @@ export async function POST(request: NextRequest) {
 
       if (challengeId && mfaToken) {
         // Verify MFA token
-        const mfaResult = await enhancedMFA.verifyMFAChallenge({
+        const mfaResult  = await enhancedMFA.verifyMFAChallenge({ 
           challengeId,
           method: 'totp', // Could be determined from challenge
           token: mfaToken, 
@@ -210,12 +209,12 @@ export async function POST(request: NextRequest) {
     // Update user login info
     await database.query(`
       UPDATE users 
-      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW() WHERE id = $1
+      SET login_attempts  = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW() WHERE id = $1
     `, [userId]);
 
     // Create session
     const sessionId = crypto.randomUUID();
-    const tokenPayload = { userId, sessionId };
+    const tokenPayload = { userId: sessionId };
     const sessionToken = await generateJWT(tokenPayload);
     const refreshToken = crypto.randomBytes(64).toString('hex');
     const expiresAt = new Date(Date.now() + (rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000)); // 30 days or 24 hours
@@ -227,8 +226,7 @@ export async function POST(request: NextRequest) {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
       sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify(deviceInfo || {
-  device: 'Unknown',
+      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify(deviceInfo || { device: 'Unknown',
   os: 'Unknown',
         browser: 'Unknown'
       }), ip, userAgent
@@ -244,7 +242,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Check for suspicious activity
-    const recentLogins = await database.query(`
+    const recentLogins  = await database.query(`
       SELECT ip_address, created_at
       FROM user_sessions
       WHERE user_id = $1 AND created_at > NOW() - INTERVAL '24 hours'
@@ -253,9 +251,9 @@ export async function POST(request: NextRequest) {
     `, [userId]);
 
     const uniqueIPs = new Set(recentLogins.rows.map(row => row.ip_address));
-    if (uniqueIPs.size > 5) {
-      await auditLogger.logSecurityIncident('unauthorized_access', 'Multiple IP addresses used within 24 hours', {
-        userId,
+    if (uniqueIPs.size > 5) { 
+      await auditLogger.logSecurityIncident('unauthorized_access', 'Multiple IP addresses used within 24 hours', { 
+        userId, 
         ipAddress: ip,
         severity: 'medium',
         metadata: {
@@ -265,10 +263,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const responseTime = Date.now() - startTime;
-    console.log(`✅ User logged in, ${email} (${responseTime}ms)`);
+    const responseTime  = Date.now() - startTime;
+    console.log(`✅ User logged: in, ${email} (${responseTime}ms)`);
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       message: 'Login successful',
       user: {
@@ -291,14 +289,14 @@ export async function POST(request: NextRequest) {
         sessionId
       },
       security: {
-        newDevice: !recentLogins.rows.some(row => row.ip_address === ip),
+        newDevice: !recentLogins.rows.some(row  => row.ip_address === ip),
         mfaUsed: user.mfa_enabled,
         loginMethod: 'password' + (user.mfa_enabled ? '+mfa' : '')
       }
     });
 
-  } catch (error) {
-    console.error('Login error:', error);
+  } catch (error) { 
+    console.error('Login error: ', error);
 
     if (userId) {
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
@@ -318,18 +316,18 @@ export async function POST(request: NextRequest) {
 // GET endpoint for login options/requirements
 export async function GET(request: NextRequest) {
   try {
-    const url = new URL(request.url);
+    const url  = new URL(request.url);
     const email = url.searchParams.get('email');
 
-    let response: any = {
+    let response: any = { 
       success: true,
       loginMethods: ['password'],
       socialLogins: ['google', 'facebook', 'apple', 'twitter'],
       mfaRequired: false
     };
-    // If email provided, check user-specific requirements
+    // If email: provided, check user-specific requirements
     if (email) {
-      const userResult = await database.query(`
+      const userResult  = await database.query(`
         SELECT mfa_enabled, email_verified, role FROM users WHERE email = $1
       `, [email.toLowerCase()]);
 
@@ -345,7 +343,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Get login options error:', error);
+    console.error('Get login options error: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to fetch login options'

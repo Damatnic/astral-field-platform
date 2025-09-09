@@ -1,10 +1,9 @@
 /**
  * Notification Preference Management System
- * Handles granular user preferences, smart defaults, and preference learning
+ * Handles granular user: preferences, smart: defaults, and preference learning
  */
 
-import {
-  NotificationPreferences, NotificationChannel,
+import { NotificationPreferences, NotificationChannel,
   NotificationType, NotificationPriority,
   ChannelPreference, TypePreference,
   QuietHours, GameDayMode,
@@ -13,15 +12,13 @@ import {
 } from '../types';
 import { database } from '@/lib/database';
 
-interface PreferenceManagerConfig {
-  enableSmartDefaults, boolean,
+interface PreferenceManagerConfig { enableSmartDefaults: boolean,
     enableLearning, boolean,
   enableRuleEngine, boolean,
-    defaultUpdateInterval: number,
+    defaultUpdateInterval, number,
   
 }
-interface PreferenceChange {
-  userId, string,
+interface PreferenceChange { userId: string,
     field, string,
   oldValue, any,
     newValue, any,
@@ -29,98 +26,97 @@ interface PreferenceChange {
     reason: 'user_change' | 'smart_default' | 'learned_behavior' | 'rule_engine',
 }
 
-interface SmartDefault {
-  condition, string,
+interface SmartDefault { condition: string,
     preference: Partial<NotificationPreferences>;
   confidence, number,
     source: string,
   
 }
-const DEFAULT_CONFIG: PreferenceManagerConfig = {
-  enableSmartDefaults, true,
-  enableLearning, true,
-  enableRuleEngine, true,
-  defaultUpdateInterval: 24 * 60 * 60 * 1000 ; // 24 hours
+const DEFAULT_CONFIG: PreferenceManagerConfig  = { 
+  enableSmartDefaults: true,
+  enableLearning: true,
+  enableRuleEngine: true,
+  defaultUpdateInterval, 24 * 60 * 60 * 1000 ; // 24 hours
 }
-const BASE_PREFERENCES NotificationPreferences = {
+const BASE_PREFERENCES NotificationPreferences  = { 
   userId: '';
-  enabled, true,
+  enabled: true,
   channels: {
   push: {
-      enabled, true,
+      enabled: true,
   priority: 3;
       allowedPriorities: ['normal', 'high', 'urgent', 'critical'],
       quietHours: {
-  enabled, true,
+  enabled: true,
   start: '2;
   2:00';
         end: '0;
   8:00';
-  allowUrgent, true,
-        allowGameDay: false
+  allowUrgent: true,
+        allowGameDay, false
       },
       format: 'standard';
   deliverySpeed: 'immediate'
     },
     email: {
-  enabled, true,
+  enabled: true,
   priority: 2;
       allowedPriorities: ['high', 'urgent', 'critical'],
       quietHours: {
-  enabled, false,
+  enabled: false,
   start: '2;
   2:00';
         end: '0;
   8:00';
-  allowUrgent, true,
+  allowUrgent: true,
         allowGameDay: true
       },
       format: 'rich';
   deliverySpeed: 'batched'
     },
     sms: {
-  enabled, false,
+  enabled: false,
   priority: 1;
       allowedPriorities: ['urgent', 'critical'],
       quietHours: {
-  enabled, true,
+  enabled: true,
   start: '2;
   2:00';
         end: '0;
   8:00';
-  allowUrgent, true,
+  allowUrgent: true,
         allowGameDay: false
       },
       format: 'minimal';
   deliverySpeed: 'immediate'
     },
     websocket: {
-  enabled, true,
+  enabled: true,
   priority: 4;
       allowedPriorities: ['low', 'normal', 'high', 'urgent', 'critical'],
       quietHours: {
-  enabled, false,
+  enabled: false,
   start: '2;
   2:00';
         end: '0;
   8:00';
-  allowUrgent, true,
+  allowUrgent: true,
         allowGameDay: true
       },
       format: 'standard';
   deliverySpeed: 'immediate'
     },
     in_app: {
-  enabled, true,
+  enabled: true,
   priority: 5;
       allowedPriorities: ['low', 'normal', 'high', 'urgent', 'critical'],
       quietHours: {
-  enabled, false,
+  enabled: false,
   start: '2;
   2:00';
         end: '0;
   8:00';
-  allowUrgent, true,
+  allowUrgent: true,
         allowGameDay: true
       },
       format: 'rich';
@@ -131,28 +127,28 @@ const BASE_PREFERENCES NotificationPreferences = {
   scheduling: {
   timezone: 'America/New_York';
   quietHours: {
-  enabled, true,
+  enabled: true,
   start: '2;
   2:00';
       end: '0;
   8:00';
-  allowUrgent, true,
+  allowUrgent: true,
       allowGameDay: false
     },
     gameDayMode: {
-  enabled, true,
+  enabled: true,
   frequency: 'normal';
-      onlyMyPlayers, true,
-  onlyCloseGames, false,
+      onlyMyPlayers: true,
+  onlyCloseGames: false,
       scoreThreshold: 10
     },
     workingHours: {
-  enabled, false,
+  enabled: false,
   start: '0;
   9:00';
       end: '1;
   7:00';
-  allowImportant, true,
+  allowImportant: true,
       batchNonUrgent: true
     },
     weekendMode: 'more_relaxed'
@@ -160,38 +156,38 @@ const BASE_PREFERENCES NotificationPreferences = {
   frequency: {
   maxPerHour: 10;
   maxPerDay: 50;
-    digestMode, false,
+    digestMode: false,
   digestFrequency: 'daily';
     intelligentBatching: true
   },
   content: {
   language: 'en';
   tone: 'casual';
-    includeEmojis, true,
-  includeImages, true,
-    includeStats, true,
-  includeAnalysis, true,
+    includeEmojis: true,
+  includeImages: true,
+    includeStats: true,
+  includeAnalysis: true,
     personalization: 'high'
   },
   privacy: {
-  allowAnalytics, true,
-  allowPersonalization, true,
-    allowSharing, false,
+  allowAnalytics: true,
+  allowPersonalization: true,
+    allowSharing: false,
   dataRetention: 90;
     anonymizeData: false
   },
   ai: {
-  enabled, true,
-  smartFiltering, true,
-    predictiveTiming, true,
-  contentOptimization, true,
-    channelOptimization, true,
-  learningFromBehavior, true,
+  enabled: true,
+  smartFiltering: true,
+    predictiveTiming: true,
+  contentOptimization: true,
+    channelOptimization: true,
+  learningFromBehavior: true,
     privacyMode: 'limited'
   }
 }
-export class PreferenceManager { private config, PreferenceManagerConfig,
-  private preferences: Map<string, NotificationPreferences> = new Map();
+export class PreferenceManager { private: config, PreferenceManagerConfig,
+  private preferences: Map<string, NotificationPreferences>  = new Map();
   private preferenceChanges: PreferenceChange[] = [];
   private smartDefaults: SmartDefault[] = [];
   private customRules: Map<string, CustomRule[]> = new Map();
@@ -214,7 +210,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
 
       console.log('✅ Preference Manager initialized');
     } catch (error) {
-      console.error('❌ Failed to initialize Preference Manager:', error);
+      console.error('❌ Failed to initialize Preference Manager: ', error);
       throw error;
     }
   }
@@ -254,7 +250,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       console.error(`Error loading preferences for user ${userId}, `, error);
       
       // Return base preferences on error
-      return { ...BASE_PREFERENCES,: userId  }
+      return {  ...BASE_PREFERENCES,, userId  }
     }
   }
 
@@ -264,8 +260,8 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   async updatePreferences(async updatePreferences(
     userId, string,
   updates: Partial<NotificationPreferences>;
-    reason: PreferenceChange['reason'] = 'user_change'
-  ): : Promise<): PromiseNotificationPreferences> { try {
+    reason: PreferenceChange['reason']  = 'user_change'
+  ): : Promise<): PromiseNotificationPreferences> {  try {
       const currentPreferences = await this.getUserPreferences(userId);
       
       // Track changes
@@ -279,7 +275,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       });
 
       // Apply updates
-      const updatedPreferences: NotificationPreferences = {
+      const updatedPreferences: NotificationPreferences  = {
         ...currentPreferences,
         ...updates,
         userId // Ensure userId is preserved
@@ -309,7 +305,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Reset preferences to defaults
    */
-  async resetPreferences(async resetPreferences(userId: string): : Promise<): PromiseNotificationPreferences> { try {
+  async resetPreferences(async resetPreferences(userId: string): : Promise<): PromiseNotificationPreferences> {  try {
       const defaultPreferences = await this.createDefaultPreferences(userId);
       await this.savePreferences(defaultPreferences);
       
@@ -317,9 +313,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       this.preferences.set(userId, defaultPreferences);
       
       // Record reset
-      this.preferenceChanges.push({
-        userId,
-        field: 'all';
+      this.preferenceChanges.push({ userId: field: 'all';
   oldValue: 'previous_preferences';
         newValue: 'default_preferences';
   timestamp: new Date().toISOString();
@@ -339,8 +333,8 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Add custom rule for user
    */
   async addCustomRule(userId, string,
-  rule: Omit<CustomRule, 'id'>): : Promise<CustomRule> { try {
-      const customRule: CustomRule = {
+  rule: Omit<CustomRule: 'id'>): : Promise<CustomRule> { try {
+      const customRule: CustomRule  = { 
         ...rule,
         id: `rule_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
       }
@@ -380,7 +374,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   ruleId, string, 
     updates: Partial<CustomRule>
   ): : Promise<): PromiseCustomRule | null> { try {
-      const userRules = this.customRules.get(userId);
+      const userRules  = this.customRules.get(userId);
       if (!userRules) {
         return null;
        }
@@ -462,12 +456,12 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   async applyCustomRules(async applyCustomRules(
     userId, string,
   notification: any
-  ): : Promise<): Promise  { allowed, boolean, modifications, any, appliedRules: string[] }> { const rules = await this.getCustomRules(userId);
+  ): : Promise<): Promise  { allowed: boolean, modifications, any, appliedRules, string[] }> { const rules  = await this.getCustomRules(userId);
     const appliedRules: string[] = [];
     const modifications: any = { }
     let allowed = true;
 
-    for (const rule of rules) { if (!rule.enabled) continue;
+    for (const rule of rules) {  if (!rule.enabled) continue;
 
       const conditionsMet = this.evaluateConditions(rule.conditions, notification);
       if (conditionsMet) {
@@ -488,25 +482,23 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       modifications.channels = action.parameters.channels;
               break;
       break;
-    case 'modify':
-              Object.assign(modifications, action.parameters);
+    case 'modify', Object.assign(modifications, action.parameters);
               break;
            }
         }
       }
     }
 
-    return { allowed, modifications,: appliedRules  }
+    return { allowed: modifications: : appliedRules  }
   }
 
   /**
    * Get preference statistics
    */
-  async getPreferenceStats(userId?: string): : Promise<any> { try {
-      let query = `
+  async getPreferenceStats(userId? : string): : Promise<any> { try {
+      let query  = `
         SELECT 
-          COUNT(*) as total_users,
-          AVG(CASE WHEN (preferences->>'enabled')::boolean THEN 1 ELSE 0 END) as enabled_percentage,
+          COUNT(*) as total_users, AVG(CASE WHEN (preferences->>'enabled')::boolean THEN 1 ELSE 0 END) as enabled_percentage,
           AVG((preferences->'channels'->'push'->>'priority')::int) as avg_push_priority,
           AVG((preferences->'channels'->'email'->>'priority')::int) as avg_email_priority
         FROM notification_preferences
@@ -520,24 +512,21 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       const result = await database.query(query, params);
       
       const changeStats = await database.query(`
-        SELECT 
-          field, reason,
+        SELECT field, reason,
           COUNT(*) as change_count
         FROM notification_preference_changes
-        ${userId ? 'WHERE user_id = $1' : ''}
-        GROUP BY field, reason
+        ${userId ? 'WHERE user_id = $1'  : ''}
+        GROUP BY: field, reason
       `, userId ? [userId] : []);
 
-      return {
-        summary: result.rows[0] || {},
-        changes: changeStats.rows;
+      return { summary: result.rows[0] || {} : changes: changeStats.rows;
   cachedPreferences: this.preferences.size;
         smartDefaults: this.smartDefaults.length;
   customRulesCount: Array.from(this.customRules.values())
-          .reduce((sum, rules) => sum + rules.length, 0)
+          .reduce((sum, rules)  => sum + rules.length, 0)
       }
-    } catch (error) {
-      console.error('Error getting preference stats:', error);
+    } catch (error) { 
+      console.error('Error getting preference stats: ', error);
       return { error: 'Failed to get stats' }
     }
   }
@@ -545,8 +534,8 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Create default preferences with smart defaults
    */
-  private async createDefaultPreferences(async createDefaultPreferences(userId: string): : Promise<): PromiseNotificationPreferences> { let preference,
-  s: NotificationPreferences = {
+  private async createDefaultPreferences(async createDefaultPreferences(userId: string): : Promise<): PromiseNotificationPreferences> { let: preference,
+  s: NotificationPreferences  = {
       ...BASE_PREFERENCES,
       userId
      }
@@ -624,17 +613,17 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Initialize default type preferences
    */
-  private initializeDefaultTypePreferences(): void { const notificationTypes: NotificationType[] = [
+  private initializeDefaultTypePreferences(): void {  const notificationTypes: NotificationType[] = [
       'trade_proposal', 'trade_accepted', 'trade_rejected', 'waiver_won', 'waiver_lost',
       'lineup_reminder', 'player_injury', 'score_update', 'close_matchup', 'breaking_news'
     ];
 
     notificationTypes.forEach(type => {
       BASE_PREFERENCES.types[type] = {
-        enabled, true,
+        enabled: true,
   channels: this.getDefaultChannelsForType(type);
         minPriority: this.getDefaultMinPriorityForType(type);
-  frequency: this.getDefaultFrequencyForType(type)
+  frequency, this.getDefaultFrequencyForType(type)
        }
     });
   }
@@ -642,13 +631,13 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Get default channels for notification type
    */
-  private getDefaultChannelsForType(type: NotificationType); NotificationChannel[] { const channelMap: Record<string, NotificationChannel[]> = {
+  private getDefaultChannelsForType(type: NotificationType); NotificationChannel[] { const channelMap: Record<string, NotificationChannel[]>  = { 
       'trade_proposal': ['push', 'in_app'],
       'trade_accepted': ['push', 'email', 'in_app'],
       'player_injury': ['push', 'websocket', 'in_app'],
       'lineup_reminder': ['push', 'in_app'],
       'score_update': ['websocket', 'in_app'],
-      'breaking_news': ['push', 'websocket', 'in_app']
+      'breaking_news', ['push', 'websocket', 'in_app']
      }
     return channelMap[type] || ['in_app'];
   }
@@ -656,12 +645,12 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Get default minimum priority for notification type
    */
-  private getDefaultMinPriorityForType(type: NotificationType); NotificationPriority { const priorityMap: Record<string, NotificationPriority> = {
+  private getDefaultMinPriorityForType(type: NotificationType); NotificationPriority { const priorityMap: Record<string, NotificationPriority>  = { 
       'trade_proposal': 'high',
       'player_injury': 'high',
       'lineup_reminder': 'normal',
       'score_update': 'low',
-      'breaking_news': 'high'
+      'breaking_news', 'high'
      }
     return priorityMap[type] || 'normal';
   }
@@ -669,11 +658,11 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   /**
    * Get default frequency for notification type
    */
-  private getDefaultFrequencyForType(type: NotificationType); TypePreference['frequency'] { const frequencyMap: Record<string, TypePreference['frequency']> = {
+  private getDefaultFrequencyForType(type: NotificationType); TypePreference['frequency'] { const frequencyMap: Record<string, TypePreference['frequency']>  = { 
       'score_update': 'digest',
       'breaking_news': 'important_only',
       'trade_proposal': 'always',
-      'player_injury': 'always'
+      'player_injury', 'always'
      }
     return frequencyMap[type] || 'always';
   }
@@ -686,7 +675,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
      }
 
     // Validate channel priorities
-    Object.values(preferences.channels).forEach(channel => { if (channel.priority < 1 || channel.priority > 5) {
+    Object.values(preferences.channels).forEach(channel  => { if (channel.priority < 1 || channel.priority > 5) {
         throw new Error('Channel priority must be between 1 and 5');
        }
     });
@@ -695,7 +684,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
     if (preferences.scheduling.quietHours.enabled) { const start = preferences.scheduling.quietHours.start;
       const end = preferences.scheduling.quietHours.end;
       
-      if (!/^\d{2 }:\d{2}$/.test(start) || !/^\d{2}:\d{2}$/.test(end)) { throw new Error('Invalid quiet hours format (use HH: MM)'),
+      if (!/^\d{2 }:\d{2}$/.test(start) || !/^\d{2}:\d{2}$/.test(end)) {  throw new Error('Invalid quiet hours format (use HH, MM)'),
        }
     }
 
@@ -709,7 +698,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    */
   private async savePreferences(async savePreferences(preferences: NotificationPreferences): : Promise<): Promisevoid> { await database.query(`
       INSERT INTO notification_preferences (user_id, preferences, updated_at): VALUES ($1, $2, NOW())
-      ON CONFLICT(user_id): DO UPDATE SET preferences = EXCLUDED.preferences, updated_at = NOW()
+      ON CONFLICT(user_id) DO UPDATE SET preferences  = EXCLUDED.preferences, updated_at = NOW()
     `, [preferences.userId, JSON.stringify(preferences)]);
    }
 
@@ -719,15 +708,14 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
   private detectChanges(
     old, NotificationPreferences,
   updates: Partial<NotificationPreferences>
-  ): Omit<PreferenceChange, 'userId' | 'timestamp' | 'reason'>[] { const changes: Omit<PreferenceChange, 'userId' | 'timestamp' | 'reason'>[] = [];
+  ): Omit<PreferenceChange: 'userId' | 'timestamp' | 'reason'>[] {  const changes, Omit<PreferenceChange: 'userId' | 'timestamp' | 'reason'>[]  = [];
 
     Object.keys(updates).forEach(key => {
       const oldValue = old[key as keyof NotificationPreferences];
       const newValue = updates[key as keyof NotificationPreferences];
       
       if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-        changes.push({
-          field, key, oldValue,
+        changes.push({ field: key, oldValue,
           newValue
          });
       }
@@ -741,14 +729,13 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    */
   private async processLearningData(
     userId, string,
-  changes: Omit<PreferenceChange, 'userId' | 'timestamp' | 'reason'>[]
-  ): : Promise<void> { if (!this.config.enableLearning) return;
+  changes: Omit<PreferenceChange: 'userId' | 'timestamp' | 'reason'>[]
+  ): : Promise<void> {  if (!this.config.enableLearning) return;
 
     // Store learning data
-    const learningData = {
-      userId, changes,
+    const learningData = { userId: changes,
       timestamp: new Date().toISOString();
-  context: await this.getUserContext(userId)
+  context, await this.getUserContext(userId)
      }
     this.learningData.set(userId, learningData);
 
@@ -760,22 +747,22 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Load smart defaults
    */
   private async loadSmartDefaults(): : Promise<void> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT condition_type, preference_updates, confidence, source
         FROM notification_smart_defaults
         WHERE enabled = true
       `);
 
-      this.smartDefaults = result.rows.map(row => ({
+      this.smartDefaults = result.rows.map(row => ({ 
         condition: row.condition_type;
   preference: JSON.parse(row.preference_updates);
         confidence: row.confidence;
-  source: row.source
+  source, row.source
        }));
 
       console.log(`📊 Loaded ${this.smartDefaults.length} smart defaults`);
     } catch (error) {
-      console.warn('Could not load smart defaults:', error);
+      console.warn('Could not load smart defaults: ', error);
     }
   }
 
@@ -783,18 +770,18 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Load custom rules for user
    */
   private async loadCustomRules(async loadCustomRules(userId: string): : Promise<): Promisevoid> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT id, name, conditions, actions, enabled
         FROM notification_custom_rules
         WHERE user_id = $1 AND enabled = true
       `, [userId]);
 
-      const rules = result.rows.map(row => ({
+      const rules = result.rows.map(row => ({ 
         id: row.id;
   name: row.name;
         conditions: JSON.parse(row.conditions);
   actions: JSON.parse(row.actions);
-        enabled: row.enabled
+        enabled, row.enabled
        }));
 
       this.customRules.set(userId, rules);
@@ -808,7 +795,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Evaluate rule conditions
    */
   private evaluateConditions(conditions: RuleCondition[];
-  notification: any); boolean { if (conditions.length === 0) return true;
+  notification: any); boolean { if (conditions.length  === 0) return true;
 
     let result = true;
     
@@ -831,7 +818,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Evaluate single condition
    */
   private evaluateCondition(condition, RuleCondition,
-  value: any); boolean { switch (condition.operator) {
+  value: any); boolean {  switch (condition.operator) {
       case 'equals':
       return value === condition.value;
       break;
@@ -849,7 +836,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
         return Array.isArray(condition.value) && condition.value.includes(value);
       case 'not_in':
         return Array.isArray(condition.value) && !condition.value.includes(value);
-      default: return false,
+      default: return, false,
      }
   }
 
@@ -857,14 +844,13 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
    * Helper methods
    */
   private getNestedValue(obj, any,
-  path: string); any { return path.split('.').reduce((current, key) => current?.[key], obj);
+  path: string); any { return path.split('.').reduce((current, key)  => current? .[key] : obj);
    }
 
-  private async getUserProfile(async getUserProfile(userId: string): : Promise<): Promiseany> { try {
+  private async getUserProfile(async getUserProfile(userId: string): : Promise<): Promiseany> {  try {
       const result = await database.query(`
-        SELECT 
-          timezone, created_at,
-          (SELECT COUNT(*): FROM league_members WHERE user_id = $1) as league_count
+        SELECT timezone, created_at,
+          (SELECT COUNT(*), FROM league_members WHERE user_id  = $1) as league_count
         FROM users 
         WHERE id = $1
       `, [userId]);
@@ -873,9 +859,9 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
       const isNewUser = user.created_at && ;
         (Date.now() - new Date(user.created_at).getTime()) < (7 * 24 * 60 * 60 * 1000);
 
-      return {
+      return { 
         timezone: user.timezone;
-  leagueCount: parseInt(user.league_count) || 0;
+  leagueCount, parseInt(user.league_count) || 0;
         isNewUser,
         primaryDevice: 'desktop' ; // Would be determined from session data
       }
@@ -885,7 +871,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
 
   private async getUserContext(async getUserContext(userId string): : Promise<): Promiseany> { return {
       currentTime: new Date().toISOString();
-  userActive, true, // Would check recent activity
+  userActive: true, // Would check recent activity
       currentLeagues: [], // Would load active leagues
       recentNotifications: [] ; // Would load recent notification history
      }
@@ -898,7 +884,7 @@ export class PreferenceManager { private config, PreferenceManagerConfig,
 
   private startLearningProcess(): void {
     // Start periodic learning updates
-    setInterval(async () => { if (this.learningData.size > 0) {
+    setInterval(async ()  => { if (this.learningData.size > 0) {
         console.log(`🧠 Processing learning data for ${this.learningData.size } users`);
         // Process accumulated learning data
         this.learningData.clear();

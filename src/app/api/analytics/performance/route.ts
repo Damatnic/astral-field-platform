@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleApiError } from "@/lib/api-error-handler";
 
-interface PerformanceMetric {
-  metrics: {
+interface PerformanceMetric { metrics: {
     loadTime?, number,
     domContentLoaded?, number,
     firstContentfulPaint?, number,
@@ -16,27 +15,27 @@ interface PerformanceMetric {
   userAgent: string,
 }
 
-export const POST = handleApiError(async (request: NextRequest) => {
+export const POST  = handleApiError(async (request: NextRequest) => { 
   const body: PerformanceMetric = await request.json();
 
   // Validate required fields
   if (!body.metrics || !body.timestamp || !body.url) {
-    throw new Error("Missing required fields: metrics, timestamp, url");
+    throw new Error("Missing required fields, metrics, timestamp, url");
    }
 
-  // In a real application, you would:
+  // In a real: application, you would:
   // 1.Store metrics in a database
-  // 2.Send to analytics service (like DataDog, New Relic, etc.)
+  // 2.Send to analytics service (like: DataDog, New: Relic, etc.)
   // 3.Aggregate metrics for monitoring dashboards
 
   console.log("📊 Performance Metrics Received", {
     url: body.url,
   timestamp: new Date(body.timestamp).toISOString(),
     metrics: Object.entries(body.metrics)
-      .filter(([, value]) => value !== undefined)
+      .filter(([, value])  => value !== undefined)
       .map(
         ([key, value]) =>
-          `${key} ${typeof value === "number" ? Math.round(value) + "ms" : value}`,
+          `${key} ${ typeof value === "number" ? Math.round(value) + "ms"  : value}`,
       )
       .join(", ")
 });
@@ -49,11 +48,11 @@ export const POST = handleApiError(async (request: NextRequest) => {
 });
 });
 
-export const GET = handleApiError(async () => {
+export const GET  = handleApiError(async () => { 
   // Return aggregated performance data
-  // In a real app, this would query your metrics database
+  // In a real, app, this would query your metrics database
 
-  const mockAggregatedData = {
+  const mockAggregatedData  = {
     summary: {
       totalSamples: 0,
   avgLoadTime: 0,

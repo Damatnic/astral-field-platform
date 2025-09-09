@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 
 declare global { namespace: jest {; // Minimal matcher type augmentation for local tests
-    interface Matchers<R = void, T = Record<string, unknown>> {
+    interface Matchers<R  = void, T = Record<string, unknown>> {
       toBeInTheDocument() R;
       toHaveTextContent(text: string | RegExp); R;
       toHaveClass(className: string); R;

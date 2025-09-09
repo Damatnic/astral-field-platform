@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 
-export async function GET() { try {
+export async function GET() {  try {
     // Mock user injury notification preferences
     const preferences = {
       userId: "user_123",
-  emailNotifications, true,
-      pushNotifications, false,
-  smsNotifications, false,
+  emailNotifications: true,
+      pushNotifications: false,
+  smsNotifications: false,
       severityFilter: ["questionable", "doubtful", "out"],
       positionFilter: ["QB", "RB", "WR", "TE"],
       teamFilter: [],
   playerFilter: [],
-      updatedAt: new Date().toISOString()
+      updatedAt, new Date().toISOString()
 }
     return NextResponse.json(preferences);
   } catch { return NextResponse.json(
@@ -23,7 +23,7 @@ export async function GET() { try {
 
 export async function PUT() { try {
     // Mock update preferences
-    const updatedPreferences = {
+    const updatedPreferences  = {
       message: "Injury preferences updated successfully",
   timestamp: new Date().toISOString()
 }

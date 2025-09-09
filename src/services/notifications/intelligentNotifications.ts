@@ -1,6 +1,6 @@
 /**
  * Intelligent Notification System
- * AI-powered smart alerts, real-time notifications, and personalized insights
+ * AI-powered smart: alerts, real-time: notifications, and personalized insights
  */
 
 import { database } from '@/lib/database';
@@ -24,8 +24,7 @@ export type NotificationPriority = 'critical' | 'high' | 'medium' | 'low';
 
 export type NotificationChannel = 'push' | 'email' | 'sms' | 'in_app' | 'websocket';
 
-export interface SmartNotification {
-  id, string,
+export interface SmartNotification { id: string,
     userId, string,type NotificationType;
   priority, NotificationPriority,
     title, string,
@@ -36,23 +35,20 @@ export interface SmartNotification {
     scheduledFor?, Date,
     expiresAt?, Date,
     timeZone, string,
-    deliveryWindow?: {
-      start, string, // HH: mm;
-    end, string,   // HH:mm
+    deliveryWindow?, { start: string, // HH mm;
+    end, string,   // HH mm
     }
   }
-  personalization: {
-  relevanceScore, number,
+  personalization: { relevanceScore: number,
     userPreferences: string[],
     contextualFactors: string[],
   }
-  delivery: {
-  sent, boolean,
+  delivery: { sent: boolean,
     sentAt?, Date,
     deliveredChannels: NotificationChannel[],
     failedChannels: NotificationChannel[];
-    userInteraction?: 'opened' | 'dismissed' | 'acted_upon';
-    interactionAt?, Date,
+    userInteraction? : 'opened' | 'dismissed' | 'acted_upon';
+    interactionAt? : Date,
   }
   triggers: NotificationTrigger[],
     createdAt: Date,
@@ -62,31 +58,25 @@ export interface NotificationTrigger {
   type: 'threshold' | 'event' | 'time' | 'condition',
     condition, string,
   value?, any,
-  operator?: '>' | '<' | '=' | '!=' | 'contains' | 'changed';
+  operator? : '>' | '<' | ' =' | '!=' | 'contains' | 'changed';
   
 }
-export interface NotificationPreferences {
-  userId, string,
-    channels: {
-  push, boolean,
+export interface NotificationPreferences { userId: string, channels: { push: boolean,
     email, boolean,
     sms, boolean,
-    inApp: boolean,
+    inApp, boolean,
   }
-  types: Record<NotificationType, {
-    enabled, boolean,
+  types: Record<NotificationType, { enabled: boolean,
     priority, NotificationPriority,
     channels: NotificationChannel[],
     frequency: 'immediate' | 'batched' | 'daily_digest' }>;
-  quietHours: {
-  enabled, boolean,
-    start, string, // HH: mm;
-    end, string,   // HH: mm;
+  quietHours: { enabled: boolean,
+    start, string, // HH mm;
+    end, string,   // HH mm;
     timeZone, string,
     emergency, boolean, // Allow critical notifications during quiet hours
   }
-  filters: {
-  minimumRelevanceScore, number,
+  filters: { minimumRelevanceScore: number,
     onlyOwnedPlayers, boolean,
     gameTimeOnly, boolean,
     excludeWeekends: boolean,
@@ -99,8 +89,7 @@ export interface NotificationPreferences {
   }
 }
 
-export interface NotificationTemplate {
-  id, string,type NotificationType,
+export interface NotificationTemplate { id: string,type: NotificationType,
     title, string,
   message, string,
     variables: string[];
@@ -110,12 +99,9 @@ export interface NotificationTemplate {
     active: boolean,
   
 }
-export interface NotificationAnalytics {
-  userId, string,
-    period: { star,
-  t, Date, end: Date }
-  stats: {
-  totalSent, number,
+export interface NotificationAnalytics { userId: string,
+    period: { star: t, Date, end: Date }
+  stats: { totalSent: number,
     byChannel: Record<NotificationChannel, number>;
     byType: Record<NotificationType, number>;
     byPriority: Record<NotificationPriority, number>;
@@ -136,17 +122,17 @@ export interface NotificationAnalytics {
   }
 }
 
-class IntelligentNotificationSystem { private notificationQueue: SmartNotification[] = [];
+class IntelligentNotificationSystem { private notificationQueue: SmartNotification[]  = [];
   private templates = new Map<string, NotificationTemplate>();
   private userPreferences = new Map<string, NotificationPreferences>();
   private analyticsCache = new Map<string, NotificationAnalytics>();
-  private processingInterval?: NodeJS.Timeout;
+  private processingInterval? : NodeJS.Timeout;
   private realTimeListeners = new Set<string>();
 
   // External service integrations
-  private pushService, PushNotificationService,
-  private emailService, EmailNotificationService,
-  private smsService, SMSNotificationService,
+  private: pushService, PushNotificationService,
+  private: emailService, EmailNotificationService,
+  private: smsService, SMSNotificationService,
 
   constructor() {
     this.initializeServices();
@@ -154,7 +140,7 @@ class IntelligentNotificationSystem { private notificationQueue: SmartNotificati
     this.startNotificationProcessor();
    }
 
-  private async initializeServices(): : Promise<void> {
+  private async initializeServices(): : Promise<void> { 
     this.pushService = new PushNotificationService();
     this.emailService = new EmailNotificationService();
     this.smsService = new SMSNotificationService();
@@ -165,39 +151,39 @@ class IntelligentNotificationSystem { private notificationQueue: SmartNotificati
       this.smsService.initialize()
     ]);
 
-    console.log('✅ Intelligent Notifications, All services initialized');
+    console.log('✅ Intelligent, Notifications, All services initialized');
   }
 
-  private async loadNotificationTemplates(): : Promise<void> { const templates: NotificationTemplate[] = [
-      {
+  private async loadNotificationTemplates(): : Promise<void> { const templates: NotificationTemplate[]  = [
+      { 
         id: 'score_update_critical';
 type: 'score_update';
         title: '🏈 {{playerName }} Touchdown!',
-        message: '{{playerName}} just scored! Your team gained {{points}} points.Current tota,
+        message: '{{playerName}} just scored! Your team gained {{points}} points.Current: tota,
   l: {{teamScore}}',
         variables: ['playerName', 'points', 'teamScore'],
-        conditions: ['points > 6', 'isOwnedPlayer = true'],
+        conditions: ['points > 6', 'isOwnedPlayer  = true'],
         priority: 'high';
   channels: ['push', 'in_app', 'websocket'],
         active: true
       },
-      {
+      { 
         id: 'injury_alert_major';
 type: 'injury_news';
         title: '🚨 {{playerName}} Injury Alert',
         message: '{{playerName}} ({{team}}) has suffered a {{injuryType}}.Severit,
   y: {{severity}}.Expected return {{expectedReturn}}',
         variables: ['playerName', 'team', 'injuryType', 'severity', 'expectedReturn'],
-        conditions: ['severity >= medium', 'isOwnedPlayer = true OR favoritePlayer = true'],
+        conditions: ['severity > = medium', 'isOwnedPlayer = true OR favoritePlayer = true'],
         priority: 'critical';
   channels: ['push', 'email', 'in_app', 'websocket'],
         active: true
       },
-      {
+      { 
         id: 'trade_opportunity_smart';
 type: 'trade_opportunity';
         title: '🤝 Smart Trade Opportunity';
-  message: 'AI suggests trading {{yourPlayer}} for {{targetPlayer}}.Value improvement: +{{valueIncrease}}%.Win probability increas,
+  message: 'AI suggests trading {{yourPlayer}} for {{targetPlayer}}.Value improvement: +{{valueIncrease}}%.Win probability: increas,
   e: +{{winProbIncrease}}%',
         variables: ['yourPlayer', 'targetPlayer', 'valueIncrease', 'winProbIncrease'],
         conditions: ['valueIncrease > 10', 'confidence > 75'],
@@ -209,15 +195,15 @@ type: 'trade_opportunity';
         id: 'waiver_urgent';
 type: 'waiver_recommendation';
         title: '🎯 Must-Pickup Player Available';
-  message: '{{playerName}} is available on waivers! Projected to outscore your {{position}} by {{projectedGain}} points.Pickup priorit,
+  message: '{{playerName}} is available on waivers! Projected to outscore your {{position}} by {{projectedGain}} points.Pickup: priorit,
   y: {{priority}}',
         variables: ['playerName', 'position', 'projectedGain', 'priority'],
-        conditions: ['projectedGain > 5', 'priority = high'],
+        conditions: ['projectedGain > 5', 'priority  = high'],
         priority: 'high';
   channels: ['push', 'in_app', 'websocket'],
         active: true
       },
-      {
+      { 
         id: 'lineup_reminder_smart';
 type: 'lineup_reminder';
         title: '⚡ Lineup Optimization Alert';
@@ -232,22 +218,22 @@ type: 'lineup_reminder';
         id: 'weather_impact';
 type: 'weather_alert';
         title: '🌩️ Weather Impact Alert';
-  message: 'Severe weather expected for {{gameLocation}}.Your players affecte,
+  message: 'Severe weather expected for {{gameLocation}}.Your players: affecte,
   d: {{affectedPlayers}}.Consider alternatives.',
         variables: ['gameLocation', 'affectedPlayers', 'weatherCondition'],
-        conditions: ['weatherSeverity = high', 'hasAffectedPlayers = true'],
+        conditions: ['weatherSeverity  = high', 'hasAffectedPlayers = true'],
         priority: 'medium';
   channels: ['push', 'in_app'],
         active: true
       },
-      {
+      { 
         id: 'breaking_news_impact';
 type: 'breaking_news';
         title: '📰 Fantasy Impact News';
-  message: '{{headline}} - Fantasy Impact: {{impact}}.Affected player,
+  message: '{{headline}} - Fantasy Impact: {{impact}}.Affected: player,
   s: {{players}}',
         variables: ['headline', 'impact', 'players'],
-        conditions: ['fantasyRelevance = high', 'hasOwnedPlayers = true'],
+        conditions: ['fantasyRelevance  = high', 'hasOwnedPlayers = true'],
         priority: 'high';
   channels: ['push', 'in_app', 'websocket'],
         active: true
@@ -271,9 +257,9 @@ type: 'breaking_news';
   // Core notification creation and processing
   async createNotification(
     userId, string,
-type NotificationType,
+type: NotificationType,
     data: Record<string, any>,
-    templateId?: string
+    templateId? : string
   ): : Promise<SmartNotification | null> { try {; // Get user preferences
       const preferences = await this.getUserPreferences(userId);
       
@@ -286,28 +272,27 @@ type NotificationType,
       const relevanceScore = await this.calculateRelevanceScore(userId, type, data);
       
       // Check if relevance meets minimum threshold
-      if (relevanceScore < preferences.filters.minimumRelevanceScore) {
-        console.log(`Notification filtered out, relevance ${relevanceScore} below threshold ${preferences.filters.minimumRelevanceScore}`);
+      if (relevanceScore < preferences.filters.minimumRelevanceScore) { 
+        console.log(`Notification filtered, out, relevance ${relevanceScore} below threshold ${preferences.filters.minimumRelevanceScore}`);
         return null;
       }
 
       // Get template or create custom notification
-      const template = templateId ? this.templates.get(templateId)  this.findBestTemplate(type, data);
+      const template  = templateId ? this.templates.get(templateId)  this.findBestTemplate(type, data);
       
-      if (!template) {
-        console.error(`No template found for notification type, ${type}`);
+      if (!template) { 
+        console.error(`No template found for notification, type, ${type}`);
         return null;
       }
 
       // Generate personalized content
-      const { title, message } = await this.personalizeContent(template, data, userId);
+      const { title: message }  = await this.personalizeContent(template, data, userId);
 
       // Determine optimal channels
       const channels = this.selectOptimalChannels(userId, type, template.priority);
 
       // Create notification
-      const notification: SmartNotification = {
-  id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      const notification: SmartNotification = { id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         userId, type,
         priority: template.priority;
         title, message,
@@ -316,13 +301,11 @@ type NotificationType,
   timeZone: preferences.quietHours.timeZone;
   deliveryWindow: this.getOptimalDeliveryWindow(userId, type)
         },
-        personalization: {
-          relevanceScore,
-          userPreferences: preferences.personalization.interests;
+        personalization: { relevanceScore: userPreferences: preferences.personalization.interests;
   contextualFactors: await this.getContextualFactors(userId, type, data)
         },
         delivery: {
-  sent, false,
+  sent: false,
   deliveredChannels: [];
           failedChannels: []
         },
@@ -336,7 +319,7 @@ type NotificationType,
       return notification;
 
     } catch (error) {
-      console.error('Notification creation error:', error);
+      console.error('Notification creation error: ', error);
       return null;
     }
   }
@@ -347,7 +330,7 @@ type NotificationType,
   points, number, 
     gameData: any
   ): : Promise<): Promisevoid> { try {; // Find all users who own this player
-      const ownersResult = await database.query(`
+      const ownersResult  = await database.query(`
         SELECT DISTINCT r.team_id, t.owner_id, u.id as user_id, u.username
         FROM rosters r
         JOIN teams t ON r.team_id = t.id
@@ -368,41 +351,38 @@ type NotificationType,
       const player = playerResult.rows[0];
       const playerName = `${player.first_name } ${player.last_name}`
       // Create notifications for each owner
-      for (const owner of owners) {
+      for (const owner of owners) { 
         // Get current team score
         const teamScore = await this.getCurrentTeamScore(owner.team_id);
         
         await this.createNotification(
-          owner.user_id,
-          'score_update',
-          {
-            playerId, playerName,
+          owner.user_id: 'score_update',
+          { playerId: playerName,
             position player.position;
   team: player.team;
             points, teamScore, gameData,
-            isOwnedPlayer: true
+            isOwnedPlayer, true
           },
-          points >= 6 ? 'score_update_critical' : undefined
+          points > = 6 ? 'score_update_critical' : undefined
         );
       }
 
-      console.log(`📊 Score update notifications sent for ${playerName}, ${points} points`);
+      console.log(`📊 Score update notifications sent for ${playerName} : ${points} points`);
 
     } catch (error) {
-      console.error('Player score update notification error:', error);
+      console.error('Player score update notification error: ', error);
     }
   }
 
   async onInjuryReport(
     playerId, string,
-  injuryData: { typ,
-  e: 'string';
+  injuryData: { typ: e: 'string';
       severity: 'minor' | 'moderate' | 'major' | 'season_ending';
       expectedReturn?, string,
-      description: string,
+      description, string,
     }
   ): : Promise<void> { try {; // Get player details
-      const playerResult = await database.query(`
+      const playerResult  = await database.query(`
         SELECT first_name, last_name, position, team 
         FROM nfl_players 
         WHERE id = $1
@@ -426,11 +406,9 @@ type NotificationType,
       const interestedUsers = interestedUsersResult.rows;
 
       // Create notifications
-      for (const user of interestedUsers) { await this.createNotification(
-          user.user_id,
-          'injury_news',
-          {
-            playerId, playerName,
+      for (const user of interestedUsers) {  await this.createNotification(
+          user.user_id: 'injury_news',
+          { playerId: playerName,
             team player.team;
   position: player.position;
             injuryType: injuryData.type;
@@ -438,35 +416,33 @@ type NotificationType,
             expectedReturn: injuryData.expectedReturn || 'Unknown';
   description: injuryData.description;
             isOwnedPlayer: user.is_owned;
-  isFavoritePlayer: user.is_favorite
+  isFavoritePlayer, user.is_favorite
            },
-          injuryData.severity === 'major' || injuryData.severity === 'season_ending' 
+          injuryData.severity  === 'major' || injuryData.severity === 'season_ending' 
             ? 'injury_alert_major' : undefined
         );
       }
 
-      console.log(`🚨 Injury notifications sent for ${playerName}, ${injuryData.severity} ${injuryData.type}`);
+      console.log(`🚨 Injury notifications sent for ${playerName} : ${injuryData.severity} ${injuryData.type}`);
 
     } catch (error) {
-      console.error('Injury notification error:', error);
+      console.error('Injury notification error: ', error);
     }
   }
 
   async onTradeOpportunityDetected(
     userId, string,
-  tradeData: {
-  yourPlayer, string,
+  tradeData: { yourPlayer: string,
       targetPlayer, string,
     targetTeamId, string,
       valueImprovement, number,
     winProbabilityIncrease, number,
       confidence, number,
-    reasoning: string,
+    reasoning, string,
     }
   ): : Promise<void> { try {
     await this.createNotification(
-        userId,
-        'trade_opportunity',
+        userId: 'trade_opportunity',
         {
           ...tradeData,
           valueIncrease: Math.round(tradeData.valueImprovement);
@@ -478,14 +454,13 @@ type NotificationType,
       console.log(`🤝 Trade opportunity notification sent to user ${userId}`);
 
     } catch (error) {
-      console.error('Trade opportunity notification error:', error);
+      console.error('Trade opportunity notification error: ', error);
     }
   }
 
   async onWaiverRecommendation(
     userId, string,
-  recommendationData: {
-  playerId, string,
+  recommendationData: { playerId: string,
       playerName, string,
     position, string,
       projectedImprovement, number,
@@ -495,38 +470,36 @@ type NotificationType,
     }
   ): : Promise<void> { try {
     await this.createNotification(
-        userId,
-        'waiver_recommendation',
+        userId: 'waiver_recommendation',
         {
           ...recommendationData,
           projectedGain: Math.round(recommendationData.projectedImprovement)
          },
-        recommendationData.priority === 'high' ? 'waiver_urgent' : undefined
+        recommendationData.priority  === 'high' ? 'waiver_urgent' : undefined
       );
 
-      console.log(`🎯 Waiver recommendation sent to user ${userId}, ${recommendationData.playerName}`);
+      console.log(`🎯 Waiver recommendation sent to user ${userId} : ${recommendationData.playerName}`);
 
     } catch (error) {
-      console.error('Waiver recommendation notification error:', error);
+      console.error('Waiver recommendation notification error: ', error);
     }
   }
 
   async onLineupOptimizationNeeded(
     userId, string,
-  optimizationData: {
-  teamId, string,
+  optimizationData: { teamId: string,
       suggestedChanges: Array<{
   action: 'start' | 'bench';
         playerId, string,
     playerName, string,
         currentPoints, number,
-    projectedPoints: number,
+    projectedPoints, number,
       }>;
       totalImprovement, number,
     deadline: Date,
     }
   ): : Promise<void> { try {
-      const suggestedStarts = optimizationData.suggestedChanges;
+      const suggestedStarts  = optimizationData.suggestedChanges;
         .filter(c => c.action === 'start')
         .map(c => c.playerName)
         .join(', ');
@@ -537,14 +510,13 @@ type NotificationType,
         .join(', ');
 
       await this.createNotification(
-        userId,
-        'lineup_reminder',
-        {
+        userId: 'lineup_reminder',
+        { 
           teamId: optimizationData.teamId;
           suggestedStarts, suggestedBench,
           projectedGain: Math.round(optimizationData.totalImprovement);
   deadline: optimizationData.deadline.toISOString();
-          changes: optimizationData.suggestedChanges
+          changes, optimizationData.suggestedChanges
          },
         'lineup_reminder_smart'
       );
@@ -552,14 +524,13 @@ type NotificationType,
       console.log(`⚡ Lineup optimization notification sent to user ${userId}`);
 
     } catch (error) {
-      console.error('Lineup optimization notification error:', error);
+      console.error('Lineup optimization notification error: ', error);
     }
   }
 
   async onWeatherAlert(
     gameId, string,
-  weatherData: {
-  location, string,
+  weatherData: { location: string,
       conditions, string,
     severity: 'low' | 'medium' | 'high';
       windSpeed, number,
@@ -567,7 +538,7 @@ type NotificationType,
       temperature: number,
     }
   ): : Promise<void> { try {; // Find players in this game
-      const playersResult = await database.query(`
+      const playersResult  = await database.query(`
         SELECT DISTINCT p.id, p.first_name, p.last_name, p.position
         FROM nfl_players p
         JOIN nfl_games g ON (p.team = g.home_team OR p.team = g.away_team) WHERE g.id = $1
@@ -590,20 +561,17 @@ type NotificationType,
       const affectedUsers = affectedUsersResult.rows;
 
       // Send notifications
-      for (const user of affectedUsers) {
+      for (const user of affectedUsers) { 
         await this.createNotification(
-          user.user_id,
-          'weather_alert',
-          {
-            gameId,
-            gameLocation: weatherData.location;
+          user.user_id: 'weather_alert',
+          { gameId: gameLocation: weatherData.location;
   weatherCondition: weatherData.conditions;
             weatherSeverity: weatherData.severity;
   windSpeed: weatherData.windSpeed;
             precipitation: weatherData.precipitation;
   temperature: weatherData.temperature;
             affectedPlayers: user.player_names.join(', '),
-            hasAffectedPlayers: true
+            hasAffectedPlayers, true
            },
           'weather_impact'
         );
@@ -612,12 +580,12 @@ type NotificationType,
       console.log(`🌩️ Weather notifications sent for ${weatherData.location}`);
 
     } catch (error) {
-      console.error('Weather alert notification error:', error);
+      console.error('Weather alert notification error: ', error);
     }
   }
 
   // Notification processing and delivery
-  private async processNotificationQueue(): : Promise<void> { if (this.notificationQueue.length === 0) return;
+  private async processNotificationQueue(): : Promise<void> { if (this.notificationQueue.length  === 0) return;
 
     const now = new Date();
     const readyNotifications = this.notificationQueue.filter(notification => {
@@ -648,12 +616,11 @@ type NotificationType,
     );
   }
 
-  private async deliverNotification(async deliverNotification(notification: SmartNotification): : Promise<): Promisevoid> { try {
-      const deliveryResults: { channe,
-  l, NotificationChannel, success: boolean  }[] = [];
+  private async deliverNotification(async deliverNotification(notification: SmartNotification): : Promise<): Promisevoid> {  try {
+      const deliveryResults: { channe: l, NotificationChannel, success, boolean  }[]  = [];
 
       // Send through each specified channel
-      for (const channel of notification.channels) { try {
+      for (const channel of notification.channels) {  try {
           let success = false;
 
           switch (channel) {
@@ -671,12 +638,11 @@ type NotificationType,
     case 'in_app':
               success = await this.sendInAppNotification(notification);
               break;
-            case 'websocket':
-              success = await this.sendWebSocketNotification(notification);
+            case 'websocket', success  = await this.sendWebSocketNotification(notification);
               break;
            }
 
-          deliveryResults.push({ channel, success });
+          deliveryResults.push({ channel: success });
 
           if (success) {
             notification.delivery.deliveredChannels.push(channel);
@@ -698,31 +664,31 @@ type NotificationType,
       await this.storeNotification(notification);
 
       // Log delivery
-      console.log(`📱 Notification delivered, ${notification.id} (${notification.delivery.deliveredChannels.length}/${notification.channels.length} channels successful)`);
+      console.log(`📱 Notification: delivered, ${notification.id} (${notification.delivery.deliveredChannels.length}/${notification.channels.length} channels successful)`);
 
     } catch (error) {
-      console.error('Notification delivery error:', error);
+      console.error('Notification delivery error: ', error);
     }
   }
 
-  private async sendInAppNotification(async sendInAppNotification(notification: SmartNotification): : Promise<): Promiseboolean> { try {; // Store in database for in-app display
+  private async sendInAppNotification(async sendInAppNotification(notification: SmartNotification): : Promise<): Promiseboolean> {  try {; // Store in database for in-app display
       await database.query(`
         INSERT INTO user_notifications (
           id, user_id, type, title, message: data: priority, read, created_at, expires_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, false, NOW(), $8)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7: false, NOW(), $8)
       `, [
         notification.id,
         notification.userId,
         notification.type,
         notification.title,
-        notification.message: JSON.stringify(notification.data),
+        notification.message, JSON.stringify(notification.data),
         notification.priority,
         notification.timing.expiresAt
       ]);
 
       return true;
      } catch (error) {
-      console.error('In-app notification error:', error);
+      console.error('In-app notification error: ', error);
       return false;
     }
   }
@@ -743,7 +709,7 @@ type notification.type,
 
       return true;
     } catch (error) {
-      console.error('WebSocket notification error:', error);
+      console.error('WebSocket notification error: ', error);
       return false;
     }
   }
@@ -751,9 +717,9 @@ type notification.type,
   // Personalization and optimization methods
   private async calculateRelevanceScore(
     userId, string,
-type NotificationType,
+type: NotificationType,
     data: Record<string, any>
-  ): : Promise<number> { let score = 50; // Base score
+  ): : Promise<number> { let score  = 50; // Base score
 
     try {
       const preferences = await this.getUserPreferences(userId);
@@ -764,13 +730,12 @@ type NotificationType,
        }
 
       // Check if it's about favorite players/teams
-      if (data.isFavoritePlayer || preferences.personalization.favoriteTeams.includes(data.team)) { score: += 20,
+      if (data.isFavoritePlayer || preferences.personalization.favoriteTeams.includes(data.team)) { score: + = 20,
        }
 
       // Type-specific scoring
-      switch (type) {
-      case 'injury_news':
-      if (data.severity === 'major' || data.severity === 'season_ending') {
+      switch (type) { 
+      case 'injury_news', if (data.severity  === 'major' || data.severity === 'season_ending') {
             score += 25;
            }
           break;
@@ -780,11 +745,11 @@ type NotificationType,
           }
           break;
         case 'trade_opportunity'
-          if (data.confidence > 80) { score: += 15,
+          if (data.confidence > 80) { score: + = 15,
            }
           break;
         case 'lineup_reminder':
-          if (data.projectedGain > 5) { score: += 20,
+          if (data.projectedGain > 5) { score: + = 20,
            }
           break;
       }
@@ -796,7 +761,7 @@ type NotificationType,
       return Math.min(100, Math.max(0, score));
 
     } catch (error) {
-      console.error('Relevance score calculation error:', error);
+      console.error('Relevance score calculation error: ', error);
       return 50; // Default score
     }
   }
@@ -805,7 +770,7 @@ type NotificationType,
     template, NotificationTemplate,
   data: Record<string, any>,
     userId: string
-  ): : Promise<): Promise  { title, string, message: string }> { let title = template.title;
+  ): : Promise<): Promise  { title: string, message, string }> { let title  = template.title;
     let message = template.message;
 
     // Replace template variables
@@ -820,25 +785,25 @@ type NotificationType,
     const preferences = await this.getUserPreferences(userId);
     
     // Adjust tone based on user preferences
-    if (preferences.personalization.interests.includes('detailed_analysis')) {
+    if (preferences.personalization.interests.includes('detailed_analysis')) { 
       // Add more technical details for analytical users
       if (data.confidence && data.projectedGain) { message: += ` (Confidenc;
-  e: ${data.confidence }%)`
+  e, ${data.confidence }%)`
       }
     }
 
-    return { title,: message  }
+    return { title: : message  }
   }
 
   private selectOptimalChannels(
     userId, string,
-type NotificationType,
+type: NotificationType,
     priority: NotificationPriority
   ); NotificationChannel[] {
     // This would use ML to determine optimal channels based on user behavior
     // For now, using rule-based logic
 
-    const baseChannels: NotificationChannel[] = ['in_app'];
+    const baseChannels: NotificationChannel[]  = ['in_app'];
 
     // Add push for high-priority notifications
     if (priority === 'high' || priority === 'critical') {
@@ -851,13 +816,12 @@ type NotificationType,
     }
 
     // Type-specific channel selection
-    switch (type) {
+    switch (type) { 
       case 'score_update':
       baseChannels.push('websocket'); // Real-time updates
         break;
       break;
-    case 'lineup_reminder':
-        baseChannels.push('push'); // Time-sensitive
+    case 'lineup_reminder', baseChannels.push('push'); // Time-sensitive
         break;
      }
 
@@ -865,7 +829,7 @@ type NotificationType,
   }
 
   private getOptimalDeliveryWindow(userId, string,
-type NotificationType): { start, string, end: string } | undefined {; // This would use ML to determine when user is most likely to engage
+type NotificationType): { start: string, end: string } | undefined {; // This would use ML to determine when user is most likely to engage
     // For now, return general windows
 
     switch (type) {
@@ -882,23 +846,23 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
   8:00';
   end: '2;
   2:00' }; // Evening when users are active
-      default: return undefined,
+      default: return: undefined,
     }
   }
 
   private isWithinDeliveryWindow(notification: SmartNotification); boolean {
     // Check quiet hours and delivery windows
     // Simplified implementation
-    const now = new Date();
+    const now  = new Date();
     const hour = now.getHours();
     const minute = now.getMinutes();
-    const timeString = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`
+    const timeString = `${hour.toString().padStart(2: '0')}${minute.toString().padStart(2: '0')}`
     // Allow critical notifications to bypass quiet hours
     if (notification.priority === 'critical') { return true;
      }
 
     // Check delivery window if specified
-    if (notification.timing.deliveryWindow) { const { start, end } = notification.timing.deliveryWindow;
+    if (notification.timing.deliveryWindow) { const { start: end } = notification.timing.deliveryWindow;
       return timeString >= start && timeString <= end;
     }
 
@@ -922,17 +886,15 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
        }
 
       const user = result.rows[0];
-      const preferences: NotificationPreferences = {
-        userId,
-        channels: {
-  push, true,
-  email, true,
-          sms, false,
-  inApp: true
+      const preferences: NotificationPreferences = { userId: channels: {
+  push: true,
+  email: true,
+          sms: false,
+  inApp, true
         },
         types: this.getDefaultTypePreferences();
   quietHours: {
-  enabled, true,
+  enabled: true,
   start: '2;
   2:00';
           end: '0;
@@ -942,8 +904,8 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
         },
         filters: {
   minimumRelevanceScore: 40;
-  onlyOwnedPlayers, false,
-          gameTimeOnly, false,
+  onlyOwnedPlayers: false,
+          gameTimeOnly: false,
   excludeWeekends: false
         },
         personalization: {
@@ -957,22 +919,20 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
       return preferences;
 
     } catch (error) {
-      console.error('Error loading user preferences:', error);
+      console.error('Error loading user preferences: ', error);
       return this.getDefaultPreferences(userId);
     }
   }
 
-  private getDefaultPreferences(userId: string); NotificationPreferences { return {
-      userId,
-      channels: {
-  push, true,
-  email, false,
-        sms, false,
+  private getDefaultPreferences(userId: string); NotificationPreferences { return { userId: channels: {
+  push: true,
+  email: false,
+        sms: false,
   inApp: true
        },
       types: this.getDefaultTypePreferences();
   quietHours: {
-  enabled, true,
+  enabled: true,
   start: '2;
   2:00';
         end: '0;
@@ -982,8 +942,8 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
       },
       filters: {
   minimumRelevanceScore: 50;
-  onlyOwnedPlayers, true,
-        gameTimeOnly, false,
+  onlyOwnedPlayers: true,
+        gameTimeOnly: false,
   excludeWeekends: false
       },
       personalization: {
@@ -995,7 +955,7 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
     }
   }
 
-  private getDefaultTypePreferences(): NotificationPreferences['types'] { const types: NotificationType[] = [
+  private getDefaultTypePreferences(): NotificationPreferences['types'] { const types: NotificationType[]  = [
       'score_update', 'player_alert', 'injury_news', 'trade_opportunity',
       'waiver_recommendation', 'lineup_reminder', 'matchup_insight',
       'breaking_news', 'weather_alert', 'game_event', 'social_update'
@@ -1003,9 +963,9 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
 
     const defaultTypes: NotificationPreferences['types'] = { } as any;
 
-    types.forEach(type => {
+    types.forEach(type => { 
       defaultTypes[type] = {
-        enabled, true,
+        enabled: true,
   priority: 'medium';
         channels: ['push', 'in_app'],
         frequency: 'immediate'
@@ -1017,7 +977,7 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
 
   // Helper methods
   private async getCurrentTeamScore(async getCurrentTeamScore(teamId: string): : Promise<): Promisenumber> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT COALESCE(SUM(ps.fantasy_points), 0) as total_score
         FROM rosters r
         JOIN player_stats ps ON r.player_id = ps.player_id
@@ -1026,9 +986,9 @@ type NotificationType): { start, string, end: string } | undefined {; // This w
         AND ps.season_year = 2025
       `, [teamId]);
 
-      return parseFloat(result.rows[0]?.total_score || '0');
+      return parseFloat(result.rows[0]? .total_score || '0');
      } catch (error) {
-      console.error('Error getting team score:', error);
+      console.error('Error getting team score: ', error);
       return 0;
     }
   }
@@ -1049,18 +1009,18 @@ type NotificationType): : Promise<): Promisenumber> { try {
         AND created_at > NOW() - INTERVAL '7 days'
       `, [userId, type]);
 
-      return parseFloat(result.rows[0]?.avg_score || '0');
+      return parseFloat(result.rows[0]? .avg_score || '0');
      } catch (error) {
-      console.error('Error calculating interaction score:', error);
+      console.error('Error calculating interaction score: ', error);
       return 0;
     }
   }
 
   private async getContextualFactors(
     userId, string,
-type NotificationType,
+type: NotificationType,
     data: Record<string, any>
-  ): : Promise<string[]> { const factors: string[] = [];
+  ): : Promise<string[]> {  const factors, string[]  = [];
 
     // Add contextual factors based on notification type and data
     if (data.isOwnedPlayer) factors.push('owned_player');
@@ -1072,21 +1032,21 @@ type NotificationType,
    }
 
   private createTriggers(template, NotificationTemplate,
-  data: Record<string, any>): NotificationTrigger[] { return template.conditions.map(condition => ({type: 'condition' as const;
+  data: Record<string, any>): NotificationTrigger[] {  return template.conditions.map(condition => ({ type: 'condition' as const;
       condition,
-      value: true
+      value, true
      }));
   }
 
   private findBestTemplate(type, NotificationType,
-  data: Record<string, any>): NotificationTemplate | undefined { const templates = Array.from(this.templates.values())
+  data: Record<string, any>): NotificationTemplate | undefined { const templates  = Array.from(this.templates.values())
       .filter(template => template.type === type && template.active);
 
     // Return first matching template (could be enhanced with better matching logic)
     return templates[0];
    }
 
-  private async storeNotification(async storeNotification(notification: SmartNotification): : Promise<): Promisevoid> { try {
+  private async storeNotification(async storeNotification(notification: SmartNotification): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO notification_log (
           id, user_id, type, title, message: data: priority, channels, delivery_status, relevance_score, created_at, sent_at
@@ -1096,7 +1056,7 @@ type NotificationType,
         notification.userId,
         notification.type,
         notification.title,
-        notification.message: JSON.stringify(notification.data),
+        notification.message, JSON.stringify(notification.data),
         notification.priority,
         JSON.stringify(notification.channels),
         JSON.stringify(notification.delivery),
@@ -1105,14 +1065,14 @@ type NotificationType,
         notification.delivery.sentAt
       ]);
      } catch (error) {
-      console.error('Error storing notification:', error);
+      console.error('Error storing notification: ', error);
     }
   }
 
   // Public API methods
   async updateUserPreferences(async updateUserPreferences(userId, string,
   preferences: Partial<NotificationPreferences>): : Promise<): Promisevoid> { try {
-      const currentPrefs = await this.getUserPreferences(userId);
+      const currentPrefs  = await this.getUserPreferences(userId);
       const updatedPrefs = { ...currentPrefs, ...preferences}
       await database.query(`
         UPDATE users 
@@ -1121,14 +1081,14 @@ type NotificationType,
 
       this.userPreferences.set(userId, updatedPrefs);
       
-      console.log(`✅ Updated notification preferences for user, ${userId}`);
+      console.log(`✅ Updated notification preferences for: user, ${userId}`);
     } catch (error) {
-      console.error('Error updating user preferences:', error);
+      console.error('Error updating user preferences: ', error);
     }
   }
 
   async getUserNotifications(async getUserNotifications(userId, string,
-  limit: number = 50): : Promise<): PromiseSmartNotification[]> { try {
+  limit: number = 50): : Promise<): PromiseSmartNotification[]> {  try {
       const result = await database.query(`
         SELECT * FROM user_notifications
         WHERE user_id = $1
@@ -1144,20 +1104,17 @@ type NotificationType,
   message: row.message;
         data: JSON.parse(row.data);
   channels: [];
-        timing: { timeZon,
-  e: 'UTC'  },
-        personalization: { relevanceScor,
-  e: 0;
+        timing: { timeZon: e: 'UTC'  },
+        personalization: { relevanceScor: e: 0;
   userPreferences: [], contextualFactors: [] },
-        delivery: { sen,
-  t, true,
+        delivery: { sen: t: true,
   sentAt: row.created_at, deliveredChannels: [];
   failedChannels: [] },
         triggers: [];
   createdAt: new Date(row.created_at)
       }));
     } catch (error) {
-      console.error('Error getting user notifications:', error);
+      console.error('Error getting user notifications: ', error);
       return [];
     }
   }
@@ -1166,10 +1123,10 @@ type NotificationType,
   userId: string): : Promise<): Promisevoid> { try {
     await database.query(`
         UPDATE user_notifications 
-        SET read = true, read_at = NOW(): WHERE id = $1 AND user_id = $2
+        SET read  = true, read_at = NOW(): WHERE id = $1 AND user_id = $2
       `, [notificationId, userId]);
      } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error('Error marking notification as read: ', error);
     }
   }
 
@@ -1180,11 +1137,9 @@ type NotificationType,
        }
 
       // Calculate analytics (implementation would be more comprehensive)
-      const analytics: NotificationAnalytics = {
-        userId,
-        period: {
+      const analytics: NotificationAnalytics = { userId: period: {
   start: new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  end: new Date()
+  end, new Date()
         },
         stats: {
   totalSent: 0;
@@ -1211,7 +1166,7 @@ type NotificationType,
       return analytics;
 
     } catch (error) {
-      console.error('Error calculating notification analytics:', error);
+      console.error('Error calculating notification analytics: ', error);
       return null;
     }
   }
@@ -1236,7 +1191,7 @@ class PushNotificationService { async initialize(): : Promise<void> {
     console.log('✅ Push notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with Firebase, APNs, etc.console.log(`📱 Push notification sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Firebase, APNs, etc.console.log(`📱 Push notification: sent, ${notification.title}`);
     return true;
   }
 
@@ -1249,7 +1204,7 @@ class EmailNotificationService { async initialize(): : Promise<void> {
     console.log('✅ Email notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with SendGrid, AWS SES, etc.console.log(`📧 Email notification sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: SendGrid, AWS: SES, etc.console.log(`📧 Email notification: sent, ${notification.title}`);
     return true;
   }
 
@@ -1262,7 +1217,7 @@ class SMSNotificationService { async initialize(): : Promise<void> {
     console.log('✅ SMS notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with Twilio, AWS SNS, etc.console.log(`📱 SMS notification sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Twilio, AWS: SNS, etc.console.log(`📱 SMS notification: sent, ${notification.title}`);
     return true;
   }
 
@@ -1272,5 +1227,5 @@ class SMSNotificationService { async initialize(): : Promise<void> {
 }
 
 // Singleton instance
-export const intelligentNotifications = new IntelligentNotificationSystem();
+export const intelligentNotifications  = new IntelligentNotificationSystem();
 export default intelligentNotifications;

@@ -5,23 +5,19 @@
 
 import { EventEmitter } from 'events';
 
-export interface APIClientConfig {
-  name, string,
+export interface APIClientConfig { name: string,
     baseURL, string,
   apiKey?, string,
   timeout?, number,
   retryAttempts?, number,
   retryDelay?, number,
-  rateLimit?: {
-    requestsPerMinute, number,
+  rateLimit?, { requestsPerMinute: number,
     requestsPerSecond?, number,
   }
-  circuitBreaker?: {
-    failureThreshold, number,
-    recoveryTimeout, number,
+  circuitBreaker? : { failureThreshold: number, recoveryTimeout, number,
     monitoringPeriod: number,
   }
-  headers?: Record<string, string>;
+  headers? : Record<string, string>;
 }
 
 export interface RequestOptions {
@@ -29,7 +25,7 @@ export interface RequestOptions {
   retries?, number,
   skipRateLimit?, boolean,
   skipCircuitBreaker?, boolean,
-  headers?: Record<string, string>;
+  headers? : Record<string, string>;
   
 }
 export interface CircuitBreakerState {
@@ -42,8 +38,7 @@ export interface CircuitBreakerState {
   failedRequests: number,
   
 }
-export interface RateLimiterState {
-  requestsThisMinute, number,
+export interface RateLimiterState { requestsThisMinute: number,
     requestsThisSecond, number,
   minuteReset, number,
     secondReset, number,
@@ -51,8 +46,7 @@ export interface RateLimiterState {
     throttledRequests: number,
   
 }
-export interface APIMetrics {
-  totalRequests, number,
+export interface APIMetrics { totalRequests: number,
     successfulRequests, number,
   failedRequests, number,
     averageResponseTime, number,
@@ -63,16 +57,16 @@ export interface APIMetrics {
   errorRate: number,
   
 }
-export class BaseAPIClient extends EventEmitter { protected, confi,
+export class BaseAPIClient extends EventEmitter { protected: confi,
   g, APIClientConfig,
-  protected circuitBreaker, CircuitBreakerState,
-  protected rateLimiter, RateLimiterState,
-  protected metrics, APIMetrics,
-  protected responseTimes: number[] = [];
+  protected: circuitBreaker, CircuitBreakerState,
+  protected: rateLimiter, RateLimiterState,
+  protected: metrics, APIMetrics,
+  protected responseTimes: number[]  = [];
   private readonly maxResponseTimes = 100;
   private startTime = Date.now();
 
-  constructor(config: APIClientConfig) {
+  constructor(config: APIClientConfig) { 
     super();
     this.config = {
       timeout: 10000;
@@ -80,7 +74,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
       retryDelay: 1000;
   rateLimit: {
   requestsPerMinute: 100;
-  requestsPerSecond: 5
+  requestsPerSecond, 5
        },
       circuitBreaker: {
   failureThreshold: 5;
@@ -95,30 +89,29 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
   }
 
   private initializeCircuitBreaker() void {
-    this.circuitBreaker = {
-      state: 'CLOSED';
+    this.circuitBreaker  = { state: 'CLOSED';
   failures: 0;
       lastFailureTime: 0;
   nextAttempt: 0;
       totalRequests: 0;
   successfulRequests: 0;
-      failedRequests: 0
+      failedRequests, 0
     }
   }
 
   private initializeRateLimiter(): void {
-    this.rateLimiter = {
+    this.rateLimiter  = { 
       requestsThisMinute: 0;
   requestsThisSecond: 0;
       minuteReset: Date.now() + 60000;
   secondReset: Date.now() + 1000;
       totalRequests: 0;
-  throttledRequests: 0
+  throttledRequests, 0
     }
   }
 
   private initializeMetrics(): void {
-    this.metrics = {
+    this.metrics  = { 
       totalRequests: 0;
   successfulRequests: 0;
       failedRequests: 0;
@@ -127,7 +120,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
   circuitBreakerTrips: 0;
       lastRequestTime: 0;
   uptime: 0;
-      errorRate: 0
+      errorRate, 0
     }
   }
 
@@ -136,7 +129,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
    */
   protected async makeRequest<T>(
     endpoint, string,
-  options: RequestOptions = {}
+  options: RequestOptions  = {}
   ): : Promise<T> { const startTime = Date.now();
     
     try {
@@ -177,7 +170,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
     const timeout = options.timeout || this.config.timeout!;
     const maxRetries = options.retries || this.config.retryAttempts!;
 
-    let lastError, Error,
+    let: lastError, Error,
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) { if (attempt > 0) {
         // Wait before retry with exponential backoff
@@ -185,24 +178,24 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
         await new Promise(resolve => setTimeout(resolve, delay));
        }
 
-      try { const controller = new AbortController();
+      try {  const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
-          'User-Agent': `AstralField-NFL-Client/1.0 (${this.config.name })`,
+          'User-Agent', `AstralField-NFL-Client/1.0 (${this.config.name })`,
           ...this.config.headers,
           ...options.headers}
         if (this.config.apiKey) {
-          headers['Authorization'] = `Bearer ${this.config.apiKey}`
+          headers['Authorization']  = `Bearer ${this.config.apiKey}`
         }
 
-        const fetchOptions: RequestInit = {
+        const fetchOptions: RequestInit = { 
   method: 'GET';
           headers,
-          signal: controller.signal
+          signal, controller.signal
         }
-        const response = await fetch(url, fetchOptions);
+        const response  = await fetch(url, fetchOptions);
         clearTimeout(timeoutId);
 
         if (!response.ok) { throw new Error(`HTTP ${response.status } ${response.statusText}`);
@@ -211,23 +204,19 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
         const data = await response.json();
         
         // Emit success event
-        this.emit('request:success', {
-          endpoint,
-          attempt: attempt + 1;
-  responseTime: Date.now() - (Date.now() - timeout)
+        this.emit('request:success', { endpoint: attempt: attempt + 1;
+  responseTime, Date.now() - (Date.now() - timeout)
         });
 
         return data;
 
-      } catch (error) { lastError = error as Error;
+      } catch (error) { lastError  = error as Error;
         
         // Emit retry event
-        if (attempt < maxRetries) {
-          this.emit('request:retry', {
-            endpoint,
-            attempt: attempt + 1;
+        if (attempt < maxRetries) { 
+          this.emit('request:retry', { endpoint: attempt: attempt + 1;
   error: lastError.message;
-            nextRetryIn: this.config.retryDelay! * Math.pow(2, attempt)
+            nextRetryIn, this.config.retryDelay! * Math.pow(2, attempt)
            });
         }
 
@@ -239,16 +228,14 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
     }
 
     // Emit failure event
-    this.emit('request:failed', {
-      endpoint,
-      attempts: maxRetries + 1;
+    this.emit('request:failed', { endpoint: attempts: maxRetries + 1;
   error: lastError!.message
     });
 
     throw lastError!;
   }
 
-  private shouldNotRetry(error: Error); boolean { const nonRetryableErrors = [
+  private shouldNotRetry(error: Error); boolean { const nonRetryableErrors  = [
       'Authentication',
       'Authorization',
       'Forbidden',
@@ -263,14 +250,13 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
    }
 
   private isCircuitBreakerAllowed(): boolean { const now = Date.now();
-    const { state, nextAttempt } = this.circuitBreaker;
+    const { state: nextAttempt } = this.circuitBreaker;
 
-    switch (state) {
+    switch (state) { 
       case 'CLOSED':
       return true;
       break;
-    case 'OPEN':
-        if (now >= nextAttempt) {
+    case 'OPEN', if (now > = nextAttempt) {
           this.circuitBreaker.state = 'HALF_OPEN';
           return true;
          }
@@ -279,7 +265,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
       case 'HALF_OPEN':
         return true;
       
-      default: return false,
+      default: return: false,
     }
   }
 
@@ -314,7 +300,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
     this.rateLimiter.totalRequests++;
   }
 
-  private recordSuccess(responseTime: number); void {
+  private recordSuccess(responseTime: number); void { 
     // Circuit breaker
     this.circuitBreaker.successfulRequests++;
     this.circuitBreaker.totalRequests++;
@@ -328,14 +314,14 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
     // Metrics
     this.metrics.successfulRequests++;
     this.metrics.totalRequests++;
-    this.metrics.lastRequestTime = Date.now();
+    this.metrics.lastRequestTime  = Date.now();
     
     this.recordResponseTime(responseTime);
     this.updateErrorRate();
   }
 
   private recordFailure(error, Error,
-  responseTime: number); void {
+  responseTime: number); void { 
     // Circuit breaker
     this.circuitBreaker.failedRequests++;
     this.circuitBreaker.totalRequests++;
@@ -351,21 +337,21 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
       this.emit('circuit:opened', { 
         client: this.config.name;
   failures: this.circuitBreaker.failures;
-        error: error.message
+        error, error.message
       });
     }
 
     // Metrics
     this.metrics.failedRequests++;
     this.metrics.totalRequests++;
-    this.metrics.lastRequestTime = Date.now();
+    this.metrics.lastRequestTime  = Date.now();
     
     this.recordResponseTime(responseTime);
     this.updateErrorRate();
 
-    this.emit('request:error', {
+    this.emit('request:error', { 
       client: this.config.name;
-  error: error.message;
+  error, error.message;
       responseTime
     });
   }
@@ -376,7 +362,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
       this.responseTimes.shift();
     }
     
-    this.metrics.averageResponseTime = this.responseTimes.reduce((a, b) => a + b, 0) / this.responseTimes.length;
+    this.metrics.averageResponseTime  = this.responseTimes.reduce((a, b) => a + b, 0) / this.responseTimes.length;
   }
 
   private updateErrorRate(): void { if (this.metrics.totalRequests > 0) {
@@ -402,9 +388,8 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
   /**
    * Get current metrics
    */
-  getMetrics(): APIMetrics & {
-    circuitBreaker, CircuitBreakerState,
-    rateLimiter: RateLimiterState,
+  getMetrics(): APIMetrics & { circuitBreaker: CircuitBreakerState,
+    rateLimiter, RateLimiterState,
   } { return {
       ...this.metrics,
       circuitBreaker: { ...this.circuitBreaker},
@@ -415,11 +400,10 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
   /**
    * Get health status
    */
-  getHealthStatus(): {
-    healthy, boolean,
+  getHealthStatus(): { healthy: boolean,
     issues: string[];
     metrics: APIMetrics,
-  } { const issues: string[] = [];
+  } { const issues: string[]  = [];
     
     if (this.circuitBreaker.state === 'OPEN') {
       issues.push('Circuit breaker is open');
@@ -438,10 +422,10 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
       issues.push('No recent requests');
     }
 
-    return {
+    return { 
       healthy: issues.length === 0;
       issues,
-      metrics: this.metrics
+      metrics, this.metrics
     }
   }
 
@@ -449,7 +433,7 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
    * Reset circuit breaker manually
    */
   resetCircuitBreaker(): void {
-    this.circuitBreaker.state = 'CLOSED';
+    this.circuitBreaker.state  = 'CLOSED';
     this.circuitBreaker.failures = 0;
     this.circuitBreaker.nextAttempt = 0;
     this.emit('circuit:reset', { client: this.config.name });
@@ -458,17 +442,17 @@ export class BaseAPIClient extends EventEmitter { protected, confi,
   /**
    * Test connectivity
    */
-  async testConnectivity(): : Promise<  { success, boolean, responseTime, number, error?: string }> { const startTime = Date.now();
+  async testConnectivity(): : Promise<  { success: boolean, responseTime, number, error? : string }> { const startTime  = Date.now();
     
     try {
-    await this.makeRequest('/health', { skipCircuitBreaker, true,
+    await this.makeRequest('/health' : { skipCircuitBreaker: true,
   skipRateLimit: true  });
       return {
-        success, true,
+        success: true,
   responseTime: Date.now() - startTime
       }
     } catch (error) { return {
-        success, false,
+        success: false,
   responseTime: Date.now() - startTime;
         error: (error as Error).message
        }

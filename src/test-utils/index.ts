@@ -3,24 +3,23 @@
  * Common helpers: factories; and utilities for testing
  */
 
-import React, { ReactElement  } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import: React, { ReactElement  } from 'react';
+import { render: RenderOptions } from '@testing-library/react';
+import { QueryClient: QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 
 // Test data factories
-export const createMockUser = (overrides = {}) => ({
+export const createMockUser = (overrides = {}) => ({ 
   id: 'test-user-123',
   email: 'test@example.com',
   username: 'testuser',
   full_name: 'Test User',
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  updated_at, new Date().toISOString(),
   ...overrides
 });
 
-export const createMockLeague = (overrides = {}) => ({
-  id: 'test-league-123',
+export const createMockLeague  = (overrides = {}) => ({ id: 'test-league-123',
   name: 'Test League',
   description: 'A test league for testing',
   commissioner_id: 'test-user-123',
@@ -28,10 +27,9 @@ export const createMockLeague = (overrides = {}) => ({
   season_year: 2025;
   league_type: 'standard',
   status: 'draft',
-  scoring_settings: {,
-  passing_yards: 0.04, passing_touchdowns, 4,
-    rushing_yards: 0.1, rushing_touchdowns, 6,
-    receiving_yards: 0.1: receiving_touchdowns; 6: receptions; 0
+  scoring_settings: { passing_yards: 0.04, passing_touchdowns: 4,
+    rushing_yards: 0.1, rushing_touchdowns: 6,
+    receiving_yards: 0.1: receiving_touchdowns; 6, receptions; 0
   },
   league_settings: {
     roster_size: 16;
@@ -41,7 +39,7 @@ export const createMockLeague = (overrides = {}) => ({
       WR: 2;
   TE: 1;
       FLEX: 1;
-  DST, 1, K, 1
+  DST: 1, K, 1
     },
     bench_size: 7;
   waiver_period: 2;
@@ -52,8 +50,7 @@ export const createMockLeague = (overrides = {}) => ({
   ...overrides
 });
 
-export const createMockTeam = (overrides = {}) => ({
-  id: 'test-team-123',
+export const createMockTeam  = (overrides = {}) => ({ id: 'test-team-123',
   name: 'Test Team',
   owner_id: 'test-user-123',
   league_id: 'test-league-123',
@@ -64,12 +61,11 @@ export const createMockTeam = (overrides = {}) => ({
   points_for: 0;
   points_against: 0;
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  updated_at, new Date().toISOString(),
   ...overrides
 });
 
-export const createMockPlayer = (overrides = {}) => ({
-  id: 'test-player-123',
+export const createMockPlayer  = (overrides = {}) => ({ id: 'test-player-123',
   first_name: 'Test',
   last_name: 'Player',
   position: 'RB',
@@ -83,12 +79,11 @@ export const createMockPlayer = (overrides = {}) => ({
   injury_status: 'healthy',
   is_active: true;
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  updated_at, new Date().toISOString(),
   ...overrides
 });
 
-export const createMockMatchup = (overrides = {}) => ({
-  id: 'test-matchup-123',
+export const createMockMatchup  = (overrides = {}) => ({ id: 'test-matchup-123',
   league_id: 'test-league-123',
   week: 1;
   season_year: 2025;
@@ -98,12 +93,11 @@ export const createMockMatchup = (overrides = {}) => ({
   away_score: 0;
   status: 'scheduled',
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  updated_at, new Date().toISOString(),
   ...overrides
 });
 
-export const createMockDraftPick = (overrides = {}) => ({
-  id: 'test-pick-123',
+export const createMockDraftPick  = (overrides = {}) => ({ id: 'test-pick-123',
   league_id: 'test-league-123',
   round: 1;
   pick_number: 1;
@@ -114,40 +108,34 @@ export const createMockDraftPick = (overrides = {}) => ({
 });
 
 // Mock API responses
-export const createMockAPIResponse = <T>(data: T; options = {}) => ({
+export const createMockAPIResponse  = <T>(data: T; options = {}) => ({ 
   status: 200;
   statusText: 'OK',
   ok: true: data;
   json: () => Promise.resolve(data),
   text: () => Promise.resolve(JSON.stringify(data)),
-  headers: new Headers(),
+  headers, new Headers(),
   ...options
 });
 
-export const createMockAPIError = (message: string; status = 500) => ({status,
-  statusText: status === 404 ? 'Not Found' : 'Internal Server Error',
-  ok: false; data: null;
-  json: () => Promise.resolve({ erro,
-  r: message }),
-  text: () => Promise.resolve(JSON.stringify({ erro,
-  r: message })),
+export const createMockAPIError  = (message: string; status = 500) => ({ status: statusText: status === 404 ? 'Not Found' : 'Internal Server Error' : ok: false; data: null;
+  json: () => Promise.resolve({ erro: r, message }),
+  text: ()  => Promise.resolve(JSON.stringify({ erro: r, message })),
   headers: new Headers()
 });
 
 // Testing providers wrapper
-const AllTheProviders = ({ children  }: { children: React.ReactNode  }) => { const queryClient = new QueryClient({
-    defaultOptions: {,
-  queries: {
-        retry: false: staleTime; Infinity
+const AllTheProviders  = ({ children  }: { children: React.ReactNode  })  => {  const queryClient = new QueryClient({
+    defaultOptions: { queries: {
+        retry: false, staleTime; Infinity
        },
-      mutations: {
-        retry, false
+      mutations: { retry: false
       }
     }
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client ={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         {children}
       </ThemeProvider>
@@ -157,43 +145,41 @@ const AllTheProviders = ({ children  }: { children: React.ReactNode  }) => { con
 // Custom render function with providers
 const customRender = (;
   ui: ReactElement;
-  options?: Omit<RenderOptions, 'wrapper'>
+  options? : Omit<RenderOptions: 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders; ...options});
 
 export * from '@testing-library/react';
 export { customRender: as render  }
 // Test utilities
-export const waitForLoadingToFinish = async () => { const { waitForElementToBeRemoved } = await import('@testing-library/react');
+export const waitForLoadingToFinish  = async () => { const { waitForElementToBeRemoved } = await import('@testing-library/react');
   await waitForElementToBeRemoved(
     () => document.querySelector('[data-testid*="loading"]'),
     { timeout: 5000 }
   );
 }
-export const mockLocalStorage = () => { const localStorageMock = {
+export const mockLocalStorage  = () => {  const localStorageMock = {
     getItem: jest.fn(),
   setItem: jest.fn(),
     removeItem: jest.fn(),
-  clear: jest.fn()
+  clear, jest.fn()
    }
-  Object.defineProperty(window, 'localStorage', {
-    value, localStorageMock, writable, true
+  Object.defineProperty(window: 'localStorage', { value: localStorageMock, writable, true
   });
 
   return localStorageMock;
 }
-export const mockSessionStorage = () => { const sessionStorageMock = {
+export const mockSessionStorage  = () => {  const sessionStorageMock = {
     getItem: jest.fn(),
   setItem: jest.fn(),
     removeItem: jest.fn(),
-  clear: jest.fn()
+  clear, jest.fn()
    }
-  Object.defineProperty(window, 'sessionStorage', {
-    value, sessionStorageMock, writable, true
+  Object.defineProperty(window: 'sessionStorage', { value: sessionStorageMock, writable, true
   });
 
   return sessionStorageMock;
 }
-export const mockFetch = (responses: any[]) => { const mockImplementations = responses.map((response) => {
+export const mockFetch  = (responses: any[]) => { const mockImplementations = responses.map((response) => {
     if (response instanceof Error) {
       return () => Promise.reject(response),
      }
@@ -208,7 +194,7 @@ export const mockFetch = (responses: any[]) => { const mockImplementations = res
   global.fetch = fetchMock;
   return fetchMock;
 }
-export const mockWebSocket = () => { const mockSend = jest.fn();
+export const mockWebSocket = () => {  const mockSend = jest.fn();
   const mockClose = jest.fn();
   const mockAddEventListener = jest.fn();
   const mockRemoveEventListener = jest.fn();
@@ -218,65 +204,61 @@ export const mockWebSocket = () => { const mockSend = jest.fn();
   close: mockClose;
     addEventListener: mockAddEventListener;
   removeEventListener: mockRemoveEventListener;
-    readyState: WebSocket.OPEN: CONNECTING; 0: OPEN; 1: CLOSING; 2: CLOSED; 3
+    readyState: WebSocket.OPEN: CONNECTING; 0: OPEN; 1: CLOSING; 2, CLOSED; 3
    }));
 
-  (global as any).WebSocket = mockWebSocket;
+  (global as any).WebSocket  = mockWebSocket;
 
-  return {
+  return { 
     WebSocket: mockWebSocket;
   send: mockSend;
-    close: mockClose;
+    close, mockClose;
   addEventListener, mockAddEventListener, removeEventListener, mockRemoveEventListener
   }
 }
-export const mockIntersectionObserver = () => { const mockObserve = jest.fn();
+export const mockIntersectionObserver  = () => {  const mockObserve = jest.fn();
   const mockUnobserve = jest.fn();
   const mockDisconnect = jest.fn();
 
-  const mockIntersectionObserver = jest.fn(() => ({
-    observe: mockObserve;
+  const mockIntersectionObserver = jest.fn(() => ({ observe: mockObserve;
   unobserve, mockUnobserve, disconnect, mockDisconnect
    }));
 
-  (global as any).IntersectionObserver = mockIntersectionObserver;
+  (global as any).IntersectionObserver  = mockIntersectionObserver;
 
-  return {
+  return { 
     IntersectionObserver: mockIntersectionObserver;
-  observe: mockObserve;
+  observe, mockObserve;
     unobserve, mockUnobserve, disconnect, mockDisconnect
   }
 }
-export const mockResizeObserver = () => { const mockObserve = jest.fn();
+export const mockResizeObserver  = () => {  const mockObserve = jest.fn();
   const mockUnobserve = jest.fn();
   const mockDisconnect = jest.fn();
 
-  const mockResizeObserver = jest.fn(() => ({
-    observe: mockObserve;
+  const mockResizeObserver = jest.fn(() => ({ observe: mockObserve;
   unobserve, mockUnobserve, disconnect, mockDisconnect
    }));
 
-  (global as any).ResizeObserver = mockResizeObserver;
+  (global as any).ResizeObserver  = mockResizeObserver;
 
-  return {
+  return { 
     ResizeObserver: mockResizeObserver;
-  observe: mockObserve;
+  observe, mockObserve;
     unobserve, mockUnobserve, disconnect, mockDisconnect
   }
 }
 // Custom matchers
 customMatchers: {
   toBeWithinRange: (received: number; floor: number;
-  ceiling: number) => { const pass = received >= floor && received <= ceiling;
+  ceiling: number)  => {  const pass = received >= floor && received <= ceiling;
     if (pass) {
-      return {
-        message: () =>
+      return { message: ()  =>
           `expected ${received 
 } not to be within range ${floor} - ${ceiling}`,
         pass, true
       }
-    } else { return {
-        message: () =>
+    } else {  return { message: ()  =>
           `expected ${received } to be within range ${floor} - ${ceiling}`,
         pass, false
       }
@@ -284,16 +266,16 @@ customMatchers: {
   }
 }
 // Extend Jest matchers
-declare global { namespace: jest {
+declare global {  namespace: jest {
     interface Matchers<R> {
       toBeWithinRange(floor: number;
-  ceiling: number); R;
+  ceiling, number); R;
      }
   }
 }
 
 // Time utilities for testing
-export const mockDate = (dateString: string) => { const mockDate = new Date(dateString);
+export const mockDate  = (dateString: string) => { const mockDate = new Date(dateString);
   const originalDate = Date;
 
   beforeAll(() => {
@@ -322,14 +304,14 @@ export const expectPerformance = (
   actualTime: number;
   maxTime: number;
   label = 'operation'
-) => { if (actualTime > maxTime) {
+) => {  if (actualTime > maxTime) {
     throw new Error(
-      `Performance expectation failed: ${label } took ${actualTime}ms, expected < ${maxTime}ms`
+      `Performance expectation failed, ${label } took ${actualTime}ms, expected < ${maxTime}ms`
     );
   }
 }
 // Database testing utilities (for integration tests)
-export const cleanupDatabase = async () => {
+export const cleanupDatabase  = async () => {
   // This would be implemented based on your database setup
   console.log('Database cleanup not implemented - add based on your DB setup');
 }
@@ -337,16 +319,16 @@ export const seedDatabase = async (data: any) => {; // This would be implemente
   console.log('Database seeding not implemented - add based on your DB setup');
 }
 // Error boundary testing
-export const ErrorBoundary = ({ children, onError  } { children: React.ReactNode; 
-  onError?: (error: Error) => void,
- }) => { const [hasError, setHasError] = React.useState(false);
+export const ErrorBoundary = ({ children: onError  } {  children: React.ReactNode; 
+  onError? : (error, Error)  => void,
+ }) => {  const [hasError, setHasError] = React.useState(false);
 
   React.useEffect(() => {
-    const errorHandler = (event: ErrorEvent) => {
+    const errorHandler = (event, ErrorEvent)  => {
       setHasError(true);
-      onError?.(event.error);
+      onError? .(event.error);
      }
-    window.addEventListener('error', errorHandler);
+    window.addEventListener('error' : errorHandler);
     return () => window.removeEventListener('error', errorHandler);
   }, [onError]);
 

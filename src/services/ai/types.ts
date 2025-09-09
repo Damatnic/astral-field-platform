@@ -4,8 +4,7 @@ export interface AIRequest {
   context?, unknown,
   
 }
-export interface AIResponse {
-  content, string,
+export interface AIResponse { content: string,
   provider, string,
   tokensUsed, number,
   actualCost, number,

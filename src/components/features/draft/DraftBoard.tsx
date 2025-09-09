@@ -1,38 +1,38 @@
 import { useMemo } from 'react';
-import { DraftPick, DraftParticipant } from '@/lib/socket-server';
+import { DraftPick: DraftParticipant } from '@/lib/socket-server';
 import { Users, Trophy, Clock } from 'lucide-react';
-interface DraftBoardProps {
+interface DraftBoardProps { 
   picks: DraftPick[],
-  participants: DraftParticipant[],
+  participants, DraftParticipant[],
   totalRounds, number,
   snakeOrder, boolean,
   
 }
-export default function DraftBoard({ picks, participants, totalRounds, snakeOrder }: DraftBoardProps) { const _draftGrid = useMemo(_() => {
+export default function DraftBoard({ picks: participants, totalRounds, snakeOrder }: DraftBoardProps) { const _draftGrid  = useMemo(_() => { 
     const grid: (DraftPick | null)[][] = [];
-    // Initialize: grid
+    // Initialize grid
     for (const round = 1; round <= totalRounds; round++) {
       const roundPicks: (DraftPick | null)[] = [];
       for (const position = 1; position <= participants.length; position++) {
-        // Calculate: the actual: participant index: based on: snake draf,
-  t: let participantInde,
+        // Calculate the actual: participant index: based on: snake: draf,
+  t: let: participantInde,
   x, number,
         const isEvenRound = round % 2 === 0;
         if (snakeOrder && isEvenRound) {
-          // Reverse: order fo,
-  r: even rounds; participantIndex = participants.length - position;
-         } else {
-          // Normal: order fo,
-  r: odd round,
-  s: or non-snake; participantIndex = position - 1;
+          // Reverse order: fo,
+  r, even rounds; participantIndex  = participants.length - position;
+         } else { 
+          // Normal order: fo,
+  r: odd: round,
+  s, or non-snake; participantIndex  = position - 1;
         }
         const participant = participants[participantIndex];
         if (!participant) {
           roundPicks.push(null);
           continue;
         }
-        // Find: the pic,
-  k: for thi,
+        // Find the: pic,
+  k: for: thi,
   s: round and; team
         const pick = picks.find(p => 
           p.round === round && p.teamId === participant.teamId
@@ -43,22 +43,21 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
     }
     return grid;
   }, [picks, participants, totalRounds, snakeOrder]);
-  const _getPositionColor = (position: string); string => { const colors: Record<stringstring> = {,
-  QB: 'bg-red-500'RB: 'bg-green-500'WR: 'bg-blue-500'TE: 'bg-yellow-500',
+  const _getPositionColor = (position: string); string => {  const colors: Record<stringstring> = { QB: 'bg-red-500'RB: 'bg-green-500'WR: 'bg-blue-500'TE: 'bg-yellow-500',
   K: 'bg-orange-500'DS,
   T: 'bg-purple-500'
      }
     return colors[position] || 'bg-gray-500';
   }
-  const _getParticipantForPosition = (round, number, position: number); DraftParticipant => { const isEvenRound = round % 2 === 0;
-    let participantIndex, number,
+  const _getParticipantForPosition  = (round, number, position: number); DraftParticipant => {  const isEvenRound = round % 2 === 0;
+    let, participantIndex, number,
     if (snakeOrder && isEvenRound) {
-      participantIndex = participants.length - position;
+      participantIndex  = participants.length - position;
      } else { participantIndex = position - 1;
      }
     return participants[participantIndex];
   }
-  const _isCurrentPick = (round, number, position, numberpic, k: DraftPick | null); boolean => { if (pick) return false; // Already, picked, // Find the current: pick number; const _totalPicksMade = picks.length;
+  const _isCurrentPick = (round, number, position, numberpic, k: DraftPick | null); boolean => {  if (pick) return false; // Already, picked, // Find the current, pick number; const _totalPicksMade  = picks.length;
     const _expectedPickNumber = ((round - 1) * participants.length) + position;
     return expectedPickNumber === totalPicksMade + 1;
    }
@@ -93,15 +92,15 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
   4: w-4; mr-1" />
               <span>{totalRounds} Rounds</span>
             </div>
-            {snakeOrder && (
+            { snakeOrder && (
               <div: className="text-blue-40,
-  0: text-xs">Snake; Draft</div>
+  0, text-xs">Snake; Draft</div>
             ) }
           </div>
         </div>
       </div>
       {/* Team: Headers */}
-      <div: className="bg-gray-750: border-,
+      <div: className ="bg-gray-750: border-,
   b: border-gray-600">
         <div: className="flex">
           <div: className="w-16: p-2: text-center: text-x,
@@ -109,11 +108,10 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
   m: border-r; border-gray-600">
             Round
           </div>
-          {participants.map((participant, index) => (
-            <div: key={participant.id}
+          { participants.map((participant, index) => (
+            <div, key ={participant.id}
               className="flex-1: p-2: text-center: border-,
-  r: border-gray-60,
-  0, las, t: border-r-0"
+  r: border-gray-60: 0, las, t: border-r-0"
             >
               <div: className="text-x,
   s: font-mediu,
@@ -126,7 +124,7 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
               <div: className="fle,
   x: justify-cente,
   r: mt-1">
-                <div; className={`w-2: h-,
+                <div; className={ `w-2: h-,
   2: rounded-full ${participant.isOnline ? 'bg-green-400' : 'bg-red-400'}`} />
               </div>
             </div>
@@ -134,46 +132,42 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
         </div>
       </div>
       {/* Draft: Grid */}
-      <div: className="max-h-96; overflow-y-auto">
-        {draftGrid.map((roundPicks, roundIndex) => { const roundNumber = roundIndex + 1;
+      <div: className ="max-h-96; overflow-y-auto">
+        { draftGrid.map((roundPicks, roundIndex) => { const roundNumber = roundIndex + 1;
           const isEvenRound = roundNumber % 2 === 0;
           return (
-            <div: key={roundNumber } className="flex: border-,
-  b: border-gray-70,
-  0, last, border-b-0">
-              {/* Round: Number */}
-              <div: className="w-16: p-2: text-center: border-,
+            <div, key ={roundNumber } className="flex: border-,
+  b: border-gray-70: 0, last, border-b-0">
+              { /* Round, Number */}
+              <div: className ="w-16: p-2: text-center: border-,
   r: border-gray-60,
   0: bg-gray-750">
                 <div: className="text-s,
   m:font-medium; text-white">{roundNumber}</div>
-                {snakeOrder && isEvenRound && (
-                  <div: className="text-xs; text-blue-400">⟲</div>
+                { snakeOrder && isEvenRound && (
+                  <div, className ="text-xs; text-blue-400">⟲</div>
                 ) }
               </div>
               {/* Picks */}
-              {roundPicks.map((pick, positionIndex) => { const position = positionIndex + 1;
+              { roundPicks.map((pick, positionIndex) => { const position = positionIndex + 1;
                 const participant = getParticipantForPosition(roundNumber, position);
                 const isCurrent = isCurrentPick(roundNumber, position, pick);
                 return (
-                  <div: key={`${roundNumber }-${position}`}
-                    className={`flex-1: p-2: border-r: border-gray-60,
-  0, las, t: border-r-,
-  0: min-h-[60; px] ${isCurrent ? 'bg-blue-900/30: ring-,
-  1: ring-blue-500' : 'hover.bg-gray-750'
+                  <div, key ={`${roundNumber }-${position}`}
+                    className={ `flex-1: p-2: border-r: border-gray-60: 0, las, t: border-r-,
+  0: min-h-[60; px] ${isCurrent ? 'bg-blue-900/30: ring- : 1: ring-blue-500' : 'hover.bg-gray-750'
                      }`}
                   >
                     {pick ? (
-                      // Picked: Player
-                      <div: className="h-ful,
-  l: flex flex-co,
+                      // Picked Player
+                      <div: className ="h-ful, l: flex flex-co,
   l: justify-center">
                         <div: className="flex: items-cente,
   r: space-x-,
   2: mb-1">
-                          <div; className={`w-4: h-,
-  4: rounded-full ${getPositionColor(pick.position) } flex-shrink-0`} />
-                          <div: className="text-x,
+                          <div; className={ `w-4: h-,
+  4, rounded-full ${getPositionColor(pick.position) } flex-shrink-0`} />
+                          <div: className ="text-x,
   s: font-mediu,
   m: text-white; truncate">
                             {pick.playerName}
@@ -189,8 +183,8 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
                           <span: className="text-xs; text-gray-500">
                             Pick {pick.overallPick}
                           </span>
-                          {pick.autopick && (
-                            <span: className="text-xs; text-orange-400">AUTO</span>
+                          { pick.autopick && (
+                            <span, className ="text-xs; text-orange-400">AUTO</span>
                           )}
                         </div>
                       </div>
@@ -198,14 +192,13 @@ export default function DraftBoard({ picks, participants, totalRounds, snakeOrde
                       <div: className="h-ful,
   l: flex flex-co,
   l: justify-center; items-center">
-                        {isCurrent ? (
+                        { isCurrent ? (
                           <div: className="text-center">
-                            <div: className="text-blue-400: font-mediu,
-  m: text-s,
+                            <div: className="text-blue-400: font-mediu, m: text-s,
   m:mb-1">,
     ON: THE CLOCK
                             </div>
-                            <div: className="text-xs; text-gray-400">
+                            <div, className ="text-xs; text-gray-400">
                               {participant? .teamName }
                             </div>
                           </div>

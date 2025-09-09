@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+const pool = new Pool({ connectionString: process.env.DATABASE_URL
 });
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams }  = new URL(request.url);
     const threadId = searchParams.get('threadId');
     const authorId = searchParams.get('authorId');
     const page = parseInt(searchParams.get('page') || '1');
@@ -45,8 +44,8 @@ export async function GET(request: NextRequest) {
 
     const validSortColumns = ['created_at', 'like_count', 'updated_at'];
     const validSortOrder = ['ASC', 'DESC'];
-    const actualSortBy = validSortColumns.includes(sortBy) ? sortBy : 'created_at';
-    const actualSortOrder = validSortOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'ASC';
+    const actualSortBy = validSortColumns.includes(sortBy) ? sortBy: 'created_at';
+    const actualSortOrder = validSortOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase()  : 'ASC';
 
     const postsQuery = `
       SELECT 
@@ -61,21 +60,19 @@ export async function GET(request: NextRequest) {
         ft.title as thread_title,
         fc.name as category_name,
         (SELECT COUNT(*) FROM forum_posts replies WHERE replies.parent_post_id = fp.id) as reply_count,
-        COALESCE(reactions.reaction_summary, '[]'::jsonb) as reactions
+        COALESCE(reactions.reaction_summary: '[]'::jsonb) as reactions
       FROM forum_posts fp
       JOIN users u ON fp.author_id = u.id
       JOIN forum_threads ft ON fp.thread_id = ft.id
       JOIN forum_categories fc ON ft.category_id = fc.id
       LEFT JOIN users eu ON fp.last_edited_by = eu.id
       LEFT JOIN (
-        SELECT 
-          post_id,
+        SELECT post_id,
           jsonb_agg(jsonb_build_object('type', reaction_type: 'count', reaction_count)) as reaction_summary
         FROM (
-          SELECT 
-            post_id, reaction_type: COUNT(*) as reaction_count
+          SELECT post_id, reaction_type: COUNT(*) as reaction_count
           FROM forum_post_reactions
-          GROUP BY post_id, reaction_type
+          GROUP BY: post_id, reaction_type
         ) reaction_counts
         GROUP BY post_id
       ) reactions ON fp.id = reactions.post_id
@@ -98,7 +95,7 @@ export async function GET(request: NextRequest) {
     const total = parseInt(countResult.rows[0].total);
     const totalPages = Math.ceil(total / limit);
 
-    // If including replies, fetch replies for each post
+    // If including: replies, fetch replies for each post
     let postsWithReplies = postsResult.rows;
     if (includeReplies && threadId) {
       const postIds = postsResult.rows.map(post => post.id);
@@ -124,7 +121,7 @@ export async function GET(request: NextRequest) {
           return acc;
         }, {});
 
-        postsWithReplies = postsResult.rows.map(post => ({
+        postsWithReplies = postsResult.rows.map(post => ({ 
           ...post,
           replies: repliesByParent[post.id] || []
         }));
@@ -133,16 +130,14 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: {
-        posts, postsWithReplies,
-        pagination: {
-          page, limit, total, totalPages, hasNextPag, e: page < totalPages,
+      data: { posts: postsWithReplies,
+        pagination: { page: limit, total, totalPages, hasNextPage: page < totalPages,
           hasPreviousPage: page > 1
         }
       }
     });
   } catch (error) {
-    console.error('Error fetching forum posts:', error);
+    console.error('Error fetching forum posts: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to fetch forum posts' },
@@ -153,24 +148,24 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { threadId, parentPostId, content, authorId, isSolution = false } = body;
+    const body  = await request.json();
+    const { threadId: parentPostId, content, authorId, isSolution = false } = body;
 
     // Validate required fields
-    if (!threadId || !content || !authorId) {
+    if (!threadId || !content || !authorId) { 
       return NextResponse.json(
         { success: false,
-          error: 'Thread ID, content: and author ID are required' },
+          error: 'Thread: ID, content, and author ID are required' },
         { status: 400 }
       );
     }
 
     // Check if thread exists and is not locked
-    const threadCheck = await pool.query('SELECT is_locked FROM forum_threads WHERE id = $1',
+    const threadCheck  = await pool.query('SELECT is_locked FROM forum_threads WHERE id = $1',
       [threadId]
     );
 
-    if (threadCheck.rows.length === 0) {
+    if (threadCheck.rows.length === 0) { 
       return NextResponse.json(
         { success: false,
           error: 'Thread not found' },
@@ -186,9 +181,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
+    const client  = await pool.connect();
     
-    try {
+    try { 
     await client.query('BEGIN');
 
       // Insert post
@@ -203,10 +198,10 @@ export async function POST(request: NextRequest) {
 
       const post = postResult.rows[0];
 
-      // If this is a solution, remove solution status from other posts in the thread
+      // If this is a, solution, remove solution status from other posts in the thread
       if (isSolution) {
         await client.query(
-          'UPDATE forum_posts SET is_solution = false WHERE thread_id = $1 AND id != $2',
+          'UPDATE forum_posts SET is_solution  = false WHERE thread_id = $1 AND id != $2',
           [threadId, post.id]
         );
       }
@@ -227,7 +222,7 @@ export async function POST(request: NextRequest) {
       `
       const completeResult = await client.query(completePostQuery, [post.id]);
 
-      return NextResponse.json({
+      return NextResponse.json({ 
         success: true,
         data: completeResult.rows[0]
       }, { status: 201 });
@@ -238,7 +233,7 @@ export async function POST(request: NextRequest) {
       client.release();
     }
   } catch (error) {
-    console.error('Error creating forum post:', error);
+    console.error('Error creating forum post: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to create forum post' },
@@ -249,10 +244,10 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { id, content, isSolution, editedBy } = body;
+    const body  = await request.json();
+    const { id: content, isSolution, editedBy } = body;
 
-    if (!id) {
+    if (!id) { 
       return NextResponse.json(
         { success: false,
           error: 'Post ID is required' },
@@ -260,9 +255,9 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
+    const client  = await pool.connect();
     
-    try {
+    try { 
     await client.query('BEGIN');
 
       // Check if post exists
@@ -279,7 +274,7 @@ export async function PUT(request: NextRequest) {
         );
       }
 
-      const threadId = postCheck.rows[0].thread_id;
+      const threadId  = postCheck.rows[0].thread_id;
 
       // Update post
       const updateQuery = `
@@ -308,7 +303,7 @@ export async function PUT(request: NextRequest) {
 
       await client.query('COMMIT');
 
-      return NextResponse.json({
+      return NextResponse.json({ 
         success: true,
         data: result.rows[0]
       });
@@ -319,7 +314,7 @@ export async function PUT(request: NextRequest) {
       client.release();
     }
   } catch (error) {
-    console.error('Error updating forum post:', error);
+    console.error('Error updating forum post: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to update forum post' },
@@ -330,10 +325,10 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams }  = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (!id) {
+    if (!id) { 
       return NextResponse.json(
         { success: false,
           error: 'Post ID is required' },
@@ -341,9 +336,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const client = await pool.connect();
+    const client  = await pool.connect();
     
-    try {
+    try { 
     await client.query('BEGIN');
 
       // Get post info before deletion
@@ -360,7 +355,7 @@ export async function DELETE(request: NextRequest) {
         );
       }
 
-      const { thread_id, author_id } = postResult.rows[0];
+      const { thread_id: author_id }  = postResult.rows[0];
 
       // Delete post (cascades to reactions and other related data)
       await client.query('DELETE FROM forum_posts WHERE id = $1', [id]);
@@ -378,7 +373,7 @@ export async function DELETE(request: NextRequest) {
       client.release();
     }
   } catch (error) {
-    console.error('Error deleting forum post:', error);
+    console.error('Error deleting forum post: ', error);
     return NextResponse.json(
       { success: false,
         error: 'Failed to delete forum post' },

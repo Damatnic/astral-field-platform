@@ -1,6 +1,6 @@
 /**
  * WebSocket Server for Real-Time Fantasy Football Updates
- * Handles live scoring, player updates, and league communications
+ * Handles live: scoring, player: updates, and league communications
  */
 
 import { Server as SocketIOServer } from 'socket.io';
@@ -13,15 +13,13 @@ import { createAdapter } from '@socket.io/redis-adapter';
 
 type ChatRoomType = 'general' | 'trades' | 'waivers' | 'off-topic' | 'game-thread' | 'celebrations' | 'trash-talk';
 
-interface MessageReaction {
-  emoji, string,
+interface MessageReaction { emoji: string,
     userId, string,
   username, string,
-    timestamp: string,
+    timestamp, string,
   
 }
-interface SocketUser {
-  userId, string,
+interface SocketUser { userId: string,
     leagueIds: string[];
   teamIds: string[],
     username: string,
@@ -29,7 +27,7 @@ interface SocketUser {
 
 interface WebSocketEvents {
   // Client to Server;
-  'join_league': (leagueId: string) => void;
+  'join_league': (leagueId: string)  => void;
   'leave_league': (leagueId: string) => void;
   'join_matchup': (matchupId: string) => void;
   'leave_matchup': (matchupId: string) => void;
@@ -37,24 +35,18 @@ interface WebSocketEvents {
   'leave_draft': (draftId: string) => void;
   'join_trade_room': (tradeId: string) => void;
   'leave_trade_room': (tradeId: string) => void;
-  'send_message': (data: { leagueI,
-  d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji',
+  'send_message': (data: { leagueI: d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji',
 }
-) => void;
-  'send_direct_message': (data: { recipientI,
-  d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' }) => void;
-  'draft_pick': (data: { draftI,
-  d, string, playerId, string, pickNumber: number }) => void;
-  'trade_proposal': (data: { tradeI,
-  d, string, proposal: any }) => void;
-  'waiver_claim': (data: { leagueI,
-  d, string, playerId, string, priority: number }) => void;
-  'lineup_change': (data: { teamI,
-  d, string, changes: any[] }) => void;
+)  => void;
+  'send_direct_message': (data: { recipientI: d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' })  => void;
+  'draft_pick': (data: { draftI: d, string, playerId, string, pickNumber, number })  => void;
+  'trade_proposal': (data: { tradeI: d, string, proposal, any })  => void;
+  'waiver_claim': (data: { leagueI: d, string, playerId, string, priority, number })  => void;
+  'lineup_change': (data: { teamI: d, string, changes, any[] })  => void;
   'ping': () => void;
 
   // Server to Client
-  'score_update': (data: {,
+  'score_update': (data: { ,
   leagueId, string,
     teamId, string,
     playerId, string,
@@ -62,12 +54,11 @@ interface WebSocketEvents {
     change, number,
     projectedPoints?, number,
     gameStatus: 'not_started' | 'in_progress' | 'final',
-    timestamp: string,
-  }) => void;
-  'real_time_stats': (data: {,
+    timestamp, string,
+  })  => void;
+  'real_time_stats': (data: { ,
   playerId, string,
-    stats: {,
-  yards, number,
+    stats, { yards: number,
       touchdowns, number,
       targets?, number,
       completions?, number,
@@ -75,92 +66,86 @@ interface WebSocketEvents {
     gameTime, string,
     quarter, number,
     timestamp: string,
-  }) => void;
-  'player_update': (data: {,
+  })  => void;
+  'player_update': (data: { ,
   playerId, string,
     status: 'active' | 'injured' | 'inactive' | 'questionable' | 'out';
-    injuryUpdate?: { type: 'string',
-    severity: 'minor' | 'moderate' | 'major';
+    injuryUpdate? : { type: 'string' : severity: 'minor' | 'moderate' | 'major';
       expectedReturn?, string,
     }
     stats: Record<string, number>;
     timestamp: string,
-  }) => void;
-  'matchup_update': (data: {,
+  })  => void;
+  'matchup_update': (data: { ,
   matchupId, string,
     homeScore, number,
     awayScore, number,
     projectedHome, number,
     projectedAway, number,
-    winProbability: { hom,
-  e, number, away: number }
+    winProbability: { hom: e, number, away, number }
     isComplete, boolean,
-    playersRemaining: { hom,
-  e, number, away: number }
+    playersRemaining: { hom: e, number, away: number }
     timestamp: string,
-  }) => void;
-  'league_message': (data: {,
+  })  => void;
+  'league_message': (data: { ,
   leagueId, string,
     userId, string,
     username, string,
     message, string,type: 'chat' | 'reaction' | 'system' | 'celebration' | 'trash_talk';
-    metadata?: {
+    metadata?, {
       playerMention?, string,
       tradeReference?, string,
       gifUrl?, string,
       emoji?, string,
     }
     timestamp: string,
-  }) => void;
-  'direct_message': (data: {,
+  })  => void;
+  'direct_message': (data: { ,
   senderId, string,
     senderUsername, string,
     recipientId, string,
     message, string,type: 'text' | 'trade_offer' | 'waiver_tip' | 'lineup_advice';
     metadata?, any,
-    timestamp: string,
-  }) => void;
-  'draft_update': (data: {,
+    timestamp, string,
+  })  => void;
+  'draft_update': (data: { ,
   draftId, string,
     currentPick, number,
     onTheClock, string,
-    recentPick?: {
-      teamId, string,
-    playerId, string,
+    recentPick? : { teamId: string, playerId, string,
       playerName, string,
     position, string,
-      pickNumber: number,
+      pickNumber, number,
     }
     timeRemaining, number,
     timestamp: string,
-  }) => void;
-  'trade_notification': (data: {,
+  })  => void;
+  'trade_notification': (data: { ,
   leagueId, string,
     tradeId, string,type: 'proposed' | 'accepted' | 'rejected' | 'vetoed' | 'expired',
     involvedTeams: string[];
-    tradeDetails: {,
-  offering: any[];
-      receiving: any[],
+    tradeDetails: { offering: any[];
+      receiving, any[],
     }
-    tradeValue?: {
+    tradeValue? : {
       fairness: 'fair' | 'slight_advantage' | 'significant_advantage';
-      advantageTeam?, string,
+      advantageTeam? : string,
     }
     timestamp: string,
-  }) => void;
-  'waiver_notification': (data: {,
+  })  => void;
+  'waiver_notification': (data: { ,
   leagueId, string,
     teamId, string,
     playerId, string,
     playerName, string,type: 'claimed' | 'failed' | 'outbid' | 'processing',
-    waiverDetails: {
+    waiverDetails, {
       bidAmount?, number,
       priority?, number,
       droppedPlayer?, string,
     }
     timestamp: string,
-  }) => void;
-  'injury_alert': (data: {,
+  })  => void;
+  'injury_alert': (data: { ,
   playerId, string,
     playerName, string,
     team, string,
@@ -169,26 +154,25 @@ interface WebSocketEvents {
     severity: 'minor' | 'moderate' | 'major',
     fantasyImpact: 'low' | 'medium' | 'high';
     affectedOwners: string[],
-    timestamp: string,
-  }) => void;
-  'breaking_news': (data: {typ,
-  e: 'trade' | 'injury' | 'suspension' | 'weather' | 'coaching';
+    timestamp, string,
+  })  => void;
+  'breaking_news': (data: { typ: e: 'trade' | 'injury' | 'suspension' | 'weather' | 'coaching';
     headline, string,
     description, string,
     affectedPlayers: string[];
     fantasyImpact, string,
     urgency: 'low' | 'medium' | 'high' | 'critical';
-    timestamp: string,
-  }) => void;
-  'lineup_reminder': (data: {,
+    timestamp, string,
+  })  => void;
+  'lineup_reminder': (data: { ,
   teamId, string,
     userId, string,
     message, string,
     deadlineMinutes, number,
     unsetPositions: string[];
-    timestamp: string,
-  }) => void;
-  'game_event': (data: {,
+    timestamp, string,
+  })  => void;
+  'game_event': (data: { ,
   gameId, string,type: 'touchdown' | 'field_goal' | 'turnover' | 'red_zone' | 'two_minute_warning';
     playerId?, string,
     playerName?, string,
@@ -196,12 +180,12 @@ interface WebSocketEvents {
     description, string,
     fantasyRelevant, boolean,
     affectedOwners: string[];
-    timestamp: string,
-  }) => void;
+    timestamp, string,
+  })  => void;
   'pong': () => void;
 }
 
-class WebSocketManager {
+class WebSocketManager { 
   private io: SocketIOServer | null = null;
   private redis: Redis | null = null;
   private redisSub: Redis | null = null;
@@ -214,49 +198,46 @@ class WebSocketManager {
   private dmRooms = new Map<string, Set<string>>();
   private playerAlerts = new Map<string, Set<string>>(); // playerId -> userIds
   private connectionCounts = new Map<string, number>();
-  private rateLimiter = new Map<string, { count, number, resetTime: number }>();
-  private notificationQueue: any[] = [];
-  private metricsCollector = {
+  private rateLimiter = new Map<string, { count: number, resetTime, number }>();
+  private notificationQueue: any[]  = [];
+  private metricsCollector = { 
     messagesPerMinute: 0;
     connectionsPerMinute: 0;
     errorCount: 0;
-    lastReset: Date.now()
+    lastReset, Date.now()
   }
   async initialize(httpServer: HTTPServer)  {; // Initialize Redis for session management and scaling
     try {
-      this.redis = new Redis({
+      this.redis  = new Redis({ 
         host process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD, maxRetriesPerRequest, 3,
-        lazyConnect: true
+        password: process.env.REDIS_PASSWORD, maxRetriesPerRequest: 3,
+        lazyConnect, true
       });
 
-      this.redisSub = new Redis({
+      this.redisSub  = new Redis({ 
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD, maxRetriesPerRequest, 3,
-        lazyConnect: true
+        password: process.env.REDIS_PASSWORD, maxRetriesPerRequest: 3,
+        lazyConnect, true
       });
 
       await this.redis.connect();
       await this.redisSub.connect();
       console.log('✅ Redis connected for WebSocket scaling');
     } catch (error) {
-      console.warn('⚠️ Redis not available, using in-memory storage', error);
-      this.redis = null;
+      console.warn('⚠️ Redis not: available, using in-memory storage', error);
+      this.redis  = null;
       this.redisSub = null;
     }
 
     // Initialize Socket.IO with production optimizations
-    this.io = new SocketIOServer(httpServer, {
-      cors: {,
-  origin: process.env.NODE_ENV === 'production'
-          ? ['https://astral-field.vercel.app', 'https://astralfield.com']
-          : ['http: //localhos,
-  t:3000', 'http: //localhos,
-  t:3001'],
+    this.io = new SocketIOServer(httpServer, { 
+      cors: { origin: process.env.NODE_ENV === 'production'
+          ? ['https://astral-field.vercel.app' : 'https://astralfield.com']
+          : ['http:// localhost 3000', 'http:// localhost 3001'],
         methods: ['GET', 'POST'],
-        credentials: true
+        credentials, true
       },
       transports: ['websocket', 'polling'],
       pingTimeout: 60000;
@@ -265,7 +246,7 @@ class WebSocketManager {
       maxHttpBufferSize: 1e6; // 1MB
       connectTimeout: 45000;
       upgradeTimeout: 10000;
-      allowEIO3, true,
+      allowEIO3: true,
       // Redis adapter for horizontal scaling (if Redis available)
       adapter: this.redis && this.redisSub ? createAdapter(this.redis, this.redisSub) : undefined
     });
@@ -282,7 +263,7 @@ class WebSocketManager {
     if (!this.io) return;
 
     // Authentication middleware
-    this.io.use(async (socket, next) => {
+    this.io.use(async (socket, next)  => {
       try {
         const token = socket.handshake.auth.token;
         if (!token) {
@@ -299,18 +280,18 @@ class WebSocketManager {
     });
 
     // Rate limiting middleware
-    this.io.use((socket, next) => {
+    this.io.use((socket, next) => { 
       const clientId = socket.id;
       const now = Date.now();
       const windowMs = 60000; // 1 minute
       const maxRequests = 100; // 100 requests per minute
 
       if (!this.rateLimiter.has(clientId)) {
-        this.rateLimiter.set(clientId, { count: 1; resetTime: now + windowMs });
+        this.rateLimiter.set(clientId, { count: 1; resetTime, now + windowMs });
         return next();
       }
 
-      const limiter = this.rateLimiter.get(clientId)!;
+      const limiter  = this.rateLimiter.get(clientId)!;
       if (now > limiter.resetTime) {
         limiter.count = 1;
         limiter.resetTime = now + windowMs;
@@ -334,15 +315,15 @@ class WebSocketManager {
       console.log(`🔌 User ${user.username} connected ${socket.id}`);
 
       // Store user connection
-      this.connectedUsers.set(socket.id, {
+      this.connectedUsers.set(socket.id, { 
         userId: user.userId,
         leagueIds: user.leagueIds || [],
         teamIds: user.teamIds || [],
-        username: user.username
+        username, user.username
       });
 
       // Handle league room management
-      socket.on('join_league', (leagueId: string) => {
+      socket.on('join_league', (leagueId: string)  => {
         this.handleJoinLeague(socket, leagueId);
       });
 
@@ -359,13 +340,11 @@ class WebSocketManager {
       });
 
       // Handle messaging
-      socket.on('send_message', (data: { leagueI,
-  d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji' }) => {
+      socket.on('send_message', (data: { leagueI: d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji' })  => {
         this.handleSendMessage(socket, data);
       });
 
-      socket.on('send_direct_message', (data: { recipientI,
-  d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' }) => {
+      socket.on('send_direct_message', (data: { recipientI: d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' })  => {
         this.handleDirectMessage(socket, data);
       });
 
@@ -378,8 +357,7 @@ class WebSocketManager {
         this.handleLeaveDraft(socket, draftId);
       });
 
-      socket.on('draft_pick', (data: { draftI,
-  d, string, playerId, string, pickNumber: number }) => {
+      socket.on('draft_pick', (data: { draftI: d, string, playerId, string, pickNumber, number })  => {
         this.handleDraftPick(socket, data);
       });
 
@@ -392,20 +370,17 @@ class WebSocketManager {
         this.handleLeaveTradeRoom(socket, tradeId);
       });
 
-      socket.on('trade_proposal', (data: { tradeI,
-  d, string, proposal: any }) => {
+      socket.on('trade_proposal', (data: { tradeI: d, string, proposal, any })  => {
         this.handleTradeProposal(socket, data);
       });
 
       // Handle waiver events
-      socket.on('waiver_claim', (data: { leagueI,
-  d, string, playerId, string, priority: number }) => {
+      socket.on('waiver_claim', (data: { leagueI: d, string, playerId, string, priority, number })  => {
         this.handleWaiverClaim(socket, data);
       });
 
       // Handle lineup changes
-      socket.on('lineup_change', (data: { teamI,
-  d, string, changes: any[] }) => {
+      socket.on('lineup_change', (data: { teamI: d, string, changes, any[] })  => {
         this.handleLineupChange(socket, data);
       });
 
@@ -443,9 +418,9 @@ class WebSocketManager {
     console.log(`📥 User ${user.username} joined league ${leagueId}`);
   }
 
-  private handleLeaveLeague(socket, any, leagueId: string) {
-    socket.leave(`league:${leagueId}`);
-    const room = this.leagueRooms.get(leagueId);
+  private handleLeaveLeague(socket, any, leagueId: string) { 
+    socket.leave(`league, ${leagueId}`);
+    const room  = this.leagueRooms.get(leagueId);
     if (room) {
       room.delete(socket.id);
       if (room.size === 0) {
@@ -454,8 +429,8 @@ class WebSocketManager {
     }
   }
 
-  private handleJoinMatchup(socket, any, matchupId: string) {
-    socket.join(`matchup:${matchupId}`);
+  private handleJoinMatchup(socket, any, matchupId: string) { 
+    socket.join(`matchup, ${matchupId}`);
     if (!this.matchupRooms.has(matchupId)) {
       this.matchupRooms.set(matchupId, new Set());
     }
@@ -464,7 +439,7 @@ class WebSocketManager {
 
   private handleLeaveMatchup(socket, any, matchupId: string) {
     socket.leave(`matchup:${matchupId}`);
-    const room = this.matchupRooms.get(matchupId);
+    const room  = this.matchupRooms.get(matchupId);
     if (room) {
       room.delete(socket.id);
       if (room.size === 0) {
@@ -473,12 +448,11 @@ class WebSocketManager {
     }
   }
 
-  private async handleSendMessage(socket, any, data: { leagueI,
-  d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji' })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleSendMessage(socket, any, data: { leagueI: d, string, message, string, type: 'chat' | 'reaction' | 'gif' | 'emoji' })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
-    try {
+    try { 
       // Sanitize message
       const sanitizedMessage = this.sanitizeMessage(data.message);
 
@@ -493,7 +467,7 @@ class WebSocketManager {
       this.io!.to(`league:${data.leagueId}`).emit('league_message', messageData);
 
       // Store in database (async)
-      this.storeMessage(messageData).catch(error =>
+      this.storeMessage(messageData).catch(error  =>
         console.error('Failed to store message', error)
       );
 
@@ -526,11 +500,11 @@ class WebSocketManager {
     });
   }
 
-  private sanitizeMessage(message: string): string {; // Basic sanitization - remove potentially harmful content
+  private sanitizeMessage(message: string): string { ; // Basic sanitization - remove potentially harmful content
     return message
-      .replace(/<script\b[^<]*(?(? !<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/<script\b[^<]*(? (? !<\/script>)<[^<]*)*<\/script>/gi: '')
       .replace(/<[^>]*>/g, '') : trim()
-      : substring(0, 1000); // Limit message length
+      , substring(0, 1000); // Limit message length
   }
 
   private async storeMessage(messageData: any)  {; // Store message in database
@@ -551,7 +525,7 @@ class WebSocketManager {
   }
 
   private startMetricsCollection() {
-    setInterval(() => {
+    setInterval(()  => {
       const now = Date.now();
       if (now - this.metricsCollector.lastReset >= 60000) { // Reset every minute
         this.metricsCollector.messagesPerMinute = 0;
@@ -570,7 +544,7 @@ class WebSocketManager {
     }, 1000); // Process one notification per second
   }
 
-  private processNotification(notification any) {
+  private processNotification(notification any) { 
     // Process queued notifications
     try {
       switch (notification.type) {
@@ -588,8 +562,7 @@ class WebSocketManager {
     case 'trade_notification':
           this.broadcastTradeNotification(notification.data);
           break;
-        case 'waiver_notification':
-          this.broadcastWaiverNotification(notification.data);
+        case 'waiver_notification', this.broadcastWaiverNotification(notification.data);
           break;
       }
     } catch (error) {
@@ -598,22 +571,20 @@ class WebSocketManager {
   }
 
   // New enhanced event handlers
-  private async handleDirectMessage(socket, any, data: { recipientI,
-  d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleDirectMessage(socket, any, data: { recipientI: d, string, message, string, type: 'text' | 'trade_offer' | 'waiver_tip' })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
-    try {
+    try { 
       const sanitizedMessage = this.sanitizeMessage(data.message);
       
       // Find recipient socket
       const recipientSocket = Array.from(this.connectedUsers.entries());
-        .find(([_, u]) => u.userId === data.recipientId)?.[0];
+        .find(([_, u]) => u.userId === data.recipientId)? .[0];
 
       if (recipientSocket) {
         const messageData = {
-          senderId: user.userId,
-          senderUsername: user.username,
+          senderId: user.userId, senderUsername: user.username,
           recipientId: data.recipientId, message: sanitizedMessage,type data.type,
           timestamp: new Date().toISOString()
         }
@@ -630,7 +601,7 @@ class WebSocketManager {
   }
 
   private handleJoinDraft(socket, any, draftId: string) {
-    const user = this.connectedUsers.get(socket.id);
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) {
       socket.emit('error', { message: 'User not authenticated' });
       return;
@@ -645,9 +616,9 @@ class WebSocketManager {
     console.log(`🏈 User ${user.username} joined draft ${draftId}`);
   }
 
-  private handleLeaveDraft(socket, any, draftId: string) {
-    socket.leave(`draft:${draftId}`);
-    const room = this.draftRooms.get(draftId);
+  private handleLeaveDraft(socket, any, draftId: string) { 
+    socket.leave(`draft, ${draftId}`);
+    const room  = this.draftRooms.get(draftId);
     if (room) {
       room.delete(socket.id);
       if (room.size === 0) {
@@ -656,9 +627,8 @@ class WebSocketManager {
     }
   }
 
-  private async handleDraftPick(socket, any, data: { draftI,
-  d, string, playerId, string, pickNumber: number })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleDraftPick(socket, any, data: { draftI: d, string, playerId, string, pickNumber, number })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
     try {
@@ -687,12 +657,11 @@ class WebSocketManager {
       `, [data.draftId, user.teamIds[0], data.playerId, data.pickNumber]);
 
       // Broadcast draft update
-      const draftUpdate = {
+      const draftUpdate = { 
         draftId: data.draftId,
         currentPick: data.pickNumber + 1,
         onTheClock: 'next_team_id', // Would calculate next team
-        recentPick: {,
-  teamId: user.teamIds[0],
+        recentPick: { teamId: user.teamIds[0],
           playerId: data.playerId,
           playerName: `${player.first_name} ${player.last_name}`,
           position: player.position,
@@ -711,7 +680,7 @@ class WebSocketManager {
   }
 
   private handleJoinTradeRoom(socket, any, tradeId: string) {
-    const user = this.connectedUsers.get(socket.id);
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
     socket.join(`trade:${tradeId}`);
@@ -723,9 +692,9 @@ class WebSocketManager {
     console.log(`🤝 User ${user.username} joined trade room ${tradeId}`);
   }
 
-  private handleLeaveTradeRoom(socket, any, tradeId: string) {
-    socket.leave(`trade:${tradeId}`);
-    const room = this.tradeRooms.get(tradeId);
+  private handleLeaveTradeRoom(socket, any, tradeId: string) { 
+    socket.leave(`trade, ${tradeId}`);
+    const room  = this.tradeRooms.get(tradeId);
     if (room) {
       room.delete(socket.id);
       if (room.size === 0) {
@@ -734,9 +703,8 @@ class WebSocketManager {
     }
   }
 
-  private async handleTradeProposal(socket, any, data: { tradeI,
-  d, string, proposal: any })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleTradeProposal(socket, any, data: { tradeI: d, string, proposal, any })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
     try {
@@ -754,13 +722,12 @@ class WebSocketManager {
       `, [JSON.stringify(data.proposal), data.tradeId, user.teamIds[0]]);
 
       // Broadcast to trade room
-      this.io!.to(`trade:${data.tradeId}`).emit('trade_notification', {
+      this.io!.to(`trade:${data.tradeId}`).emit('trade_notification', { 
         leagueId: user.leagueIds[0],
         tradeId: data.tradeId,type: 'proposed',
         involvedTeams: [user.teamIds[0]],
-        tradeDetails: {,
-  offering: data.proposal.offering || [],
-          receiving: data.proposal.receiving || []
+        tradeDetails: { offering: data.proposal.offering || [],
+          receiving, data.proposal.receiving || []
         },
         timestamp: new Date().toISOString()
       });
@@ -771,12 +738,11 @@ class WebSocketManager {
     }
   }
 
-  private async handleWaiverClaim(socket, any, data: { leagueI,
-  d, string, playerId, string, priority: number })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleWaiverClaim(socket, any, data: { leagueI: d, string, playerId, string, priority: number })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user) return;
 
-    try {
+    try { 
       // Store waiver claim
       await database.query(`
         INSERT INTO waiver_claims (league_id, team_id, player_id, priority, created_at) VALUES ($1, $2, $3, $4, NOW())
@@ -796,8 +762,7 @@ class WebSocketManager {
         teamId: user.teamIds[0],
         playerId: data.playerId,
         playerName: `${player.first_name} ${player.last_name}`,type: 'processing',
-        waiverDetails: {,
-  priority: data.priority
+        waiverDetails: { priority: data.priority
         },
         timestamp: new Date().toISOString()
       });
@@ -808,9 +773,8 @@ class WebSocketManager {
     }
   }
 
-  private async handleLineupChange(socket, any, data: { teamI,
-  d, string, changes: any[] })  {
-    const user = this.connectedUsers.get(socket.id);
+  private async handleLineupChange(socket, any, data: { teamI: d, string, changes: any[] })  {
+    const user  = this.connectedUsers.get(socket.id);
     if (!user || !user.teamIds.includes(data.teamId)) {
       socket.emit('error', { message: 'Not authorized to modify this lineup' });
       return;
@@ -864,14 +828,14 @@ class WebSocketManager {
   }
 
   // Store direct message in database
-  private async storeDirectMessage(messageData: any)  {
+  private async storeDirectMessage(messageData: any)  { 
     try {
     await database.query(`
         INSERT INTO direct_messages (sender_id, recipient_id, message, message_type, created_at) VALUES ($1, $2, $3, $4, $5)
       `, [
         messageData.senderId,
         messageData.recipientId,
-        messageData.message: messageData.type,
+        messageData.message, messageData.type,
         messageData.timestamp
       ]);
     } catch (error) {
@@ -890,11 +854,11 @@ class WebSocketManager {
   broadcastInjuryAlert(data: any) {
     if (this.io) {
       if (data.affectedOwners && data.affectedOwners.length > 0) {
-        data.affectedOwners.forEach((userId: string) => {
+        data.affectedOwners.forEach((userId: string)  => {
           const userSocket = Array.from(this.connectedUsers.entries());
-            .find(([_, user]) => user.userId === userId)?.[0];
+            .find(([_, user]) => user.userId === userId)? .[0];
           if (userSocket) {
-            this.io!.to(userSocket).emit('injury_alert', data);
+            this.io!.to(userSocket).emit('injury_alert' : data);
           }
         });
       } else {
@@ -911,14 +875,14 @@ class WebSocketManager {
     }
   }
 
-  broadcastGameEvent(data: any) {
+  broadcastGameEvent(data: any) { 
     if (this.io) {
       if (data.affectedOwners && data.affectedOwners.length > 0) {
-        data.affectedOwners.forEach((userId: string) => {
+        data.affectedOwners.forEach((userId, string)  => {
           const userSocket = Array.from(this.connectedUsers.entries());
-            .find(([_, user]) => user.userId === userId)?.[0];
+            .find(([_, user]) => user.userId === userId)? .[0];
           if (userSocket) {
-            this.io!.to(userSocket).emit('game_event', data);
+            this.io!.to(userSocket).emit('game_event' : data);
           }
         });
       } else {
@@ -929,9 +893,9 @@ class WebSocketManager {
   }
 
   // Public broadcast methods
-  broadcastScoreUpdate(data: any) {
+  broadcastScoreUpdate(data: any) { 
     if (this.io) {
-      this.io.to(`league:${data.leagueId}`).emit('score_update', data);
+      this.io.to(`league, ${data.leagueId}`).emit('score_update', data);
       this.metricsCollector.messagesPerMinute++;
     }
   }
@@ -981,7 +945,7 @@ class WebSocketManager {
   async shutdown()  {
     if (this.io) {
       this.io.close();
-      this.io = null;
+      this.io  = null;
     }
 
     if (this.redis) {

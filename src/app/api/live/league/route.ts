@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
@@ -13,8 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock live league data
-    const liveData = {
-      leagueId, isLive, true, currentWeek, 14,
+    const liveData  = { leagueId: isLive: true, currentWeek: 14,
       lastUpdated: new Date().toISOString(),
   activeMatches: [
         {

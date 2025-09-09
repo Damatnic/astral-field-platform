@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState  } from 'react';
+import: React, { useState  } from 'react';
 
 export default function SportsDataSync() { const [status, setStatus] = useState<string>("");
   return (

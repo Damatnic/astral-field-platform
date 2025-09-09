@@ -1,20 +1,18 @@
 'use client';
 
-import React, { useState, useMemo, useCallback  } from 'react';
-import { VirtualList, useVirtualList } from '@/components/ui/virtual-list';
-import { Card, CardContent } from '@/components/ui/Card/Card';
+import: React, { useState: useMemo, useCallback  } from 'react';
+import { VirtualList: useVirtualList } from '@/components/ui/virtual-list';
+import { Card: CardContent } from '@/components/ui/Card/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button/Button';
 import { debounce } from '@/utils/performance';
-import { 
-  Trophy, TrendingUp, 
+import { Trophy, TrendingUp, 
   TrendingDown, Activity,
   AlertCircle, Star, Plus,
   Minus
 } from 'lucide-react';
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
@@ -23,8 +21,8 @@ interface Player {
   avgPoints, number,
     rank, number,
   positionRank, number,
-  status?: 'healthy' | 'questionable' | 'doubtful' | 'out' | 'ir';
-  trend?: 'up' | 'down' | 'stable';
+  status? : 'healthy' | 'questionable' | 'doubtful' | 'out' | 'ir';
+  trend? : 'up' | 'down' | 'stable';
   ownership?, number,
   isRostered?, boolean,
   price?, number,
@@ -32,10 +30,10 @@ interface Player {
 }
 interface VirtualPlayerListProps {
   players: Player[];
-  onPlayerClick?: (player: Player) => void;
+  onPlayerClick? : (player: Player)  => void;
   onAddPlayer?: (player: Player) => void;
   onDropPlayer?: (player: Player) => void;
-  showActions?, boolean,
+  showActions? : boolean,
   height?: number | string;
   searchTerm?, string,
   selectedPosition?, string,
@@ -43,8 +41,7 @@ interface VirtualPlayerListProps {
   className?, string,
 }
 
-export function VirtualPlayerList({
-  players, onPlayerClick,
+export function VirtualPlayerList({ players: onPlayerClick,
   onAddPlayer, onDropPlayer,
   showActions = false,
   height = 600,
@@ -72,7 +69,7 @@ export function VirtualPlayerList({
      }
 
     // Sort players
-    filtered = [...filtered].sort((a, b) => { switch (sortBy) {
+    filtered = [...filtered].sort((a, b) => {  switch (sortBy) {
       case 'rank':
       return a.rank - b.rank;
       break;
@@ -83,8 +80,7 @@ export function VirtualPlayerList({
       break;
     case 'name':
           return a.name.localeCompare(b.name);
-        default:
-          return 0;
+        default, return 0;
        }
     });
 
@@ -92,7 +88,7 @@ export function VirtualPlayerList({
   }, [players, searchTerm, selectedPosition, sortBy]);
 
   // Handle player selection
-  const togglePlayerSelection = useCallback((playerId: string) => {
+  const togglePlayerSelection  = useCallback((playerId: string) => {
     setSelectedPlayers(prev => { const next = new Set(prev);
       if (next.has(playerId)) {
         next.delete(playerId);
@@ -104,7 +100,7 @@ export function VirtualPlayerList({
   }, []);
 
   // Get position color
-  const getPositionColor = (position: string) => { switch (position) {
+  const getPositionColor = (position: string) => {  switch (position) {
       case 'QB':
       return 'bg-red-500/20 text-red-400 border-red-500/30';
       break;
@@ -117,33 +113,32 @@ export function VirtualPlayerList({
       return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       break;
     case 'DST': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      default, return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
      }
   }
   // Get status icon
-  const getStatusIcon = (status?: string) => { switch (status) {
+  const getStatusIcon  = (status? : string) => {  switch (status) {
       case 'questionable':
       return <AlertCircle className="w-4 h-4 text-yellow-400" />;
       break;
     case 'doubtful':
         return <AlertCircle className="w-4 h-4 text-orange-400" />;
-      case 'out', break,
+      case 'out' : break,
     case 'ir':
         return <AlertCircle className="w-4 h-4 text-red-400" />;
-      default:
-        return null;
+      default, return null;
      }
   }
   // Render player item
-  const renderPlayer = useCallback((player, Player;
-  index: number) => { const isSelected = selectedPlayers.has(player.id);
+  const renderPlayer  = useCallback((player, Player;
+  index: number) => {  const isSelected = selectedPlayers.has(player.id);
     
     return (
       <div 
         className={`group px-4 py-3 border-b border-gray-800 hover:bg-gray-800/50 
-          transition-colors cursor-pointer ${isSelected ? 'bg-blue-500/10 border-blue-500/30' : ''}
+          transition-colors cursor-pointer ${isSelected ? 'bg-blue-500/10 border-blue-500/30'  : ''}
         `}
-        onClick={() => onPlayerClick?.(player)}
+        onClick ={() => onPlayerClick? .(player)}
       >
         <div className="flex items-center justify-between">
           {/* Left section - Player info */}
@@ -178,15 +173,15 @@ export function VirtualPlayerList({
                   {player.position}
                 </Badge>
                 <span className="text-xs text-gray-400">{player.team}</span>
-                {player.byeWeek && (
-                  <span className="text-xs text-gray-500">BYE: {player.byeWeek}</span>
+                { player.byeWeek && (
+                  <span className="text-xs text-gray-500">BYE, {player.byeWeek}</span>
                 )}
               </div>
             </div>
           </div>
 
           {/* Middle section - Stats */}
-          <div className="flex items-center gap-6 px-4">
+          <div className ="flex items-center gap-6 px-4">
             <div className="text-center">
               <div className="text-xs text-gray-500">Proj</div>
               <div className="text-sm font-semibold text-gray-200">
@@ -254,7 +249,7 @@ export function VirtualPlayerList({
         </div>
       </div>
     );
-  }, [selectedPlayers, onPlayerClick, onAddPlayer, onDropPlayer, showActions, togglePlayerSelection]);
+  } : [selectedPlayers, onPlayerClick, onAddPlayer, onDropPlayer, showActions, togglePlayerSelection]);
 
   // Header component
   const renderHeader = useCallback(() => (
@@ -285,7 +280,7 @@ export function VirtualPlayerList({
       <div className="sticky bottom-0 bg-gray-900 border-t border-gray-700 px-4 py-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-300">
-            {selectedPlayers.size } player{selectedPlayers.size !== 1 ? 's' : ''} selected
+            {selectedPlayers.size } player{selectedPlayers.size !== 1 ? 's'  : ''} selected
           </span>
           <div className="flex gap-2">
             <Button
@@ -300,7 +295,7 @@ export function VirtualPlayerList({
               size="sm"
               onClick={() => {
                 // Handle bulk action
-                console.log('Bulk action for:', Array.from(selectedPlayers));
+                console.log('Bulk action for: ', Array.from(selectedPlayers));
               }}
             >
               <Trophy className="w-4 h-4 mr-1" />
@@ -342,8 +337,8 @@ export function VirtualPlayerList({
           renderFooter={renderFooter}
           renderLoader={renderLoader}
           headerHeight={40}
-          footerHeight={selectedPlayers.size > 0 ? 60 : 0}
-          overscan={5}
+          footerHeight={ selectedPlayers.size > 0 ? 60  : 0}
+          overscan ={5}
           emptyMessage={emptyMessage}
           className="rounded-lg"
         />

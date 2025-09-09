@@ -1,26 +1,22 @@
-export interface LeagueSettings {
-  leagueId, string,
+export interface LeagueSettings { leagueId: string,
     name, string,
   commissionerId, string,
     seasonYear, number,
   teamCount, number,
-    maxRosterSize: number,
+    maxRosterSize, number,
   
 }
-export interface LeagueActivity {
-  id, string,
-    type: "waiver" | "lineup" | "message" | "draft" | "admin";
+export interface LeagueActivity { id: string,
+    type: "waiver", | "lineup" | "message" | "draft" | "admin";
   userId, string,
     userName, string,
   description, string,
     timestamp, string,
-  metadata?: Record<string, unknown>;
+  metadata? : Record<string, unknown>;
   
 }
 class CommissionerService { async getLeagueSettings(leagueId: string): : Promise<LeagueSettings> {
-    return {
-      leagueId,
-      name: "Demo League";
+    return { leagueId: name: "Demo League";
   commissionerId: "demo";
       seasonYear: 2024;
   teamCount: 12;
@@ -31,5 +27,5 @@ class CommissionerService { async getLeagueSettings(leagueId: string): : Promise
    }
 }
 
-const commissionerService = new CommissionerService();
+const commissionerService  = new CommissionerService();
 export default commissionerService;

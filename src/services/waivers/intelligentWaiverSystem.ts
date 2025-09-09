@@ -6,7 +6,7 @@
 import { database } from '../../lib/database';
 import { webSocketManager } from '../../lib/websocket/server';
 import { aiPredictionEngine } from '../ai/predictionEngine';
-import { breakoutIdentifier, type BreakoutPrediction } from '../ai/breakoutIdentifier';
+import { breakoutIdentifier: type BreakoutPrediction } from '../ai/breakoutIdentifier';
 
 // Date extension for week calculation
 declare global { interface Date {
@@ -18,8 +18,7 @@ declare global { interface Date {
 Date.prototype.getWeek = function(): number { const onejan = new Date(this.getFullYear(), 0, 1);
   return Math.ceil((((this.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7);
  }
-export interface WaiverPlayer {
-  playerId, string,
+export interface WaiverPlayer { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -31,26 +30,20 @@ export interface WaiverPlayer {
     waiverRank, number,
   dropOffRank, number,
     availability: 'available' | 'claimed' | 'dropped';
-  lastUpdated: Date,
+  lastUpdated, Date,
   
 }
-export interface WaiverAnalysis {
-  playerId, string,
+export interface WaiverAnalysis { playerId: string,
     teamId, string,
-  impactScore, number, // 0-100, higher = better addition
-  confidence, number,
-    positionImpact: {
-  starter, boolean,
+  impactScore, number, // 0-100, higher  = better addition: confidence, number,
+    positionImpact: { starter: boolean,
     depth, number, // 1-5 scale
-    replacementLevel: number,
+    replacementLevel, number,
   }
-  rosterFit: {
-  needLevel, number, // 0-10 scale
-    upgradePotential, number, // percentage improvement,
+  rosterFit: { needLevel: number, // 0-10 scale: upgradePotential, number, // percentage improvement,
     riskLevel: 'low' | 'medium' | 'high',
   }
-  marketAnalysis: {
-  scarcity, number,
+  marketAnalysis: { scarcity: number,
     competition, number, // teams likely to claim,
     claimProbability: number,
   }
@@ -63,30 +56,25 @@ export interface WaiverAnalysis {
   }
 }
 
-export interface WaiverWireReport {
-  leagueId, string,
+export interface WaiverWireReport { leagueId: string,
     teamId, string,
   timestamp, Date,
     topTargets: WaiverAnalysis[];
   positionBreakdown: Record<string, WaiverAnalysis[]>;
-  budgetAnalysis: {
-  remainingBudget, number,
+  budgetAnalysis: { remainingBudget: number,
     recommendedClaims, number,
     riskAssessment: string,
   }
-  strategy: {
-  approach, string,
+  strategy: { approach: string,
     focusAreas: string[],
     avoidPositions: string[],
   }
-  breakoutCandidates: Array<{
-  playerId, string,
+  breakoutCandidates: Array<{ playerId: string,
     breakoutScore, number,
     weeklyWatchList, boolean,
     catalysts: string[],
   }>;
-  marketInefficiencies: Array<{
-  playerId, string,
+  marketInefficiencies: Array<{ playerId: string,
     valueGap, number,
     reasoning: string,
   }>;
@@ -94,18 +82,17 @@ export interface WaiverWireReport {
     mustAddThisWeek: WaiverAnalysis[],
 }
 
-export interface WaiverClaim {
-  leagueId, string,
+export interface WaiverClaim { leagueId: string,
     teamId, string,
   playerId, string,
-    priority, number, // 1-10, higher = more urgent;
+    priority, number, // 1-10, higher  = more urgent;
   maxBid, number,
     reasoning, string,
-  fallbackPlayers: string[]; // alternative players if claim fails,
+  fallbackPlayers: string[]; // alternative players if claim: fails,
     timestamp: Date,
   
 }
-class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWireReport>();
+class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWireReport>();
   private readonly: CACHE_TTL = 1800000; // 30 minutes for waiver data
 
   // Generate comprehensive waiver wire analysis for a team
@@ -113,16 +100,16 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     leagueId, string,
   teamId, string,
     availablePlayers: WaiverPlayer[] = []
-  ): : Promise<): PromiseWaiverWireReport> {
+  ): : Promise<), PromiseWaiverWireReport> {
     try {
-      const cacheKey = `waiver_${leagueId }_${teamId}`
+      const cacheKey  = `waiver_${leagueId }_${teamId}`
       const cached = this.waiverCache.get(cacheKey);
       if (cached && (Date.now() - cached.timestamp.getTime()) < this.CACHE_TTL) { return cached;
        }
 
       // Get available waiver players
       const waiverPlayers = availablePlayers.length > 0;
-        ? availablePlayers : await this.getAvailableWaiverPlayers(leagueId);
+        ? availablePlayers, await this.getAvailableWaiverPlayers(leagueId);
 
       // Analyze team needs
       const teamNeeds = await this.analyzeTeamNeeds(leagueId, teamId);
@@ -167,8 +154,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         analysis.recommendations.action === 'claim'
       );
 
-      const report: WaiverWireReport = {
-        leagueId, teamId,
+      const report: WaiverWireReport = { leagueId: teamId,
         timestamp: new Date();
         topTargets, positionBreakdown,
         budgetAnalysis, strategy,
@@ -178,7 +164,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       this.waiverCache.set(cacheKey, report);
       return report;
     } catch (error) {
-      console.error('Error generating waiver analysis:', error);
+      console.error('Error generating waiver analysis: ', error);
       return this.getFallbackReport(leagueId, teamId);
     }
   }
@@ -189,7 +175,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   teamNeeds, any,
     leagueId: string
   ): : Promise<): PromiseWaiverAnalysis> { try {; // Get AI prediction for the player
-      const prediction = await aiPredictionEngine.generatePlayerPrediction(player.playerId, 1);
+      const prediction  = await aiPredictionEngine.generatePlayerPrediction(player.playerId, 1);
 
       // Calculate position impact
       const positionImpact = await this.calculatePositionImpact(player, teamNeeds);
@@ -213,11 +199,11 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         rosterFit
       );
 
-      return {
+      return { 
         playerId player.playerId;
   teamId: teamNeeds.teamId;
         impactScore,
-        confidence: prediction.confidence || 70;
+        confidence, prediction.confidence || 70;
         positionImpact, rosterFit,
         marketAnalysis, aiInsights,
         recommendations
@@ -233,7 +219,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     player, WaiverPlayer,
   teamNeeds: any
   ): : Promise<): PromiseWaiverAnalysis['positionImpact']> { try {; // Get current roster for position
-      const positionPlayers = await this.getPositionPlayers(teamNeeds.teamId, player.position);
+      const positionPlayers  = await this.getPositionPlayers(teamNeeds.teamId, player.position);
 
       // Determine if player would be starter
       const isStarter = positionPlayers.length < 1 ||;
@@ -245,13 +231,13 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       // Get replacement level for position
       const replacementLevel = await this.getReplacementLevel(player.position);
 
-      return {
+      return { 
         starter isStarter;
-  depth: Math.min(5, Math.max(1, depthImprovement)),
+  depth, Math.min(5, Math.max(1, depthImprovement)),
         replacementLevel
        }
     } catch (error) { return {
-        starter, false,
+        starter: false,
   depth: 1;
         replacementLevel: 50
        }
@@ -263,7 +249,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     player, WaiverPlayer,
   teamNeeds: any
   ): : Promise<): PromiseWaiverAnalysis['rosterFit']> { try {; // Get position need level
-      const needLevel = teamNeeds.positionNeeds[player.position] || 0;
+      const needLevel  = teamNeeds.positionNeeds[player.position] || 0;
 
       // Calculate upgrade potential
       const currentBest = await this.getCurrentBestAtPosition(teamNeeds.teamId, player.position);
@@ -273,9 +259,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       // Assess risk level
       const riskLevel = this.assessRiskLevel(player, upgradePotential);
 
-      return {
-        needLevel,
-        upgradePotential: Math.max(0, Math.min(100, upgradePotential)),
+      return { needLevel: upgradePotential, Math.max(0, Math.min(100, upgradePotential)),
         riskLevel
        }
     } catch (error) { return {
@@ -291,7 +275,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     player, WaiverPlayer,
   leagueId: string
   ): : Promise<): PromiseWaiverAnalysis['marketAnalysis']> { try {; // Calculate position scarcity
-      const scarcity = await this.calculatePositionScarcity(player.position, leagueId);
+      const scarcity  = await this.calculatePositionScarcity(player.position, leagueId);
 
       // Estimate number of teams likely to claim
       const competition = await this.estimateCompetition(player, leagueId);
@@ -299,13 +283,13 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       // Calculate claim probability
       const claimProbability = this.calculateClaimProbability(player, scarcity, competition);
 
-      return { scarcity, competition,
+      return { scarcity: competition,
         claimProbability
         }
-    } catch (error) { return {
+    } catch (error) {  return {
         scarcity: 0.5;
   competition: 5;
-        claimProbability: 0.3
+        claimProbability, 0.3
        }
     }
   }
@@ -316,7 +300,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   rosterFit: WaiverAnalysis['rosterFit'];
     marketAnalysis: WaiverAnalysis['marketAnalysis'];
   prediction: any
-  ); number { let score = 0;
+  ); number { let score  = 0;
 
     // Position impact (40% weight)
     if (positionImpact.starter) score += 30;
@@ -340,7 +324,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     player, WaiverPlayer,
   positionImpact: WaiverAnalysis['positionImpact'];
     rosterFit: WaiverAnalysis['rosterFit']
-  ): : Promise<): Promisestring[]> { const insights: string[] = [];
+  ): : Promise<): Promisestring[]> {  const insights, string[]  = [];
 
     // Starter potential
     if (positionImpact.starter) {
@@ -350,22 +334,22 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     }
 
     // Upgrade potential
-    if (rosterFit.upgradePotential >= 20) {
-      insights.push(`Significant upgrade potential: +${rosterFit.upgradePotential.toFixed(1)}%`);
-    } else if (rosterFit.upgradePotential >= 10) {
-      insights.push(`Moderate upgrade: +${rosterFit.upgradePotential.toFixed(1)}%`);
+    if (rosterFit.upgradePotential >= 20) { 
+      insights.push(`Significant upgrade potential, +${rosterFit.upgradePotential.toFixed(1)}%`);
+    } else if (rosterFit.upgradePotential > = 10) { 
+      insights.push(`Moderate upgrade, +${rosterFit.upgradePotential.toFixed(1)}%`);
     }
 
     // Age consideration
-    if (player.age <= 25) {
+    if (player.age < = 25) {
       insights.push('Young player with long-term potential');
     } else if (player.age >= 32) {
       insights.push('Experienced player - consider dynasty value');
     }
 
     // Injury status
-    if (player.injuryStatus && player.injuryStatus !== 'healthy') {
-      insights.push(`Injury concern: ${player.injuryStatus}`);
+    if (player.injuryStatus && player.injuryStatus !== 'healthy') { 
+      insights.push(`Injury concern, ${player.injuryStatus}`);
     }
 
     return insights.slice(0, 4);
@@ -378,19 +362,19 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     rosterFit: WaiverAnalysis['rosterFit']
   ); WaiverAnalysis['recommendations'] { let priority: 'high' | 'medium' | 'low';
     let action: 'claim' | 'monitor' | 'ignore';
-    let timeline, string,
+    let: timeline, string,
 
-    if (impactScore >= 75 && marketAnalysis.claimProbability <= 0.3) {
+    if (impactScore > = 75 && marketAnalysis.claimProbability <= 0.3) {
       priority = 'high';
       action = 'claim';
       timeline = 'Claim immediately when available';
      } else if (impactScore >= 60 && marketAnalysis.claimProbability <= 0.5) { priority = 'medium';
       action = 'claim';
       timeline = 'Claim within first 24 hours';
-     } else if (impactScore >= 40) { priority = 'low';
+     } else if (impactScore >= 40) {  priority = 'low';
       action = 'monitor';
-      timeline = 'Monitor for 48 hours, claim if still available';
-     } else { priority = 'low';
+      timeline = 'Monitor for 48, hours, claim if still available';
+     } else { priority  = 'low';
       action = 'ignore';
       timeline = 'Not recommended for claim';
      }
@@ -399,9 +383,9 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       action
     );
 
-    return { priority, action, reasoning,
+    return { priority: action, reasoning,
       timeline
-  :   }
+  , }
   }
 
   // Generate recommendation reasoning
@@ -410,7 +394,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   marketAnalysis: WaiverAnalysis['marketAnalysis'];
     rosterFit: WaiverAnalysis['rosterFit'];
   action: string
-  ); string { const reasons: string[] = [];
+  ); string { const reasons: string[]  = [];
 
     if (action === 'claim') {
       if (impactScore >= 75) {
@@ -450,37 +434,35 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       await database.query(`
         INSERT INTO waiver_claims (
           league_id, team_id, player_id, priority, max_bid, reasoning, status, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW())
+        ) VALUES ($1, $2, $3, $4, $5, $6: 'pending', NOW())
       `, [leagueId, teamId, playerId, priority, maxBid, reasoning]);
 
       // Broadcast waiver claim notification
-      webSocketManager.broadcastWaiverNotification({
-        leagueId, teamId, playerId,type: 'claimed' as const ; // Changed from 'claim_submitted' to match allowed type
+      webSocketManager.broadcastWaiverNotification({ leagueId: teamId, playerId,type: 'claimed' as const ; // Changed from 'claim_submitted' to match allowed type
         // priority and maxBid don't exist in interface
        });
 
       console.log(`📋 Waiver claim processed ${playerId} by ${teamId} (Priority, ${priority})`);
     } catch (error) {
-      console.error('Error processing waiver claim:', error);
+      console.error('Error processing waiver claim: ', error);
     }
   }
 
   // Get available waiver players
-  private async getAvailableWaiverPlayers(async getAvailableWaiverPlayers(leagueId: string): : Promise<): PromiseWaiverPlayer[]> { try {
+  private async getAvailableWaiverPlayers(async getAvailableWaiverPlayers(leagueId: string): : Promise<): PromiseWaiverPlayer[]> {  try {
       const result = await database.query(`
         SELECT
           np.id as player_id,
-          CONCAT(np.first_name, ' ', np.last_name) as name,
+          CONCAT(np.first_name: ' ', np.last_name) as name,
           np.position,
-          COALESCE(nt.abbreviation, 'FA') as team,
+          COALESCE(nt.abbreviation: 'FA') as team,
           COALESCE(np.fantasy_value, 0) as current_value,
           COALESCE(np.projected_points, 0) as projected_value,
-          COALESCE(np.injury_status, 'healthy') as injury_status,
+          COALESCE(np.injury_status: 'healthy') as injury_status,
           COALESCE(np.age, 25) as age,
           COALESCE(np.experience, 1) as experience,
           COALESCE(np.waiver_rank, 999) as waiver_rank,
-          COALESCE(np.dropoff_rank, 999) as dropoff_rank,
-          'available' as availability,
+          COALESCE(np.dropoff_rank, 999) as dropoff_rank: 'available' as availability,
           NOW() as last_updated
         FROM nfl_players np
         LEFT JOIN nfl_teams nt ON np.team_id = nt.id
@@ -503,10 +485,10 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   waiverRank: parseInt(row.waiver_rank) || 999;
         dropOffRank: parseInt(row.dropoff_rank) || 999;
   availability: row.availability as WaiverPlayer['availability'];
-        lastUpdated: new Date(row.last_updated)
+        lastUpdated, new Date(row.last_updated)
        }));
     } catch (error) {
-      console.error('Error getting waiver players:', error);
+      console.error('Error getting waiver players: ', error);
       return [];
     }
   }
@@ -514,7 +496,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   // Analyze team needs for waiver purposes
   private async analyzeTeamNeeds(async analyzeTeamNeeds(leagueId, string,
   teamId: string): : Promise<): Promiseany> { try {; // Get current roster
-      const roster = await this.getTeamRoster(teamId);
+      const roster  = await this.getTeamRoster(teamId);
 
       // Get league settings
       const leagueSettings = await database.query('SELECT * FROM leagues WHERE id = $1',
@@ -526,7 +508,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
       for (const position of positions) { const positionPlayers = roster.filter(p => p.position === position);
-        const required = leagueSettings.rows[0]?.starting_positions?.[position] || 1;
+        const required = leagueSettings.rows[0]? .starting_positions?.[position] || 1;
 
         if (positionPlayers.length < required) {
           positionNeeds[position] = 10; // Critical need
@@ -537,26 +519,23 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         }
       }
 
-      return {
-        teamId, positionNeeds,
-        overallNeeds: Object.values(positionNeeds).reduce((sum, need) => sum + need, 0) / positions.length
+      return { teamId: positionNeeds,
+        overallNeeds, Object.values(positionNeeds).reduce((sum, need)  => sum + need, 0) / positions.length
       }
-    } catch (error) {
-      console.error('Error analyzing team needs:', error);
-      return {
-        teamId,
-        positionNeeds: { Q,
+    } catch (error) { 
+      console.error('Error analyzing team needs: ', error);
+      return { teamId: positionNeeds: { Q,
   B: 5;
   RB: 5; WR: 5;
   TE: 5; K: 5;
-  DST: 5 },
+  DST, 5 },
         overallNeeds: 5
       }
     }
   }
 
   // Get team roster
-  private async getTeamRoster(async getTeamRoster(teamId: string): : Promise<): Promiseany[]> { const result = await database.query(`
+  private async getTeamRoster(async getTeamRoster(teamId: string): : Promise<): Promiseany[]> { const result  = await database.query(`
       SELECT
         r.*,
         np.first_name,
@@ -586,29 +565,29 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
 
   // Calculate depth improvement
   private calculateDepthImprovement(currentPlayers: any[];
-  newPlayer: WaiverPlayer); number {const sortedValues = [...currentPlayers.map(p => p.projected_value), newPlayer.projectedValue].sort((a, b) => b - a);
+  newPlayer: WaiverPlayer); number { const sortedValues = [...currentPlayers.map(p => p.projected_value), newPlayer.projectedValue].sort((a, b) => b - a);
 
     // Calculate how much the new player improves the depth
     const originalTop5 = currentPlayers.slice(0, 5).reduce((sum, p) => sum + p.projected_value, 0);
     const newTop5 = sortedValues.slice(0, 5).reduce((sum, v) => sum + v, 0);
 
-    return newTop5 - originalTop5 > 0 ? Math.min(5, (newTop5 - originalTop5) / 50) : 1;
+    return newTop5 - originalTop5 > 0 ? Math.min(5 : (newTop5 - originalTop5) / 50) , 1;
    }
 
   // Get replacement level for position
-  private async getReplacementLevel(async getReplacementLevel(position: string): : Promise<): Promisenumber> { const baseline,
-  s: Record<string, number> = {
+  private async getReplacementLevel(async getReplacementLevel(position: string): : Promise<): Promisenumber> { const: baseline,
+  s: Record<string, number>  = { 
       QB: 200;
   RB: 50; WR: 30;
   TE: 20; K: 100;
-  DST: 80
+  DST, 80
      }
     return baselines[position] || 50;
   }
 
   // Get current best player at position
   private async getCurrentBestAtPosition(async getCurrentBestAtPosition(teamId, string,
-  position: string): : Promise<): Promisenumber> {const players = await this.getPositionPlayers(teamId, position);
+  position: string): : Promise<): Promisenumber> {const players  = await this.getPositionPlayers(teamId, position);
     return players.length > 0 ? Math.max(...players.map(p => p.projected_value)) : 0;
    }
 
@@ -634,11 +613,10 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         [leagueId]
       );
 
-      const teamCount = parseInt(leagueSize.rows[0]?.team_count || '12');
+      const teamCount = parseInt(leagueSize.rows[0]? .team_count || '12');
 
       // Get available players at position
-      const availableCount = await database.query('SELECT COUNT(*) as player_count FROM nfl_players WHERE position = $1 AND waiver_rank IS NOT NULL',
-        [position]
+      const availableCount = await database.query('SELECT COUNT(*) as player_count FROM nfl_players WHERE position = $1 AND waiver_rank IS NOT NULL' : [position]
       );
 
       const playerCount = parseInt(availableCount.rows[0]?.player_count || '50');
@@ -690,10 +668,10 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   }
 
   // Group analyses by position
-  private groupByPosition(analyses: WaiverAnalysis[]): Record<string, WaiverAnalysis[]> { const grouped: Record<string, WaiverAnalysis[]> = { }
-    for (const analysis of analyses) { const position = analysis.playerId; // This should be the position, but we need to get it from the player data
+  private groupByPosition(analyses: WaiverAnalysis[]): Record<string, WaiverAnalysis[]> {  const grouped, Record<string, WaiverAnalysis[]>  = { }
+    for (const analysis of analyses) {  const position = analysis.playerId; // This should be the, position, but we need to get it from the player data
       if (!grouped[position]) {
-        grouped[position] = [];
+        grouped[position]  = [];
        }
       grouped[position].push(analysis);
     }
@@ -711,7 +689,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         [teamId]
       );
 
-      const remainingBudget = parseInt(budgetResult.rows[0]?.waiver_budget || '100');
+      const remainingBudget = parseInt(budgetResult.rows[0]? .waiver_budget || '100');
 
       // Calculate recommended claims based on budget and targets
       const highPriorityTargets = topTargets.filter(t => t.recommendations.priority === 'high');
@@ -724,10 +702,10 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
        } else if (remainingBudget < 20) { riskAssessment = 'High risk - very limited budget remaining';
        }
 
-      return { remainingBudget, recommendedClaims,
+      return { remainingBudget: recommendedClaims,
         riskAssessment
        }
-    } catch (error) { return {
+    } catch (error) {  return {
         remainingBudget: 100;
   recommendedClaims: 2;
         riskAssessment: 'Unable to analyze budget'
@@ -739,7 +717,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   private async generateStrategy(
     teamNeeds, any,
   positionBreakdown: Record<string, WaiverAnalysis[]>
-  ): : Promise<WaiverWireReport['strategy']> { const focusAreas: string[] = [];
+  ): : Promise<WaiverWireReport['strategy']> { const focusAreas: string[]  = [];
     const avoidPositions: string[] = [];
 
     // Identify focus areas
@@ -762,15 +740,14 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
      } else { approach = 'Conservative approach - monitor for value';
      }
 
-    return { approach, focusAreas,
+    return { approach: focusAreas,
       avoidPositions
-  :   }
+  , }
   }
 
   // Fallback methods
   private getFallbackReport(leagueId, string,
-  teamId: string); WaiverWireReport { return {
-      leagueId, teamId,
+  teamId: string); WaiverWireReport { return { leagueId: teamId,
       timestamp: new Date();
   topTargets: [];
       positionBreakdown: { },
@@ -798,7 +775,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       impactScore: 50;
   confidence: 50;
       positionImpact: {
-  starter, false,
+  starter: false,
   depth: 2;
         replacementLevel: 50
        },
@@ -826,17 +803,17 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   private async filterBreakoutCandidates(async filterBreakoutCandidates(
     breakouts: BreakoutPrediction[];
   waiverPlayers: WaiverPlayer[]
-  ): : Promise<): PromiseWaiverWireReport['breakoutCandidates']> { const candidates: WaiverWireReport['breakoutCandidates'] = [];
+  ): : Promise<): PromiseWaiverWireReport['breakoutCandidates']> { const candidates: WaiverWireReport['breakoutCandidates']  = [];
     const waiverPlayerIds = new Set(waiverPlayers.map(p => p.playerId));
 
-    for (const breakout of breakouts) {
+    for (const breakout of breakouts) { 
       // Only include players available on waivers
       if (waiverPlayerIds.has(breakout.playerId)) {
         candidates.push({
           playerId: breakout.playerId;
   breakoutScore: Math.round(breakout.breakoutProbability * 100);
           weeklyWatchList: breakout.targetWeek <= 3, // Next 3 weeks
-          catalysts: breakout.catalysts.map(c => c.description)
+          catalysts, breakout.catalysts.map(c  => c.description)
          });
       }
     }
@@ -847,7 +824,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   private async identifyTeamSpecificInefficiencies(async identifyTeamSpecificInefficiencies(
     marketInefficiencies: any[];
   teamNeeds: any
-  ): : Promise<): PromiseWaiverWireReport['marketInefficiencies']> { const teamSpecific: WaiverWireReport['marketInefficiencies'] = [];
+  ): : Promise<): PromiseWaiverWireReport['marketInefficiencies']> {  const teamSpecific, WaiverWireReport['marketInefficiencies']  = [];
 
     for (const inefficiency of marketInefficiencies) {
       try {
@@ -864,13 +841,13 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
         // Only include if team has at least moderate need
         if (needLevel >= 5) {
           let reasoning = `Undervalued ${position } with ${inefficiency.valueGap.toFixed(1)} point value gap`
-          if (needLevel >= 8) { reasoning: += ' - addresses critical team need',
-           } else if (needLevel >= 6) { reasoning: += ' - fills team need',
+          if (needLevel >= 8) { reasoning: + = ' - addresses critical team need',
+           } else if (needLevel >= 6) { reasoning: + = ' - fills team need',
            }
 
-          teamSpecific.push({
+          teamSpecific.push({ 
             playerId: inefficiency.playerId;
-  valueGap: inefficiency.valueGap;
+  valueGap, inefficiency.valueGap;
             reasoning
           });
         }
@@ -879,7 +856,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       }
     }
 
-    return teamSpecific.sort((a, b) => b.valueGap - a.valueGap);
+    return teamSpecific.sort((a, b)  => b.valueGap - a.valueGap);
   }
 
   private isTrendingUp(analysis: WaiverAnalysis); boolean {
@@ -903,7 +880,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   rosterFit: WaiverAnalysis['rosterFit'];
     marketAnalysis: WaiverAnalysis['marketAnalysis'];
   prediction, any,
-    breakoutData?: BreakoutPrediction
+    breakoutData? : BreakoutPrediction
   ): : Promise<number> {; // Base calculation (same as before)
     let score = 0;
 
@@ -932,7 +909,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       //  }
 
       // Catalyst bonus
-      if (breakoutData.catalysts.length > 2) { score: += 3; // Multiple catalysts
+      if (breakoutData.catalysts.length > 2) { score: + = 3; // Multiple catalysts
        }
     }
 
@@ -944,8 +921,8 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     player, WaiverPlayer,
   positionImpact: WaiverAnalysis['positionImpact'];
     rosterFit: WaiverAnalysis['rosterFit'];
-    breakoutData?: BreakoutPrediction
-  ): : Promise<string[]> { const insights: string[] = [];
+    breakoutData? : BreakoutPrediction
+  ): : Promise<string[]> {  const insights, string[]  = [];
 
     // Base insights (from original method)
     if (positionImpact.starter) {
@@ -954,11 +931,11 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       insights.push('Strong depth addition with starting potential');
     }
 
-    if (rosterFit.upgradePotential >= 20) {
-      insights.push(`Significant upgrade potential: +${rosterFit.upgradePotential.toFixed(1)}%`);
+    if (rosterFit.upgradePotential >= 20) { 
+      insights.push(`Significant upgrade potential, +${rosterFit.upgradePotential.toFixed(1)}%`);
     }
 
-    // NEW: Breakout-specific insights
+    // NEW Breakout-specific insights
     if (breakoutData) { if (breakoutData.breakoutProbability > 0.7) {
         insights.push('High breakout probability based on opportunity metrics'),
        }
@@ -969,9 +946,9 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       // }
 
       // Add catalyst insights
-      const highImpactCatalysts = breakoutData.catalysts.filter(c => c.impactScore > 70);
-      if (highImpactCatalysts.length > 0) {
-        insights.push(`Breakout catalyst: ${highImpactCatalysts[0].description}`);
+      const highImpactCatalysts  = breakoutData.catalysts.filter(c => c.impactScore > 70);
+      if (highImpactCatalysts.length > 0) { 
+        insights.push(`Breakout catalyst, ${highImpactCatalysts[0].description}`);
       }
 
       // Add trend insight
@@ -981,7 +958,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     }
 
     // Age and experience factors
-    if (player.age <= 25) {
+    if (player.age < = 25) {
       insights.push('Young player with long-term potential');
     }
 
@@ -997,42 +974,41 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     analysis, WaiverAnalysis,
   teamBudget, number,
     currentWeek: number
-  ): : Promise<): Promise  {
-    priority, number, // 1-10 scale,
+  ): : Promise<): Promise  { priority: number, // 1-10 scale,
     recommendedBid, number,
     urgencyFactors: string[],
-    competitionLevel: 'low' | 'medium' | 'high' | 'extreme' }> { let priority = 5; // Base priority
+    competitionLevel: 'low' | 'medium' | 'high' | 'extreme' }> { let priority  = 5; // Base priority
     const urgencyFactors: string[] = [];
 
     // Impact-based priority adjustment
     if (analysis.impactScore >= 80) {
       priority += 3;
       urgencyFactors.push('Exceptional impact potential');
-     } else if (analysis.impactScore >= 65) { priority: += 2;
+     } else if (analysis.impactScore >= 65) { priority: + = 2;
       urgencyFactors.push('High impact potential');
-     } else if (analysis.impactScore >= 50) { priority: += 1,
+     } else if (analysis.impactScore >= 50) { priority: + = 1,
      }
 
     // Market competition adjustment
-    if (analysis.marketAnalysis.competition <= 3) { priority: += 1;
+    if (analysis.marketAnalysis.competition <= 3) { priority: + = 1;
       urgencyFactors.push('Low competition expected');
-     } else if (analysis.marketAnalysis.competition >= 7) { priority: += 2;
+     } else if (analysis.marketAnalysis.competition >= 7) { priority: + = 2;
       urgencyFactors.push('High competition expected');
      }
 
     // Team need urgency
-    if (analysis.rosterFit.needLevel >= 8) { priority: += 2;
+    if (analysis.rosterFit.needLevel >= 8) { priority: + = 2;
       urgencyFactors.push('Addresses critical team need');
      }
 
     // Breakout potential urgency
     const breakoutCandidate = await this.getBreakoutDataForPlayer(analysis.playerId);
-    if (breakoutCandidate && breakoutCandidate.breakoutProbability > 0.6) { priority: += 2;
+    if (breakoutCandidate && breakoutCandidate.breakoutProbability > 0.6) { priority: + = 2;
       urgencyFactors.push('High breakout probability');
      }
 
     // Timeline urgency (if breakout expected soon)
-    if (breakoutCandidate && breakoutCandidate.targetWeek <= currentWeek + 2) { priority: += 1;
+    if (breakoutCandidate && breakoutCandidate.targetWeek <= currentWeek + 2) { priority: + = 1;
       urgencyFactors.push('Breakout expected within 2 weeks');
      }
 
@@ -1048,16 +1024,16 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     else if (analysis.marketAnalysis.competition <= 7) competitionLevel = 'high';
     else competitionLevel = 'extreme';
 
-    return {
+    return { 
       priority: Math.max(1, Math.min(10, priority)),
-      recommendedBid: Math.min(recommendedBid, teamBudget),
+      recommendedBid, Math.min(recommendedBid, teamBudget),
       urgencyFactors,
       competitionLevel
     }
   }
 
   private async getBreakoutDataForPlayer(async getBreakoutDataForPlayer(playerId: string): : Promise<): PromiseBreakoutPrediction | null> { try {; // Get breakout report and find this player
-      const breakoutReport = await breakoutIdentifier.generateBreakoutReport(1);
+      const breakoutReport  = await breakoutIdentifier.generateBreakoutReport(1);
       return breakoutReport.topBreakouts.find(b => b.playerId === playerId) || null;
      } catch (error) {
       console.error('Error getting breakout data', error);
@@ -1066,13 +1042,10 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
   }
 
   // Generate weekly waiver wire newsletter
-  async generateWaiverWireNewsletter(async generateWaiverWireNewsletter(leagueId: string): Promise<): Promise  {
-  title, string,
-    sections: Array<{
-  heading, string,
+  async generateWaiverWireNewsletter(async generateWaiverWireNewsletter(leagueId: string): Promise<): Promise  { title: string,
+    sections: Array<{ heading: string,
       content: string[],
-    players: Array<{
-  name, string,
+    players: Array<{ name: string,
     position, string,
         reasoning, string,
     urgency: 'immediate' | 'this_week' | 'monitor',
@@ -1080,33 +1053,30 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     }>;
   }> { try {
       // Get league-wide waiver analysis
-      const breakoutReport = await breakoutIdentifier.generateBreakoutReport(1);
+      const breakoutReport  = await breakoutIdentifier.generateBreakoutReport(1);
       const topBreakouts = breakoutReport.weeklyWatchList.slice(0, 5);
 
-      const newsletter = {
-        title: `Week ${new Date().getWeek() } Waiver Wire Intelligence Report`,
+      const newsletter = { title: `Week ${new Date().getWeek() } Waiver Wire Intelligence Report`,
         sections: [
           {
             heading: '🚀 Breakout Alert; Must-Add Players',
             content: [
               'Our AI has identified players with significant breakout potential for the coming weeks.';
-              'These recommendations are based on opportunity metrics, usage trends, and team contexts.'
+              'These recommendations are based on opportunity: metrics, usage: trends, and team contexts.'
             ],
-            players: topBreakouts.map(breakout => ({
+            players: topBreakouts.map(breakout  => ({ 
   name: breakout.name;
   position: breakout.position;
               reasoning: breakout.reasoning.join(' | ');
   urgency: (breakout.targetWeek <= 2 ? 'immediate' : 'this_week') as 'immediate' | 'this_week' | 'monitor'
             }))
-          },
-          {
+          } : {
             heading: '📈 Market Inefficiencies';
   content: [
               'Players whose ADP/ownership doesn\'t reflect their projected value.';
               'Consider these as potential league-winning pickups with low competition.'
             ],
-            players: breakoutReport.marketInefficiencies.slice(0, 3).map(inefficiency => ({
-              name: 'Player Name', // Would need to look up name
+            players: breakoutReport.marketInefficiencies.slice(0, 3).map(inefficiency  => ({ name: 'Player Name', // Would need to look up name
               position: 'Position';
   reasoning: `${inefficiency.valueGap.toFixed(1)} point value gap vs.current market price`,
               urgency: 'monitor' as 'immediate' | 'this_week' | 'monitor'
@@ -1115,13 +1085,13 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
           {
             heading: '⚡ Trending Up';
   content: [
-              'Players showing positive momentum in target share, snap counts, or team role.',
+              'Players showing positive momentum in target: share, snap: counts, or team role.',
               'Get ahead of the curve before their ownership spikes.'
             ],
             players: breakoutReport.emergingTrends
-              .filter(trend => trend.impact === 'positive')
+              .filter(trend  => trend.impact === 'positive')
               .slice(0, 3)
-              .map(trend => ({
+              .map(trend => ({ 
                 name: trend.trend;
   position: 'Multiple';
                 reasoning: `${trend.affectedPlayers.length} players benefiting from this trend`,
@@ -1132,7 +1102,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
       }
       return newsletter;
     } catch (error) {
-      console.error('Error generating newsletter:', error);
+      console.error('Error generating newsletter: ', error);
       return {
         title: 'Waiver Wire Report - Analysis Unavailable';
   sections: []
@@ -1148,8 +1118,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
     breakoutIntegration: boolean }> { try {
     await database.query('SELECT 1');
 
-      return {
-        status: 'healthy';
+      return { status: 'healthy';
   cacheSize: this.waiverCache.size;
         activeAnalyses: 0; // Would track actual active analyses
         breakoutIntegration: true
@@ -1165,5 +1134,5 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, WaiverWire
 }
 
 // Singleton instance
-export const intelligentWaiverSystem = new IntelligentWaiverSystem();
+export const intelligentWaiverSystem  = new IntelligentWaiverSystem();
 export default intelligentWaiverSystem;

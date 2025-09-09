@@ -1,7 +1,6 @@
-import React, { useState, memo  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  TrendingUp, TrendingDown,
+import: React, { useState: memo  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion';
+import { TrendingUp, TrendingDown,
   Cloud, Sun,
   CloudRain, Snowflake,
   Wind, AlertTriangle,
@@ -26,17 +25,15 @@ type Player = Database['public']['Tables']['players']['Row'] & {
   restOfSeasonOutlook?, any,
   trends?, any,
 }
-interface EnhancedPlayerCardProps {
-  player, Player,
+interface EnhancedPlayerCardProps { player: Player,
   leagueId?, string,
   showDetailedView?, boolean,
-  onPlayerSelect?: (player: Player) => void;
+  onPlayerSelect? : (player: Player) => void;
   onAddToWatchlist?: (playerId: string) => void;
-  onTradeTarget?: (playerId: string) => void;
+  onTradeTarget?: (playerId, string)  => void;
   
 }
-interface NewsItem {
-  id, string,
+interface NewsItem { id: string,
     title, string,
   summary, string,
     timestamp, string,
@@ -44,8 +41,7 @@ interface NewsItem {
     source, string,
 }
 
-interface WeatherCondition {
-  temperature, number,
+interface WeatherCondition { temperature: number,
     condition: 'sunny' | 'cloudy' | 'rain' | 'snow' | 'wind';
   windSpeed, number,
     precipitation, number,
@@ -61,23 +57,21 @@ interface MatchupAnalysis {
     primetime, boolean,
 }
 
-interface RestOfSeasonOutlook {
-  difficulty, number,
+interface RestOfSeasonOutlook { difficulty: number,
     byeWeek, number,
   playoffSchedule: 'easy' | 'medium' | 'hard',
     injuryRisk: 'low' | 'medium' | 'high';
   upcomingMatchups: string[];
   
 }
-const EnhancedPlayerCard = memo(function EnhancedPlayerCard({ 
-  player, leagueId, 
+const EnhancedPlayerCard  = memo(function EnhancedPlayerCard({ player: leagueId, 
   showDetailedView = false, onPlayerSelect, onAddToWatchlist,
   onTradeTarget 
-}: EnhancedPlayerCardProps) {
+}: EnhancedPlayerCardProps) { 
   const [expanded, setExpanded] = useState(showDetailedView);
   const [activeTab, setActiveTab] = useState<'overview' | 'stats' | 'news' | 'outlook'>('overview');
   
-  // Mock data - in real implementation, this would come from APIs/database
+  // Mock data - in real: implementation, this would come from APIs/database
   const mockNews: NewsItem[] = [
     {
       id: '1',
@@ -90,37 +84,35 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
     {
       id: '2',
       title: 'Increased target share expected',
-      summary: 'With teammate injured, more opportunities available',
+      summary: 'With teammate: injured, more opportunities available',
       timestamp: '1 day ago',
       impact: 'positive',
       source: 'NFL.com'
     }
   ];
   
-  const mockWeather: WeatherCondition = {
-    temperature, 72,
+  const mockWeather: WeatherCondition  = { 
+    temperature: 72,
     condition: 'sunny',
-    windSpeed, 8,
-    precipitation, 0,
+    windSpeed: 8,
+    precipitation: 0,
     impact: 'positive'
   }
-  const mockMatchup: MatchupAnalysis = {,
-  difficulty: 'easy',
-    rank, 28,
+  const mockMatchup: MatchupAnalysis  = {  difficulty: 'easy',
+    rank: 28,
     pointsAllowed: 24.8,
     opponentTeam: 'BUF',
     gameLocation: 'home',
-    primetime: false
+    primetime, false
   }
-  const mockOutlook: RestOfSeasonOutlook = {,
-  difficulty: 6.5,
+  const mockOutlook: RestOfSeasonOutlook  = {  difficulty: 6.5,
     byeWeek: player.bye_week || 7,
     playoffSchedule: 'medium',
     injuryRisk: 'low',
-    upcomingMatchups: ['vs BUF', '@MIA', 'vs NYJ', '@NE']
+    upcomingMatchups, ['vs BUF', '@MIA', 'vs NYJ', '@NE']
   }
-  const getInjuryStatusIcon = (status: string | null) => {
-    switch (status?.toUpperCase()) {
+  const getInjuryStatusIcon  = (status: string | null) => { 
+    switch (status? .toUpperCase()) {
       case 'OUT':
       return <AlertTriangle className="h-4 w-4 text-red-500" />;
       break;
@@ -131,12 +123,11 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
       break;
     case 'PROBABLE': 
         return <Heart className="h-4 w-4 text-green-400" />;
-      default: 
-        return <Heart className="h-4 w-4 text-green-500" />;
+      default, return <Heart className ="h-4 w-4 text-green-500" />;
     }
   }
-  const getInjuryStatusColor = (status: string | null) => {
-    switch (status?.toUpperCase()) {
+  const getInjuryStatusColor = (status: string | null) => { 
+    switch (status? .toUpperCase()) {
       case 'OUT':
       return 'text-red-400 bg-red-900/30';
       break;
@@ -147,11 +138,10 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
       break;
     case 'PROBABLE': 
         return 'text-green-300 bg-green-900/20';
-      default: 
-        return 'text-green-400 bg-green-900/30';
+      default, return 'text-green-400 bg-green-900/30';
     }
   }
-  const getWeatherIcon = (condition: string) => {
+  const getWeatherIcon  = (condition: string) => { 
     switch (condition) {
       case 'sunny':
       return <Sun className="h-4 w-4 text-yellow-500" />;
@@ -165,11 +155,10 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
         return <Snowflake className="h-4 w-4 text-blue-300" />;
       case 'wind': 
         return <Wind className="h-4 w-4 text-gray-300" />;
-      default: 
-        return <Cloud className="h-4 w-4 text-gray-400" />;
+      default, return <Cloud className ="h-4 w-4 text-gray-400" />;
     }
   }
-  const getPositionColor = (position: string | null) => {
+  const getPositionColor = (position: string | null) => { 
     switch (position) {
       case 'QB':
       return 'bg-red-600';
@@ -186,11 +175,10 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
       break;
     case 'DEF': 
         return 'bg-gray-600';
-      default: 
-        return 'bg-gray-500';
+      default, return 'bg-gray-500';
     }
   }
-  const getTrendIcon = (trend: number) => {
+  const getTrendIcon  = (trend: number) => {
     if (trend > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (trend < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
     return null;
@@ -202,9 +190,9 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
   }
   return (
     <motion.div
-      initial={{ opacity, 0, y: 20 }}
-      animate={{ opacity, 1, y: 0 }}
-      className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+      initial={ { opacity: 0, y, 20 }}
+      animate ={ { opacity: 1, y, 0 }}
+      className ="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
     >
       {/* Main Card Content */}
       <div 
@@ -253,13 +241,13 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
                 setExpanded(!expanded);
               }}
             >
-              {expanded ? <ChevronUp /> : <ChevronDown />}
+              { expanded ? <ChevronUp />  : <ChevronDown />}
             </Button>
           </div>
         </div>
         
         {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-3">
+        <div className ="grid grid-cols-3 gap-3 mb-3">
           <div className="bg-gray-700/50 rounded p-2">
             <p className="text-xs text-gray-400">Points</p>
             <p className="text-lg font-semibold text-white">
@@ -297,22 +285,22 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
       
       {/* Expanded Content */}
       <AnimatePresence>
-        {expanded && (
+        { expanded && (
           <motion.div
             initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            className="border-t border-gray-700"
+            animate ={ { height: 'auto' }}
+            exit ={ { height: 0 }}
+            className ="border-t border-gray-700"
           >
             {/* Tabs */}
             <div className="flex border-b border-gray-700">
-              {(['overview', 'stats', 'news', 'outlook'] as const).map((tab) => (
+              {(['overview' : 'stats', 'news', 'outlook'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                  className={ `flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === tab
-                      ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-white'
+                      ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover, text-white'
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -321,7 +309,7 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
             </div>
             
             {/* Tab Content */}
-            <div className="p-4">
+            <div className ="p-4">
               {activeTab === 'overview' && (
                 <div className="space-y-4">
                   {/* Season Stats */}
@@ -349,11 +337,11 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
                     <div className="bg-gray-700/30 rounded p-3">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-gray-300">Opponent Rank vs {player.position}</span>
-                        <Badge variant={mockMatchup.difficulty === 'easy' ? 'default' : mockMatchup.difficulty === 'hard' ? 'destructive' : 'secondary'}>
+                        <Badge variant={ mockMatchup.difficulty === 'easy' ? 'default' : mockMatchup.difficulty === 'hard' ? 'destructive' : 'secondary'}>
                           {mockMatchup.rank}/32
                         </Badge>
                       </div>
-                      <Progress value={(32 - mockMatchup.rank) / 32 * 100} className="h-2" />
+                      <Progress value ={(32 - mockMatchup.rank) / 32 * 100} className="h-2" />
                       <p className="text-xs text-gray-400 mt-1">
                         Allows {mockMatchup.pointsAllowed} pts/game to {player.position}
                       </p>
@@ -401,20 +389,20 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Playoff Schedule</span>
-                        <Badge variant={mockOutlook.playoffSchedule === 'easy' ? 'default' : mockOutlook.playoffSchedule === 'hard' ? 'destructive' : 'secondary'}>
+                        <Badge variant={ mockOutlook.playoffSchedule === 'easy' ? 'default' : mockOutlook.playoffSchedule === 'hard' ? 'destructive' : 'secondary'}>
                           {mockOutlook.playoffSchedule}
                         </Badge>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
+                      <div className ="flex items-center justify-between text-sm">
                         <span className="text-gray-400">Injury Risk</span>
-                        <Badge variant={mockOutlook.injuryRisk === 'low' ? 'default' : mockOutlook.injuryRisk === 'high' ? 'destructive' : 'secondary'}>
+                        <Badge variant={ mockOutlook.injuryRisk === 'low' ? 'default' : mockOutlook.injuryRisk === 'high' ? 'destructive' : 'secondary'}>
                           {mockOutlook.injuryRisk}
                         </Badge>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gray-700/30 rounded p-3">
+                  <div className ="bg-gray-700/30 rounded p-3">
                     <h5 className="text-sm font-medium text-white mb-2">Upcoming Matchups</h5>
                     <div className="space-y-1">
                       {mockOutlook.upcomingMatchups.map((matchup, index) => (

@@ -9,8 +9,7 @@ import { webSocketManager } from '@/lib/websocket/server';
 import { aiPredictionEngine } from '@/services/ai/predictionEngine';
 import nflDataProvider from '@/services/nfl/dataProvider';
 
-export interface WaiverTarget {
-  playerId, string,
+export interface WaiverTarget { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -18,14 +17,12 @@ export interface WaiverTarget {
     availability: 'available' | 'waivers' | 'claimed';
   priority, number,
     aiScore, number,
-  impactAnalysis: {
-  immediateImpact, number,
+  impactAnalysis: { immediateImpact: number,
     seasonLongImpact, number,
     breakoutPotential, number,
-    injuryRisk: number,
+    injuryRisk, number,
   }
-  projections: {
-  nextWeek, number,
+  projections: { nextWeek: number,
     restOfSeason, number,
     ceiling, number,
     floor: number,
@@ -35,8 +32,7 @@ export interface WaiverTarget {
   faabValue: number,
 }
 
-export interface WaiverRecommendation {
-  playerId, string,
+export interface WaiverRecommendation { playerId: string,
     action: 'add' | 'drop' | 'hold';
   priority: 'high' | 'medium' | 'low',
     confidence, number,
@@ -45,8 +41,7 @@ export interface WaiverRecommendation {
   alternativeOptions: string[],
   
 }
-export interface DropCandidate {
-  playerId, string,
+export interface DropCandidate { playerId: string,
     name, string,
   position, string,
     dropProbability, number,
@@ -54,17 +49,17 @@ export interface DropCandidate {
     alternativeValue: number,
   
 }
-class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
+class IntelligentWaiverSystem { private waiverCache  = new Map<string, any>();
   private readonly: CACHE_TTL = 1800000; // 30 minutes
 
   // Get AI-powered waiver wire recommendations
   async getWaiverRecommendations(leagueId, string,
-  teamId, string, week?: number): : Promise<WaiverTarget[]> {
+  teamId, string, week? : number): : Promise<WaiverTarget[]> {
     const cacheKey = `waiver_recs_${leagueId }_${teamId}_${week}`
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    try { const currentWeek = week || await nflDataProvider.getCurrentWeek();
+    try {  const currentWeek = week || await nflDataProvider.getCurrentWeek();
       
       // Get available players
       const availablePlayers = await this.getAvailablePlayers(leagueId, currentWeek);
@@ -73,7 +68,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
       const teamNeeds = await this.analyzeTeamNeeds(teamId, currentWeek);
       
       // Analyze each available player
-      const waiverTargets: WaiverTarget[] = [];
+      const waiverTargets, WaiverTarget[]  = [];
       
       for (const player of availablePlayers) {
         const analysis = await this.analyzeWaiverTarget(player, teamNeeds, leagueId, currentWeek);
@@ -88,7 +83,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
       this.setCache(cacheKey, sortedTargets);
       return sortedTargets;
     } catch (error) {
-      console.error('Error getting waiver recommendations:', error);
+      console.error('Error getting waiver recommendations: ', error);
       return [];
     }
   }
@@ -96,7 +91,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
   // Analyze specific waiver target with AI
   async analyzeWaiverTarget(async analyzeWaiverTarget(player, any,
   teamNeeds, any, leagueId, string,
-  week: number): : Promise<): PromiseWaiverTarget> { try {; // Get player predictions
+  week: number): : Promise<): PromiseWaiverTarget> {  try {; // Get player predictions
       const prediction = await aiPredictionEngine.generatePlayerPrediction(player.id, week);
       
       // Analyze breakout potential
@@ -107,24 +102,24 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
       const impactAnalysis = {
         immediateImpact this.calculateImmediateImpact(player, teamNeeds, prediction),
         seasonLongImpact: this.calculateSeasonImpact(player, prediction),
-        breakoutPotential: isBreakoutCandidate ? 0.8 : 0.2;
-  injuryRisk: this.calculateInjuryRisk(player)
+        breakoutPotential: isBreakoutCandidate ? 0.8, 0.2;
+  injuryRisk, this.calculateInjuryRisk(player)
        }
       // Calculate AI composite score
-      const aiScore = this.calculateCompositeScore(impactAnalysis, prediction, teamNeeds);
+      const aiScore  = this.calculateCompositeScore(impactAnalysis, prediction, teamNeeds);
       
       // Get market data
       const ownership = await this.getPlayerOwnership(player.id, leagueId);
       const faabValue = this.calculateFAABValue(aiScore, ownership, teamNeeds);
 
-      return {
+      return { 
         playerId: player.id;
   name: `${player.first_name} ${player.last_name}`,
         position: player.position;
   team: player.team_abbr || 'FA';
         ownership,
         availability: ownership < 50 ? 'available' : 'waivers';
-  priority: aiScore > 0.7 ? 1 : aiScore > 0.5 ? 2 : 3;
+  priority: aiScore > 0.7 ? 1 : aiScore > 0.5 ? 2, 3;
         aiScore, impactAnalysis,
         projections: {
   nextWeek: prediction.projectedPoints;
@@ -148,7 +143,7 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
       console.log(`🔄 Processing waiver claims for league ${leagueId }, week ${week}`);
       
       // Get all pending waiver claims
-      const claimsResult = await database.query(`
+      const claimsResult  = await database.query(`
         SELECT wc.*, t.team_name, u.username, np.first_name, np.last_name
         FROM waiver_claims wc
         JOIN teams t ON wc.team_id = t.id
@@ -169,8 +164,6 @@ class IntelligentWaiverSystem { private waiverCache = new Map<string, any>();
          });
 
         // Broadcast waiver notification
-        webSocketManager.broadcastWaiverNotification({
-          leagueId,
-          teamId: claim.team_id;
+        webSocketManager.broadcastWaiverNotification({ leagueId: teamId: claim.team_id;
   playerId: claim.player_id,type: 'success'
         });

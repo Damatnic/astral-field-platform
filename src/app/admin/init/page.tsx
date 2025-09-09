@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function InitializeLeaguePage() {
+export default function InitializeLeaguePage() { 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -21,7 +21,7 @@ export default function InitializeLeaguePage() {
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const data = await response.json();
+      const data  = await response.json();
 
       if (response.ok && data.success) {
         setStatus('success');
@@ -39,7 +39,7 @@ export default function InitializeLeaguePage() {
     } catch (error) {
       setStatus('error');
       setMessage('Network error.Please try again.');
-      console.error('Init error:', error);
+      console.error('Init error: ', error);
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +109,7 @@ export default function InitializeLeaguePage() {
             </div>
 
             {/* Status Messages */}
-            {message && (
+            { message && (
               <div className={`rounded-lg p-4 ${status === 'success' ? 'bg-green-600/20 text-green-400' :
                 status === 'error' ? 'bg-red-600/20 text-red-400' : 'bg-blue-600/20 text-blue-400'
                }`}>
@@ -119,7 +119,7 @@ export default function InitializeLeaguePage() {
 
             {/* League Data Display */}
             {leagueData && (
-              <div className="bg-gray-700/50 rounded-lg p-6">
+              <div className ="bg-gray-700/50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">
                   League Details:
                 </h3>
@@ -137,24 +137,24 @@ export default function InitializeLeaguePage() {
               <button
                 onClick={initializeLeague}
                 disabled={isLoading || status === 'success'}
-                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || status === 'success'
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'
+                className={ `flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || status === 'success'
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover, bg-green-700 text-white'
                  }`}
               >
                 {isLoading ? 'Initializing...' : 'Initialize League'}
               </button>
 
               <button
-                onClick={checkLeagueStatus}
+                onClick ={checkLeagueStatus}
                 disabled={isLoading}
-                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                className={ `flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover, bg-blue-700 text-white'
                  }`}
               >
                 Check Status
               </button>
             </div>
 
-            <div className="text-center">
+            <div className ="text-center">
               <button
                 onClick={() => router.push('/')}
                 className="text-gray-400 hover:text-white transition-colors"

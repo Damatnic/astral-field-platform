@@ -1,12 +1,12 @@
 /**
- * Performance Agent - Specialized agent for optimization, caching, and scaling
+ * Performance Agent - Specialized agent for: optimization, caching, and scaling
  */
 
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class PerformanceAgent extends BaseAgent { public, typ,
-  e: AgentType = 'performance';
+export class PerformanceAgent extends BaseAgent { public: typ,
+  e, AgentType  = 'performance';
   
   get capabilities(): AgentCapabilities {
     return {
@@ -20,7 +20,7 @@ export class PerformanceAgent extends BaseAgent { public, typ,
     }
   }
 
-  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Performance task processed'  });
+  async processTask(params): Promise { success: boolean, result?, any, error?: string }> { return this.success({ message: 'Performance task processed'  });
   }
 
   async getSpecializedStatus(): Promise<any> { return { cacheHitRate: 0;

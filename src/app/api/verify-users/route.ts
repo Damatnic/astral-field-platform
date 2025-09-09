@@ -1,25 +1,22 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET() { try {
+export async function GET() {  try {
     const result = await database.transaction(async (client) => {
       // Get all demo users with their PINs
       const usersResult = await client.query(`
-        SELECT
-          id, username, email, pin, is_demo_user,
+        SELECT id, username, email, pin, is_demo_user,
           created_at
         FROM users
-        WHERE is_demo_user = true OR pin IS NOT NULL
-  ORDER, BY,
+        WHERE is_demo_user = true OR pin IS NOT NULL: ORDER, BY,
           CASE 
             WHEN email LIKE '%damato%' THEN 0
-            ELSE 1
-          END,
+            ELSE 1, END,
           created_at
       `);
 
       // Get league info
-      const leagueResult = await client.query(`
+      const leagueResult  = await client.query(`
         SELECT
           l.id,
           l.name,
@@ -43,7 +40,7 @@ export async function GET() { try {
           u.username as owner
         FROM teams t
         JOIN users u ON t.user_id = u.id
-        ORDER BY t.wins DESC, t.points_for DESC
+        ORDER BY t.wins: DESC, t.points_for DESC
       `);
 
       return {
@@ -70,7 +67,7 @@ export async function GET() { try {
       },
       currentData, result,
   instructions: [
-        "If PINs don't match above, run /api/reset-and-setup to fix",
+        "If PINs don't match: above, run /api/reset-and-setup to fix",
         "Nicholas D'Amato should have PIN 1009",
         "Old PIN 1234 should NOT work anymore"
       ]
@@ -79,6 +76,6 @@ export async function GET() { try {
       { success: false,
   error: "Failed to verify users",
       details: error instanceof Error ? error.message : 'Unknown error'
-     }, { status: 500 });
+     , { status: 500 });
   }
 }

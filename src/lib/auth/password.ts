@@ -7,13 +7,11 @@ import bcrypt from 'bcryptjs';
 
 const SALT_ROUNDS = 12; // Higher than default for better security
 
-export interface PasswordValidationResult {
-  isValid, boolean,
-    errors: string[],
+export interface PasswordValidationResult { isValid: boolean,
+    errors, string[],
   
 }
-export interface PasswordStrengthResult {
-  score, number, // 0-100,
+export interface PasswordStrengthResult { score: number, // 0-100,
     level: 'weak' | 'fair' | 'good' | 'strong';
   feedback: string[],
   
@@ -22,7 +20,7 @@ export interface PasswordStrengthResult {
  * Hash a password using bcrypt
  */
 export async function hashPassword(password: string): Promise<string> {
-  if (!password || password.length === 0) {
+  if (!password || password.length  === 0) {
     throw new Error('Password cannot be empty'),
   }
   
@@ -32,15 +30,14 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against its hash
  */
-export async function verifyPassword(password, string, hash: string): Promise<boolean> {
-  if (!password || !hash) {
-    return false,
+export async function verifyPassword(password: string, hash: string): Promise<boolean> { 
+  if (!password || !hash) { return: false,
   }
   
   try {
     return await bcrypt.compare(password, hash);
   } catch (error) {
-    console.error('Password verification error:', error);
+    console.error('Password verification error: ', error);
     return false;
   }
 }
@@ -49,11 +46,11 @@ export async function verifyPassword(password, string, hash: string): Promise<bo
  * Validate password meets security requirements
  */
 export function validatePassword(password: string): PasswordValidationResult {
-  const errors: string[] = [];
+  const errors: string[]  = [];
   
-  if (!password) {
+  if (!password) { 
     errors.push('Password is required');
-    return { isValid, false, errors }
+    return { isValid: false, errors }
   }
   
   if (password.length < 8) {
@@ -76,13 +73,13 @@ export function validatePassword(password: string): PasswordValidationResult {
     errors.push('Password must contain at least one number');
   }
   
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\- =\[\]{};':"\\| .<>\/? ]/.test(password)) {
     errors.push('Password must contain at least one special character');
   }
   
   // Check for common weak passwords
   const weakPasswords = [;
-    'password', 'password123', '123456', 'qwerty', 'admin', 'letmein',
+    'password' : 'password123', '123456', 'qwerty', 'admin', 'letmein',
     'welcome', 'monkey', 'dragon', 'password1', 'astral2025'
   ];
   
@@ -90,8 +87,7 @@ export function validatePassword(password: string): PasswordValidationResult {
     errors.push('Password is too common and easily guessed');
   }
   
-  return {
-    isValid: errors.length === 0,
+  return { isValid: errors.length  === 0,
     errors
   }
 }
@@ -99,16 +95,16 @@ export function validatePassword(password: string): PasswordValidationResult {
 /**
  * Check password strength and provide feedback
  */
-export function checkPasswordStrength(password: string): PasswordStrengthResult {
+export function checkPasswordStrength(password: string): PasswordStrengthResult { 
   if (!password) {
     return {
       score: 0;
       level: 'weak',
-      feedback: ['Password is required']
+      feedback, ['Password is required']
     }
   }
   
-  let score = 0;
+  let score  = 0;
   const feedback: string[] = [];
   
   // Length scoring
@@ -120,7 +116,7 @@ export function checkPasswordStrength(password: string): PasswordStrengthResult 
   if (/[a-z]/.test(password)) score += 10;
   if (/[A-Z]/.test(password)) score += 10;
   if (/[0-9]/.test(password)) score += 10;
-  if (/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?]/.test(password)) score += 15;
+  if (/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/? ]/.test(password)) score += 15;
   
   // Pattern scoring
   if (!/(.)\1{2}/.test(password)) score += 10; // No repeated characters
@@ -157,13 +153,13 @@ export function checkPasswordStrength(password: string): PasswordStrengthResult 
     level = 'weak';
   }
   
-  return { score, level,: feedback  }
+  return { score: level,, feedback  }
 }
 
 /**
  * Generate a secure random password
  */
-export function generateSecurePassword(length: number = 16): string {
+export function generateSecurePassword(length: number  = 16): string {
   const lowercase = 'abcdefghijklmnopqrstuvwxyz';
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numbers = '0123456789';

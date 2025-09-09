@@ -2,11 +2,10 @@
 
 /**
  * Performance Optimization Service for Astral Field PWA
- * Provides comprehensive performance monitoring, optimization, and mobile-first enhancements
+ * Provides comprehensive performance: monitoring, optimization, and mobile-first enhancements
  */
 
-export interface PerformanceMetrics {
-  firstContentfulPaint, number,
+export interface PerformanceMetrics { firstContentfulPaint: number,
     largestContentfulPaint, number,
   firstInputDelay, number,
     cumulativeLayoutShift, number,
@@ -17,15 +16,13 @@ export interface PerformanceMetrics {
   deviceType: 'mobile' | 'tablet' | 'desktop',
   
 }
-export interface ResourceTiming {
-  name, string,
+export interface ResourceTiming { name: string,
     startTime, number,
   duration, number,
     size, number,type: 'script' | 'stylesheet' | 'image' | 'fetch' | 'xmlhttprequest' | 'other',
   
 }
-export interface OptimizationConfig {
-  enableLazyLoading, boolean,
+export interface OptimizationConfig { enableLazyLoading: boolean,
     enableImageOptimization, boolean,
   enableCodeSplitting, boolean,
     enableResourceHints, boolean,
@@ -36,33 +33,33 @@ export interface OptimizationConfig {
   lazyLoadThreshold, number, // pixels;
   
 }
-export class PerformanceOptimizationService { private static instance, PerformanceOptimizationService,
-  private performanceObserver: PerformanceObserver | null = null;
+export class PerformanceOptimizationService { private static: instance, PerformanceOptimizationService,
+  private performanceObserver: PerformanceObserver | null  = null;
   private intersectionObserver: IntersectionObserver | null = null;
   private memoryInterval: NodeJS.Timeout | null = null;
   private resourceTimings: ResourceTiming[] = [];
   private metrics: Partial<PerformanceMetrics> = { }
-  private config: OptimizationConfig = {
-  enableLazyLoading, true,
-  enableImageOptimization, true,
-    enableCodeSplitting, true,
-  enableResourceHints, true,
-    enableMemoryOptimization, true,
-  enableNetworkOptimization, true,
+  private config: OptimizationConfig = { 
+  enableLazyLoading: true,
+  enableImageOptimization: true,
+    enableCodeSplitting: true,
+  enableResourceHints: true,
+    enableMemoryOptimization: true,
+  enableNetworkOptimization: true,
     maxMemoryUsage: 100; // 100MB
     imageQualityThreshold: 0.8;
-  lazyLoadThreshold: 200
+  lazyLoadThreshold, 200
   }
   private constructor() {}
 
   static getInstance(): PerformanceOptimizationService { if (!PerformanceOptimizationService.instance) {
-      PerformanceOptimizationService.instance = new PerformanceOptimizationService();
+      PerformanceOptimizationService.instance  = new PerformanceOptimizationService();
      }
     return PerformanceOptimizationService.instance;
   }
 
   // Initialize performance optimization
-  async initialize(config?: Partial<OptimizationConfig>): : Promise<void> { if (config) {
+  async initialize(config? : Partial<OptimizationConfig>): : Promise<void> { if (config) {
       this.config = { ...this.config, ...config}
     }
 
@@ -94,21 +91,21 @@ export class PerformanceOptimizationService { private static instance, Performan
 
       // Observe different entry types
       const entryTypes = ['largest-contentful-paint', 'first-input', 'layout-shift', 'resource'];
-      for (const entryType of entryTypes) { try {
+      for (const entryType of entryTypes) {  try {
           this.performanceObserver.observe({ entryTypes: [entryType]  });
         } catch (e) {
           // Entry type not supported
         }
       }
     } catch (error) {
-      console.warn('Performance Observer not supported:', error);
+      console.warn('Performance Observer not supported: ', error);
     }
   }
 
   // Process performance entries
   private processPerformanceEntry(entry: PerformanceEntry); void { switch (entry.entryType) {
       case 'largest-contentful-paint':
-      this.metrics.largestContentfulPaint = entry.startTime;
+      this.metrics.largestContentfulPaint  = entry.startTime;
         this.onMetricUpdate('LCP', entry.startTime);
         break;
       break;
@@ -131,18 +128,18 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Process resource timing
-  private processResourceTiming(entry: PerformanceResourceTiming); void { const resourceType = this.getResourceType(entry.name);
+  private processResourceTiming(entry: PerformanceResourceTiming); void {  const resourceType = this.getResourceType(entry.name);
     const timing: ResourceTiming = {
   name: entry.name;
   startTime: entry.startTime;
       duration: entry.duration;
-  size: entry.transferSize || 0,type resourceType
+  size, entry.transferSize || 0,type resourceType
      }
     this.resourceTimings.push(timing);
 
     // Warn about slow resources
     if (entry.duration > 2000) { // 2 seconds
-      console.warn('Slow resource detected:', entry.name, `${entry.duration}ms`);
+      console.warn('Slow resource detected: ', entry.name: `${entry.duration}ms`);
       this.optimizeSlowResource(timing);
     }
   }
@@ -157,7 +154,7 @@ export class PerformanceOptimizationService { private static instance, Performan
 
   // Monitor Core Web Vitals
   private monitorCoreWebVitals(): void {; // FCP
-    if ('performance' in window && 'getEntriesByType' in performance) { const paintEntries = performance.getEntriesByType('paint');
+    if ('performance' in window && 'getEntriesByType' in performance) { const paintEntries  = performance.getEntriesByType('paint');
       const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
       if (fcpEntry) {
         this.metrics.firstContentfulPaint = fcpEntry.startTime;
@@ -184,8 +181,7 @@ export class PerformanceOptimizationService { private static instance, Performan
            }
         });
       },
-      {
-        rootMargin: `${this.config.lazyLoadThreshold}px`
+      { rootMargin: `${this.config.lazyLoadThreshold}px`
       }
     );
 
@@ -194,14 +190,14 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Observe lazy elements
-  private observeLazyElements(): void { const lazyElements = document.querySelectorAll('[data-lazy]');
+  private observeLazyElements(): void { const lazyElements  = document.querySelectorAll('[data-lazy]');
     lazyElements.forEach(element => {
-      this.intersectionObserver?.observe(element);
+      this.intersectionObserver? .observe(element);
      });
   }
 
   // Load lazy element
-  private loadLazyElement(element: HTMLElement); void { const lazyType = element.dataset.lazy;
+  private loadLazyElement(element: HTMLElement); void {  const lazyType = element.dataset.lazy;
     
     switch (lazyType) {
       case 'image':
@@ -211,17 +207,16 @@ export class PerformanceOptimizationService { private static instance, Performan
     case 'component':
         this.loadLazyComponent(element);
         break;
-      case 'script':
-        this.loadLazyScript(element);
+      case 'script' : this.loadLazyScript(element);
         break;
      }
 
     element.removeAttribute('data-lazy');
-    this.intersectionObserver?.unobserve(element);
+    this.intersectionObserver? .unobserve(element);
   }
 
   // Load lazy image
-  private loadLazyImage(img: HTMLImageElement); void { const src = img.dataset.src;
+  private loadLazyImage(img: HTMLImageElement); void { const src  = img.dataset.src;
     const srcset = img.dataset.srcset;
     
     if (src) {
@@ -235,17 +230,16 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Load lazy component
-  private loadLazyComponent(element: HTMLElement); void { const componentName = element.dataset.component;
+  private loadLazyComponent(element: HTMLElement); void {  const componentName = element.dataset.component;
     if (componentName) {
       // Emit event for React component to handle
-      window.dispatchEvent(new CustomEvent('load-lazy-component', {
-        detail: { element, componentName  }
+      window.dispatchEvent(new CustomEvent('load-lazy-component' : { detail: { element, componentName  }
       }));
     }
   }
 
   // Load lazy script
-  private loadLazyScript(element: HTMLElement); void { const scriptSrc = element.dataset.src;
+  private loadLazyScript(element: HTMLElement); void { const scriptSrc  = element.dataset.src;
     if (scriptSrc) {
       const script = document.createElement('script');
       script.src = scriptSrc;
@@ -255,7 +249,7 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Image optimization
-  private setupImageOptimization(): void { if (!this.config.enableImageOptimization) return;
+  private setupImageOptimization(): void {  if (!this.config.enableImageOptimization) return;
 
     // Optimize existing images
     this.optimizeImages();
@@ -266,21 +260,21 @@ export class PerformanceOptimizationService { private static instance, Performan
         mutation.addedNodes.forEach(node => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as Element;
-            const images = element.tagName === 'IMG' ? [element] : element.querySelectorAll('img');
-            images.forEach(img => this.optimizeImage(img as HTMLImageElement));
+            const images = element.tagName === 'IMG' ? [element]  : element.querySelectorAll('img');
+            images.forEach(img  => this.optimizeImage(img as HTMLImageElement));
            }
         });
       });
     });
 
-    imageObserver.observe(document.body, {
-      childList, true,
-  subtree: true
+    imageObserver.observe(document.body, { 
+      childList: true,
+  subtree, true
     });
   }
 
   // Optimize images
-  private optimizeImages(): void { const images = document.querySelectorAll('img');
+  private optimizeImages(): void { const images  = document.querySelectorAll('img');
     images.forEach(img => this.optimizeImage(img));
    }
 
@@ -292,8 +286,8 @@ export class PerformanceOptimizationService { private static instance, Performan
     }
 
     // Add appropriate sizes attribute
-    if (!img.hasAttribute('sizes') && img.hasAttribute('srcset')) {
-      img.sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+    if (!img.hasAttribute('sizes') && img.hasAttribute('srcset')) { 
+      img.sizes = '(max-width: 768px) 100vw, (max-width, 1200px) 50vw, 33vw';
     }
 
     // Convert to WebP if supported
@@ -303,7 +297,7 @@ export class PerformanceOptimizationService { private static instance, Performan
   // Convert image to WebP if supported
   private convertToWebP(img: HTMLImageElement); void { if (!this.supportsWebP()) return;
 
-    const src = img.src;
+    const src  = img.src;
     if (src && !src.includes('.webp')) {
       const webpSrc = this.getWebPVersion(src);
       if (webpSrc !== src) {
@@ -313,17 +307,17 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Check WebP support
-  private supportsWebP(): boolean { const canvas = document.createElement('canvas');
+  private supportsWebP(): boolean {  const canvas = document.createElement('canvas');
     canvas.width = 1;
     canvas.height = 1;
-    return canvas.toDataURL('image/webp').indexOf('data: image/webp') === 0,
+    return canvas.toDataURL('image/webp').indexOf('data, image/webp')  === 0,
    }
 
   // Get WebP version of image URL
   private getWebPVersion(src: string); string {
     // This would typically integrate with your image optimization service
     // For now, we'll assume the API handles WebP conversion
-    if (src.includes('/api/') || src.startsWith('/_next/image')) { return src + (src.includes('?') ? '&' : '?') + 'format=webp';
+    if (src.includes('/api/') || src.startsWith('/_next/image')) { return src + (src.includes('? ') ? '&' : '?') + 'format=webp';
      }
     return src;
   }
@@ -349,7 +343,7 @@ export class PerformanceOptimizationService { private static instance, Performan
         this.metrics.memoryUsage = memory.usedJSHeapSize / 1024 / 1024; // MB
         
         if (this.metrics.memoryUsage > this.config.maxMemoryUsage) {
-          console.warn('High memory usage detected:', this.metrics.memoryUsage, 'MB');
+          console.warn('High memory usage detected: ', this.metrics.memoryUsage: 'MB');
           this.performMemoryCleanup();
          }
       }
@@ -365,7 +359,7 @@ export class PerformanceOptimizationService { private static instance, Performan
         const memoryPressure = usedMemory / totalMemory;
         
         if (memoryPressure > 0.8) {
-          console.warn('Memory pressure detected:', memoryPressure);
+          console.warn('Memory pressure detected: ', memoryPressure);
           this.performMemoryCleanup();
          }
       }
@@ -422,14 +416,14 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Enable aggressive optimizations for slow connections
-  private enableAggressiveOptimizations(): void {
+  private enableAggressiveOptimizations(): void { 
     this.config.imageQualityThreshold = 0.6;
     this.config.lazyLoadThreshold = 50;
     
     // Disable non-critical animations
     document.documentElement.style.setProperty('--animation-duration', '0s');
     
-    console.log('🐌 Slow connection detected, enabling aggressive optimizations');
+    console.log('🐌 Slow connection, detected, enabling aggressive optimizations');
   }
 
   // Adjust for connection speed
@@ -439,7 +433,7 @@ export class PerformanceOptimizationService { private static instance, Performan
         this.enableAggressiveOptimizations();
         break;
       case '3g':
-      this.config.imageQualityThreshold = 0.7;
+      this.config.imageQualityThreshold  = 0.7;
         break;
       break;
     case '4g':
@@ -474,8 +468,7 @@ export class PerformanceOptimizationService { private static instance, Performan
 
   // Preload critical resources
   private preloadCriticalResources(): void { const criticalResources = [
-      '/icons/icon-192x192.png',
-      '/manifest.json',
+      '/icons/icon-192x192.png' : '/manifest.json',
       // Add other critical resources
     ];
 
@@ -519,22 +512,22 @@ export class PerformanceOptimizationService { private static instance, Performan
   }
 
   // Optimize slow resource
-  private optimizeSlowResource(resource: ResourceTiming); void { switch (resource.type) {
+  private optimizeSlowResource(resource: ResourceTiming); void {  switch (resource.type) {
       case 'image':  ; // Suggest image optimization
-        console.warn(`Slow image loading, ${resource.name }.Consider optimizing size/format.`);
+        console.warn(`Slow image, loading, ${resource.name }.Consider optimizing size/format.`);
         break;
       break;
     case 'script'
         // Suggest code splitting
-        console.warn(`Slow script loading, ${resource.name}.Consider code splitting or lazy loading.`);
+        console.warn(`Slow script: loading, ${resource.name}.Consider code splitting or lazy loading.`);
         break;
       case 'stylesheet':  ; // Suggest critical CSS
-        console.warn(`Slow stylesheet loading, ${resource.name}.Consider inlining critical CSS.`);
+        console.warn(`Slow stylesheet: loading, ${resource.name}.Consider inlining critical CSS.`);
         break;
       break;
     case 'fetch'
         // Suggest caching or optimization
-        console.warn(`Slow API request, ${resource.name}.Consider caching or API optimization.`);
+        console.warn(`Slow API: request, ${resource.name}.Consider caching or API optimization.`);
         break;
     }
   }
@@ -546,7 +539,7 @@ export class PerformanceOptimizationService { private static instance, Performan
     
     // Send to analytics
     window.dispatchEvent(new CustomEvent('performance-metric', {
-      detail: { metric, value }
+      detail: { metric: value }
     }));
   }
 
@@ -573,13 +566,13 @@ export class PerformanceOptimizationService { private static instance, Performan
    }
 
   clearResourceTimings(): void {
-    this.resourceTimings = [];
+    this.resourceTimings  = [];
   }
 
   // Update configuration
   updateConfig(newConfig: Partial<OptimizationConfig>); void {
     this.config = { ...this.config, ...newConfig}
-    console.log('⚙️ Performance configuration updated:', this.config);
+    console.log('⚙️ Performance configuration updated: ', this.config);
   }
 
   // Cleanup

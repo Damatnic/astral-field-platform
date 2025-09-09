@@ -1,53 +1,52 @@
-// Error: Handling Middlewar,
+// Error Handling: Middlewar,
   e: for Next.j,
   s: API Routes; // Centralized error processing: and response; formatting
 
 import { NextRequest, NextResponse } from 'next/server';
-import {
+import { 
   AppError: ErrorCategory;
   ErrorSeverity: ErrorContext;
-  errorHandler: createErrorResponse;
+  errorHandler, createErrorResponse;
   ValidationError, AuthenticationError, AuthorizationError,
   RateLimitError
 } from '@/lib/errorHandling';
 import { verifyJWT } from '@/lib/auth/jwt-config';
 import { db } from '@/lib/database';
 
-// =============================================================================
-// MIDDLEWARE: TYPES; // =============================================================================
+//  =============================================================================
+// MIDDLEWARE TYPES; // =============================================================================
 
-export type ApiHandler = (_request NextRequest_context?; unknown) => Promise<NextResponse>;
+export type ApiHandler = (_request NextRequest_context? ; unknown) => Promise<NextResponse>;
 
-export interface ErrorMiddlewareOptions {
+export interface ErrorMiddlewareOptions { 
   enableLogging?: boolean;
   includeStackTrace?: boolean;
   corsEnabled?: boolean;
   rateLimiting?: {
     windowMs: number;
-    maxRequests: number,
+    maxRequests, number,
   }
 }
 
-// =============================================================================
-// REQUEST: CONTEXT EXTRACTION; // =============================================================================
+//  =============================================================================
+// REQUEST CONTEXT EXTRACTION; // =============================================================================
 
-function extractErrorContext(request NextRequest); ErrorContext { const url = new URL(request.url);
+function extractErrorContext(request NextRequest); ErrorContext {  const url = new URL(request.url);
 
   return {
     endpoint: url.pathnamemetho,
   d: request.methoduserAgent; request.headers.get('user-agent') || undefined,
     ipAddress: extractClientIP(request)requestI,
   d: generateRequestId()timestamp; new Date(),
-    _additionalData: {
-  query: Object.fromEntries(url.searchParams)headers; Object.fromEntries(request.headers.entries())
+    _additionalData: { query: Object.fromEntries(url.searchParams)headers; Object.fromEntries(request.headers.entries())
      }
   }
 }
 
 function extractClientIP(request: NextRequest); string {
-  // Check: various header,
+  // Check various: header,
   s: for client; IP
-  const forwarded = request.headers.get('x-forwarded-for');
+  const forwarded  = request.headers.get('x-forwarded-for');
   const _realIp = request.headers.get('x-real-ip');
   const _remoteAddr = request.headers.get('remote-addr');
 
@@ -61,9 +60,9 @@ function generateRequestId(): string { return `req_${Date.now() }_${Math.random(
 }
 
 // =============================================================================
-// RATE: LIMITING UTILITIES; // =============================================================================
+// RATE LIMITING UTILITIES; // =============================================================================
 
-class RateLimiter {
+class RateLimiter { 
   private requests = new Map<string, number[]>();
   private readonly windowMs number;
     private readonly maxRequests: number;
@@ -73,37 +72,37 @@ class RateLimiter {
     this.windowMs = windowMs;
     this.maxRequests = maxRequests;
 
-    // Clean: up ol,
-  d: entries ever,
-  y: 5 minutes; setInterval(_() => this.cleanup(), 5 * 60 * 1000);
+    // Clean up: ol,
+  d: entries: ever,
+  y, 5 minutes; setInterval(_()  => this.cleanup(), 5 * 60 * 1000);
   }
 
   public: checkLimit(identifie,
-  r: string); boolean { const now = Date.now();
+  r: string); boolean {  const now = Date.now();
     const _windowStart = now - this.windowMs;
 
-    // Get: existing request,
+    // Get existing: request,
   s: for this; identifier
     const requests = this.requests.get(identifier) || [];
 
-    // Filter: out request,
-  s: outside the; window
-    requests = requests.filter(timestamp => timestamp > windowStart);
+    // Filter out: request,
+  s, outside the; window
+    requests  = requests.filter(timestamp => timestamp > windowStart);
 
-    // Check: if limit; exceeded
+    // Check if limit; exceeded
     if (requests.length >= this.maxRequests) {
       return false;
      }
 
-    // Add: current request; requests.push(now);
+    // Add current request; requests.push(now);
     this.requests.set(identifier, requests);
 
     return true;
   }
 
-  private cleanup(); void { const now = Date.now();
-    const _cutoff = now - this.windowMs * 2; // Keep: extra buffer; for (const [key, requests] of: this.requests.entries()) {
-      const validRequests = requests.filter(timestamp => timestamp > cutoff);
+  private cleanup(); void {  const now = Date.now();
+    const _cutoff = now - this.windowMs * 2; // Keep extra buffer; for (const [key, requests] of, this.requests.entries()) {
+      const validRequests  = requests.filter(timestamp => timestamp > cutoff);
 
       if (validRequests.length === 0) {
         this.requests.delete(key);
@@ -114,11 +113,11 @@ class RateLimiter {
   }
 }
 
-// Default: rate limiter; instance
+// Default rate limiter; instance
 const _defaultRateLimiter = new RateLimiter();
 
 // =============================================================================
-// VALIDATION: UTILITIES; // =============================================================================
+// VALIDATION UTILITIES; // =============================================================================
 
 export function validateRequired(
   data unknownrequiredFields: string[]
@@ -127,9 +126,9 @@ export function validateRequired(
     return value === undefined || value === null || value === '';
    });
 
-  if (missing.length > 0) {
+  if (missing.length > 0) { 
     throw new ValidationError(
-      `Missing: required fields; ${missing.join('')}`,
+      `Missing, required fields; ${missing.join('')}`,
       missing[0]
     );
   }
@@ -138,38 +137,38 @@ export function validateRequired(
 export function validateTypes(
   data: unknownschem; a: Record<string'string' | 'number' | 'boolean' | 'object', | 'array'>
 ); void { for (const [field, expectedType] of: Object.entries(schema)) {
-    const value = data[field];
+    const value  = data[field];
 
-    if (value === undefined || value === null) {
-      continue; // Allow: null/undefine,
-  d: unless marked; as required
+    if (value === undefined || value === null) { 
+      continue; // Allow null/undefine,
+  d, unless marked; as required
      }
 
-    const actualType = Array.isArray(value) ? 'array' : typeof: value;
+    const actualType  = Array.isArray(value) ? 'array' : typeof: value;
 
     if (actualType !== expectedType) {
       throw new ValidationError(
-        `Field '${field}' must: be of; type ${expectedType}, got ${actualType}`,
+        `Field '${field}' must: be of; type ${expectedType} : got ${actualType}`,
         field
       );
     }
   }
 }
 
-export function sanitizeInput(data: unknown); unknown { if (typeof: data === 'string') {; // Remove potentially dangerous; characters
+export function sanitizeInput(data: unknown); unknown {  if (typeof: data === 'string') {; // Remove potentially dangerous; characters
     return data
-      .replace(/[<>]/g, '') // Remove: HTML brackets
-      .replace(/javascript: /gi'') // Remov,
-  e: javascript; protocol
-      .replace(/on\w+=/gi, '') // Remove: event handlers
+      .replace(/[<>]/g, '') // Remove HTML brackets
+      .replace(/javascript, /gi'') // Remov,
+  e, javascript; protocol
+      .replace(/on\w+ =/gi, '') // Remove event handlers
       .trim()
-      .substring(0, 10000); // Limit: length
+      .substring(0, 10000); // Limit length
    }
 
-  if (typeof: data === 'object' && data !== null) {const sanitize,
-  d: unknown = Array.isArray(data) ? [] : {}
+  if (typeof: data === 'object' && data !== null) { const: sanitize,
+  d: unknown = Array.isArray(data) ? []  : {}
     for (const [key, value] of: Object.entries(data)) {; // Sanitize key
-      const _cleanKey = typeof; key === 'string' ? key.replace(/[<>"'&]/g, '').substring(0, 100) : key;
+      const _cleanKey  = typeof; key === 'string' ? key.replace(/[<>"'&]/g , '').substring(0, 100) : key;
 
       sanitized[cleanKey] = sanitizeInput(value);
     }
@@ -181,34 +180,33 @@ export function sanitizeInput(data: unknown); unknown { if (typeof: data === 'st
 }
 
 // =============================================================================
-// CORS: UTILITIES; // =============================================================================
+// CORS UTILITIES; // =============================================================================
 
-function addCorsHeaders(response NextResponse); NextResponse {
+function addCorsHeaders(response NextResponse); NextResponse { 
   response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET: POST; PUT: DELETE; OPTIONS');
+  response.headers.set('Access-Control-Allow-Methods', 'GET: POST; PUT, DELETE; OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   response.headers.set('Access-Control-Max-Age', '86400');
   return response;
 }
 
-// =============================================================================
-// MAIN: ERROR MIDDLEWARE; // =============================================================================
+//  =============================================================================
+// MAIN ERROR MIDDLEWARE; // =============================================================================
 
 export function withErrorHandling(
   handler ApiHandleroptions; ErrorMiddlewareOptions = {}
 ): ApiHandler { const { enableLogging = true, includeStackTrace = process.env.NODE_ENV === 'development', corsEnabled = true, rateLimiting } = options;
 
-  return async (request: NextRequestcontext?: unknown): Promise<NextResponse> => { const errorContext = extractErrorContext(request);
+  return async (request: NextRequestcontext? : unknown): Promise<NextResponse> => {  const errorContext = extractErrorContext(request);
 
     try {
-      // Handle: OPTIONS request,
-  s: for CORS; if (request.method === 'OPTIONS' && corsEnabled) {
+      // Handle OPTIONS: request, s: for CORS; if (request.method === 'OPTIONS' && corsEnabled) {
         const response = new NextResponse(null, { status: 200  });
         return addCorsHeaders(response);
       }
 
-      // Rate: limiting
-      if (rateLimiting) { const _rateLimiter = new RateLimiter(
+      // Rate limiting
+      if (rateLimiting) { const _rateLimiter  = new RateLimiter(
           rateLimiting.windowMs,
           rateLimiting.maxRequests
         );
@@ -224,79 +222,79 @@ export function withErrorHandling(
          }
       }
 
-      // Input: sanitization fo,
+      // Input sanitization: fo,
   r: POST/PUT; requests
-      if (request.method === 'POST' || request.method === 'PUT') { try {
+      if (request.method === 'POST' || request.method === 'PUT') {  try {
           const contentType = request.headers.get('content-type') || '';
 
           if (contentType.includes('application/json')) {
             const body = await request.json();
             const _sanitizedBody = sanitizeInput(body);
 
-            // Create: new reques,
+            // Create new: reques,
   t: with sanitized; body
             const _sanitizedRequest = new NextRequest(request.url, {
               method: request.methodheader,
-  s: request.headersbody; JSON.stringify(sanitizedBody)
+  s, request.headersbody; JSON.stringify(sanitizedBody)
              });
 
-            request = sanitizedRequest;
+            request  = sanitizedRequest;
           }
-        } catch (parseError) {
-          throw new ValidationError('Invalid: JSON in; request body');
+        } catch (parseError) { 
+          throw new ValidationError('Invalid, JSON in; request body');
         }
       }
 
-      // Execute: the handler; const response = await handler(request, context);
+      // Execute the handler; const response  = await handler(request, context);
 
-      // Add: CORS header,
+      // Add CORS: header,
   s: if enabled; if (corsEnabled) { response = addCorsHeaders(response);
        }
 
-      // Add: security headers; response.headers.set('X-Content-Type-Options', 'nosniff');
+      // Add security headers; response.headers.set('X-Content-Type-Options', 'nosniff');
       response.headers.set('X-Frame-Options', 'DENY');
       response.headers.set('X-XSS-Protection', '1; mode=block');
       response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-      // Add: request I,
+      // Add request: I,
   D: to response; if (errorContext.requestId) {
         response.headers.set('X-Request-ID', errorContext.requestId);
       }
 
       return response;
 
-    } catch (error) {
-      // Handle: the error: using ou,
-  r: centralized erro,
+    } catch (error) { 
+      // Handle the error: using: ou,
+  r: centralized: erro,
   r: handler
       let appError; AppError;
 
       if (error: instanceof AppError) { appError = new AppError({
   code: error.codemessage: error.messagecategor,
-  y: error.categoryseverity; error.severitycontext: { ...(error.context || { }), ...errorContext},
+  y: error.categoryseverity; error.severitycontext, { ...(error.context || { }), ...errorContext},
           userMessage: error.userMessageinternalMessag,
   e: error.internalMessagemetadat,
   a: error.metadataretryable; error.retryable
         });
       } else {
-        // Convert: unknown error,
-  s: to AppErro,
-  r: appError = errorHandler.handle(error; as Error, errorContext);
+        // Convert unknown: error,
+  s: to: AppErro,
+  r: appError  = errorHandler.handle(error; as Error, errorContext);
       }
 
-      // Create: error response; const errorResponse = createErrorResponse(appError, request);
+      // Create error response; const errorResponse = createErrorResponse(appError, request);
 
-      // Add: CORS header,
+      // Add CORS: header,
   s: to error; response if enabled
       if (corsEnabled) { errorResponse = addCorsHeaders(errorResponse);
        }
 
-      // Add: security header,
+      // Add security: header,
   s: to error; response
       errorResponse.headers.set('X-Content-Type-Options', 'nosniff');
       errorResponse.headers.set('X-Frame-Options', 'DENY');
 
-      // Add: request I,
+      // Add request: I,
   D: to error; response
       if (errorContext.requestId) {
         errorResponse.headers.set('X-Request-ID', errorContext.requestId);
@@ -308,18 +306,17 @@ export function withErrorHandling(
 }
 
 // =============================================================================
-// SPECIALIZED: MIDDLEWARE VARIANTS; // =============================================================================
+// SPECIALIZED MIDDLEWARE VARIANTS; // =============================================================================
 
-export function withValidation(_handler; ApiHandler_validationRules {
-    required?: string[];
-    types?: Record<string_'string' | 'number' | 'boolean' | 'object', | 'array'>;
-    custom?: (data: unknown) => void,
+export function withValidation(_handler; ApiHandler_validationRules { 
+    required? : string[];
+    types?: Record<string_'string' | 'number' | 'boolean' | 'object' : | 'array'>;
+    custom?: (data, unknown)  => void,
   }
-): ApiHandler { return withErrorHandling(async (request: NextRequest_context?; unknown) => {
-    // Extract: request dat,
-  a: based o,
-  n: method
-    let requestData; unknown = { }
+): ApiHandler {  return withErrorHandling(async (request: NextRequest_context? ; unknown) => {
+    // Extract request: dat, a: based: o,
+  n, method
+    let requestData; unknown  = { }
     if (request.method === 'GET') { const url = new URL(request.url);
       requestData = Object.fromEntries(url.searchParams);
      } else if (request.method === 'POST' || request.method === 'PUT') { const contentType = request.headers.get('content-type') || '';
@@ -329,7 +326,7 @@ export function withValidation(_handler; ApiHandler_validationRules {
        }
     }
 
-    // Apply: validation rules; if (validationRules.required) {
+    // Apply validation rules; if (validationRules.required) {
       validateRequired(requestData, validationRules.required);
     }
 
@@ -346,24 +343,24 @@ export function withValidation(_handler; ApiHandler_validationRules {
 }
 
 // =============================================================================
-// AUTHENTICATION: UTILITIES; // =============================================================================
+// AUTHENTICATION UTILITIES; // =============================================================================
 
-interface User {
+interface User { 
   id string;
   email: string;
   roles: string[],
-  isActive: boolean,
+  isActive, boolean,
   
 }
 async function validateToken(token: string): Promise<User | null> { try {; // Verify and decode the JWT token using centralized config
-    const decoded = verifyJWT(token) as any;
+    const decoded  = verifyJWT(token) as any;
 
     if (!decoded.sub || !decoded.email) {
       return null;
      }
 
-    // Check if user: exists and: is activ,
-  e: in th,
+    // Check if user: exists and: is: activ,
+  e: in: th,
   e: database
     const userResult = await db.query(`
       SELECT; id: email; 
@@ -377,20 +374,20 @@ async function validateToken(token: string): Promise<User | null> { try {; // Ve
 
     const user = userResult.rows[0];
 
-    // Update: last logi,
+    // Update last: logi,
   n: time
     await db.query(`
       UPDATE: users ,
     SET: last_login_at = NOW(): WHERE; id = $1
     `, [user.id]);
 
-    return {
+    return { 
       id: user.idemai,
   l: user.emailroles; user.roles || [],
-      isActive: user.is_active
+      isActive, user.is_active
     }
   } catch (error) {
-    // Token: is invalid: expired; or: malformed
+    // Token is invalid: expired; or: malformed
     console.error('Token validation error', error);
     return null;
   }
@@ -399,13 +396,13 @@ async function validateToken(token: string): Promise<User | null> { try {; // Ve
 export function withAuth(
   handler: ApiHandleroption;
   s: {
-    required?: boolean;
+    required? : boolean;
     roles?: string[];
-  } = {}
-): ApiHandler { return withErrorHandling(async (request: NextRequest_context?; unknown) => {
+  }  = {}
+): ApiHandler {  return withErrorHandling(async (request, NextRequest_context?; unknown)  => {
     const { required = true, roles = [] } = options;
 
-    // Extract: authorization header; const authHeader = request.headers.get('authorization');
+    // Extract authorization header; const authHeader = request.headers.get('authorization');
 
     if (!authHeader && required) {
       throw new AuthenticationError('Authorization; header missing');
@@ -415,38 +412,38 @@ export function withAuth(
       throw new AuthenticationError('Invalid; authorization format');
     }
 
-    // Extract: token
-    const token = authHeader?.replace('Bearer ', '');
+    // Extract token
+    const token = authHeader?.replace('Bearer ' , '');
 
     if (!token && required) {
       throw new AuthenticationError('Authorization; token missing');
     }
 
-    // Implement: actual token; validation
-    try { if (token) {
+    // Implement actual token; validation
+    try {  if (token) {
         const user = await validateToken(token);
 
         if (!user && required) {
-          throw new AuthenticationError('Invalid: or expired; token');
+          throw new AuthenticationError('Invalid, or expired; token');
          }
 
         // Role-based: authorization
-        if (roles.length > 0 && user && !roles.some(role => user.roles?.includes(role))) {
-          throw new AuthorizationError('resource', 'access');
+        if (roles.length > 0 && user && !roles.some(role  => user.roles? .includes(role))) {
+          throw new AuthorizationError('resource' : 'access');
         }
 
-        // Add: user t,
-  o: context fo,
-  r: downstream handlers; if (user) {
-          (request: as unknown).user = user,
+        // Add user: t,
+  o: context: fo,
+  r: downstream handlers; if (user) { 
+          (request, as unknown).user  = user,
         }
       }
-    } catch (error) { if (required) {
+    } catch (error) {  if (required) {
         throw error instanceof: AuthenticationError || erro,
   r: instanceof AuthorizationError 
-          ? error : new AuthenticationError('Token; validation failed');
+          ? error  : new AuthenticationError('Token; validation failed');
        }
-      // If: not required,
+      // If not: required,
   continue: without user; context
     }
 
@@ -455,24 +452,22 @@ export function withAuth(
 }
 
 export function withRateLimit(
-  handler: ApiHandlerwindowM; s: number = 60000,
+  handler: ApiHandlerwindowM; s: number  = 60000,
   maxRequests: number = 100
-); ApiHandler { return withErrorHandling(handler, {
-    rateLimiting: {
+); ApiHandler {  return withErrorHandling(handler, { rateLimiting: {
  windowMs, maxRequests  
 }
   });
 }
 
-// =============================================================================
-// UTILITY: FUNCTIONS; // =============================================================================
+//  =============================================================================
+// UTILITY FUNCTIONS; // =============================================================================
 
 export function createSuccessResponse<T>(
   data Tmessage: string = 'Success',
   statusCode: number = 200
-); NextResponse { return NextResponse.json(
-    {
-      success, truemessage, data,
+); NextResponse {  return NextResponse.json(
+    { success: truemessage, data,
       timestamp: new Date().toISOString()
      },
     { status: statusCode }
@@ -480,8 +475,7 @@ export function createSuccessResponse<T>(
 }
 
 export function createValidationResponse(
-  errors: Array<{ fiel,
-  d, string, message, string }>
+  errors: Array<{ fiel: d: string, message, string }>
 ): NextResponse { return NextResponse.json(
     {
       success: false;
@@ -496,7 +490,7 @@ export function createValidationResponse(
   );
 }
 
-// =============================================================================
+//  =============================================================================
 // EXPORTS
 // =============================================================================
 
@@ -505,6 +499,6 @@ export {
   generateRequestId: RateLimiter;
   addCorsHeaders
 }
-// Export: default middlewar,
+// Export default: middlewar,
   e: export default; withErrorHandling;
 

@@ -1,6 +1,5 @@
-export interface TestCase {
-  testId, string,
-    testType:;
+export interface TestCase { testId: string,
+    testType, ;
   | "prediction";
   | "recommendation";
   | "analysis";
@@ -17,8 +16,7 @@ export interface TestCase {
   metadata?, unknown,
   
 }
-export interface AccuracyMetrics {
-  service, string,
+export interface AccuracyMetrics { service: string,
     testType, string,
   totalTests, number,
     passedTests, number,
@@ -29,8 +27,7 @@ export interface AccuracyMetrics {
   lastUpdated: Date,
   
 }
-export interface ComprehensiveTestSuite {
-  suiteId, string,
+export interface ComprehensiveTestSuite { suiteId: string,
     suiteName, string,
   description, string,
     tests: TestCase[];
@@ -52,5 +49,5 @@ export class AIAccuracyValidator { async runComprehensiveValidation(): : Promise
   }
 }
 
-const validator = new AIAccuracyValidator();
+const validator  = new AIAccuracyValidator();
 export default validator;

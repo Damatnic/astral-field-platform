@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     
-    switch (type) {
+    switch (type) { 
       case 'replacement_strategy':
         const leagueId = searchParams.get('leagueId');
         const teamId = searchParams.get('teamId');
@@ -19,33 +19,33 @@ export async function GET(request: NextRequest) {
         
         if (!leagueId || !teamId || !injuredPlayerId) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId and injuredPlayerId' },
+            { error: 'Missing required parameters, leagueId, teamId and injuredPlayerId' },
             { status: 400 }
           );
         }
 
-        const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(leagueId, teamId, injuredPlayerId);
+        const strategy  = await injuryImpactAnalyzer.generateReplacementStrategy(leagueId, teamId, injuredPlayerId);
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true,
           data: strategy,
           timestamp: new Date().toISOString()
         });
 
       case 'injury_trends':
-        const position = searchParams.get('position');
+        const position  = searchParams.get('position');
         const injuryType = searchParams.get('injuryType');
         
-        if (!position || !injuryType) {
+        if (!position || !injuryType) { 
           return NextResponse.json(
-            { error: 'Missing required parameters: position and injuryType' },
+            { error: 'Missing required parameters, position and injuryType' },
             { status: 400 }
           );
         }
 
-        const trends = await injuryImpactAnalyzer.analyzeInjuryTrends(position, injuryType);
+        const trends  = await injuryImpactAnalyzer.analyzeInjuryTrends(position, injuryType);
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true,
           data: trends,
           timestamp: new Date().toISOString()
@@ -59,65 +59,62 @@ export async function GET(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in injuries GET endpoint:', error);
+    console.error('Error in injuries GET endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process injury request',
+      { error: 'Failed to process injury request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { type, ...data } = body;
+    const body  = await request.json();
+    const { type, ...data  } = body;
 
-    switch (type) {
-      case 'report_injury':
-        const { playerId, injuryType, initialSeverity, source } = data;
+    switch (type) { 
+      case 'report_injury': const { playerId: injuryType, initialSeverity, source }  = data;
 
-        if (!playerId || !injuryType || !initialSeverity) {
+        if (!playerId || !injuryType || !initialSeverity) { 
           return NextResponse.json(
-            { error: 'Missing required parameters: playerId, injuryType and initialSeverity' },
+            { error: 'Missing required parameters, playerId, injuryType and initialSeverity' },
             { status: 400 }
           );
         }
 
-        const validSeverities = ['questionable', 'doubtful', 'out', 'ir'];
-        if (!validSeverities.includes(initialSeverity)) {
+        const validSeverities  = ['questionable', 'doubtful', 'out', 'ir'];
+        if (!validSeverities.includes(initialSeverity)) { 
           return NextResponse.json(
-            { error: 'initialSeverity must be one of: questionable, doubtful, out, ir' },
+            { error: 'initialSeverity must be one of, questionable, doubtful, out, ir' },
             { status: 400 }
           );
         }
 
-        const injuryAlert = await injuryImpactAnalyzer.processInjuryReport(playerId, injuryType, initialSeverity,
+        const injuryAlert  = await injuryImpactAnalyzer.processInjuryReport(playerId, injuryType, initialSeverity,
           source || 'official'
         );
 
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true,
           data: injuryAlert,
           timestamp: new Date().toISOString()
         });
 
       case 'update_status':
-        const { alertId, newStatus, additionalInfo } = data;
+        const { alertId: newStatus, additionalInfo }  = data;
 
-        if (!alertId || !newStatus) {
+        if (!alertId || !newStatus) { 
           return NextResponse.json(
-            { error: 'Missing required parameters: alertId and newStatus' },
+            { error: 'Missing required parameters, alertId and newStatus' },
             { status: 400 }
           );
         }
 
-        const validStatuses = ['improving', 'worsening', 'setback', 'resolved'];
-        if (!validStatuses.includes(newStatus)) {
+        const validStatuses  = ['improving', 'worsening', 'setback', 'resolved'];
+        if (!validStatuses.includes(newStatus)) { 
           return NextResponse.json(
-            { error: 'newStatus must be one of: improving, worsening, setback, resolved' },
+            { error: 'newStatus must be one of, improving, worsening, setback, resolved' },
             { status: 400 }
           );
         }
@@ -131,16 +128,16 @@ export async function POST(request: NextRequest) {
         });
 
       case 'batch_analysis':
-        const { injuries } = data;
+        const { injuries }  = data;
         
-        if (!Array.isArray(injuries)) {
+        if (!Array.isArray(injuries)) { 
           return NextResponse.json(
             { error: 'injuries parameter must be an array' },
             { status: 400 }
           );
         }
 
-        const batchResults = await Promise.all(injuries.map(async (injury: any) => {
+        const batchResults  = await Promise.all(injuries.map(async (injury: any) => { 
             try {
               const alert = await injuryImpactAnalyzer.processInjuryReport(injury.playerId,
                 injury.injuryType,
@@ -163,24 +160,23 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true,
-          data: batchResults,
+          success: true, data: batchResults,
           total: injuries.length,
-          successful: batchResults.filter(r => r.success).length,
+          successful: batchResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'multiple_strategies':
-        const { leagueId: multiLeagueId, requests } = data;
+        const { leagueId: multiLeagueId, requests }  = data;
         
-        if (!multiLeagueId || !Array.isArray(requests)) {
+        if (!multiLeagueId || !Array.isArray(requests)) { 
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId and requests (array)' },
+            { error: 'Missing required parameters, leagueId and requests (array)' },
             { status: 400 }
           );
         }
 
-        const strategyResults = await Promise.all(requests.map(async (request: any) => {
+        const strategyResults  = await Promise.all(requests.map(async (request: any) => { 
             try {
               const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(multiLeagueId,
                 request.teamId,
@@ -204,10 +200,9 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true,
-          data: strategyResults,
+          success: true, data: strategyResults,
           total: requests.length,
-          successful: strategyResults.filter(r => r.success).length,
+          successful: strategyResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()
         });
 
@@ -219,13 +214,11 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error in injuries POST endpoint:', error);
+    console.error('Error in injuries POST endpoint: ', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process injury request',
+      { error: 'Failed to process injury request',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

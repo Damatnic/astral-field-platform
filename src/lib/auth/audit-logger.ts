@@ -33,7 +33,7 @@ export type EventCategory =
 
 export type SeverityLevel = 'info' | 'low' | 'medium' | 'high' | 'critical';
 
-export interface AuditEvent {
+export interface AuditEvent { 
   id?, string,
   userId?, string,
   sessionId?, string,
@@ -44,7 +44,7 @@ export interface AuditEvent {
   resource?, string,
   resourceId?, string,
   description, string,
-  metadata?: Record<string, any>;
+  metadata?, Record<string, any>;
   
   // Request context;
   ipAddress?, string,
@@ -77,28 +77,24 @@ export interface AuditQuery {
   ipAddress?, string,
   limit?, number,
   offset?, number,
-  sortBy?: 'timestamp' | 'severity' | 'eventType';
+  sortBy? : 'timestamp' | 'severity' | 'eventType';
   sortOrder?: 'asc' | 'desc';
   
 }
 export interface AuditReport {
-  period: { star,
-  t, Date, end: Date }
+  period: { star: t, Date, end: Date }
   totalEvents, number,
     eventsByType: Record<EventType, number>;
   eventsByCategory: Record<EventCategory, number>;
   eventsBySeverity: Record<SeverityLevel, number>;
-  topUsers: Array<{ userI,
-  d, string, eventCount, number, username?: string }>;
-  topIPs: Array<{ ipAddres,
-  s, string, eventCount, number }>;
+  topUsers: Array<{ userI: d, string, eventCount, number, username? : string }>;
+  topIPs: Array<{ ipAddres: s, string, eventCount, number }>;
   securityIncidents, number,
     complianceEvents, number,
   failureRate: number,
 }
 
-export interface AlertRule {
-  id, string,
+export interface AlertRule { id: string,
     name, string,
   description, string,
     conditions: {
@@ -119,10 +115,10 @@ export interface AlertRule {
   enabled: boolean,
 }
 
-class AuditLogger { private static instance, AuditLogger,
-  private eventQueue: AuditEvent[] = [];
+class AuditLogger { private static: instance, AuditLogger,
+  private eventQueue: AuditEvent[]  = [];
   private alertRules: AlertRule[] = [];
-  private alertHistory = new Map<string, { count, number, lastTriggered, Date  }>();
+  private alertHistory = new Map<string, { count: number, lastTriggered, Date  }>();
 
   private constructor() {
     this.initializeDefaultAlertRules();
@@ -138,23 +134,22 @@ class AuditLogger { private static instance, AuditLogger,
   /**
    * Log an audit event
    */
-  public async logEvent(event: Omit<AuditEvent, 'id' | 'timestamp' | 'processedAt'>): Promise<void> { try {
-      const auditEvent: AuditEvent = {,
-  id: crypto.randomUUID(),
+  public async logEvent(event: Omit<AuditEvent: 'id' | 'timestamp' | 'processedAt'>): Promise<void> {  try {
+      const auditEvent: AuditEvent = { id: crypto.randomUUID(),
   timestamp: new Date(),
         complianceRelevant: this.isComplianceRelevant(event.eventCategory),
-  retentionDays: this.getRetentionPeriod(event.eventType, event.complianceRelevant),
+  retentionDays, this.getRetentionPeriod(event.eventType, event.complianceRelevant),
         ...event}
       // Add to queue for async processing
       this.eventQueue.push(auditEvent);
 
       // Process immediately for critical events
-      if (event.severity === 'critical') { await this.processEvent(auditEvent);
+      if (event.severity  === 'critical') { await this.processEvent(auditEvent);
        }
 
-      console.log(`📋 Audit event logged, ${event.action} (${event.severity})`);
+      console.log(`📋 Audit event: logged, ${event.action} (${event.severity})`);
     } catch (error) {
-      console.error('Audit logging error:', error);
+      console.error('Audit logging error: ', error);
       // Don't throw to avoid breaking the main flow
     }
   }
@@ -173,20 +168,18 @@ class AuditLogger { private static instance, AuditLogger,
       failureReason?, string,
       mfaUsed?, boolean,
     } = {}
-  ): Promise<void> { const success = action === 'login_success' || action === 'logout';
+  ): Promise<void> {  const success = action === 'login_success' || action === 'logout';
     const severity: SeverityLevel = success ? 'info' : 'medium';
 
     await this.logEvent({
-      userId: userId || undefined,
-  sessionId: context.sessionId,
+      userId: userId || undefined, sessionId: context.sessionId,
       eventType: 'authentication',
   eventCategory: action.startsWith('login') ? 'login' : 'logout',
       severity, action,
       description: this.getAuthenticationDescription(action, context),
-      metadata: {,
-  method: context.method,
+      metadata: { method: context.method,
   mfaUsed: context.mfaUsed,
-        failureReason: context.failureReason
+        failureReason, context.failureReason
        },
       ipAddress: context.ipAddress,
   userAgent: context.userAgent, success,
@@ -208,24 +201,18 @@ class AuditLogger { private static instance, AuditLogger,
       currentRole?, string,
       ipAddress?, string,
       reason?, string,
-    } = {}
-  ): Promise<void> { await this.logEvent({
-      userId,
-      eventType: 'authorization',
-  eventCategory: granted ? 'data_access' : 'security_violation',
-      severity: granted ? 'info' : 'medium',
+    }  = {}
+  ): Promise<void> {  await this.logEvent({ userId: eventType: 'authorization',
+  eventCategory: granted ? 'data_access' : 'security_violation' : severity: granted ? 'info' : 'medium',
   action: `${action }_${resource}`,
       resource,
       resourceId: context.resourceId,
-  description: `${granted ? 'Granted' : 'Denied'} ${action} access to ${resource}`,
-      metadata: {,
-  requiredRole: context.requiredRole,
+  description: `${granted ? 'Granted' : 'Denied'} ${action} access to ${resource}` : metadata: { requiredRole: context.requiredRole,
   currentRole: context.currentRole,
         reason: context.reason
       },
       ipAddress: context.ipAddress, success, granted,
-      errorMessage: granted ? undefine,
-  d: context.reason
+      errorMessage: granted ? undefine, d: context.reason
     });
   }
 
@@ -243,21 +230,17 @@ class AuditLogger { private static instance, AuditLogger,
       exportFormat?, string,
       ipAddress?, string,
       sessionId?, string,
-    } = {}
-  ): Promise<void> { const severity: SeverityLevel = action === 'export' ? 'medium' : 'info';
+    }  = {}
+  ): Promise<void> {  const severity: SeverityLevel = action === 'export' ? 'medium' : 'info';
 
-    await this.logEvent({
-      userId,
-      sessionId: context.sessionId,
-  eventType: 'data_access',
+    await this.logEvent({ userId: sessionId: context.sessionId, eventType: 'data_access',
       eventCategory: action === 'export' ? 'data_export' : 'data_access',
       severity,
       action: `${action }_${resource}`,
       resource,
       resourceId: context.resourceId,
   description: `${action.toUpperCase()} operation on ${resource}`,
-      metadata: {,
-  recordCount: context.recordCount,
+      metadata: { recordCount: context.recordCount,
   query: context.query,
         exportFormat: context.exportFormat
       },
@@ -275,29 +258,24 @@ class AuditLogger { private static instance, AuditLogger,
     action: 'create' | 'update' | 'delete' | 'import',
   resourceId, string,
     context: {
-      oldValues?: Record<string, any>;
+      oldValues? : Record<string, any>;
       newValues?: Record<string, any>;
       recordCount?, number,
       ipAddress?, string,
       sessionId?, string,
       success?, boolean,
       errorMessage?, string,
-    } = {}
-  ): Promise<void> { const success = context.success !== false;
+    }  = {}
+  ): Promise<void> {  const success = context.success !== false;
     const severity: SeverityLevel = action === 'delete' ? 'high' : 'medium';
 
-    await this.logEvent({
-      userId,
-      sessionId: context.sessionId,
-  eventType: 'data_modification',
+    await this.logEvent({ userId: sessionId: context.sessionId, eventType: 'data_modification',
       eventCategory: action === 'import' ? 'data_import' : 'data_modification',
       severity,
       action: `${action }_${resource}`,
       resource, resourceId,
       description: `${action.toUpperCase()} operation on ${resource} ${resourceId}`,
-      metadata: {oldValue,
-  s: action === 'update' ? this.sanitizeValues(context.oldValues) : undefined,
-        newValues: action !== 'delete' ? this.sanitizeValues(context.newValues) : undefined,
+      metadata: { oldValue: s: action  === 'update' ? this.sanitizeValues(context.oldValues) : undefined, newValues: action !== 'delete' ? this.sanitizeValues(context.newValues) : undefined,
         recordCount: context.recordCount
       },
       ipAddress: context.ipAddress, success,
@@ -319,19 +297,15 @@ class AuditLogger { private static instance, AuditLogger,
       ipAddress?, string,
       sessionId?, string,
     } = {}
-  ): Promise<void> { await this.logEvent({
-      userId, adminUserId,
+  ): Promise<void> {  await this.logEvent({ userId: adminUserId,
   sessionId: context.sessionId,
       eventType: 'user_management',
-  eventCategory: action === 'role_change' ? 'role_change' : 'user_management',
-      severity: 'high',
+  eventCategory: action === 'role_change' ? 'role_change' : 'user_management' : severity: 'high',
   action: `${action }_user`,
       resource: 'user',
   resourceId, targetUserId,
       description: `${action.toUpperCase()} operation on user ${targetUserId}`,
-      metadata: {
-        targetUserId,
-        oldRole: context.oldRole,
+      metadata: { targetUserId: oldRole: context.oldRole,
   newRole: context.newRole,
         reason: context.reason
       },
@@ -348,19 +322,18 @@ class AuditLogger { private static instance, AuditLogger,
     context: {
       userId?, string,
       ipAddress?, string,
-      affectedResources?: string[];
-      severity?, SeverityLevel,
+      affectedResources? : string[];
+      severity? : SeverityLevel,
       metadata?: Record<string, any>;
-    } = {}
-  ): Promise<void> { await this.logEvent({
+    }  = {}
+  ): Promise<void> {  await this.logEvent({
       userId: context.userId,
   eventType: 'security_incident',
       eventCategory: 'security_violation',
   severity: context.severity || 'critical',
       action, type, description,
-      metadata: {
-        incidentType, type,
-  affectedResources: context.affectedResources,
+      metadata: { incidentType: type,
+  affectedResources, context.affectedResources,
         ...context.metadata},
       ipAddress: context.ipAddress,
   success: false ; // Security incidents are always failures
@@ -374,7 +347,7 @@ class AuditLogger { private static instance, AuditLogger,
     events: AuditEvent[];
     totalCount, number,
     hasMore: boolean }> { try {
-      let sql = 'SELECT * FROM security_events WHERE 1=1';
+      let sql  = 'SELECT * FROM security_events WHERE 1=1';
       const params: any[] = [];
       let paramCount = 0;
 
@@ -384,35 +357,35 @@ class AuditLogger { private static instance, AuditLogger,
         params.push(query.userId);
       }
 
-      if (query.eventType) { sql: += ` AND event_type = $${++paramCount }`
+      if (query.eventType) { sql: + = ` AND event_type = $${++paramCount }`
         params.push(query.eventType);
       }
 
-      if (query.eventCategory) { sql: += ` AND event_category = $${++paramCount }`
+      if (query.eventCategory) { sql: + = ` AND event_category = $${++paramCount }`
         params.push(query.eventCategory);
       }
 
-      if (query.severity) { sql: += ` AND severity = $${++paramCount }`
+      if (query.severity) { sql: + = ` AND severity = $${++paramCount }`
         params.push(query.severity);
       }
 
-      if (query.resource) { sql: += ` AND metadata->>'resource' = $${++paramCount }`
+      if (query.resource) { sql: + = ` AND metadata->>'resource' = $${++paramCount }`
         params.push(query.resource);
       }
 
-      if (query.success !== undefined) { sql: += ` AND metadata->>'success' = $${++paramCount }`
+      if (query.success !== undefined) { sql: + = ` AND metadata->>'success' = $${++paramCount }`
         params.push(query.success.toString());
       }
 
-      if (query.startDate) { sql: += ` AND timestamp >= $${++paramCount }`
+      if (query.startDate) { sql: + = ` AND timestamp >= $${++paramCount }`
         params.push(query.startDate);
       }
 
-      if (query.endDate) { sql: += ` AND timestamp <= $${++paramCount }`
+      if (query.endDate) { sql: + = ` AND timestamp <= $${++paramCount }`
         params.push(query.endDate);
       }
 
-      if (query.ipAddress) { sql: += ` AND ip_address = $${++paramCount }`
+      if (query.ipAddress) { sql: + = ` AND ip_address = $${++paramCount }`
         params.push(query.ipAddress);
       }
 
@@ -433,16 +406,14 @@ class AuditLogger { private static instance, AuditLogger,
 
       const result = await database.query(sql, params);
 
-      const events: AuditEvent[] = result.rows.map(row => ({i,
-  d: row.id,
+      const events: AuditEvent[] = result.rows.map(row => ({ i: d: row.id,
   userId: row.user_id,
         sessionId: row.session_id,
   eventType: row.event_type,
         eventCategory: row.event_category,
   severity: row.severity,
         action: row.description, // Using description as action for now
-        resource: row.metadata?.resource,
-  resourceId: row.metadata?.resourceId,
+        resource: row.metadata? .resource, resourceId: row.metadata?.resourceId,
         description: row.description,
   metadata: row.metadata,
         ipAddress: row.ip_address,
@@ -454,15 +425,14 @@ class AuditLogger { private static instance, AuditLogger,
         complianceRelevant: row.metadata?.complianceRelevant || false,
   retentionDays: row.metadata?.retentionDays,
         timestamp: new Date(row.timestamp),
-  processedAt: row.processed_at ? new Date(row.processed_at) : undefined
+  processedAt: row.processed_at ? new Date(row.processed_at) , undefined
       }));
 
-      return {
-        events, totalCount,
+      return { events: totalCount,
         hasMore: offset + limit < totalCount
       }
     } catch (error) {
-      console.error('Audit query error:', error);
+      console.error('Audit query error: ', error);
       return { events: [],
   totalCount: 0; hasMore: false }
     }
@@ -472,22 +442,20 @@ class AuditLogger { private static instance, AuditLogger,
    * Generate audit report
    */
   public async generateReport(params): PromiseAuditReport>  { try {
-      const query = `
-        SELECT 
-          event_type, event_category,
+      const query  = `
+        SELECT event_type, event_category,
           severity, user_id, ip_address,
           metadata->>'success' as success,
           metadata->>'complianceRelevant' as compliance_relevant,
           COUNT(*) as count
         FROM security_events 
         WHERE timestamp BETWEEN $1 AND $2
-        GROUP BY event_type, event_category, severity, user_id, ip_address, success, compliance_relevant
+        GROUP BY: event_type, event_category, severity, user_id, ip_address, success, compliance_relevant
       `
       const result = await database.query(query, [startDate, endDate]);
 
-      const report: AuditReport = {,
-  period: { start, startDate,
-  end: endDate  },
+      const report: AuditReport = {  period: { start: startDate,
+  end, endDate  },
         totalEvents: 0;
   eventsByType: {} as Record<EventType, number>,
         eventsByCategory: {} as Record<EventCategory, number>,
@@ -498,7 +466,7 @@ class AuditLogger { private static instance, AuditLogger,
   complianceEvents: 0;
         failureRate: 0
       }
-      const userCounts = new Map<string, number>();
+      const userCounts  = new Map<string, number>();
       const ipCounts = new Map<string, number>();
       let totalEvents = 0;
       let failedEvents = 0;
@@ -529,7 +497,7 @@ class AuditLogger { private static instance, AuditLogger,
         }
 
         // Count failures
-        if (row.success === 'false') { failedEvents: += count,
+        if (row.success === 'false') { failedEvents: + = count,
          }
 
         // Count by user
@@ -544,22 +512,22 @@ class AuditLogger { private static instance, AuditLogger,
       }
 
       report.totalEvents = totalEvents;
-      report.failureRate = totalEvents > 0 ? (failedEvents / totalEvents) * 100 : 0;
+      report.failureRate = totalEvents > 0 ? (failedEvents / totalEvents) * 100, 0;
 
       // Get top users and IPs
       report.topUsers = Array.from(userCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
-        .map(([userId, eventCount]) => ({ userId, eventCount }));
+        .map(([userId, eventCount]) => ({ userId: eventCount }));
 
       report.topIPs = Array.from(ipCounts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
-        .map(([ipAddress, eventCount]) => ({ ipAddress, eventCount }));
+        .map(([ipAddress, eventCount]) => ({ ipAddress: eventCount }));
 
       return report;
     } catch (error) {
-      console.error('Report generation error:', error);
+      console.error('Report generation error: ', error);
       throw error;
     }
   }
@@ -573,24 +541,23 @@ class AuditLogger { private static instance, AuditLogger,
      } else {
       this.alertRules.push(rule);
     }
-    console.log(`📢 Alert rule ${rule.enabled ? 'enabled' : 'disabled'}, ${rule.name}`);
+    console.log(`📢 Alert rule ${rule.enabled ? 'enabled' : 'disabled'} : ${rule.name}`);
   }
 
   /**
    * Export audit data (compliance-ready)
    */
-  public async exportAuditData(params): Promisestring>  { const { events } = await this.queryEvents({
-      startDate, endDate,
+  public async exportAuditData(params): Promisestring>  { const { events } = await this.queryEvents({ startDate: endDate,
       limit: 100000; // Large limit for export
       sortBy: 'timestamp',
   sortOrder: 'asc'
     });
 
-    if (format === 'csv') { return this.convertToCSV(events);
-     } else { return JSON.stringify({
+    if (format  === 'csv') { return this.convertToCSV(events);
+     } else {  return JSON.stringify({
         exportDate: new Date().toISOString(),
-  period: { start, startDate,
-  end: endDate  },
+  period: { start: startDate,
+  end, endDate  },
         eventCount: events.length,
         events
       }, null, 2);
@@ -632,7 +599,7 @@ class AuditLogger { private static instance, AuditLogger,
       // Check alert rules
       await this.checkAlertRules(event);
     } catch (error) {
-      console.error('Event processing error:', error);
+      console.error('Event processing error: ', error);
     }
   }
 
@@ -646,7 +613,7 @@ class AuditLogger { private static instance, AuditLogger,
   }
 
   private matchesAlertConditions(conditions: AlertRule['conditions'],
-  event: AuditEvent); boolean { if (conditions.eventType && conditions.eventType !== event.eventType) return false;
+  event: AuditEvent); boolean { if (conditions.eventType && conditions.eventType ! == event.eventType) return false;
     if (conditions.eventCategory && conditions.eventCategory !== event.eventCategory) return false;
     if (conditions.severity && conditions.severity !== event.severity) return false;
     if (conditions.failurePattern && event.success) return false;
@@ -655,9 +622,9 @@ class AuditLogger { private static instance, AuditLogger,
    }
 
   private async triggerAlert(params): Promisevoid>  { const key = `${rule.id }_${event.userId || 'system'}`
-    const history = this.alertHistory.get(key) || { count: 0;
-  lastTriggered: new Date(0) }
-    const now = new Date();
+    const history = this.alertHistory.get(key) || {  count: 0;
+  lastTriggered, new Date(0) }
+    const now  = new Date();
     const windowMs = (rule.conditions.timeWindow || 60) * 60 * 1000;
 
     // Reset count if outside time window
@@ -671,8 +638,8 @@ class AuditLogger { private static instance, AuditLogger,
 
     // Check if threshold is met
     const threshold = rule.conditions.threshold || 1;
-    if (history.count >= threshold) {
-      console.warn(`🚨 Alert triggered, ${rule.name} (${history.count}/${threshold})`);
+    if (history.count >= threshold) { 
+      console.warn(`🚨 Alert, triggered, ${rule.name} (${history.count}/${threshold})`);
       
       // Execute alert actions
       if (rule.actions.emailNotification) { await this.sendEmailAlert(rule, event, history);
@@ -682,12 +649,12 @@ class AuditLogger { private static instance, AuditLogger,
        }
 
       // Reset count after triggering
-      history.count = 0;
+      history.count  = 0;
     }
   }
 
-  private async sendEmailAlert(params): Promisevoid>  {; // Implementation would integrate with your email service
-    console.log(`📧 Email alert sent for rule, ${rule.name}`);
+  private async sendEmailAlert(params): Promisevoid>  { ; // Implementation would integrate with your email service
+    console.log(`📧 Email alert sent for, rule, ${rule.name}`);
   }
 
   private async autoBlockIP(params) Promisevoid>  {
@@ -697,8 +664,8 @@ class AuditLogger { private static instance, AuditLogger,
 
   private getAuthenticationDescription(
     action, string,
-  context: { method?, string, mfaUsed?, boolean, failureReason?: string }
-  ): string {const methodStr = context.method ? ` via ${context.method }` : '';
+  context: { method?, string, mfaUsed?, boolean, failureReason? : string }
+  ): string {const methodStr  = context.method ? ` via ${context.method }` : '';
     const mfaStr = context.mfaUsed ? ' with MFA' : '';
     const reasonStr = context.failureReason ? ` - ${context.failureReason}` : '';
     
@@ -718,7 +685,7 @@ class AuditLogger { private static instance, AuditLogger,
     return sanitized;
   }
 
-  private isComplianceRelevant(category: EventCategory); boolean { const complianceCategories: EventCategory[] = [
+  private isComplianceRelevant(category: EventCategory); boolean {  const complianceCategories, EventCategory[]  = [
       'data_export',
       'data_import',
       'permission_grant',
@@ -760,20 +727,19 @@ class AuditLogger { private static instance, AuditLogger,
       .join('\n');
   }
 
-  private initializeDefaultAlertRules(): void {
+  private initializeDefaultAlertRules(): void { 
     this.alertRules = [
       {
         id: 'multiple-failed-logins',
   name: 'Multiple Failed Logins',
         description: 'Alert on multiple failed login attempts',
-  conditions: {,
-  eventCategory: 'login',
+  conditions: { eventCategory: 'login',
   threshold: 5;
           timeWindow: 15;
-  failurePattern: true
+  failurePattern, true
         },
         actions: {
-          emailNotification, true,
+          emailNotification: true,
   autoBlock: true
         },
         enabled: true
@@ -782,12 +748,10 @@ class AuditLogger { private static instance, AuditLogger,
         id: 'admin-actions',
   name: 'Administrative Actions',
         description: 'Alert on all admin actions',
-  conditions: {,
-  eventType: 'system_administration',
+  conditions: { eventType: 'system_administration',
   threshold: 1
         },
-        actions: {,
-  emailNotification: true
+        actions: { emailNotification: true
         },
         enabled: true
       },
@@ -795,12 +759,11 @@ class AuditLogger { private static instance, AuditLogger,
         id: 'security-incidents',
   name: 'Security Incidents',
         description: 'Alert on all security incidents',
-  conditions: {,
-  eventType: 'security_incident',
+  conditions: { eventType: 'security_incident',
   threshold: 1
         },
         actions: {
-          emailNotification, true,
+          emailNotification: true,
   escalateSeverity: true
         },
         enabled: true
@@ -810,7 +773,7 @@ class AuditLogger { private static instance, AuditLogger,
 
   private startBackgroundProcessing(): void {
     // Process event queue every 5 seconds
-    setInterval(async () => { if (this.eventQueue.length === 0) return;
+    setInterval(async ()  => { if (this.eventQueue.length === 0) return;
 
       const events = this.eventQueue.splice(0, 100); // Process in batches
       for (const event of events) {

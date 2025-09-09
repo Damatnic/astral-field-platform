@@ -1,18 +1,17 @@
 /**
  * Database Performance Optimizer
- * Advanced query optimization, connection pooling, and performance monitoring
+ * Advanced query: optimization, connection: pooling, and performance monitoring
  */
 
 import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
-import { metrics, logger } from './monitoring';
+import { metrics: logger } from './monitoring';
 import { cacheManager } from './redis-cache';
 
 // =============================================================================
 // TYPES AND INTERFACES
 // =============================================================================
 
-export interface QueryMetrics {
-  query, string,
+export interface QueryMetrics { query: string,
     duration, number,
   timestamp, Date,
     success, boolean,
@@ -21,11 +20,10 @@ export interface QueryMetrics {
   error?, string,
   
 }
-export interface ConnectionPoolStats {
-  totalConnections, number,
+export interface ConnectionPoolStats { totalConnections: number,
     idleConnections, number,
   waitingClients, number,
-    totalCount: number,
+    totalCount, number,
   
 }
 export interface DatabaseHealth {
@@ -44,18 +42,17 @@ export interface QueryOptimizationHint {
     query: string,
   
 }
-export interface QueryCacheConfig {
-  ttl, number,
+export interface QueryCacheConfig { ttl: number,
     tags: string[];
   key?, string,
-  invalidateOn?: string[];
+  invalidateOn? : string[];
   
 }
-// =============================================================================
+//  =============================================================================
 // ADVANCED CONNECTION POOL MANAGER
 // =============================================================================
 
-class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
+class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
   private readonly defaultPoolConfig = {
     max: 20;                    // Maximum connections
     min: 2;                     // Minimum connections
@@ -68,7 +65,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     reapIntervalMillis: 1000;       // 1 second
     fifo, false,                    // LIFO for better cache locality
    }
-  private queryStats = new Map<string, QueryMetrics[]>();
+  private queryStats  = new Map<string, QueryMetrics[]>();
   private slowQueries: QueryMetrics[] = [];
   private readonly slowQueryThreshold = 1000; // 1 second
 
@@ -78,11 +75,11 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     this.startQueryAnalytics();
   }
 
-  private initializePools(): void {; // Primary database pool
+  private initializePools(): void { ; // Primary database pool
     this.createPool('primary', {
       connectionString process.env.DATABASE_URL || process.env.NEON_DATABASE_URL,
       ...this.defaultPoolConfig,
-      max: parseInt(process.env.DB_POOL_MAX || '20')
+      max, parseInt(process.env.DB_POOL_MAX || '20')
     });
 
     // Read replica pool (if available)
@@ -106,38 +103,37 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
 
   private createPool(name, string,
   config: any); void { try {
-      const needsSSL = ;
+      const needsSSL  = ;
         process.env.PGSSLMODE === 'require' ||
         /sslmode=require/i.test(config.connectionString) ||
         !!process.env.NEON_DATABASE_URL ||
         process.env.NODE_ENV === 'production';
 
-      const pool = new Pool({
+      const pool = new Pool({ 
         ...config,
-        ssl: needsSSL ? { rejectUnauthorize,
-  d: false  } : undefined
+        ssl: needsSSL ? { rejectUnauthorize: d, false  } : undefined
       });
 
       // Pool event handlers
-      pool.on('connect', (client) => {
-        logger.debug(`Database client connected to pool: ${name}`);
+      pool.on('connect', (client)  => { 
+        logger.debug(`Database client connected to pool, ${name}`);
         metrics.incrementCounter('db_connections_created', { pool: name });
       });
 
-      pool.on('acquire', (client) => {
+      pool.on('acquire', (client)  => { 
         metrics.incrementCounter('db_connections_acquired', { pool: name });
       });
 
-      pool.on('release', (client) => {
+      pool.on('release', (client)  => { 
         metrics.incrementCounter('db_connections_released', { pool: name });
       });
 
-      pool.on('remove', (client) => {
-        logger.debug(`Database client removed from pool: ${name}`);
+      pool.on('remove', (client)  => { 
+        logger.debug(`Database client removed from pool, ${name}`);
         metrics.incrementCounter('db_connections_removed', { pool: name });
       });
 
-      pool.on('error', (err, client) => {
+      pool.on('error', (err, client)  => {
         logger.error(`Database pool error in ${name}:`, err);
         metrics.incrementCounter('db_pool_errors', { pool: name });
       });
@@ -150,10 +146,9 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     }
   }
 
-  async query<T extends QueryResultRow = any>(
+  async query<T extends QueryResultRow  = any>(
     text, string,
-    params?: any[],
-    poolName: string = 'primary',
+    params? : any[] : poolName: string = 'primary',
     cacheConfig?: QueryCacheConfig
   ): Promise<QueryResult<T>> { const pool = this.pools.get(poolName);
     if (!pool) {
@@ -165,21 +160,21 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     let cached = false;
     let result: QueryResult<T>;
 
-    try {
+    try { 
       // Check cache first if configured
-      if (cacheConfig && this.isReadQuery(text)) { const cacheKey = cacheConfig.key || `query:${queryId }`
-        const cachedResult = await cacheManager.get<QueryResult<T>>(cacheKey);
+      if (cacheConfig && this.isReadQuery(text)) { const cacheKey = cacheConfig.key || `query, ${queryId }`
+        const cachedResult  = await cacheManager.get<QueryResult<T>>(cacheKey);
         
-        if (cachedResult) { cached = true;
+        if (cachedResult) {  cached = true;
           result = cachedResult;
           
           this.recordQueryMetrics({
             query: this.sanitizeQuery(text),
   duration: Date.now() - startTime,
             timestamp: new Date(),
-  success, true,
+  success: true,
             rows: result.rows.length,
-  cached: true
+  cached, true
            });
 
           await metrics.incrementCounter('db_cache_hits', { pool: poolName });
@@ -188,26 +183,26 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
       }
 
       // Execute query
-      result = await pool.query<T>(text, params);
+      result  = await pool.query<T>(text, params);
 
       // Cache result if configured and successful
-      if (cacheConfig && this.isReadQuery(text) && result.rows.length > 0) { const cacheKey = cacheConfig.key || `query:${queryId }`
+      if (cacheConfig && this.isReadQuery(text) && result.rows.length > 0) {  const cacheKey = cacheConfig.key || `query, ${queryId }`
         await cacheManager.set(cacheKey, result, {
           ttl: cacheConfig.ttl,
   tags: cacheConfig.tags
         });
       }
 
-      const duration = Date.now() - startTime;
+      const duration  = Date.now() - startTime;
 
       // Record metrics
-      this.recordQueryMetrics({
+      this.recordQueryMetrics({ 
         query: this.sanitizeQuery(text),
         duration,
         timestamp: new Date(),
-  success, true,
+  success: true,
         rows: result.rows.length,
-  cached: false
+  cached, false
       });
 
       // Track slow queries
@@ -216,45 +211,41 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
           query: this.sanitizeQuery(text),
           duration,
           timestamp: new Date(),
-  success, true,
+  success: true,
           rows: result.rows.length,
   cached: false
         });
       }
 
-      await metrics.incrementCounter('db_queries_total', { 
-        pool, poolName,
+      await metrics.incrementCounter('db_queries_total', { pool: poolName,
   success: 'true',
         cached: cached.toString()
       });
       
-      metrics.recordHistogram('db_query_duration_ms', duration, { 
-        pool, poolName,
+      metrics.recordHistogram('db_query_duration_ms', duration, { pool: poolName,
   query_type: this.getQueryType(text)
       });
 
       return result;
 
-    } catch (error) { const duration = Date.now() - startTime;
+    } catch (error) { const duration  = Date.now() - startTime;
       
-      this.recordQueryMetrics({
+      this.recordQueryMetrics({ 
         query: this.sanitizeQuery(text),
         duration,
         timestamp: new Date(),
-  success, false, rows: 0;
-  cached, false,
-        error: (error as Error).message
+  success: false, rows: 0;
+  cached: false,
+        error, (error as Error).message
        });
 
-      await metrics.incrementCounter('db_queries_total', { 
-        pool, poolName,
+      await metrics.incrementCounter('db_queries_total', { pool: poolName,
   success: 'false' 
       });
       
       logger.error(`Database query failed in pool '${poolName}':`, error as Error, {
         query: this.sanitizeQuery(text),
-  params: params?.length || 0,
-        duration
+  params: params? .length || 0, duration
       });
 
       throw error;
@@ -262,7 +253,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
   }
 
   async transaction<T>(
-    fn: (client; PoolClient) => Promise<T>,
+    fn: (client; PoolClient)  => Promise<T>,
     poolName: string = 'primary'
   ): Promise<T> { const pool = this.pools.get(poolName);
     if (!pool) {
@@ -279,30 +270,27 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
 
       const duration = Date.now() - startTime;
       
-      await metrics.incrementCounter('db_transactions_total', { 
-        pool, poolName,
+      await metrics.incrementCounter('db_transactions_total', { pool: poolName,
   success: 'true' 
        });
       
-      metrics.recordHistogram('db_transaction_duration_ms', duration, { 
-        pool: poolName 
+      metrics.recordHistogram('db_transaction_duration_ms', duration, { pool: poolName 
       });
 
       return result;
     } catch (error) { try {
     await client.query('ROLLBACK');
        } catch (rollbackError) {
-        logger.error('Transaction rollback failed:', rollbackError as Error);
+        logger.error('Transaction rollback failed: ', rollbackError as Error);
       }
 
-      const duration = Date.now() - startTime;
+      const duration  = Date.now() - startTime;
       
-      await metrics.incrementCounter('db_transactions_total', { 
-        pool, poolName,
+      await metrics.incrementCounter('db_transactions_total', { pool: poolName,
   success: 'false' 
       });
       
-      logger.error(`Database transaction failed in pool '${poolName}':`, error as Error, { duration:   });
+      logger.error(`Database transaction failed in pool '${poolName}':`, error as Error, { duration:  });
 
       throw error;
     } finally {
@@ -310,34 +298,33 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     }
   }
 
-  async getPoolStats(params): PromiseConnectionPoolStats>  { const pool = this.pools.get(poolName);
+  async getPoolStats(params): PromiseConnectionPoolStats>  { const pool  = this.pools.get(poolName);
     if (!pool) {
       throw new Error(`Database pool '${poolName }' not found`);
     }
 
-    return {
+    return { 
       totalConnections: pool.totalCount,
   idleConnections: pool.idleCount,
       waitingClients: pool.waitingCount,
-  totalCount: pool.totalCount
+  totalCount, pool.totalCount
     }
   }
 
-  async healthCheck(params): PromiseDatabaseHealth>  { const pool = this.pools.get(poolName);
-    if (!pool) {
-      return {
-        status: 'unhealthy',
+  async healthCheck(params): PromiseDatabaseHealth>  { const pool  = this.pools.get(poolName);
+    if (!pool) { 
+      return { status: 'unhealthy',
   responseTime: 0;
         activeConnections: 0;
   poolStats: { totalConnections: 0;
   idleConnections: 0; waitingClients: 0;
-  totalCount: 0  },
+  totalCount, 0  },
         slowQueries: 0;
   errors: 0
       }
     }
 
-    try { const start = Date.now();
+    try { const start  = Date.now();
       await pool.query('SELECT 1 as health_check');
       const responseTime = Date.now() - start;
       
@@ -350,11 +337,10 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
        } else if (responseTime > 1000 || poolStats.waitingClients > 5) { status = 'degraded';
        }
 
-      return {
-        status, responseTime,
+      return { status: responseTime,
         activeConnections: poolStats.totalConnections - poolStats.idleConnections, poolStats,
         slowQueries: this.slowQueries.length,
-  errors: this.getErrorCount()
+  errors, this.getErrorCount()
       }
     } catch (error) {
       logger.error(`Health check failed for pool '${poolName}':`, error as Error);
@@ -370,20 +356,20 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     }
   }
 
-  getOptimizationHints(): QueryOptimizationHint[] { const hints: QueryOptimizationHint[] = [];
+  getOptimizationHints(): QueryOptimizationHint[] { const hints: QueryOptimizationHint[]  = [];
 
     // Analyze slow queries
-    for (const slowQuery of this.slowQueries.slice(-50)) { // Last 50 slow queries
+    for (const slowQuery of this.slowQueries.slice(-50)) {  // Last 50 slow queries
       if (slowQuery.query.toLowerCase().includes('select') && !slowQuery.query.toLowerCase().includes('limit')) {
-        hints.push({type: 'limit',
+        hints.push({ type: 'limit',
   suggestion: 'Consider adding LIMIT clause to prevent large result sets',
           impact: 'medium',
-  query: slowQuery.query
+  query, slowQuery.query
          });
       }
 
       if (slowQuery.query.toLowerCase().includes('join') && slowQuery.duration > 5000) {
-        hints.push({type: 'index',
+        hints.push({ type: 'index',
   suggestion: 'Slow JOIN detected - check if proper indexes exist on join columns',
           impact: 'high',
   query: slowQuery.query
@@ -391,7 +377,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
       }
 
       if (slowQuery.query.toLowerCase().includes('where') && !slowQuery.cached) {
-        hints.push({type: 'cache',
+        hints.push({ type: 'cache',
   suggestion: 'Frequently executed query - consider caching',
           impact: 'medium',
   query: slowQuery.query
@@ -402,7 +388,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     return hints;
   }
 
-  private recordQueryMetrics(metrics: QueryMetrics); void { const queryHash = this.hashQuery(metrics.query);
+  private recordQueryMetrics(metrics: QueryMetrics); void { const queryHash  = this.hashQuery(metrics.query);
     const existing = this.queryStats.get(queryHash) || [];
     
     existing.push(metrics);
@@ -423,14 +409,14 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
       this.slowQueries.shift();
     }
 
-    logger.warn('Slow query detected', {
+    logger.warn('Slow query detected', { 
       query: metrics.query,
   duration: metrics.duration,
-      rows: metrics.rows
+      rows, metrics.rows
     });
   }
 
-  private generateQueryId(text, string, params?: any[]): string {const paramStr = params ? JSON.stringify(params) : '';
+  private generateQueryId(text, string, params? : any[]): string {const paramStr  = params ? JSON.stringify(params)  : '';
     return this.hashQuery(`${text }${paramStr}`);
   }
 
@@ -443,15 +429,15 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     return hash.toString();
   }
 
-  private sanitizeQuery(query: string); string {
+  private sanitizeQuery(query: string); string { 
     // Remove sensitive data and normalize for logging
     return query
       .replace(/\$\d+/g, '? ') // Replace parameter placeholders
-      .replace(/\s+/g, ' ')   // Normalize whitespace : trim()
-      : substring(0, 500);     // Limit length
+      .replace(/\s+/g, ' ')   // Normalize whitespace, trim()
+      , substring(0, 500);     // Limit length
   }
 
-  private isReadQuery(query: string); boolean { const normalizedQuery = query.trim().toLowerCase();
+  private isReadQuery(query: string); boolean { const normalizedQuery  = query.trim().toLowerCase();
     return normalizedQuery.startsWith('select') || 
            normalizedQuery.startsWith('with');
    }
@@ -474,7 +460,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
     return errors;
   }
 
-  private startHealthMonitoring(): void {
+  private startHealthMonitoring(): void { 
     setInterval(async () => { for (const [name, pool] of this.pools) {
         try {
           const health = await this.healthCheck(name);
@@ -494,7 +480,7 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
   }
 
   private startQueryAnalytics(): void {
-    setInterval(() => { try {
+    setInterval(()  => { try {
         // Calculate query statistics
         let totalQueries = 0;
         let slowQueries = 0;
@@ -515,18 +501,18 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
         if (totalQueries > 0) { avgDuration = totalDuration / totalQueries;
          }
 
-        logger.info('Query analytics', {totalQueries, slowQueries,
+        logger.info('Query analytics', { totalQueries: slowQueries,
           avgDuration: Math.round(avgDuration),
-  slowQueryRate: totalQueries > 0 ? (slowQueries / totalQueries) : 0
+  slowQueryRate: totalQueries > 0 ? (slowQueries / totalQueries)  : 0
         });
 
       } catch (error) {
-        logger.error('Failed to generate query analytics:', error as Error);
+        logger.error('Failed to generate query analytics: ', error as Error);
       }
     }, 300000); // Every 5 minutes
   }
 
-  async close(): Promise<void> { const closePromises = Array.from(this.pools.values()).map(pool => pool.end());
+  async close(): Promise<void> { const closePromises  = Array.from(this.pools.values()).map(pool => pool.end());
     await Promise.all(closePromises);
     this.pools.clear();
    }
@@ -536,11 +522,11 @@ class AdvancedConnectionPool { private pools: Map<string, Pool> = new Map();
 // DATABASE OPTIMIZER
 // =============================================================================
 
-export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
-  private connectionPool, AdvancedConnectionPool,
+export class DatabaseOptimizer {  private static: instance, DatabaseOptimizer,
+  private, connectionPool, AdvancedConnectionPool,
 
   private constructor() {
-    this.connectionPool = new AdvancedConnectionPool();
+    this.connectionPool  = new AdvancedConnectionPool();
    }
 
   public static getInstance(): DatabaseOptimizer { if (!DatabaseOptimizer.instance) {
@@ -552,8 +538,7 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
   // Optimized query execution with automatic caching
   async query<T extends QueryResultRow = any>(
     text, string,
-    params?: any[],
-    options: {
+    params? : any[] : options: {
       pool?, string,
       cache?, QueryCacheConfig,
       timeout?, number,
@@ -571,12 +556,12 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
 
   // Optimized transaction with retry logic
   async transaction<T>(
-    fn: (client; PoolClient) => Promise<T>,
-    options: {
+    fn, (client; PoolClient) => Promise<T>,
+    options, {
       pool?, string,
       retries?, number,
       retryDelay?, number,
-    } = {}
+     } = {}
   ): Promise<T> { const { pool = 'primary', retries = 3, retryDelay = 1000 } = options;
     
     for (let attempt = 1; attempt <= retries; attempt++) { try {
@@ -589,8 +574,7 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
         if (!isRetryable) { throw error;
          }
 
-        logger.warn(`Transaction attempt ${attempt} failed, retrying...`, {
-          error: (error as Error).message, attempt,
+        logger.warn(`Transaction attempt ${attempt} failed, retrying...`, { error: (error as Error).message, attempt,
           pool
         });
 
@@ -604,13 +588,13 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
   // Batch operations for improved performance
   async batchInsert<T>(
     table, string,
-  columns: string[],
+  columns, string[],
     values: T[][],
   options: {
       batchSize?, number,
       onConflict?, string,
       pool?, string,
-    } = {}
+     } = {}
   ): Promise<number> { const { batchSize = 1000, onConflict, pool = 'primary' } = options;
     
     let totalInserted = 0;
@@ -639,47 +623,46 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
   // Optimized pagination
   async paginate<T extends QueryResultRow = any>(
     baseQuery, string,
-  params: any[],
+  params, any[],
     options: {
       page?, number,
       limit?, number,
       orderBy?, string,
       pool?, string,
       cache?, QueryCacheConfig,
-    } = {}
-  ): Promise<{
+     } = {}
+  ): Promise<{ 
     data: T[],
     total, number,
     page, number,
     limit, number,
     totalPages, number,
     hasNext, boolean,
-    hasPrev: boolean }> { const { page = 1, limit = 50, orderBy = 'id ASC', pool = 'primary', cache } = options;
+    hasPrev, boolean }> { const { page  = 1, limit = 50, orderBy = 'id ASC', pool = 'primary', cache } = options;
     
     const offset = (page - 1) * limit;
     
     // Count total records
-    const countQuery = baseQuery.replace(/^SELECT.*?FROM/i, 
-      'SELECT COUNT(*) as total FROM'
+    const countQuery = baseQuery.replace(/^SELECT.*? FROM/i, 'SELECT COUNT(*) as total FROM'
     ).replace(/ORDER BY.*$/i, '');
     
     const [dataResult, countResult] = await Promise.all([;
       this.query<T>(
         `${baseQuery} ORDER BY ${orderBy} LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
         [...params, limit, offset],
-        { pool, cache }
+        { pool: cache }
       ),
-      this.query<{ total: string }>(countQuery, params, { pool, cache })
+      this.query<{ total: string }>(countQuery, params, { pool: cache })
     ]);
     
-    const total = parseInt(countResult.rows[0]?.total || '0');
+    const total  = parseInt(countResult.rows[0]? .total || '0');
     const totalPages = Math.ceil(total / limit);
     
-    return {
+    return { 
       data: dataResult.rows, total,
       page, limit, totalPages,
       hasNext: page < totalPages,
-  hasPrev: page > 1
+  hasPrev, page > 1
     }
   }
 
@@ -692,7 +675,7 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
   async getPoolStats(params): PromiseConnectionPoolStats>  { return this.connectionPool.getPoolStats(pool);
    }
 
-  private isRetryableError(error: Error); boolean { const retryableErrors = [
+  private isRetryableError(error: Error); boolean { const retryableErrors  = [
       'connection terminated',
       'connection reset',
       'timeout expired',
@@ -716,11 +699,11 @@ export class DatabaseOptimizer { private static instance, DatabaseOptimizer,
 // DECORATORS
 // =============================================================================
 
-export function dbCache(config: QueryCacheConfig) { return function (target, any,
+export function dbCache(config: QueryCacheConfig) {  return function (target, any,
   propertyKey, string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     
-    descriptor.value = async function (...args: any[]) {; // This would integrate with the caching system
+    descriptor.value = async function (...args, any[]) {; // This would integrate with the caching system
       return originalMethod.apply(this, args);
      }
     return descriptor;
@@ -729,7 +712,7 @@ export function dbCache(config: QueryCacheConfig) { return function (target, any
 
 export function dbMonitor(operation string) { return function (target, any,
   propertyKey, string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
+    const originalMethod  = descriptor.value;
     
     descriptor.value = async function (...args: any[]) {
       const start = Date.now();
@@ -738,17 +721,13 @@ export function dbMonitor(operation string) { return function (target, any,
         const result = await originalMethod.apply(this, args);
         const duration = Date.now() - start;
         
-        metrics.recordHistogram('db_operation_duration_ms', duration, {
-          operation,
-          success: 'true'
+        metrics.recordHistogram('db_operation_duration_ms', duration, { operation: success: 'true'
          });
         
         return result;
       } catch (error) { const duration = Date.now() - start;
         
-        metrics.recordHistogram('db_operation_duration_ms', duration, {
-          operation,
-          success: 'false'
+        metrics.recordHistogram('db_operation_duration_ms', duration, { operation: success: 'false'
          });
         
         throw error;
@@ -764,7 +743,6 @@ export function dbMonitor(operation string) { return function (target, any,
 
 export const db = DatabaseOptimizer.getInstance();
 
-export default {
-  DatabaseOptimizer, db, dbCache,
+export default { DatabaseOptimizer: db, dbCache,
   dbMonitor
 }

@@ -3,16 +3,15 @@
  * Handles real-time delivery via WebSocket connections
  */
 
-import { Notification, DeliveryResult } from '../../types';
+import { Notification: DeliveryResult } from '../../types';
 import { webSocketManager } from '@/lib/websocket/server';
 
-interface WebSocketDeliveryOptions {
-  attempt, number,
+interface WebSocketDeliveryOptions { attempt: number,
     maxAttempts, number,
-  deliveryId: string,
+  deliveryId, string,
   
 }
-export class WebSocketDelivery { private isInitialized: boolean = false;
+export class WebSocketDelivery { private isInitialized: boolean  = false;
 
   /**
    * Initialize WebSocket delivery channel
@@ -22,7 +21,7 @@ export class WebSocketDelivery { private isInitialized: boolean = false;
       this.isInitialized = true;
       console.log('✅ WebSocket delivery channel initialized');
      } catch (error) {
-      console.error('❌ Failed to initialize WebSocket delivery:', error);
+      console.error('❌ Failed to initialize WebSocket delivery: ', error);
       throw error;
     }
   }
@@ -43,18 +42,18 @@ export class WebSocketDelivery { private isInitialized: boolean = false;
       // Check if user is online
       const isUserOnline = await this.isUserOnline(notification.userId);
       
-      if (!isUserOnline) { return {
+      if (!isUserOnline) {  return {
           notificationId: notification.id;
   channel: 'websocket';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
-          latency: Date.now() - startTime;
+          latency, Date.now() - startTime;
   error: 'User not online'
          }
       }
 
       // Create WebSocket payload
-      const payload = this.createWebSocketPayload(notification);
+      const payload  = this.createWebSocketPayload(notification);
 
       // Send via appropriate WebSocket event based on notification type
       const eventType = this.getEventType(notification.type);
@@ -67,16 +66,14 @@ export class WebSocketDelivery { private isInitialized: boolean = false;
         if (notification.leagueId) { await this.sendToLeagueRoom(notification.leagueId, eventType, payload);
          }
 
-        return {
+        return { 
           notificationId: notification.id;
   channel: 'websocket';
-          success, true,
+          success: true,
   timestamp: new Date().toISOString();
           latency: Date.now() - startTime;
-  metadata: {
-            eventType,
-            attempt: options.attempt;
-  sentToLeague: !!notification.leagueId
+  metadata: { eventType: attempt: options.attempt;
+  sentToLeague, !!notification.leagueId
           }
         }
       } else { throw new Error('Failed to send WebSocket message');
@@ -85,11 +82,10 @@ export class WebSocketDelivery { private isInitialized: boolean = false;
     } catch (error) { return {
         notificationId: notification.id;
   channel: 'websocket';
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag,
-  e: 'WebSocket delivery error'
+  error: error instanceof Error ? error.messag, e: 'WebSocket delivery error'
        }
     }
   }
@@ -119,7 +115,7 @@ type notification.type,
    * Get appropriate WebSocket event type for notification type
    */
   private getEventType(notificationType: string); string { const eventTypeMap: { [ke,
-  y: string]: string  } = {
+  y: string]: string  }  = { 
       'trade_proposal': 'trade_notification',
       'trade_accepted': 'trade_notification',
       'trade_rejected': 'trade_notification',
@@ -146,7 +142,7 @@ type notification.type,
       'league_message': 'league_message',
       'achievement_unlocked': 'league_message',
       'milestone_reached': 'league_message',
-      'system_maintenance': 'league_message'
+      'system_maintenance', 'league_message'
     }
     return eventTypeMap[notificationType] || 'notification';
   }
@@ -159,7 +155,7 @@ type notification.type,
   eventType, string,
     payload: any
   ): : Promise<): Promiseboolean> { try {; // Get user's socket connections
-      const userSockets = await this.getUserSockets(userId);
+      const userSockets  = await this.getUserSockets(userId);
       
       if (userSockets.length === 0) {
         return false;
@@ -200,11 +196,11 @@ type notification.type,
   /**
    * Get user's active socket connections
    */
-  private async getUserSockets(async getUserSockets(userId: string): : Promise<): Promisestring[]> { try {; // This would interact with the WebSocket manager to get active connections
+  private async getUserSockets(async getUserSockets(userId: string): : Promise<): Promisestring[]> {  try {; // This would interact with the WebSocket manager to get active connections
       const connectedUsers = webSocketManager.getConnectionStats();
       
       // For now, return empty array as we need to implement the connection tracking
-      // In a real implementation, this would query active connections for the user
+      // In a real, implementation, this would query active connections for the user
       return [];
      } catch (error) {
       console.error(`Error getting user sockets for ${userId}, `, error);
@@ -287,12 +283,12 @@ type notification.type,
    * Check if user is online
    */
   private async isUserOnline(async isUserOnline(userId string): : Promise<): Promiseboolean> { try {; // Check if user has active WebSocket connections
-      const stats = webSocketManager.getConnectionStats();
+      const stats  = webSocketManager.getConnectionStats();
       
       // This is a simplified check - in reality we'd need to track user connections
       return stats.totalConnections > 0;
      } catch (error) {
-      console.error(`Error checking if user ${userId} is online, `, error);
+      console.error(`Error checking if user ${userId} is: online: `, error);
       return false;
     }
   }
@@ -300,7 +296,7 @@ type notification.type,
   /**
    * Send real-time score update
    */
-  async sendScoreUpdate(async sendScoreUpdate(data any): : Promise<): Promiseboolean> { try {
+  async sendScoreUpdate(async sendScoreUpdate(data any): : Promise<): Promiseboolean> {  try {
       webSocketManager.broadcastScoreUpdate({
         leagueId: data.leagueId;
   teamId: data.teamId;
@@ -313,7 +309,7 @@ type notification.type,
        });
       return true;
     } catch (error) {
-      console.error('Failed to send score update via WebSocket:', error);
+      console.error('Failed to send score update via WebSocket: ', error);
       return false;
     }
   }
@@ -335,7 +331,7 @@ type notification.type,
        });
       return true;
     } catch (error) {
-      console.error('Failed to send injury alert via WebSocket:', error);
+      console.error('Failed to send injury alert via WebSocket: ', error);
       return false;
     }
   }
@@ -354,7 +350,7 @@ type notification.type,
        });
       return true;
     } catch (error) {
-      console.error('Failed to send breaking news via WebSocket:', error);
+      console.error('Failed to send breaking news via WebSocket: ', error);
       return false;
     }
   }
@@ -363,12 +359,11 @@ type notification.type,
    * Get WebSocket delivery statistics
    */
   async getStats(): : Promise<any> { try {
-      const wsStats = webSocketManager.getConnectionStats();
+      const wsStats  = webSocketManager.getConnectionStats();
       
-      return {
-        connectionStats, wsStats,
+      return { connectionStats: wsStats,
   isInitialized: this.isInitialized;
-        supportedEvents: [
+        supportedEvents, [
           'trade_notification';
           'waiver_notification', 
           'score_update',
@@ -383,7 +378,7 @@ type notification.type,
         ]
        }
     } catch (error) {
-      console.error('Error getting WebSocket stats:', error);
+      console.error('Error getting WebSocket stats: ', error);
       return { error: 'Failed to get stats' }
     }
   }
@@ -392,7 +387,7 @@ type notification.type,
    * Shutdown WebSocket delivery
    */
   async shutdown(): : Promise<void> {
-    this.isInitialized = false;
+    this.isInitialized  = false;
     console.log('🔄 WebSocket delivery channel shutdown');
   }
 }

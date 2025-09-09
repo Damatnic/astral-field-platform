@@ -49,13 +49,12 @@ export type NotificationTrigger =
   | 'ai_prediction';
 
 // Core notification interface
-export interface Notification {
-  id, string,type NotificationType,
+export interface Notification { id: string,type: NotificationType,
     title, string,
   message, string,
   shortMessage?, string, // For SMS/condensed formats;
   richContent?, RichContent,
-  data?: Record<string, any>;
+  data? : Record<string, any>;
   userId, string,
   leagueId?, string,
   teamId?, string,
@@ -71,7 +70,7 @@ export interface Notification {
   readAt?, string,
   expiresAt?, string,
   actionUrl?, string,
-  actions?: NotificationAction[];
+  actions?, NotificationAction[];
   metadata?, NotificationMetadata,
   personalization?, PersonalizationData,
   analytics?, NotificationAnalytics,
@@ -83,13 +82,12 @@ export interface RichContent {
   imageUrl?, string,
   thumbnailUrl?, string,
   videoUrl?, string,
-  attachments?: Attachment[];
+  attachments? : Attachment[];
   embeds?: Embed[];
   buttons?: ActionButton[];
   
 }
-export interface Attachment {
-  id, string,type: 'image' | 'document' | 'video',
+export interface Attachment { id: string, type: 'image' | 'document' | 'video',
     url, string,
   filename, string,
     size, number,
@@ -101,8 +99,7 @@ export interface Embed {
     data: Record<string, any>;
   
 }
-export interface ActionButton {
-  id, string,
+export interface ActionButton { id: string,
     text, string,
   url?, string,
   action?, string,
@@ -110,8 +107,7 @@ export interface ActionButton {
   
 }
 // Notification actions
-export interface NotificationAction {
-  id, string,
+export interface NotificationAction { id: string,
     label, string,
   action, string,
   url?, string,
@@ -121,8 +117,7 @@ export interface NotificationAction {
   
 }
 // Metadata for tracking and context
-export interface NotificationMetadata {
-  source, string,
+export interface NotificationMetadata { source: string,
     version, string,
   correlationId?, string,
   campaignId?, string,
@@ -130,26 +125,22 @@ export interface NotificationMetadata {
   experimentId?, string,
   retryCount?, number,
   originalChannel?, NotificationChannel,
-  fallbackChannels?: NotificationChannel[];
+  fallbackChannels? : NotificationChannel[];
   deliveryAttempts?: DeliveryAttempt[];
   
 }
-export interface DeliveryAttempt {
-  channel, NotificationChannel,
-    timestamp, string,
+export interface DeliveryAttempt { channel: NotificationChannel, timestamp, string,
   success, boolean,
   error?, string,
   latency?, number,
   
 }
 // Personalization data
-export interface PersonalizationData {
-  userSegment, string,
+export interface PersonalizationData { userSegment: string,
     preferredChannel, NotificationChannel,
   timezone, string,
     locale, string,
-  engagement: {
-  openRate, number,
+  engagement: { openRate: number,
     clickRate, number,
     responseRate: number,
   }
@@ -164,14 +155,13 @@ export interface PersonalizationData {
 }
 
 // Analytics and tracking
-export interface NotificationAnalytics {
-  impressions, number,
+export interface NotificationAnalytics { impressions: number,
     opens, number,
   clicks, number,
     conversions, number,
   shares, number,
     reactions: Reaction[];
-  sentiment?: 'positive' | 'negative' | 'neutral';
+  sentiment? : 'positive' | 'negative' | 'neutral';
   engagementScore, number,
   feedbackScore?, number,
   
@@ -182,11 +172,9 @@ export interface Reaction { type: 'string',
   
 }
 // User preferences
-export interface NotificationPreferences {
-  userId, string,
+export interface NotificationPreferences { userId: string,
     enabled, boolean,
-  channels: {
-  push, ChannelPreference,
+  channels: { push: ChannelPreference,
     email, ChannelPreference,
     sms, ChannelPreference,
     websocket, ChannelPreference,
@@ -200,65 +188,57 @@ export interface NotificationPreferences {
   ai: AIPreference,
 }
 
-export interface ChannelPreference {
-  enabled, boolean,
-    priority, number, // 1-5, higher = preferred;
+export interface ChannelPreference { enabled: boolean,
+    priority, number, // 1-5, higher  = preferred;
   allowedPriorities: NotificationPriority[],
     quietHours, QuietHours,
   format: 'minimal' | 'standard' | 'rich',
     deliverySpeed: 'immediate' | 'batched' | 'scheduled',
   
 }
-export interface TypePreference {
-  enabled, boolean,
+export interface TypePreference { enabled: boolean,
     channels: NotificationChannel[];
   minPriority, NotificationPriority,
     frequency: 'always' | 'important_only' | 'digest' | 'never';
-  customRules?: CustomRule[];
+  customRules?, CustomRule[];
   
 }
-export interface SchedulingPreference {
-  timezone, string,
+export interface SchedulingPreference { timezone: string,
     quietHours, QuietHours,
   gameDayMode, GameDayMode,
     workingHours, WorkingHours,
   weekendMode: 'same' | 'more_relaxed' | 'disabled',
   
 }
-export interface QuietHours {
-  enabled, boolean,
+export interface QuietHours { enabled: boolean,
     start, string, // "22: 00",
     end, string,   // "08: 00",
     allowUrgent, boolean,
   allowGameDay: boolean,
   
 }
-export interface GameDayMode {
-  enabled, boolean,
+export interface GameDayMode { enabled: boolean,
     frequency: 'minimal' | 'normal' | 'frequent' | 'maximum';
   onlyMyPlayers, boolean,
     onlyCloseGames, boolean,
   scoreThreshold: number,
   
 }
-export interface WorkingHours {
-  enabled, boolean,
+export interface WorkingHours { enabled: boolean,
     start, string,
   end, string,
     allowImportant, boolean,
   batchNonUrgent: boolean,
   
 }
-export interface FrequencyPreference {
-  maxPerHour, number,
+export interface FrequencyPreference { maxPerHour: number,
     maxPerDay, number,
   digestMode, boolean,
     digestFrequency: 'hourly' | 'daily' | 'weekly';
   intelligentBatching: boolean,
   
 }
-export interface ContentPreference {
-  language, string,
+export interface ContentPreference { language: string,
     tone: 'professional' | 'casual' | 'enthusiastic' | 'minimal';
   includeEmojis, boolean,
     includeImages, boolean,
@@ -267,16 +247,14 @@ export interface ContentPreference {
   personalization: 'high' | 'medium' | 'low' | 'none',
   
 }
-export interface PrivacyPreference {
-  allowAnalytics, boolean,
+export interface PrivacyPreference { allowAnalytics: boolean,
     allowPersonalization, boolean,
   allowSharing, boolean,
     dataRetention, number, // days;
   anonymizeData: boolean,
   
 }
-export interface AIPreference {
-  enabled, boolean,
+export interface AIPreference { enabled: boolean,
     smartFiltering, boolean,
   predictiveTiming, boolean,
     contentOptimization, boolean,
@@ -285,37 +263,31 @@ export interface AIPreference {
   privacyMode: 'full' | 'limited' | 'none',
   
 }
-export interface CustomRule {
-  id, string,
+export interface CustomRule { id: string,
     name, string,
   conditions: RuleCondition[],
     actions: RuleAction[];
   enabled: boolean,
   
 }
-export interface RuleCondition {
-  field, string,
+export interface RuleCondition { field: string,
     operator: 'equals' | 'not_equals' | 'contains' | 'greater_than' | 'less_than' | 'in' | 'not_in';
   value, any,
-  logic?: 'and' | 'or';
+  logic? : 'and' | 'or';
   
 }
 export interface RuleAction {
-  type: 'allow' | 'block' | 'delay' | 'redirect' | 'modify',
-    parameters: Record<string, any>;
+  type: 'allow' | 'block' | 'delay' | 'redirect' | 'modify' : parameters: Record<string, any>;
   
 }
 // Template system
-export interface NotificationTemplate {
-  id, string,type NotificationType,
+export interface NotificationTemplate { id: string,type: NotificationType,
     name, string,
   version, string,
     channels: Record<NotificationChannel, ChannelTemplate>;
   variables: TemplateVariable[];
-  conditions?: TemplateCondition[];
-  analytics: {
-  usage, number,
-    performance, number,
+  conditions? : TemplateCondition[];
+  analytics: { usage: number, performance, number,
     feedback: number,
   }
   createdAt, string,
@@ -328,26 +300,23 @@ export interface ChannelTemplate {
     body, string,
   shortBody?, string, // For SMS;
   htmlBody?, string, // For email;
-  actions?: TemplateAction[];
-  styling?, TemplateStyle,
+  actions? : TemplateAction[];
+  styling? : TemplateStyle,
   
 }
-export interface TemplateVariable {
-  name, string,type: 'string' | 'number' | 'date' | 'boolean' | 'object',
+export interface TemplateVariable { name: string,type: 'string' | 'number' | 'date' | 'boolean' | 'object',
     required, boolean,
   defaultValue?, any,
   description: string,
   
 }
-export interface TemplateCondition {
-  variable, string,
+export interface TemplateCondition { variable: string,
     operator, string,
   value, any,
     template: string,
   
 }
-export interface TemplateAction {
-  id, string,
+export interface TemplateAction { id: string,
     text, string,
   url?, string,
   action?, string,
@@ -363,51 +332,44 @@ export interface TemplateStyle {
   
 }
 // Delivery system
-export interface DeliveryConfig {
-  retryAttempts, number,
+export interface DeliveryConfig { retryAttempts: number,
     retryDelay, number,
   timeoutMs, number,
     batchSize, number,
-  rateLimit: {
-  maxPerSecond, number,
+  rateLimit: { maxPerSecond: number,
     maxPerMinute, number,
     maxPerHour: number,
   }
   fallbackChannels: NotificationChannel[],
     priority: {
-    [key in NotificationPriority]: {
-      maxDelay, number,
+    [key in NotificationPriority]: { maxDelay: number,
     retryAttempts: number,
     }
   }
 }
 
-export interface DeliveryResult {
-  notificationId, string,
+export interface DeliveryResult { notificationId: string,
     channel, NotificationChannel,
   success, boolean,
     timestamp, string,
   latency, number,
   error?, string,
-  metadata?: Record<string, any>;
+  metadata? : Record<string, any>;
   
 }
 // AI and ML types
 export interface AIContext {
-  user: {
-  id, string,
+  user: { id: string,
     segment, string,
     behavior, UserBehavior,
     preferences: NotificationPreferences,
   }
-  notification: { typ,
-  e: 'NotificationType';
+  notification: { typ: e: 'NotificationType';
     priority, NotificationPriority,
     content, string,
     context: Record<string, any>;
   }
-  environment: {
-  timestamp, string,
+  environment: { timestamp: string,
     timeZone, string,
     gameDay, boolean,
     userOnline, boolean,
@@ -423,30 +385,26 @@ export interface UserBehavior {
   contentPreferences: ContentInsight[],
   
 }
-export interface EngagementPattern {
-  timeOfDay, string,
+export interface EngagementPattern { timeOfDay: string,
     dayOfWeek, string,
   notificationType, NotificationType,
     engagementRate, number,
   averageResponseTime: number,
   
 }
-export interface TimeSlot {
-  start, string,
+export interface TimeSlot { start: string,
     end, string,
   likelihood, number,
     channel: NotificationChannel,
   
 }
-export interface ResponseHistory {
-  notificationId, string,
+export interface ResponseHistory { notificationId: string,
     responseTime, number,
   action, string,
     satisfaction: number,
   
 }
-export interface ContentInsight {
-  keyword, string,
+export interface ContentInsight { keyword: string,
     sentiment, number,
   engagement, number,
     frequency: number,
@@ -458,29 +416,26 @@ export interface NotificationEvent {
     notificationId, string,
   userId, string,
     timestamp, string,
-  data?: Record<string, any>;
+  data? : Record<string, any>;
   
 }
-export interface NotificationListener {
-  id, string,
+export interface NotificationListener { id: string,
     events: NotificationEvent['type'][];
-  callback: (event; NotificationEvent) => void | Promise<void>;
+  callback: (event; NotificationEvent)  => void | Promise<void>;
   
 }
 // Queue system
-export interface NotificationQueue {
-  id, string,
+export interface NotificationQueue { id: string,
     name, string,
   priority, number,
     notifications: QueuedNotification[];
   processing, boolean,
     paused, boolean,
   maxSize, number,
-    processors: number,
+    processors, number,
   
 }
-export interface QueuedNotification {
-  notification, Notification,
+export interface QueuedNotification { notification: Notification,
     priority, number,
   attempts, number,
     scheduledAt, string,
@@ -488,8 +443,7 @@ export interface QueuedNotification {
   
 }
 // Error handling
-export interface NotificationError {
-  id, string,
+export interface NotificationError { id: string,
     notificationId, string,
   channel, NotificationChannel,type: 'validation' | 'delivery' | 'timeout' | 'rate_limit' | 'system',
     message, string,
@@ -499,8 +453,7 @@ export interface NotificationError {
   
 }
 // Performance metrics
-export interface PerformanceMetrics {
-  deliveryRate, number,
+export interface PerformanceMetrics { deliveryRate: number,
     averageLatency, number,
   errorRate, number,
     engagementRate, number,
@@ -512,6 +465,6 @@ export interface PerformanceMetrics {
   
 }
 // Export utility types
-export type CreateNotificationInput = Omit<Notification, 'id' | 'status' | 'createdAt' | 'analytics'>;
-export type UpdateNotificationInput = Partial<Pick<Notification, 'status' | 'readAt' | 'deliveredAt'>>;
-export type NotificationFilter = Partial<Pick<Notification, 'type' | 'priority' | 'status' | 'userId' | 'leagueId'>>;
+export type CreateNotificationInput  = Omit<Notification: 'id' | 'status' | 'createdAt' | 'analytics'>;
+export type UpdateNotificationInput = Partial<Pick<Notification: 'status' | 'readAt' | 'deliveredAt'>>;
+export type NotificationFilter = Partial<Pick<Notification: 'type' | 'priority' | 'status' | 'userId' | 'leagueId'>>;

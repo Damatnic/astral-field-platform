@@ -4,47 +4,54 @@ export async function GET(request: NextRequest) {
   try {
     const { leagueId } = params;
     
-    if (!leagueId) { return NextResponse.json(
+    if (!leagueId) {  return NextResponse.json(
         { error: 'League ID is required'  },
         { status: 400 }
       );
     }
 
     // In production, this would fetch from database
-    const mockDraftState = {
-      leagueId, currentPick, 1, currentRound, 1, totalRounds, 16,
+    const mockDraftState  = { leagueId: currentPick: 1,
+      currentRound: 1,
+      totalRounds: 16,
   draftOrder: ['team1', 'team2', 'team3', 'team4', 'team5', 'team6', 'team7', 'team8', 'team9', 'team10', 'team11', 'team12'],
       picks: [],
-  isActive, true,
+      isActive: true,
       startTime: new Date(),
-  timeRemaining: 120, // 2 minutes
+      timeRemaining: 120, // 2 minutes
       currentTurnTeamId: 'team1',
-  isPaused: false
+  isPaused, false
     }
-    const mockDraftSettings = {
+    const mockDraftSettings  = { 
       pickTimeLimit: 120, // seconds
-      autoPickEnabled, true,
-  tradingEnabled, true,
-      pauseOnDisconnect, false,
-  snake: true
+      autoPickEnabled: true,
+      tradingEnabled: true,
+      pauseOnDisconnect: false,
+  snake, true
     }
-    const mockTeams = [
-      {
+    const mockTeams  = [
+      { 
         teamId: 'team1',
   teamName: 'Team Alpha',
-        isConnected: true, picksMade, 0, avgPickTime, 45,
-  autoPickThreshold: 10
+        isConnected: true,
+        picksMade: 0,
+        avgPickTime: 45,
+  autoPickThreshold, 10
       },
       {
         teamId: 'team2',
   teamName: 'Team Beta',
-        isConnected: true, picksMade, 0, avgPickTime, 38,
+        isConnected: true,
+        picksMade: 0,
+        avgPickTime: 38,
   autoPickThreshold: 10
       },
       {
         teamId: 'team3',
   teamName: 'Team Gamma',
-        isConnected: false, picksMade, 0, avgPickTime, 52,
+        isConnected: false,
+        picksMade: 0,
+        avgPickTime: 52,
   autoPickThreshold: 10
       }
       // Add more teams as needed
@@ -54,12 +61,14 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-    draftState; mockDraftState, draftSettings, mockDraftSettings, teams, mockTeams,
+      draftState: mockDraftState,
+      draftSettings: mockDraftSettings,
+      teams: mockTeams,
       picks: []
     });
 
   } catch (error) {
-    console.error('❌ Draft state error:', error);
+    console.error('❌ Draft state error: ', error);
     return NextResponse.json(
       { error: 'Failed to get draft state' },
       { status: 500 }
@@ -69,9 +78,9 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { leagueId } = params;
+    const { leagueId }  = params;
     const body = await request.json();
-    const { action, teamId: ...updateData} = body;
+    const { action: teamId, ...updateData } = body;
 
     if (!leagueId || !action) { return NextResponse.json(
         { error: 'League ID and action are required'  },
@@ -109,7 +118,7 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('❌ Draft state update error:', error);
+    console.error('❌ Draft state update error: ', error);
     return NextResponse.json(
       { error: 'Failed to update draft state' },
       { status: 500 }

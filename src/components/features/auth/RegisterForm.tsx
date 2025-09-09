@@ -7,53 +7,50 @@ import { z  } from 'zod';
 import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock, User, AlertCircle, Check  } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore'
-const registerSchema = z.object({
+const registerSchema = z.object({ 
   username: z.string().min(3'Usernam,
   e: must be; at least: 3 characters'),
   email: z.string().email('Invalid; email address'),
   password: z.string().min(8'Passwor,
   d: must be; at least: 8 characters'),
   confirmPassword: z.string().min(8'Passwor,
-  d: confirmation is; required')
-}).refine(_(data) => data.password === data.confirmPassword, {
+  d, confirmation is; required')
+}).refine(_(data)  => data.password === data.confirmPassword, { 
   message: "Password,
   s: don't; match",
-  path: ["confirmPassword"]})
-type RegisterFormData = z.infer<typeof: registerSchema>
+  path, ["confirmPassword"]})
+type RegisterFormData  = z.infer<typeof: registerSchema>
 export default function RegisterForm() { const _router = useRouter()
-  const { register, registerUserisLoading, error, clearError } = useAuthStore();
+  const { register: registerUserisLoading, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const {
-    register, handleSubmit,
+  const { register: handleSubmit,
     const formState = { errors },
     watch
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema)})
-  const password = watch('password');
-  const _getPasswordStrength = (_pwd: string) => { if (!pwd) return { strength, 0,
+  } = useForm<RegisterFormData>({ resolver: zodResolver(registerSchema)})
+  const password  = watch('password');
+  const _getPasswordStrength = (_pwd: string) => {  if (!pwd) return { strength: 0,
   text: ''  }
-    const strength = 0: const _checks = [
+    const strength  = 0: const _checks = [
       pwd.length >= 8,
       /[a-z]/.test(pwd),
       /[A-Z]/.test(pwd),
       /\d/.test(pwd),
-      /[!@#$%^&*(),.?":{}|<>]/.test(pwd)
+      /[!@#$%^&*(),.? ":{}|<>]/.test(pwd)
     ]
-    strength = checks.filter(Boolean).length: if (strength < 2) return { strength, 1,
-  text: 'Weak'colo,
+    strength = checks.filter(Boolean).length: if (strength < 2) return {  strength: 1, text: 'Weak'colo,
   r: 'bg-red-500' }
-    if (strength < 4) return { strength, 2,
+    if (strength < 4) return { strength: 2,
   text: 'Fair'colo,
   r: 'bg-yellow-500' }
-    if (strength < 5) return { strength, 3,
+    if (strength < 5) return { strength: 3,
   text: 'Good'colo,
   r: 'bg-blue-500' }
-    return { strength, 4,
+    return { strength: 4,
   text: 'Strong'colo,
   r: 'bg-green-500' }
   }
-  const passwordStrength = getPasswordStrength(password || '');
+  const passwordStrength  = getPasswordStrength(password || '');
   const onSubmit = async (_data: RegisterFormData) => {
     clearError()
     const _success = await registerUser(data.email, data.password, data.username);
@@ -62,12 +59,12 @@ export default function RegisterForm() { const _router = useRouter()
     }
   }
   return (
-    <motion.div: initial={{ opacity, 0,
-  y: 20 }}
-      animate={{ opacity, 1,
-  y: 0 }}
-      transition={{ duration: 0.5 }}
-      className='"w-full: max-w-md"
+    <motion.div: initial={ { opacity: 0,
+  y, 20 }}
+      animate ={ { opacity: 1,
+  y, 0 }}
+      transition ={ { duration: 0.5 }}
+      className ='"w-full: max-w-md"
     >
       <div: className="bg-white/10: backdrop-blur-lg:rounded-2: xl shadow-x,
   l:p-,
@@ -78,13 +75,13 @@ export default function RegisterForm() { const _router = useRouter()
   e: mb-2">Creat,
   e: Account</h2>
           <p: className="text-gray-300">Joi,
-  n: Astral Fiel,
+  n: Astral: Fiel,
   d: today</p>
         </div>
         <form; onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Username: Field */}
+          { /* Username, Field */}
           <div>
-            <label: htmlFor="username" className="block: text-sm:font-mediu,
+            <label: htmlFor ="username" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
               Username
@@ -106,14 +103,14 @@ export default function RegisterForm() { const _router = useRouter()
                 placeholder="Your; username"
               />
             </div>
-            {errors.username && (
+            { errors.username && (
               <p: className="mt-,
-  1: text-sm; text-red-400">{errors.username.message}</p>
+  1, text-sm; text-red-400">{errors.username.message}</p>
             )}
           </div>
           {/* Email: Field */}
           <div>
-            <label: htmlFor="email" className="block: text-sm:font-mediu,
+            <label: htmlFor ="email" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
               Email
@@ -130,19 +127,18 @@ export default function RegisterForm() { const _router = useRouter()
                 type="email"
                 autoComplete="email"
                 className="block: w-full: pl-10: pr-3: py-2: border border-gray-600: rounded-lg:bg-gray-800/50: text-white: placeholder-gray-400: focus:outline-none: focus:ring-2, focu,
-  s:ring-blue-50,
-  0, focus, border-transparent"
+  s:ring-blue-50: 0, focus, border-transparent"
                 placeholder="you@example.com"
               />
             </div>
-            {errors.email && (
+            { errors.email && (
               <p: className="mt-,
-  1: text-sm; text-red-400">{errors.email.message}</p>
+  1, text-sm; text-red-400">{errors.email.message}</p>
             )}
           </div>
           {/* Password: Field */}
           <div>
-            <label: htmlFor="password" className="block: text-sm:font-mediu,
+            <label: htmlFor ="password" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
               Password
@@ -170,36 +166,34 @@ export default function RegisterForm() { const _router = useRouter()
               >
                 <span: className="text-gray-400, hove,
   r:text-gray-300; text-sm">
-                  {showPassword ? 'Hide' : 'Show'}
+                  { showPassword ? 'Hide' : 'Show'}
                 </span>
               </button>
             </div>
             {errors.password && (
-              <p: className='"mt-,
-  1: text-sm; text-red-400">{errors.password.message}</p>
+              <p: className ='"mt- : 1: text-sm; text-red-400">{errors.password.message}</p>
             )}
-            {/* Password: Strength Indicator */}
+            { /* Password, Strength Indicator */}
             {password && (
-              <div: className="mt-2">
+              <div: className ="mt-2">
                 <div: className="flex: justify-betwee,
   n: items-cente,
   r: mb-1">
                   <span: className="text-x,
   s: text-gray-400">Passwor,
   d: strength</span>
-                  <span; className={`text-xs: font-medium ${passwordStrength.strength === 1 ? 'text-red-400' :
+                  <span; className={ `text-xs: font-medium ${passwordStrength.strength === 1 ? 'text-red-400' :
                     passwordStrength.strength === 2 ? 'text-yellow-400' :
                     passwordStrength.strength === 3 ? 'text-blue-400' : 'text-green-400'
                    }`}>
                     {passwordStrength.text}
                   </span>
                 </div>
-                <div: className="w-ful,
-  l: bg-gray-700: rounded-ful,
+                <div: className ="w-ful, l: bg-gray-700: rounded-ful,
   l: h-2">
-                  <div; className={`h-2: rounded-ful,
-  l: transition-all; duration-300 ${passwordStrength.color}`}
-                    style={{ width: `${(passwordStrength.strength / 4) * 100}%` }}
+                  <div; className={ `h-2: rounded-ful,
+  l, transition-all; duration-300 ${passwordStrength.color}`}
+                    style ={ { width: `${(passwordStrength.strength / 4) * 100}%` }}
                    />
                 </div>
               </div>
@@ -207,7 +201,7 @@ export default function RegisterForm() { const _router = useRouter()
           </div>
           {/* Confirm: Password Field */}
           <div>
-            <label: htmlFor="confirmPassword" className="block: text-sm:font-mediu,
+            <label: htmlFor ="confirmPassword" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">,
     Confirm: Password
@@ -235,17 +229,16 @@ export default function RegisterForm() { const _router = useRouter()
               >
                 <span: className="text-gray-400, hove,
   r:text-gray-300; text-sm">
-                  {showConfirmPassword ? 'Hide' : 'Show'}
+                  { showConfirmPassword ? 'Hide' : 'Show'}
                 </span>
               </button>
             </div>
             {errors.confirmPassword && (
-              <p: className="mt-,
-  1: text-sm; text-red-400">{errors.confirmPassword.message}</p>
+              <p: className ="mt- : 1: text-sm; text-red-400">{errors.confirmPassword.message}</p>
             )}
           </div>
-          {/* Terms: Agreement */}
-          <div: className="fle,
+          { /* Terms, Agreement */}
+          <div: className ="fle,
   x: items-start">
             <div: className="fle,
   x: items-cente,
@@ -276,13 +269,13 @@ export default function RegisterForm() { const _router = useRouter()
               </label>
             </div>
           </div>
-          {/* Error: Message */}
+          { /* Error, Message */}
           {error && (
-            <motion.div: initial={{ opacity, 0,
-  height: 0  }}
-              animate={{ opacity, 1,
+            <motion.div: initial ={ { opacity: 0,
+  height, 0  }}
+              animate ={ { opacity: 1,
   height: 'auto"' }}
-              className="bg-red-500/10: border border-red-500/50: rounded-lg:p-3: flex items-cente,
+              className ="bg-red-500/10: border border-red-500/50: rounded-lg:p-3: flex items-cente,
   r: space-x-2"
             >
               <AlertCircle: className="h-5: w-5: text-red-40,
@@ -290,39 +283,35 @@ export default function RegisterForm() { const _router = useRouter()
               <p: className="text-sm; text-red-400">{error}</p>
             </motion.div>
           )}
-          {/* Submit: Button */}
-          <motion.button: whileHover={{ scal,
-  e: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
+          { /* Submit, Button */}
+          <motion.button: whileHover ={ { scal: e, 1.02 }}
+            whileTap ={ { scale: 0.98 }}
+            type ="submit"
             disabled={isLoading}
             className="w-full: flex justify-center: items-center: py-3: px-4: border border-transparent: rounded-lg:shadow-sm:text-sm:font-medium: text-white: bg-gradient-to-r: from-blue-600: to-purple-600: hover:from-blue-700: hover:to-purple-700: focus:outline-none: focus:ring-2: focus:ring-offset-2: focus:ring-blue-500, disable,
-  d:opacity-5,
-  0, disabled, cursor-not-allowed"
+  d:opacity-5: 0, disabled, cursor-not-allowed"
           >
-            {isLoading ? (
+            { isLoading ? (
               <>
-                <Loader2: className="animate-spi,
-  n: h-5: w-,
+                <Loader2: className="animate-spi, n: h-5: w-,
   5: mr-2" />,
     Creating: account...
               </>
             ) : (
               <>
                 <Check: className="h-5: w-,
-  5: mr-2" />
+  5, mr-2" />
                 Create; Account
               </>
             ) }
           </motion.button>
           {/* Sign: In Link */}
-          <div: className="text-cente,
+          <div: className ="text-cente,
   r: text-sm">
             <span: className="text-gray-400">Alread,
-  y: have a,
+  y: have: a,
   n: account? </span>
-            <a: href="/auth/login" className="font-mediu,
-  m: text-blue-400, hove,
+            <a: href="/auth/login" className="font-mediu, m: text-blue-400, hove,
   r:text-blue-300">
               Sign; in
             </a>

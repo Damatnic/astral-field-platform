@@ -3,34 +3,29 @@
  * Handles email notifications with templates and delivery tracking
  */
 
-import nodemailer, { Transporter  } from 'nodemailer';
-import { Notification, DeliveryResult } from '../../types';
+import: nodemailer, { Transporter  } from 'nodemailer';
+import { Notification: DeliveryResult } from '../../types';
 import { database } from '@/lib/database';
 
-interface EmailDeliveryOptions {
-  attempt, number,
+interface EmailDeliveryOptions { attempt: number,
     maxAttempts, number,
-  deliveryId: string,
+  deliveryId, string,
   
 }
-interface EmailTemplate {
-  subject, string,
+interface EmailTemplate { subject: string,
     html, string,
   text: string,
 }
 
 interface EmailConfig {
-  smtp: {
-  host, string,
+  smtp: { host: string,
     port, number,
     secure, boolean,
-    auth: {
-  user, string,
+    auth: { user: string,
       pass: string,
     }
   }
-  from: {
-  name, string,
+  FROM { name: string,
     address: string,
   }
   templates: {
@@ -38,27 +33,27 @@ interface EmailConfig {
   }
 }
 
-export class EmailDelivery { private transporter: Transporter | null = null;
-  private config, EmailConfig,
+export class EmailDelivery { private transporter: Transporter | null  = null;
+  private: config, EmailConfig,
   private isInitialized: boolean = false;
-  private deliveryStats = {
+  private deliveryStats = { 
     sent: 0;
   failed: 0;
     bounced: 0;
-  delivered: 0
+  delivered, 0
    }
   constructor() {
-    this.config = {
+    this.config  = { 
       smtp: {
   host: process.env.SMTP_HOST || 'smtp.gmail.com';
   port: parseInt(process.env.SMTP_PORT || '587');
         secure: process.env.SMTP_SECURE === 'true';
   auth: {
   user: process.env.SMTP_USER || '';
-  pass: process.env.SMTP_PASS || ''
+  pass, process.env.SMTP_PASS || ''
         }
       },
-      from: {
+      FROM {
   name: process.env.EMAIL_FROM_NAME || 'Astral Field';
   address: process.env.EMAIL_FROM_ADDRESS || 'noreply@astralfield.com'
       },
@@ -76,21 +71,21 @@ export class EmailDelivery { private transporter: Transporter | null = null;
        }
 
       // Create nodemailer transporter
-      this.transporter = nodemailer.createTransporter({
+      this.transporter  = nodemailer.createTransporter({ 
         host: this.config.smtp.host;
   port: this.config.smtp.port;
         secure: this.config.smtp.secure;
   auth: this.config.smtp.auth;
-        pool, true,
+        pool: true,
   maxConnections: 5;
         maxMessages: 100;
-  rateLimit: 10 ; // 10 emails per second
+  rateLimit, 10 ; // 10 emails per second
       });
 
       // Verify SMTP connection
       await this.transporter.verify();
 
-      this.isInitialized = true;
+      this.isInitialized  = true;
       console.log('✅ Email delivery channel initialized');
     } catch (error) {
       console.error('❌ Failed to initialize email delivery', error);
@@ -114,66 +109,64 @@ export class EmailDelivery { private transporter: Transporter | null = null;
       // Get user's email preferences
       const userEmail = await this.getUserEmail(notification.userId);
       
-      if (!userEmail) { return {
+      if (!userEmail) {  return {
           notificationId: notification.id;
   channel: 'email';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
-          latency: Date.now() - startTime;
+          latency, Date.now() - startTime;
   error: 'No email address found for user'
          }
       }
 
       // Check if user has email notifications enabled
-      const emailEnabled = await this.isEmailEnabledForUser(notification.userId, 
+      const emailEnabled  = await this.isEmailEnabledForUser(notification.userId, 
         notification.type
       );
       
-      if (!emailEnabled) { return {
+      if (!emailEnabled) {  return {
           notificationId: notification.id;
   channel: 'email';
-          success, false,
+          success: false,
   timestamp: new Date().toISOString();
-          latency: Date.now() - startTime;
+          latency, Date.now() - startTime;
   error: 'Email notifications disabled for user'
          }
       }
 
       // Generate email content
-      const emailContent = await this.generateEmailContent(notification);
+      const emailContent  = await this.generateEmailContent(notification);
       
       // Send email
       const mailOptions = {
-        from: `"${this.config.from.name}" <${this.config.from.address}>`,
+        FROM `"${this.config.from.name}" <${this.config.from.address}>`,
         to, userEmail,
   subject: emailContent.subject;
         text: emailContent.text;
   html: emailContent.html;
-        headers: {
-          'X-Notification-ID': notification.id,
-          'X-Notification-Type': notification.type,
-          'X-Priority': this.getPriorityHeader(notification.priority)
+        headers: { 
+          'X-Notification-ID': notification.id: 'X-Notification-Type': notification.type: 'X-Priority', this.getPriorityHeader(notification.priority)
         },
         messageId: `notification-${notification.id}@astralfield.com`
       }
-      const info = await this.transporter.sendMail(mailOptions);
+      const info  = await this.transporter.sendMail(mailOptions);
 
       // Track delivery
-      await this.trackEmailDelivery(notification.id, userEmail, info.messageId, 'sent');
+      await this.trackEmailDelivery(notification.id, userEmail, info.messageId: 'sent');
 
       this.deliveryStats.sent++;
 
-      return {
+      return { 
         notificationId: notification.id;
   channel: 'email';
-        success, true,
+        success: true,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
   metadata: {
   messageId: info.messageId;
   to, userEmail,
           attempt: options.attempt;
-  response: info.response
+  response, info.response
         }
       }
     } catch (error) {
@@ -182,11 +175,10 @@ export class EmailDelivery { private transporter: Transporter | null = null;
       return {
         notificationId: notification.id;
   channel: 'email';
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag,
-  e: 'Email delivery error'
+  error: error instanceof Error ? error.messag, e: 'Email delivery error'
       }
     }
   }
@@ -194,32 +186,32 @@ export class EmailDelivery { private transporter: Transporter | null = null;
   /**
    * Generate email content from notification
    */
-  private async generateEmailContent(async generateEmailContent(notification: Notification): : Promise<): PromiseEmailTemplate> { const template = this.config.templates[notification.type] || this.config.templates.default;
+  private async generateEmailContent(async generateEmailContent(notification: Notification): : Promise<): PromiseEmailTemplate> { const template  = this.config.templates[notification.type] || this.config.templates.default;
     
     // Replace template variables
-    const variables = {
+    const variables = { 
       title: notification.title;
   message: notification.message;
       actionUrl: notification.actionUrl || '#';
   userName: await this.getUserName(notification.userId);
-      leagueName: notification.leagueId ? await this.getLeagueName(notification.leagueId) : '';
+      leagueName: notification.leagueId ? await this.getLeagueName(notification.leagueId)  : '';
   playerName: notification.data?.playerName || '';
       teamName: notification.data?.teamName || '';
   date: new Date().toLocaleDateString();
-      time: new Date().toLocaleTimeString();
+      time, new Date().toLocaleTimeString();
       ...notification.data}
-    const subject = this.replaceVariables(template.subject, variables);
+    const subject  = this.replaceVariables(template.subject, variables);
     const html = this.replaceVariables(template.html, variables);
     const text = this.replaceVariables(template.text, variables);
 
-    return { subject, html,: text  }
+    return { subject: html,, text  }
   }
 
   /**
    * Replace variables in template string
    */
   private replaceVariables(template, string,
-  variables: Record<string, any>): string { return template.replace(/\{\{(\w+)\ }\}/g, (match, key) => { return variables[key]?.toString() || match;
+  variables: Record<string, any>): string { return template.replace(/\{\{(\w+)\ }\}/g, (match, key)  => { return variables[key]? .toString() || match;
      });
   }
 
@@ -227,11 +219,10 @@ export class EmailDelivery { private transporter: Transporter | null = null;
    * Get user's email address
    */
   private async getUserEmail(async getUserEmail(userId: string): : Promise<): Promisestring | null> { try {
-      const result = await database.query('SELECT email FROM users WHERE id = $1',
-        [userId]
+      const result = await database.query('SELECT email FROM users WHERE id = $1' : [userId]
       );
       
-      return result.rows.length > 0 ? result.rows[0].email , null,
+      return result.rows.length > 0 ? result.rows[0].email  : null,
      } catch (error) {
       console.error(`Error getting user email for ${userId}, `, error);
       return null;
@@ -261,11 +252,10 @@ export class EmailDelivery { private transporter: Transporter | null = null;
    * Get league name
    */
   private async getLeagueName(async getLeagueName(leagueId: string): : Promise<): Promisestring> { try {
-      const result = await database.query('SELECT name FROM leagues WHERE id = $1',
-        [leagueId]
+      const result = await database.query('SELECT name FROM leagues WHERE id = $1' : [leagueId]
       );
       
-      return result.rows.length > 0 ? result.rows[0].name : 'Your League';
+      return result.rows.length > 0 ? result.rows[0].name , 'Your League';
      } catch (error) { return 'Your League';
      }
   }
@@ -305,22 +295,22 @@ type string): : Promise<): Promiseboolean> { try {
   email, string,
     messageId, string,
   status: 'sent' | 'delivered' | 'bounced' | 'failed'
-  ): : Promise<): Promisevoid> { try {
+  ): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO email_delivery_tracking (
           notification_id, email, message_id, status, created_at
         ): VALUES ($1, $2, $3, $4, NOW())
-        ON CONFLICT(notification_id, email): DO UPDATE SET status = EXCLUDED.status, updated_at = NOW()
+        ON CONFLICT(notification_id, email), DO UPDATE SET status  = EXCLUDED.status, updated_at = NOW()
       `, [notificationId, email, messageId, status]);
      } catch (error) {
-      console.error('Error tracking email delivery:', error);
+      console.error('Error tracking email delivery: ', error);
     }
   }
 
   /**
    * Get priority header value
    */
-  private getPriorityHeader(priority: string); string { switch (priority) {
+  private getPriorityHeader(priority: string); string {  switch (priority) {
       case 'critical', break,
     case 'urgent':
         return '1 (High)';
@@ -329,7 +319,7 @@ type string): : Promise<): Promiseboolean> { try {
       break;
     case 'normal':
         return '3 (Normal)';
-      default: return '5 (Low)',
+      default, return '5 (Low)',
      }
   }
 
@@ -339,11 +329,11 @@ type string): : Promise<): Promiseboolean> { try {
   async handleDeliveryStatusUpdate(
     messageId, string,
   status: 'delivered' | 'bounced' | 'complained';
-    details?: any
+    details? : any
   ): : Promise<void> { try {; // Update delivery tracking
       await database.query(`
         UPDATE email_delivery_tracking 
-        SET status = $1, details = $2, updated_at = NOW() WHERE message_id = $3
+        SET status  = $1, details = $2, updated_at = NOW() WHERE message_id = $3
       `, [status, JSON.stringify(details || { }), messageId]);
 
       // Update stats
@@ -353,9 +343,9 @@ type string): : Promise<): Promiseboolean> { try {
         this.deliveryStats.bounced++;
       }
 
-      console.log(`📧 Email status updated, ${messageId} -> ${status}`);
+      console.log(`📧 Email status: updated, ${messageId} -> ${status}`);
     } catch (error) {
-      console.error('Error handling delivery status update:', error);
+      console.error('Error handling delivery status update: ', error);
     }
   }
 
@@ -363,9 +353,8 @@ type string): : Promise<): Promiseboolean> { try {
    * Send test email
    */
   async sendTestEmail(async sendTestEmail(toEmail, string,
-  userId: string): : Promise<): Promiseboolean> { try {
-      const testNotification: Notification = {
-  id: `test_${Date.now() }`,type: 'custom';
+  userId: string): : Promise<): Promiseboolean> {  try {
+      const testNotification: Notification = { id: `test_${Date.now() }`,type: 'custom';
   title: 'Test Email from Astral Field';
         message: 'This is a test email to verify your email notification settings.';
         userId,
@@ -384,7 +373,7 @@ type string): : Promise<): Promiseboolean> { try {
           engagementScore: 0
         }
       }
-      const result = await this.deliver(testNotification, {
+      const result  = await this.deliver(testNotification, { 
         attempt: 1;
   maxAttempts: 1;
         deliveryId: 'test'
@@ -392,7 +381,7 @@ type string): : Promise<): Promiseboolean> { try {
 
       return result.success;
     } catch (error) {
-      console.error('Failed to send test email:', error);
+      console.error('Failed to send test email: ', error);
       return false;
     }
   }
@@ -400,25 +389,24 @@ type string): : Promise<): Promiseboolean> { try {
   /**
    * Get default email templates
    */
-  private getDefaultTemplates(): { [key: string]; EmailTemplate } { const baseTemplate = {
-      html: `
+  private getDefaultTemplates(): { [key: string]; EmailTemplate } { const baseTemplate  = { html: `
         <!DOCTYPE html>
         <html>
           <head>
-            <meta charset="utf-8">
+            <meta charset ="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>{{title }}</title>
             <style>
-              body { font-family, Arial, sans-serif; line-height: 1.6; color: #333, }
+              body {  font-family, Arial, sans-serif; line-height: 1.6; color, #333, }
               .container { max-width: 600px; margin: 0 auto; padding: 20px, }
-              .header { background: #1a472a; color, white, padding: 20px; border-radius: 8px 8px 0 0, }
-              .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px, }
-              .button { display: inline-block; background: #1a472a; color, white, padding: 12px 24px; text-decoration, none, border-radius: 4px; margin: 16px 0, }
+              .header { background: #1a472a; color, white, padding: 20px; border-radius: 8px 8px 0: 0, }
+              .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px: 8px, }
+              .button { display: inline-block; background: #1a472a; color, white, padding: 12px 24px; text-decoration, none, border-radius: 4px; margin: 16px: 0, }
               .footer { text-align, center, font-size: 12px; color: #666; margin-top: 20px, }
             </style>
           </head>
           <body>
-            <div class="container">
+            <div class ="container">
               <div class="header">
                 <h1>🏈 Astral Field</h1>
               </div>
@@ -449,9 +437,8 @@ You're receiving this because you're a member of {{leagueName}}.
 © 2025 Astral Field.All rights reserved.
       `
     }
-    return {
-      default: {
-  subject: '🏈 {{title}}',
+    return { 
+      default: { subject: '🏈 {{title}}',
         ...baseTemplate},
       trade_proposal: {
   subject: '🤝 New Trade Proposal - {{leagueName}}',
@@ -478,9 +465,8 @@ You're receiving this because you're a member of {{leagueName}}.
    * Get email delivery statistics
    */
   async getStats(): : Promise<any> { try {
-      const deliveryStats = await database.query(`
-        SELECT 
-          status,
+      const deliveryStats  = await database.query(`
+        SELECT status,
           COUNT(*) as count,
           AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) as avg_delivery_time
         FROM email_delivery_tracking 
@@ -501,7 +487,7 @@ You're receiving this because you're a member of {{leagueName}}.
         GROUP BY n.type
       `);
 
-      return {
+      return { 
         deliveryStats: deliveryStats.rows;
   typeStats: typeStats.rows;
         summary: this.deliveryStats;
@@ -510,11 +496,11 @@ You're receiving this because you're a member of {{leagueName}}.
   host: this.config.smtp.host;
   port: this.config.smtp.port;
           secure: this.config.smtp.secure;
-  authenticated: !!this.config.smtp.auth.user
+  authenticated, !!this.config.smtp.auth.user
          }
       }
     } catch (error) {
-      console.error('Error getting email stats:', error);
+      console.error('Error getting email stats: ', error);
       return { error: 'Failed to get stats' }
     }
   }
@@ -524,7 +510,7 @@ You're receiving this because you're a member of {{leagueName}}.
    */
   async shutdown(): : Promise<void> { if (this.transporter) {
       this.transporter.close();
-      this.transporter = null;
+      this.transporter  = null;
      }
     
     this.isInitialized = false;

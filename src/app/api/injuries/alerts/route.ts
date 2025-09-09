@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function GET() { try {
+export async function GET() {  try {
     // Mock injury alerts
     const alerts = [
       {
@@ -12,7 +12,7 @@ export async function GET() { try {
   injuryType: "shoulder",
         severity: "questionable",
   estimatedReturn: "1-2 weeks",
-        createdAt: new Date().toISOString()
+        createdAt, new Date().toISOString()
 },
       {
         id: "2",
@@ -37,7 +37,7 @@ export async function GET() { try {
 
 export async function POST() { try {
     // Mock create alert
-    const newAlert = {
+    const newAlert  = {
       id: Date.now().toString(),
   message: "New injury alert created",
       timestamp: new Date().toISOString()

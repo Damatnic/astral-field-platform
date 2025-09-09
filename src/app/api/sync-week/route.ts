@@ -1,30 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) { 
   try {
     const body = await request.json();
-    const action = body?.action;
+    const action = body? .action;
     const week = body?.week;
 
     if (!action) {
-      return NextResponse.json({ error: "Action required"  }, { status: 400 });
+      return NextResponse.json({ error: "Action required"   }, { status: 400);
     }
 
     switch (action) {
       case "sync-projections": {
-        const result = {
+        const result  = { 
           success: true,
   message: "Weekly projections synced successfully",
-          week: week || 14, projectionsProcessed, 450,
+          week: week || 14, projectionsProcessed: 450,
           timestamp: new Date().toISOString()
 }
         return NextResponse.json(result);
       }
 
-      case "sync-stats": { const result = {
+      case "sync-stats": { const result  = { 
           success: true,
   message: "Weekly stats synced successfully",
-          week: week || 14, statsProcessed, 380,
+          week: week || 14, statsProcessed: 380,
           timestamp: new Date().toISOString()
 }
         return NextResponse.json(result);
@@ -44,11 +44,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() { try {
-    const status = {
+    const status  = {
       currentWeek: 14,
   lastProjectionsSync: new Date().toISOString(),
       lastStatsSync: new Date().toISOString(),
-  projectionsAvailable, true,
+  projectionsAvailable: true,
       statsAvailable: true
 }
     return NextResponse.json(status);

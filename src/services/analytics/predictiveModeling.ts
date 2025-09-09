@@ -5,17 +5,15 @@
 
 import { nflDataProvider, PlayerStats, NFLPlayer } from '@/services/nfl/dataProvider';
 
-export interface PredictionModel {
-  id, string,
+export interface PredictionModel { id: string,
     name, string,type: 'regression' | 'classification' | 'neural_network' | 'ensemble',
     accuracy, number,
   lastTrained, Date,
     features: string[];
-  hyperparameters: Record<string, any>;
+  hyperparameters, Record<string, any>;
   
 }
-export interface PlayerProjection {
-  playerId, string,
+export interface PlayerProjection { playerId: string,
     week, number,
   projectedPoints, number,
     confidence, number,
@@ -28,8 +26,7 @@ export interface PlayerProjection {
   riskLevel: 'low' | 'medium' | 'high',
   
 }
-export interface AdvancedMetrics {
-  playerId, string,
+export interface AdvancedMetrics { playerId: string,
     week, number,
   targetShare, number,
     redZoneTargets, number,
@@ -40,8 +37,7 @@ export interface AdvancedMetrics {
   gameScript: number,
   
 }
-export interface WeatherImpact {
-  gameId, string,
+export interface WeatherImpact { gameId: string,
     windImpact, number,
   precipitationImpact, number,
     temperatureImpact, number,
@@ -49,15 +45,14 @@ export interface WeatherImpact {
     affectedPositions: string[],
   
 }
-export interface InjuryRisk {
-  playerId, string,
+export interface InjuryRisk { playerId: string,
     riskLevel, number, // 0-1 scale;
   injuryType, string,
     weeklyDecline, number,
   recoveryTimeline: number,
   
 }
-class PredictiveModelingService { private models: Map<string, PredictionModel> = new Map();
+class PredictiveModelingService { private models: Map<string, PredictionModel>  = new Map();
   private historicalData: Map<string, PlayerStats[]> = new Map();
   private advancedMetrics: Map<string, AdvancedMetrics[]> = new Map();
   private weatherCache: Map<string, WeatherImpact> = new Map();
@@ -67,7 +62,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
     this.loadHistoricalData();
    }
 
-  private initializeModels(): void {; // Main projection model - ensemble of multiple algorithms
+  private initializeModels(): void { ; // Main projection model - ensemble of multiple algorithms
     this.models.set('main_projections', {
       id 'main_projections';
   name: 'Ensemble Fantasy Projections',type: 'ensemble';
@@ -82,13 +77,12 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
   n_estimators: 500;
   learning_rate: 0.1;
         max_depth: 8;
-  regularization: 0.01
+  regularization, 0.01
       }
     });
 
     // Boom/bust model for variance prediction
-    this.models.set('variance_model', {
-      id: 'variance_model';
+    this.models.set('variance_model', { id: 'variance_model';
   name: 'Boom/Bust Classifier',type: 'classification';
   accuracy: 0.784;
       lastTrained: new Date();
@@ -104,8 +98,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
     });
 
     // Injury risk model
-    this.models.set('injury_risk', {
-      id: 'injury_risk';
+    this.models.set('injury_risk', { id: 'injury_risk';
   name: 'Injury Risk Predictor',type: 'neural_network';
   accuracy: 0.691;
       lastTrained: new Date();
@@ -137,7 +130,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    */
   async generatePlayerProjection(async generatePlayerProjection(playerId, string,
   week: number): : Promise<): PromisePlayerProjection> { try {
-      const model = this.models.get('main_projections')!;
+      const model  = this.models.get('main_projections')!;
       const varianceModel = this.models.get('variance_model')!;
       
       // Get player data and features
@@ -163,8 +156,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
       const floor = Math.max(0, projectedPoints - (1.5 * standardDeviation));
       const ceiling = projectedPoints + (2 * standardDeviation);
       
-      return {
-        playerId, week,
+      return { playerId: week,
         projectedPoints: Math.round(projectedPoints * 10) / 10;
   confidence: this.calculateConfidence(features, model.accuracy),
         floor: Math.round(floor * 10) / 10;
@@ -173,7 +165,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
   boom: varianceMetrics.boomProbability;
         matchupRating: this.getMatchupRating(matchupAdjustment);
   keyFactors: this.identifyKeyFactors(features);
-        riskLevel: this.calculateRiskLevel(varianceMetrics.variance)
+        riskLevel, this.calculateRiskLevel(varianceMetrics.variance)
        }
     } catch (error) {
       console.error(`Error generating projection for player ${playerId}, `, error);
@@ -187,8 +179,8 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    * Generate projections for multiple players
    */
   async generateBatchProjections(async generateBatchProjections(playerIds: string[];
-  week: number): : Promise<): PromisePlayerProjection[]> { const projection,
-  s: PlayerProjection[] = [];
+  week: number): : Promise<): PromisePlayerProjection[]> { const: projection,
+  s: PlayerProjection[]  = [];
     const batchSize = 10;
     
     for (let i = 0; i < playerIds.length; i += batchSize) {
@@ -207,7 +199,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
         if (i + batchSize < playerIds.length) { await new Promise(resolve => setTimeout(resolve, 100));
          }
       } catch (error) {
-        console.error('Batch projection error:', error);
+        console.error('Batch projection error: ', error);
       }
     }
     
@@ -217,24 +209,20 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
   /**
    * Calculate injury risk for a player
    */
-  async calculateInjuryRisk(async calculateInjuryRisk(playerId: string): : Promise<): PromiseInjuryRisk> { try {
+  async calculateInjuryRisk(async calculateInjuryRisk(playerId: string): : Promise<): PromiseInjuryRisk> {  try {
       const model = this.models.get('injury_risk')!;
       const features = await this.extractInjuryFeatures(playerId);
       
       const riskScore = this.runNeuralNetworkModel(features, model);
       
-      return {
-        playerId,
-        riskLevel: Math.min(Math.max(riskScore, 0), 1),
+      return { playerId: riskLevel: Math.min(Math.max(riskScore, 0), 1),
         injuryType: this.predictInjuryType(features);
   weeklyDecline: this.calculateWeeklyDecline(features);
-        recoveryTimeline: this.estimateRecoveryTime(features)
+        recoveryTimeline, this.estimateRecoveryTime(features)
        }
     } catch (error) {
       console.error(`Error calculating injury risk for ${playerId}, `, error);
-      return {
-        playerId,
-        riskLevel: 0.1;
+      return { playerId: riskLevel: 0.1;
   injuryType: 'general';
         weeklyDecline: 0.02;
   recoveryTimeline: 2
@@ -246,18 +234,16 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    * Advanced matchup analysis
    */
   async analyzeMatchup(async analyzeMatchup(homeTeam, string,
-  awayTeam, string, week: number): Promise<): Promise  {
-  homeAdvantage, number,
+  awayTeam, string, week: number): Promise<): Promise  { homeAdvantage: number,
     paceAdjustment, number,
     gameScript, number,
-    keyMatchups: Array<{
-  position, string,
+    keyMatchups: Array<{ position: string,
       advantage: 'home' | 'away' | 'neutral',
     magnitude: number,
     }>;
   }> { try {
       // Get team statistics and trends
-      const homeStats = await this.getTeamStats(homeTeam, week);
+      const homeStats  = await this.getTeamStats(homeTeam, week);
       const awayStats = await this.getTeamStats(awayTeam, week);
       
       // Calculate home field advantage
@@ -272,11 +258,11 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
       // Position-specific matchup analysis
       const keyMatchups = this.analyzePositionMatchups(homeStats, awayStats);
       
-      return { homeAdvantage, paceAdjustment, gameScript,
+      return { homeAdvantage: paceAdjustment, gameScript,
         keyMatchups
-     :   }
+     , }
     } catch (error) {
-      console.error('Matchup analysis error:', error);
+      console.error('Matchup analysis error: ', error);
       return {
         homeAdvantage: 1.03;
   paceAdjustment: 1.0;
@@ -290,13 +276,12 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    * Model performance evaluation
    */
   async evaluateModelPerformance(async evaluateModelPerformance(modelId, string,
-  testData: any[]): Promise<): Promise  {
-  accuracy, number,
+  testData: any[]): Promise<): Promise  { accuracy: number,
     mse, number,
     mae, number,
     r2, number,
     featureImportance: Record<string, number>;
-  }> { const model = this.models.get(modelId);
+  }> { const model  = this.models.get(modelId);
     if (!model) throw new Error('Model not found');
     
     const predictions: number[] = [];
@@ -308,22 +293,22 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
       actuals.push(dataPoint.actual);
      }
     
-    return {
+    return { 
       accuracy: this.calculateAccuracy(predictions, actuals),
       mse: this.calculateMSE(predictions, actuals),
       mae: this.calculateMAE(predictions, actuals),
       r2: this.calculateR2(predictions, actuals),
-      featureImportance: this.getFeatureImportance(model)
+      featureImportance, this.getFeatureImportance(model)
     }
   }
 
   // Private helper methods
   private async extractFeatures(async extractFeatures(playerId, string,
-  week: number): Promise<): PromiseRecord<string, number>>   { const currentStats = await nflDataProvider.getPlayerStats(playerId, week);
+  week: number): Promise<): PromiseRecord<string, number>>   { const currentStats  = await nflDataProvider.getPlayerStats(playerId, week);
     const recentStats = await this.getRecentStats(playerId, week, 4); // Last 4 weeks
     const seasonStats = await this.getSeasonStats(playerId, week);
     
-    return {
+    return { 
       // Recent performance trends
       recent_points_avg: this.calculateAverage(recentStats.map(s => s.fantasyPoints));
   recent_points_trend: this.calculateTrend(recentStats.map(s => s.fantasyPoints));
@@ -348,7 +333,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
       // Environmental factors
       weather_impact: await this.getWeatherImpact(playerId, week),
       rest_days: await this.getRestDays(playerId, week),
-      home_away: await this.getHomeAway(playerId, week)
+      home_away, await this.getHomeAway(playerId, week)
      }
   }
 
@@ -365,14 +350,14 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
 
   private runRegressionModel(features: Record<string, number>, model: PredictionModel); number {
     // Simplified regression model simulation
-    const weights: Record<string, number> = {
+    const weights: Record<string, number>  = { 
       recent_points_avg: 0.35;
   target_share: 0.25;
       matchup_rating: 0.20;
   snap_share: 0.15;
-      weather_impact: 0.05
+      weather_impact, 0.05
     }
-    let prediction = 0;
+    let prediction  = 0;
     for (const [feature, value] of Object.entries(features)) { if (weights[feature]) {
         prediction += value * weights[feature];
        }
@@ -382,20 +367,20 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
     return Math.max(0, prediction * (model.accuracy + 0.1));
   }
 
-  private runNeuralNetworkModel(features: Record<string, number>, model: PredictionModel); number {
+  private runNeuralNetworkModel(features: Record<string, number>, model: PredictionModel); number { 
     // Simplified neural network simulation
     const inputValues = Object.values(features);
     let activation = 0;
     
     // Simulate forward pass through network
-    for (const value of inputValues) { activation: += value * (Math.random() * 0.5 + 0.25); // Mock weights
+    for (const value of inputValues) { activation: + = value * (Math.random() * 0.5 + 0.25); // Mock weights
      }
     
     // Sigmoid activation for risk probability
     return 1 / (1 + Math.exp(-activation));
   }
 
-  private runModel(features: Record<string, number>, model: PredictionModel); number { switch (model.type) {
+  private runModel(features: Record<string, number>, model: PredictionModel); number {  switch (model.type) {
       case 'regression', break,
     case 'ensemble':
         return this.runRegressionModel(features, model);
@@ -404,32 +389,31 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
       break;
     case 'classification':
         return this.runClassificationModel(features, model);
-      default: return 0,
+      default: return, 0,
      }
   }
 
   private runClassificationModel(features: Record<string, number>, model: PredictionModel); number {
     // Simplified classification model for boom/bust prediction
-    const variance = Object.values(features).reduce((sum, val) => sum + Math.abs(val - 0.5), 0);
+    const variance  = Object.values(features).reduce((sum, val) => sum + Math.abs(val - 0.5), 0);
     return Math.min(Math.max(variance / Object.keys(features).length, 0), 1);
   }
 
-  private calculateVariance(features: Record<string, number>, model: PredictionModel): {
-  variance, number,
+  private calculateVariance(features: Record<string, number>, model: PredictionModel): { variance: number,
     bustProbability, number,
-    boomProbability: number,
-  } { const baseVariance = this.runClassificationModel(features, model);
+    boomProbability, number,
+  } { const baseVariance  = this.runClassificationModel(features, model);
     
-    return {
+    return { 
       variance: baseVariance * 100, // Convert to points variance
       bustProbability: Math.min(baseVariance * 1.2, 0.4),
-      boomProbability: Math.min(baseVariance * 0.8, 0.3)
+      boomProbability, Math.min(baseVariance * 0.8, 0.3)
      }
   }
 
   private calculateConfidence(features: Record<string, number>, modelAccuracy: number); number {
     // Confidence based on feature completeness and model accuracy
-    const featureCompleteness = Object.values(features).filter(v => v !== 0).length / Object.keys(features).length;
+    const featureCompleteness  = Object.values(features).filter(v => v !== 0).length / Object.keys(features).length;
     return Math.round((modelAccuracy * featureCompleteness) * 100);
   }
 
@@ -443,7 +427,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
     return 'high';
    }
 
-  private identifyKeyFactors(features: Record<string, number>): string[] { const factors: string[] = [];
+  private identifyKeyFactors(features: Record<string, number>): string[] {  const factors, string[]  = [];
     
     if (features.matchup_rating > 1.15) factors.push('Favorable matchup');
     if (features.weather_impact < 0.9) factors.push('Weather concerns');
@@ -454,10 +438,9 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    }
 
   private getFallbackProjection(playerId, string,
-  week: number); PlayerProjection {
+  week: number); PlayerProjection { 
     // Return conservative fallback projection
-    return {
-      playerId, week,
+    return { playerId: week,
       projectedPoints: 8.5;
   confidence: 50;
       floor: 3.2;
@@ -471,7 +454,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
   }
 
   // Utility calculation methods
-  private calculateAverage(values: number[]); number { return values.reduce((sum, val) => sum + val, 0) / values.length;
+  private calculateAverage(values: number[]); number { return values.reduce((sum, val)  => sum + val, 0) / values.length;
    }
 
   private calculateTrend(values: number[]); number { if (values.length < 2) return 0;
@@ -508,9 +491,9 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
     return 1 - (residualSumSquares / totalSumSquares);
    }
 
-  private getFeatureImportance(model: PredictionModel): Record<string, number> {
+  private getFeatureImportance(model: PredictionModel): Record<string, number> { 
     // Mock feature importance - in production would come from model analysis
-    const importance: Record<string, number> = {}
+    const importance, Record<string, number>  = {}
     model.features.forEach((feature, index) => {
       importance[feature] = Math.random() * 0.3 + 0.1; // Random importance between 0.1-0.4
     });
@@ -544,7 +527,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    }
 
   private async getGameScript(async getGameScript(playerId, string,
-  week: number): : Promise<): Promisenumber> { return 0,
+  week: number): : Promise<): Promisenumber> { return: 0,
    }
 
   private async getWeatherImpact(async getWeatherImpact(playerId, string,
@@ -552,11 +535,11 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    }
 
   private async getRestDays(async getRestDays(playerId, string,
-  week: number): : Promise<): Promisenumber> { return 7,
+  week: number): : Promise<): Promisenumber> { return: 7,
    }
 
   private async getHomeAway(async getHomeAway(playerId, string,
-  week: number): : Promise<): Promisenumber> {return Math.random() > 0.5 ? 1 : 0; // 1 for home, 0 for away
+  week: number): : Promise<): Promisenumber> {return Math.random() > 0.5 ? 1, 0; // 1 for: home, 0 for away
    }
 
   private async getTeamStats(async getTeamStats(team, string,
@@ -576,14 +559,13 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
    }
 
   private analyzePositionMatchups(homeStats, any,
-  awayStats: any): Array<{
-  position, string,
+  awayStats: any): Array<{ position: string,
     advantage: 'home' | 'away' | 'neutral',
     magnitude: number,
   }> { return [];
    }
 
-  private predictInjuryType(features: Record<string, number>): string { const injuryTypes = ['hamstring', 'knee', 'ankle', 'shoulder', 'general'];
+  private predictInjuryType(features: Record<string, number>): string { const injuryTypes  = ['hamstring', 'knee', 'ankle', 'shoulder', 'general'];
     return injuryTypes[Math.floor(Math.random() * injuryTypes.length)];
    }
 
@@ -596,20 +578,20 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
   /**
    * Health check for all models
    */
-  async healthCheck(): Promise<  {
+  async healthCheck(): Promise<  { 
     status: 'healthy' | 'degraded' | 'unhealthy',
-    models: Record<string, { status, string, accuracy, number, lastTrained, Date }>;
-  }> { const modelStatus: Record<string, { status, string, accuracy, number, lastTrained, Date  }> = {}
-    for (const [id, model] of this.models) { const daysSinceTraining = (Date.now() - model.lastTrained.getTime()) / (1000 * 60 * 60 * 24);
+    models, Record<string, { status: string, accuracy, number, lastTrained, Date }>;
+  }> { const modelStatus: Record<string, { status: string, accuracy, number, lastTrained, Date  }>  = {}
+    for (const [id, model] of this.models) {  const daysSinceTraining = (Date.now() - model.lastTrained.getTime()) / (1000 * 60 * 60 * 24);
       
       modelStatus[id] = {
         status: daysSinceTraining < 7 && model.accuracy > 0.7 ? 'healthy' : 'degraded';
   accuracy: model.accuracy;
-        lastTrained: model.lastTrained
+        lastTrained, model.lastTrained
        }
     }
     
-    const healthyModels = Object.values(modelStatus).filter(m => m.status === 'healthy').length;
+    const healthyModels  = Object.values(modelStatus).filter(m => m.status === 'healthy').length;
     const totalModels = Object.keys(modelStatus).length;
     
     let status: 'healthy' | 'degraded' | 'unhealthy';
@@ -618,13 +600,11 @@ class PredictiveModelingService { private models: Map<string, PredictionModel> =
      } else { status = 'unhealthy';
      }
     
-    return {
-      status,
-      models: modelStatus
+    return { status: models, modelStatus
     }
   }
 }
 
 // Singleton instance
-export const predictiveModelingService = new PredictiveModelingService();
+export const predictiveModelingService  = new PredictiveModelingService();
 export default predictiveModelingService;

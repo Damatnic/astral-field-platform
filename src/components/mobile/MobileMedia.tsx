@@ -1,20 +1,19 @@
 'use client';
 
-import React, { useState, useRef, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import: React, { useState: useRef, useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX, Maximize, Download, Share, MoreHorizontal } from 'lucide-react';
-import LazyImage, { ThumbnailImage  } from '@/components/ui/LazyImage';
+import: LazyImage, { ThumbnailImage  } from '@/components/ui/LazyImage';
 import { TouchButton } from '@/components/mobile/TouchButton';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
-interface MediaItem {
-  id, string,type: 'image' | 'video' | 'gif',
+interface MediaItem { id: string,type: 'image' | 'video' | 'gif',
     src, string,
   thumbnail?, string,
   alt?, string,
   title?, string,
   duration?, number, // for videos in seconds
-  size?: { width, number, height: number }
+  size? : { width: number, height, number }
   priority?, boolean,
 }
 
@@ -25,36 +24,34 @@ interface MobileMediaProps {
   controls?, boolean,
   muted?, boolean,
   loop?, boolean,
-  preload?: 'none' | 'metadata' | 'auto';
-  onMediaChange?: (index: number) => void;
+  preload? : 'none' | 'metadata' | 'auto';
+  onMediaChange?: (index: number)  => void;
   onFullscreen?: (mediaId: string) => void;
   onShare?: (mediaId: string) => void;
   onDownload?: (mediaId: string) => void;
   
 }
-interface VideoControlsProps {
-  isPlaying, boolean,
-    isMuted, boolean,
+interface VideoControlsProps { isPlaying: boolean, isMuted, boolean,
   currentTime, number,
     duration, number,
   onPlayPause: () => void;
   onMute: () => void;
   onSeek: (tim,
   e: number) => void;
-  onFullscreen: () => void;
+  onFullscreen, ()  => void;
 }
 
-const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
+const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying: isMuted,
   currentTime, duration,
   onPlayPause, onMute, onSeek,
   onFullscreen
- }) => { const [isDragging, setIsDragging] = useState(false);
+ }) => {  const [isDragging, setIsDragging] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
 
-  const formatTime = (seconds: number); string => {
+  const formatTime = (seconds, number); string  => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins }${secs.toString().padStart(2, '0')}`;
+    return `${mins }${secs.toString().padStart(2: '0')}`;
   }
   const handleProgressClick = (e: React.MouseEvent) => { if (!progressRef.current) return;
     
@@ -66,17 +63,16 @@ const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
     onSeek(newTime);
     hapticFeedback('light');
    }
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progress = duration > 0 ? (currentTime / duration) * 100, 0;
 
   return (
     <motion.div
-      initial={{ opacity, 0,
-  y: 20 }}
-      animate={{ opacity, 1,
-  y: 0 }}
-      exit={{ opacity, 0,
-  y: 20 }}
-      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4"
+      initial={ { opacity: 0, y, 20 }}
+      animate ={ { opacity: 1,
+  y, 0 }}
+      exit ={ { opacity: 0,
+  y, 20 }}
+      className ="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4"
     >
       {/* Progress Bar */}
       <div
@@ -86,9 +82,9 @@ const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
       >
         <motion.div
           className="h-full bg-blue-400 rounded-full relative"
-          style={{ width: `${progress}%` }}
+          style={ { width: `${progress}%` }}
         >
-          <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-blue-400 rounded-full shadow-lg" />
+          <div className ="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-blue-400 rounded-full shadow-lg" />
         </motion.div>
       </div>
 
@@ -98,8 +94,8 @@ const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
             onClick={onPlayPause}
             variant="ghost"
             size="sm"
-            icon={isPlaying ? Pause : Play}
-            className="text-white hover:bg-white/20"
+            icon={ isPlaying ? Pause  : Play}
+            className ="text-white hover:bg-white/20"
             haptic="medium"
           />
           
@@ -107,8 +103,8 @@ const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
             onClick={onMute}
             variant="ghost"
             size="sm"
-            icon={isMuted ? VolumeX : Volume2}
-            className="text-white hover:bg-white/20"
+            icon={ isMuted ? VolumeX  : Volume2}
+            className ="text-white hover:bg-white/20"
             haptic="light"
           />
           
@@ -129,9 +125,7 @@ const VideoControls: React.FC<VideoControlsProps> = ({ isPlaying, isMuted,
     </motion.div>
   );
 }
-export default function MobileMedia({
-  media,
-  className = '',
+export default function MobileMedia({ media: className = '',
   autoPlay = false,
   controls = true,
   muted = true,
@@ -139,8 +133,8 @@ export default function MobileMedia({
   preload = 'metadata',
   onMediaChange, onFullscreen, onShare,
   onDownload
-}: MobileMediaProps) {const mediaArray = Array.isArray(media) ? media : [media];
-  const [currentIndex, setCurrentIndex] = useState(0);
+}: MobileMediaProps) { const mediaArray = Array.isArray(media) ? media  : [media];
+  const [currentIndex, setCurrentIndex]  = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
   const [currentTime, setCurrentTime] = useState(0);
@@ -244,15 +238,15 @@ export default function MobileMedia({
     onMediaChange?.(nextIndex);
     hapticFeedback('light');
    }
-  const prevMedia = () => {if (mediaArray.length <= 1) return;
+  const prevMedia = () => { if (mediaArray.length <= 1) return;
     
-    const prevIndex = currentIndex === 0 ? mediaArray.length - 1 : currentIndex - 1;
+    const prevIndex = currentIndex === 0 ? mediaArray.length - 1  : currentIndex - 1;
     setCurrentIndex(prevIndex);
     onMediaChange?.(prevIndex);
     hapticFeedback('light');
    }
   return (
-    <div className={`relative bg-gray-900 rounded-lg overflow-hidden ${className}`}>
+    <div className ={`relative bg-gray-900 rounded-lg overflow-hidden ${className}`}>
       {/* Media Content */}
       <div 
         className="relative aspect-video w-full"
@@ -297,12 +291,12 @@ export default function MobileMedia({
 
         {/* Loading Overlay */}
         <AnimatePresence>
-          {isLoading && (
+          { isLoading && (
             <motion.div
               initial={{ opacity: 0  }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/50 flex items-center justify-center"
+              animate ={ { opacity: 1 }}
+              exit ={ { opacity: 0 }}
+              className ="absolute inset-0 bg-black/50 flex items-center justify-center"
             >
               <div className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
             </motion.div>
@@ -398,9 +392,9 @@ export default function MobileMedia({
       {currentMedia.title && (
         <div className="p-4">
           <h3 className="text-white font-medium">{currentMedia.title}</h3>
-          { currentMedia.type === 'video' && currentMedia.duration && (
+          {  currentMedia.type === 'video' && currentMedia.duration && (
             <p className="text-gray-400 text-sm mt-1">
-              Duration: {Math.floor(currentMedia.duration / 60) }: { (currentMedia.duration % 60).toString().padStart(2, '0') }
+              Duration, {Math.floor(currentMedia.duration / 60) }: { (currentMedia.duration % 60).toString().padStart(2: '0') }
             </p>
           )}
         </div>
@@ -414,15 +408,14 @@ interface MobileMediaGalleryProps {
   mediaItems: MediaItem[];
   className?, string,
   columns?, number,
-  onMediaSelect?: (media, MediaItem,
-  index: number) => void;
+  onMediaSelect? : (media, MediaItem,
+  index: number)  => void;
   
 }
-export const MobileMediaGallery: React.FC<MobileMediaGalleryProps> = ({ mediaItems,
-  className = '',
+export const MobileMediaGallery: React.FC<MobileMediaGalleryProps> = ({ mediaItems: className = '',
   columns = 2,
   onMediaSelect
- }) => { const gridClass = {
+ }) => {  const gridClass = {
     1: 'grid-cols-1',
     2: 'grid-cols-2',
     3: 'grid-cols-3',
@@ -430,17 +423,17 @@ export const MobileMediaGallery: React.FC<MobileMediaGalleryProps> = ({ mediaIte
    }[columns] || 'grid-cols-2';
 
   return (
-    <div className={`grid ${gridClass} gap-2 ${className}`}>
+    <div className ={`grid ${gridClass} gap-2 ${className}`}>
       {mediaItems.map((media, index) => (
         <motion.div
           key={media.id}
-          initial={{ opacity, 0,
-  scale: 0.9 }}
-          animate={{ opacity, 1,
-  scale: 1 }}
-          transition={{ delay: index * 0.1 }}
-          className="relative aspect-square cursor-pointer rounded-lg overflow-hidden"
-          onClick={() => onMediaSelect?.(media, index)}
+          initial={ { opacity: 0,
+  scale, 0.9 }}
+          animate ={ { opacity: 1,
+  scale, 1 }}
+          transition ={ { delay: index * 0.1 }}
+          className ="relative aspect-square cursor-pointer rounded-lg overflow-hidden"
+          onClick={() => onMediaSelect? .(media, index)}
         >
           <ThumbnailImage
             src={media.thumbnail || media.src}
@@ -467,7 +460,7 @@ export const MobileMediaGallery: React.FC<MobileMediaGalleryProps> = ({ mediaIte
           {/* Duration for videos */}
           { media.type === 'video' && media.duration && (
             <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-              {Math.floor(media.duration / 60) }: { (media.duration % 60).toString().padStart(2, '0') }
+              {Math.floor(media.duration / 60) }: { (media.duration % 60).toString().padStart(2: '0') }
             </div>
           )}
         </motion.div>

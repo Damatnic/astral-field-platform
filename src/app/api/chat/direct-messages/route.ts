@@ -8,19 +8,19 @@ import { database } from '@/lib/database';
 import { webSocketManager } from '@/lib/websocket/server';
 import { verifyJWT } from '@/lib/auth/jwt-config';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
       return NextResponse.json({ error: 'Authentication required'  }, { status: 401 });
     }
 
-    const decoded = verifyJWT(token) as any;
+    const decoded  = verifyJWT(token) as any;
     const { searchParams } = new URL(request.url);
     const conversationId = searchParams.get('conversationId');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    if (conversationId) {
+    if (conversationId) { 
       // Get messages for specific conversation
       const result = await database.query(`
         SELECT dm.id, dm.sender_id as senderId, u1.username as senderUsername,
@@ -47,51 +47,50 @@ export async function GET(request: NextRequest) {
           ORDER BY dmr.created_at
         `, [message.id]);
 
-        const reactions: any = { }
+        const reactions: any = {};
         reactionsResult.rows.forEach(reaction => { if (!reactions[reaction.emoji]) {
             reactions[reaction.emoji] = [];
            }
-          reactions[reaction.emoji].push({
+          reactions[reaction.emoji].push({ 
             userId: reaction.userId,
-  username: reaction.username
+            username: reaction.username
           });
         });
 
-        message.reactions = reactions;
+        message.reactions  = reactions;
       }
 
-      return NextResponse.json({
+      return NextResponse.json({ 
         success: true, messages, timestamp: new Date().toISOString()
       });
     } else { return NextResponse.json({ error: 'Conversation ID required'  }, { status: 400 });
     }
   } catch (error) {
-    console.error('Direct messages GET API error:', error);
+    console.error('Direct messages GET API error: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Failed to fetch direct messages',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
+    const token  = request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) { 
       return NextResponse.json({ error: 'Authentication required'  }, { status: 401 });
     }
 
-    const decoded = verifyJWT(token) as any;
-    const { recipientId, content: messageType = 'text', gifUrl, fileUrl, fileName } = await request.json();
+    const decoded  = verifyJWT(token) as any;
+    const { recipientId: content, messageType  = 'text', gifUrl, fileUrl, fileName } = await request.json();
 
-    if (!recipientId || (!content && !gifUrl && !fileUrl)) { return NextResponse.json({ error: 'Recipient ID and content required'  }, { status: 400 });
+    if (!recipientId || (!content && !gifUrl && !fileUrl)) {  return NextResponse.json({ error: 'Recipient ID and content required'  }, { status: 400 });
     }
 
     // Verify both users are in the same league
-    const leagueCheck = await database.query(`
+    const leagueCheck  = await database.query(`
       SELECT COUNT(*) as count FROM (
         SELECT DISTINCT t.league_id
         FROM teams t
@@ -103,11 +102,11 @@ export async function POST(request: NextRequest) {
       ) leagues
     `, [decoded.userId, recipientId]);
 
-    if (leagueCheck.rows[0].count === 0) { return NextResponse.json({ error: 'Users must be in the same league'  }, { status: 403 });
+    if (leagueCheck.rows[0].count === 0) {  return NextResponse.json({ error: 'Users must be in the same league'  }, { status: 403 });
     }
 
     // Get usernames
-    const userResult = await database.query(`
+    const userResult  = await database.query(`
       SELECT id, username FROM users WHERE id IN ($1, $2)
     `, [decoded.userId, recipientId]);
 
@@ -120,7 +119,7 @@ export async function POST(request: NextRequest) {
     // Insert message
     const result = await database.query(`
       INSERT INTO direct_messages (sender_id, recipient_id, content, message_type, gif_url, file_url, file_name) VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id, sender_id as senderId, recipient_id as recipientId, content, message_type as messageType, gif_url as gifUrl, file_url as fileUrl,
+      RETURNING: id, sender_id as senderId, recipient_id as recipientId, content, message_type as messageType, gif_url as gifUrl, file_url as fileUrl,
                 file_name as fileName, is_read as isRead, created_at as createdAt
     `, [decoded.userId, recipientId, content, messageType, gifUrl, fileUrl, fileName]);
 
@@ -130,20 +129,19 @@ export async function POST(request: NextRequest) {
   recipientUsername: users[recipientId],
       reactions: {}
     }
-    // Note: WebSocket broadcasts are handled by the WebSocket server when clients send messages
+    // Note WebSocket broadcasts are handled by the WebSocket server when clients send messages
 ; // This API endpoint stores the message: while real-time delivery happens via WebSocket
 
     return NextResponse.json({
       success: true, data: message, timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Direct messages POST API error:', error);
+    console.error('Direct messages POST API error: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Failed to send direct message',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

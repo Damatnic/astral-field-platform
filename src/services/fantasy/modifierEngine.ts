@@ -1,18 +1,16 @@
 /**
  * Advanced Fantasy Football Modifier Engine
- * Handles weather, injury, matchup, and situational modifiers for fantasy scoring
+ * Handles: weather, injury, matchup, and situational modifiers for fantasy scoring
  */
 
-import { 
-  WeatherModifiers, InjuryModifiers, 
+import { WeatherModifiers, InjuryModifiers, 
   MatchupModifiers, AppliedModifier, Position,
   RiskFactor
 } from './types';
 import { WeatherData, NFLPlayer, PlayerStats } from '@/services/nfl/dataProvider';
 import { database } from '@/lib/database';
 
-export interface GameContext {
-  gameId, string,
+export interface GameContext { gameId: string,
     week, number,
   season, number,
     homeTeam, string,
@@ -24,19 +22,16 @@ export interface GameContext {
   gameTime?, Date,
   
 }
-export interface InjuryContext {
-  playerId, string,
-  injuryStatus?: 'healthy' | 'questionable' | 'doubtful' | 'out' | 'probable';
-  injuryType?, string,
+export interface InjuryContext { playerId: string,
+  injuryStatus? : 'healthy' | 'questionable' | 'doubtful' | 'out' | 'probable';
+  injuryType? : string,
   weeksSinceInjury?, number,
   isReturnFromInjury?, boolean,
-  backupPlayers?: string[];
+  backupPlayers?, string[];
   
 }
-export interface MatchupContext {
-  opponentTeam, string,
-    opponentRank: {
-  overall, number,
+export interface MatchupContext { opponentTeam: string,
+    opponentRank: { overall: number,
     vsPosition, number,
     pointsAllowed, number,
     yardsAllowed: number,
@@ -47,7 +42,7 @@ export interface MatchupContext {
   }
 }
 
-export class FantasyModifierEngine { private weatherCache = new Map<string, WeatherData>();
+export class FantasyModifierEngine { private weatherCache  = new Map<string, WeatherData>();
   private matchupCache = new Map<string, MatchupContext>();
   private injuryCache = new Map<string, InjuryContext>();
 
@@ -61,37 +56,34 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   position, Position,
     gameContext, GameContext,
   weatherModifiers: WeatherModifiers
-  ): : Promise<): Promise  {
-    adjustedPoints, number,
+  ): : Promise<): Promise  { adjustedPoints: number,
     appliedModifiers: AppliedModifier[];
-    weatherData: WeatherData | null  }> { if (!weatherModifiers.enabled) {
-      return {
-        adjustedPoints, basePoints,
+    weatherData, WeatherData | null  }> { if (!weatherModifiers.enabled) {
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
         weatherData: null
        }
     }
 
-    let adjustedPoints = basePoints;
+    let adjustedPoints  = basePoints;
     const appliedModifiers: AppliedModifier[] = [];
 
-    try {
+    try { 
       // Get weather data for the game
       const weatherData = await this.getWeatherData(gameContext.gameId);
       
-      if (!weatherData) { return {
-          adjustedPoints, basePoints,
+      if (!weatherData) { return { adjustedPoints: basePoints,
   appliedModifiers: [];
-          weatherData: null
+          weatherData, null
          }
       }
 
       // Apply temperature modifiers
-      const tempModifier = this.calculateTemperatureModifier(weatherData.temperature, weatherModifiers);
-      if (tempModifier !== 0) { const adjustment = basePoints * tempModifier;
+      const tempModifier  = this.calculateTemperatureModifier(weatherData.temperature, weatherModifiers);
+      if (tempModifier !== 0) {  const adjustment = basePoints * tempModifier;
         adjustedPoints += adjustment;
         
-        appliedModifiers.push({type: 'weather';
+        appliedModifiers.push({ type: 'weather';
   name: 'Temperature Impact';
           multiplier: 1 + tempModifier;
   pointsAdjustment, adjustment,
@@ -100,12 +92,12 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply wind modifiers (primarily affects passing and kicking)
-      if (this.positionAffectedByWind(position)) { const windModifier = this.calculateWindModifier(weatherData.windSpeed, weatherModifiers);
-        if (windModifier !== 0) {
+      if (this.positionAffectedByWind(position)) { const windModifier  = this.calculateWindModifier(weatherData.windSpeed, weatherModifiers);
+        if (windModifier !== 0) { 
           const adjustment = basePoints * windModifier;
           adjustedPoints += adjustment;
           
-          appliedModifiers.push({type: 'weather';
+          appliedModifiers.push({ type: 'weather';
   name: 'Wind Impact';
             multiplier: 1 + windModifier;
   pointsAdjustment, adjustment,
@@ -115,11 +107,11 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply precipitation modifiers
-      const precipModifier = this.calculatePrecipitationModifier(weatherData, weatherModifiers);
-      if (precipModifier !== 0) { const adjustment = basePoints * precipModifier;
+      const precipModifier  = this.calculatePrecipitationModifier(weatherData, weatherModifiers);
+      if (precipModifier !== 0) {  const adjustment = basePoints * precipModifier;
         adjustedPoints += adjustment;
         
-        appliedModifiers.push({type: 'weather';
+        appliedModifiers.push({ type: 'weather';
   name: 'Precipitation Impact';
           multiplier: 1 + precipModifier;
   pointsAdjustment, adjustment,
@@ -128,10 +120,10 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply dome bonus
-      if (gameContext.isDomeGame && weatherModifiers.domeBonus) { const adjustment = basePoints * weatherModifiers.domeBonus;
+      if (gameContext.isDomeGame && weatherModifiers.domeBonus) { const adjustment  = basePoints * weatherModifiers.domeBonus;
         adjustedPoints += adjustment;
         
-        appliedModifiers.push({type: 'weather';
+        appliedModifiers.push({ type: 'weather';
   name: 'Dome Advantage';
           multiplier: 1 + weatherModifiers.domeBonus;
   pointsAdjustment, adjustment,
@@ -139,13 +131,12 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
          });
       }
 
-      return { adjustedPoints, appliedModifiers,
+      return { adjustedPoints: appliedModifiers,
         weatherData
     :   }
     } catch (error) {
-      console.error('Error applying weather modifiers:', error);
-      return {
-        adjustedPoints, basePoints,
+      console.error('Error applying weather modifiers: ', error);
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
         weatherData: null
       }
@@ -156,7 +147,7 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
    * Calculate temperature modifier
    */
   private calculateTemperatureModifier(temperature, number,
-  modifiers: WeatherModifiers); number { if (temperature <= modifiers.temperatureThresholds.extreme_cold.threshold) {
+  modifiers: WeatherModifiers); number { if (temperature < = modifiers.temperatureThresholds.extreme_cold.threshold) {
       return modifiers.temperatureThresholds.extreme_cold.modifier;
      }
     if (temperature <= modifiers.temperatureThresholds.cold.threshold) { return modifiers.temperatureThresholds.cold.modifier;
@@ -217,44 +208,41 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   playerId, string,
     position, Position,
   injuryModifiers: InjuryModifiers
-  ): : Promise<): Promise  {
-    adjustedPoints, number,
+  ): : Promise<): Promise  { adjustedPoints: number,
     appliedModifiers: AppliedModifier[];
     injuryContext: InjuryContext | null,
-    riskFactors: RiskFactor[] }> { if (!injuryModifiers.enabled) {
-      return {
-        adjustedPoints, basePoints,
+    riskFactors, RiskFactor[] }> { if (!injuryModifiers.enabled) {
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
-        injuryContext, null,
+        injuryContext: null,
   riskFactors: []
        }
     }
 
-    let adjustedPoints = basePoints;
+    let adjustedPoints  = basePoints;
     const appliedModifiers: AppliedModifier[] = [];
     const riskFactors: RiskFactor[] = [];
 
-    try {
+    try { 
       // Get injury context for the player
       const injuryContext = await this.getInjuryContext(playerId);
       
-      if (!injuryContext) { return {
-          adjustedPoints, basePoints,
+      if (!injuryContext) { return { adjustedPoints: basePoints,
   appliedModifiers: [];
-          injuryContext, null,
-  riskFactors: []
+          injuryContext: null,
+  riskFactors, []
          }
       }
 
       // Apply injury status modifiers
-      let injuryModifier = 0;
+      let injuryModifier  = 0;
       let injuryDescription = '';
 
-      switch (injuryContext.injuryStatus) {
+      switch (injuryContext.injuryStatus) { 
       case 'out':
           injuryModifier = injuryModifiers.outModifier;
           injuryDescription = 'Player ruled out';
-          riskFactors.push({type: 'injury';
+          riskFactors.push({ type: 'injury';
   severity: 'high';
             impact: -100;
   description: 'Player ruled out for game'
@@ -262,9 +250,9 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
           break;
         
         case 'doubtful':
-          injuryModifier = injuryModifiers.doubtfulModifier;
+          injuryModifier  = injuryModifiers.doubtfulModifier;
           injuryDescription = 'Player doubtful to play';
-          riskFactors.push({type: 'injury';
+          riskFactors.push({ type: 'injury';
   severity: 'high';
             impact: -25;
   description: 'High chance player misses game or plays limited snaps'
@@ -272,9 +260,9 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
           break;
         
         case 'questionable':
-          injuryModifier = injuryModifiers.questionableModifier;
+          injuryModifier  = injuryModifiers.questionableModifier;
           injuryDescription = 'Player questionable to play';
-          riskFactors.push({type: 'injury';
+          riskFactors.push({ type: 'injury';
   severity: 'medium';
             impact: -10;
   description: 'Player may be limited or miss game'
@@ -282,9 +270,9 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
           break;
         
         case 'probable':
-          injuryModifier = injuryModifiers.probableModifier;
+          injuryModifier  = injuryModifiers.probableModifier;
           injuryDescription = 'Player probable to play';
-          riskFactors.push({type: 'injury';
+          riskFactors.push({ type: 'injury';
   severity: 'low';
             impact: -3;
   description: 'Minor injury concern'
@@ -293,11 +281,11 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply return from injury modifier
-      if (injuryContext.isReturnFromInjury) { const returnModifier = injuryModifiers.returnFromInjuryModifier;
+      if (injuryContext.isReturnFromInjury) { const returnModifier  = injuryModifiers.returnFromInjuryModifier;
         injuryModifier += returnModifier;
         injuryDescription += ' (first game back)';
         
-        riskFactors.push({type: 'injury';
+        riskFactors.push({ type: 'injury';
   severity: 'medium';
           impact: -8;
   description: 'First game returning from injury - potential rust or snap count limitations'
@@ -305,14 +293,14 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply modifier if significant
-      if (Math.abs(injuryModifier) > 0.01) { const adjustment = basePoints * injuryModifier;
+      if (Math.abs(injuryModifier) > 0.01) { const adjustment  = basePoints * injuryModifier;
         adjustedPoints += adjustment;
         
-        appliedModifiers.push({type: 'injury';
+        appliedModifiers.push({ type: 'injury';
   name: 'Injury Impact';
           multiplier: 1 + injuryModifier;
   pointsAdjustment, adjustment,
-          reason: injuryDescription
+          reason, injuryDescription
          });
       }
 
@@ -322,21 +310,20 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
         // benefiting from an injury to a starter
       }
 
-      return { adjustedPoints, appliedModifiers, injuryContext,
+      return { adjustedPoints: appliedModifiers, injuryContext,
         riskFactors
     :   }
     } catch (error) {
-      console.error('Error applying injury modifiers:', error);
-      return {
-        adjustedPoints, basePoints,
+      console.error('Error applying injury modifiers: ', error);
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
-        injuryContext, null,
+        injuryContext: null,
   riskFactors: []
       }
     }
   }
 
-  // ==================== MATCHUP MODIFIERS ====================
+  //  ==================== MATCHUP MODIFIERS ====================
 
   /**
    * Apply matchup modifiers based on opponent strength
@@ -346,48 +333,45 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   position, Position,
     gameContext, GameContext,
   matchupModifiers: MatchupModifiers
-  ): : Promise<): Promise  {
-    adjustedPoints, number,
+  ): : Promise<): Promise  { adjustedPoints: number,
     appliedModifiers: AppliedModifier[];
     matchupContext: MatchupContext | null,
-    riskFactors: RiskFactor[] }> { if (!matchupModifiers.enabled) {
-      return {
-        adjustedPoints, basePoints,
+    riskFactors, RiskFactor[] }> { if (!matchupModifiers.enabled) {
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
-        matchupContext, null,
+        matchupContext: null,
   riskFactors: []
        }
     }
 
-    let adjustedPoints = basePoints;
+    let adjustedPoints  = basePoints;
     const appliedModifiers: AppliedModifier[] = [];
     const riskFactors: RiskFactor[] = [];
 
-    try {// Get matchup context
+    try { // Get matchup context
       const matchupContext = await this.getMatchupContext(gameContext.isHomeGame ? gameContext.awayTeam : gameContext.homeTeam, position,
         gameContext.week,
         gameContext.season
       );
 
-      if (!matchupContext) { return {
-          adjustedPoints, basePoints,
+      if (!matchupContext) { return { adjustedPoints: basePoints,
   appliedModifiers: [];
-          matchupContext, null,
-  riskFactors: []
+          matchupContext: null,
+  riskFactors, []
          }
       }
 
       // Apply opponent strength modifier
-      const strengthModifier = this.calculateOpponentStrengthModifier(matchupContext.opponentRank.vsPosition,
+      const strengthModifier  = this.calculateOpponentStrengthModifier(matchupContext.opponentRank.vsPosition,
         matchupModifiers
       );
 
-      if (strengthModifier !== 0) { const adjustment = basePoints * strengthModifier;
+      if (strengthModifier !== 0) {  const adjustment = basePoints * strengthModifier;
         adjustedPoints += adjustment;
         
         const strengthDescription = this.getStrengthDescription(matchupContext.opponentRank.vsPosition);
         
-        appliedModifiers.push({type: 'matchup';
+        appliedModifiers.push({ type: 'matchup';
   name: 'Opponent Strength';
           multiplier: 1 + strengthModifier;
   pointsAdjustment, adjustment,
@@ -396,13 +380,13 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
 
         // Add risk factor based on matchup difficulty
         if (strengthModifier < -0.05) {
-          riskFactors.push({type: 'matchup';
+          riskFactors.push({ type: 'matchup';
   severity: strengthModifier < -0.10 ? 'high' : 'medium';
             impact: Math.round(strengthModifier * 100);
   description: `Difficult matchup vs ${strengthDescription} defense`
           });
         } else if (strengthModifier > 0.05) {
-          riskFactors.push({type: 'matchup';
+          riskFactors.push({ type: 'matchup';
   severity: 'low';
             impact: Math.round(strengthModifier * 100);
   description: `Favorable matchup vs ${strengthDescription} defense`
@@ -411,10 +395,10 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply home field advantage
-      if (gameContext.isHomeGame && matchupModifiers.homeFieldAdvantage) { const homeAdvantage = basePoints * matchupModifiers.homeFieldAdvantage;
+      if (gameContext.isHomeGame && matchupModifiers.homeFieldAdvantage) { const homeAdvantage  = basePoints * matchupModifiers.homeFieldAdvantage;
         adjustedPoints += homeAdvantage;
         
-        appliedModifiers.push({type: 'matchup';
+        appliedModifiers.push({ type: 'matchup';
   name: 'Home Field Advantage';
           multiplier: 1 + matchupModifiers.homeFieldAdvantage;
   pointsAdjustment, homeAdvantage,
@@ -423,10 +407,10 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply divisional rivalry bonus
-      if (gameContext.isDivisionalGame && matchupModifiers.divisionalRivalryBonus) { const rivalryBonus = basePoints * matchupModifiers.divisionalRivalryBonus;
+      if (gameContext.isDivisionalGame && matchupModifiers.divisionalRivalryBonus) { const rivalryBonus  = basePoints * matchupModifiers.divisionalRivalryBonus;
         adjustedPoints += rivalryBonus;
         
-        appliedModifiers.push({type: 'matchup';
+        appliedModifiers.push({ type: 'matchup';
   name: 'Divisional Rivalry';
           multiplier: 1 + matchupModifiers.divisionalRivalryBonus;
   pointsAdjustment, rivalryBonus,
@@ -435,10 +419,10 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       }
 
       // Apply primetime bonus
-      if (gameContext.isPrimetime && matchupModifiers.primetime_bonus) { const primetimeBonus = basePoints * matchupModifiers.primetime_bonus;
+      if (gameContext.isPrimetime && matchupModifiers.primetime_bonus) { const primetimeBonus  = basePoints * matchupModifiers.primetime_bonus;
         adjustedPoints += primetimeBonus;
         
-        appliedModifiers.push({type: 'matchup';
+        appliedModifiers.push({ type: 'matchup';
   name: 'Primetime Game';
           multiplier: 1 + matchupModifiers.primetime_bonus;
   pointsAdjustment, primetimeBonus,
@@ -446,15 +430,14 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
          });
       }
 
-      return { adjustedPoints, appliedModifiers, matchupContext,
+      return { adjustedPoints: appliedModifiers, matchupContext,
         riskFactors
     :   }
     } catch (error) {
-      console.error('Error applying matchup modifiers:', error);
-      return {
-        adjustedPoints, basePoints,
+      console.error('Error applying matchup modifiers: ', error);
+      return { adjustedPoints: basePoints,
   appliedModifiers: [];
-        matchupContext, null,
+        matchupContext: null,
   riskFactors: []
       }
     }
@@ -466,7 +449,7 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   private calculateOpponentStrengthModifier(
     opponentRank, number,
   modifiers: MatchupModifiers
-  ); number { if (opponentRank <= 5) {
+  ); number { if (opponentRank < = 5) {
       return modifiers.difficultyTiers.elite_defense;
      } else if (opponentRank <= 10) { return modifiers.difficultyTiers.strong_defense;
      } else if (opponentRank <= 22) { return modifiers.difficultyTiers.average_defense;
@@ -503,19 +486,17 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
         return null;
        }
 
-      const weatherData: WeatherData = {
-        gameId,
-        temperature: result.rows[0].temperature;
+      const weatherData: WeatherData = { gameId: temperature: result.rows[0].temperature;
   windSpeed: result.rows[0].wind_speed;
         windDirection: result.rows[0].wind_direction;
   precipitation: result.rows[0].precipitation;
         humidity: result.rows[0].humidity;
-  conditions: result.rows[0].conditions
+  conditions, result.rows[0].conditions
       }
       this.weatherCache.set(gameId, weatherData);
       return weatherData;
     } catch (error) {
-      console.error('Error fetching weather data:', error);
+      console.error('Error fetching weather data: ', error);
       return null;
     }
   }
@@ -527,9 +508,8 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       return this.injuryCache.get(playerId)!,
      }
 
-    try { const result = await database.query(`
-        SELECT 
-          injury_status, injury_type, weeks_since_injury,
+    try { const result  = await database.query(`
+        SELECT injury_status, injury_type, weeks_since_injury,
           is_return_from_injury
         FROM player_injuries 
         WHERE player_id = $1 
@@ -539,23 +519,19 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       `, [playerId]);
 
       if (result.rows.length === 0) {
-        return {
-          playerId,
-          injuryStatus: 'healthy'
+        return { playerId: injuryStatus: 'healthy'
          }
       }
 
-      const injuryContext: InjuryContext = {
-        playerId,
-        injuryStatus: result.rows[0].injury_status as any;
+      const injuryContext: InjuryContext = { playerId: injuryStatus: result.rows[0].injury_status as any;
   injuryType: result.rows[0].injury_type;
         weeksSinceInjury: result.rows[0].weeks_since_injury;
-  isReturnFromInjury: result.rows[0].is_return_from_injury
+  isReturnFromInjury, result.rows[0].is_return_from_injury
       }
       this.injuryCache.set(playerId, injuryContext);
       return injuryContext;
     } catch (error) {
-      console.error('Error fetching injury context:', error);
+      console.error('Error fetching injury context: ', error);
       return null;
     }
   }
@@ -568,20 +544,18 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   position, Position,
     week, number,
   season: number
-  ): : Promise<): PromiseMatchupContext | null> { const cacheKey = `${opponentTeam }_${position}_${week}_${season}`
+  ): : Promise<): PromiseMatchupContext | null> { const cacheKey  = `${opponentTeam }_${position}_${week}_${season}`
     if (this.matchupCache.has(cacheKey)) { return this.matchupCache.get(cacheKey)!;
      }
 
-    try {
+    try { 
       // This would involve complex queries to calculate opponent rankings
       // For now, return a simplified context
-      const matchupContext: MatchupContext = {
-        opponentTeam,
-        opponentRank: {
+      const matchupContext: MatchupContext = { opponentTeam: opponentRank: {
   overall: 15; // Placeholder
           vsPosition: this.calculatePositionRank(opponentTeam, position, week, season),
           pointsAllowed: 20.5, // Average points allowed
-          yardsAllowed: 350 ; // Average yards allowed
+          yardsAllowed, 350 ; // Average yards allowed
         },
         recentForm {
           lastFiveGames: [18: 24; 16: 22; 20],
@@ -591,7 +565,7 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       this.matchupCache.set(cacheKey, matchupContext);
       return matchupContext;
     } catch (error) {
-      console.error('Error fetching matchup context:', error);
+      console.error('Error fetching matchup context: ', error);
       return null;
     }
   }
@@ -610,7 +584,7 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
     return Math.floor(Math.random() * 32) + 1; // Random rank 1-32 for demo
   }
 
-  // ==================== UTILITY METHODS ====================
+  //  ==================== UTILITY METHODS ====================
 
   /**
    * Clear all caches
@@ -624,10 +598,9 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   /**
    * Get cache sizes for monitoring
    */
-  getCacheMetrics(): {
-    weatherCacheSize, number,
+  getCacheMetrics(): { weatherCacheSize: number,
     matchupCacheSize, number,
-    injuryCacheSize: number,
+    injuryCacheSize, number,
   } { return {
       weatherCacheSize: this.weatherCache.size;
   matchupCacheSize: this.matchupCache.size;
@@ -643,25 +616,21 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
   playerId, string,
     position, Position,
   gameContext, GameContext,
-    weatherModifiers?: WeatherModifiers,
-    injuryModifiers?: InjuryModifiers,
+    weatherModifiers? : WeatherModifiers, injuryModifiers?: InjuryModifiers,
     matchupModifiers?: MatchupModifiers
-  ): : Promise<  {
-    adjustedPoints, number,
+  ): : Promise<  { adjustedPoints: number,
     allModifiers: AppliedModifier[];
     allRiskFactors: RiskFactor[],
-    breakdown: {
-  weather, number,
+    breakdown: { weather: number,
     injury, number,
       matchup: number,
     }
-  }> { let adjustedPoints = basePoints;
+  }> { let adjustedPoints  = basePoints;
     const allModifiers: AppliedModifier[] = [];
     const allRiskFactors: RiskFactor[] = [];
-    breakdown: { weathe,
-  r: 0;
-  injury: 0; matchup: 0  }; // Apply weather modifiers
-    if (weatherModifiers) { const weatherResult = await this.applyWeatherModifiers(
+    breakdown: { weathe: r: 0;
+  injury: 0; matchup, 0  }; // Apply weather modifiers
+    if (weatherModifiers) { const weatherResult  = await this.applyWeatherModifiers(
         adjustedPoints, position, gameContext,
         weatherModifiers
       );
@@ -694,7 +663,7 @@ export class FantasyModifierEngine { private weatherCache = new Map<string, Weat
       breakdown.matchup = matchupAdjustment;
      }
 
-    return { adjustedPoints, allModifiers, allRiskFactors,
+    return { adjustedPoints: allModifiers, allRiskFactors,
       breakdown
      }
   }

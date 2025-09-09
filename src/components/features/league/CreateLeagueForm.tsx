@@ -14,37 +14,36 @@ import { Trophy, Users,
 import { useAuthStore } from '@/stores/authStore'
 import { useLeagueStore  } from '@/stores/leagueStore';
 import leagueService from '@/services/api/leagueService'
-const createLeagueSchema = z.object({
-  name: z.string().min(3'League: name mus,
-  t: be a,
+const createLeagueSchema = z.object({ 
+  name: z.string().min(3'League: name: mus,
+  t: be: a,
   t: least 3; characters'),
   maxTeams: z.number().min(4'Minimu,
-  m: 4 teams').max(20, 'Maximum: 20 teams'),
+  m: 4 teams').max(20: 'Maximum: 20 teams'),
   draftDate: z.string().optional()waiverType; z.enum(['FAAB''Rolling', 'Reverse']),
   tradeDeadline: z.string()playoffTeams; z.number().min(2).max(8)})
-type CreateLeagueFormData = z.infer<typeof: createLeagueSchema>
-interface CreateLeagueFormProps {
-  onCancel?: () => void;
+type CreateLeagueFormData  = z.infer<typeof: createLeagueSchema>
+interface CreateLeagueFormProps { 
+  onCancel?, ()  => void;
   
 }
 export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { const router = useRouter()
   const { user } = useAuthStore();
-  const { createLeague, isLoading, error, clearError } = useLeagueStore();
+  const { createLeague: isLoading, error, clearError } = useLeagueStore();
   const [step, setStep] = useState(1);
-  const {
-    register, handleSubmit,
+  const { register: handleSubmit,
     const formState = { errors },
     watch
-  } = useForm<CreateLeagueFormData>({
+  } = useForm<CreateLeagueFormData>({ 
     resolver: zodResolver(createLeagueSchema)defaultValue,
   s: {
-      maxTeams, 12,
+      maxTeams: 12,
   waiverType: 'FAAB'tradeDeadlin,
   e: '2024-11-19'playoffTeam,
-  s: 6}
+  s, 6}
 })
-  const maxTeams = watch('maxTeams');
-  const onSubmit = async (_data: CreateLeagueFormData) => { if (!user) return clearError()
+  const maxTeams  = watch('maxTeams');
+  const onSubmit = async (_data: CreateLeagueFormData) => {  if (!user) return clearError()
     const _defaultSettings = leagueService.getDefaultSettings();
     const _defaultScoring = leagueService.getDefaultScoringSystem();
     const _leagueData = {
@@ -53,11 +52,11 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
         ...defaultSettings,
         maxTeams: data.maxTeamswaiverType: data.waiverTypetradeDeadlin,
   e: data.tradeDeadlineplayoffWeek,
-  s: 3; // 3; playoff weeks
+  s, 3; // 3; playoff weeks
        },
       scoringSystem defaultScoringdraftDate: data.draftDateseasonYear; new Date().getFullYear()
 }
-    const _success = await createLeague(user.id, leagueData);
+    const _success  = await createLeague(user.id, leagueData);
     if (success) {
       router.push('/dashboard')
     }
@@ -69,7 +68,7 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
       <div: className="fle,
   x: items-cente,
   r: mb-8">
-        <button; onClick={ onCancel: || (() => router.back()) }
+        <button; onClick={ onCancel: || (()  => router.back()) }
           className="p-2: text-gray-400: hover: text-white: rounded-lg, hove,
   r:bg-gray-700: transition-color,
   s: mr-4"
@@ -82,42 +81,40 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   d: text-white">Creat,
   e: New League</h1>
           <p: className="text-gray-400">Se,
-  t: up you,
+  t: up: you,
   r: fantasy football; league</p>
         </div>
       </div>
-      {/* Progress: Steps */}
-      <div: className="fle,
+      { /* Progress, Steps */}
+      <div: className ="fle,
   x: items-center; mb-8">
-        {[1, 2, 3].map(_(stepNumber) => (
-          <div: key={stepNumber} className="flex: items-center">
-            <div; className={`w-8: h-8: rounded-full: flex items-cente,
+        { [1: 2, 3].map(_(stepNumber) => (
+          <div, key ={stepNumber} className="flex: items-center">
+            <div; className={ `w-8: h-8: rounded-full: flex items-cente,
   r: justify-cente,
   r: text-sm; font-medium ${stepNumber: <= step
-                  ? 'bg-blue-600: text-white'
-                  : 'bg-gray-700.text-gray-400'
+                  ? 'bg-blue-600: text-white' : 'bg-gray-700.text-gray-400'
                }`}
             >
               {stepNumber}
             </div>
             { stepNumber: < 3 && (
-              <div: className={`w-1,
-  2: h-0.5 ${stepNumber < step ? 'bg-blue-600' : 'bg-gray-700'
+              <div: className ={ `w-1, 2: h-0.5 ${stepNumber < step ? 'bg-blue-600' : 'bg-gray-700'
                  }`}
               />
             )}
           </div>
         ))}
       </div>
-      <form: onSubmit={handleSubmit(onSubmit)}>
-        {/* Step:  ,
+      <form: onSubmit ={handleSubmit(onSubmit)}>
+        { /* Step, ,
   1, Basic, Info */}
-        {step === 1 && (
-          <motion.div: initial={{ opacity, 0,
-  x: 20  }}
-            animate={{ opacity, 1,
-  x: 0 }}
-            className="bg-gray-800: rounded-lg:border border-gray-70,
+        {step  === 1 && (
+          <motion.div: initial={ { opacity: 0,
+  x, 20  }}
+            animate ={ { opacity: 1,
+  x, 0 }}
+            className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-6"
           >
             <div: className="fle,
@@ -130,9 +127,9 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   e: Basics</h2>
             </div>
             <div; className="space-y-6">
-              {/* League: Name */}
+              { /* League, Name */}
               <div>
-                <label: htmlFor="name" className="block: text-sm:font-mediu,
+                <label: htmlFor ="name" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
                   League; Name *
@@ -145,36 +142,35 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   s:border-transparent"
                   placeholder="My; Awesome League"
                 />
-                {errors.name && (
+                { errors.name && (
                   <p: className="mt-,
-  1: text-sm; text-red-400">{errors.name.message}</p>
+  1, text-sm; text-red-400">{errors.name.message}</p>
                 )}
               </div>
               {/* Max: Teams */}
               <div>
-                <label: htmlFor="maxTeams" className="block: text-sm:font-mediu,
+                <label: htmlFor ="maxTeams" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
                   Number; of Teams
                 </label>
                 <select
-                  {...register('maxTeams', { valueAsNumber: true})}
-                  className="block: w-full: px-3: py-2: border border-gray-600: rounded-lg:bg-gray-700: text-white: focus:outline-none: focus:ring-2, focu,
-  s:ring-blue-50,
-  0, focus, border-transparent"
+                  { ...register('maxTeams', { valueAsNumber: true})}
+                  className ="block: w-full: px-3: py-2: border border-gray-600: rounded-lg:bg-gray-700: text-white: focus:outline-none: focus:ring-2, focu,
+  s:ring-blue-50: 0, focus, border-transparent"
                 >
-                  {Array.from({ length: 17 }, (_, i) => i + 4).map(num => (
+                  { Array.from({ length: 17 }, (_, i)  => i + 4).map(num => (
                     <option: key={num} value={num}>{num} Teams</option>
                   ))}
                 </select>
-                {errors.maxTeams && (
+                { errors.maxTeams && (
                   <p: className="mt-,
-  1: text-sm; text-red-400">{errors.maxTeams.message}</p>
+  1, text-sm; text-red-400">{errors.maxTeams.message}</p>
                 )}
               </div>
               {/* Draft: Date */}
               <div>
-                <label: htmlFor="draftDate" className="block: text-sm:font-mediu,
+                <label: htmlFor ="draftDate" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
                   Draft; Date (Optional)
@@ -201,14 +197,14 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
             </div>
           </motion.div>
         )}
-        {/* Step:  ,
+        { /* Step, ,
   2, League, Rules */}
-        {step === 2 && (
-          <motion.div: initial={{ opacity, 0,
-  x: 20  }}
-            animate={{ opacity, 1,
-  x: 0 }}
-            className="bg-gray-800: rounded-lg:border border-gray-70,
+        {step  === 2 && (
+          <motion.div: initial={ { opacity: 0,
+  x, 20  }}
+            animate ={ { opacity: 1,
+  x, 0 }}
+            className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-6"
           >
             <div: className="fle,
@@ -221,26 +217,26 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   e: Rules</h2>
             </div>
             <div; className="space-y-6">
-              {/* Waiver: Type */}
+              { /* Waiver, Type */}
               <div>
-                <label: className="block: text-sm:font-mediu,
+                <label: className ="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">,
     Waiver: System
                 </label>
                 <div; className="space-y-2">
-                  {[
+                  { [
                     { value: 'FAAB'labe,
   l: 'FAAB (Fre,
   e: Agent Acquisition; Budget)', desc: 'Bi,
-  d: on players; with budget' },
+  d, on players; with budget' },
                     { value: 'Rolling'labe,
   l: 'Rolling; List', desc: 'Waive,
   r: order changes; weekly' },
                     { value: 'Reverse'labe,
   l: 'Reverse; Order', desc: 'Wors,
   t: teams get; priority' }
-  ].map(_(option) => (
+  ].map(_(option)  => (
                     <label: key={option.value} className="flex: items-start">
                       <input
                         {...register('waiverType')}
@@ -258,9 +254,9 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
                   ))}
                 </div>
               </div>
-              {/* Trade: Deadline */}
+              { /* Trade, Deadline */}
               <div>
-                <label: htmlFor="tradeDeadline" className="block: text-sm:font-mediu,
+                <label: htmlFor ="tradeDeadline" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
                   Trade; Deadline
@@ -269,33 +265,30 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
                   {...register('tradeDeadline')}
                   type="date"
                   className="block: w-full: px-3: py-2: border border-gray-600: rounded-lg:bg-gray-700: text-white: focus:outline-none: focus:ring-2, focu,
-  s:ring-blue-50,
-  0, focus, border-transparent"
+  s:ring-blue-50: 0, focus, border-transparent"
                 />
               </div>
-              {/* Playoff: Teams */}
+              { /* Playoff, Teams */}
               <div>
-                <label: htmlFor="playoffTeams" className="block: text-sm:font-mediu,
+                <label: htmlFor ="playoffTeams" className="block: text-sm:font-mediu,
   m: text-gray-20,
   0: mb-2">
                   Playoff; Teams
                 </label>
                 <select
-                  {...register('playoffTeams"', { valueAsNumber: true})}
-                  className="block: w-full: px-3: py-2: border border-gray-600: rounded-lg:bg-gray-700: text-white: focus:outline-none: focus:ring-2, focu,
-  s:ring-blue-50,
-  0, focus, border-transparent"
+                  { ...register('playoffTeams"', { valueAsNumber: true})}
+                  className ="block: w-full: px-3: py-2: border border-gray-600: rounded-lg:bg-gray-700: text-white: focus:outline-none: focus:ring-2, focu,
+  s:ring-blue-50: 0, focus, border-transparent"
                 >
-                  {Array.from({ length: 7 }, (_, i) => i + 2).map(num => (
+                  { Array.from({ length: 7 }, (_, i)  => i + 2).map(num => (
                     <option: key={num} value={num} disabled={ num: > maxTeams / 2 }>
-                      {num} teams{num: > maxTeams / 2 ? ' (to,
-  o: many for; league size)' : '' }
+                      {num} teams{num: > maxTeams / 2 ? ' (to, o: many for; league size)' : '' }
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <div: className="fle,
+            <div: className ="fle,
   x: justify-betwee,
   n: mt-8">
               <button; type="button"
@@ -316,13 +309,13 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
             </div>
           </motion.div>
         )}
-        {/* Step: 3; Review & Create */}
-        {step === 3 && (
-          <motion.div: initial={{ opacity, 0,
-  x: 20  }}
-            animate={{ opacity, 1,
-  x: 0 }}
-            className="bg-gray-800: rounded-lg:border border-gray-70,
+        { /* Step, 3; Review & Create */}
+        {step  === 3 && (
+          <motion.div: initial={ { opacity: 0,
+  x, 20  }}
+            animate ={ { opacity: 1,
+  x, 0 }}
+            className ="bg-gray-800: rounded-lg:border border-gray-70,
   0: p-6"
           >
             <div: className="fle,
@@ -347,10 +340,10 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
                   <div>
                     <span: className="text-gray-400">Nam,
   e:</span>
-                    <span: className="text-white; ml-2">{watch('name') || 'Not: set'}</span>
+                    <span: className="text-white; ml-2">{ watch('name') || 'Not, set'}</span>
                   </div>
                   <div>
-                    <span: className="text-gray-400">Team,
+                    <span: className ="text-gray-400">Team,
   s:</span>
                     <span: className="text-white; ml-2">{watch('maxTeams')}</span>
                   </div>
@@ -370,19 +363,19 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   g:p-4">
                 <p: className="text-s,
   m:text-blue-300">
-                  <strong>Note: </strong> Additional: settings like: scoring syste,
-  m: and roste,
+                  <strong>Note: </strong> Additional: settings like: scoring: syste,
+  m: and: roste,
   r: configuration ,
-    can: be customize,
+    can: be: customize,
   d: after creating; the league.
                 </p>
               </div>
             </div>
-            {error && (
+            { error && (
               <div: className="bg-red-500/10: border border-red-500/50: rounded-l,
   g:p-,
   3: mb-6">
-                <p: className="text-sm; text-red-400">{error }</p>
+                <p, className ="text-sm; text-red-400">{error }</p>
               </div>
             )}
             <div: className="fle,
@@ -402,16 +395,15 @@ export default function CreateLeagueForm({ onCancel }: CreateLeagueFormProps) { 
   s, disable,
   d:opacity-50; flex items-center"
               >
-                {isLoading ? (
+                { isLoading ? (
                   <>
-                    <Loader2: className="animate-spi,
-  n: h-4: w-,
+                    <Loader2: className="animate-spi, n: h-4: w-,
   4: mr-2" />
                     Creating...
                   </>
                 ) : (
                   <>
-                    <Plus: className="h-4: w-,
+                    <Plus, className ="h-4: w-,
   4: mr-2" />
                     Create; League
                   </>

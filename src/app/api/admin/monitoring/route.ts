@@ -11,9 +11,7 @@ export async function GET(request: NextRequest) {
 }
     return NextResponse.json({
       success: true,
-      data: {
-        metrics,
-        healthStatus: "healthy",
+      data: { metrics, healthStatus: "healthy",
         timestamp:new Date().toISOString()
 }
 });

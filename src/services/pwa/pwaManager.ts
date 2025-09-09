@@ -2,7 +2,7 @@
 
 /**
  * PWA Manager - Central controller for all PWA services in Astral Field
- * Coordinates offline storage, push notifications, touch optimizations, performance, and background sync
+ * Coordinates offline: storage, push: notifications, touch: optimizations, performance, and background sync
  */
 
 import PWAService from '../../lib/pwa';
@@ -12,8 +12,7 @@ import TouchOptimizationService from './touchOptimizations';
 import PerformanceOptimizationService from './performanceOptimization';
 import BackgroundSyncService from './backgroundSync';
 
-export interface PWAConfig {
-  enableOfflineStorage, boolean,
+export interface PWAConfig { enableOfflineStorage: boolean,
     enablePushNotifications, boolean,
   enableTouchOptimizations, boolean,
     enablePerformanceOptimization, boolean,
@@ -24,8 +23,7 @@ export interface PWAConfig {
   backgroundSyncConfig?, any,
   
 }
-export interface PWAStatus {
-  isInstalled, boolean,
+export interface PWAStatus { isInstalled: boolean,
     isOnline, boolean,
   serviceWorkerRegistered, boolean,
     offlineStorageReady, boolean,
@@ -34,28 +32,28 @@ export interface PWAStatus {
   performanceMonitoringActive, boolean,
     backgroundSyncActive, boolean,
   cacheSize, number,
-    syncQueueSize: number,
+    syncQueueSize, number,
   
 }
-export class PWAManager { private static instance, PWAManager,
-  private pwaService, PWAService,
-  private offlineStorage, OfflineStorageService,
-  private pushNotifications, PushNotificationService,
-  private touchOptimizations, TouchOptimizationService,
-  private performanceOptimization, PerformanceOptimizationService,
-  private backgroundSync, BackgroundSyncService,
+export class PWAManager { private static: instance, PWAManager,
+  private: pwaService, PWAService,
+  private: offlineStorage, OfflineStorageService,
+  private: pushNotifications, PushNotificationService,
+  private: touchOptimizations, TouchOptimizationService,
+  private: performanceOptimization, PerformanceOptimizationService,
+  private: backgroundSync, BackgroundSyncService,
   
-  private registration: ServiceWorkerRegistration | null = null;
+  private registration: ServiceWorkerRegistration | null  = null;
   private isInitialized = false;
-  private config: PWAConfig = {
-  enableOfflineStorage, true,
-  enablePushNotifications, true,
-    enableTouchOptimizations, true,
-  enablePerformanceOptimization, true,
-    enableBackgroundSync: true
+  private config: PWAConfig = { 
+  enableOfflineStorage: true,
+  enablePushNotifications: true,
+    enableTouchOptimizations: true,
+  enablePerformanceOptimization: true,
+    enableBackgroundSync, true
    }
   private constructor() {
-    this.pwaService = PWAService.getInstance();
+    this.pwaService  = PWAService.getInstance();
     this.offlineStorage = OfflineStorageService.getInstance();
     this.pushNotifications = PushNotificationService.getInstance();
     this.touchOptimizations = TouchOptimizationService.getInstance();
@@ -70,7 +68,7 @@ export class PWAManager { private static instance, PWAManager,
   }
 
   // Initialize all PWA services
-  async initialize(config?: Partial<PWAConfig>): : Promise<boolean> { if (this.isInitialized) {
+  async initialize(config? : Partial<PWAConfig>): : Promise<boolean> { if (this.isInitialized) {
       console.log('PWA Manager already initialized');
       return true;
      }
@@ -84,10 +82,10 @@ export class PWAManager { private static instance, PWAManager,
 
       // Step 1: Register Service Worker
       const swRegistered = await this.pwaService.registerServiceWorker();
-      if (!swRegistered) {
-        console.warn('Service Worker registration failed, continuing with limited functionality');
+      if (!swRegistered) { 
+        console.warn('Service Worker registration, failed, continuing with limited functionality');
       } else {
-        this.registration = await this.getServiceWorkerRegistration();
+        this.registration  = await this.getServiceWorkerRegistration();
       }
 
       // Step 2: Initialize Offline Storage
@@ -129,7 +127,7 @@ export class PWAManager { private static instance, PWAManager,
       
       return true;
     } catch (error) {
-      console.error('❌ PWA Manager initialization failed:', error);
+      console.error('❌ PWA Manager initialization failed: ', error);
       return false;
     }
   }
@@ -199,58 +197,55 @@ export class PWAManager { private static instance, PWAManager,
   }
 
   // Setup fantasy-specific event listeners
-  private setupFantasyEventListeners() void {
+  private setupFantasyEventListeners() void { 
     // Lineup changes
-    window.addEventListener('lineup-change', async (event: any) => { const { leagueId, changes } = event.detail;
+    window.addEventListener('lineup-change', async (event, any)  => { const { leagueId: changes } = event.detail;
       await this.handleLineupChange(leagueId, changes);
     });
 
     // Waiver claims
-    window.addEventListener('waiver-claim', async (event: any) => { const { leagueId, playerId, dropPlayerId } = event.detail;
+    window.addEventListener('waiver-claim', async (event, any) => { const { leagueId: playerId, dropPlayerId } = event.detail;
       await this.handleWaiverClaim(leagueId, playerId, dropPlayerId);
     });
 
     // Trade proposals
-    window.addEventListener('trade-proposal', async (event: any) => { const { leagueId, proposal } = event.detail;
+    window.addEventListener('trade-proposal', async (event, any) => { const { leagueId: proposal  } = event.detail;
       await this.handleTradeProposal(leagueId, proposal);
     });
 
     // Draft picks
-    window.addEventListener('draft-pick', async (event: any) => { const { leagueId, playerId, pick } = event.detail;
+    window.addEventListener('draft-pick', async (event: any) => { const { leagueId: playerId, pick } = event.detail;
       await this.handleDraftPick(leagueId, playerId, pick);
     });
 
     // Score updates
-    window.addEventListener('score-update', async (event: any) => { const { scores } = event.detail;
+    window.addEventListener('score-update', async (event, any) => { const { scores } = event.detail;
       await this.handleScoreUpdate(scores);
     });
 
     // Analytics events
-    window.addEventListener('analytics-event', async (event: any) => { const { event, eventName, data } = event.detail;
+    window.addEventListener('analytics-event', async (event, any) => { const { event: eventName, data  } = event.detail;
       await this.handleAnalyticsEvent(eventName, data);
     });
   }
 
   // Handle network status changes
-  private handleNetworkChange(isOnline: boolean); void {
-    console.log(`📶 Network status changed: ${isOnline, ? 'online' : 'offline'}`);
+  private handleNetworkChange(isOnline: boolean); void { 
+    console.log(`📶 Network status changed: ${ isOnline: ? 'online' : 'offline'}`);
     
     if (isOnline) {
       // Trigger background sync when coming back online
       this.backgroundSync.triggerSync();
       
       // Show reconnection notification
-      this.showNotification({
-        title: '📶 Back Online';
+      this.showNotification({ title: '📶 Back Online';
   body: 'Syncing your changes...';
         tag: 'network-status';
-  data: { typ,
-  e: 'network-online' }
+  data: { typ, e: 'network-online' }
       });
     } else {
       // Show offline notification
-      this.showNotification({
-        title: '📵 Offline Mode';
+      this.showNotification({ title: '📵 Offline Mode';
   body: 'Changes will sync when connection returns';
         tag: 'network-status';
   data: { typ,
@@ -302,21 +297,21 @@ export class PWAManager { private static instance, PWAManager,
       
       console.log('✅ Lineup change handled', leagueId);
     } catch (error) {
-      console.error('❌ Failed to handle lineup change:', error);
+      console.error('❌ Failed to handle lineup change: ', error);
     }
   }
 
   async handleWaiverClaim(leagueId, string,
-  playerId, string, dropPlayerId?: string): : Promise<void> { try {
+  playerId, string, dropPlayerId? : string): : Promise<void> { try {
     await this.backgroundSync.queueWaiverClaim(leagueId, playerId, dropPlayerId);
       
       if (!navigator.onLine) {
         this.showOfflineOperationNotification('Waiver claim saved offline');
        }
       
-      console.log('✅ Waiver claim handled:', { leagueId, playerId, dropPlayerId });
+      console.log('✅ Waiver claim handled: ', { leagueId: playerId, dropPlayerId });
     } catch (error) {
-      console.error('❌ Failed to handle waiver claim:', error);
+      console.error('❌ Failed to handle waiver claim: ', error);
     }
   }
 
@@ -328,9 +323,9 @@ export class PWAManager { private static instance, PWAManager,
         this.showOfflineOperationNotification('Trade proposal saved offline');
        }
       
-      console.log('✅ Trade proposal handled:', { leagueId, proposal });
+      console.log('✅ Trade proposal handled: ', { leagueId: proposal });
     } catch (error) {
-      console.error('❌ Failed to handle trade proposal:', error);
+      console.error('❌ Failed to handle trade proposal: ', error);
     }
   }
 
@@ -342,9 +337,9 @@ export class PWAManager { private static instance, PWAManager,
         this.showOfflineOperationNotification('Draft pick saved offline');
        }
       
-      console.log('✅ Draft pick handled:', { leagueId, playerId, pick });
+      console.log('✅ Draft pick handled: ', { leagueId: playerId, pick });
     } catch (error) {
-      console.error('❌ Failed to handle draft pick:', error);
+      console.error('❌ Failed to handle draft pick: ', error);
     }
   }
 
@@ -365,9 +360,9 @@ export class PWAManager { private static instance, PWAManager,
     await this.offlineStorage.logAnalyticsEvent(eventName, data);
       await this.backgroundSync.queueAnalyticsEvent(eventName, data);
       
-      console.log('✅ Analytics event handled:', eventName);
+      console.log('✅ Analytics event handled: ', eventName);
      } catch (error) {
-      console.error('❌ Failed to handle analytics event:', error);
+      console.error('❌ Failed to handle analytics event: ', error);
     }
   }
 
@@ -375,17 +370,15 @@ export class PWAManager { private static instance, PWAManager,
   private async showNotification(async showNotification(data: any): : Promise<): Promisevoid> { try {
     await this.pushNotifications.showLocalNotification(data),
      } catch (error) {
-      console.error('Failed to show notification:', error);
+      console.error('Failed to show notification: ', error);
     }
   }
 
   private showOfflineOperationNotification(message: string); void {
-    this.showNotification({
-      title: '📵 Offline';
+    this.showNotification({ title: '📵 Offline';
   body, message,
       tag: 'offline-operation';
-  data: { typ,
-  e: 'offline-operation' }
+  data: { typ: e: 'offline-operation' }
     });
   }
 
@@ -397,7 +390,7 @@ export class PWAManager { private static instance, PWAManager,
       // Trigger data refresh events
       window.dispatchEvent(new CustomEvent('refresh-critical-data'));
      } catch (error) {
-      console.error('Failed to refresh critical data:', error);
+      console.error('Failed to refresh critical data: ', error);
     }
   }
 
@@ -411,27 +404,27 @@ export class PWAManager { private static instance, PWAManager,
   }
 
   private async saveAppState(): : Promise<void> { try {; // Save current app state to offline storage
-      const state = {
+      const state  = { 
         timestamp Date.now();
-  url: window.location.href;
+  url, window.location.href;
         // Add other relevant state
        }
       await this.offlineStorage.saveSetting('app-state', state);
     } catch (error) {
-      console.error('Failed to save app state:', error);
+      console.error('Failed to save app state: ', error);
     }
   }
 
   private reduceBackgroundActivity(): void {; // Reduce performance monitoring frequency when app is hidden
     this.performanceOptimization.updateConfig({
-      maxMemoryUsage this.config.performanceConfig?.maxMemoryUsage * 0.8 || 80
+      maxMemoryUsage this.config.performanceConfig? .maxMemoryUsage * 0.8 || 80
     });
   }
 
   // Setup maintenance tasks
   private setupMaintenance(): void {; // Run maintenance tasks every hour
-    setInterval(async () => { await this.performMaintenance();
-     }, 60 * 60 * 1000); // 1 hour
+    setInterval(async ()  => { await this.performMaintenance();
+     } : 60 * 60 * 1000); // 1 hour
 
     // Run initial maintenance after 5 minutes
     setTimeout(async () => { await this.performMaintenance();
@@ -451,33 +444,32 @@ export class PWAManager { private static instance, PWAManager,
       
       console.log('✅ PWA maintenance completed');
     } catch (error) {
-      console.error('❌ PWA maintenance failed:', error);
+      console.error('❌ PWA maintenance failed: ', error);
     }
   }
 
   // Notify app that PWA is ready
-  private notifyAppReady(): void {
+  private notifyAppReady(): void { 
     window.dispatchEvent(new CustomEvent('pwa-ready', {
-      detail: { statu,
-  s: this.getStatus() }
+      detail: { statu: s, this.getStatus() }
     }));
   }
 
   // Public API methods
-  async getStatus(): : Promise<PWAStatus> { const syncStatus = await this.backgroundSync.getSyncStatus();
+  async getStatus(): : Promise<PWAStatus> { const syncStatus  = await this.backgroundSync.getSyncStatus();
     const storageStats = await this.offlineStorage.getStorageStats();
     
-    return {
+    return { 
       isInstalled: window.matchMedia('(display-mode; standalone)').matches,
       isOnline: navigator.onLine;
   serviceWorkerRegistered: this.registration !== null;
-      offlineStorageReady, true, // Would check actual status
+      offlineStorageReady: true, // Would check actual status
       pushNotificationsEnabled: this.pushNotifications.isSubscribed();
   touchOptimizationsActive: this.config.enableTouchOptimizations;
       performanceMonitoringActive: this.config.enablePerformanceOptimization;
   backgroundSyncActive: this.config.enableBackgroundSync;
       cacheSize: 0; // Would calculate actual cache size
-      syncQueueSize: syncStatus.pending
+      syncQueueSize, syncStatus.pending
      }
   }
 
@@ -494,7 +486,7 @@ export class PWAManager { private static instance, PWAManager,
    }
 
   updateConfig(newConfig: Partial<PWAConfig>); void {
-    this.config = { ...this.config, ...newConfig}
+    this.config  = { ...this.config, ...newConfig}
     console.log('⚙️ PWA configuration updated');
   }
 

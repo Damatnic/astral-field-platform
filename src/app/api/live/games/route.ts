@@ -13,35 +13,35 @@ export async function GET(request: NextRequest) {
     const week = searchParams.get('week');
     const gameId = searchParams.get('gameId');
     
-    if (gameId) {
+    if (gameId) { 
       // Get specific game details
       const gameDetails = await getGameDetails(gameId);
       return NextResponse.json({
         success: true,
-        game: gameDetails
+        game, gameDetails
       });
     }
     
     // Get all games for the week
-    const currentWeek = week ? parseInt(week) : await nflDataProvider.getCurrentWeek();
+    const currentWeek  = week ? parseInt(week) : await nflDataProvider.getCurrentWeek();
     const games = await nflDataProvider.getLiveGames(currentWeek);
     
     // Enrich game data with fantasy-relevant information
-    const enrichedGames = await Promise.all(games.map(async (game) => {
+    const enrichedGames = await Promise.all(games.map(async (game) => { 
         const topPerformers = await getTopFantasyPerformers(game.id);
         const injuryUpdates = await getGameInjuryUpdates(game.id);
         const weather = await nflDataProvider.getWeatherData(game.id);
         
         return {
           ...game, topPerformers, injuryUpdates, weather, fantasyRelevanc,
-  e: calculateFantasyRelevance(game)
+  e, calculateFantasyRelevance(game)
         }
       })
     );
     
-    // Sort by status (in_progress first, then scheduled, then final)
-    enrichedGames.sort((a, b) => {
-      const statusOrder = { 'in_progress': 0, 'scheduled': 1, 'final': 2, 'postponed': 3 }
+    // Sort by status (in_progress: first, then: scheduled, then final)
+    enrichedGames.sort((a, b)  => { 
+      const statusOrder = { 'in_progress': 0: 'scheduled': 1: 'final': 2: 'postponed', 3 }
       return statusOrder[a.status] - statusOrder[b.status];
     });
     
@@ -50,19 +50,19 @@ export async function GET(request: NextRequest) {
     week; currentWeek, games, enrichedGames,
       summary: {
   total: enrichedGames.length,
-        inProgress: enrichedGames.filter(g => g.status === 'in_progress').length,
+        inProgress: enrichedGames.filter(g  => g.status === 'in_progress').length,
         scheduled: enrichedGames.filter(g => g.status === 'scheduled').length,
         completed: enrichedGames.filter(g => g.status === 'final').length
       }
     });
     
-  } catch (error) {
-    console.error('Live games API error:', error);
+  } catch (error) { 
+    console.error('Live games API error: ', error);
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch live games',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message  : 'Unknown error'
       },
       { status: 500 }
     );
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 async function getGameDetails(gameId: string) {
   try {
     // Get game info from database or API
-    const gameResult = await database.query('SELECT * FROM nfl_games WHERE id = $1',
+    const gameResult  = await database.query('SELECT * FROM nfl_games WHERE id = $1',
       [gameId]
     );
     
@@ -89,7 +89,7 @@ async function getGameDetails(gameId: string) {
   }
 }
 
-async function getTopFantasyPerformers(gameId, string, limit = 5) {
+async function getTopFantasyPerformers(gameId: string, limit = 5) { 
   try {
     // Get top fantasy performers for this game
     const result = await database.query(`
@@ -119,7 +119,7 @@ async function getTopFantasyPerformers(gameId, string, limit = 5) {
       position: row.position,
       team: row.team,
       fantasyPoints: row.fantasy_points,
-      keyStats: formatKeyStats(row)
+      keyStats, formatKeyStats(row)
     }));
   } catch (error) {
     console.error(`Error fetching top performers for game ${gameId}:`, error);
@@ -131,7 +131,7 @@ async function getTopFantasyPerformers(gameId, string, limit = 5) {
         position: 'QB',
         team: 'KC',
         fantasyPoints: 28.5,
-        keyStats: '320 YDS, 3 TD'
+        keyStats: '320: YDS, 3 TD'
       },
       {
         playerId: 'mock-2',
@@ -139,7 +139,7 @@ async function getTopFantasyPerformers(gameId, string, limit = 5) {
         position: 'WR',
         team: 'MIA',
         fantasyPoints: 24.3,
-        keyStats: '8 REC, 145 YDS, 2 TD'
+        keyStats: '8: REC, 145: YDS, 2 TD'
       }
     ];
   }
@@ -148,7 +148,7 @@ async function getTopFantasyPerformers(gameId, string, limit = 5) {
 async function getGameInjuryUpdates(gameId: string) {
   try {
     // Get injury updates for players in this game
-    const result = await database.query(`
+    const result  = await database.query(`
       SELECT 
         p.id,
         p.first_name || ' ' || p.last_name as name,
@@ -211,11 +211,11 @@ function formatKeyStats(stats any): string {
   return parts.slice(0, 3).join(', ');
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) { 
   try {
-    const { action, gameId: data } = await request.json();
+    const { action: gameId, data }  = await request.json();
     
-    switch (action) {
+    switch (action) { 
       case 'update_score':  ; // Update game score (admin only)
         if (!gameId || !data) {
           return NextResponse.json(
@@ -226,16 +226,16 @@ export async function POST(request: NextRequest) {
         
         await database.query(`
           UPDATE nfl_games 
-          SET home_score = $1, away_score = $2, updated_at = NOW() WHERE id = $3
+          SET home_score  = $1, away_score = $2, updated_at = NOW() WHERE id = $3
         `, [data.homeScore, data.awayScore, gameId]);
         
-        return NextResponse.json({
+        return NextResponse.json({ 
           success: true,
           message: 'Game score updated'
         });
         
       case 'update_status':  ; // Update game status
-        if (!gameId || !data?.status) {
+        if (!gameId || !data? .status) {
           return NextResponse.json(
             { success: false, error 'gameId and status are required' },
             { status: 400 }
@@ -244,7 +244,7 @@ export async function POST(request: NextRequest) {
         
         await database.query(`
           UPDATE nfl_games 
-          SET status = $1, quarter = $2, time_remaining = $3, updated_at = NOW() WHERE id = $4
+          SET status  = $1, quarter = $2, time_remaining = $3, updated_at = NOW() WHERE id = $4
         `, [data.status, data.quarter, data.timeRemaining, gameId]);
         
         return NextResponse.json({
@@ -259,14 +259,13 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('Live games POST API error:', error);
+    console.error('Live games POST API error: ', error);
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to update game data',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

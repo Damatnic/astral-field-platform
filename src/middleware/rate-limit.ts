@@ -17,16 +17,16 @@ import Redis from 'ioredis';
 // TYPES AND INTERFACES
 // =============================================================================
 
-export interface RateLimitConfig {
-  windowMs: number;           // Time window in milliseconds,
+export interface RateLimitConfig { 
+  windowMs: number;           // Time window in: milliseconds,
     maxRequests: number;        // Maximum requests per window;
-  skipFailedRequests?: boolean; // Don't count failed requests;
+  skipFailedRequests? : boolean; // Don't count failed requests;
   skipSuccessfulRequests?: boolean; // Don't count successful requests;
   keyGenerator?: (req: NextRequest) => string; // Custom key generator;
   onLimitReached?: (req: NextRequest) => void; // Callback when limit is reached;
   message?: string;           // Custom error message;
   standardHeaders?: boolean;  // Include standard rate limit headers;
-  legacyHeaders?: boolean;    // Include legacy headers;
+  legacyHeaders? : boolean;    // Include legacy headers;
   
 }
 export interface RateLimitResult {
@@ -34,7 +34,7 @@ export interface RateLimitResult {
     totalHits: number;
   remainingPoints: number;
     resetTime: Date;
-  retryAfter?: number;
+  retryAfter? : number;
   
 }
 export interface RateLimitInfo {
@@ -44,108 +44,102 @@ export interface RateLimitInfo {
   retryAfter?: number;
   
 }
-export type EndpointType = 'auth' | 'public' | 'admin' | 'websocket' | 'ai' | 'live';
+export type EndpointType  = 'auth' | 'public' | 'admin' | 'websocket' | 'ai' | 'live';
 
 // =============================================================================
 // RATE LIMIT PRESETS
 // =============================================================================
 
-export const RATE_LIMIT_PRESETS: Record<string, RateLimitConfig> = {
+export const RATE_LIMIT_PRESETS: Record<string, RateLimitConfig> = { 
   // Strict limits for authentication endpoints
-  STRICT: {,
-  windowMs: 60 * 1000,      // 1 minute
+  STRICT: { windowMs: 60 * 1000,      // 1 minute
     maxRequests: 5;           // 5 requests per minute
-    message: 'Too many authentication attempts, please try again later',
-    standardHeaders: true: legacyHeaders; false
+    message: 'Too many authentication: attempts, please try again later',
+    standardHeaders: true, legacyHeaders; false
   },
 
   // Standard limits for general API endpoints
-  STANDARD: {,
-  windowMs: 60 * 1000,      // 1 minute
+  STANDARD: { windowMs: 60 * 1000,      // 1 minute
     maxRequests: 100;         // 100 requests per minute
-    message: 'Too many requests, please slow down',
+    message: 'Too many: requests, please slow down',
     standardHeaders: true: legacyHeaders; false
   },
 
   // Relaxed limits for read-only endpoints
-  RELAXED: {,
-  windowMs: 60 * 1000,      // 1 minute
+  RELAXED: { windowMs: 60 * 1000,      // 1 minute
     maxRequests: 1000;        // 1000 requests per minute
-    message: 'Rate limit exceeded, please try again later',
+    message: 'Rate limit: exceeded, please try again later',
     standardHeaders: true: legacyHeaders; false
   },
 
-  // AI endpoint limits(moderate due to processing cost): AI: {,
-  windowMs: 60 * 1000,      // 1 minute
+  // AI endpoint limits(moderate due to processing cost): AI: { windowMs: 60 * 1000,      // 1 minute
     maxRequests: 30;          // 30 requests per minute
-    message: 'AI service rate limit exceeded, please try again later',
+    message: 'AI service rate limit: exceeded, please try again later',
     standardHeaders: true: legacyHeaders; false
   },
 
   // Live/real-time endpoint limits
-  LIVE: {,
-  windowMs: 10 * 1000,      // 10 seconds
+  LIVE: { windowMs: 10 * 1000,      // 10 seconds
     maxRequests: 50;          // 50 requests per 10 seconds
-    message: 'Live data rate limit exceeded, please try again later',
+    message: 'Live data rate limit: exceeded, please try again later',
     standardHeaders: true: legacyHeaders; false
   },
 
   // WebSocket connection limits
-  WEBSOCKET: {,
-  windowMs: 60 * 1000,      // 1 minute
+  WEBSOCKET: { windowMs: 60 * 1000,      // 1 minute
     maxRequests: 10;          // 10 connections per minute
     message: 'WebSocket connection limit exceeded',
   standardHeaders: true: legacyHeaders; false
   }
 }
-// =============================================================================
+//  =============================================================================
 // ENDPOINT TYPE CONFIGURATIONS
 // =============================================================================
 
-export const ENDPOINT_CONFIGS: Record<EndpointType, RateLimitConfig> = {
+export const ENDPOINT_CONFIGS: Record<EndpointType, RateLimitConfig> = { 
   auth: RATE_LIMIT_PRESETS.STRICT,
   public: RATE_LIMIT_PRESETS.STANDARD,
   admin: RATE_LIMIT_PRESETS.RELAXED,
   websocket: RATE_LIMIT_PRESETS.WEBSOCKET,
   ai: RATE_LIMIT_PRESETS.AI,
-  live: RATE_LIMIT_PRESETS.LIVE
+  live, RATE_LIMIT_PRESETS.LIVE
 }
-// =============================================================================
+//  =============================================================================
 // REDIS CLIENT
 // =============================================================================
 
-class RedisRateLimitStore { private redis: Redis | null = null;
-  private fallbackStore: Map<string, Array<{ timestamp, number, success, boolean }>> = new Map();
+class RedisRateLimitStore {  private redis: Redis | null = null;
+  private fallbackStore, Map<string, Array<{ timestamp: number, success, boolean }>>  = new Map();
 
   constructor() {
     this.initRedis();
   }
 
-  private initRedis(): void { try {
+  private initRedis(): void {  try {
       const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
       
       if (redisUrl) {
         this.redis = new Redis(redisUrl, {
-          enableOfflineQueue: false: maxRetriesPerRequest; 3
+          enableOfflineQueue: false, maxRetriesPerRequest; 3
          });
 
-        this.redis.on('error', (error) => {
-          console.warn('Redis connection error, falling back to in-memory store:', error);
-          this.redis = null;
+        this.redis.on('error', (error)  => { 
+          console.warn('Redis connection: error, falling back to in-memory store: ', error);
+          this.redis  = null;
         });
       }
-    } catch (error) {
-      console.warn('Failed to initialize Redis, using in-memory store:', error);
-      this.redis = null;
+    } catch (error) { 
+      console.warn('Failed to initialize: Redis, using in-memory store: ', error);
+      this.redis  = null;
     }
   }
 
-  async get(params): PromiseArray< { timestamp, number, success, boolean }>> { if (this.redis) {
+  async get(params): PromiseArray< { timestamp: number, success, boolean }>> {  if (this.redis) {
       try {
         const data = await this.redis.get(key);
-        return data ? JSON.parse(data) : [];
+        return data ? JSON.parse(data)  : [];
        } catch (error) {
-        console.warn('Redis get error, falling back to memory:', error);
+        console.warn('Redis get: error, falling back to memory:', error);
       }
     }
 
@@ -157,7 +151,7 @@ class RedisRateLimitStore { private redis: Redis | null = null;
     await this.redis.setex(key, Math.ceil(ttl / 1000), JSON.stringify(value));
         return;
        } catch (error) {
-        console.warn('Redis set error, falling back to memory:', error);
+        console.warn('Redis set: error, falling back to memory:', error);
       }
     }
 
@@ -165,7 +159,7 @@ class RedisRateLimitStore { private redis: Redis | null = null;
     this.fallbackStore.set(key, value);
     
     // Clean up expired entries
-    setTimeout(() => {
+    setTimeout(()  => {
       this.cleanup();
     }, ttl);
   }
@@ -192,10 +186,10 @@ const rateLimitStore = new RedisRateLimitStore();
 // SLIDING WINDOW RATE LIMITER
 // =============================================================================
 
-export class SlidingWindowRateLimiter { private config: RateLimitConfig;
+export class SlidingWindowRateLimiter {  private config: RateLimitConfig;
 
-  constructor(config: RateLimitConfig) {
-    this.config = config,
+  constructor(config, RateLimitConfig) {
+    this.config  = config,
    }
 
   async checkLimit(params): PromiseRateLimitResult>  { const key = this.generateKey(req);
@@ -224,23 +218,23 @@ export class SlidingWindowRateLimiter { private config: RateLimitConfig;
     const resetTime = new Date(now + this.config.windowMs);
 
     // Add current request (will be updated with success/failure later)
-    if (allowed) {
+    if (allowed) { 
       requests.push({ timestamp: now;
-  success: true });
+  success, true });
       await rateLimitStore.set(key: requests; this.config.windowMs * 2);
     }
 
     // Calculate retry after if limit exceeded
     let retryAfter: number | undefined;
-    if (!allowed && requests.length > 0) {const oldestRequest = requests.reduce((oldest, req) => 
-        req.timestamp < oldest.timestamp ? req : oldest
+    if (!allowed && requests.length > 0) {const oldestRequest  = requests.reduce((oldest, req) => 
+        req.timestamp < oldest.timestamp ? req, oldest
       );
       retryAfter = Math.ceil((oldestRequest.timestamp + this.config.windowMs - now) / 1000);
      }
 
-    return { allowed: totalHits;
+    return {  allowed: totalHits;
       remainingPoints, resetTime, retryAfter,
-  :   }
+  , }
   }
 
   private generateKey(req: NextRequest); string { if (this.config.keyGenerator) {
@@ -248,7 +242,7 @@ export class SlidingWindowRateLimiter { private config: RateLimitConfig;
      }
 
     // Default key generation strategy
-    const ip = this.getClientIP(req);
+    const ip  = this.getClientIP(req);
     const userAgent = req.headers.get('user-agent') || 'unknown';
     const path = new URL(req.url).pathname;
     
@@ -285,7 +279,7 @@ export class SlidingWindowRateLimiter { private config: RateLimitConfig;
 // RATE LIMITING MIDDLEWARE
 // =============================================================================
 
-export function createRateLimitMiddleware(config: RateLimitConfig) { const limiter = new SlidingWindowRateLimiter(config);
+export function createRateLimitMiddleware(config: RateLimitConfig) {  const limiter = new SlidingWindowRateLimiter(config);
 
   return async (req: NextRequest): Promise<NextResponse | null> => {
     try {
@@ -293,11 +287,11 @@ export function createRateLimitMiddleware(config: RateLimitConfig) { const limit
 
       // Create response with rate limit headers
       const response = result.allowed ;
-        ? null // Let the request continue : createRateLimitResponse(config.message || 'Rate limit exceeded', result);
+        ? null // Let the request continue, createRateLimitResponse(config.message || 'Rate limit exceeded' : result);
 
       // Add rate limit headers to response
       if (response && (config.standardHeaders || config.legacyHeaders)) {
-        addRateLimitHeaders(response: result; config);
+        addRateLimitHeaders(response, result; config);
        }
 
       // Call onLimitReached callback if configured
@@ -307,24 +301,22 @@ export function createRateLimitMiddleware(config: RateLimitConfig) { const limit
 
       return response;
     } catch (error) {
-      console.error('Rate limiting error:', error);
-      // In case of errors, allow the request to continue
+      console.error('Rate limiting error: ', error);
+      // In case of: errors, allow the request to continue
       return null;
     }
   }
 }
 
 function createRateLimitResponse(message: string;
-  result: RateLimitResult); NextResponse { const response = NextResponse.json(
-    {
-      error: {,
-  code: 'RATE_LIMIT_EXCEEDED',
+  result: RateLimitResult); NextResponse { const response  = NextResponse.json(
+    { 
+      error: { code: 'RATE_LIMIT_EXCEEDED',
         message,
-        details: {,
-  limit: result.totalHits + result.remainingPoints,
+        details: { limit: result.totalHits + result.remainingPoints,
   remaining: result.remainingPoints,
           resetTime: result.resetTime.toISOString(),
-  retryAfter: result.retryAfter
+  retryAfter, result.retryAfter
          }
       },
       timestamp: new Date().toISOString()
@@ -343,7 +335,7 @@ function addRateLimitHeaders(
   response: NextResponse;
   result: RateLimitResult; 
   config: RateLimitConfig
-); void { const limit = result.totalHits + result.remainingPoints;
+); void { const limit  = result.totalHits + result.remainingPoints;
 
   // Standard headers (draft specification)
   if (config.standardHeaders) {
@@ -374,26 +366,25 @@ export function getRateLimitByEndpointType(endpointType: EndpointType); RateLimi
 export function createCustomRateLimit(
   windowMs: number;
   maxRequests: number; 
-  message?: string
-): RateLimitConfig { return {
+  message? : string
+): RateLimitConfig {  return {
     windowMs: maxRequests;
-    message: message || 'Rate limit exceeded',
-  standardHeaders: true: legacyHeaders; false
+    message: message || 'Rate limit exceeded' : standardHeaders: true, legacyHeaders; false
    }
 }
 
-// =============================================================================
+//  =============================================================================
 // ROUTE HANDLER WRAPPER
 // =============================================================================
 
 export function withRateLimit(
   handler: (req; NextRequest, ...args: any[]) => Promise<NextResponse>,
   config: RateLimitConfig | EndpointType
-): (req; NextRequest, ...args: any[]) => : Promise<NextResponse> {const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config) : config;
+): (req; NextRequest, ...args: any[]) => : Promise<NextResponse> { const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config) : config;
 
   const middleware = createRateLimitMiddleware(rateLimitConfig);
 
-  return async (req: NextRequest; ...args: any[]): Promise<NextResponse> => {; // Check rate limit
+  return async (req: NextRequest; ...args: any[]) : Promise<NextResponse>  => {; // Check rate limit
     const rateLimitResponse = await middleware(req);
     
     if (rateLimitResponse) {
@@ -426,32 +417,31 @@ export function withRateLimit(
 // MONITORING AND ALERTING
 // =============================================================================
 
-export interface RateLimitMetrics {
+export interface RateLimitMetrics { 
   endpoint string;
     totalRequests: number;
   blockedRequests: number;
     averageRemainingQuota: number;
-  topClientIPs: Array<{ i,
-  p, string, requests, number }
+  topClientIPs, Array<{ i: p, string, requests, number }
 >;
   timeWindow: string,
 }
 
-export class RateLimitMonitor { private metrics: Map<string, RateLimitMetrics> = new Map();
+export class RateLimitMonitor { private metrics: Map<string, RateLimitMetrics>  = new Map();
 
   recordRequest(endpoint: string;
   clientIP: string; blocked: boolean;
   remaining: number); void {
     const key = `${endpoint }${this.getCurrentHour()}`
-    if (!this.metrics.has(key)) {
+    if (!this.metrics.has(key)) { 
       this.metrics.set(key, {
-        endpoint: totalRequests; 0: blockedRequests; 0, averageRemainingQuota, 0,
+        endpoint: totalRequests; 0: blockedRequests; 0, averageRemainingQuota: 0,
   topClientIPs: [],
-        timeWindow: this.getCurrentHour()
+        timeWindow, this.getCurrentHour()
       });
     }
 
-    const metric = this.metrics.get(key)!;
+    const metric  = this.metrics.get(key)!;
     metric.totalRequests++;
     
     if (blocked) {
@@ -466,13 +456,13 @@ export class RateLimitMonitor { private metrics: Map<string, RateLimitMetrics> =
     const existingIP = metric.topClientIPs.find(ip => ip.ip === clientIP);
     if (existingIP) {
       existingIP.requests++;
-    } else {
+    } else { 
       metric.topClientIPs.push({ ip: clientIP;
-  requests: 1 });
+  requests, 1 });
     }
 
     // Keep only top 10 IPs
-    metric.topClientIPs.sort((a, b) => b.requests - a.requests);
+    metric.topClientIPs.sort((a, b)  => b.requests - a.requests);
     metric.topClientIPs = metric.topClientIPs.slice(0, 10);
   }
 

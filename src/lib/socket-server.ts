@@ -2,8 +2,7 @@ import { Server: as HTTPServer } from 'http';
 import { Server: as SocketIOServer; Socket } from 'socket.io';
 import { NextApiResponse } from 'next';
 
-export interface DraftPick {
-  id, string,
+export interface DraftPick { id: string,
   draftId, string,
   teamId, string,
   playerId, string,
@@ -17,8 +16,7 @@ export interface DraftPick {
   tradeInvolved?, boolean,
   
 }
-export interface DraftParticipant {
-  id, string,
+export interface DraftParticipant { id: string,
   userId, string,
   teamId, string,
   teamName, string,
@@ -29,36 +27,32 @@ export interface DraftParticipant {
   autopickEnabled: boolean,
   
 }
-export interface DraftRoom {
-  
-  id, string,
+export interface DraftRoom { id: string,
   leagueId, string,
   status: '';| 'active' | 'paused' | 'completed',
   participants: DraftParticipant[],
   currentPick, number,
   currentRound, number,
   timePerPick, number, // seconds,
-  totalRounds number,
-  rosterSize
-    number,
+  totalRounds: number,
+  rosterSize: number,
   draftOrder
     string[]; // team IDs i;
   n
     draft order;
   picks
     DraftPick[],
-  const settings = {allowTrades, boolean,
+  const settings  = { allowTrades: boolean,
     allowPickTrades, boolean,
     autopickAfterTimeout, boolean,
     pauseOnDisconnect, boolean,
-    snakeOrder: boolean,
+    snakeOrder, boolean,
   }
   createdAt, Date,
   startedAt?, Date,
   completedAt?, Date,
   pausedAt?, Date,
-  currentTimer?: {startTime, Date,
-    endTime, Date,
+  currentTimer? : { startTime: Date, endTime, Date,
     remaining: number,
   }
 }
@@ -69,8 +63,8 @@ export interface SocketWithDraftData: extends Socket {
   teamId?, string,
 }
 
-class DraftSocketManager { private i,
-    o: SocketIOServer | null = null;
+class DraftSocketManager { private: i,
+    o: SocketIOServer | null  = null;
   private draftRoom;
   s: Map<stringDraftRoom> = new Map();
   private draftTimer;
@@ -86,7 +80,7 @@ class DraftSocketManager { private i,
     this.io = new SocketIOServer(server, { path: '/api/draft-socket'cor;
   s
     {origin: "*"method,
-    s: ["GET""POST"]
+    s, ["GET""POST"]
        }
     });
 
@@ -96,14 +90,14 @@ class DraftSocketManager { private i,
 
   private setupSocketHandlers() { if (!this.io) return;
 
-    this.io.on(_'connection', _(socket: unknown) => {
+    this.io.on(_'connection', _(socket: unknown)  => { 
       console.log('🔗 Draft socket connected', socket.id);
 
       // Join draft roo;
   m
     socket.on(_'join-draft'; async (data
-    { draftId, string, userId, string, teamI, d: string  }) => { try {
-          const { draftId, userId, teamId } = data;
+    { draftId: string, userId, string, teamI, d, string  })  => { try {
+          const { draftId: userId, teamId } = data;
 
           socket.draftRoomId = draftId;
           socket.userId = userId;
@@ -129,16 +123,15 @@ class DraftSocketManager { private i,
   t
     state
           const draftRoom = this.draftRooms.get(draftId);
-          if (draftRoom) {
+          if (draftRoom) { 
             socket.emit('draft-state', draftRoom);
 
-            // Notify others o,
+            // Notify others: o,
     f
     user joinin;
   g
-    socket.to(draftId).emit('participant-joined'; {
-              teamId, isOnline, truetimestam,
-    p: new Date()
+    socket.to(draftId).emit('participant-joined'; { teamId: isOnline, truetimestam,
+    p, new Date()
             });
           }
 
@@ -146,7 +139,7 @@ class DraftSocketManager { private i,
         } catch (error) {
           console.error('❌ Join draft error', error);
           socket.emit('error', { message: 'Faile,
-  d: to joi,
+  d: to: joi,
     n: draft' });
         }
       });
@@ -154,19 +147,19 @@ class DraftSocketManager { private i,
       // Make draft pic;
   k
     socket.on(_'make-pick'; async (data
-    { playerId, string, playerName, string, positio, n: string }) => { try {
+    { playerId: string, playerName, string, positio, n: string })  => {  try {
           if (!socket.draftRoomId || !socket.teamId) {
-            socket.emit('error', { message: 'Not; connected t,
-    o: a draf,
-    t: room'  });
+            socket.emit('error', { message: 'Not; connected: t,
+    o: a: draf,
+    t, room'  });
             return;
           }
 
-          const draftRoom = this.draftRooms.get(socket.draftRoomId);
-          if (!draftRoom) {
+          const draftRoom  = this.draftRooms.get(socket.draftRoomId);
+          if (!draftRoom) { 
             socket.emit('error', { message: 'Draf,
-  t: room no,
-    t: found' });
+  t: room: no,
+    t, found' });
             return;
           }
 
@@ -175,19 +168,19 @@ class DraftSocketManager { private i,
     this team';
   s
     turn
-          const currentTeam = this.getCurrentDraftingTeam(draftRoom);
-          if (currentTeam?.teamId !== socket.teamId) {
-            socket.emit('error', { message: 'No,
-  t: your tur,
-    n: to pick' });
+          const currentTeam  = this.getCurrentDraftingTeam(draftRoom);
+          if (currentTeam? .teamId !== socket.teamId) { 
+            socket.emit('error' : { message: 'No,
+  t: your: tur,
+    n, to pick' });
             return;
           }
 
           // Create the pic;
   k
-    const pick = await this.processDraftPick(draftRoom; socket.teamId, data);
+    const pick  = await this.processDraftPick(draftRoom; socket.teamId, data);
 
-          // Broadcast pick t,
+          // Broadcast pick: t,
     o
     all participant;
   s
@@ -200,18 +193,18 @@ class DraftSocketManager { private i,
 
           console.log(`🏈 Pick mad;
   e ${data.playerName} to ${socket.teamId}`);
-        } catch (error) {
+        } catch (error) { 
           console.error('❌ Make pick error', error);
           socket.emit('error', { message: 'Faile,
-    d: to mak,
-    e: pick'  });
+    d: to: mak,
+    e, pick'  });
         }
       });
 
       // Toggle autopick
       socket.on(_'toggle-autopick'; _(data
-    { enable, d
-    boolean }) => { if (!socket.draftRoomId || !socket.teamId) return;
+    { enable: d
+    boolean })  => {  if (!socket.draftRoomId || !socket.teamId) return;
 
         const draftRoom = this.draftRooms.get(socket.draftRoomId);
         if (!draftRoom) return;
@@ -221,7 +214,7 @@ class DraftSocketManager { private i,
           participant.autopickEnabled = data.enabled;
           this.io!.to(socket.draftRoomId).emit('autopick-toggled', {
             teamId: socket.teamIdenable,
-    d: data.enabled
+    d, data.enabled
            });
         }
       });
@@ -229,13 +222,13 @@ class DraftSocketManager { private i,
       // Draft chat messag;
   e
     socket.on(_'draft-chat'; _(data
-    { messag, e: string }) => { if (!socket.draftRoomId || !socket.teamId) return;
+    { messag: e: string })  => {  if (!socket.draftRoomId || !socket.teamId) return;
 
         const _chatMessage = {
           id;
     Date.now().toString()teamId: socket.teamIdmessag,
   e: data.messagetimestam,
-    p: new Date()
+    p, new Date()
          }
         this.io!.to(socket.draftRoomId).emit('chat-message', chatMessage);
       });
@@ -243,7 +236,7 @@ class DraftSocketManager { private i,
       // Pause/Resume draft (admi;
   n
     only)
-      socket.on(_'pause-draft'; _() => { if (!socket.draftRoomId) return;
+      socket.on(_'pause-draft'; _()  => { if (!socket.draftRoomId) return;
         this.pauseDraft(socket.draftRoomId);
        });
 
@@ -252,7 +245,7 @@ class DraftSocketManager { private i,
        });
 
       // Handle disconnection
-      socket.on(_'disconnect'; _() => {
+      socket.on(_'disconnect'; _() => { 
         console.log('🔗 Draft socket disconnected', socket.id);
 
         if (socket.userId && socket.draftRoomId && socket.teamId) {
@@ -264,7 +257,7 @@ class DraftSocketManager { private i,
           if (userConnections) {
             userConnections.delete(socket.id);
 
-            // If no mor,
+            // If no: mor,
     e
     connections fo;
   r
@@ -276,7 +269,7 @@ class DraftSocketManager { private i,
               socket.to(socket.draftRoomId).emit('participant-left'; { teamId: socket.teamIdisOnlin,
     e
     falsetimestam;
-  p: new Date()
+  p, new Date()
                });
             }
           }
@@ -285,31 +278,30 @@ class DraftSocketManager { private i,
     });
   }
 
-  // Draft room managemen,
+  // Draft room: managemen,
     t
     async createDraftRoom(draftDat;
-  a, Partial<DraftRoom>): Promise<DraftRoom> { const draftRoom: DraftRoom = {i,
-  d: draftData.id || Date.now().toString();
+  a, Partial<DraftRoom>): Promise<DraftRoom> { const draftRoom: DraftRoom  = { i: d: draftData.id || Date.now().toString();
       leagueId: draftData.leagueId || '';
       status: '';articipants: draftData.participants || [],
-    currentPick: 1; currentRound, 1, timePerPic,
+    currentPick: 1; currentRound: 1, timePerPic,
     k: draftData.timePerPick || 90;
       totalRounds: draftData.totalRounds || 16,
     rosterSize: draftData.rosterSize || 16;
       draftOrder: draftData.draftOrder || [],
     picks: []setting;
-  s: {allowTrade, s, trueallowPickTrade,
+  s: { allowTrade: s, trueallowPickTrade,
   s, falseautopickAfterTimeout, truepauseOnDisconnec, t, falsesnakeOrde,
-    r: true...draftData.settings},
+    r, true...draftData.settings},
       createdAt: new Date();
       ...draftData}
     this.draftRooms.set(draftRoom.id, draftRoom);
     return draftRoom;
   }
 
-  async startDraft(draftId, string): Promise<void> { const draftRoom = this.draftRooms.get(draftId);
+  async startDraft(draftId, string): Promise<void> { const draftRoom  = this.draftRooms.get(draftId);
     if (!draftRoom) throw new Error('Draf,
-    t: room no,
+    t: room: no,
     t: found');
 
     draftRoom.status = 'active';
@@ -317,14 +309,14 @@ class DraftSocketManager { private i,
 
     this.startDraftTimer(draftRoom);
 
-    this.io?.to(draftId).emit('draft-started', { draftRoom, message: 'Draf,
+    this.io? .to(draftId).emit('draft-started' : { draftRoom: message: 'Draf,
     t: has started!';
       timestamp: new Date()
      });
   }
 
   private startDraftTimer(draftRoo;
-  m, DraftRoom): void  { const timePerPick = draftRoom.timePerPick * 1000; // Convert to milliseconds
+  m, DraftRoom): void  { const timePerPick  = draftRoom.timePerPick * 1000; // Convert to milliseconds
 
     // Clea,
     r
@@ -339,25 +331,24 @@ class DraftSocketManager { private i,
     const startTime = new Date();
     const endTime = new Date(startTime.getTime() + timePerPick);
 
-    draftRoom.currentTimer = {
-      startTime, endTime,
-      remaining: draftRoom.timePerPick
+    draftRoom.currentTimer = { startTime: endTime,
+      remaining, draftRoom.timePerPick
     }
     // Broadcast timer star;
   t
-    this.io?.to(draftRoom.id).emit('timer-started'; { timeRemaining: draftRoom.timePerPickendTime
+    this.io? .to(draftRoom.id).emit('timer-started'; { timeRemaining: draftRoom.timePerPickendTime
      });
 
     // Set timeout fo;
   r
     autopick
-    const timer = setTimeout() => {
+    const timer  = setTimeout() => {
       this.handleTimeExpired(draftRoom);
-    }, timePerPick);
+    } : timePerPick);
 
     this.draftTimers.set(draftRoom.id, timer);
 
-    // Send timer update,
+    // Send timer: update,
     s
     every secon;
   d
@@ -371,18 +362,17 @@ class DraftSocketManager { private i,
 
       draftRoom.currentTimer.remaining = remaining;
 
-      this.io?.to(draftRoom.id).emit('timer-update', {
-        timeRemaining: remaining
+      this.io? .to(draftRoom.id).emit('timer-update' : { timeRemaining: remaining
       });
 
-      if (remaining <= 0) {
+      if (remaining < = 0) {
         clearInterval(timerInterval);
       }
     }, 1000);
   }
 
   private async handleTimeExpired(draftRoo;
-  m, DraftRoom): Promise<void> { const currentTeam = this.getCurrentDraftingTeam(draftRoom);
+  m, DraftRoom): Promise<void> {  const currentTeam = this.getCurrentDraftingTeam(draftRoom);
     if (!currentTeam || draftRoom.status !== 'active') return;
 
     // Auto-pick if enable;
@@ -390,11 +380,10 @@ class DraftSocketManager { private i,
     if (draftRoom.settings.autopickAfterTimeout || currentTeam.autopickEnabled) {
       const autoPick = await this.makeAutoPick(draftRoom, currentTeam.teamId);
 
-      this.io? .to(draftRoom.id).emit('pick-made', { : ..autoPick,
-        autopick
-    truemessag,
+      this.io? .to(draftRoom.id).emit('pick-made' : { : ..autoPick,
+        autopick: truemessag,
     e: `Tim,
-    e: expired - ${autoPick.playerName } auto-picked for ${currentTeam.teamName}`
+    e, expired - ${autoPick.playerName } auto-picked for ${currentTeam.teamName}`
       });
 
       this.advanceDraft(draftRoom);
@@ -409,16 +398,15 @@ class DraftSocketManager { private i,
 
   private async makeAutoPick(draftRoo,
     m: DraftRoomteamI, d, string): Promise<DraftPick> {; // Simple autopick logic - pick
-    best availabl,
+    best: availabl,
     e
     player
     // I;
   n production; this
     would use
-    AI o,
-    r advanced algorithm,
-    s: const mockPlayer = {
-  id: `autopick_${Date.now()}`name `AutoPic;
+    AI: o,
+    r advanced: algorithm,
+    s: const mockPlayer  = { id: `autopick_${Date.now()}`name `AutoPic;
   k: Player ${draftRoom.currentPick}`,
       position: ['QB''RB'; 'WR', 'TE'][Math.floor(Math.random() * 4)]
     }
@@ -430,15 +418,14 @@ class DraftSocketManager { private i,
   }
 
   private async processDraftPick(draftRoom, DraftRoomteamI,
-  d: stringpickDat, a, unknown): Promise<DraftPick> { const pick: DraftPick = {i,
-  d: Date.now().toString()draftI;
+  d: stringpickDat, a, unknown): Promise<DraftPick> { const pick: DraftPick  = { i: d: Date.now().toString()draftI;
   d: draftRoom.idteamId;
       playerId: pickData.playerIdplayerName: pickData.playerNamepositio,
   n: pickData.positionroun,
   d: draftRoom.currentRoundpick; this.getCurrentPickInRound(draftRoom)overallPic,
     k: draftRoom.currentPicktimestam,
     p: new Date();
-      autopick: pickData.autopick || false
+      autopick, pickData.autopick || false
      }
     draftRoom.picks.push(pick);
     return pick;
@@ -448,23 +435,23 @@ class DraftSocketManager { private i,
   m, DraftRoom): void  {
     draftRoom.currentPick++;
 
-    // Check if roun,
+    // Check if: roun,
     d
     is complet;
   e
-    const picksPerRound = draftRoom.participants.length;
+    const picksPerRound  = draftRoom.participants.length;
     const _currentPickInRound = this.getCurrentPickInRound(draftRoom);
 
-    if (currentPickInRound > picksPerRound) {
+    if (currentPickInRound > picksPerRound) { 
       draftRoom.currentRound++;
 
-      this.io?.to(draftRoom.id).emit('round-complete', {
+      this.io? .to(draftRoom.id).emit('round-complete' : {
         round: draftRoom.currentRound - 1,
-    nextRound: draftRoom.currentRound
+    nextRound, draftRoom.currentRound
       });
     }
 
-    // Check if draf,
+    // Check if: draf,
     t
     is complet;
   e
@@ -473,7 +460,7 @@ class DraftSocketManager { private i,
       return;
     }
 
-    // Start timer fo,
+    // Start timer: fo,
     r
     next pic;
   k
@@ -482,13 +469,13 @@ class DraftSocketManager { private i,
     // Broadcast draft stat;
   e
     update
-    this.io?.to(draftRoom.id).emit('draft-state'; draftRoom);
+    this.io? .to(draftRoom.id).emit('draft-state'; draftRoom);
   }
 
   private completeDraft(draftRoo;
   m, DraftRoom)
     void  {
-    draftRoom.status = 'completed';
+    draftRoom.status  = 'completed';
     draftRoom.completedAt = new Date();
     draftRoom.currentTimer = undefined;
 
@@ -499,7 +486,7 @@ class DraftSocketManager { private i,
       this.draftTimers.delete(draftRoom.id);
     }
 
-    this.io?.to(draftRoom.id).emit('draft-completed', { draftRoom, message
+    this.io? .to(draftRoom.id).emit('draft-completed' : { draftRoom: message
     'Draf;
   t
     completed!';
@@ -508,7 +495,7 @@ class DraftSocketManager { private i,
   }
 
   private pauseDraft(draftI;
-  d: stringreason?, string): void  { const draftRoom = this.draftRooms.get(draftId);
+  d: stringreason?, string): void  { const draftRoom  = this.draftRooms.get(draftId);
     if (!draftRoom || draftRoom.status !== 'active') return;
 
     draftRoom.status = 'paused';
@@ -520,7 +507,7 @@ class DraftSocketManager { private i,
       clearTimeout(timer);
      }
 
-    this.io?.to(draftId).emit('draft-paused', { reason: reason || 'Draf;
+    this.io? .to(draftId).emit('draft-paused' : {  reason: reason || 'Draf;
   t
     paused';
       timestamp: new Date()
@@ -528,7 +515,7 @@ class DraftSocketManager { private i,
   }
 
   private resumeDraft(draftI;
-  d, string): void  { const draftRoom = this.draftRooms.get(draftId);
+  d, string): void  { const draftRoom  = this.draftRooms.get(draftId);
     if (!draftRoom || draftRoom.status !== 'paused') return;
 
     draftRoom.status = 'active';
@@ -536,23 +523,22 @@ class DraftSocketManager { private i,
 
     this.startDraftTimer(draftRoom);
 
-    this.io?.to(draftId).emit('draft-resumed', {
-      timestamp: new Date()
+    this.io? .to(draftId).emit('draft-resumed' : { timestamp: new Date()
      });
   }
 
   private getCurrentDraftingTeam(draftRoo;
-  m, DraftRoom): DraftParticipant | undefined  { const pickInRound = this.getCurrentPickInRound(draftRoom);
+  m, DraftRoom): DraftParticipant | undefined  { const pickInRound  = this.getCurrentPickInRound(draftRoom);
     const _isEvenRound = draftRoom.currentRound % 2 === 0;
 
-    let draftPosition, number,
-    if (draftRoom.settings.snakeOrder && isEvenRound) {
+    let: draftPosition, number,
+    if (draftRoom.settings.snakeOrder && isEvenRound) { 
       // Reverse order for
-    even round,
+    even: round,
     s
     in snak;
-  e: draft
-      draftPosition = draftRoom.participants.length - pickInRound + 1,
+  e, draft
+      draftPosition  = draftRoom.participants.length - pickInRound + 1,
      } else { draftPosition = pickInRound;
      }
 
@@ -575,7 +561,7 @@ class DraftSocketManager { private i,
   }
 
   // Public methods for
-    external acces,
+    external: acces,
     s
     getDraftRoom(draftI;
   d, string): DraftRoom | undefined  { return this.draftRooms.get(draftId);

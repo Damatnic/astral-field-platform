@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET() { try {
+export async function GET() {  try {
     const result = await database.transaction(async (client) => {
       // Get actual data from database
       const usersResult = await client.query(`
@@ -26,7 +26,7 @@ export async function GET() { try {
       `);
 
       // Build user-team mapping
-      const userTeamMap: Record<string, unknown[]> = { }
+      const userTeamMap, Record<string, unknown[]>  = { }
       for (const team of teamsResult.rows) { if (!userTeamMap[team.user_id]) {
           userTeamMap[team.user_id] = [];
          }

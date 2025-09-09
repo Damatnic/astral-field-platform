@@ -7,14 +7,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 import { verifyJWT } from '@/lib/auth/jwt-config';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
       return NextResponse.json({ error: 'Authentication required'  }, { status: 401 });
     }
 
-    const decoded = verifyJWT(token) as any;
+    const decoded  = verifyJWT(token) as any;
 
     // Get all conversations for the user with latest message and unread count
     const result = await database.query(`
@@ -61,8 +61,7 @@ export async function GET(request: NextRequest) {
       participantUsername: row.participant_username,
   participantAvatar: row.participant_avatar,
       lastMessage: row.last_message_id ? {
-  id: row.last_message_id,
-  senderId: row.last_message_sender_id,
+  id: row.last_message_id, senderId: row.last_message_sender_id,
         content: row.last_message_content,
   messageType: row.last_message_type,
         createdAt: row.last_message_time
@@ -75,13 +74,12 @@ export async function GET(request: NextRequest) {
       success: true, conversations, timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Conversations GET API error:', error);
+    console.error('Conversations GET API error: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Failed to fetch conversations',
         details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

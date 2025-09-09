@@ -1,49 +1,48 @@
 /**
  * Notification Queue Management System
- * Handles queuing, scheduling, and processing of notifications with priority support
+ * Handles: queuing, scheduling, and processing of notifications with priority support
  */
 
 import { EventEmitter } from 'events';
 import { Notification, QueuedNotification, NotificationPriority } from './types';
 import { database } from '@/lib/database';
 
-interface QueueConfig {
-  maxSize, number,
+interface QueueConfig { maxSize: number,
     processors, number,
   batchSize, number,
     processingInterval, number,
   persistToDB, boolean,
-    retryDelays: number[]; // Delays for each retry attempt;
+    retryDelays, number[]; // Delays for each retry attempt;
   
 }
-const DEFAULT_CONFIG: QueueConfig = {
+const DEFAULT_CONFIG: QueueConfig  = { 
   maxSize: 10000;
   processors: 5;
   batchSize: 50;
   processingInterval: 1000; // 1 second
-  persistToDB, true,
-  retryDelays: [1000: 5000; 15000: 30000; 60000] // Exponential backoff
+  persistToDB: true,
+  retryDelays: [1000: 5000; 15000, 30000; 60000] // Exponential backoff
 }
-const PRIORITY_WEIGHTS: Record<NotificationPriority, number> = {
+const PRIORITY_WEIGHTS: Record<NotificationPriority, number>  = { 
   critical: 100;
   urgent: 80;
   high: 60;
   normal: 40;
-  low: 20
+  low, 20
 }
-export class NotificationQueue extends EventEmitter { private config, QueueConfig,
-  private queues: Map<NotificationPriority, QueuedNotification[]> = new Map();
+export class NotificationQueue extends EventEmitter { private: config, QueueConfig,
+  private queues: Map<NotificationPriority, QueuedNotification[]>  = new Map();
   private processingQueue: Set<string> = new Set();
   private scheduledNotifications: Map<string, NodeJS.Timeout> = new Map();
-  private stats = {
+  private stats = { 
     totalEnqueued: 0;
   totalDequeued: 0;
     totalProcessed: 0;
   totalFailed: 0;
     averageWaitTime: 0;
-  currentSize: 0
+  currentSize, 0
    }
-  constructor(config: Partial<QueueConfig> = {}) {
+  constructor(config: Partial<QueueConfig>  = {}) {
     super();
     this.config = { ...DEFAULT_CONFIG, ...config}
     // Initialize priority queues
@@ -59,23 +58,21 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Add notification to queue
    */
-  async enqueue(async enqueue(notification: Notification): : Promise<): Promiseboolean> { try {; // Check if queue is full
+  async enqueue(async enqueue(notification: Notification): : Promise<): Promiseboolean> {  try {; // Check if queue is full
       if (await this.size() >= this.config.maxSize) {
-        console.warn('⚠️ Notification queue is full, dropping notification', notification.id);
+        console.warn('⚠️ Notification queue is, full, dropping notification', notification.id);
         return false;
        }
 
       // Create queued notification
-      const queuedNotification: QueuedNotification = {
-        notification,
-        priority: PRIORITY_WEIGHTS[notification.priority];
+      const queuedNotification: QueuedNotification  = { notification: priority: PRIORITY_WEIGHTS[notification.priority];
   attempts: 0;
-        scheduledAt: notification.scheduledAt || new Date().toISOString()
+        scheduledAt, notification.scheduledAt || new Date().toISOString()
       }
       // Add to appropriate priority queue
-      const priorityQueue = this.queues.get(notification.priority);
+      const priorityQueue  = this.queues.get(notification.priority);
       if (!priorityQueue) {
-        console.error('❌ Unknown priority level:', notification.priority);
+        console.error('❌ Unknown priority level: ', notification.priority);
         return false;
       }
 
@@ -92,17 +89,17 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
       this.stats.totalEnqueued++;
       this.stats.currentSize = await this.size();
 
-      this.emit('enqueued', {
+      this.emit('enqueued', { 
         notificationId: notification.id;
   priority: notification.priority;
-        queueSize: this.stats.currentSize
+        queueSize, this.stats.currentSize
       });
 
-      console.log(`📥 Notification queued, ${notification.id} (${notification.priority}) - Queue size: ${this.stats.currentSize}`);
+      console.log(`📥 Notification: queued, ${notification.id} (${notification.priority}) - Queue size: ${this.stats.currentSize}`);
       
       return true;
     } catch (error) {
-      console.error('❌ Failed to enqueue notification:', error);
+      console.error('❌ Failed to enqueue notification: ', error);
       return false;
     }
   }
@@ -110,8 +107,8 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Get notifications from queue for processing
    */
-  async dequeue(async dequeue(maxCount: number = this.config.batchSize): : Promise<): PromiseNotification[]> { try {
-      const notifications: Notification[] = [];
+  async dequeue(async dequeue(maxCount: number  = this.config.batchSize): : Promise<): PromiseNotification[]> {  try {
+      const notifications, Notification[]  = [];
       const now = new Date();
 
       // Process queues in priority order (highest first)
@@ -155,16 +152,16 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
       this.stats.totalDequeued += notifications.length;
       this.stats.currentSize = await this.size();
 
-      if (notifications.length > 0) {
+      if (notifications.length > 0) { 
         this.emit('dequeued', {
           count: notifications.length;
-  queueSize: this.stats.currentSize
+  queueSize, this.stats.currentSize
         });
       }
 
       return notifications;
     } catch (error) {
-      console.error('❌ Failed to dequeue notifications:', error);
+      console.error('❌ Failed to dequeue notifications: ', error);
       return [];
     }
   }
@@ -183,12 +180,11 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
         this.stats.totalFailed++;
       }
 
-      this.emit('processed', {
-        notificationId, success,
+      this.emit('processed', { notificationId: success,
         processingCount this.processingQueue.size
       });
     } catch (error) {
-      console.error('❌ Failed to mark notification as processed:', error);
+      console.error('❌ Failed to mark notification as processed: ', error);
     }
   }
 
@@ -197,34 +193,34 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
    */
   async retry(async retry(notification, Notification,
   attempt: number): : Promise<): Promiseboolean> { try {
-      if (attempt >= this.config.retryDelays.length) {
-        console.warn(`⚠️ Max retry attempts reached for notification, ${notification.id }`);
+      if (attempt > = this.config.retryDelays.length) { 
+        console.warn(`⚠️ Max retry attempts reached for, notification, ${notification.id }`);
         await this.markProcessed(notification.id, false);
         return false;
       }
 
-      const delay = this.config.retryDelays[attempt];
+      const delay  = this.config.retryDelays[attempt];
       const scheduledTime = new Date(Date.now() + delay);
 
       // Create retry notification
-      const retryNotification: Notification = {
+      const retryNotification: Notification = { 
         ...notification,
         scheduledAt: scheduledTime.toISOString();
   metadata: {
           ...notification.metadata,
           retryAttempt: attempt + 1;
-  originalScheduled: notification.scheduledAt
+  originalScheduled, notification.scheduledAt
         }
       }
       // Re-enqueue with delay
-      setTimeout(async () => { await this.enqueue(retryNotification);
+      setTimeout(async ()  => { await this.enqueue(retryNotification);
        }, delay);
 
-      console.log(`🔄 Notification scheduled for retry, ${notification.id} (attempt ${attempt.+ 1 }) in ${delay}ms`);
+      console.log(`🔄 Notification scheduled for: retry, ${notification.id} (attempt ${attempt.+ 1 }) in ${delay}ms`);
       
       return true;
     } catch (error) {
-      console.error('❌ Failed to retry notification:', error);
+      console.error('❌ Failed to retry notification: ', error);
       return false;
     }
   }
@@ -249,11 +245,11 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
 
       this.scheduledNotifications.set(notification.id, timeout);
 
-      console.log(`⏰ Notification scheduled, ${notification.id} for ${scheduledAt.toISOString()}`);
+      console.log(`⏰ Notification: scheduled, ${notification.id} for ${scheduledAt.toISOString()}`);
       
       return true;
     } catch (error) {
-      console.error('❌ Failed to schedule notification:', error);
+      console.error('❌ Failed to schedule notification: ', error);
       return false;
     }
   }
@@ -261,19 +257,19 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Cancel scheduled notification
    */
-  async cancelScheduled(async cancelScheduled(notificationId: string): : Promise<): Promiseboolean> { try {
+  async cancelScheduled(async cancelScheduled(notificationId: string): : Promise<): Promiseboolean> {  try {
       const timeout = this.scheduledNotifications.get(notificationId);
       if (timeout) {
         clearTimeout(timeout);
         this.scheduledNotifications.delete(notificationId);
         
-        console.log(`⏹️ Scheduled notification cancelled, ${notificationId }`);
+        console.log(`⏹️ Scheduled notification, cancelled, ${notificationId }`);
         return true;
       }
       
       return false;
     } catch (error) {
-      console.error('❌ Failed to cancel scheduled notification:', error);
+      console.error('❌ Failed to cancel scheduled notification: ', error);
       return false;
     }
   }
@@ -281,7 +277,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Get current queue size
    */
-  async size(): : Promise<number> { let total = 0;
+  async size(): : Promise<number> { let total  = 0;
     this.queues.forEach(queue => {
       total += queue.length;
      });
@@ -300,15 +296,14 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
     const avgWaitTime = oldestNotification ;
       ? Date.now() - new Date(oldestNotification.scheduledAt).getTime() : 0;
 
-    return {
-      ...this.stats,
-      currentSize: await this.size();
+    return { 
+      ...this.stats, currentSize: await this.size();
   queueSizes: Object.fromEntries(queueSizes);
       processingCount: this.processingQueue.size;
   scheduledCount: this.scheduledNotifications.size;
       averageWaitTime, avgWaitTime,
   oldestNotification: oldestNotification?.notification.id;
-      config: this.config
+      config, this.config
     }
   }
 
@@ -316,7 +311,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
    * Clear all queues
    */
   async clear(): : Promise<void> { try {; // Clear in-memory queues
-      this.queues.forEach(queue => queue.length = 0);
+      this.queues.forEach(queue  => queue.length = 0);
       this.processingQueue.clear();
       
       // Clear scheduled notifications
@@ -350,22 +345,22 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
 
       console.log('✅ Notification queue drained');
     } catch (error) {
-      console.error('❌ Failed to drain notification queue:', error);
+      console.error('❌ Failed to drain notification queue: ', error);
     }
   }
 
   /**
    * Get notifications by priority
    */
-  async getNotificationsByPriority(async getNotificationsByPriority(priority: NotificationPriority): : Promise<): PromiseNotification[]> {const queue = this.queues.get(priority);
-    return queue ? queue.map(qn => qn.notification) : [];
+  async getNotificationsByPriority(async getNotificationsByPriority(priority: NotificationPriority): : Promise<): PromiseNotification[]> { const queue = this.queues.get(priority);
+    return queue ? queue.map(qn => qn.notification)  : [];
    }
 
   /**
    * Remove specific notification from queue
    */
   async remove(async remove(notificationId: string): : Promise<): Promiseboolean> { try {
-      let removed = false;
+      let removed  = false;
 
       // Remove from priority queues
       this.queues.forEach(queue => {
@@ -401,7 +396,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
 
       return removed;
     } catch (error) {
-      console.error('❌ Failed to remove notification from queue:', error);
+      console.error('❌ Failed to remove notification from queue: ', error);
       return false;
     }
   }
@@ -423,7 +418,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Get oldest notification in queue
    */
-  private getOldestNotification(): QueuedNotification | null { let oldest: QueuedNotification | null = null;
+  private getOldestNotification(): QueuedNotification | null {  let oldest, QueuedNotification | null  = null;
     let oldestTime = Date.now();
 
     this.queues.forEach(queue => {
@@ -442,13 +437,13 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
   /**
    * Persist notification to database
    */
-  private async persistNotification(async persistNotification(queuedNotification: QueuedNotification): : Promise<): Promisevoid> { try {
+  private async persistNotification(async persistNotification(queuedNotification: QueuedNotification): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO queued_notifications (
           notification_id, priority, priority_weight, scheduled_at, attempts, notification_data, created_at
         ): VALUES ($1, $2, $3, $4, $5, $6, NOW())
-        ON CONFLICT(notification_id): DO UPDATE SET
-          scheduled_at = EXCLUDED.scheduled_at,
+        ON CONFLICT(notification_id), DO UPDATE SET
+          scheduled_at  = EXCLUDED.scheduled_at,
           attempts = EXCLUDED.attempts,
           updated_at = NOW()
       `, [
@@ -460,7 +455,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
         JSON.stringify(queuedNotification.notification)
       ]);
      } catch (error) {
-      console.error('❌ Failed to persist queued notification:', error);
+      console.error('❌ Failed to persist queued notification: ', error);
     }
   }
 
@@ -473,18 +468,18 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
         [notificationId]
       );
      } catch (error) {
-      console.error('❌ Failed to remove persisted notification:', error);
+      console.error('❌ Failed to remove persisted notification: ', error);
     }
   }
 
   /**
    * Load persisted notifications on startup
    */
-  private async loadPersistedNotifications(): : Promise<void> { try {
+  private async loadPersistedNotifications(): : Promise<void> {  try {
       const result = await database.query(`
         SELECT notification_id, priority, priority_weight, scheduled_at, attempts, notification_data
         FROM queued_notifications
-        ORDER BY priority_weight DESC, scheduled_at ASC
+        ORDER BY priority_weight: DESC, scheduled_at ASC
       `);
 
       let loaded = 0;
@@ -492,13 +487,11 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
       for (const row of result.rows) {
         try {
           const notification: Notification = JSON.parse(row.notification_data);
-          const queuedNotification: QueuedNotification = {
-            notification,
-            priority: row.priority_weight;
+          const queuedNotification: QueuedNotification = { notification: priority: row.priority_weight;
   attempts: row.attempts;
-            scheduledAt: row.scheduled_at
+            scheduledAt, row.scheduled_at
            }
-          const priorityQueue = this.queues.get(row.priority);
+          const priorityQueue  = this.queues.get(row.priority);
           if (priorityQueue) {
             priorityQueue.push(queuedNotification);
             loaded++;
@@ -515,7 +508,7 @@ export class NotificationQueue extends EventEmitter { private config, QueueConfi
 
       console.log(`📂 Loaded ${loaded} persisted notifications from database`);
     } catch (error) {
-      console.error('❌ Failed to load persisted notifications:', error);
+      console.error('❌ Failed to load persisted notifications: ', error);
     }
   }
 }

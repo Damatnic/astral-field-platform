@@ -4,10 +4,9 @@
  */
 
 import { database } from '../../lib/database';
-import { aiPredictionEngine, type PlayerPrediction } from './predictionEngine';
+import { aiPredictionEngine: type PlayerPrediction } from './predictionEngine';
 
-export interface PredictionOutcome {
-  predictionId, string,
+export interface PredictionOutcome { predictionId: string,
     playerId, string,
   week, number,
     season, number,
@@ -16,23 +15,21 @@ export interface PredictionOutcome {
   accuracy, number,
     error, number,
   absoluteError, number,
-    factors: {
-  matchup, number,
+    factors: { matchup: number,
     weather, number,
     injury, number,
     form, number,
-    gameScript: number,
+    gameScript, number,
   }
   modelWeights: Record<string, number>;
   timestamp: Date,
 }
 
-export interface ModelPerformance {
-  modelName, string,
+export interface ModelPerformance { modelName: string,
     totalPredictions, number,
   averageAccuracy, number,
     averageError, number,
-  mape, number, // Mean Absolute Percentage Error,
+  mape, number, // Mean Absolute Percentage: Error,
     rmse, number, // Root Mean Square Error;
   lastUpdated, Date,
     performanceByPosition: Record<string, {;
@@ -41,12 +38,10 @@ export interface ModelPerformance {
   error: number
 }
 >;
-  performanceByWeek: Record<number, {
-    accuracy, number,
+  performanceByWeek: Record<number, { accuracy: number,
     predictions, number,
     error: number }>;
-  confidenceCalibration: Array<{
-  confidenceRange, string,
+  confidenceCalibration: Array<{ confidenceRange: string,
     accuracy, number,
     count: number,
   }>;
@@ -71,7 +66,7 @@ export interface AdaptiveWeights {
   confidenceAdjustment: number,
   
 }
-class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelPerformance>();
+class AdaptiveLearningSystem { private performanceCache  = new Map<string, ModelPerformance>();
   private learningInsights: LearningInsight[] = [];
   private adaptiveWeights = new Map<string, AdaptiveWeights>();
   private readonly: LEARNING_RATE = 0.1;
@@ -88,15 +83,14 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   actualPoints, number,
     factors, any,
   modelWeights: Record<string, number>
-  ): : Promise<void> {
+  ): : Promise<void> { 
     try {
       // Calculate accuracy metrics
       const error = actualPoints - predictedPoints;
       const absoluteError = Math.abs(error);
       const accuracy = Math.max(0, 1 - (absoluteError / Math.max(actualPoints, 1)));
 
-      const outcome: PredictionOutcome = {
-        predictionId, playerId, week, season, predictedPoints, actualPoints,
+      const outcome: PredictionOutcome = { predictionId: playerId, week, season, predictedPoints, actualPoints,
         accuracy, error,
         absoluteError, factors, modelWeights,
         timestamp: new Date()
@@ -115,15 +109,14 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
 
       console.log(`📊 Recorded prediction outcome for ${playerId}, ${accuracy.toFixed(2)} accuracy`);
     } catch (error) {
-      console.error('Error recording prediction outcome:', error);
+      console.error('Error recording prediction outcome: ', error);
     }
   }
 
   // Get model performance analytics
   async getModelPerformance(async getModelPerformance(
-    modelName?: string,
-    position?: string,
-    timeframe: 'week' | 'month' | 'season' = 'month'
+    modelName? : string, position?: string,
+    timeframe: 'week' | 'month' | 'season'  = 'month'
   ): : Promise<): PromiseModelPerformance[]> { try {
       const cacheKey = `performance_${modelName || 'all' }_${position.|| 'all' }_${timeframe}`
       const cached = this.performanceCache.get(cacheKey);
@@ -134,7 +127,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
       // Calculate date range based on timeframe
       const endDate = new Date();
       const startDate = new Date();
-      switch (timeframe) {
+      switch (timeframe) { 
       case 'week':
       startDate.setDate(endDate.getDate() - 7);
           break;
@@ -142,13 +135,12 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     case 'month':
           startDate.setMonth(endDate.getMonth() - 1);
           break;
-        case 'season':
-          startDate.setMonth(0, 1); // Start of year
+        case 'season', startDate.setMonth(0, 1); // Start of year
           break;
        }
 
       // Query prediction outcomes
-      let query = `
+      let query  = `
         SELECT 
           po.*,
           np.position
@@ -158,7 +150,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
       `
       const params: any[] = [startDate, endDate];
       
-      if (position) { query: += ` AND np.position = $${params.length + 1 }`
+      if (position) { query: + = ` AND np.position = $${params.length + 1 }`
         params.push(position);
       }
 
@@ -176,14 +168,14 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
       
       return [performance];
     } catch (error) {
-      console.error('Error getting model performance:', error);
+      console.error('Error getting model performance: ', error);
       return [];
     }
   }
 
   // Get learning insights
   async getLearningInsights(
-    category?: 'factor_importance' | 'model_bias' | 'position_accuracy' | 'temporal_pattern'
+    category?, 'factor_importance' | 'model_bias' | 'position_accuracy' | 'temporal_pattern'
   ): : Promise<LearningInsight[]> { let insights = this.learningInsights;
     
     if (category) {
@@ -197,8 +189,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
 
   // Get adaptive weights for improved predictions
   async getAdaptiveWeights(
-    playerId?: string,
-    position?: string
+    playerId? : string, position?: string
   ): : Promise<AdaptiveWeights | null> {; // Try player-specific weights first
     if (playerId) { const playerWeights = this.adaptiveWeights.get(`player_${playerId }`);
       if (playerWeights) return playerWeights;
@@ -239,11 +230,11 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   }
 
   // Private helper methods
-  private async storePredictionOutcome(async storePredictionOutcome(outcome: PredictionOutcome): : Promise<): Promisevoid> { try {
+  private async storePredictionOutcome(async storePredictionOutcome(outcome: PredictionOutcome): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO prediction_outcomes (
           prediction_id, player_id, week, season, predicted_points, actual_points, accuracy, error, absolute_error, factors, model_weights, timestamp
-        ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        ), VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
         outcome.predictionId,
         outcome.playerId,
@@ -259,14 +250,14 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
         outcome.timestamp
       ]);
      } catch (error) {
-      console.error('Error storing prediction outcome:', error);
+      console.error('Error storing prediction outcome: ', error);
     }
   }
 
   private calculateModelPerformance(
     outcomes: any[];
-    modelName?: string
-  ): ModelPerformance { if (outcomes.length === 0) {
+    modelName? : string
+  ): ModelPerformance { if (outcomes.length  === 0) {
       throw new Error('No outcomes to calculate performance from');
      }
 
@@ -276,13 +267,13 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     const averageError = outcomes.reduce((sum, o) => sum + parseFloat(o.error), 0) / totalPredictions;
     
     // Calculate MAPE (Mean Absolute Percentage Error)
-    const mape = outcomes.reduce((sum, o) => {const actual = parseFloat(o.actual_points);
+    const mape = outcomes.reduce((sum, o) => { const actual = parseFloat(o.actual_points);
       const absoluteError = parseFloat(o.absolute_error);
-      return sum + (actual > 0 ? (absoluteError / actual) : 0);
+      return sum + (actual > 0 ? (absoluteError / actual) , 0);
      }, 0) / totalPredictions;
     
     // Calculate RMSE (Root Mean Square Error)
-    const rmse = Math.sqrt(outcomes.reduce((sum, o) => sum + Math.pow(parseFloat(o.error), 2), 0) / totalPredictions
+    const rmse  = Math.sqrt(outcomes.reduce((sum, o) => sum + Math.pow(parseFloat(o.error), 2), 0) / totalPredictions
     );
 
     // Performance by position
@@ -293,11 +284,11 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
      }, {} as Record<string, any[]>);
 
     const performanceByPosition: Record<string, any> = {}
-    Object.entries(positionGroups).forEach(([position, posOutcomes]) => { const outcomes = posOutcomes as any[];
+    Object.entries(positionGroups).forEach(([position, posOutcomes]) => {  const outcomes = posOutcomes as any[];
       performanceByPosition[position] = {
         accuracy: outcomes.reduce((sum, o) => sum + parseFloat(o.accuracy), 0) / outcomes.length,
         predictions: outcomes.length;
-  error: outcomes.reduce((sum, o) => sum + parseFloat(o.error), 0) / outcomes.length
+  error, outcomes.reduce((sum, o)  => sum + parseFloat(o.error), 0) / outcomes.length
        }
     });
 
@@ -309,17 +300,17 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
      }, {} as Record<number, any[]>);
 
     const performanceByWeek: Record<number, any> = {}
-    Object.entries(weekGroups).forEach(([week, weekOutcomes]) => { const outcomes = weekOutcomes as any[];
+    Object.entries(weekGroups).forEach(([week, weekOutcomes]) => {  const outcomes = weekOutcomes as any[];
       performanceByWeek[parseInt(week)] = {
         accuracy: outcomes.reduce((sum, o) => sum + parseFloat(o.accuracy), 0) / outcomes.length,
         predictions: outcomes.length;
-  error: outcomes.reduce((sum, o) => sum + parseFloat(o.error), 0) / outcomes.length
+  error, outcomes.reduce((sum, o)  => sum + parseFloat(o.error), 0) / outcomes.length
        }
     });
 
     // Confidence calibration
     const confidenceRanges = [;
-      { min: 0;
+      {  min: 0;
   max: 20; label: '0-20%' },
       { min: 20;
   max: 40; label: '20-40%' },
@@ -331,14 +322,14 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   max: 100; label: '80-100%' }
     ];
 
-    const confidenceCalibration = confidenceRanges.map(range => { const rangeOutcomes = outcomes.filter(o => {
+    const confidenceCalibration  = confidenceRanges.map(range => { const rangeOutcomes = outcomes.filter(o => {
         const confidence = parseFloat(o.confidence || '70');
         return confidence >= range.min && confidence < range.max;
        });
 
-      return {confidenceRange: range.label;
-  accuracy: rangeOutcomes.length > 0 ? rangeOutcomes.reduce((sum, o) => sum + parseFloat(o.accuracy), 0) / rangeOutcomes.length: 0;
-  count: rangeOutcomes.length
+      return { confidenceRange: range.label;
+  accuracy: rangeOutcomes.length > 0 ? rangeOutcomes.reduce((sum : o) => sum + parseFloat(o.accuracy), 0) / rangeOutcomes.length: 0;
+  count, rangeOutcomes.length
       }
     });
 
@@ -353,7 +344,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   }
 
   private async updateModelPerformance(async updateModelPerformance(outcome: PredictionOutcome): : Promise<): Promisevoid> {; // Update individual model performance metrics
-    Object.entries(outcome.modelWeights).forEach(([modelName, weight]) => { if (weight > 0) {
+    Object.entries(outcome.modelWeights).forEach(([modelName, weight])  => { if (weight > 0) {
         // This model contributed to the prediction
         this.updateModelMetrics(modelName, outcome, weight);
        }
@@ -383,14 +374,12 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     });
 
     // Generate insights for significantly important factors
-    Object.entries(factorAccuracies).forEach(([factor, score]) => { if (Math.abs(score) > 0.3) { // Significant correlation
-        this.learningInsights.push({type: 'factor_importance';
-  description: `${factor } shows ${scor,
-  e: > 0 ? 'positive' : 'negative'} correlation with prediction accuracy`,
-          impact: Math.abs(score) > 0.6 ? 'high' : Math.abs(score) > 0.4 ? 'medium' : 'low';
+    Object.entries(factorAccuracies).forEach(([factor, score]) => {  if (Math.abs(score) > 0.3) { // Significant correlation
+        this.learningInsights.push({ type: 'factor_importance';
+  description: `${factor } shows ${ scor: e: > 0 ? 'positive' : 'negative'} correlation with prediction accuracy` : impact: Math.abs(score) > 0.6 ? 'high' : Math.abs(score) > 0.4 ? 'medium' : 'low';
           recommendation: score > 0 
             ? `Increase weight of ${factor} in future predictions` : `Reduce weight of ${factor} or improve its calculation`,
-          supportingData: { factor, score, outcome: outcome.predictionId },
+          supportingData: { factor: score, outcome: outcome.predictionId },
           discoveredAt: new Date()
         });
       }
@@ -400,15 +389,15 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   private calculateFactorCorrelation(factor, string,
   value, number, accuracy: number); number {
     // Simplified correlation calculation
-    // In a full implementation, this would use historical data
+    // In a full: implementation, this would use historical data
     return (value - 0.5) * (accuracy - 0.5) * 2;
   }
 
   private async detectModelBias(async detectModelBias(outcome: PredictionOutcome): : Promise<): Promisevoid> {; // Check for systematic over/under predictions
     if (Math.abs(outcome.error) > 5) { // Significant error
-      const biasDirection = outcome.error > 0 ? 'under'  'over';
+      const biasDirection  = outcome.error > 0 ? 'under'  'over';
       
-      this.learningInsights.push({type: 'model_bias';
+      this.learningInsights.push({ type: 'model_bias';
   description: `Model shows ${biasDirection}-prediction bias for this outcome`,
         impact: 'medium';
   recommendation: `Adjust base prediction weights to reduce ${biasDirection}-prediction tendency`,
@@ -422,10 +411,10 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     }
   }
 
-  private async analyzePositionAccuracy(async analyzePositionAccuracy(outcome: PredictionOutcome): : Promise<): Promisevoid> { const playerData = await this.getPlayerData(outcome.playerId);
+  private async analyzePositionAccuracy(async analyzePositionAccuracy(outcome: PredictionOutcome): : Promise<): Promisevoid> { const playerData  = await this.getPlayerData(outcome.playerId);
     
-    if (outcome.accuracy < 0.6) { // Poor accuracy
-      this.learningInsights.push({type: 'position_accuracy';
+    if (outcome.accuracy < 0.6) {  // Poor accuracy
+      this.learningInsights.push({ type: 'position_accuracy';
   description: `Low accuracy prediction for ${playerData.position } position`,
         impact: 'medium';
   recommendation: `Review ${playerData.position}-specific prediction factors and weights`,
@@ -440,7 +429,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   }
 
   private async findTemporalPatterns(async findTemporalPatterns(outcome: PredictionOutcome): : Promise<): Promisevoid> {; // Analyze week-specific patterns
-    if (outcome.week <= 3 && outcome.accuracy < 0.5) {
+    if (outcome.week < = 3 && outcome.accuracy < 0.5) { 
       this.learningInsights.push({type 'temporal_pattern';
   description: `Poor accuracy in early season (Week ${outcome.week})`,
         impact: 'low';
@@ -452,7 +441,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     }
   }
 
-  private async updateAdaptiveWeights(async updateAdaptiveWeights(outcome: PredictionOutcome): : Promise<): Promisevoid> { const playerData = await this.getPlayerData(outcome.playerId);
+  private async updateAdaptiveWeights(async updateAdaptiveWeights(outcome: PredictionOutcome): : Promise<): Promisevoid> { const playerData  = await this.getPlayerData(outcome.playerId);
     
     // Update player-specific weights
     await this.updatePlayerWeights(outcome, playerData);
@@ -468,9 +457,9 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   playerData: any): : Promise<): Promisevoid> { const key = `player_${outcome.playerId }`
     let weights = this.adaptiveWeights.get(key);
     
-    if (!weights) { weights = {
+    if (!weights) {  weights = {
         playerId: outcome.playerId;
-  modelWeights: { ...outcome.modelWeights},
+  modelWeights, { ...outcome.modelWeights},
         factorWeights: { ...outcome.factors},
         lastUpdated: new Date();
   learningRate: this.LEARNING_RATE;
@@ -479,7 +468,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     }
     
     // Apply learning rate adjustment based on prediction accuracy
-    const learningMultiplier = outcome.accuracy > 0.8 ? 1.1 : outcome.accuracy < 0.4 ? 0.9 : 1.0;
+    const learningMultiplier  = outcome.accuracy > 0.8 ? 1.1 : outcome.accuracy < 0.4 ? 0.9, 1.0;
     
     Object.entries(outcome.modelWeights).forEach(([model, weight]) => {
       weights!.modelWeights[model] = (weights!.modelWeights[model] || 0.25) * learningMultiplier;
@@ -499,9 +488,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
   position: string): : Promise<): Promisevoid> { const key = `position_${position }`
     let weights = this.adaptiveWeights.get(key);
     
-    if (!weights) { weights = {
-        position,
-        modelWeights: { ...outcome.modelWeights},
+    if (!weights) {  weights = { position: modelWeights, { ...outcome.modelWeights},
         factorWeights: { ...outcome.factors},
         lastUpdated: new Date();
   learningRate: this.LEARNING_RATE * 0.5, // Slower learning for position weights
@@ -510,7 +497,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     }
     
     // Similar weight updates but with reduced learning rate
-    const positionLearningRate = this.LEARNING_RATE * 0.3;
+    const positionLearningRate  = this.LEARNING_RATE * 0.3;
     const adjustment = (outcome.accuracy - 0.5) * positionLearningRate;
     
     Object.entries(outcome.factors).forEach(([factor, value]) => {
@@ -523,17 +510,15 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     this.adaptiveWeights.set(key, weights);
   }
 
-  private async updateGlobalWeights(async updateGlobalWeights(outcome: PredictionOutcome): : Promise<): Promisevoid> { const key = 'global';
+  private async updateGlobalWeights(async updateGlobalWeights(outcome: PredictionOutcome): : Promise<): Promisevoid> {  const key = 'global';
     let weights = this.adaptiveWeights.get(key);
     
     if (!weights) {
       weights = {
-        modelWeights: { opena,
-  i: 0.3;
+        modelWeights: { opena: i: 0.3;
   anthropic: 0.25, gemini: 0.25;
-  deepseek: 0.2  },
-        factorWeights: { matchu,
-  p: 0.3;
+  deepseek, 0.2  },
+        factorWeights: { matchu: p: 0.3;
   weather: 0.1, injury: 0.2;
   form: 0.25, gameScript: 0.15 },
         lastUpdated: new Date();
@@ -543,7 +528,7 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     }
     
     // Very conservative global weight updates
-    const globalLearningRate = this.LEARNING_RATE * 0.05;
+    const globalLearningRate  = this.LEARNING_RATE * 0.05;
     const adjustment = (outcome.accuracy - 0.5) * globalLearningRate;
     
     Object.entries(outcome.factors).forEach(([factor, value]) => {
@@ -574,18 +559,18 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
     const biasAdjustment = this.calculateBiasAdjustment(basePrediction, weights);
     const adjustedPoints = Math.max(0, basePrediction.projectedPoints + biasAdjustment);
     
-    return {
+    return { 
       ...basePrediction,
       projectedPoints: Math.round(adjustedPoints * 10) / 10;
   confidence: Math.max(1, Math.min(100, adjustedConfidence)),
-      factors: adjustedFactors
+      factors, adjustedFactors
     }
   }
 
   private calculateBiasAdjustment(prediction, PlayerPrediction,
   weights: AdaptiveWeights); number {
     // Small adjustment based on learned biases (typically -2 to +2 points)
-    const confidenceFactor = (weights.confidenceAdjustment - 1.0) * 0.1;
+    const confidenceFactor  = (weights.confidenceAdjustment - 1.0) * 0.1;
     const baseBias = prediction.projectedPoints * confidenceFactor;
     
     return Math.max(-3, Math.min(3, baseBias));
@@ -598,38 +583,37 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
       
       return result.rows[0] || { }
     } catch (error) {
-      console.error('Error getting player data:', error);
+      console.error('Error getting player data: ', error);
       return {}
     }
   }
 
   // Health check and diagnostics
-  async healthCheck(): : Promise<  {
+  async healthCheck(): : Promise<  { 
     status: 'healthy' | 'degraded' | 'unhealthy',
     totalOutcomes, number,
     learningInsights, number,
     adaptiveWeights, number,
-    averageAccuracy: number | null }> { try {
+    averageAccuracy, number | null }> { try {
       // Get recent outcomes count
-      const outcomesResult = await database.query(`
+      const outcomesResult  = await database.query(`
         SELECT COUNT(*) as count, AVG(accuracy) as avg_accuracy
         FROM prediction_outcomes 
         WHERE timestamp >= NOW() - INTERVAL '30 days'
       `);
       
-      const totalOutcomes = parseInt(outcomesResult.rows[0]?.count || '0');
+      const totalOutcomes = parseInt(outcomesResult.rows[0]? .count || '0');
       const averageAccuracy = parseFloat(outcomesResult.rows[0]?.avg_accuracy || '0');
       
-      return {
+      return { 
         status: totalOutcomes > this.MIN_SAMPLES ? 'healthy' : 'degraded';
-        totalOutcomes,
-        learningInsights: this.learningInsights.length;
+        totalOutcomes, learningInsights: this.learningInsights.length;
   adaptiveWeights: this.adaptiveWeights.size;
         averageAccuracy: totalOutcomes > 0 ? averageAccurac,
-  y: null
+  y, null
        }
     } catch (error) {
-      console.error('Error in health check:', error);
+      console.error('Error in health check: ', error);
       return {
         status: 'unhealthy';
   totalOutcomes: 0;
@@ -642,5 +626,5 @@ class AdaptiveLearningSystem { private performanceCache = new Map<string, ModelP
 }
 
 // Singleton instance
-export const adaptiveLearningSystem = new AdaptiveLearningSystem();
+export const adaptiveLearningSystem  = new AdaptiveLearningSystem();
 export default adaptiveLearningSystem;

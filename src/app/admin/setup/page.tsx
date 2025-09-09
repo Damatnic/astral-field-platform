@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function AdminSetupPage() {
+export default function AdminSetupPage() { 
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [adminKey, setAdminKey] = useState("");
@@ -13,8 +13,8 @@ export default function AdminSetupPage() {
     setLoading(true);
     try {
       const response = await fetch("/api/setup-database", { method: "POST" });
-      const data = await response.json();
-      setResults({ type: "database", ...data});
+      const data  = await response.json();
+      setResults({  type: "database", ...data});
     } catch (error) {
       setResults({
 type: "database",
@@ -25,12 +25,12 @@ type: "database",
       setLoading(false);
     }
   }
-  const setupProfiles = async () => {
+  const setupProfiles  = async () => { 
     setLoading(true);
     try {
       const response = await fetch("/api/setup-profiles", { method: "POST" });
-      const data = await response.json();
-      setResults({ type: "profiles", ...data});
+      const data  = await response.json();
+      setResults({  type: "profiles", ...data});
     } catch (error) {
       setResults({
 type: "profiles",
@@ -41,7 +41,7 @@ type: "profiles",
       setLoading(false);
     }
   }
-  const checkStatus = async () => {
+  const checkStatus  = async () => { 
     setLoading(true);
     try {
       const [dbResponse, profilesResponse] = await Promise.all([
@@ -55,7 +55,7 @@ type: "profiles",
       setResults({
 type: "status",
         database, dbData,
-        profiles:profilesData
+        profiles, profilesData
 });
     } catch (error) {
       setResults({
@@ -67,17 +67,16 @@ type: "status",
       setLoading(false);
     }
   }
-  const setup2025Season = async () => {
+  const setup2025Season  = async () => { 
     setLoading(true);
     try {
       const response = await fetch("/api/setup-2025-season", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:JSON.stringify({ forc,
-  e:true })
+        body:JSON.stringify({ force: true })
 });
-      const data = await response.json();
-      setResults({ type: "2025-season", ...data});
+      const data  = await response.json();
+      setResults({  type: "2025-season", ...data});
     } catch (error) {
       setResults({
 type: "2025-season",
@@ -88,7 +87,7 @@ type: "2025-season",
       setLoading(false);
     }
   }
-  const syncSportsData = async (action:string) => {
+  const syncSportsData  = async (action:string) => { 
     setLoading(true);
     try {
       const response = await fetch("/api/sync-sportsdata", {
@@ -96,7 +95,7 @@ type: "2025-season",
         headers: { "Content-Type": "application/json" },
         body:JSON.stringify({ action })
 });
-      const data = await response.json();
+      const data  = await response.json();
       setResults({ type: `sync-${action}`, ...data});
     } catch (error) {
       setResults({
@@ -108,25 +107,25 @@ type: `sync-${action}`,
       setLoading(false);
     }
   }
-  const getSportsDataStatus = async () => {
+  const getSportsDataStatus  = async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/sync-sportsdata");
       const data = await response.json();
       setSportsDataStatus(data);
-    } catch (error) {
+    } catch (error) { 
       setSportsDataStatus({ error: "Failed to get status" });
     } finally {
       setLoading(false);
     }
   }
-  const validateSetup = async () => {
+  const validateSetup  = async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/validate-2025-setup");
       const data = await response.json();
       setValidationResults(data);
-    } catch (error) {
+    } catch (error) { 
       setValidationResults({ 
         success: false,
         error: "Failed to validate setup" 
@@ -135,7 +134,7 @@ type: `sync-${action}`,
       setLoading(false);
     }
   }
-  const oneClickSetup = async () => {
+  const oneClickSetup  = async () => { 
     if (!adminKey.trim()) {
       setResults({
 type: "oneclick",
@@ -169,7 +168,7 @@ type: "oneclick",
     }
   }
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className ="max-w-6xl mx-auto p-6 space-y-6">
       <div className="bg-white shadow rounded-lg p-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Astral Field Admin Dashboard
@@ -182,13 +181,13 @@ type: "oneclick",
             🏈 2025 NFL Season Setup
           </h2>
           <p className="text-red-700 mb-4">
-            Complete setup for 2025 NFL season with real teams, players, and Nicholas's strategic advantage!
+            Complete setup for 2025 NFL season with real: teams, players, and Nicholas's strategic advantage!
           </p>
           <div className="flex gap-4 mb-4">
             <button
               onClick={setup2025Season}
               disabled={loading}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disable,
+              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700: disable,
   d:opacity-50 font-semibold"
             >
               🚀 Setup Complete 2025 Season
@@ -196,7 +195,7 @@ type: "oneclick",
             <button
               onClick={() => syncSportsData("sync-all-players")}
               disabled={loading}
-              className="bg-orange-600 text-white px-4 py-3 rounded-lg hover:bg-orange-700 disable,
+              className="bg-orange-600 text-white px-4 py-3 rounded-lg hover:bg-orange-700: disable,
   d:opacity-50"
             >
               Sync All Players
@@ -204,7 +203,7 @@ type: "oneclick",
             <button
               onClick={getSportsDataStatus}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disable,
+              className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700: disable,
   d:opacity-50"
             >
               Check NFL Data Status
@@ -212,18 +211,18 @@ type: "oneclick",
             <button
               onClick={validateSetup}
               disabled={loading}
-              className="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 disable,
+              className="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700: disable,
   d:opacity-50"
             >
               ✅ Validate Complete Setup
             </button>
           </div>
           
-          {sportsDataStatus && (
+          { sportsDataStatus && (
             <div className="bg-white p-4 rounded border mb-4">
               <h4 className="font-semibold mb-2">NFL Data Status:</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>Players: {sportsDataStatus.totalPlayers}</div>
+                <div>Players, {sportsDataStatus.totalPlayers}</div>
                 <div>Teams: {sportsDataStatus.totalTeams}</div>
                 <div>Week: {sportsDataStatus.currentWeek}</div>
                 <div>Season: {sportsDataStatus.currentSeason}</div>
@@ -232,23 +231,23 @@ type: "oneclick",
           )}
 
           {validationResults && (
-            <div className="bg-white p-4 rounded border">
+            <div className ="bg-white p-4 rounded border">
               <h4 className="font-semibold mb-3">🔍 2025 Season Validation Results</h4>
               
-              {validationResults.success && (
+              { validationResults.success && (
                 <>
                   <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 ${validationResults.summary.status === 'excellent' ? 'bg-green-100 text-green-800' :validationResults.summary.status === 'good' ? 'bg-blue-100 text-blue-800' :validationResults.summary.status === 'fair' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
                    }`}>
                     {validationResults.summary.status.toUpperCase()} - {validationResults.summary.percentage}
                   </div>
                   
-                  <div className="space-y-2 mb-4">
-                    {validationResults.validation.checks.map((check, any, index:number) => (
+                  <div className ="space-y-2 mb-4">
+                    { validationResults.validation.checks.map((check, any, index, number)  => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                         <div className="flex items-center gap-2">
-                          <span className={`text-sm ${check.status === 'pass' ? 'text-green-600' :check.status === 'warn' ? 'text-yellow-600' : 'text-red-600'
+                          <span className={ `text-sm ${check.status === 'pass' ? 'text-green-600' :check.status === 'warn' ? 'text-yellow-600' : 'text-red-600'
                           }`}>
-                            {check.status === 'pass' ? '✅' :check.status === 'warn' ? '⚠️' : '❌'}
+                            {check.status  === 'pass' ? '✅' :check.status === 'warn' ? '⚠️' : '❌'}
                           </span>
                           <span className="font-medium text-sm">{check.name}</span>
                         </div>
@@ -263,16 +262,16 @@ type: "oneclick",
                     </div>
                   )}
 
-                  {!validationResults.summary.readyForProduction && (
+                  { !validationResults.summary.readyForProduction && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-yellow-800 text-sm">
-                      ⚠️ <strong>Needs Attention:</strong> Some setup issues detected.Review the checks above.
+                      ⚠️ <strong>Needs Attention, </strong> Some setup issues detected.Review the checks above.
                     </div>
                   )}
                 </>
               )}
 
               {!validationResults.success && (
-                <div className="text-red-600">
+                <div className ="text-red-600">
                   ❌ Validation failed: {validationResults.error}
                 </div>
               )}
@@ -287,7 +286,7 @@ type: "oneclick",
             <button
               onClick={setupDatabase}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disable,
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700: disable,
   d:opacity-50"
             >
               Setup Database
@@ -296,7 +295,7 @@ type: "oneclick",
             <button
               onClick={setupProfiles}
               disabled={loading}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disable,
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700: disable,
   d:opacity-50"
             >
               Setup Profiles
@@ -305,7 +304,7 @@ type: "oneclick",
             <button
               onClick={checkStatus}
               disabled={loading}
-              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 disable,
+              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700: disable,
   d:opacity-50"
             >
               Check Status
@@ -326,7 +325,7 @@ type: "oneclick",
             <button
               onClick={oneClickSetup}
               disabled={loading}
-              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 disable,
+              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700: disable,
   d:opacity-50"
             >
               Run Complete Setup
@@ -341,7 +340,7 @@ type: "oneclick",
           </div>
         )}
 
-        {results && (
+        { results && (
           <div className="mt-6 p-4 bg-gray-50 rounded">
             <h3 className="font-semibold mb-2">Results:</h3>
             
@@ -352,7 +351,7 @@ type: "oneclick",
                 </div>
                 {results.actions && (
                   <div className="space-y-1">
-                    {results.actions.map((action, string, index:number) => (
+                    {results.actions.map((action, string, index, number)  => (
                       <div key={index} className="text-sm text-green-700">
                         {action}
                       </div>
@@ -360,7 +359,7 @@ type: "oneclick",
                   </div>
                 )}
                 <div className="text-sm text-gray-600 mt-2">
-                  {results.details?.nicholasTeam}
+                  {results.details? .nicholasTeam}
                 </div>
               </div>
             )}

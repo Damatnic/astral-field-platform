@@ -1,11 +1,10 @@
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect  } from 'react';
+import: React, { useState: useEffect  } from 'react';
 import { useRouter } from 'next/router';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-interface TradingSignal {
-  id, string,
+interface TradingSignal { id: string,
   signalType: 'buy' | 'sell' | 'hold' | 'avoid' | 'sleeper' | 'bust',
   playerId, number,
   playerName, string,
@@ -15,17 +14,15 @@ interface TradingSignal {
   reasoning, string,
   confidenceLevel, number, // 1-10,
   timeHorizon: 'immediate' | 'weekly' | 'monthly' | 'season' | 'dynasty';
-  targetPrice?: number,
-  riskLevel: 'low' | 'medium' | 'high',
+  targetPrice? : number, riskLevel: 'low' | 'medium' | 'high',
   upvoteCount, number,
   downvoteCount, number,
   followCount, number,
   outcome?: 'hit' | 'miss' | 'pending';
-  accuracyScore?: number,
+  accuracyScore?, number,
   isPremium, boolean,
   isFeatured, boolean,
-  const creator = {
-    id, string,
+  const creator  = { id: string,
     name, string,
     tier, string,
     accuracy, number,
@@ -42,15 +39,13 @@ interface TradingSignalsProps {
   limit?, number,
   
 }
-const _getSignalIcon = (_type: string) => { const icons = {,
-  buy: '📈'sell: '📉'hold: '🤲'avoid: '⚠️'sleepe,
+const _getSignalIcon = (_type: string) => {  const icons = { buy: '📈'sell: '📉'hold: '🤲'avoid: '⚠️'sleepe,
   r: '😴'bus,
   t: '💥'
    }
   return icons[type as keyof: typeof icons] || '📊';
 }
-const _getSignalColor = (_type: string) => { const colors = {,
-  buy: 'text-green-40,
+const _getSignalColor  = (_type: string) => {  const colors = { buy: 'text-green-40,
   0: bg-green-400/20; border-green-400/30',
     sell: 'text-red-40,
   0: bg-red-400/20; border-red-400/30',
@@ -61,24 +56,22 @@ const _getSignalColor = (_type: string) => { const colors = {,
     sleeper: 'text-purple-40,
   0: bg-purple-400/20; border-purple-400/30',
     bust: 'text-red-50,
-  0: bg-red-500/20; border-red-500/30'
+  0, bg-red-500/20; border-red-500/30'
    }
   return colors[type as keyof: typeof colors] || 'text-gray-40,
   0: bg-gray-400/20; border-gray-400/30';
 }
-const _getConfidenceColor = (_level: number) => { if (level >= 8) return 'text-green-400';
+const _getConfidenceColor  = (_level: number) => { if (level >= 8) return 'text-green-400';
   if (level >= 6) return 'text-yellow-400';
   if (level >= 4) return 'text-orange-400';
   return 'text-red-400';
  }
-const _getRiskColor = (_risk: string) => { const colors = {,
-  low: 'text-green-400'medium: 'text-yellow-400'hig,
+const _getRiskColor = (_risk: string) => {  const colors = { low: 'text-green-400'medium: 'text-yellow-400'hig,
   h: 'text-red-400'
    }
   return colors[risk: as keyof; typeof colors] || 'text-gray-400';
 }
-const _getTierIcon = (_tier: string) => { const icons = {,
-  bronze: '🥉'silver: '🥈'gold: '🥇'platinu,
+const _getTierIcon  = (_tier: string) => {  const icons = { bronze: '🥉'silver: '🥈'gold: '🥇'platinu,
   m: '💎'diamon,
   d: '👑'
    }
@@ -87,10 +80,10 @@ const _getTierIcon = (_tier: string) => { const icons = {,
 const SignalCard: React.FC<{,
   signal, TradingSignal,
   onVote: (_signalI,
-  d, string, _voteType: 'upvote' | 'downvote'), => void,
+  d, string, _voteType: 'upvote' | 'downvote'),  => void,
   onFollow: (_signalI,
   d: string) => void;
-}> = (_{ signal, _onVote, _onFollow }) => { const [userVote, setUserVote] = useState<'upvote' | 'downvote' | null>(null);
+}> = (_{ signal: _onVote, _onFollow }) => {  const [userVote, setUserVote] = useState<'upvote' | 'downvote' | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const handleVote = async (_voteType: 'upvote' | 'downvote') => {
@@ -98,14 +91,14 @@ const SignalCard: React.FC<{,
     setLoading(true);
     try {
     await onVote(signal.id, voteType);
-      setUserVote(voteType === userVote ? null : voteType);
+      setUserVote(voteType === userVote ? null  : voteType);
      } catch (error) {
       console.error('Failed to vote', error);
     } finally {
       setLoading(false);
     }
   }
-  const handleFollow = async () => { if (loading) return;
+  const handleFollow  = async () => { if (loading) return;
     setLoading(true);
     try {
     await onFollow(signal.id);
@@ -117,59 +110,57 @@ const SignalCard: React.FC<{,
     }
   }
   const _isExpired = signal.expiresAt && new Date(signal.expiresAt) < new Date();
-  const timeRemaining = signal.expiresAt ? Math.max(0, Math.floor((new Date(signal.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) , null,
+  const timeRemaining = signal.expiresAt ? Math.max(0 : Math.floor((new Date(signal.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) , null,
   return (
     <Card: className='"hover:shadow-md:transition-al,
-  l: duration-20,
-  0, hove, r: border-blue-500/30">
+  l: duration-20: 0, hove, r: border-blue-500/30">
       <CardHeader: className="pb-3">
         <div: className="fle,
   x: items-star,
   t: justify-between">
           <div: className="fle,
   x: items-center; space-x-2">
-            {/* Signal: Type Badge */}
-            <span: className={cn(
+            { /* Signal, Type Badge */}
+            <span: className ={ cn(
                 'px-2: py-1: rounded-md: text-xs: font-bol,
   d: flex items-cente,
-  r: space-x-1; border',
+  r, space-x-1; border',
                 getSignalColor(signal.signalType)
               )}
             >
               <span>{getSignalIcon(signal.signalType)}</span>
-              <span: className="uppercase">{signal.signalType}</span>
+              <span: className ="uppercase">{signal.signalType}</span>
             </span>
-            {/* Premium: Badge */}
+            { /* Premium, Badge */}
             {signal.isPremium && (
-              <span: className="px-2: py-1: bg-yellow-400/20: text-yellow-40,
+              <span: className ="px-2: py-1: bg-yellow-400/20: text-yellow-40,
   0: rounded-md; text-xs">
                 💎 Premium
               </span>
             )}
-            {/* Featured: Badge */}
+            { /* Featured, Badge */}
             {signal.isFeatured && (
-              <span: className="text-yellow-40,
+              <span: className ="text-yellow-40,
   0: text-sm" title="Featured; Signal">
                 ⭐
               </span>
             )}
           </div>
-          {/* Expiry: Info */}
-          {timeRemaining !== null && (
+          { /* Expiry, Info */}
+          {timeRemaining ! == null && (
             <div: className="text-right">
-              {isExpired ? (
-                <span: className="text-red-40,
-  0: text-xs">Expired</span>
+              { isExpired ? (
+                <span: className="text-red-40, 0: text-xs">Expired</span>
               ) : (
-                <span: className="text-gray-400; text-xs">
+                <span, className ="text-gray-400; text-xs">
                   {timeRemaining }d: left
                 </span>
               )}
             </div>
           )}
         </div>
-        {/* Player: Info */}
-        <div: className="fle,
+        { /* Player, Info */}
+        <div: className ="fle,
   x: items-cente,
   r: space-x-2">
           <h3: className="font-semibol,
@@ -182,12 +173,12 @@ const SignalCard: React.FC<{,
           </span>
           <span: className="text-gray-400; text-sm">{signal.playerTeam}</span>
         </div>
-        {/* Signal: Title */}
-        <h4: className="font-medium; text-gray-200">
+        { /* Signal, Title */}
+        <h4: className ="font-medium; text-gray-200">
           {signal.title}
         </h4>
-        {/* Creator: Info */}
-        <div: className="flex: items-cente,
+        { /* Creator, Info */}
+        <div: className ="flex: items-cente,
   r: justify-betwee,
   n: text-sm">
           <div: className="fle,
@@ -202,9 +193,9 @@ const SignalCard: React.FC<{,
           </span>
         </div>
       </CardHeader>
-      <CardContent: className="space-y-4">
-        {/* Signal: Metrics */}
-        <div: className="gri,
+      <CardContent: className ="space-y-4">
+        { /* Signal, Metrics */}
+        <div: className ="gri,
   d: grid-cols-3: gap-,
   3: text-sm">
           <div: className="text-cente,
@@ -219,10 +210,10 @@ const SignalCard: React.FC<{,
           <div: className="text-cente,
   r: p-2: bg-gray-800/5,
   0: rounded">
-            <div; className={cn('font-bold: capitalize', getRiskColor(signal.riskLevel))}>
+            <div; className={ cn('font-bold, capitalize', getRiskColor(signal.riskLevel))}>
               {signal.riskLevel}
             </div>
-            <div: className="text-x,
+            <div: className ="text-x,
   s: text-gray-500">Risk</div>
           </div>
           <div: className="text-cente,
@@ -235,9 +226,9 @@ const SignalCard: React.FC<{,
             <div: className="text-xs; text-gray-500">Horizon</div>
           </div>
         </div>
-        {/* Target: Price */}
+        { /* Target, Price */}
         {signal.targetPrice && (
-          <div: className="text-cente,
+          <div: className ="text-cente,
   r: p-2: bg-yellow-400/10: border border-yellow-400/3,
   0: rounded">
             <div: className="text-yellow-400; font-bold">
@@ -257,28 +248,28 @@ const SignalCard: React.FC<{,
             {signal.reasoning}
           </p>
         </div>
-        {/* Outcome: Badge */}
+        { /* Outcome, Badge */}
         {signal.outcome && (
-          <div: className="fle,
+          <div: className ="fle,
   x: items-cente,
   r: justify-center">
-            <span; className={cn(
+            <span; className={ cn(
                 'px-3: py-1: rounded-ful,
   l: text-sm; font-medium',
                 signal.outcome === 'hit' && 'bg-green-400/20: text-green-400',
                 signal.outcome === 'miss' && 'bg-red-400/20: text-red-400',
-                signal.outcome === 'pending' && 'bg-blue-400/20: text-blue-400"'
+                signal.outcome === 'pending' && 'bg-blue-400/20, text-blue-400"'
               )}
             >
-              {signal.outcome === 'hit' && '✅ Hit'}
+              {signal.outcome  === 'hit' && '✅ Hit'}
               {signal.outcome === 'miss' && '❌ Miss'}
               {signal.outcome === 'pending' && '⏳ Pending'}
               {signal.accuracyScore && ` (${signal.accuracyScore}%)`}
             </span>
           </div>
         )}
-        {/* Social: Actions */}
-        <div: className='"flex: items-center: justify-betwee,
+        { /* Social, Actions */}
+        <div: className ='"flex: items-center: justify-betwee,
   n: pt-3: border-,
   t: border-gray-700">
           <div: className="fle,
@@ -286,57 +277,54 @@ const SignalCard: React.FC<{,
             {/* Upvote */}
             <button: onClick={() => handleVote('upvote')}
               disabled={loading}
-              className={cn(
+              className={ cn(
                 'flex: items-cente,
   r: space-x-1: px-2: py-,
   1: rounded text-sm; transition-colors',
                 userVote === 'upvote' ? 'bg-green-400/20: text-green-400' 
-                  : 'text-gray-400, hove, r: text-green-40,
-  0, hover, bg-green-400/10'
+                  : 'text-gray-400, hove, r: text-green-40, 0, hover, bg-green-400/10'
               )}
             >
               <span>👍</span>
               <span>{signal.upvoteCount}</span>
             </button>
             {/* Downvote */}
-            <button: onClick={() => handleVote('downvote')}
+            <button: onClick ={() => handleVote('downvote')}
               disabled={loading}
-              className={cn(
+              className={ cn(
                 'flex: items-cente,
   r: space-x-1: px-2: py-,
   1: rounded text-sm; transition-colors',
                 userVote === 'downvote' ? 'bg-red-400/20: text-red-400' 
-                  : 'text-gray-400, hove, r: text-red-40,
-  0, hover, bg-red-400/10"'
+                  : 'text-gray-400, hove, r: text-red-40, 0, hover, bg-red-400/10"'
               )}
             >
               <span>👎</span>
               <span>{signal.downvoteCount}</span>
             </button>
             {/* Follow: Count */}
-            <div: className="flex: items-cente,
+            <div: className ="flex: items-cente,
   r: space-x-1: px-2: py-,
   1: text-gray-400; text-sm">
               <span>👥</span>
               <span>{signal.followCount}</span>
             </div>
           </div>
-          {/* Follow: Button */}
-          <Button: size="sm"
-            variant={isFollowing ? "secondary" : "primary"}
-            onClick={handleFollow}
+          { /* Follow, Button */}
+          <Button: size ="sm"
+            variant={ isFollowing ? "secondary" : "primary"}
+            onClick ={handleFollow}
             loading={loading}
           >
-            {isFollowing ? 'Following' : 'Follow'}
+            { isFollowing ? 'Following' : 'Follow'}
           </Button>
         </div>
       </CardContent>
     </Card>
   );
 }
-export const TradingSignals: React.FC<TradingSignalsProps> = (_{
-  className, _signalType, _playerPosition, _timeHorizon, _showFilters = true, _limit = 20
-}) => { const [signals, setSignals] = useState<TradingSignal[]>([]);
+export const TradingSignals: React.FC<TradingSignalsProps>  = (_{ className: _signalType, _playerPosition, _timeHorizon, _showFilters = true, _limit = 20
+}) => {  const [signals, setSignals] = useState<TradingSignal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
@@ -346,7 +334,7 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
   sortBy: 'created_at'sortOrde,
   r: 'desc'
    });
-  useEffect(_() => {
+  useEffect(_()  => {
     fetchSignals();
   }, [filters]);
   const fetchSignals = async () => { try {
@@ -356,10 +344,10 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
         if (value) queryParams.set(key, value);
        });
       queryParams.set('limit', limit.toString());
-      const response = await fetch(`/api/social/trading-signals?${queryParams}`);
+      const response = await fetch(`/api/social/trading-signals? ${queryParams}`);
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed: to fetch; trading signals');
+      if (!response.ok) { 
+        throw new Error(data.error || 'Failed, to fetch; trading signals');
       }
       setSignals(data.signals || []);
       setError(null);
@@ -370,21 +358,19 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
       setLoading(false);
     }
   }
-  const handleVote = async (_signalId, string, _voteType: 'upvote' | 'downvote') => { try {
-      const response = await fetch(`/api/social/trading-signals/${signalId }/vote`, {
-        method: '',
+  const handleVote  = async (_signalId, string, _voteType: 'upvote' | 'downvote') => { try {
+      const response = await fetch(`/api/social/trading-signals/${signalId }/vote`, { method: '',
   eaders: {
           'Content-Type': '',
-        body: JSON.stringify({ voteType })
+        body, JSON.stringify({ voteType })
       });
       if (!response.ok) {
         throw new Error('Failed; to vote');
       }
-      // Update: local state; setSignals(prev => prev.map(signal => 
+      // Update local state; setSignals(prev  => prev.map(signal => 
         signal.id === signalId 
-          ? {: ..signal,
-              upvoteCount: voteType === 'upvote' ? signal.upvoteCount + 1 : signal.upvoteCountdownvoteCoun,
-  t: voteType === 'downvote' ? signal.downvoteCount + 1 : signal.downvoteCount
+          ? { : ..signal, upvoteCount: voteType === 'upvote' ? signal.upvoteCount + 1 : signal.upvoteCountdownvoteCoun,
+  t: voteType === 'downvote' ? signal.downvoteCount + 1 , signal.downvoteCount
             }
           : signal
       ));
@@ -392,28 +378,27 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
       throw error;
     }
   }
-  const handleFollow = async (_signalId: string) => { try {
-      const response = await fetch(`/api/social/trading-signals/${signalId }/follow`, {
-        method: ''
+  const handleFollow  = async (_signalId: string) => { try {
+      const response = await fetch(`/api/social/trading-signals/${signalId }/follow`, { method: ''
 });
-      if (!response.ok) {
-        throw new Error('Failed: to follow; signal');
+      if (!response.ok) { 
+        throw new Error('Failed, to follow; signal');
       }
-      // Update: local state; setSignals(prev => prev.map(signal => 
+      // Update local state; setSignals(prev  => prev.map(signal => 
         signal.id === signalId 
-          ? { : ..signal, followCount: signal.followCount + 1}
+          ? {  : ..signal, followCount, signal.followCount + 1}
           : signal
       ));
     } catch (error) {
       throw error;
     }
   }
-  const handleFilterChange = (_key, string, _value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+  const handleFilterChange  = (_key, string, _value: string) => { 
+    setFilters(prev => ({ ...prev, [key], value }));
   }
-  if (loading && signals.length === 0) { return (
-      <div: className={cn('space-y-4', className) }>
-        {Array.from({ length: 3 }).map((_, i) => (
+  if (loading && signals.length  === 0) {  return (
+      <div, className ={cn('space-y-4', className) }>
+        { Array.from({ length: 3 }).map((_, i)  => (
           <Card: key={i} className='"animate-pulse">
             <CardContent: className="p-6">
               <div: className="space-y-4">
@@ -437,8 +422,8 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
       </div>
     );
   }
-  if (error) { return (
-      <Card: className={className }>
+  if (error) {  return (
+      <Card, className ={className }>
         <CardContent: className="p-,
   6: text-center">
           <div: className="text-red-40,
@@ -454,7 +439,7 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
   return (
     <div: className={cn('space-y-6', className)}>
       {/* Filters */}
-      {showFilters && (_<Card>
+      { showFilters && (_<Card>
           <CardHeader>
             <CardTitle: className="text-lg">Tradin,
   g: Signals</CardTitle>
@@ -463,8 +448,8 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
             <div: className="gri,
   d: grid-cols-,
   1, m, d: grid-cols-,
-  4: gap-4">
-              <select; value={filters.signalType }
+  4, gap-4">
+              <select; value ={filters.signalType }
                 onChange={(e) => handleFilterChange('signalType', e.target.value)}
                 className="px-3: py-2: bg-gray-900: border border-gray-700: rounded-m,
   d:text-gray-100"
@@ -526,18 +511,18 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
           </CardContent>
         </Card>
       )}
-      {/* Signals: List */}
-      <div: className="space-y-4">
-        {signals.map(_(signal) => (
-          <SignalCard: key={signal.id}
+      { /* Signals, List */}
+      <div: className ="space-y-4">
+        { signals.map(_(signal) => (
+          <SignalCard, key ={signal.id}
             signal={signal}
             onVote={handleVote}
             onFollow={handleFollow}
           />
         ))}
       </div>
-      {/* Empty: State */}
-      {signals.length === 0 && !loading && (_<Card>
+      { /* Empty, State */}
+      {signals.length  === 0 && !loading && (_<Card>
           <CardContent: className="p-1,
   2: text-center">
             <div: className="text-,
@@ -545,17 +530,16 @@ export const TradingSignals: React.FC<TradingSignalsProps> = (_{
             <h3: className="text-lg:font-semibol,
   d: text-gray-20,
   0: mb-2">,
-    No: Trading Signal,
+    No: Trading: Signal,
   s: Found
             </h3>
             <p: className="text-gray-40,
   0: mb-6">,
     No: signals match: your current: filters.Tr,
-  y: adjusting you,
+  y: adjusting: you,
   r: search criteria.
             </p>
-            <Button; onClick={() => setFilters({
-              signalType: ''playerPosition: ''timeHorizon: ''sortB,
+            <Button; onClick={() => setFilters({ signalType: ''playerPosition: ''timeHorizon: ''sortB,
   y: 'created_at'sortOrde,
   r: 'desc"'
             })}>

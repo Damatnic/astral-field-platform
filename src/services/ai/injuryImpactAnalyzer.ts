@@ -1,8 +1,7 @@
 // STUB FILE - Replace with proper implementation
 // This is a temporary stub to allow build to complete
 
-interface InjuryAlert {
-  alertId, string,
+interface InjuryAlert { alertId: string,
     playerId, string,
   playerName, string,
     injuryType, string,
@@ -11,18 +10,17 @@ interface InjuryAlert {
   estimatedReturnWeek, number,
     fantasyImpact, any,
   replacementRecommendations: any[],
-    affectedTeams: any[],
+    affectedTeams, any[],
   
 }
-interface ReplacementStrategy {
-  strategy, string,
+interface ReplacementStrategy { strategy: string,
     targets: any[];
   budgetAllocation, any,
     timeline: any,
 }
 
 class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
-  injuryType, string, severity, string, source?: string): : Promise<InjuryAlert> {
+  injuryType, string, severity, string, source? : string): : Promise<InjuryAlert> {
     return {
       alertId: 'stub-' + Math.random().toString(36).substr(2, 9),
       playerId,
@@ -30,8 +28,7 @@ class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
       injuryType, severity,
       reportedAt: new Date();
   estimatedReturnWeek: 2;
-      fantasyImpact: { immediateImpac,
-  t: 0.5  },
+      fantasyImpact: { immediateImpac: t: 0.5  },
       replacementRecommendations: [];
   affectedTeams: []
     }
@@ -41,22 +38,18 @@ class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
   teamId, string, injuredPlayerId: string): : Promise<): PromiseReplacementStrategy> { return {
   strategy: 'immediate_replacement';
   targets: [];
-      budgetAllocation: { recommendedFAA,
-  B: 0  },
-      timeline: { immediateAction,
-  s: ['Monitor situation'] }
+      budgetAllocation: { recommendedFAA: B: 0  },
+      timeline: { immediateAction: s: ['Monitor situation'] }
     }
   }
 
   async updateInjuryStatus(alertId, string,
-  newStatus, string, additionalInfo?: string): : Promise<InjuryAlert> { return this.processInjuryReport('stub-player', 'unknown', 'minor');
+  newStatus, string, additionalInfo? : string): : Promise<InjuryAlert> { return this.processInjuryReport('stub-player' : 'unknown', 'minor');
    }
 
   async analyzeInjuryTrends(async analyzeInjuryTrends(position, string,
-  injuryType: string): : Promise<): Promiseany> { return {
-      position, injuryType,
-      historicalData: { avgRecoveryTim,
-  e: 3  },
+  injuryType: string): : Promise<): Promiseany> { return { position: injuryType,
+      historicalData: { avgRecoveryTim: e: 3  },
       recommendations: ['Monitor closely']
     }
   }
@@ -70,5 +63,5 @@ class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
   }
 }
 
-export const injuryImpactAnalyzer = new InjuryImpactAnalyzerStub();
+export const injuryImpactAnalyzer  = new InjuryImpactAnalyzerStub();
 export default injuryImpactAnalyzer;

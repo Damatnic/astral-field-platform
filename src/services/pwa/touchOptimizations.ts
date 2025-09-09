@@ -2,22 +2,21 @@
 
 /**
  * Touch Optimizations and Gesture Support for Astral Field PWA
- * Provides native app-like touch interactions, gestures, and haptic feedback
+ * Provides native app-like touch: interactions, gestures, and haptic feedback
  */
 
-export interface TouchPoint {
-  x, number,
+export interface TouchPoint { x: number,
     y, number,
   timestamp, number,
-    identifier: number,
+    identifier, number,
   
 }
 export interface GestureData {
   type: 'swipe' | 'pinch' | 'tap' | 'long-press' | 'drag' | 'double-tap',
     startPoint, TouchPoint,
   endPoint?, TouchPoint,
-  direction?: 'left' | 'right' | 'up' | 'down';
-  distance?, number,
+  direction? : 'left' | 'right' | 'up' | 'down';
+  distance? : number,
   velocity?, number,
   duration?, number,
   scale?, number,
@@ -25,8 +24,7 @@ export interface GestureData {
     target: HTMLElement,
   
 }
-export interface TouchOptimizationOptions {
-  enableHapticFeedback, boolean,
+export interface TouchOptimizationOptions { enableHapticFeedback: boolean,
     swipeThreshold, number,
   longPressThreshold, number,
     doubleTapThreshold, number,
@@ -36,10 +34,10 @@ export interface TouchOptimizationOptions {
     enableDragAndDrop: boolean,
   
 }
-export type GestureCallback = (gesture: GestureData) => void;
+export type GestureCallback  = (gesture: GestureData) => void;
 export type TouchCallback = (event: TouchEvent) => void;
 
-export class TouchOptimizationService { private static instance, TouchOptimizationService,
+export class TouchOptimizationService {  private static: instance, TouchOptimizationService,
   private gestureListeners: Map<string, GestureCallback[]> = new Map();
   private activeGestures: Map<number, TouchPoint> = new Map();
   private longPressTimers: Map<number, NodeJS.Timeout> = new Map();
@@ -47,25 +45,25 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
   private lastTapElement: HTMLElement | null = null;
   
   private options: TouchOptimizationOptions = {
-  enableHapticFeedback, true,
+  enableHapticFeedback: true,
   swipeThreshold: 50;
     longPressThreshold: 500;
   doubleTapThreshold: 300;
     velocityThreshold: 0.5;
-  enablePullToRefresh, true,
-    enableSwipeNavigation, true,
-  enableDragAndDrop: true
+  enablePullToRefresh: true,
+    enableSwipeNavigation: true,
+  enableDragAndDrop, true
    }
   private constructor() {}
 
   static getInstance(): TouchOptimizationService { if (!TouchOptimizationService.instance) {
-      TouchOptimizationService.instance = new TouchOptimizationService();
+      TouchOptimizationService.instance  = new TouchOptimizationService();
      }
     return TouchOptimizationService.instance;
   }
 
   // Initialize touch optimizations
-  initialize(options?: Partial<TouchOptimizationOptions>): void { if (options) {
+  initialize(options? : Partial<TouchOptimizationOptions>): void { if (options) {
       this.options = { ...this.options, ...options}
     }
 
@@ -78,7 +76,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
   }
 
   // Setup global event listeners
-  private setupEventListeners(): void { if (typeof window === 'undefined') return;
+  private setupEventListeners(): void {  if (typeof window === 'undefined') return;
 
     // Passive listeners for better performance
     document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false  });
@@ -90,25 +88,25 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
     document.addEventListener('touchend', this.preventZoom.bind(this), { passive: false });
 
     // Context menu prevention for long press
-    document.addEventListener('contextmenu', (e) => {
+    document.addEventListener('contextmenu', (e)  => {
       e.preventDefault();
     }, { passive: false });
   }
 
   // Handle touch start
-  private handleTouchStart(event: TouchEvent); void { const touch = event.touches[0];
+  private handleTouchStart(event: TouchEvent); void { const touch  = event.touches[0];
     const element = event.target as HTMLElement;
     
-    const touchPoint: TouchPoint = {
+    const touchPoint: TouchPoint = { 
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier: touch.identifier
+  identifier, touch.identifier
      }
     this.activeGestures.set(touch.identifier, touchPoint);
 
     // Start long press timer
-    const timer = setTimeout(() => {
+    const timer  = setTimeout(() => {
       this.handleLongPress(touchPoint, element);
     }, this.options.longPressThreshold);
     
@@ -131,11 +129,11 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
       this.longPressTimers.delete(touch.identifier);
      }
 
-    const currentPoint: TouchPoint = {
+    const currentPoint: TouchPoint = { 
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier: touch.identifier
+  identifier, touch.identifier
     }
     // Handle drag if enabled
     if (this.options.enableDragAndDrop) {
@@ -144,18 +142,18 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
   }
 
   // Handle touch end
-  private handleTouchEnd(event: TouchEvent); void { const touch = event.changedTouches[0];
+  private handleTouchEnd(event: TouchEvent); void { const touch  = event.changedTouches[0];
     const startPoint = this.activeGestures.get(touch.identifier);
     
     if (!startPoint) return;
 
-    const endPoint: TouchPoint = {
+    const endPoint: TouchPoint = { 
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier: touch.identifier
+  identifier, touch.identifier
      }
-    const element = event.target as HTMLElement;
+    const element  = event.target as HTMLElement;
 
     // Clear timers
     const timer = this.longPressTimers.get(touch.identifier);
@@ -194,26 +192,26 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
 
   // Handle tap gesture
   private handleTap(startPoint, TouchPoint,
-  element, HTMLElement, timestamp: number); void { const timeSinceLastTap = timestamp - this.lastTapTime;
+  element, HTMLElement, timestamp: number); void {  const timeSinceLastTap = timestamp - this.lastTapTime;
     
     if (timeSinceLastTap < this.options.doubleTapThreshold && 
         this.lastTapElement === element) {
       // Double tap
       this.triggerGesture('double-tap', {type 'double-tap',
         startPoint, element,
-        target: element
+        target, element
        });
       this.playHapticFeedback('medium');
-      this.lastTapTime = 0;
+      this.lastTapTime  = 0;
       this.lastTapElement = null;
-    } else {
+    } else { 
       // Single tap
-      this.triggerGesture('tap', {type: 'tap';
+      this.triggerGesture('tap', { type: 'tap';
         startPoint, element,
-        target: element
+        target, element
       });
       this.playHapticFeedback('light');
-      this.lastTapTime = timestamp;
+      this.lastTapTime  = timestamp;
       this.lastTapElement = element;
     }
   }
@@ -229,16 +227,15 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
     
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       direction = deltaX > 0 ? 'right' : 'left';
-     } else {direction = deltaY > 0 ? 'down' : 'up';
+     } else { direction = deltaY > 0 ? 'down' : 'up';
      }
 
-    const gesture: GestureData = {typ,
-  e: 'swipe';
+    const gesture: GestureData  = { typ: e: 'swipe';
       startPoint, endPoint,
       direction, distance,
       velocity: distance / duration;
       duration, element,
-      target: element
+      target, element
     }
     this.triggerGesture('swipe', gesture);
     this.playHapticFeedback('medium');
@@ -256,21 +253,21 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
 
   // Handle drag gesture
   private handleDrag(startPoint, TouchPoint,
-  currentPoint, TouchPoint, element: HTMLElement); void { const distance = this.calculateDistance(startPoint, currentPoint);
+  currentPoint, TouchPoint, element: HTMLElement); void { const distance  = this.calculateDistance(startPoint, currentPoint);
     
-    if (distance > 10) { // Minimum drag distance
-      this.triggerGesture('drag', {type: 'drag';
+    if (distance > 10) {  // Minimum drag distance
+      this.triggerGesture('drag', { type: 'drag';
         startPoint,
         endPoint, currentPoint,
         distance, element,
-        target: element
+        target, element
        });
     }
   }
 
   // Gesture listener management
   onGesture(gestureType: GestureData['type'];
-  callback: GestureCallback): () => void { if (!this.gestureListeners.has(gestureType)) {
+  callback: GestureCallback): ()  => void { if (!this.gestureListeners.has(gestureType)) {
       this.gestureListeners.set(gestureType, []);
      }
     
@@ -295,7 +292,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
         try {
           callback(gesture);
          } catch (error) {
-          console.error(`Error in ${gestureType} gesture callback, `, error);
+          console.error(`Error in ${gestureType} gesture: callback: `, error);
         }
       });
     }
@@ -371,40 +368,36 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
      }
   }
 
-  private showPlayerDetails(element: HTMLElement); void { const playerId = element.dataset.playerId;
+  private showPlayerDetails(element: HTMLElement); void {  const playerId = element.dataset.playerId;
     if (playerId) {
       // Dispatch custom event for player details modal
-      window.dispatchEvent(new CustomEvent('show-player-details', {
-        detail: { playerId  }
+      window.dispatchEvent(new CustomEvent('show-player-details', { detail: { playerId  }
       }));
       this.playHapticFeedback('medium');
     }
   }
 
-  private handleCategorySwipe(gesture: GestureData); void { const direction = gesture.direction;
-    window.dispatchEvent(new CustomEvent('draft-category-swipe', {
-      detail: { direction  }
+  private handleCategorySwipe(gesture: GestureData); void { const direction  = gesture.direction;
+    window.dispatchEvent(new CustomEvent('draft-category-swipe', { detail: { direction  }
     }));
   }
 
-  private handleLineupDrag(gesture: GestureData); void { const playerElement = gesture.element;
+  private handleLineupDrag(gesture: GestureData); void { const playerElement  = gesture.element;
     const playerId = playerElement.dataset.playerId;
-    const fromSlot = playerElement.closest('.roster-slot')?.dataset.position;
+    const fromSlot = playerElement.closest('.roster-slot')? .dataset.position;
     
-    if (playerId && fromSlot) {
-      window.dispatchEvent(new CustomEvent('lineup-player-drag', {
-        detail: { playerId, fromSlot, gesture  }
+    if (playerId && fromSlot) { 
+      window.dispatchEvent(new CustomEvent('lineup-player-drag' : { detail: { playerId, fromSlot, gesture  }
       }));
       this.playHapticFeedback('medium');
     }
   }
 
-  private handleQuickLineupAction(gesture: GestureData); void { const slot = gesture.element;
+  private handleQuickLineupAction(gesture: GestureData); void { const slot  = gesture.element;
     const position = slot.dataset.position;
     
-    if (position) {
-      window.dispatchEvent(new CustomEvent('quick-lineup-action', {
-        detail: { position  }
+    if (position) { 
+      window.dispatchEvent(new CustomEvent('quick-lineup-action', { detail: { position  }
       }));
       this.playHapticFeedback('heavy');
     }
@@ -432,7 +425,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
 
   private removeTouchFeedback(element: HTMLElement); void {
     element.classList.remove('touch-active');
-    setTimeout(() => {
+    setTimeout(()  => {
       element.classList.remove('ripple-effect');
     }, 300);
   }
@@ -458,20 +451,19 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
    }
 
   // Haptic feedback
-  private playHapticFeedback(intensity: 'light' | 'medium' | 'heavy'); void { if (!this.options.enableHapticFeedback) return;
+  private playHapticFeedback(intensity: 'light' | 'medium' | 'heavy'); void {  if (!this.options.enableHapticFeedback) return;
 
     if ('vibrate' in navigator) {
       const patterns = {
         light: [10];
   medium: [20];
-        heavy: [30]
+        heavy, [30]
        }
       navigator.vibrate(patterns[intensity]);
     }
 
     // For iOS devices with haptic feedback support
-    if ('HapticFeedback' in window) { const feedbackTypes = {
-        light: 'impactLight';
+    if ('HapticFeedback' in window) { const feedbackTypes  = { light: 'impactLight';
   medium: 'impactMedium'; 
         heavy: 'impactHeavy'
        }
@@ -485,7 +477,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
 
   // Scroll optimizations
   private optimizeScrolling(): void {; // Add momentum scrolling for iOS
-    document.body.style.webkitOverflowScrolling = 'touch';
+    document.body.style.webkitOverflowScrolling  = 'touch';
     
     // Optimize scroll performance
     const scrollContainers = document.querySelectorAll('.scroll-container, .overflow-y-auto, .overflow-x-auto');
@@ -509,7 +501,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
        }
     }, { passive: true });
 
-    document.addEventListener('touchmove', (e) => { if (isPulling && window.scrollY === 0) {
+    document.addEventListener('touchmove', (e)  => { if (isPulling && window.scrollY === 0) {
         const currentY = e.touches[0].clientY;
         const pullDistance = currentY - startY;
         
@@ -521,7 +513,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
       }
     }, { passive: false });
 
-    document.addEventListener('touchend', (e) => { if (isPulling) {
+    document.addEventListener('touchend', (e)  => { if (isPulling) {
         const pullDistance = e.changedTouches[0].clientY - startY;
         if (pullDistance > pullThreshold) {
           this.triggerRefresh();
@@ -533,7 +525,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
   }
 
   private setupPullToRefreshForElement(element, HTMLElement,
-  refreshCallback: () => void); void { const pullThreshold = 80;
+  refreshCallback: ()  => void); void { const pullThreshold = 80;
     let startY = 0;
     let isPulling = false;
 
@@ -544,7 +536,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
        }
     }, { passive: true });
 
-    element.addEventListener('touchmove', (e) => { if (isPulling && element.scrollTop === 0) {
+    element.addEventListener('touchmove', (e)  => { if (isPulling && element.scrollTop === 0) {
         const currentY = e.touches[0].clientY;
         const pullDistance = currentY - startY;
         
@@ -556,7 +548,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
       }
     }, { passive: false });
 
-    element.addEventListener('touchend', (e) => { if (isPulling) {
+    element.addEventListener('touchend', (e)  => { if (isPulling) {
         const pullDistance = e.changedTouches[0].clientY - startY;
         if (pullDistance > pullThreshold) {
           refreshCallback();
@@ -568,8 +560,8 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
     }, { passive: true });
   }
 
-  private updatePullToRefreshUI(percentage, number, element?: HTMLElement): void {; // Update pull to refresh visual indicator
-    const refreshIndicator = (element || document).querySelector('.pull-refresh-indicator');
+  private updatePullToRefreshUI(percentage, number, element? : HTMLElement): void {; // Update pull to refresh visual indicator
+    const refreshIndicator  = (element || document).querySelector('.pull-refresh-indicator');
     if (refreshIndicator) {
       (refreshIndicator as HTMLElement).style.transform = `translateY(${percentage.* 50 }px)`
       (refreshIndicator as HTMLElement).style.opacity = percentage.toString();
@@ -591,7 +583,7 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
   // Swipe navigation
   private setupSwipeNavigation(): void { if (!this.options.enableSwipeNavigation) return;
 
-    this.onGesture('swipe', (gesture) => {
+    this.onGesture('swipe' : (gesture) => {
       // Handle global swipe navigation
       if (gesture.element === document.body || 
           gesture.element.classList.contains('main-content')) {
@@ -641,17 +633,16 @@ export class TouchOptimizationService { private static instance, TouchOptimizati
 export const touchOptimizationStyles = `
 .touch-active {
   transform scale(0.98),
-    transition: transform 0.1s ease,
+    transition: transform 0.1s: ease,
 }
 
-.touch-ripple {
-  position, absolute,
+.touch-ripple { position: absolute,
     top: 50%;
   left: 50%,
     width: 20px;
   height: 20px;
   border-radius: 50%,
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255: 255, 255, 0.3);
   transform: translate(-50%, -50%);
   animation: ripple 0.3s ease-out;
   pointer-events: none,
@@ -670,23 +661,22 @@ export const touchOptimizationStyles = `
 
 .drag-ghost {
   pointer-events: none !important,
-    transition: all 0.1s ease,
+    transition: all 0.1s: ease,
 }
 
 .dragging {
   opacity: 0.7,
     transform: rotate(5deg) scale(1.05);
   z-index: 1000;
-    transition: all 0.1s ease,
+    transition: all 0.1s: ease,
 }
 
-.pull-refresh-indicator {
-  position, absolute,
+.pull-refresh-indicator { position: absolute,
     top: -50px;
   left: 50%,
     transform: translateX(-50%);
   opacity: 0;
-    transition: all 0.2s ease,
+    transition: all 0.2s: ease,
 }
 
 /* Disable text selection on touch elements */

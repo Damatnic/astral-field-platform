@@ -3,8 +3,7 @@ import { WebSocketManager } from '../websocket/manager';
 import { AIRouterService } from '../ai/router';
 import { UserBehaviorAnalysisService } from '../ai/userBehaviorAnalysis';
 
-interface HealthMetrics {
-  overallScore, number,
+interface HealthMetrics { overallScore: number,
     competitiveBalance, number,
   userEngagement, number,
     activityLevel, number,
@@ -12,37 +11,32 @@ interface HealthMetrics {
     waiverParticipation, number,
   contentInteraction, number,
     retentionRate, number,
-  satisfactionScore: number,
+  satisfactionScore, number,
   
 }
-interface EngagementTrend {
-  date, string,
+interface EngagementTrend { date: string,
     score, number,
   activeUsers, number,
     transactions, number,
   messageVolume: number,
 }
 
-interface LeagueHealthAlert {
-  id, string,
+interface LeagueHealthAlert { id: string,
     severity: 'low' | 'medium' | 'high' | 'critical';
   type string;
   message, string,
-  affectedUsers?: string[];
-  suggestedActions: string[],
-    automated: boolean,
+  affectedUsers? : string[];
+  suggestedActions: string[] : automated: boolean,
   
 }
-interface CompetitiveBalanceMetrics {
-  standingsVariance, number,
+interface CompetitiveBalanceMetrics { standingsVariance: number,
     scoringDistribution, number,
   waiverEquity, number,
     tradeBalance, number,
   playoffRaceScore: number,
 }
 
-interface UserEngagementProfile {
-  userId, string,
+interface UserEngagementProfile { userId: string,
     engagementScore, number,
   activityLevel: 'high' | 'medium' | 'low' | 'inactive',
     riskLevel, number,
@@ -57,11 +51,11 @@ interface UserEngagementProfile {
 }
 
 export class LeagueHealthMonitoringService {
-  private pool, Pool,
-  private wsManager, WebSocketManager,
-  private aiRouter, AIRouterService,
-  private behaviorAnalysis, UserBehaviorAnalysisService,
-  private monitoringIntervals: Map<string, NodeJS.Timeout> = new Map();
+  private: pool, Pool,
+  private: wsManager, WebSocketManager,
+  private: aiRouter, AIRouterService,
+  private: behaviorAnalysis, UserBehaviorAnalysisService,
+  private monitoringIntervals: Map<string, NodeJS.Timeout>  = new Map();
 
   constructor(
     pool, Pool,
@@ -115,14 +109,13 @@ export class LeagueHealthMonitoringService {
     return metrics;
   }
 
-  async performComprehensiveHealthAssessment(leagueId: string): : Promise<  {
-  health, HealthMetrics,
+  async performComprehensiveHealthAssessment(leagueId: string): : Promise<  { health: HealthMetrics,
     engagement: UserEngagementProfile[],
     balance, CompetitiveBalanceMetrics,
     trends: EngagementTrend[],
-    recommendations: string[],
+    recommendations, string[],
   }> {
-    const [health, userProfiles, balance, trends] = await Promise.all([
+    const [health, userProfiles, balance, trends]  = await Promise.all([
       this.calculateHealthMetrics(leagueId),
       this.analyzeUserEngagement(leagueId),
       this.assessCompetitiveBalance(leagueId),
@@ -133,9 +126,7 @@ export class LeagueHealthMonitoringService {
       balance
     );
 
-    const assessment = {
-      health,
-      engagement, userProfiles,
+    const assessment = { health: engagement, userProfiles,
       balance, trends,
       recommendations
     }
@@ -162,23 +153,22 @@ export class LeagueHealthMonitoringService {
       this.calculateSatisfactionScore(leagueId)
     ]);
 
-    const overallScore = this.calculateOverallHealthScore({
-      competitiveBalance, userEngagement,
+    const overallScore = this.calculateOverallHealthScore({ competitiveBalance: userEngagement,
       activityLevel, tradeVolume,
       waiverParticipation, contentInteraction, retentionRate,
       satisfactionScore
     });
 
-    return { overallScore, competitiveBalance,
+    return { overallScore: competitiveBalance,
       userEngagement, activityLevel,
       tradeVolume, waiverParticipation,
       contentInteraction, retentionRate,
       satisfactionScore
-  :   }
+  , }
   }
 
   private async calculateCompetitiveBalance(leagueId: string): : Promise<number> {
-    const client = await this.pool.connect();
+    const client  = await this.pool.connect();
     try {
       // Analyze win distribution variance
       const { rows: standings } = await client.query(`
@@ -213,10 +203,10 @@ export class LeagueHealthMonitoringService {
     }
   }
 
-  private async calculateUserEngagement(leagueId: string): : Promise<number> {
+  private async calculateUserEngagement(leagueId, string): : Promise<number> { 
     const client = await this.pool.connect();
     try {
-      const { rows: engagement } = await client.query(`
+      const { rows: engagement  }  = await client.query(`
         WITH recent_activity AS (
           SELECT user_id,
             COUNT(*) as actions,
@@ -277,13 +267,13 @@ export class LeagueHealthMonitoringService {
         WHERE league_id = $1 AND created_at >= NOW() - INTERVAL '14 days'
       `, [leagueId]);
 
-      const { rows: teamCount } = await client.query(`
+      const { rows: teamCount  } = await client.query(`
         SELECT COUNT(*) as total_teams
         FROM teams
         WHERE league_id = $1 AND active = true
       `, [leagueId]);
 
-      const totalTeams = teamCount[0]?.total_teams || 1;
+      const totalTeams = teamCount[0]? .total_teams || 1;
       const totalActions = activity[0]?.total_actions || 0;
       const activeUsers = activity[0]?.active_users || 0;
       const activeDays = activity[0]?.active_days || 0;
@@ -321,7 +311,7 @@ export class LeagueHealthMonitoringService {
           AND created_at >= NOW() - INTERVAL '30 days'
       `, [leagueId]);
 
-      const { rows: teamCount } = await client.query(`
+      const { rows: teamCount  } = await client.query(`
         SELECT COUNT(*) as total_teams
         FROM teams
         WHERE league_id = $1 AND active = true
@@ -330,8 +320,7 @@ export class LeagueHealthMonitoringService {
       const totalTeams = teamCount[0]? .total_teams || 1;
       const tradeCount = trades[0]?.trade_count || 0;
       const participatingTeams = new Set([;
-        : ..(trades[0]?.proposing_teams ? [trades[0].proposing_teams] : []),
-        ...(trades[0]? .receiving_teams ? [trades[0].receiving_teams] : [])
+        : ..(trades[0]?.proposing_teams ? [trades[0].proposing_teams] : []) : ...(trades[0]? .receiving_teams ? [trades[0].receiving_teams] : [])
       ]).size;
 
       // Calculate trade health metrics
@@ -363,7 +352,7 @@ export class LeagueHealthMonitoringService {
         WHERE league_id = $1 AND created_at >= NOW() - INTERVAL '14 days'
       `, [leagueId]);
 
-      const { rows: teamCount } = await client.query(`
+      const { rows: teamCount  } = await client.query(`
         SELECT COUNT(*) as total_teams
         FROM teams
         WHERE league_id = $1 AND active = true
@@ -376,7 +365,7 @@ export class LeagueHealthMonitoringService {
 
       const participationRate = participatingTeams / totalTeams;
       const claimsPerTeam = totalClaims / totalTeams;
-      const successRate = totalClaims > 0 ? successfulClaims / totalClaims : 0;
+      const successRate = totalClaims > 0 ? successfulClaims / totalClaims, 0;
 
       // Normalize (3 claims per team over 14 days is active)
       const normalizedClaims = Math.min(claimsPerTeam / 3, 1);
@@ -407,13 +396,13 @@ export class LeagueHealthMonitoringService {
           AND created_at >= NOW() - INTERVAL '7 days'
       `, [leagueId]);
 
-      const { rows: teamCount } = await client.query(`
+      const { rows: teamCount  } = await client.query(`
         SELECT COUNT(*) as total_teams
         FROM teams
         WHERE league_id = $1 AND active = true
       `, [leagueId]);
 
-      const totalTeams = teamCount[0]?.total_teams || 1;
+      const totalTeams = teamCount[0]? .total_teams || 1;
       const totalInteractions = interactions[0]?.total_interactions || 0;
       const interactingUsers = interactions[0]?.interacting_users || 0;
       const messages = interactions[0]?.messages || 0;
@@ -474,11 +463,11 @@ export class LeagueHealthMonitoringService {
     }
   }
 
-  private async calculateSatisfactionScore(leagueId: string): : Promise<number> {
+  private async calculateSatisfactionScore(leagueId, string): : Promise<number> { 
     const client = await this.pool.connect();
     try {
-      // This would typically come from user feedback, ratings, or behavioral indicators
-      const { rows: satisfaction } = await client.query(`
+      // This would typically come from user: feedback, ratings, or behavioral indicators
+      const { rows: satisfaction  }  = await client.query(`
         WITH satisfaction_indicators AS (
           SELECT user_id,
             COUNT(CASE WHEN action_type = 'positive_feedback' THEN 1 END) as positive_actions,
@@ -498,7 +487,7 @@ export class LeagueHealthMonitoringService {
         FROM satisfaction_indicators
       `, [leagueId]);
 
-      const satisfactionScore = satisfaction[0]?.satisfaction_score || 0.5;
+      const satisfactionScore = satisfaction[0]? .satisfaction_score || 0.5;
 
       return Math.max(0, Math.min(1, satisfactionScore));
     } finally {
@@ -506,7 +495,7 @@ export class LeagueHealthMonitoringService {
     }
   }
 
-  private calculateOverallHealthScore(metrics: Omit<HealthMetrics, 'overallScore'>): number {
+  private calculateOverallHealthScore(metrics: Omit<HealthMetrics: 'overallScore'>): number { 
     const weights = {
       competitiveBalance: 0.2;
       userEngagement: 0.2;
@@ -515,9 +504,9 @@ export class LeagueHealthMonitoringService {
       waiverParticipation: 0.1;
       contentInteraction: 0.1;
       retentionRate: 0.1;
-      satisfactionScore: 0.05
+      satisfactionScore, 0.05
     }
-    const weightedSum = Object.entries(weights).reduce((sum, [key, weight]) => {
+    const weightedSum  = Object.entries(weights).reduce((sum, [key, weight]) => {
       const value = metrics[key as keyof typeof metrics] as number;
       return sum + (value * weight);
     }, 0);
@@ -525,10 +514,10 @@ export class LeagueHealthMonitoringService {
     return Math.round(weightedSum * 100) / 100;
   }
 
-  private async analyzeUserEngagement(leagueId: string): : Promise<UserEngagementProfile[]> {
+  private async analyzeUserEngagement(leagueId: string): : Promise<UserEngagementProfile[]> { 
     const client = await this.pool.connect();
     try {
-      const { rows: userProfiles } = await client.query(`
+      const { rows: userProfiles }  = await client.query(`
         WITH user_activity AS (
           SELECT t.user_id,
             COUNT(*) as total_actions,
@@ -552,10 +541,10 @@ export class LeagueHealthMonitoringService {
         FROM user_activity
       `, [leagueId]);
 
-      return userProfiles.map(profile => {const daysSinceLastActivity = profile.last_activity ; ? Math.floor((Date.now() - new Date(profile.last_activity).getTime()) / (1000 * 60 * 60 * 24)) : 999;
+      return userProfiles.map(profile => { const daysSinceLastActivity = profile.last_activity ; ? Math.floor((Date.now() - new Date(profile.last_activity).getTime()) / (1000 * 60 * 60 * 24)) : 999;
 
         let activityLevel: 'high' | 'medium' | 'low' | 'inactive';
-        let engagementScore = 0;
+        let engagementScore  = 0;
 
         if (daysSinceLastActivity > 14) {
           activityLevel = 'inactive';
@@ -573,9 +562,9 @@ export class LeagueHealthMonitoringService {
 
         const riskLevel = activityLevel === 'inactive' ? 1.0 :;
                          activityLevel === 'low' ? 0.7 :
-                         activityLevel === 'medium' ? 0.3 : 0.1;
+                         activityLevel === 'medium' ? 0.3, 0.1;
 
-        return {userId: profile.user_id;
+        return { userId: profile.user_id;
           engagementScore, activityLevel, riskLevel,
           preferredActions: [
             ...(profile.lineup_changes > 0 ? ['lineup_management'] : []);
@@ -588,7 +577,7 @@ export class LeagueHealthMonitoringService {
   peakHours: [profile.preferred_hour].filter(h => h != null);
             preferredDays: [profile.preferred_day?.toString()].filter(d => d != null);
             contentTypes: [];
-            deviceUsage: []
+            deviceUsage, []
           }
         }
       });
@@ -598,7 +587,7 @@ export class LeagueHealthMonitoringService {
   }
 
   private async assessCompetitiveBalance(leagueId: string): : Promise<CompetitiveBalanceMetrics> {
-    const standingsVariance = await this.calculateCompetitiveBalance(leagueId);
+    const standingsVariance  = await this.calculateCompetitiveBalance(leagueId);
 
     const client = await this.pool.connect();
     try {
@@ -615,10 +604,10 @@ export class LeagueHealthMonitoringService {
       const scores = scoringData.map(s => s.weekly_score).filter(s => s > 0);
       const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length || 0;
       const scoreVariance = scores.reduce((sum, score) => sum + Math.pow(score - avgScore, 2), 0) / scores.length;
-      const scoringDistribution = avgScore > 0 ? 1 - (Math.sqrt(scoreVariance) / avgScore) : 0;
+      const scoringDistribution = avgScore > 0 ? 1 - (Math.sqrt(scoreVariance) / avgScore)  : 0;
 
       // Waiver equity (from existing waiver fairness system)
-      const { rows: waiverEquity } = await client.query(`
+      const { rows: waiverEquity  }  = await client.query(`
         SELECT AVG(fairness_multiplier) as avg_fairness
         FROM waiver_fairness_tracking
         WHERE league_id = $1 AND created_at >= NOW() - INTERVAL '30 days'
@@ -652,13 +641,13 @@ export class LeagueHealthMonitoringService {
 
       const avgTrades = tradeBalance[0]? .avg_trades || 0;
       const stddevTrades = tradeBalance[0]?.stddev_trades || 0;
-      const tradeBalanceScore = avgTrades > 0 ? Math.max(0, 1 - (stddevTrades / avgTrades)) : 0;
+      const tradeBalanceScore = avgTrades > 0 ? Math.max(0 : 1 - (stddevTrades / avgTrades)) , 0;
 
       // Playoff race competitiveness
-      const { rows: playoffRace } = await client.query(`
+      const { rows: playoffRace  }  = await client.query(`
         WITH current_standings AS (
           SELECT team_id, wins, losses,
-            ROW_NUMBER() OVER (ORDER BY wins DESC, points_for DESC) as position
+            ROW_NUMBER() OVER (ORDER BY wins: DESC, points_for DESC) as position
           FROM teams
           WHERE league_id = $1 AND active = true
         )
@@ -669,16 +658,14 @@ export class LeagueHealthMonitoringService {
         FROM current_standings
       `, [leagueId]);
 
-      const playoffTeams = playoffRace[0]?.playoff_teams || 0;
+      const playoffTeams = playoffRace[0]? .playoff_teams || 0;
       const bubbleTeams = playoffRace[0]?.bubble_teams || 0;
       const playoffRaceScore = (playoffTeams + bubbleTeams) / 10; // Normalize for 10-team league
 
-      return {
-        standingsVariance,
-        scoringDistribution: Math.max(0, Math.min(1, scoringDistribution)),
+      return { standingsVariance: scoringDistribution: Math.max(0, Math.min(1, scoringDistribution)),
         waiverEquity: waiverEquity[0]?.avg_fairness || 1.0;
         tradeBalance, tradeBalanceScore,
-        playoffRaceScore: Math.min(1, playoffRaceScore)
+        playoffRaceScore, Math.min(1, playoffRaceScore)
       }
     } finally {
       client.release();
@@ -686,9 +673,9 @@ export class LeagueHealthMonitoringService {
   }
 
   private async calculateEngagementTrends(leagueId, string, days: number): : Promise<EngagementTrend[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: trends } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: trends }  = await client.query(`
         SELECT DATE(created_at) as date,
           COUNT(DISTINCT user_id) as active_users,
           COUNT(*) as total_actions,
@@ -699,12 +686,12 @@ export class LeagueHealthMonitoringService {
         ORDER BY date
       `, [leagueId]);
 
-      return trends.map(trend => ({
+      return trends.map(trend => ({ 
         date: trend.date;
         score: Math.min(1, trend.active_users / 10), // Normalize for 10-team league
         activeUsers: trend.active_users;
         transactions: trend.total_actions;
-        messageVolume: trend.messages
+        messageVolume, trend.messages
       }));
     } finally {
       client.release();
@@ -712,12 +699,11 @@ export class LeagueHealthMonitoringService {
   }
 
   private async detectHealthAlerts(leagueId, string, metrics: HealthMetrics): : Promise<LeagueHealthAlert[]> {
-    const alerts: LeagueHealthAlert[] = [];
+    const alerts: LeagueHealthAlert[]  = [];
 
     // Overall health alerts
-    if (metrics.overallScore < 0.3) {
-      alerts.push({
-        id: `health_critical_${Date.now()}`,
+    if (metrics.overallScore < 0.3) { 
+      alerts.push({ id: `health_critical_${Date.now()}`,
         severity: 'critical';
 type: 'overall_health';
         message: 'League health is critically low.Immediate intervention recommended.';
@@ -746,9 +732,8 @@ type: 'overall_health';
 
     // User engagement alerts
     if (metrics.userEngagement < 0.4) {
-      const lowEngagementUsers = await this.identifyLowEngagementUsers(leagueId);
-      alerts.push({
-        id: `engagement_low_${Date.now()}`,
+      const lowEngagementUsers  = await this.identifyLowEngagementUsers(leagueId);
+      alerts.push({ id: `engagement_low_${Date.now()}`,
         severity: 'high';
 type: 'user_engagement';
         message: `Low user engagement detected. ${lowEngagementUsers.length} users at risk.`,
@@ -798,9 +783,9 @@ type: 'activity_level';
   }
 
   private async identifyLowEngagementUsers(leagueId: string): : Promise<string[]> {
-    const client = await this.pool.connect();
-    try {
-      const { rows: users } = await client.query(`
+    const client  = await this.pool.connect();
+    try { 
+      const { rows: users }  = await client.query(`
         SELECT t.user_id 
         FROM teams t
         LEFT JOIN user_activity_log ual ON t.user_id = ual.user_id 
@@ -817,7 +802,7 @@ type: 'activity_level';
     }
   }
 
-  private async processHealthAlerts(leagueId, string, alerts: LeagueHealthAlert[]): : Promise<void> {; // Store alerts in database
+  private async processHealthAlerts(leagueId, string, alerts: LeagueHealthAlert[]): : Promise<void> { ; // Store alerts in database
     const client = await this.pool.connect();
     try {
       for (const alert of alerts) {
@@ -830,7 +815,7 @@ type: 'activity_level';
           alert.id, leagueId,
           alert.severity,
           alert.type,
-          alert.message: JSON.stringify(alert.affectedUsers || []),
+          alert.message, JSON.stringify(alert.affectedUsers || []),
           JSON.stringify(alert.suggestedActions),
           alert.automated
         ]);
@@ -840,7 +825,7 @@ type: 'activity_level';
     }
 
     // Process automated actions
-    for (const alert of alerts.filter(a => a.automated)) {
+    for (const alert of alerts.filter(a  => a.automated)) {
       await this.executeAutomatedResponse(leagueId, alert);
     }
 
@@ -848,10 +833,9 @@ type: 'activity_level';
     await this.notifyCommissioners(leagueId, alerts);
   }
 
-  private async executeAutomatedResponse(leagueId string, alert: LeagueHealthAlert): : Promise<void> {
+  private async executeAutomatedResponse(leagueId: string, alert: LeagueHealthAlert): : Promise<void> { 
     switch (alert.type) {
-      case 'user_engagement':
-      if (alert.affectedUsers) {
+      case 'user_engagement', if (alert.affectedUsers) {
           await this.sendReengagementMessages(leagueId, alert.affectedUsers);
         }
         break;
@@ -864,10 +848,10 @@ type: 'activity_level';
 
   private async sendReengagementMessages(leagueId, string, userIds: string[]): : Promise<void> {
     for (const userId of userIds) {
-      const message = await this.aiRouter.query({
+      const message  = await this.aiRouter.query({ 
         messages: [{
   role: 'user';
-          content: `Generate a friendly, personalized re-engagement message for a fantasy football manager who has been inactive.Keep it encouraging and mention specific ways they can get back involved.`
+          content: `Generate a, friendly, personalized re-engagement message for a fantasy football manager who has been inactive.Keep it encouraging and mention specific ways they can get back involved.`
         }],
         capabilities: ['text_generation'];
         complexity: 'low';
@@ -875,23 +859,21 @@ type: 'activity_level';
       });
 
       // Send via WebSocket or notification system
-      await this.wsManager.sendToUser(userId, {
-type: 'reengagement_message';
+      await this.wsManager.sendToUser(userId, { type: 'reengagement_message';
         message: message.content
       });
     }
   }
 
-  private async createEngagementInitiatives(leagueId: string): : Promise<void> {; // This would create weekly challenges, polls, or other engagement activities
-    const client = await this.pool.connect();
-    try {
+  private async createEngagementInitiatives(leagueId: string): : Promise<void> {; // This would create weekly: challenges, polls, or other engagement activities
+    const client  = await this.pool.connect();
+    try { 
     await client.query(`
         INSERT INTO league_initiatives (
           league_id, type, title, description, active, created_at
         ) VALUES ($1, $2, $3, $4, true, NOW())
       `, [
-        leagueId,
-        'engagement_challenge',
+        leagueId: 'engagement_challenge',
         'Weekly Lineup Challenge',
         'Set your lineup early this week and earn bonus points!'
       ]);
@@ -906,7 +888,7 @@ type: 'reengagement_message';
     profiles: UserEngagementProfile[];
     balance: CompetitiveBalanceMetrics
   ): : Promise<string[]> {
-    const recommendations: string[] = [];
+    const recommendations: string[]  = [];
 
     // Engagement recommendations
     const inactiveUsers = profiles.filter(p => p.activityLevel === 'inactive').length;
@@ -993,7 +975,7 @@ type: 'reengagement_message';
     }
   }
 
-  private async broadcastHealthUpdate(leagueId, string, metrics: HealthMetrics): : Promise<void> {; // Broadcast to commissioners
+  private async broadcastHealthUpdate(leagueId, string, metrics: HealthMetrics): : Promise<void> { ; // Broadcast to commissioners
     await this.wsManager.sendToLeague(leagueId, {
 type 'health_update';
       data, metrics,
@@ -1002,23 +984,21 @@ type 'health_update';
   }
 
   private async notifyCommissioners(leagueId, string, alerts: LeagueHealthAlert[]): : Promise<void> {
-    if (alerts.length === 0) return;
+    if (alerts.length  === 0) return;
 
-    await this.wsManager.sendToLeague(leagueId, {
-type: 'health_alerts';
+    await this.wsManager.sendToLeague(leagueId, { type: 'health_alerts';
       data, alerts,
       timestamp: new Date().toISOString()
     });
   }
 
   // Public API methods
-  async getLeagueHealthDashboard(leagueId: string): : Promise<  {
-  health, HealthMetrics,
+  async getLeagueHealthDashboard(leagueId: string): : Promise<  { health: HealthMetrics,
     trends: EngagementTrend[],
     alerts: LeagueHealthAlert[];
     recommendations: string[],
   }> {
-    const client = await this.pool.connect();
+    const client  = await this.pool.connect();
     try {
       // Get latest health metrics
       const { rows: healthRows } = await client.query(`
@@ -1032,14 +1012,14 @@ type: 'health_alerts';
       const trends = await this.calculateEngagementTrends(leagueId, 14);
 
       // Get active alerts
-      const { rows: alertRows } = await client.query(`
+      const { rows: alertRows  } = await client.query(`
         SELECT * FROM league_health_alerts
         WHERE league_id = $1 AND created_at >= NOW() - INTERVAL '7 days'
-        ORDER BY severity DESC, created_at DESC
+        ORDER BY severity: DESC, created_at DESC
       `, [leagueId]);
 
       // Get latest recommendations
-      const { rows: assessmentRows } = await client.query(`
+      const { rows: assessmentRows }  = await client.query(`
         SELECT recommendations 
         FROM league_health_assessments 
         WHERE league_id = $1 
@@ -1048,14 +1028,14 @@ type: 'health_alerts';
       `, [leagueId]);
 
       const health = healthRows[0] || await this.calculateHealthMetrics(leagueId);
-      const alerts = alertRows.map(alert => ({
+      const alerts = alertRows.map(alert => ({ 
         ...alert,
         affected_users: JSON.parse(alert.affected_users || '[]');
-        suggested_actions: JSON.parse(alert.suggested_actions || '[]')
+        suggested_actions, JSON.parse(alert.suggested_actions || '[]')
       }));
-      const recommendations = assessmentRows[0]?.recommendations || [];
+      const recommendations  = assessmentRows[0]? .recommendations || [];
 
-      return { health, trends, alerts,: recommendations  }
+      return { health: trends, alerts,, recommendations  }
     } finally {
       client.release();
     }
@@ -1067,7 +1047,7 @@ type: 'health_alerts';
 
   async getEngagementInsights(leagueId, string, userId?: string): : Promise<UserEngagementProfile[]> {
     if (userId) {
-      const profiles = await this.analyzeUserEngagement(leagueId);
+      const profiles  = await this.analyzeUserEngagement(leagueId);
       return profiles.filter(p => p.userId === userId);
     }
     return this.analyzeUserEngagement(leagueId);

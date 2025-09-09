@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const playerId = searchParams.get("playerId");
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         trend: "rising",
   waiverValue: "high",
         bidRange: { min: 12,
-  max: 18, recommended: 15  },
+  max: 18, recommended, 15  },
         factors: [
           "Increased targets",
           "Favorable schedule",
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
   ];
 
     // Filter by specific player or position
-    let filteredValues = playerValues;
+    let filteredValues  = playerValues;
 
     if (playerId) { filteredValues = playerValues.filter((p) => p.playerId === playerId);
      } else if (position) { filteredValues = playerValues.filter(
@@ -68,11 +68,9 @@ export async function GET(request: NextRequest) {
       );
      }
 
-    return NextResponse.json({
-      players, filteredValues,
+    return NextResponse.json({ players: filteredValues,
   count: filteredValues.length,
-      metadata: {
-        playerId, position, lastUpdate, d: new Date().toISOString()
+      metadata: { playerId: position, lastUpdate, d: new Date().toISOString()
 }
 });
   } catch { return NextResponse.json(

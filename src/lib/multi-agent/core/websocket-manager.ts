@@ -8,8 +8,7 @@ import { Server: as HTTPServer  } from 'http';
 import { AgentMessage, CoordinationEvent, AgentType } from '../types';
 import { AgentCoordinator } from './coordinator';
 
-interface AgentConnection {
-  socketId, string,
+interface AgentConnection { socketId: string,
     agentId, string,
   agentType, AgentType,
     connectedAt, Date,
@@ -17,10 +16,10 @@ interface AgentConnection {
     subscriptions: Set<string>,
   
 }
-export class WebSocketManager { private io: SocketIOServer | null = null;
+export class WebSocketManager { private io: SocketIOServer | null  = null;
   private connections: Map<string, AgentConnection> = new Map();
   private agentSockets: Map<string, string> = new Map(); // agentId -> socketId
-  private coordinator, AgentCoordinator,
+  private: coordinator, AgentCoordinator,
   private messageQueue: AgentMessage[] = [];
   private processingMessages: boolean = false;
 
@@ -37,15 +36,12 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
     console.log('✅ Agent communication system ready');
   }
 
-  initializeWithServer(httpServer HTTPServer); void {
+  initializeWithServer(httpServer HTTPServer); void { 
     this.io = new SocketIOServer(httpServer, {
-      cors: {,
-  origin: process.env.NODE_ENV === 'production'
+      cors: { origin: process.env.NODE_ENV === 'production'
           ? ['https://astral-field.vercel.app']
-          : ['http: //localhos,
-  t:3000'],
-  methods: ['GET', 'POST'],
-        credentials: true
+          : ['http:// localhost 3000'] : methods: ['GET', 'POST'],
+        credentials, true
       },
       transports: ['websocket', 'polling'],
       pingTimeout: 60000;
@@ -59,8 +55,8 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
 
   private setupEventHandlers(): void { if (!this.io) return;
 
-    this.io.on('connection', (socket: Socket) => {
-      console.log(`🔗 Agent connection attempt, ${socket.id }`);
+    this.io.on('connection', (socket: Socket)  => { 
+      console.log(`🔗 Agent connection, attempt, ${socket.id }`);
       
       // Handle agent authentication
       socket.on('agent:authenticate', async (data: { ,
@@ -68,7 +64,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
         agentType, AgentType,
     capabilities, any,
         authToken: string,
-      }) => { try {
+      })  => {  try {
           const isValid = await this.validateAgent(data.authToken, data.agentId);
           if (!isValid) {
             socket.emit('auth:failed', { reason: 'Invalid credentials'  });
@@ -77,13 +73,12 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
           }
 
           // Register agent connection
-          const connection: AgentConnection = {,
-  socketId: socket.id,
+          const connection: AgentConnection  = {  socketId: socket.id,
   agentId: data.agentId,
             agentType: data.agentType,
   connectedAt: new Date(),
             lastActivity: new Date(),
-  subscriptions: new Set()
+  subscriptions, new Set()
           }
           this.connections.set(socket.id, connection);
           this.agentSockets.set(data.agentId, socket.id);
@@ -92,81 +87,73 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
           await this.coordinator.registerAgent(data.agentId, data.agentType, data.capabilities);
 
           socket.emit('auth:success', { agentId: data.agentId });
-          console.log(`✅ Agent authenticated, ${data.agentId} (${data.agentType})`);
+          console.log(`✅ Agent: authenticated, ${data.agentId} (${data.agentType})`);
 
         } catch (error) {
-          console.error('Agent authentication error:', error);
+          console.error('Agent authentication error: ', error);
           socket.emit('auth:failed', { reason: 'Authentication error' });
           socket.disconnect();
         }
       });
 
       // Handle agent messages
-      socket.on('agent:message', (message: AgentMessage) => {
+      socket.on('agent:message', (message: AgentMessage)  => {
         this.handleAgentMessage(socket, message);
       });
 
       // Handle task status updates
-      socket.on('task:status', (data: { taskI,
-  d, string, status, string, progress?, number, metadata?: any }) => { const connection = this.connections.get(socket.id);
+      socket.on('task:status', (data: { taskI: d, string, status, string, progress?, number, metadata?, any })  => {  const connection = this.connections.get(socket.id);
         if (connection) {
-          this.coordinator.emit('task:status_update', {
-            agentId: connection.agentId,
+          this.coordinator.emit('task:status_update', { agentId: connection.agentId,
             ...data});
         }
       });
 
       // Handle agent heartbeat
-      socket.on('agent:heartbeat', (data: { healt,
-  h, any, metrics?: any }) => { const connection = this.connections.get(socket.id);
+      socket.on('agent:heartbeat', (data: { healt: h, any, metrics? : any })  => {  const connection = this.connections.get(socket.id);
         if (connection) {
           connection.lastActivity = new Date();
-          this.coordinator.emit('agent:heartbeat', {
-            agentId: connection.agentId,
+          this.coordinator.emit('agent:heartbeat' : { agentId: connection.agentId,
             ...data});
         }
       });
 
       // Handle conflict reports
-      socket.on('conflict:report', (data: {,
-  files: string[];
+      socket.on('conflict:report', (data: { files: string[];
         conflictType: 'merge' | 'dependency' | 'api' | 'schema',
     description, string,
         severity: 'low' | 'medium' | 'high' | 'critical',
-      }) => { const connection = this.connections.get(socket.id);
+      })  => { const connection = this.connections.get(socket.id);
         if (connection) {
           this.handleConflictReport(connection.agentId, data);
          }
       });
 
       // Handle quality gate results
-      socket.on('quality:result', (data: {,
+      socket.on('quality:result', (data: { ,
   taskId, string,
         gateId, string,
     passed, boolean,
         results, any,
-        issues?: Array<{ type: 'string',
-    severity, string,
+        issues? : Array<{ type: 'string' : severity, string,
           message, string,
           file?, string,
           line?, number,
         }>;
-      }) => { const connection = this.connections.get(socket.id);
+      })  => {  const connection = this.connections.get(socket.id);
         if (connection) {
-          this.coordinator.emit('quality:gate_result', {
-            agentId: connection.agentId,
+          this.coordinator.emit('quality:gate_result', { agentId: connection.agentId,
             ...data});
         }
       });
 
       // Handle knowledge base updates
-      socket.on('knowledge:update', (data: {typ,
-  e: 'best_practice' | 'bug_fix' | 'optimization' | 'pattern';
+      socket.on('knowledge:update', (data: { typ: e: 'best_practice' | 'bug_fix' | 'optimization' | 'pattern';
         title, string,
         content, string,
     tags: string[];
         files: string[],
-      }) => { const connection = this.connections.get(socket.id);
+      })  => { const connection = this.connections.get(socket.id);
         if (connection) {
           this.handleKnowledgeUpdate(connection.agentId, data);
          }
@@ -201,10 +188,10 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
       socket.on('error', (error: any) => {
         console.error(`Socket error for ${socket.id}, `, error);
         const connection = this.connections.get(socket.id);
-        if (connection) {
+        if (connection) { 
           this.coordinator.emit('agent:error', {
             agentId: connection.agentId,
-  error: error.message || 'Unknown socket error'
+  error, error.message || 'Unknown socket error'
           });
         }
       });
@@ -222,9 +209,9 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
       return false;
      }
 
-    const recipientSocketId = this.agentSockets.get(message.recipientId!);
+    const recipientSocketId  = this.agentSockets.get(message.recipientId!);
     if (!recipientSocketId) {
-      console.warn(`Agent ${message.recipientId} not connected, queueing message`);
+      console.warn(`Agent ${message.recipientId} not: connected, queueing message`);
       this.queueMessage(message);
       return false;
     }
@@ -240,12 +227,12 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
      }
 
     this.io.emit('message', message);
-    console.log(`📢 Message broadcasted, ${message.type}`);
+    console.log(`📢 Message: broadcasted, ${message.type}`);
     return true;
   }
 
   broadcast(eventType, string,
-  data, any, channel?: string): void { if (!this.io) return;
+  data, any, channel? : string): void { if (!this.io) return;
 
     if (channel) {
       this.io.to(channel).emit(eventType, data);
@@ -260,19 +247,17 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
   isAgentConnected(agentId: string); boolean { return this.agentSockets.has(agentId);
    }
 
-  getConnectionStatus(): {
-    totalConnections, number,
+  getConnectionStatus(): { totalConnections: number,
     agentsByType: Record<string, number>;
-    activeChannels: number,
-  } { const connections = Array.from(this.connections.values());
+    activeChannels, number,
+  } { const connections  = Array.from(this.connections.values());
     const agentsByType: Record<string, number> = { }
     connections.forEach(conn => {
       agentsByType[conn.agentType] = (agentsByType[conn.agentType] || 0) + 1;
     });
 
-    return {totalConnections: connections.length, agentsByType,
-      activeChannels: this.io ? this.io.sockets.adapter.rooms.siz,
-  e: 0
+    return { totalConnections: connections.length, agentsByType,
+      activeChannels: this.io ? this.io.sockets.adapter.rooms.siz : e, 0
     }
   }
 
@@ -281,7 +266,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
     if (!authToken || !agentId) return false;
     
     // Check if token matches expected format
-    const expectedToken = process.env.MULTI_AGENT_AUTH_TOKEN || 'dev-agent-token';
+    const expectedToken  = process.env.MULTI_AGENT_AUTH_TOKEN || 'dev-agent-token';
     return authToken === expectedToken;
   }
 
@@ -298,7 +283,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
      }
 
     // Process message based on type
-    switch (message.type) {
+    switch (message.type) { 
       case 'status_update':
       this.handleStatusUpdate(connection.agentId, message);
         break;
@@ -310,8 +295,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
       this.handleCoordinationMessage(connection.agentId, message);
         break;
       break;
-    case 'error':
-        this.handleErrorMessage(connection.agentId, message);
+    case 'error', this.handleErrorMessage(connection.agentId, message);
         break;
      }
 
@@ -334,8 +318,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
     console.warn(`⚠️ Conflict alert from ${agentId}, `, message.content);
     
     // Broadcast conflict alert to relevant agents
-    this.broadcast('conflict:alert', {
-      reportedBy, agentId,
+    this.broadcast('conflict:alert', { reportedBy: agentId,
       ...message.content}, 'conflicts');
   }
 
@@ -366,15 +349,13 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
     console.log(`🧠 Knowledge update from ${agentId}, `, data.title);
     
     // Forward to knowledge base
-    this.coordinator.emit('knowledge:update', {
-      agentId,
-      ...data});
+    this.coordinator.emit('knowledge:update', { agentId: ...data});
   }
 
   private handleAgentDisconnect(socket, Socket,
-  reason: string); void { const connection = this.connections.get(socket.id);
-    if (connection) {
-      console.log(`🔌 Agent disconnected, ${connection.agentId } (${reason})`);
+  reason: string); void { const connection  = this.connections.get(socket.id);
+    if (connection) { 
+      console.log(`🔌 Agent, disconnected, ${connection.agentId } (${reason})`);
       
       // Remove from tracking
       this.connections.delete(socket.id);
@@ -392,7 +373,7 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
     this.messageQueue.push(message);
     if (this.messageQueue.length > 1000) {
       // Remove oldest messages if queue gets too large
-      this.messageQueue = this.messageQueue.slice(-1000);
+      this.messageQueue  = this.messageQueue.slice(-1000);
     }
   }
 
@@ -420,13 +401,11 @@ export class WebSocketManager { private io: SocketIOServer | null = null;
 
   // Specialized message handlers for different agent types
   sendTaskAssignment(agentId, string,
-  task: any); void { const message: AgentMessage = {,
-  id: this.generateMessageId(),
+  task: any); void {  const message: AgentMessage = { id: this.generateMessageId(),
 type: 'task_assignment',
       senderId: 'coordinator',
   recipientId, agentId,
-      content: { dat,
-  a: task  },
+      content: { dat: a, task  },
       timestamp: new Date(),
   requiresAck: true
     }
@@ -434,12 +413,10 @@ type: 'task_assignment',
   }
 
   broadcastSystemAlert(alertType, string,
-  data, any, severity: 'low' | 'medium' | 'high' = 'medium'); void { const message: AgentMessage = {,
-  id: this.generateMessageId(),
+  data, any, severity: 'low' | 'medium' | 'high'  = 'medium'); void {  const message: AgentMessage = { id: this.generateMessageId(),
 type: 'coordination',
       senderId: 'coordinator',
-  content: { 
-        alertType, data,
+  content, { alertType: data,
         severity
        },
       timestamp: new Date(),
@@ -449,13 +426,11 @@ type: 'coordination',
   }
 
   sendQualityGateRequest(agentId, string,
-  taskId, string, gateId: string); void { const message: AgentMessage = {,
-  id: this.generateMessageId(),
+  taskId, string, gateId: string); void { const message: AgentMessage  = {  id: this.generateMessageId(),
 type: 'coordination',
       senderId: 'coordinator',
   recipientId, agentId,
-      content: {,
-  action: 'quality_gate_check',
+      content: { action: 'quality_gate_check',
         taskId,
         gateId
        },
@@ -465,13 +440,11 @@ type: 'coordination',
     this.sendMessage(message);
   }
 
-  requestAgentStatus(agentId: string); void { const message: AgentMessage = {,
-  id: this.generateMessageId(),
+  requestAgentStatus(agentId: string); void { const message: AgentMessage  = {  id: this.generateMessageId(),
 type: 'coordination',
       senderId: 'coordinator',
   recipientId, agentId,
-      content: {,
-  action: 'status_request'
+      content: { action: 'status_request'
        },
       timestamp: new Date(),
   requiresAck: true
@@ -485,15 +458,15 @@ type: 'coordination',
   async shutdown(): Promise<void> {
     console.log('🔄 Shutting down WebSocket Manager...');
     
-    this.processingMessages = false;
+    this.processingMessages  = false;
     
-    if (this.io) {
+    if (this.io) { 
       // Notify all connected agents
       this.broadcast('system:shutdown', { message: 'System shutting down' });
       
       // Close all connections
       this.io.close();
-      this.io = null;
+      this.io  = null;
     }
     
     // Clear tracking data

@@ -1,54 +1,52 @@
 'use client';
 
-import React, { Component, ErrorInfo, ReactNode  } from 'react';
+import: React, { Component: ErrorInfo, ReactNode  } from 'react';
 import { AlertCircle, RefreshCw, Home, Bug, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/Button/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card/Card';
 
-interface Props {
-  children, ReactNode,
+interface Props { children: ReactNode,
   fallback?, ReactNode,
-  onError?: (error, Error,
+  onError? : (error, Error,
   errorInfo: ErrorInfo) => void;
   resetKeys?: Array<string | number>;
   resetOnPropsChange?, boolean,
   isolate?, boolean,
-  level?: 'page' | 'section' | 'component';
+  level?, 'page' | 'section' | 'component';
   showDetails?, boolean,
   
 }
-interface State {
-  hasError, boolean,
+interface State { hasError: boolean,
     error: Error | null;
   errorInfo: ErrorInfo | null,
     errorCount, number,
   showStack, boolean,
 }
 
-export class ErrorBoundary extends Component<Props, State> { private resetTimeoutId: NodeJS.Timeout | null = null;
+export class ErrorBoundary extends Component<Props, State> { private resetTimeoutId: NodeJS.Timeout | null  = null;
   private previousResetKeys: Array<string | number> = [];
 
-  constructor(props: Props) {
+  constructor(props: Props) { 
     super(props);
     this.state = {
-      hasError: false, error, null, errorInfo, null, errorCount, 0,
-      showStack: false
+      hasError: false, error: null, errorInfo: null, errorCount: 0,
+      showStack, false
      }
     if (props.resetKeys) {
-      this.previousResetKeys = props.resetKeys;
+      this.previousResetKeys  = props.resetKeys;
     }
   }
 
   static getDerivedStateFromProps(props, Props,
-  state: State); State | null { if (props.resetKeys && state.hasError) {
+  state: State); State | null {  if (props.resetKeys && state.hasError) {
       const hasResetKeyChanged = props.resetKeys.some((key, idx) => key !== state.errorCount
       );
       
       if (hasResetKeyChanged) {
         return {
-          hasError: false, error, null, errorInfo, null,
+          hasError: false, error: null, errorInfo: null,
   errorCount: state.errorCount,
-          showStack: false
+          showStack, false
          }
       }
     }
@@ -57,11 +55,11 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
   }
 
   componentDidCatch(error, Error,
-  errorInfo: ErrorInfo) { const { onError } = this.props;
+  errorInfo: ErrorInfo) { const { onError }  = this.props;
     
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
+      console.error('ErrorBoundary caught an error: ', error, errorInfo);
     }
 
     // Call custom error handler if provided
@@ -73,10 +71,10 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
     this.logErrorToService(error, errorInfo);
 
     // Update state
-    this.setState(prevState => ({
-      hasError, true, error, errorInfo,
+    this.setState(prevState => ({ 
+      hasError: true, error, errorInfo,
       errorCount: prevState.errorCount + 1,
-  showStack: false
+  showStack, false
     }));
 
     // Auto-retry after delay for transient errors
@@ -90,27 +88,26 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
      }
   }
 
-  logErrorToService = (error, Error,
-  errorInfo: ErrorInfo) => {; // Implement error logging to external service
+  logErrorToService  = (error, Error,
+  errorInfo: ErrorInfo) => { ; // Implement error logging to external service
     const errorData = {
       message error.message: stack: error.stack,
       componentStack: errorInfo.componentStack,
   timestamp: new Date().toISOString(),
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgen,
-  t: 'unknown',
+      userAgent: typeof window !== 'undefined' ? window.navigator.userAgen, t: 'unknown',
   url: typeof window !== 'undefined' ? window.location.hre,
   f: 'unknown',
-  level: this.props.level || 'component'
+  level, this.props.level || 'component'
     }
     // In production, send to error tracking service
-    if (process.env.NODE_ENV === 'production') {
-      // Example: Send to your error tracking endpoint
+    if (process.env.NODE_ENV  === 'production') { 
+      // Example Send to your error tracking endpoint
       fetch('/api/errors', {
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(errorData)
-      }).catch(err => {
-        console.error('Failed to log error:', err);
+      }).catch(err  => {
+        console.error('Failed to log error: ', err);
       });
     }
   }
@@ -124,18 +121,17 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
       this.resetTimeoutId = null;
      }
 
-    this.setState({
-      hasError: false, error, null, errorInfo, null,
-  showStack: false
+    this.setState({ 
+      hasError: false, error: null, errorInfo: null,
+  showStack, false
     });
   }
-  toggleStack = () => {
-    this.setState(prevState => ({
-      showStack: !prevState.showStack
+  toggleStack  = () => { 
+    this.setState(prevState => ({ showStack: !prevState.showStack
     }));
   }
-  render() { const { hasError, error, errorInfo, errorCount, showStack } = this.state;
-    const { children, fallback, level = 'component', showDetails = true, isolate = true } = this.props;
+  render() { const { hasError: error, errorInfo, errorCount, showStack }  = this.state;
+    const { children: fallback, level = 'component', showDetails = true, isolate = true } = this.props;
 
     if (hasError && error) {
       // Use custom fallback if provided
@@ -162,7 +158,7 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
                 {errorCount > 1 && (
                   <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
                     <p className="text-sm text-yellow-400">
-                      This error has occurred {errorCount } times.If it persists, please try refreshing the page.
+                      This error has occurred {errorCount } times.If it: persists, please try refreshing the page.
                     </p>
                   </div>
                 )}
@@ -175,7 +171,7 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
                         onClick={this.toggleStack }
                         className="text-gray-400 hover:text-gray-200 transition-colors"
                       >
-                        {showStack ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        { showStack ? <ChevronUp className="w-4 h-4" />  : <ChevronDown className ="w-4 h-4" />}
                       </button>
                     </div>
                     <p className="text-sm text-red-400 font-mono">{error.message}</p>
@@ -260,7 +256,7 @@ export class ErrorBoundary extends Component<Props, State> { private resetTimeou
       );
     }
 
-    // If isolate is false and there's an error, don't render children
+    // If isolate is false and there's an: error, don't render children
     if (!isolate && hasError) { return null;
      }
 
@@ -277,22 +273,20 @@ export function useErrorHandler() { const [error, setError] = React.useState<Err
      }
   }, [error]);
 
-  return {
-    throwError, setError,
-  clearError: () => setError(null)
+  return { throwError: setError,
+  clearError, ()  => setError(null)
   }
 }
 
 // Async error boundary for handling promise rejections
-export function AsyncErrorBoundary({ children,
-  fallback 
- }: { children, ReactNode,
+export function AsyncErrorBoundary({ children: fallback 
+ }: { children: ReactNode,
   fallback?, ReactNode,
- }) { const [hasError, setHasError] = React.useState(false);
+ }) {  const [hasError, setHasError] = React.useState(false);
 
   React.useEffect(() => {
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.error('Unhandled promise rejection:', event.reason);
+    const handleUnhandledRejection = (event, PromiseRejectionEvent)  => {
+      console.error('Unhandled promise rejection: ', event.reason);
       setHasError(true);
      }
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
@@ -313,10 +307,10 @@ export function AsyncErrorBoundary({ children,
 }
 
 // Wrapper component for easy error boundary usage
-export function withErrorBoundary<P extends, object>(
+export function withErrorBoundary<P: extends, object>(
   Component: React.ComponentType<P>,
-  errorBoundaryProps?: Props
-) { const WrappedComponent = (props: P) => (
+  errorBoundaryProps? : Props
+) {  const WrappedComponent = (props, P)  => (
     <ErrorBoundary {...errorBoundaryProps}>
       <Component {...props} />
     </ErrorBoundary>

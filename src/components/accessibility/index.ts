@@ -1,5 +1,4 @@
-export {
-  AccessibilityProvider, useAccessibility,
+export { AccessibilityProvider: useAccessibility,
   ScreenReaderOnly, SkipLink, Announcement,
   FocusTrap
 } from "./AccessibilityProvider";

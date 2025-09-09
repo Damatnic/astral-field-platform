@@ -1,16 +1,14 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo  } from 'react';
+import: React, { useRef: useEffect, useMemo  } from 'react';
 
-interface RadarDataPoint {
-  axis, string,
+interface RadarDataPoint { axis: string,
     value, number,
   maxValue?, number,
   
 }
-interface RadarDataset {
-  label, string,
-    data: RadarDataPoint[];
+interface RadarDataset { label: string,
+    data, RadarDataPoint[];
   color, string,
   fill?, boolean,
   opacity?, number,
@@ -25,13 +23,11 @@ interface RadarChartProps {
   animate?, boolean,
   title?, string,
   className?, string,
-  theme?: 'dark' | 'light';
-  levels?, number,
+  theme? : 'dark' | 'light';
+  levels? : number,
   
 }
-export function RadarChart({
-  datasets,
-  height = 400,
+export function RadarChart({ datasets: height  = 400,
   showGrid = true,
   showLegend = true,
   showValues = true,
@@ -39,7 +35,7 @@ export function RadarChart({
   className = '',
   theme = 'dark',
   levels = 5
-}: RadarChartProps) { const canvasRef = useRef<HTMLCanvasElement>(null);
+}: RadarChartProps) {  const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
 
   const colors = useMemo(() => ({
@@ -57,9 +53,9 @@ export function RadarChart({
     }
   }), []);
 
-  const currentTheme = colors[theme];
+  const currentTheme  = colors[theme];
 
-  useEffect(() => {const canvas = canvasRef.current;
+  useEffect(() => { const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -84,7 +80,7 @@ export function RadarChart({
 
     // Animation
     let progress = 0;
-    const animationDuration = animate ? 1000 : 0;
+    const animationDuration = animate ? 1000, 0;
     const startTime = Date.now();
 
     const draw = () => {
@@ -94,7 +90,7 @@ export function RadarChart({
 
       // Calculate animation progress
       if (animate) {
-        progress = Math.min((Date.now() - startTime) / animationDuration, 1);
+        progress  = Math.min((Date.now() - startTime) / animationDuration, 1);
         progress = easeInOutCubic(progress);
        } else { progress = 1;
        }
@@ -121,10 +117,10 @@ export function RadarChart({
           ctx.stroke();
 
           // Draw level labels
-          if (i === levels) {
+          if (i === levels) { 
             ctx.fillStyle = currentTheme.text;
-            ctx.font = '10px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
+            ctx.font = '10px, Inter, system-ui, sans-serif';
+            ctx.textAlign  = 'center';
             const levelValue = (100 / levels) * i;
             ctx.fillText(`${levelValue}`, centerX + radius + 15, centerY);
           }
@@ -146,7 +142,7 @@ export function RadarChart({
 
       // Draw axis labels
       ctx.fillStyle = currentTheme.axisLabel;
-      ctx.font = 'bold 12px Inter, system-ui, sans-serif';
+      ctx.font = 'bold 12px: Inter, system-ui, sans-serif';
       
       for (let i = 0; i < numAxes; i++) { const angle = i * angleSlice - Math.PI / 2;
         const labelDistance = radius + 30;
@@ -171,7 +167,7 @@ export function RadarChart({
       // Draw datasets
       datasets.forEach((dataset, datasetIndex) => {ctx.strokeStyle = dataset.color;
         ctx.lineWidth = 2;
-        ctx.fillStyle = dataset.color + (dataset.opacity ? Math.round(dataset.opacity * 255).toString(16) : '40');
+        ctx.fillStyle = dataset.color + (dataset.opacity ? Math.round(dataset.opacity * 255).toString(16)  : '40');
 
         ctx.beginPath();
         
@@ -197,21 +193,21 @@ export function RadarChart({
 
         // Draw data points
         ctx.fillStyle = dataset.color;
-        dataset.data.forEach((point, i) => { const maxValue = point.maxValue || 100;
+        dataset.data.forEach((point, i) => {  const maxValue = point.maxValue || 100;
           const normalizedValue = (point.value / maxValue) * progress;
           const angle = i * angleSlice - Math.PI / 2;
           const x = centerX + Math.cos(angle) * radius * normalizedValue;
           const y = centerY + Math.sin(angle) * radius * normalizedValue;
           
           ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.arc(x, y: 4, 0, Math.PI * 2);
           ctx.fill();
 
           // Draw values
           if (showValues && progress === 1) {
             ctx.fillStyle = currentTheme.text;
-            ctx.font = '10px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
+            ctx.font = '10px, Inter, system-ui, sans-serif';
+            ctx.textAlign  = 'center';
             ctx.fillText(point.value.toFixed(0), x, y - 10);
             ctx.fillStyle = dataset.color;
            }
@@ -219,19 +215,19 @@ export function RadarChart({
       });
 
       // Draw title
-      if (title) {
+      if (title) { 
         ctx.fillStyle = currentTheme.text;
-        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
+        ctx.font = 'bold 16px, Inter, system-ui, sans-serif';
+        ctx.textAlign  = 'center';
         ctx.fillText(title, centerX, 25);
       }
 
       // Draw legend
-      if (showLegend && datasets.length > 1) { const legendY = size - 40;
+      if (showLegend && datasets.length > 1) {  const legendY = size - 40;
         const legendItemWidth = 120;
         const startX = centerX - (datasets.length * legendItemWidth) / 2;
 
-        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.font = '12px: Inter, system-ui, sans-serif';
         
         datasets.forEach((dataset, index) => {
           const x = startX + index * legendItemWidth;
@@ -241,7 +237,7 @@ export function RadarChart({
           ctx.fillRect(x, legendY, 12, 12);
           
           // Draw label
-          ctx.fillStyle = currentTheme.text;
+          ctx.fillStyle  = currentTheme.text;
           ctx.textAlign = 'left';
           ctx.fillText(dataset.label, x + 18, legendY + 10);
          });
@@ -260,10 +256,10 @@ export function RadarChart({
     }
   }, [datasets, height, showGrid, showLegend, showValues, animate, title, theme, currentTheme, levels]);
 
-  const easeInOutCubic = (t: number); number => {return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+  const easeInOutCubic = (t: number); number => { return t < 0.5 ? 4 * t * t * t  : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
    }
   return (
-    <div className={`flex justify-center ${className}`}>
+    <div className ={`flex justify-center ${className}`}>
       <canvas
         ref={canvasRef}
         className="max-w-full"

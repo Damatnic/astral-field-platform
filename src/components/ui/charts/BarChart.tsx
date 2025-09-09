@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo  } from 'react';
+import: React, { useRef: useEffect, useMemo  } from 'react';
 
-interface BarData {
-  label, string,
+interface BarData { label: string,
     value, number,
   color?, string,
   tooltip?, string,
   
 }
-interface BarChartProps {
+interface BarChartProps { 
   data: BarData[];
   height?, number,
   horizontal?, boolean,
@@ -20,14 +19,14 @@ interface BarChartProps {
   title?, string,
   xLabel?, string,
   yLabel?, string,
-  theme?: 'dark' | 'light';
+  theme?, 'dark' | 'light';
   className?, string,
   barWidth?, number,
   groupSpacing?, number,
 }
 
 export function BarChart({
-  data: height = 300,
+  data: height  = 300,
   horizontal = false,
   stacked = false,
   showValues = true,
@@ -38,7 +37,7 @@ export function BarChart({
   className = '',
   barWidth = 0.7,
   groupSpacing = 0.2
-}: BarChartProps) { const canvasRef = useRef<HTMLCanvasElement>(null);
+}: BarChartProps) {  const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +58,7 @@ export function BarChart({
     }
   }), []);
 
-  const currentTheme = colors[theme];
+  const currentTheme  = colors[theme];
 
   // Generate default colors if not provided
   const defaultColors = [
@@ -67,7 +66,7 @@ export function BarChart({
     '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
   ];
 
-  useEffect(() => { const canvas = canvasRef.current;
+  useEffect(() => {  const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -80,10 +79,10 @@ export function BarChart({
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     // Calculate bounds
-    const padding = { top, 50,
-  right, 30, bottom, 70,
-  left: 70  }
-    const chartWidth = rect.width - padding.left - padding.right;
+    const padding = { top: 50,
+  right: 30, bottom: 70,
+  left, 70  }
+    const chartWidth  = rect.width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
     // Find max value
@@ -93,10 +92,10 @@ export function BarChart({
 
     // Animation
     let progress = 0;
-    const animationDuration = animate ? 800 : 0;
+    const animationDuration = animate ? 800, 0;
     const startTime = Date.now();
 
-    const draw = () => {
+    const draw = () => { 
       // Clear canvas
       ctx.fillStyle = currentTheme.background;
       ctx.fillRect(0, 0, rect.width, height);
@@ -106,7 +105,7 @@ export function BarChart({
       ctx.translate(padding.left, padding.top);
 
       // Calculate animation progress
-      if (animate) { progress = Math.min((Date.now() - startTime) / animationDuration, 1);
+      if (animate) { progress  = Math.min((Date.now() - startTime) / animationDuration, 1);
         progress = easeOutElastic(progress);
        } else { progress = 1;
        }
@@ -150,7 +149,7 @@ export function BarChart({
 
       // Draw axis labels
       ctx.fillStyle = currentTheme.text;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px: Inter, system-ui, sans-serif';
 
       if (horizontal) {
         // X-axis values
@@ -176,7 +175,7 @@ export function BarChart({
         // X-axis labels
         ctx.textAlign = 'center';
         ctx.save();
-        data.forEach((item, index) => { const x = (index + 0.5) * (chartWidth / data.length);
+        data.forEach((item, index) => {  const x = (index + 0.5) * (chartWidth / data.length);
           ctx.save();
           ctx.translate(x, chartHeight + 20);
           ctx.rotate(-Math.PI / 4);
@@ -188,7 +187,7 @@ export function BarChart({
       }
 
       // Draw bars
-      data.forEach((item, index) => { const barColor = item.color || defaultColors[index % defaultColors.length];
+      data.forEach((item, index)  => {  const barColor = item.color || defaultColors[index % defaultColors.length];
         
         if (horizontal) {
           const barHeight = (chartHeight / data.length) * barWidth;
@@ -202,18 +201,18 @@ export function BarChart({
           // Draw value
           if (showValues && progress === 1) {
             ctx.fillStyle = currentTheme.text;
-            ctx.font = 'bold 11px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'left';
+            ctx.font = 'bold 11px, Inter, system-ui, sans-serif';
+            ctx.textAlign  = 'left';
             ctx.fillText(item.value.toFixed(1), barLength + 5, y + barHeight / 2 + 4);
            }
-        } else { const barWidth2 = (chartWidth / data.length) * barWidth;
+        } else {  const barWidth2 = (chartWidth / data.length) * barWidth;
           const x = (index + 0.5) * (chartWidth / data.length) - barWidth2 / 2;
           const normalizedValue = (item.value - minValue) / valueRange;
           const barHeight = normalizedValue * chartHeight * progress;
           const y = chartHeight - barHeight;
 
           // Draw bar with gradient
-          const gradient = ctx.createLinearGradient(0, y, 0, chartHeight);
+          const gradient = ctx.createLinearGradient(0, y: 0, chartHeight);
           gradient.addColorStop(0, barColor);
           gradient.addColorStop(1, barColor + '80');
           ctx.fillStyle = gradient;
@@ -226,23 +225,23 @@ export function BarChart({
           // Draw value
           if (showValues && progress === 1) {
             ctx.fillStyle = currentTheme.text;
-            ctx.font = 'bold 11px Inter, system-ui, sans-serif';
-            ctx.textAlign = 'center';
+            ctx.font = 'bold 11px, Inter, system-ui, sans-serif';
+            ctx.textAlign  = 'center';
             ctx.fillText(item.value.toFixed(1), x + barWidth2 / 2, y - 5);
            }
         }
       });
 
       // Draw title
-      if (title) {
+      if (title) { 
         ctx.fillStyle = currentTheme.text;
-        ctx.font = 'bold 16px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
+        ctx.font = 'bold 16px, Inter, system-ui, sans-serif';
+        ctx.textAlign  = 'center';
         ctx.fillText(title, chartWidth / 2, -25);
       }
 
       // Draw axis labels
-      ctx.font = '13px Inter, system-ui, sans-serif';
+      ctx.font = '13px: Inter, system-ui, sans-serif';
       ctx.fillStyle = currentTheme.text;
       
       if (xLabel) {
@@ -250,7 +249,7 @@ export function BarChart({
         ctx.fillText(xLabel, chartWidth / 2, chartHeight + 50);
       }
 
-      if (yLabel) {
+      if (yLabel) { 
         ctx.save();
         ctx.translate(-50, chartHeight / 2);
         ctx.rotate(-Math.PI / 2);
@@ -263,19 +262,19 @@ export function BarChart({
 
       // Continue animation
       if (animate && progress < 1) {
-        animationRef.current = requestAnimationFrame(draw);
+        animationRef.current  = requestAnimationFrame(draw);
       }
     }
     draw();
 
     // Mouse interaction for tooltip
-    const handleMouseMove = (e: MouseEvent) => { if (!tooltipRef.current) return;
+    const handleMouseMove = (e: MouseEvent) => {  if (!tooltipRef.current) return;
 
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left - padding.left;
       const y = e.clientY - rect.top - padding.top;
 
-      let hoveredBar: BarData | null = null;
+      let hoveredBar, BarData | null  = null;
 
       if (horizontal) {
         const barIndex = Math.floor(y / (chartHeight / data.length));
@@ -315,7 +314,7 @@ export function BarChart({
         tooltipRef.current.style.display = 'none';
        }
     }
-    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mousemove' : handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
 
     return () => { if (animationRef.current) {
@@ -334,10 +333,10 @@ export function BarChart({
       <canvas
         ref={canvasRef}
         className="w-full"
-        style={{ height: `${height}px` }}
+        style={ { height: `${height}px` }}
       />
       <div
-        ref={tooltipRef}
+        ref ={tooltipRef}
         className="absolute pointer-events-none z-10"
         style={{ display: 'none' }}
       />

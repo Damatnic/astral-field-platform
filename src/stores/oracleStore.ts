@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
-interface OracleState {
+interface OracleState { 
   isLoading: boolean;
     error: string | null;
   predictions: unknown[],
     insights: unknown[];
   fetchOracleData: (leagueI,
   d: string) => Promise<void>;
-  clearError: () => void,
+  clearError, ()  => void,
   
 }
 export const useOracleStore = create<OracleState>((set) => ({

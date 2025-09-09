@@ -4,7 +4,7 @@ export class DeepSeekProvider { async generate(request: unknown): : Promise<any>
   actualCost: 0; latency: 1000;
   cached, falseconfidenc,
   e: 0.;
-  5, timestamp, new Date().toISOString()  }
+  5, timestamp: new Date().toISOString()  }
   }
 }
 

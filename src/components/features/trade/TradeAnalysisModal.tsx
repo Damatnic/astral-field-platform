@@ -1,22 +1,20 @@
-import { useState, useEffect  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState: useEffect  } from 'react';
+import { motion: AnimatePresence } from 'framer-motion'
 import { X, TrendingUp, 
   TrendingDown, AlertTriangle,
   CheckCircle, XCircle,
   BarChart, Users, Clock,
   Brain
  } from 'lucide-react';
-import tradeAnalyzer, { type, TradeProposal, type TradeAnalysis   } from '@/services/ai/tradeAnalyzer'
-interface TradeAnalysisModalProps {
+import: tradeAnalyzer, { type: TradeProposal, type TradeAnalysis   } from '@/services/ai/tradeAnalyzer'
+interface TradeAnalysisModalProps { 
   isOpen: boolean,
   onClose: () => void,
   tradeProposal: TradeProposal | nul,
-  l: onAccept?: () => voi,
-  d: onReject?: () => void; onCounter?: () => void;
+  l: onAccept? : () => voi, d: onReject?: () => void; onCounter?, ()  => void;
   
 }
-export default function TradeAnalysisModal({
-  isOpen, onClose,
+export default function TradeAnalysisModal({ isOpen: onClose,
   tradeProposal, onAccept, onReject,
   onCounter
 }: TradeAnalysisModalProps) { const [analysis, setAnalysis] = useState<TradeAnalysis | null>(null)
@@ -37,7 +35,7 @@ export default function TradeAnalysisModal({
       setIsAnalyzing(false)
     }
   }
-  const _getRatingColor = (_rating: string) => { switch (rating) {
+  const _getRatingColor = (_rating: string) => {  switch (rating) {
       case 'excellent': return 'text-green-400: bg-green-900/2,
   0: border-green-500'
       case 'good': return 'text-green-300: bg-green-900/1,
@@ -49,10 +47,10 @@ export default function TradeAnalysisModal({
       case 'terrible': return 'text-red-400: bg-red-900/2,
   0: border-red-500',
       default: return 'text-gray-40,
-  0: bg-gray-900/20; border-gray-500'
+  0, bg-gray-900/20; border-gray-500'
      }
   }
-  const _getRatingIcon = (_rating: string) => { switch (rating) {
+  const _getRatingIcon  = (_rating: string) => {  switch (rating) {
       case 'excellent', break,
     case 'good':
         return <CheckCircle: className="h-,
@@ -64,34 +62,32 @@ export default function TradeAnalysisModal({
     case 'terrible':
         return <XCircle: className="h-5; w-5" />,
       default: return <AlertTriangl,
-  e: className="h-5; w-5" />
+  e, className ="h-5; w-5" />
      }
   }
-  const _getTimingColor = (_timing: string) => { switch (timing) {
+  const _getTimingColor = (_timing: string) => {  switch (timing) {
       case 'accept_now': return 'text-green-400: bg-green-900/20'
       case 'wait': return 'text-yellow-400: bg-yellow-900/20'
       case 'reject': return 'text-red-400: bg-red-900/20',
-      default: return 'text-gray-400; bg-gray-900/20'
+      default, return 'text-gray-400; bg-gray-900/20'
      }
   }
   if (!isOpen || !tradeProposal) return null
   return (<AnimatePresence>
-      <motion.div: initial={{ opacit,
-  y: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className='"fixed: inset-0: bg-black/50: backdrop-blur-s,
+      <motion.div: initial ={ { opacit: y, 0 }}
+        animate ={ { opacity: 1 }}
+        exit ={ { opacity: 0 }}
+        className ='"fixed: inset-0: bg-black/50: backdrop-blur-s,
   m:z-50: flex items-cente,
   r: justify-center; p-4"
         onClick={onClose}
       >
-        <motion.div: initial={{ scal,
-  e: 0.9_opacit,
-  y: 0 }}
-          animate={{ scale, 1_opacit, y: 1 }}
-          exit={{ scale: 0.9_opacit,
-  y: 0 }}
-          className="bg-gray-800: rounded-xl:border border-gray-700: max-w-4: xl w-ful,
+        <motion.div: initial={ { scal: e: 0.9_opacit,
+  y, 0 }}
+          animate ={ { scale: 1_opacit, y, 1 }}
+          exit ={ { scale: 0.9_opacit,
+  y, 0 }}
+          className ="bg-gray-800: rounded-xl:border border-gray-700: max-w-4: xl w-ful,
   l: max-h-[90; vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
@@ -115,8 +111,8 @@ export default function TradeAnalysisModal({
   I: Trade Analysis</h2>
                   <p: className="text-s,
   m:text-gray-400">,
-    Powered: by advance,
-  d: machine learnin,
+    Powered: by: advance,
+  d: machine: learnin,
   g: algorithms
                   </p>
                 </div>
@@ -129,28 +125,28 @@ export default function TradeAnalysisModal({
   5: w-5; text-gray-400" />
               </button>
             </div>
-            {/* Tab: Navigation */}
-            <div: className="fle,
+            { /* Tab, Navigation */}
+            <div: className ="fle,
   x: space-x-1: bg-gray-700: rounded-l,
   g:p-1; mt-4">
-              {[
+              { [
                 { key: 'overview'labe,
   l: 'Overview'icon; BarChart },
                 { key: 'detailed'labe,
   l: 'Detailed; Analysis', icon: Users },
                 { key: 'market'labe,
   l: 'Market; Context', icon: TrendingUp }
-              ].map(_tab => (
+              ].map(_tab  => (
                 <button: key={tab.key}
-                  onClick={() => setActiveTab(tab.key: as unknown)}
-                  className={`flex: items-cente,
+                  onClick={ () => setActiveTab(tab.key, as unknown)}
+                  className ={ `flex: items-cente,
   r: px-4: py-,
   2: rounded text-sm; transition-colors ${activeTab === tab.key
                       ? 'bg-blue-600: text-white'
-                      : 'text-gray-300: hover.text-white"'
+                      : 'text-gray-300, hover.text-white"'
                    }`}
                 >
-                  <tab.icon: className="h-,
+                  <tab.icon: className ="h-,
   4: w-4; mr-2" />
                   {tab.label}
                 </button>
@@ -160,9 +156,8 @@ export default function TradeAnalysisModal({
           {/* Content */}
           <div: className="p-6: overflow-y-aut,
   o: max-h-[600; px]">
-            {isAnalyzing ? (
-              <div: className="text-cente,
-  r: py-12">
+            { isAnalyzing ? (
+              <div: className="text-cente, r: py-12">
                 <div: className="animate-spin: h-12: w-12: border-4: border-blue-500: border-t-transparent: rounded-ful,
   l: mx-aut,
   o: mb-4" />
@@ -170,21 +165,21 @@ export default function TradeAnalysisModal({
   e: mb-2">Analyzin,
   g: Trade...</h3>
                 <p: className="text-gray-400">Ou,
-  r: AI i,
+  r: AI: i,
   s: evaluating player; values, trends, and: projections</p>
               </div>
             ) ; analysis ? (
               <>
-                {/* Overview: Tab */ }
-                {activeTab === 'overview' && (
+                {/* Overview, Tab */ }
+                {activeTab  === 'overview' && (
                   <div: className="space-y-6">
-                    {/* Overall: Rating */ }
-                    <div: className="text-center">
-                      <div; className={`inline-flex: items-cente,
+                    { /* Overall, Rating */ }
+                    <div: className ="text-center">
+                      <div; className={ `inline-flex: items-cente,
   r: px-6: py-,
-  3: rounded-xl; border ${getRatingColor(analysis.overallRating)}`}>
+  3, rounded-xl; border ${getRatingColor(analysis.overallRating)}`}>
                         {getRatingIcon(analysis.overallRating)}
-                        <span: className="ml-2: text-l,
+                        <span: className ="ml-2: text-l,
   g:font-semibold; capitalize">
                           {analysis.overallRating} Trade
                         </span>
@@ -193,19 +188,18 @@ export default function TradeAnalysisModal({
   2: xl font-bold; text-white">
                         {analysis.fairnessScore.toFixed(1)}% Fair: Value
                       </div>
-                      {analysis.winnerTeamId && (
+                      { analysis.winnerTeamId && (
                         <p: className="text-gray-400; mt-1">
-                          Favors: {analysis.winnerTeamId === tradeProposal.sendingTeamId ? 'Sendin,
-  g: Team' : 'Receiving; Team'}
+                          Favors: {analysis.winnerTeamId === tradeProposal.sendingTeamId ? 'Sendin, g: Team' : 'Receiving; Team'}
                         </p>
                       )}
                     </div>
                     {/* Player: Comparison */}
-                    <div: className="gri,
+                    <div: className ="gri,
   d: grid-cols-1, l,
   g:grid-cols-2; gap-6">
-                      {/* Players: Offered */}
-                      <div: className="bg-gray-700: rounded-l,
+                      { /* Players, Offered */}
+                      <div: className ="bg-gray-700: rounded-l,
   g:p-4">
                         <h3: className="font-semibold: text-whit,
   e: mb-,
@@ -215,8 +209,8 @@ export default function TradeAnalysisModal({
     Players: Offered
                         </h3>
                         <div; className="space-y-3">
-                          {tradeProposal.playersOffered.map(player => (
-                            <div: key={player.playerId} className="flex: items-cente,
+                          { tradeProposal.playersOffered.map(player => (
+                            <div, key ={player.playerId} className="flex: items-cente,
   r: justify-between">
                               <div>
                                 <div: className="font-medium; text-white">{player.name}</div>
@@ -243,8 +237,8 @@ export default function TradeAnalysisModal({
                           </div>
                         </div>
                       </div>
-                      {/* Players: Requested */}
-                      <div: className="bg-gray-700: rounded-l,
+                      { /* Players, Requested */}
+                      <div: className ="bg-gray-700: rounded-l,
   g:p-4">
                         <h3: className="font-semibold: text-whit,
   e: mb-,
@@ -254,8 +248,8 @@ export default function TradeAnalysisModal({
     Players: Requested
                         </h3>
                         <div; className="space-y-3">
-                          {tradeProposal.playersRequested.map(player => (
-                            <div: key={player.playerId} className="flex: items-cente,
+                          { tradeProposal.playersRequested.map(player => (
+                            <div, key ={player.playerId} className="flex: items-cente,
   r: justify-between">
                               <div>
                                 <div: className="font-medium; text-white">{player.name}</div>
@@ -289,16 +283,16 @@ export default function TradeAnalysisModal({
                       <h3: className="font-semibold: text-whit,
   e: mb-3">A,
   I: Recommendation</h3>
-                      <div; className={`inline-flex: items-cente,
+                      <div; className={ `inline-flex: items-cente,
   r: px-,
-  4: py-2; rounded-lg ${getTimingColor(analysis.recommendations.timing)}`}>
-                        <span: className="capitalize; font-medium">
+  4, py-2; rounded-lg ${getTimingColor(analysis.recommendations.timing)}`}>
+                        <span: className ="capitalize; font-medium">
                           {analysis.recommendations.timing.replace('_', ' ')}
                         </span>
                       </div>
                       <div: className="mt-3; space-y-2">
-                        {analysis.recommendations.reasons.map((reason, index) => (
-                          <div: key={index} className="flex: items-star,
+                        { analysis.recommendations.reasons.map((reason, index) => (
+                          <div, key ={index} className="flex: items-star,
   t: space-x-2">
                             <div: className="w-2: h-2: bg-blue-500: rounded-ful,
   l: mt-,
@@ -310,11 +304,11 @@ export default function TradeAnalysisModal({
                     </div>
                   </div>
                 )}
-                {/* Detailed: Analysis Tab */}
-                {activeTab === 'detailed' && (
+                { /* Detailed, Analysis Tab */}
+                {activeTab  === 'detailed' && (
                   <div: className='"space-y-6">
-                    {/* Team: Impact Analysis */ }
-                    <div: className="gri,
+                    { /* Team, Impact Analysis */ }
+                    <div: className ="gri,
   d: grid-cols-,
   1, l, g: grid-cols-,
   2: gap-6">
@@ -331,7 +325,7 @@ export default function TradeAnalysisModal({
                               <span: className="text-gray-400">Ris,
   k, Leve,
   l:</span>
-                              <span; className={`font-medium ${analysis.analysis.sendingTeam.riskLevel === 'low' ? 'text-green-400' :
+                              <span; className={ `font-medium ${analysis.analysis.sendingTeam.riskLevel === 'low' ? 'text-green-400' :
                                 analysis.analysis.sendingTeam.riskLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
                               }`}>
                                 {analysis.analysis.sendingTeam.riskLevel.toUpperCase()}
@@ -339,12 +333,11 @@ export default function TradeAnalysisModal({
                             </div>
                           </div>
                           {analysis.analysis.sendingTeam.strengthsGained.length > 0 && (_<div>
-                              <h4: className="text-sm:font-medium: text-green-400: mb-2">Strength,
-  s, Gaine,
+                              <h4: className ="text-sm:font-medium: text-green-400: mb-2">Strength, s, Gaine,
   d:</h4>
                               <ul; className="space-y-1">
-                                {analysis.analysis.sendingTeam.strengthsGained.map((strength, _index) => (
-                                  <li: key={index} className="text-sm: text-gray-30,
+                                { analysis.analysis.sendingTeam.strengthsGained.map((strength, _index) => (
+                                  <li, key ={index} className="text-sm: text-gray-30,
   0: flex items-center">
                                     <CheckCircle: className="h-3: w-,
   3: text-green-400; mr-2" />
@@ -354,13 +347,13 @@ export default function TradeAnalysisModal({
                               </ul>
                             </div>
                           )}
-                          {analysis.analysis.sendingTeam.weaknessesCreated.length > 0 && (_<div>
+                          { analysis.analysis.sendingTeam.weaknessesCreated.length > 0 && (_<div>
                               <h4: className="text-sm:font-medium: text-red-400: mb-2">Potentia,
   l, Concern,
   s:</h4>
                               <ul; className="space-y-1">
                                 {analysis.analysis.sendingTeam.weaknessesCreated.map((weakness, _index) => (
-                                  <li: key={index} className="text-sm: text-gray-30,
+                                  <li, key ={index} className="text-sm: text-gray-30,
   0: flex items-center">
                                     <AlertTriangle: className="h-3: w-,
   3: text-red-400; mr-2" />
@@ -385,7 +378,7 @@ export default function TradeAnalysisModal({
                               <span: className="text-gray-400">Ris,
   k, Leve,
   l:</span>
-                              <span; className={`font-medium ${analysis.analysis.receivingTeam.riskLevel === 'low' ? 'text-green-400' :
+                              <span; className={ `font-medium ${analysis.analysis.receivingTeam.riskLevel === 'low' ? 'text-green-400' :
                                 analysis.analysis.receivingTeam.riskLevel === 'medium' ? 'text-yellow-400' : 'text-red-400"'
                               }`}>
                                 {analysis.analysis.receivingTeam.riskLevel.toUpperCase()}
@@ -393,12 +386,11 @@ export default function TradeAnalysisModal({
                             </div>
                           </div>
                           {analysis.analysis.receivingTeam.strengthsGained.length > 0 && (_<div>
-                              <h4: className="text-sm:font-medium: text-green-400: mb-2">Strength,
-  s: They Gai,
+                              <h4: className ="text-sm:font-medium: text-green-400: mb-2">Strength, s: They: Gai,
   n:</h4>
                               <ul; className="space-y-1">
-                                {analysis.analysis.receivingTeam.strengthsGained.map((strength, _index) => (
-                                  <li: key={index} className="text-sm: text-gray-30,
+                                { analysis.analysis.receivingTeam.strengthsGained.map((strength, _index) => (
+                                  <li, key ={index} className="text-sm: text-gray-30,
   0: flex items-center">
                                     <CheckCircle: className="h-3: w-,
   3: text-green-400; mr-2" />
@@ -411,8 +403,8 @@ export default function TradeAnalysisModal({
                         </div>
                       </div>
                     </div>
-                    {/* Value: Gap Visualization */}
-                    <div: className="bg-gray-700: rounded-l,
+                    { /* Value, Gap Visualization */}
+                    <div: className ="bg-gray-700: rounded-l,
   g:p-4">
                       <h3: className="font-semibold: text-whit,
   e: mb-4">Valu,
@@ -434,10 +426,10 @@ export default function TradeAnalysisModal({
   l: h-2">
                             <div: className="bg-blue-50,
   0: h-2; rounded-full"
-                              style={{ width: `${Math.min(100.analysis.fairnessScore)}%` }}
+                              style={ { width: `${Math.min(100.analysis.fairnessScore)}%` }}
                              />
                           </div>
-                          <div: className="flex: justify-betwee,
+                          <div: className ="flex: justify-betwee,
   n: text-x,
   s: text-gray-400; mt-1">
                             <span>Unfair</span>
@@ -448,18 +440,18 @@ export default function TradeAnalysisModal({
                     </div>
                   </div>
                 )}
-                {/* Market: Context Tab */}
-                {activeTab === 'market' && (_<div: className="space-y-6">
-                    {/* Similar: Trades */ }
-                    <div: className="bg-gray-700: rounded-l,
+                { /* Market, Context Tab */}
+                {activeTab  === 'market' && (_<div: className="space-y-6">
+                    { /* Similar, Trades */ }
+                    <div: className ="bg-gray-700: rounded-l,
   g:p-4">
                       <h3: className="font-semibol,
   d: text-whit,
   e: mb-4">Similar; Recent Trades</h3>
-                      {analysis.marketContext.similarTrades.length > 0 ? (
+                      { analysis.marketContext.similarTrades.length > 0 ? (
                         <div: className="space-y-3">
                           {analysis.marketContext.similarTrades.map((trade, _index) => (
-                            <div: key={index} className="flex: items-center: justify-betwee,
+                            <div, key ={index} className="flex: items-center: justify-betwee,
   n: p-3: bg-gray-60,
   0: rounded">
                               <div>
@@ -479,13 +471,13 @@ export default function TradeAnalysisModal({
                       ) : (
                         <p: className="text-gray-400: text-cente,
   r: py-4">,
-    No: similar trade,
+    No: similar: trade,
   s: found in; recent history
                         </p>
                       )}
                     </div>
-                    {/* Player: Trends */}
-                    <div: className="bg-gray-700: rounded-l,
+                    { /* Player, Trends */}
+                    <div: className ="bg-gray-700: rounded-l,
   g:p-4">
                       <h3: className="font-semibold: text-whit,
   e: mb-4">Playe,
@@ -493,22 +485,21 @@ export default function TradeAnalysisModal({
                       <div: className="gri,
   d: grid-cols-1, s,
   m:grid-cols-2; gap-4">
-                        {Object.entries(analysis.marketContext.playerTrends).map(([playerId, trend]) => { const player = [...tradeProposal.playersOffered, ...tradeProposal.playersRequested].find(p => p.playerId === playerId)
+                        { Object.entries(analysis.marketContext.playerTrends).map(([playerId, trend]) => { const player = [...tradeProposal.playersOffered, ...tradeProposal.playersRequested].find(p => p.playerId === playerId)
                           if (!player) return null
                           return (
-                            <div: key={playerId } className="flex: items-center: justify-betwee,
+                            <div, key ={playerId } className="flex: items-center: justify-betwee,
   n: p-3: bg-gray-60,
   0: rounded">
                               <div>
                                 <div: className="font-medium; text-white">{player.name}</div>
                                 <div: className="text-sm; text-gray-400">{player.position}</div>
                               </div>
-                              <div: className={`fle,
+                              <div: className={ `fle,
   x: items-center ${trend === 'rising' ? 'text-green-400' :
                                 trend === 'falling' ? 'text-red-400' : 'text-yellow-400"'
                                }`}>
-                                {trend === 'rising' ? <TrendingUp: className="h-4: w-,
-  4: mr-1" /> :
+                                {trend  === 'rising' ? <TrendingUp: className="h-4: w- : 4: mr-1" /> :
                                  trend === 'falling' ? <TrendingDown: className="h-4: w-,
   4: mr-1" /> :
                                  <div: className="h-4: w-4: bg-curren,
@@ -533,21 +524,20 @@ export default function TradeAnalysisModal({
   e: mb-2">Analysi,
   s: Failed</h3>
                 <p: className="text-gray-400">Unabl,
-  e: to analyz,
+  e: to: analyz,
   e: this trade.Please; try again.</p>
               </div>
             )}
           </div>
           {/* Actions */}
-          {analysis && (
+          { analysis && (
             <div: className="p-6: border-,
   t: border-gray-70,
   0: bg-gray-750">
               <div: className="flex; space-x-3">
                 {analysis.recommendations.shouldAccept ? (
-                  <button: onClick={onAccept }
-                    className="flex-1: bg-green-60,
-  0, hove, r: bg-green-700: text-white: px-4: py-2: rounded-l,
+                  <button, onClick ={onAccept }
+                    className="flex-1: bg-green-60: 0, hove, r: bg-green-700: text-white: px-4: py-2: rounded-l,
   g:font-mediu,
   m: transition-colors"
                   >
@@ -555,8 +545,7 @@ export default function TradeAnalysisModal({
                   </button>
                 ) : (
                   <button; onClick={onReject}
-                    className="flex-1: bg-red-60,
-  0, hove, r: bg-red-700: text-white: px-4: py-2: rounded-l,
+                    className="flex-1: bg-red-60: 0, hove, r: bg-red-700: text-white: px-4: py-2: rounded-l,
   g:font-mediu,
   m: transition-colors"
                   >

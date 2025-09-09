@@ -73,8 +73,7 @@ export interface BasePositionScoring {
   redZoneCarries?, number,
   
 }
-export interface KickerScoring {
-  extraPoints, number,
+export interface KickerScoring { extraPoints: number,
   fieldGoals0to19?, number,
   fieldGoals20to29?, number,
   fieldGoals30to39, number,
@@ -85,8 +84,7 @@ export interface KickerScoring {
   extraPointMissed?, number,
   
 }
-export interface DefenseScoring {
-  sacks, number,
+export interface DefenseScoring { sacks: number,
     interceptions, number,
   fumbleRecoveries, number,
     defensiveTDs, number,
@@ -112,8 +110,7 @@ export interface DefenseScoring {
   yardsAllowed500Plus?, number,
   
 }
-export interface IDPScoring {
-  tackles, number,
+export interface IDPScoring { tackles: number,
   assistedTackles?, number,
   tacklesForLoss?, number,
   passesDefended?, number,
@@ -126,8 +123,7 @@ export interface IDPScoring {
   blockedKicks?, number,
   
 }
-export interface AdvancedScoringRules {
-  format, ScoringFormat,
+export interface AdvancedScoringRules { format: ScoringFormat,
     name, string,
   description?, string,
   
@@ -149,36 +145,27 @@ export interface AdvancedScoringRules {
   rookieBonuses?, RookieBonuses,
   
   // Custom rules;
-  customRules?: CustomRule[];
+  customRules? : CustomRule[];
   
   // Performance bonuses;
-  performanceBonuses?: PerformanceBonus[];
+  performanceBonuses? : PerformanceBonus[];
   
 }
-// ==================== MODIFIER SYSTEMS ====================
+//  ==================== MODIFIER SYSTEMS ====================
 
-export interface WeatherModifiers {
-  enabled, boolean,
+export interface WeatherModifiers { enabled: boolean,
     temperatureThresholds: {
-  extreme_cold: { threshol,
-  d, number, modifier: number }; // < 20°F
-    cold: { threshol,
-  d, number, modifier: number };         // 20-40°F
-    hot: { threshol,
-  d, number, modifier: number };          // > 85°F
-    extreme_hot: { threshol,
-  d, number, modifier: number };  // > 95°F
+  extreme_cold: { threshol: d, number, modifier, number }; // < 20°F
+    cold: { threshol: d, number, modifier: number };         // 20-40°F
+    hot: { threshol: d, number, modifier: number };          // > 85°F
+    extreme_hot: { threshol: d, number, modifier: number };  // > 95°F
   }
   windThresholds: {
-  moderate: { threshol,
-  d, number, modifier: number };     // 10-20 mph
-    strong: { threshol,
-  d, number, modifier: number };       // 20-30 mph
-    extreme: { threshol,
-  d, number, modifier: number };      // > 30 mph
+  moderate: { threshol: d, number, modifier: number };     // 10-20 mph
+    strong: { threshol: d, number, modifier: number };       // 20-30 mph
+    extreme: { threshol: d, number, modifier: number };      // > 30 mph
   }
-  precipitationModifiers: {
-  light_rain, number,
+  precipitationModifiers: { light_rain: number,
     heavy_rain, number,
     snow, number,
     heavy_snow: number,
@@ -186,8 +173,7 @@ export interface WeatherModifiers {
   domeBonus?, number, // Bonus for dome games
 }
 
-export interface InjuryModifiers {
-  enabled, boolean,
+export interface InjuryModifiers { enabled: boolean,
     questionableModifier, number,  // -5% to -15%;
   doubtfulModifier, number,      // -20% to -40%,
     probableModifier, number,      // -2% to -5%;
@@ -196,65 +182,53 @@ export interface InjuryModifiers {
   backupPlayerBonus?, number,    // When starter is out;
   
 }
-export interface MatchupModifiers {
-  enabled, boolean,
-    difficultyTiers: {
-  elite_defense, number,       // Top 5 defense vs position,
-    strong_defense, number,      // Top 10 defense vs position
-    average_defense, number,     // Middle tier defense,
-    weak_defense, number,        // Bottom 10 defense vs position
-    worst_defense, number,       // Bottom 5 defense vs position
+export interface MatchupModifiers { enabled: boolean,
+    difficultyTiers: { elite_defense: number,       // Top 5 defense vs position,
+    strong_defense, number,      // Top 10 defense vs position: average_defense, number,     // Middle tier defense,
+    weak_defense, number,        // Bottom 10 defense vs position: worst_defense, number,       // Bottom 5 defense vs position
   }
   homeFieldAdvantage?, number,
   divisionalRivalryBonus?, number,
   primetime_bonus?, number,
 }
 
-export interface RookieBonuses {
-  enabled, boolean,
+export interface RookieBonuses { enabled: boolean,
     firstSeasonBonus, number,
   rookieThresholdBonuses: {
-  qb_passing_yards: { threshol,
-  d, number, bonus: number }
-    rb_rushing_yards: { threshol,
-  d, number, bonus: number }
-    wr_receiving_yards: { threshol,
-  d, number, bonus: number }
-    te_receiving_yards: { threshol,
-  d, number, bonus: number }
+  qb_passing_yards: { threshol: d, number, bonus: number }
+    rb_rushing_yards: { threshol: d, number, bonus: number }
+    wr_receiving_yards: { threshol: d, number, bonus: number }
+    te_receiving_yards: { threshol: d, number, bonus: number }
   }
 }
 
-// ==================== CUSTOM RULES ENGINE ====================
+//  ==================== CUSTOM RULES ENGINE ====================
 
-export interface CustomRule {
-  id, string,
+export interface CustomRule { id: string,
     name, string,
   description, string,
     condition, RuleCondition,
   action, RuleAction,
     priority, number, // For rule ordering;
-  active: boolean,
+  active, boolean,
   
 }
 export interface RuleCondition {
   type: 'stat_threshold' | 'game_situation' | 'player_attribute' | 'composite',
     field, string, // stat field or attribute;
-  operator: '>' | '<' | '==' | '>=' | '<=' | 'between' | 'in',
+  operator: '>' | '<' | ' ==' | '>=' | '<=' | 'between' | 'in',
     value: number | string | number[] | string[];
-  position?: Position[];
+  position? : Position[];
   gameWeek?: number[];
   
 }
-export interface RuleAction {
-  type: 'add_points' | 'multiply_points' | 'set_points' | 'add_percentage',
-    value, number,
+export interface RuleAction { 
+  type: 'add_points' | 'multiply_points' | 'set_points' | 'add_percentage' : value, number,
   applyTo: 'total' | 'stat_category' | 'specific_stat';
   target?, string, // specific stat if applicable;
   
 }
-export interface PerformanceBonus {
-  id, string,
+export interface PerformanceBonus { id: string,
     name, string,
   description, string,
     positions: Position[];
@@ -263,18 +237,15 @@ export interface PerformanceBonus {
   maxOccurrences?, number, // per game/week/season;
   
 }
-export interface BonusCondition {
-  stat, string,
+export interface BonusCondition { stat: string,
     threshold, number,
-  operator: '>=' | '<=' | '==' | 'between';
-  additionalRequirements?: BonusCondition[];
+  operator: '> =' | '<=' | '==' | 'between';
+  additionalRequirements? : BonusCondition[];
   
 }
 // ==================== SCORING CALCULATION RESULTS ====================
 
-export interface AdvancedFantasyScore {
-  playerId, string,
-    playerName, string,
+export interface AdvancedFantasyScore { playerId: string, playerName, string,
   position, Position,
     teamId, string,
   leagueId, string,
@@ -290,7 +261,7 @@ export interface AdvancedFantasyScore {
   breakdown, ScoreBreakdown,
   
   // Modifiers applied;
-  modifiersApplied: AppliedModifier[];
+  modifiersApplied, AppliedModifier[];
   
   // Performance metrics;
   efficiency, PerformanceMetrics,
@@ -324,28 +295,24 @@ export interface ScoreBreakdown {
   finalTotal: number,
   
 }
-export interface CategoryScore {
-  basePoints, number,
+export interface CategoryScore { basePoints: number,
     bonusPoints, number,
   totalPoints, number,
     stats: StatContribution[],
   
 }
-export interface StatContribution {
-  statName, string,
+export interface StatContribution { statName: string,
     statValue, number,
   pointsPerUnit, number,
     totalPoints: number,
   
 }
-export interface BonusScore {
-  bonusName, string,
+export interface BonusScore { bonusName: string,
     points, number,
   trigger: string,
   
 }
-export interface CustomRuleScore {
-  ruleName, string,
+export interface CustomRuleScore { ruleName: string,
     points, number,
   description: string,
   
@@ -372,22 +339,21 @@ export interface PerformanceMetrics {
   }
 }
 
-// ==================== BATCH PROCESSING & OPTIMIZATION ====================
+//  ==================== BATCH PROCESSING & OPTIMIZATION ====================
 
-export interface BatchProcessingJob {
-  id, string,
+export interface BatchProcessingJob { id: string,
     jobType: 'live_scoring' | 'projection_update' | 'historical_analysis' | 'rule_validation';
   status: 'pending' | 'processing' | 'completed' | 'error',
     priority: 'low' | 'medium' | 'high' | 'critical';
   
   // Job parameters
-  leagueIds?: string[];
+  leagueIds? : string[];
   playerIds?: string[];
   weeks?: number[];
   seasons?: number[];
   
   // Processing metrics
-  startTime?, Date,
+  startTime? : Date,
   endTime?, Date,
   duration?, number, // milliseconds
   recordsProcessed?, number,
@@ -395,31 +361,25 @@ export interface BatchProcessingJob {
   
   // Results
   results?, any,
-  performance: {
-  avgTimePerRecord, number,
+  performance: { avgTimePerRecord: number,
     memoryUsage, number,
-    cacheHitRate: number,
+    cacheHitRate, number,
   }
 }
 
-export interface CacheEntry<T> {
-  key, string,
+export interface CacheEntry<T> { key: string,
     data, T,
   timestamp, Date,
-    ttl, number, // Time to live in seconds
-  accessCount, number,
+    ttl, number, // Time to live in seconds: accessCount, number,
     lastAccessed: Date,
 }
 
-// ==================== PROJECTION ALGORITHMS ====================
+//  ==================== PROJECTION ALGORITHMS ====================
 
-export interface ProjectionModel {
-  id, string,
+export interface ProjectionModel { id: string,
     name, string,type: 'regression' | 'machine_learning' | 'composite' | 'expert_consensus',
     position, Position,
-  accuracy: {
-  mape, number,      // Mean Absolute Percentage Error
-    rmse, number,      // Root Mean Square Error,
+  accuracy: { mape: number,      // Mean Absolute Percentage Error, rmse, number,      // Root Mean Square Error,
     correlation, number, // Correlation with actual results
   }
   lastTrained, Date,
@@ -427,8 +387,7 @@ export interface ProjectionModel {
   weights: Record<string, number>;
 }
 
-export interface PlayerProjection {
-  playerId, string,
+export interface PlayerProjection { playerId: string,
     position, Position,
   week, number,
     season, number,
@@ -437,17 +396,14 @@ export interface PlayerProjection {
   projectedStats: Partial<PlayerStats>;
   
   // Confidence intervals
-  confidence: {
-  floor, number,    // 10th percentile
-    ceiling, number,  // 90th percentile,
+  confidence: { floor: number,    // 10th percentile: ceiling, number,  // 90th percentile,
     median, number,   // 50th percentile
   }
   // Risk assessment
   riskFactors: RiskFactor[],
     volatility, number,
   
-  // Model information
-  modelUsed, string,
+  // Model information: modelUsed, string,
     lastUpdated, Date,
   dataPoints, number, // Historical games used
 }
@@ -459,17 +415,15 @@ export interface RiskFactor {
     description: string,
   
 }
-// ==================== LEAGUE CONFIGURATION ====================
+//  ==================== LEAGUE CONFIGURATION ====================
 
-export interface LeagueConfiguration {
-  id, string,
+export interface LeagueConfiguration { id: string,
     name, string,
   scoringFormat, ScoringFormat,
     scoringRules, AdvancedScoringRules,
   
   // Roster settings
-  rosterPositions: {
-  qb, number,
+  rosterPositions: { qb: number,
     rb, number,
     wr, number,
     te, number,
@@ -479,10 +433,8 @@ export interface LeagueConfiguration {
     dst, number,
     bench, number,
     ir, number,
-    idp?: {
-      dl, number,
-    lb, number,
-      db: number,
+    idp? : { dl: number, lb, number,
+      db, number,
     }
   }
   // Advanced settings
@@ -491,24 +443,21 @@ export interface LeagueConfiguration {
   waiverSystem: 'faab' | 'rolling' | 'reverse_standings';
   
   // Performance tracking
-  performanceTracking: {
-  trackEfficiency, boolean,
+  performanceTracking: { trackEfficiency: boolean,
     trackVolatility, boolean,
     trackRiskFactors, boolean,
     weeklyAnalytics: boolean,
   }
 }
 
-// ==================== REAL-TIME UPDATES ====================
+//  ==================== REAL-TIME UPDATES ====================
 
-export interface LiveScoreUpdate {
-  id, string,
+export interface LiveScoreUpdate { id: string,
     playerId, string,
   teamId, string,
     leagueId, string,
   
-  // Score changes
-  previousPoints, number,
+  // Score changes: previousPoints, number,
     currentPoints, number,
   pointsChange, number,
   
@@ -517,8 +466,7 @@ export interface LiveScoreUpdate {
     modifierChanges: ModifierChange[];
   
   // Context
-  gameContext: {
-  quarter, number,
+  gameContext, { quarter: number,
     timeRemaining, string,
     gameStatus, string,
     lastPlay?, string,
@@ -527,8 +475,7 @@ export interface LiveScoreUpdate {
     sequence, number, // For ordering updates
 }
 
-export interface StatChange {
-  statType, string,
+export interface StatChange { statType: string,
     previousValue, number,
   currentValue, number,
     pointsImpact, number,
@@ -541,28 +488,24 @@ export interface ModifierChange {
   pointsImpact: number,
   
 }
-// ==================== PERFORMANCE MONITORING ====================
+//  ==================== PERFORMANCE MONITORING ====================
 
 export interface ScoringEngineMetrics {
-  // Performance metrics
-  avgCalculationTime, number, // milliseconds,
+  // Performance metrics: avgCalculationTime, number, // milliseconds,
     calculationsPerSecond, number,
   memoryUsage, number,
     cacheHitRate, number,
   
   // Accuracy metrics
-  projectionAccuracy: {
-  mape, number,
+  projectionAccuracy: { mape: number,
     rmse, number,
     correlation: number,
   }
-  // System health
-  lastUpdate, Date,
+  // System health: lastUpdate, Date,
     errorRate, number,
   uptime, number,
   
-  // Processing volumes
-  dailyCalculations, number,
+  // Processing volumes: dailyCalculations, number,
     weeklyProjections, number,
   liveUpdates: number,
 }

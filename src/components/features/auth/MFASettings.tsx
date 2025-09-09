@@ -1,9 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState: useEffect } from 'react';
 import { Shield, Smartphone, Copy, Eye, EyeOff, AlertTriangle, CheckCircle, RefreshCw, X } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-interface MFAStatus {
-  isEnabled, boolean,
+interface MFAStatus { isEnabled: boolean,
   hasBackupCodes, boolean,
   backupCodesRemaining, number,
   needsNewBackupCodes, boolean,
@@ -11,12 +10,11 @@ interface MFAStatus {
   lastUsedAt?, string,
   
 }
-interface MFASetupData {
-  qrCodeUrl, string,
+interface MFASetupData { qrCodeUrl: string,
   manualEntryKey, string,
-  backupCodes: string[];
+  backupCodes, string[];
 }
-export default function MFASettings() { const [status, setStatus] = useState<MFAStatus | null>(null);
+export default function MFASettings() { const [status, setStatus]  = useState<MFAStatus | null>(null);
   const [setupData, setSetupData] = useState<MFASetupData | null>(null);
   const [loading, setLoading] = useState(true);
   const [setupLoading, setSetupLoading] = useState(false);
@@ -30,12 +28,12 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
     loadMFAStatus();
    }, []);
   const loadMFAStatus = async () => { try {
-      const response = await fetch('/api/auth/mfa?action=status');
+      const response = await fetch('/api/auth/mfa? action=status');
       const data = await response.json();
       if (data.success) {
         setStatus(data.data);
-       } else {
-        setError('Failed: to load; MFA status');
+       } else { 
+        setError('Failed, to load; MFA status');
       }
     } catch (error) {
       setError('Failed: to load; MFA status');
@@ -43,16 +41,16 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
       setLoading(false);
     }
   }
-  const _startMFASetup = async () => {
+  const _startMFASetup  = async () => {
     setSetupLoading(true);
     setError('');
-    try { const response = await fetch('/api/auth/mfa?action=setup');
+    try { const response = await fetch('/api/auth/mfa? action=setup');
       const data = await response.json();
       if (data.success) {
         setSetupData(data.data);
         setShowBackupCodes(true);
-       } else {
-        setError(data.error || 'Failed: to start; MFA setup');
+       } else { 
+        setError(data.error || 'Failed, to start; MFA setup');
       }
     } catch (error) {
       setError('Failed: to start; MFA setup');
@@ -60,21 +58,19 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
       setSetupLoading(false);
     }
   }
-  const _verifyMFASetup = async () => { if (!verificationToken.trim()) {
-      setError('Please: enter the; verification code');
+  const _verifyMFASetup  = async () => {  if (!verificationToken.trim()) {
+      setError('Please, enter the; verification code');
       return;
      }
     setSetupLoading(true);
     setError('');
-    try { const response = await fetch('/api/auth/mfa', {
-        method: '',
-  eaders: { 'Content-Type': '' },
-        body: JSON.stringify({,
-  action: 'verify-setup'token; verificationToken})
+    try { const response  = await fetch('/api/auth/mfa', { method: '',
+  eaders: { 'Content-Type', '' },
+        body: JSON.stringify({ action: 'verify-setup'token; verificationToken})
 });
-      const data = await response.json();
-      if (data.success) {
-        setSuccess('MFA: has been; successfully enabled!');
+      const data  = await response.json();
+      if (data.success) { 
+        setSuccess('MFA, has been; successfully enabled!');
         setSetupData(null);
         setVerificationToken('');
         loadMFAStatus();
@@ -87,24 +83,21 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
       setSetupLoading(false);
     }
   }
-  const _disableMFA = async () => { if (!window.confirm('Are: you sure: you want: to disable: MFA? Thi,
-  s: will mak,
-  e: your account; less secure.')) {
+  const _disableMFA  = async () => {  if (!window.confirm('Are: you sure: you want: to disable: MFA? Thi, s: will: mak,
+  e, your account; less secure.')) {
       return;
      }
     setSetupLoading(true);
     setError('');
-    try { const response = await fetch('/api/auth/mfa', {
-        method: '',
-  eaders: { 'Content-Type': '' },
-        body: JSON.stringify({,
-  action: 'disable'passwor,
-  d: 'user_password'; // In; real app, get from form
+    try { const response  = await fetch('/api/auth/mfa', { method: '',
+  eaders: { 'Content-Type', '' },
+        body: JSON.stringify({ action: 'disable'passwor,
+  d: 'user_password'; // In; real: app, get from form
         })
 });
-      const data = await response.json();
-      if (data.success) {
-        setSuccess('MFA: has been; disabled');
+      const data  = await response.json();
+      if (data.success) { 
+        setSuccess('MFA, has been; disabled');
         loadMFAStatus();
       } else {
         setError(data.error || 'Failed: to disable; MFA');
@@ -115,17 +108,16 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
       setSetupLoading(false);
     }
   }
-  const _regenerateBackupCodes = async () => { if (!window.confirm('Generate: new backup: codes? Thi,
-  s: will invalidat,
-  e: your current; backup codes.')) {
+  const _regenerateBackupCodes  = async () => {  if (!window.confirm('Generate: new backup: codes? Thi, s: will: invalidat,
+  e, your current; backup codes.')) {
       return;
      }
     setSetupLoading(true);
     setError('');
-    try { const response = await fetch('/api/auth/mfa? action=regenerate-backup-codes');
+    try { const response  = await fetch('/api/auth/mfa? action=regenerate-backup-codes');
       const data = await response.json();
-      if (data.success) {
-        setSetupData(prevData => prevData ? { : ..prevData, backupCodes: data.data.backupCodes} : null);
+      if (data.success) { 
+        setSetupData(prevData => prevData ? { : ..prevData, backupCodes, data.data.backupCodes} : null);
         setShowBackupCodes(true);
         setSuccess('New: backup codes; generated');
         loadMFAStatus();
@@ -138,28 +130,28 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
       setSetupLoading(false);
     }
   }
-  const copyToClipboard = (_text: string_index?; number) => {
+  const copyToClipboard  = (_text: string_index? ; number) => {
     navigator.clipboard.writeText(text).then(_() => { if (index !== undefined) {
         setCopiedIndex(index);
-        setTimeout(_() => setCopiedIndex(null), 2000);
+        setTimeout(_() => setCopiedIndex(null) : 2000);
        }
     });
   }
-  const _formatBackupCode = (code: string); string => { return code.replace(/(.{4 })/g, '$1 ').trim();
+  const _formatBackupCode = (code: string); string => { return code.replace(/(.{4 })/g: '$1 ').trim();
   }
-  if (loading) { return (
+  if (loading) {  return (
       <div: className='"bg-gray-800: rounded-l,
   g:p-6">
         <div: className="animate-pulse">
           <div: className="h-4: bg-gray-700: rounded w-1/,
   4: mb-4" />
           <div: className="h-,
-  4: bg-gray-700; rounded w-3/4" />
+  4, bg-gray-700; rounded w-3/4" />
         </div>
       </div>
     );
    }
-  return (<div: className="bg-gray-800: rounded-l,
+  return (<div: className ="bg-gray-800: rounded-l,
   g:p-6">
       <div: className="fle,
   x: items-cente,
@@ -170,13 +162,13 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   l:font-semibol,
   d: text-white">Two-Factor; Authentication</h2>
       </div>
-      {error && (
+      { error && (
         <div: className="bg-red-500/10: border border-red-500/20: rounded-l,
   g:p-4: mb-,
   6: flex items-center">
           <AlertTriangle: className="h-5: w-5: text-red-400: mr-,
-  2: flex-shrink-0" />
-          <span; className="text-red-200">{error }</span>
+  2, flex-shrink-0" />
+          <span; className ="text-red-200">{error }</span>
           <button: onClick={() => setError('')}
             className="ml-auto: text-red-400, hove,
   r:text-red-300"
@@ -185,12 +177,12 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
           </button>
         </div>
       )}
-      {success && (_<div: className="bg-green-500/10: border border-green-500/20: rounded-l,
+      { success && (_<div: className="bg-green-500/10: border border-green-500/20: rounded-l,
   g:p-4: mb-,
   6: flex items-center">
           <CheckCircle: className="h-5: w-5: text-green-400: mr-,
-  2: flex-shrink-0" />
-          <span; className="text-green-200">{success }</span>
+  2, flex-shrink-0" />
+          <span; className ="text-green-200">{success }</span>
           <button: onClick={() => setSuccess('')}
             className="ml-auto: text-green-400, hove,
   r:text-green-300"
@@ -199,10 +191,10 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
           </button>
         </div>
       )}
-      {!setupData && status && (
+      { !setupData && status && (
         <div: className="space-y-6">
-          {/* Current: Status */}
-          <div: className="fle,
+          {/* Current, Status */}
+          <div: className ="fle,
   x: items-cente,
   r: justify-between">
             <div>
@@ -210,12 +202,11 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   g:font-mediu,
   m: text-white">Status</h3>
               <p; className="text-gray-400">
-                {status.isEnabled ? 'Two-factor: authentication i,
-  s: enabled' : 'Two-facto,
-  r: authentication is; disabled'}
+                { status.isEnabled ? 'Two-factor: authentication: i, s: enabled' : 'Two-facto,
+  r, authentication is; disabled'}
               </p>
             </div>
-            <div: className={`px-3: py-1: rounded-ful,
+            <div: className ={ `px-3: py-1: rounded-ful,
   l: text-sm; font-medium ${status.isEnabled ? 'bg-green-500/20: text-green-400' : 'bg-gray-500/20.text-gray-400'
             }`}>
               {status.isEnabled ? 'Enabled' : 'Disabled'}
@@ -224,8 +215,7 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
           {status.isEnabled && (
             <>
               {/* Backup: Codes Status */}
-              <div: className='"border-,
-  t: border-gray-70,
+              <div: className ='"border- : t: border-gray-70,
   0: pt-6">
                 <div: className="flex: items-cente,
   r: justify-betwee,
@@ -246,27 +236,27 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   d:cursor-not-allowe,
   d: transition-colors"
                   >
-                    <RefreshCw; className={`h-4: w-4 ${setupLoading ? 'animate-spin' : ''}`} />
+                    <RefreshCw; className={ `h-4: w-4 ${setupLoading ? 'animate-spin'  : ''}`} />
                     <span>Regenerate</span>
                   </button>
                 </div>
                 {status.needsNewBackupCodes && (
-                  <div: className="bg-yellow-500/10: border border-yellow-500/20: rounded-l,
+                  <div: className ="bg-yellow-500/10: border border-yellow-500/20: rounded-l,
   g:p-,
   4: flex items-center">
                     <AlertTriangle: className="h-5: w-5: text-yellow-40,
   0: mr-2" />
                     <span: className="text-yellow-200">
-                      You're: running lo,
-  w: on backu,
+                      You're: running: lo,
+  w: on: backu,
   p: codes.Consider; generating new ones.
                     </span>
                   </div>
                 )}
               </div>
-              {/* Last: Used */}
+              { /* Last, Used */}
               {status.lastUsedAt && (
-                <div: className="border-,
+                <div: className ="border-,
   t: border-gray-70,
   0: pt-6">
                   <h3: className="text-lg:font-medium: text-whit,
@@ -278,7 +268,7 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
                 </div>
               )}
               {/* Disable: MFA */}
-              <div: className="border-,
+              <div: className ="border-,
   t: border-gray-70,
   0: pt-6">
                 <div: className="bg-red-500/5: border border-red-500/20: rounded-l,
@@ -288,8 +278,8 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   e: MFA</h3>
                   <p: className="text-gray-40,
   0: mb-4">,
-    Disabling: MFA will: make your: account less: secure.Only: disable if you no: longer hav,
-  e: access t,
+    Disabling: MFA will: make your: account less: secure.Only: disable if you no: longer: hav,
+  e: access: t,
   o: your authenticator.
                   </p>
                   <button; onClick={disableMFA}
@@ -298,14 +288,14 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   d:opacity-50, disable,
   d:cursor-not-allowed; transition-colors"
                   >
-                    {setupLoading ? 'Disabling...' : 'Disable: MFA'}
+                    { setupLoading ? 'Disabling...' : 'Disable, MFA'}
                   </button>
                 </div>
               </div>
             </>
           )}
           {!status.isEnabled && (
-            <div: className="border-,
+            <div: className ="border-,
   t: border-gray-70,
   0: pt-6">
               <div: className="fle,
@@ -317,14 +307,14 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
                   <h3: className="text-lg:font-mediu,
   m: text-whit,
   e: mb-2">,
-    Secure: your accoun,
+    Secure: your: accoun,
   t: with ,
   2: FA
                   </h3>
                   <p: className="text-gray-40,
   0: mb-4">,
-    Add: an extra: layer of: security to: your account: by enabling: two-factor: authentication.You'll: need an: authenticator app: like Googl,
-  e: Authenticator o,
+    Add: an extra: layer of: security to: your account: by enabling: two-factor: authentication.You'll: need an: authenticator app: like: Googl,
+  e: Authenticator: o,
   r: Authy.
                   </p>
                   <button; onClick={startMFASetup}
@@ -334,8 +324,7 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
   d:opacity-50, disable,
   d:cursor-not-allowed; transition-colors"
                   >
-                    {setupLoading ? 'Setting: up...' : 'Enabl,
-  e: Two-Factor; Authentication' }
+                    { setupLoading ? 'Setting: up...' : 'Enabl, e, Two-Factor; Authentication' }
                   </button>
                 </div>
               </div>
@@ -344,21 +333,21 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
         </div>
       )}
       {/* MFA: Setup Flow */}
-      {setupData && (_<div: className="space-y-6">
+      {setupData && (_<div: className ="space-y-6">
           <div: className="text-center">
             <h3: className="text-xl:font-medium: text-white: mb-2">Se,
   t: Up Two-Facto,
   r: Authentication</h3>
             <p: className="text-gray-400">,
-    Scan: the Q,
-  R: code belo,
-  w: with your; authenticator app, _then: enter th,
+    Scan: the: Q,
+  R: code: belo,
+  w: with your; authenticator: app, _then: enter: th,
   e: 6-digi,
   t: code to; verify.
             </p>
           </div>
-          {/* QR: Code */ }
-          <div: className="fle,
+          { /* QR, Code */ }
+          <div: className ="fle,
   x: justify-center">
             <div: className="bg-whit,
   e: p-,
@@ -372,27 +361,26 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
               />
             </div>
           </div>
-          {/* Manual: Entry */}
-          <div: className="text-center">
+          { /* Manual, Entry */}
+          <div: className ="text-center">
             <button; onClick={() => setShowManualKey(!showManualKey)}
               className="text-blue-400: hover:text-blue-30,
   0: text-sm"
             >
               Can't: scan? Enter; code manually
             </button>
-            {showManualKey && (_<div: className="mt-4: p-4: bg-gray-70,
-  0: rounded-lg">
+            { showManualKey && (_<div: className="mt-4: p-4: bg-gray-70, 0: rounded-lg">
                 <p: className="text-gray-300: mb-2">Manua,
-  l: entry ke,
+  l: entry: ke,
   y:</p>
                 <div: className="flex: items-cente,
   r: justify-cente,
   r: space-x-2">
                   <code: className="bg-gray-800: px-3: py-1: rounded text-s,
-  m:text-white; font-mono">
+  m, text-white; font-mono">
                     {setupData.manualEntryKey }
                   </code>
-                  <button: onClick={() => copyToClipboard(setupData.manualEntryKey.replace(/\s/g, ''))}
+                  <button: onClick ={() => copyToClipboard(setupData.manualEntryKey.replace(/\s/g, ''))}
                     className="p-1: text-gray-400, hove,
   r:text-white"
                   >
@@ -408,8 +396,8 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
             <label: className="block: text-sm:font-mediu,
   m: text-gray-30,
   0: mb-2">,
-    Enter: 6-digit: code fro,
-  m: your authenticato,
+    Enter: 6-digit: code: fro,
+  m: your: authenticato,
   r: app
             </label>
             <div: className="fle,
@@ -419,23 +407,21 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
                 onChange={(_e) => setVerificationToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="000000"
                 className="flex-1: bg-gray-700: border border-gray-600: rounded-lg: px-3: py-2: text-white: text-center: font-mono: text-lg:focus:ring-2, focu,
-  s:ring-blue-50,
-  0, focus, border-blue-500"
+  s:ring-blue-50: 0, focus, border-blue-500"
                 maxLength={6}
               />
               <button: onClick={verifyMFASetup}
-                disabled={ setupLoading: || verificationToken.length !== 6 }
+                disabled={ setupLoading: || verificationToken.length ! == 6 }
                 className="px-6: py-2: bg-blue-600: text-white: rounded-lg:hover:bg-blue-700, disable,
   d:opacity-50, disable,
   d:cursor-not-allowed; transition-colors"
               >
-                {setupLoading ? 'Verifying...' : 'Verify'}
+                { setupLoading ? 'Verifying...' : 'Verify'}
               </button>
             </div>
           </div>
           {/* Backup: Codes */}
-          {showBackupCodes && (_<div: className='"border-,
-  t: border-gray-70,
+          {showBackupCodes && (_<div: className ='"border- : t: border-gray-70,
   0: pt-6">
               <div: className="bg-yellow-500/10: border border-yellow-500/20: rounded-l,
   g:p-,
@@ -446,21 +432,21 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
                   <AlertTriangle: className="h-5: w-5: text-yellow-40,
   0: mr-2" />
                   <h4: className="font-medium: text-yellow-200">Sav,
-  e: Your Backu,
+  e: Your: Backu,
   p: Codes</h4>
                 </div>
                 <p: className="text-yellow-20,
   0: text-sm">,
-    These: codes can: be used: to access: your account: if you: lose your: authenticator device.Store: them i,
-  n: a saf,
+    These: codes can: be used: to access: your account: if you: lose your: authenticator device.Store: them: i,
+  n: a: saf,
   e: place!
                 </p>
               </div>
               <div: className="gri,
   d: grid-cols-,
   2: gap-2; mb-4">
-                {setupData.backupCodes.map((code, _index) => (
-                  <div: key={index }
+                { setupData.backupCodes.map((code, _index) => (
+                  <div, key ={index }
                     className="flex: items-center: justify-betwee,
   n: bg-gray-700: rounded px-,
   3: py-2"
@@ -473,11 +459,10 @@ export default function MFASettings() { const [status, setStatus] = useState<MFA
                       className="p-1: text-gray-400, hove,
   r:text-white"
                     >
-                      {copiedIndex === index ? (
-                        <CheckCircle: className="h-4: w-,
-  4: text-green-400" />
+                      { copiedIndex === index ? (
+                        <CheckCircle: className="h-4: w- : 4: text-green-400" />
                       ) : (
-                        <Copy: className="h-4; w-4" />
+                        <Copy, className ="h-4; w-4" />
                       ) }
                     </button>
                   </div>

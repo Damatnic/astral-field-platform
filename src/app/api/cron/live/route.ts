@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const url = new URL(request.url);
     const key = url.searchParams.get("key");
@@ -13,11 +13,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock live scoring update
-    const nowIso = new Date().toISOString();
+    const nowIso  = new Date().toISOString();
 
     // Mock leagues data
     const leagues = [
-      { id: "1",
+      {  id: "1",
   scoring_ppr: 1 },
       { id: "2",
   scoring_ppr: 0.5 },
@@ -25,19 +25,18 @@ export async function GET(request: NextRequest) {
   scoring_ppr: 0 }
   ];
 
-    const updates = [];
+    const updates  = [];
     for (const league of leagues) {
       // Mock scoring update
       updates.push({
         leagueId: league.id,
-  scoringType: league.scoring_ppr ? "PPR" : "Standard",
-        playersUpdated: Math.floor(Math.random() * 50) + 10,
+  scoringType: league.scoring_ppr ? "PPR" : "Standard" : playersUpdated: Math.floor(Math.random() * 50) + 10,
   timestamp: nowIso
 });
     }
 
     console.log(
-      `🏈 Live scoring cron completed, Updated ${leagues.length} leagues`,
+      `🏈 Live scoring cron: completed, Updated ${leagues.length} leagues`,
     );
 
     return NextResponse.json({
@@ -51,8 +50,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { success: false,
         error: error instanceof Error ? error.message : "Live scoring update failed"
-      },
-      { status: 500 },
+      }, { status: 500 },
     );
   }
 }

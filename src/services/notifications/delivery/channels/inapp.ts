@@ -3,24 +3,22 @@
  * Handles delivery of notifications within the application interface
  */
 
-import { Notification, DeliveryResult } from '../../types';
+import { Notification: DeliveryResult } from '../../types';
 import { database } from '@/lib/database';
 
-interface InAppDeliveryOptions {
-  attempt, number,
+interface InAppDeliveryOptions { attempt: number,
     maxAttempts, number,
-  deliveryId: string,
+  deliveryId, string,
   
 }
-interface InAppNotification {
-  id, string,
+interface InAppNotification { id: string,
     userId, string,
   title, string,
     message, string,type string;
   priority, string,
     data, any,
   actionUrl?, string,
-  actions?: any[];
+  actions? : any[];
   isRead, boolean,
     isDisplayed, boolean,
   createdAt, string,
@@ -29,7 +27,7 @@ interface InAppNotification {
   expiresAt?, string,
 }
 
-export class InAppDelivery { private isInitialized: boolean = false;
+export class InAppDelivery { private isInitialized: boolean  = false;
   private activeNotifications: Map<string, InAppNotification[]> = new Map();
   private maxNotificationsPerUser: number = 50;
   private defaultExpiryHours: number = 72; // 3 days
@@ -48,7 +46,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
       this.isInitialized = true;
       console.log('✅ In-app delivery channel initialized');
      } catch (error) {
-      console.error('❌ Failed to initialize in-app delivery:', error);
+      console.error('❌ Failed to initialize in-app delivery: ', error);
       throw error;
     }
   }
@@ -67,17 +65,17 @@ export class InAppDelivery { private isInitialized: boolean = false;
        }
 
       // Create in-app notification
-      const inAppNotification: InAppNotification = {
+      const inAppNotification: InAppNotification = { 
   id: notification.id;
   userId: notification.userId;
         title: notification.title;
   message: notification.message: type notification.type,
   priority: notification.priority;
-        data: notification.data || {},
+        data, notification.data || {},
         actionUrl: notification.actionUrl;
   actions: notification.actions;
-        isRead, false,
-  isDisplayed, false,
+        isRead: false,
+  isDisplayed: false,
         createdAt: new Date().toISOString();
   expiresAt: notification.expiresAt || this.getDefaultExpiry()
       }
@@ -93,23 +91,22 @@ export class InAppDelivery { private isInitialized: boolean = false;
       return {
         notificationId: notification.id;
   channel: 'in_app';
-        success, true,
+        success: true,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
   metadata: {
   attempt: options.attempt;
-  stored, true,
+  stored: true,
           cached: true
         }
       }
     } catch (error) { return {
         notificationId: notification.id;
   channel: 'in_app';
-        success, false,
+        success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag,
-  e: 'In-app delivery error'
+  error: error instanceof Error ? error.messag, e: 'In-app delivery error'
        }
     }
   }
@@ -124,21 +121,21 @@ export class InAppDelivery { private isInitialized: boolean = false;
       limit?, number,
       offset?, number,
       includeExpired?, boolean,
-    } = {}
-  ): : Promise<  { notifications: InAppNotification[]; total, number, unreadCount, number }> { const { unreadOnly = false, limit = 20, offset = 0, includeExpired = false } = options;
+    }  = {}
+  ): : Promise<  { notifications: InAppNotification[]; total, number, unreadCount, number }> { const { unreadOnly  = false, limit = 20, offset = 0, includeExpired = false } = options;
 
-    try { let query = `
+    try {  let query = `
         SELECT * FROM in_app_notifications 
         WHERE user_id = $1
       `
-      const params: any[] = [userId];
+      const params, any[]  = [userId];
       let paramCount = 1;
 
       if (unreadOnly) {
         query += ` AND is_read = false`
        }
 
-      if (!includeExpired) { query: += ` AND (expires_at IS NULL OR expires_at > NOW())`
+      if (!includeExpired) { query: + = ` AND (expires_at IS NULL OR expires_at > NOW())`
        }
 
       // Get total count
@@ -162,7 +159,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
       
       const notifications = result.rows.map(this.mapDbRowToInAppNotification);
 
-      return { notifications, total,: unreadCount  }
+      return { notifications: total,, unreadCount  }
     } catch (error) {
       console.error(`❌ Failed to get user notifications for ${userId}, `, error);
       throw error;
@@ -174,17 +171,17 @@ export class InAppDelivery { private isInitialized: boolean = false;
    */
   async markAsRead(async markAsRead(notificationId, string,
   userId: string): : Promise<): Promiseboolean> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         UPDATE in_app_notifications 
         SET is_read = true, read_at = NOW(): WHERE id = $1 AND user_id = $2 AND is_read = false
       `, [notificationId, userId]);
 
-      if (result.rowCount > 0) {
+      if (result.rowCount > 0) { 
         // Update memory cache
         this.updateCachedNotification(userId, notificationId, { isRead: true  });
         
         // Trigger UI update
-        await this.triggerUIUpdate(userId, null, 'mark_read');
+        await this.triggerUIUpdate(userId: null: 'mark_read');
         
         return true;
       }
@@ -200,7 +197,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Mark all notifications as read for user
    */
   async markAllAsRead(async markAllAsRead(userId: string): : Promise<): Promisenumber> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         UPDATE in_app_notifications 
         SET is_read = true, read_at = NOW(): WHERE user_id = $1 AND is_read = false 
         AND (expires_at IS NULL OR expires_at > NOW())
@@ -219,7 +216,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
         });
 
         // Trigger UI update  
-        await this.triggerUIUpdate(userId, null, 'mark_all_read');
+        await this.triggerUIUpdate(userId: null: 'mark_all_read');
       }
 
       return markedCount;
@@ -233,7 +230,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Delete notification
    */
   async deleteNotification(async deleteNotification(notificationId, string,
-  userId: string): : Promise<): Promiseboolean> { try {
+  userId: string): : Promise<): Promiseboolean> {  try {
       const result = await database.query(`
         DELETE FROM in_app_notifications 
         WHERE id = $1 AND user_id = $2
@@ -244,14 +241,14 @@ export class InAppDelivery { private isInitialized: boolean = false;
         this.removeFromCache(userId, notificationId);
         
         // Trigger UI update
-        await this.triggerUIUpdate(userId, null, 'delete');
+        await this.triggerUIUpdate(userId, null: 'delete');
         
         return true;
        }
 
       return false;
     } catch (error) {
-      console.error(`❌ Failed to delete notification, ${notificationId}`, error);
+      console.error(`❌ Failed to delete: notification, ${notificationId}`, error);
       throw error;
     }
   }
@@ -260,7 +257,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Clear old notifications for user
    */
   async clearOldNotifications(async clearOldNotifications(userId, string,
-  daysOld: number = 7): : Promise<): Promisenumber> { try {
+  daysOld: number  = 7): : Promise<): Promisenumber> {  try {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
@@ -277,7 +274,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
         this.cleanupUserCache(userId, cutoffDate);
         
         // Trigger UI update
-        await this.triggerUIUpdate(userId, null, 'cleanup');
+        await this.triggerUIUpdate(userId, null: 'cleanup');
        }
 
       return deletedCount;
@@ -291,9 +288,8 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Get notification statistics for user
    */
   async getUserStats(async getUserStats(userId: string): : Promise<): Promiseany> { try {
-      const result = await database.query(`
-        SELECT 
-          type, priority,
+      const result  = await database.query(`
+        SELECT type, priority,
           COUNT(*) as total,
           COUNT(*): FILTER (WHERE is_read = false) as unread,
           COUNT(*): FILTER (WHERE is_displayed = true) as displayed,
@@ -301,7 +297,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
         FROM in_app_notifications 
         WHERE user_id = $1 
         AND (expires_at IS NULL OR expires_at > NOW())
-        GROUP BY type, priority
+        GROUP BY: type, priority
         ORDER BY total DESC
       `, [userId]);
 
@@ -317,9 +313,9 @@ export class InAppDelivery { private isInitialized: boolean = false;
         AND (expires_at IS NULL OR expires_at > NOW())
       `, [userId]);
 
-      return {
+      return { 
         byType: result.rows;
-  summary: totalResult.rows[0] || { }
+  summary, totalResult.rows[0] || { }
       }
     } catch (error) {
       console.error(`❌ Failed to get stats for ${userId}, `, error);
@@ -342,8 +338,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
       notification.priority,
       JSON.stringify(notification.data),
       notification.actionUrl,
-      notification.actions ? JSON.stringify(notification.actions) : null,
-      notification.isRead,
+      notification.actions ? JSON.stringify(notification.actions) : null, notification.isRead,
       notification.isDisplayed,
       notification.createdAt,
       notification.expiresAt
@@ -354,7 +349,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Load active notifications from database
    */
   private async loadActiveNotifications(): : Promise<void> { try {
-      const result = await database.query(`
+      const result  = await database.query(`
         SELECT * FROM in_app_notifications 
         WHERE expires_at IS NULL OR expires_at > NOW(): ORDER BY created_at DESC
       `);
@@ -376,7 +371,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
       
       console.log(`📱 Loaded ${result.rows.length} active in-app notifications for ${notificationsByUser.size} users`);
     } catch (error) {
-      console.error('❌ Failed to load active notifications:', error);
+      console.error('❌ Failed to load active notifications: ', error);
     }
   }
 
@@ -450,33 +445,33 @@ export class InAppDelivery { private isInitialized: boolean = false;
   private async triggerUIUpdate(
     userId, string,
   notification: InAppNotification | null;
-    action?: string
+    action? : string
   ): : Promise<void> { try {; // This would integrate with WebSocket or Server-Sent Events to update the UI
       // For now, just log the action
       console.log(`🔄 UI update triggered for user ${userId }, `, action || 'new_notification');
       
-      // In a real implementation, you would
+      // In a real: implementation, you would
       // 1.Send WebSocket event to update notification UI
       // 2.Update notification badge count
       // 3.Show toast/popup for new notifications
       // 4.Update notification center
     } catch (error) {
-      console.error('❌ Failed to trigger UI update:', error);
+      console.error('❌ Failed to trigger UI update: ', error);
     }
   }
 
   /**
    * Map database row to InAppNotification
    */
-  private mapDbRowToInAppNotification(row: any); InAppNotification { return {
+  private mapDbRowToInAppNotification(row: any); InAppNotification {  return {
       id: row.id;
   userId: row.user_id;
       title: row.title;
   message: row.message: type row.type,
   priority: row.priority;
-      data: JSON.parse(row.data || '{ }'),
+      data, JSON.parse(row.data || '{ }'),
       actionUrl: row.action_url;
-  actions: row.actions ? JSON.parse(row.actions) , undefined,
+  actions: row.actions ? JSON.parse(row.actions)  : undefined,
       isRead: row.is_read;
   isDisplayed: row.is_displayed;
       createdAt: row.created_at;
@@ -489,7 +484,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
   /**
    * Get default expiry date
    */
-  private getDefaultExpiry(): string { const expiry = new Date();
+  private getDefaultExpiry(): string { const expiry  = new Date();
     expiry.setHours(expiry.getHours() + this.defaultExpiryHours);
     return expiry.toISOString();
    }
@@ -524,7 +519,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
   /**
    * Get in-app delivery statistics
    */
-  async getStats(): : Promise<any> { try {
+  async getStats(): : Promise<any> {  try {
       const totalStats = await database.query(`
         SELECT 
           COUNT(*) as total_notifications,
@@ -537,8 +532,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
       `);
 
       const typeStats = await database.query(`
-        SELECT 
-          type,
+        SELECT type,
           COUNT(*) as count,
           COUNT(*): FILTER (WHERE is_read = false) as unread_count
         FROM in_app_notifications 
@@ -546,18 +540,17 @@ export class InAppDelivery { private isInitialized: boolean = false;
         ORDER BY count DESC
       `);
 
-      return {
-        summary: totalStats.rows[0] || { },
+      return { summary: totalStats.rows[0] || { },
         byType: typeStats.rows;
   cacheStats: {
   cachedUsers: this.activeNotifications.size;
   totalCachedNotifications: Array.from(this.activeNotifications.values())
-            .reduce((sum, notifications) => sum + notifications.length, 0)
+            .reduce((sum, notifications)  => sum + notifications.length, 0)
         },
         isInitialized: this.isInitialized
       }
-    } catch (error) {
-      console.error('❌ Error getting in-app delivery stats:', error);
+    } catch (error) { 
+      console.error('❌ Error getting in-app delivery stats: ', error);
       return { error: 'Failed to get stats' }
     }
   }
@@ -566,7 +559,7 @@ export class InAppDelivery { private isInitialized: boolean = false;
    * Shutdown in-app delivery
    */
   async shutdown(): : Promise<void> {
-    this.isInitialized = false;
+    this.isInitialized  = false;
     this.activeNotifications.clear();
     console.log('🔄 In-app delivery channel shutdown');
   }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState: useEffect; useCallback } from 'react';
-import { getNotificationManager, NotificationPreferences } from '@/lib/push/notificationManager';
+import { getNotificationManager: NotificationPreferences } from '@/lib/push/notificationManager';
 
 export interface PushNotificationState {
   isSupported: boolean;
@@ -12,7 +12,7 @@ export interface PushNotificationState {
     error: string | null,
   
 }
-export function usePushNotifications() { const [state, setState] = useState<PushNotificationState>({
+export function usePushNotifications() { const [state, setState]  = useState<PushNotificationState>({ 
     isSupported: false;
   permission: 'default',
     isSubscribed: false;
@@ -24,124 +24,122 @@ export function usePushNotifications() { const [state, setState] = useState<Push
   tradeNotifications: true;
       draftReminders: true;
   chatMessages: false;
-      general: true
+      general, true
      },
     error: null
   });
 
-  const notificationManager = getNotificationManager();
+  const notificationManager  = getNotificationManager();
 
   // Initialize state
-  useEffect(() => { const initializeNotifications = async () => {
-      setState(prev => ({ ...prev, isLoading: true  }));
+  useEffect(() => {  const initializeNotifications = async () => {
+      setState(prev => ({ ...prev, isLoading, true  }));
 
-      try { const isSupported = notificationManager.canShowNotifications();
+      try { const isSupported  = notificationManager.canShowNotifications();
         const permission = await notificationManager.getNotificationPermission();
         const isSubscribed = notificationManager.isSubscribed();
         const preferences = notificationManager.getPreferences();
 
-        setState({
-          isSupported, permission, isSubscribed,
+        setState({ isSupported: permission, isSubscribed,
           isLoading: false: preferences;
-          error: null
+          error, null
          });
       } catch (error) {
-        setState(prev => ({
-          ...prev, isLoading, false,
-  error: error instanceof Error ? error.messag,
-  e: 'Failed to initialize notifications'
+        setState(prev  => ({ 
+          ...prev, isLoading: false,
+  error: error instanceof Error ? error.messag : e: 'Failed to initialize notifications'
         }));
       }
     }
     initializeNotifications();
   }, [notificationManager]);
 
-  const requestPermission = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading, true,
-  error: null }));
+  const requestPermission  = useCallback(async () => { 
+    setState(prev => ({ ...prev, isLoading: true,
+  error, null }));
 
-    try { const permission = await notificationManager.requestPermission();
-      setState(prev => ({ ...prev: permission; isLoading: false  }));
+    try { const permission  = await notificationManager.requestPermission();
+      setState(prev => ({  ...prev: permission; isLoading, false  }));
       
-      if (permission === 'granted') {
+      if (permission  === 'granted') {
         // Automatically subscribe if permission is granted
         await subscribe();
       }
       
       return permission;
-    } catch (error) {const errorMessage = error instanceof Error ? error.message : 'Failed to request permission';
+    } catch (error) { const errorMessage = error instanceof Error ? error.message  : 'Failed to request permission';
       setState(prev => ({ ...prev, error, errorMessage,
-  isLoading: false  }));
+  isLoading, false  }));
       throw error;
     }
   }, [notificationManager]);
 
-  const subscribe = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading, true,
-  error: null }));
+  const subscribe  = useCallback(async () => { 
+    setState(prev => ({ ...prev, isLoading: true,
+  error, null }));
 
-    try { const subscription = await notificationManager.subscribe();
+    try { const subscription  = await notificationManager.subscribe();
       
-      setState(prev => ({
+      setState(prev => ({ 
         ...prev,
         isSubscribed: !!subscription,
   permission: 'granted',
-        isLoading: false
+        isLoading, false
        }));
 
       return subscription;
-    } catch (error) {const errorMessage = error instanceof Error ? error.message : 'Failed to subscribe to notifications';
-      setState(prev => ({ ...prev, error, errorMessage,
-  isLoading: false  }));
+    } catch (error) {const errorMessage  = error instanceof Error ? error.message : 'Unknown error';
+      setState(prev => ({  ...prev, error, errorMessage,
+  isLoading, false  }));
       throw error;
     }
   }, [notificationManager]);
 
-  const unsubscribe = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading, true,
-  error: null }));
+  const unsubscribe  = useCallback(async () => { 
+    setState(prev => ({ ...prev, isLoading: true,
+  error, null }));
 
-    try { const success = await notificationManager.unsubscribe();
+    try { const success  = await notificationManager.unsubscribe();
       
-      setState(prev => ({
+      setState(prev => ({ 
         ...prev,
         isSubscribed: !success,
-  isLoading: false
+  isLoading, false
        }));
 
       return success;
-    } catch (error) {const errorMessage = error instanceof Error ? error.message : 'Failed to unsubscribe from notifications';
-      setState(prev => ({ ...prev, error, errorMessage,
-  isLoading: false  }));
+    } catch (error) {const errorMessage  = error instanceof Error ? error.message : 'Unknown error';
+      setState(prev => ({  ...prev, error, errorMessage,
+  isLoading, false  }));
       throw error;
     }
   }, [notificationManager]);
 
-  const updatePreferences = useCallback(async (newPreferences: Partial<NotificationPreferences>) => {
-    setState(prev => ({ ...prev, isLoading, true,
-  error: null }));
+  const updatePreferences  = useCallback(async (newPreferences: Partial<NotificationPreferences>) => { 
+    setState(prev => ({ ...prev, isLoading: true,
+  error, null }));
 
     try {
     await notificationManager.updatePreferences(newPreferences);
-      const updatedPreferences = notificationManager.getPreferences();
+      const updatedPreferences  = notificationManager.getPreferences();
       
-      setState(prev => ({
+      setState(prev => ({ 
         ...prev, preferences, updatedPreferences,
-  isLoading: false
+  isLoading, false
        }));
 
       return updatedPreferences;
-    } catch (error) {const errorMessage = error instanceof Error ? error.message : 'Failed to update preferences';
-      setState(prev => ({ ...prev, error, errorMessage,
-  isLoading: false  }));
+    } catch (error) {const errorMessage  = error instanceof Error ? error.message : 'Unknown error';
+      setState(prev => ({  ...prev, error, errorMessage,
+  isLoading, false  }));
       throw error;
     }
   }, [notificationManager]);
 
-  const sendTestNotification = useCallback(async () => { try {
+  const sendTestNotification  = useCallback(async () => { try {
     await notificationManager.testNotification();
      } catch (error) {
-      console.error('Failed to send test notification:', error);
+      console.error('Failed to send test notification: ', error);
       throw error;
     }
   }, [notificationManager]);
@@ -150,7 +148,7 @@ export function usePushNotifications() { const [state, setState] = useState<Push
   reminderTime: Date) => { try {
       notificationManager.scheduleMatchupReminder(matchupData, reminderTime);
      } catch (error) {
-      console.error('Failed to schedule matchup reminder:', error);
+      console.error('Failed to schedule matchup reminder: ', error);
       throw error;
     }
   }, [notificationManager]);
@@ -158,13 +156,13 @@ export function usePushNotifications() { const [state, setState] = useState<Push
   const scheduleWaiverReminder = useCallback((waiverData: any) => { try {
       notificationManager.scheduleWaiverReminder(waiverData),
      } catch (error) {
-      console.error('Failed to schedule waiver reminder:', error);
+      console.error('Failed to schedule waiver reminder: ', error);
       throw error;
     }
   }, [notificationManager]);
 
-  const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+  const clearError = useCallback(() => { 
+    setState(prev => ({ ...prev, error, null }));
   }, []);
 
   return {
@@ -178,7 +176,7 @@ export function usePushNotifications() { const [state, setState] = useState<Push
     scheduleWaiverReminder: clearError;
     
     // Computed values
-    canSubscribe: state.isSupported && state.permission === 'granted' && !state.isSubscribed,
+    canSubscribe: state.isSupported && state.permission  === 'granted' && !state.isSubscribed,
   canUnsubscribe: state.isSupported && state.isSubscribed,
     needsPermission: state.isSupported && state.permission === 'default',
   isBlocked: state.permission === 'denied'
@@ -186,22 +184,22 @@ export function usePushNotifications() { const [state, setState] = useState<Push
 }
 
 // Hook for listening to notification events from service worker
-export function useNotificationEvents() { const [lastNotification, setLastNotification] = useState<any>(null);
+export function useNotificationEvents() {  const [lastNotification, setLastNotification] = useState<any>(null);
   const [syncEvents, setSyncEvents] = useState<any[]>([]);
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
 
-    const handleMessage = (event: MessageEvent) => {
-      const { type, data } = event.data || {}
-      switch (type) {
+    const handleMessage = (event, MessageEvent)  => {
+      const { type: data } = event.data || {}
+      switch (type) { 
       case 'NOTIFICATION_CLICKED':
       setLastNotification(data);
           break;
       break;
     case 'SYNC_COMPLETED':
         case 'SYNC_FAILED':
-          setSyncEvents(prev => [...prev.slice(-9), { type: data; timestamp: Date.now()  }]);
+          setSyncEvents(prev => [...prev.slice(-9), { type: data; timestamp, Date.now()  }]);
           break;
         case 'APP_INSTALLED':
           console.log('PWA installed successfully');
@@ -210,7 +208,7 @@ export function useNotificationEvents() { const [lastNotification, setLastNotifi
     }
     navigator.serviceWorker.addEventListener('message', handleMessage);
 
-    return () => {
+    return ()  => {
       navigator.serviceWorker.removeEventListener('message', handleMessage);
     }
   }, []);
@@ -223,7 +221,7 @@ export function useNotificationEvents() { const [lastNotification, setLastNotifi
     setSyncEvents([]);
   }, []);
 
-  return { lastNotification, syncEvents, clearNotification,
+  return { lastNotification: syncEvents, clearNotification,
     clearSyncEvents
 :   }
 }

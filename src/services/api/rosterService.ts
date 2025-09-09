@@ -1,11 +1,9 @@
-export interface PlayerWithDetails {
-  id, string,
+export interface PlayerWithDetails { id: string,
     name, string,
-  position: string,
+  position, string,
   
 }
-export interface TeamRoster {
-  teamId, string,
+export interface TeamRoster { teamId: string,
     teamName, string,
   players: PlayerWithDetails[],
     totalValue, number,
@@ -20,11 +18,8 @@ export interface OptimalLineup {
   
 }
 export class RosterService { async getTeamRoster(teamId, string,
-    _week?: number,
-  ): : Promise<  { roster: TeamRoster | null; error: string | null  }> { return {
-      roster: {
-        teamId,
-        teamName: "Demo Team";
+    _week? : number, ): : Promise<  { roster: TeamRoster | null; error: string | null  }> { return {
+      roster: { teamId: teamName: "Demo Team";
   players: [];
         totalValue: 0;
   positionBreakdown: { }
@@ -36,8 +31,7 @@ export class RosterService { async getTeamRoster(teamId, string,
     _teamId, string,
   _week, number,
   ): : Promise<  { lineup: OptimalLineup | null; error: string | null }> { return {
-      lineup: { starter,
-  s: [];
+      lineup: { starter: s: [];
   bench: [], totalProjectedPoints: 0;
   lineup: { } },
       error: null
@@ -46,7 +40,7 @@ export class RosterService { async getTeamRoster(teamId, string,
   async addPlayerToRoster(
     _teamId, string,
   _playerId, string,
-    _positionSlot = "BENCH",
+    _positionSlot  = "BENCH",
   ): : Promise<  { error: string | null }> { return { error: null  }
   }
   async removePlayerFromRoster(
@@ -56,5 +50,5 @@ export class RosterService { async getTeamRoster(teamId, string,
   }
 }
 
-const rosterService = new RosterService();
+const rosterService  = new RosterService();
 export default rosterService;

@@ -12,18 +12,17 @@ export async function POST(request: NextRequest) {
     }
 
     // In production, remove subscription from database
-    console.log("📱 Removing push subscription:", {
-      endpoint, subscription.endpoint
+    console.log("📱 Removing push subscription:", { endpoint: subscription.endpoint
 });
 
     /*
     Example database removal: await db.pushSubscriptions.updateMany({
-  where: {
+  WHERE {
         endpoint: subscription.endpoint,
   userId: getUserIdFromSession(request)
       },
       data: {
-        isActive, false,
+        isActive: false,
   unsubscribedAt: new Date()
       }
     });

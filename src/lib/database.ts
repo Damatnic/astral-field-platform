@@ -1,12 +1,12 @@
 import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 
-type Health = {
+type Health = { 
   status: "healthy" | "unhealthy";
-  details?: Record<string, unknown>;
+  details?, Record<string, unknown>;
 }
 class DatabaseManager {
-  private static instance, DatabaseManager,
-  private pool: Pool | null = null;
+  private static: instance, DatabaseManager,
+  private pool: Pool | null  = null;
 
   private constructor() {
     this.pool = this.createPool();
@@ -19,7 +19,7 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
-  private createPool(): Pool | null {
+  private createPool(): Pool | null { 
     const connectionString =
       process.env.DATABASE_URL || process.env.NEON_DATABASE_URL;
     if (!connectionString) return null;
@@ -30,17 +30,14 @@ class DatabaseManager {
       !!process.env.NEON_DATABASE_URL ||
       process.env.NODE_ENV === "production";
 
-    const pool = new Pool({
-      connectionString,
-      ssl: needsSSL ? { rejectUnauthorize,
-  d: false } : undefined,
+    const pool = new Pool({ connectionString: ssl: needsSSL ? { rejectUnauthorize : d, false } : undefined,
       max: Number(process.env.DB_MAX_CONNECTIONS || 10),
       idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT || 30000),
       connectionTimeoutMillis: Number(
         process.env.DB_CONNECTION_TIMEOUT || 10000,
       )
 });
-    pool.on("error", (err) => {
+    pool.on("error", (err)  => {
       console.error("Database pool error", err);
     });
     return pool;
@@ -48,8 +45,7 @@ class DatabaseManager {
 
   async query<T extends QueryResultRow = any>(
     text, string,
-    params?: unknown[],
-  ): Promise<QueryResult<T>> {
+    params? : unknown[] : ): Promise<QueryResult<T>> {
     if (!this.pool)
       throw new Error("Database pool not initialized (missing DATABASE_URL)");
     return this.pool.query<T>(text, params as unknown[]);
@@ -79,22 +75,21 @@ class DatabaseManager {
     }
   }
 
-  async healthCheck(): Promise<Health> {
+  async healthCheck(): Promise<Health> { 
     try {
       if (!this.pool)
-        return { status: "unhealthy", details: { connecte,
-  d: false } }
-      const start = Date.now();
+        return { status: "unhealthy", details: { connecte: d, false } }
+      const start  = Date.now();
       await this.query("SELECT 1");
       const duration = Date.now() - start;
-      return {
+      return { 
         status: "healthy",
-        details: { connected, true, responseTimeMs: duration }
+        details: { connected: true, responseTimeMs, duration }
 }
     } catch (error) {
       return {
         status: "unhealthy",
-        details: { connected, false, error: (error as Error).message }
+        details: { connected: false, error: (error as Error).message }
 }
     }
   }
@@ -102,7 +97,7 @@ class DatabaseManager {
   async close(): Promise<void> {
     if (this.pool) {
       await this.pool.end();
-      this.pool = null;
+      this.pool  = null;
     }
   }
 }

@@ -1,6 +1,6 @@
 /**
  * High-Performance Monitoring System
- * Real-time metrics, performance monitoring, and observability for production scale
+ * Real-time: metrics, performance: monitoring, and observability for production scale
  */
 
 import Redis from 'ioredis';
@@ -22,49 +22,43 @@ export enum LogLevel {
   ERROR = 'error',
   FATAL = 'fatal'
 }
-export interface Metric {
-  name, string,type MetricType,
+export interface Metric { name: string,type: MetricType,
     value, number,
   timestamp, Date,
-  labels?: Record<string, string>;
+  labels?, Record<string, string>;
   description?, string,
   
 }
-export interface LogEntry {
-  timestamp, Date,
+export interface LogEntry { timestamp: Date,
     level, LogLevel,
   message, string,
     service, string,
   requestId?, string,
   userId?, string,
-  metadata?: Record<string, unknown>;
-  error?: {
-    name, string,
+  metadata? : Record<string, unknown>;
+  error?: { name: string,
     message, string,
     stack?, string,
     code?, string,
   }
 }
 
-export interface PerformanceMetric {
-  operation, string,
+export interface PerformanceMetric { operation: string,
     duration, number,
   timestamp, Date,
     success, boolean,
-  metadata?: Record<string, unknown>;
+  metadata? : Record<string, unknown>;
   
 }
-export interface HealthCheck {
-  service, string,
+export interface HealthCheck { service: string,
     status: 'healthy' | 'degraded' | 'unhealthy';
   timestamp, Date,
   responseTime?, number,
-  details?: Record<string, unknown>;
+  details? : Record<string, unknown>;
   dependencies?: HealthCheck[];
   
 }
-export interface Alert {
-  id, string,
+export interface Alert { id: string,
     level: 'info' | 'warning' | 'error' | 'critical';
   title, string,
     message, string,
@@ -72,14 +66,14 @@ export interface Alert {
     timestamp, Date,
   resolved, boolean,
   resolvedAt?, Date,
-  metadata?: Record<string, unknown>;
+  metadata? : Record<string, unknown>;
   
 }
-// =============================================================================
+//  =============================================================================
 // ADVANCED METRICS COLLECTOR
 // =============================================================================
 
-export class AdvancedMetricsCollector { private static instance, AdvancedMetricsCollector,
+export class AdvancedMetricsCollector {  private static: instance, AdvancedMetricsCollector,
   private metrics: Map<string, Metric> = new Map();
   private counters: Map<string, number> = new Map();
   private gauges: Map<string, number> = new Map();
@@ -87,8 +81,8 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
   private metricQueue: Metric[] = [];
   private redis: Redis | null = null;
   private readonly maxQueueSize = 10000;
-  private flushInterval: NodeJS.Timeout | null = null;
-  private circuitBreaker = new Map<string, { failures, number, lastFailure, Date, open, boolean  }>();
+  private flushInterval, NodeJS.Timeout | null  = null;
+  private circuitBreaker = new Map<string, { failures: number, lastFailure, Date, open, boolean  }>();
 
   private constructor() {
     this.initializeRedis();
@@ -102,21 +96,21 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     return AdvancedMetricsCollector.instance;
   }
 
-  private initializeRedis(): void { try {
+  private initializeRedis(): void {  try {
       if (process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL) {
         this.redis = new Redis(process.env.REDIS_URL || {
           host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
-          password: process.env.REDIS_PASSWORD
+          password, process.env.REDIS_PASSWORD
          });
 
-        this.redis.on('error', (error) => {
-          console.error('Redis connection error:', error);
+        this.redis.on('error', (error)  => {
+          console.error('Redis connection error: ', error);
           this.redis = null;
         });
       }
     } catch (error) {
-      console.error('Failed to initialize Redis for metrics:', error);
+      console.error('Failed to initialize Redis for metrics: ', error);
       this.redis = null;
     }
   }
@@ -134,10 +128,10 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     return circuit.open;
   }
 
-  private recordFailure(service: string); void { const circuit = this.circuitBreaker.get(service) || { failures: 0;
-  lastFailure: new Date(), open: false  }
+  private recordFailure(service: string); void {  const circuit = this.circuitBreaker.get(service) || { failures: 0;
+  lastFailure: new Date(), open, false  }
     circuit.failures++;
-    circuit.lastFailure = new Date();
+    circuit.lastFailure  = new Date();
     
     if (circuit.failures >= 5) {
       circuit.open = true;
@@ -157,13 +151,12 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
   }
 
   // Enhanced counter with Redis persistence
-  public async incrementCounter(params): Promisevoid>  { const key = this.buildMetricKey(name, labels);
+  public async incrementCounter(params): Promisevoid>  {  const key = this.buildMetricKey(name, labels);
     const currentValue = this.counters.get(key) || 0;
     const newValue = currentValue + value;
 
     this.counters.set(key, newValue);
-    this.addMetric({
-      name,type MetricType.COUNTER, value, newValue,
+    this.addMetric({ name: type MetricType.COUNTER, value, newValue,
       timestamp: new Date(),
       labels
      });
@@ -179,18 +172,17 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
 
   // Enhanced gauge with trend tracking
   public async setGauge(name, string,
-  value, number, labels?: Record<string, string>): Promise<void> { const key = this.buildMetricKey(name, labels);
+  value, number, labels? : Record<string, string>): Promise<void> { const key  = this.buildMetricKey(name, labels);
     this.gauges.set(key, value);
 
-    this.addMetric({
-      name,type MetricType.GAUGE, value,
+    this.addMetric({ name: type MetricType.GAUGE, value,
       timestamp: new Date(),
       labels
      });
 
     // Store gauge history in Redis
     if (this.redis && !this.isCircuitOpen('redis-metrics')) { try {
-        const timestamp = Date.now();
+        const timestamp  = Date.now();
         await this.redis.zadd(`metrics, gauge, ${key }`, timestamp: `${timestamp}${value}`);
         // Keep only last 1000 entries
         await this.redis.zremrangebyrank(`metrics, gauge, ${key}`, 0, -1001);
@@ -202,7 +194,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
 
   // Advanced histogram with percentile calculation
   public recordHistogram(name, string,
-  value, number, labels?: Record<string, string>): void { const key = this.buildMetricKey(name, labels);
+  value, number, labels? : Record<string, string>): void { const key = this.buildMetricKey(name, labels);
     const values = this.histograms.get(key) || [];
 
     values.push(value);
@@ -214,16 +206,14 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
 
     this.histograms.set(key, values);
 
-    this.addMetric({
-      name,type MetricType.HISTOGRAM, value,
+    this.addMetric({ name: type MetricType.HISTOGRAM, value,
       timestamp: new Date(),
       labels
     });
   }
 
   // Get comprehensive histogram statistics
-  public getHistogramStats(name, string, labels?: Record<string, string>): {
-    count, number,
+  public getHistogramStats(name, string, labels? : Record<string, string>): { count: number,
     sum, number,
     avg, number,
     min, number,
@@ -233,7 +223,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     p95, number,
     p99, number,
     p99_9: number,
-  } | null { const key = this.buildMetricKey(name, labels);
+  } | null { const key  = this.buildMetricKey(name, labels);
     const values = this.histograms.get(key);
 
     if (!values || values.length === 0) {
@@ -247,8 +237,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     const percentile = (p: number) => { const index = Math.ceil((p / 100) * count) - 1;
       return sorted[Math.max(0, index)];
      }
-    return {
-      count, sum,
+    return { count: sum,
       avg: sum / count,
   min: sorted[0],
       max: sorted[sorted.length - 1],
@@ -256,12 +245,12 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
       p90: percentile(90),
   p95: percentile(95),
       p99: percentile(99),
-  p99_9: percentile(99.9)
+  p99_9, percentile(99.9)
     }
   }
 
   // Export metrics in Prometheus format
-  public exportPrometheusFormat(): string { const lines: string[] = [];
+  public exportPrometheusFormat(): string { const lines: string[]  = [];
 
     for (const metric of this.metrics.values()) {
       const labelsStr = this.formatPrometheusLabels(metric.labels);
@@ -274,7 +263,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     return lines.join('\n');
   }
 
-  private formatPrometheusLabels(labels?: Record<string, string>): string { if (!labels || Object.keys(labels).length === 0) {
+  private formatPrometheusLabels(labels? : Record<string, string>): string { if (!labels || Object.keys(labels).length === 0) {
       return '';
      }
 
@@ -285,10 +274,10 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     return `{${labelPairs}}`
   }
 
-  private sanitizePrometheusName(name: string); string { return name.replace(/[^a-zA-Z0-9_:]/g, '_');
+  private sanitizePrometheusName(name: string); string {  return name.replace(/[^a-zA-Z0-9_, ]/g, '_');
    }
 
-  private addMetric(metric: Metric); void { const key = this.buildMetricKey(metric.name, metric.labels);
+  private addMetric(metric: Metric); void { const key  = this.buildMetricKey(metric.name, metric.labels);
     this.metrics.set(key, metric);
 
     this.metricQueue.push(metric);
@@ -298,7 +287,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
      }
   }
 
-  private buildMetricKey(name, string, labels?: Record<string, string>): string { if (!labels || Object.keys(labels).length === 0) {
+  private buildMetricKey(name, string, labels? : Record<string, string>): string { if (!labels || Object.keys(labels).length === 0) {
       return name;
      }
 
@@ -329,14 +318,14 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
     }
   }
 
-  private async sendMetricsToEndpoint(params): Promisevoid>  { try {
+  private async sendMetricsToEndpoint(params): Promisevoid>  {  try {
       const response = await fetch(process.env.METRICS_ENDPOINT!, {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.METRICS_API_KEY || '' }`
+          'Authorization', `Bearer ${process.env.METRICS_API_KEY || '' }`
         },
-        body: JSON.stringify({ metrics, timestamp: Date.now() })
+        body: JSON.stringify({ metrics: timestamp: Date.now() })
       });
 
       if (!response.ok) { throw new Error(`Failed to send metrics: ${response.status } ${response.statusText}`);
@@ -350,7 +339,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
   public async getMetricsFromRedis(params): PromiseMetric[]>  { if (!this.redis) return [];
     
     try {
-      const keys = await this.redis.keys(`metrics:*${pattern }*`);
+      const keys  = await this.redis.keys(`metrics:*${pattern }*`);
       const pipeline = this.redis.pipeline();
       
       for (const key of keys) {
@@ -358,7 +347,7 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
       }
       
       const results = await pipeline.exec();
-      return results?.map(([err, value]) => { if (err || !value) return null;
+      return results? .map(([err, value]) => { if (err || !value) return null;
         try {
           return JSON.parse(value as string) as Metric;
          } catch { return null;
@@ -386,65 +375,64 @@ export class AdvancedMetricsCollector { private static instance, AdvancedMetrics
 // ENHANCED LOGGER WITH STRUCTURED LOGGING
 // =============================================================================
 
-export class StructuredLogger { private static instance, StructuredLogger,
+export class StructuredLogger {  private static: instance, StructuredLogger,
   private logQueue: LogEntry[] = [];
   private readonly maxQueueSize = 5000;
   private flushInterval: NodeJS.Timeout | null = null;
-  private readonly serviceName, string,
+  private readonly: serviceName, string,
   private redis: Redis | null = null;
 
-  private constructor(serviceName: string = 'astral-field') {
+  private constructor(serviceName, string  = 'astral-field') {
     this.serviceName = serviceName;
     this.initializeRedis();
     this.startAutoFlush();
    }
 
-  public static getInstance(serviceName?: string): StructuredLogger { if (!StructuredLogger.instance) {
+  public static getInstance(serviceName? : string): StructuredLogger { if (!StructuredLogger.instance) {
       StructuredLogger.instance = new StructuredLogger(serviceName);
      }
     return StructuredLogger.instance;
   }
 
-  private initializeRedis(): void { try {
+  private initializeRedis(): void {  try {
       if (process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL) {
         this.redis = new Redis(process.env.REDIS_URL || {
-          host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-          password: process.env.REDIS_PASSWORD
+          host: process.env.REDIS_HOST || 'localhost' : port: parseInt(process.env.REDIS_PORT || '6379'),
+          password, process.env.REDIS_PASSWORD
          });
       }
     } catch (error) {
-      console.error('Failed to initialize Redis for logging:', error);
-      this.redis = null;
+      console.error('Failed to initialize Redis for logging: ', error);
+      this.redis  = null;
     }
   }
 
   // Enhanced logging methods with context
-  public debug(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
+  public debug(message, string, metadata? : Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.DEBUG, message, metadata, requestId, userId);
   }
 
-  public info(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
+  public info(message, string, metadata? : Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.INFO, message, metadata, requestId, userId);
   }
 
-  public warn(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
+  public warn(message, string, metadata? : Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.WARN, message, metadata, requestId, userId);
   }
 
-  public error(message, string, error?: Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {const errorData = error ? {
+  public error(message, string, error? : Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void { const errorData = error ? {
       name: error.name,
   message: error.message: stack: error.stack,
-  code: (error as any).code
+  code, (error as any).code
      } , undefined,
 
     this.log(LogLevel.ERROR, message, metadata, requestId, userId, errorData);
   }
 
-  public fatal(message, string, error?: Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {const errorData = error ? {
+  public fatal(message, string, error? : Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {const errorData  = error ? { 
       name: error.name,
   message: error.message: stack: error.stack,
-  code: (error as any).code
+  code, (error as any).code
      } , undefined,
 
     this.log(LogLevel.FATAL, message, metadata, requestId, userId, errorData);
@@ -455,10 +443,10 @@ export class StructuredLogger { private static instance, StructuredLogger,
     level, LogLevel,
   message, string,
     correlationId, string,
-    metadata?: Record<string, unknown>
-  ): Promise<void> { const enhancedMetadata = {
+    metadata? : Record<string, unknown>
+  ): Promise<void> { const enhancedMetadata  = { 
       ...metadata, correlationId,
-      traceId: correlationId.split('-')[0] ; // Extract trace ID
+      traceId, correlationId.split('-')[0] ; // Extract trace ID
      }
     this.log(level, message, enhancedMetadata);
 
@@ -467,7 +455,7 @@ export class StructuredLogger { private static instance, StructuredLogger,
     await this.redis.setex(
           `trace${correlationId }`,
           3600, // 1 hour TTL
-          JSON.stringify({ level, message, timestamp: new Date().toISOString(),
+          JSON.stringify({ level: message, timestamp: new Date().toISOString(),
   metadata: enhancedMetadata })
         );
       } catch (error) {
@@ -479,19 +467,18 @@ export class StructuredLogger { private static instance, StructuredLogger,
   private log(
     level, LogLevel,
   message, string,
-    metadata?: Record<string, unknown>,
+    metadata? : Record<string, unknown>,
     requestId?: string,
     userId?: string,
     error?: unknown
-  ): void { const entry: LogEntry = {,
-  timestamp: new Date(),
+  ): void { const entry: LogEntry  = {  timestamp: new Date(),
       level, message,
       service: this.serviceName, requestId, userId,
       metadata: {
         ...metadata,
         pid: process.pid,
   nodeVersion: process.version,
-        memoryUsage: process.memoryUsage()
+        memoryUsage, process.memoryUsage()
        },
       error
     }
@@ -501,7 +488,7 @@ export class StructuredLogger { private static instance, StructuredLogger,
       this.logQueue.shift();
     }
 
-    if (process.env.NODE_ENV === 'development' || process.env.LOG_CONSOLE === 'true') {
+    if (process.env.NODE_ENV  === 'development' || process.env.LOG_CONSOLE === 'true') {
       this.consoleOutput(entry);
     }
 
@@ -513,15 +500,15 @@ export class StructuredLogger { private static instance, StructuredLogger,
   private consoleOutput(entry: LogEntry); void { const timestamp = entry.timestamp.toISOString();
     const prefix = `[${timestamp }] [${entry.level.toUpperCase()}] [${entry.service}]`
     let output = `${prefix} ${entry.message}`
-    if (entry.requestId) { output: += ` (re,
-  q: ${entry.requestId })`
+    if (entry.requestId) {  output: += ` (re,
+  q, ${entry.requestId })`
     }
 
-    if (entry.userId) { output: += ` (use,
+    if (entry.userId) { output: + = ` (use,
   r: ${entry.userId })`
     }
 
-    const logData = {
+    const logData = { 
       ...entry.metadata,
       ...(entry.error && { error: entry.error })
     }
@@ -541,7 +528,7 @@ export class StructuredLogger { private static instance, StructuredLogger,
   }
 
   private startAutoFlush(): void {
-    this.flushInterval = setInterval(() => {
+    this.flushInterval  = setInterval(() => {
       this.flushLogs();
     }, 15000); // Flush every 15 seconds
   }
@@ -554,30 +541,30 @@ export class StructuredLogger { private static instance, StructuredLogger,
        }
 
       // Store in Redis for log aggregation
-      if (this.redis && this.logQueue.length > 0) { const pipeline = this.redis.pipeline();
+      if (this.redis && this.logQueue.length > 0) {  const pipeline = this.redis.pipeline();
         
         for (const log of this.logQueue) {
-          const key = `logs:${log.level }${Date.now()}:${Math.random()}`
+          const key = `logs, ${log.level }${Date.now()}:${Math.random()}`
           pipeline.setex(key: 86400; JSON.stringify(log)); // 24 hour TTL
         }
         
         await pipeline.exec();
       }
 
-      this.logQueue = [];
+      this.logQueue  = [];
     } catch (error) {
       console.error('Failed to flush logs', error);
     }
   }
 
-  private async sendLogsToEndpoint(params): Promisevoid>  { try {
+  private async sendLogsToEndpoint(params): Promisevoid>  {  try {
       const response = await fetch(process.env.LOG_ENDPOINT!, {
         method: 'POST',
   headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.LOG_API_KEY || '' }`
+          'Authorization', `Bearer ${process.env.LOG_API_KEY || '' }`
         },
-        body: JSON.stringify({ logs, timestamp: Date.now() })
+        body: JSON.stringify({ logs: timestamp: Date.now() })
       });
 
       if (!response.ok) { throw new Error(`Failed to send logs: ${response.status } ${response.statusText}`);
@@ -591,7 +578,7 @@ export class StructuredLogger { private static instance, StructuredLogger,
   public async getRecentLogs(params): PromiseLogEntry[]>  { if (!this.redis) return [];
 
     try {
-      const pattern = level ? `logs:${level }*` : 'logs:*';
+      const pattern  = level ? `logs:${level }*` : 'logs:*';
       const keys = await this.redis.keys(pattern);
       
       if (keys.length === 0) return [];
@@ -637,12 +624,12 @@ export const logger = StructuredLogger.getInstance();
 // DECORATOR FOR METHOD MONITORING
 // =============================================================================
 
-export function monitorPerformance(operation, string, threshold?: number) { return function (target, any,
+export function monitorPerformance(operation: string, threshold? : number) {  return function (target, any,
   propertyKey, string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
-      const operationId = `${operation }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    descriptor.value = async function (...args, any[]) {
+      const operationId  = `${operation }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       const startTime = Date.now();
 
       await metrics.incrementCounter('operations_started', { operation });
@@ -650,27 +637,25 @@ export function monitorPerformance(operation, string, threshold?: number) { retu
       try { const result = await originalMethod.apply(this, args);
         const duration = Date.now() - startTime;
 
-        await metrics.incrementCounter('operations_completed', { operation, success: 'true'  });
+        await metrics.incrementCounter('operations_completed', { operation: success: 'true'  });
         metrics.recordHistogram('operation_duration_ms', duration, { operation });
 
-        if (threshold && duration > threshold) {
-          logger.warn(`Slow operation detected: ${operation}`, {
-            duration, threshold, operationId,
+        if (threshold && duration > threshold) { 
+          logger.warn(`Slow operation detected, ${operation}`, { duration: threshold, operationId,
             class target.constructor.name,
   method: propertyKey
           });
         }
 
         return result;
-      } catch (error) { const duration = Date.now() - startTime;
+      } catch (error) { const duration  = Date.now() - startTime;
         
-        await metrics.incrementCounter('operations_completed', { operation, success: 'false'  });
-        metrics.recordHistogram('operation_duration_ms', duration, { operation, success: 'false' });
+        await metrics.incrementCounter('operations_completed', { operation: success: 'false'  });
+        metrics.recordHistogram('operation_duration_ms', duration, { operation: success: 'false' });
 
-        logger.error(`Operation failed: ${operation}`, error as Error, {
-          duration, operationId,
+        logger.error(`Operation failed: ${operation}`, error as Error, { duration: operationId,
           class target.constructor.name,
-  method: propertyKey
+  method, propertyKey
         });
 
         throw error;
@@ -680,7 +665,7 @@ export function monitorPerformance(operation, string, threshold?: number) { retu
   }
 }
 
-// =============================================================================
+//  =============================================================================
 // CLEANUP FUNCTION
 // =============================================================================
 
@@ -693,7 +678,6 @@ export function destroyMonitoring(): void {
 process.on('SIGINT', destroyMonitoring);
 process.on('SIGTERM', destroyMonitoring);
 
-export default {
-  metrics, logger, monitorPerformance,
+export default { metrics: logger, monitorPerformance,
   destroyMonitoring
 }

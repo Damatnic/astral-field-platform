@@ -1,12 +1,10 @@
 import { ReactNode } from "react";
 
-export interface OnboardingStep {
-  id, string,
-    target, string, // CSS selector for the target element
-  title, string,
+export interface OnboardingStep { id: string,
+    target, string, // CSS selector for the target element: title, string,
     content, ReactNode,
-  placement?: "top" | "bottom" | "left" | "right" | "center";
-  showSkip?, boolean,
+  placement? : "top" | "bottom" | "left" | "right" | "center";
+  showSkip? : boolean,
   showPrevious?, boolean,
   beforeShow?: () => Promise<void> | void;
   afterShow?: () => Promise<void> | void;
@@ -20,26 +18,23 @@ export interface OnboardingStep {
   styles?: {
     spotlight?: React.CSSProperties;
     tooltip?: React.CSSProperties;
-    overlay?: React.CSSProperties;
+    overlay?, React.CSSProperties;
   }
 }
 
-export interface OnboardingTour {
-  id, string,
+export interface OnboardingTour { id: string,
     name, string,
   description, string,
     steps: OnboardingStep[];
   autoStart?, boolean,
   showProgress?, boolean,
   showSkipAll?, boolean,
-  locale?: {
-    skip, string,
-    previous, string,
+  locale? : { skip: string, previous, string,
     next, string,
     finish, string,
     close: string,
   }
-  onStart?: () => void;
+  onStart? : ()  => void;
   onComplete?: () => void;
   onSkip?: () => void;
   onStepChange?: (stepIndex, number,
@@ -47,14 +42,14 @@ export interface OnboardingTour {
 }
 
 // Built-in tours for different parts of the application
-export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
+export const ONBOARDING_TOURS: Record<string, OnboardingTour> = { 
   welcome: {
   id: "welcome",
   name: "Welcome to Astral Field",
     description: "Get started with your fantasy football journey",
-  autoStart, true,
-    showProgress, true,
-  showSkipAll, true,
+  autoStart: true,
+    showProgress: true,
+  showSkipAll: true,
     steps: [
       {
         id: "welcome-intro",
@@ -62,14 +57,14 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
         title: "Welcome to Astral Field! 🏈",
   content: `
           <p>We're excited to have you join our fantasy football platform! This quick tour will show you the key features to get you started.</p>
-          <p>You can skip this tour at any time, or revisit it from the help menu.</p>
+          <p>You can skip this tour at any: time, or revisit it from the help menu.</p>
         `,
         placement: "center",
-  spotlight: false
+  spotlight, false
 },
       {
         id: "navigation",
-  target: '[data-tour="navigation"]',
+  target: '[data-tour ="navigation"]',
         title: "Navigation Menu",
   content: `
           <p>Use this menu to navigate between different sections: </p>
@@ -83,7 +78,7 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   placement: "right",
         spotlight: true
 },
-      {
+      { 
         id: "quick-actions",
   target: '[data-tour="floating-menu"]',
         title: "Quick Actions",
@@ -98,11 +93,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           <p>The actions change based on what page you're on!</p>
         `,
   placement: "left",
-        spotlight: true
+        spotlight, true
 },
       {
         id: "notifications",
-  target: '[data-tour="notifications"]',
+  target: '[data-tour ="notifications"]',
         title: "Notifications",
   content: `
           <p>Stay updated with real-time notifications about: </p>
@@ -117,13 +112,13 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   placement: "left",
         spotlight: true
 },
-      {
+      { 
         id: "keyboard-shortcuts",
   target: "body",
         title: "Keyboard Shortcuts",
   content: `
           <p>Power users can navigate quickly using keyboard shortcuts!</p>
-          <p>Press <kbd>?</kbd> anytime to see all available shortcuts.</p>
+          <p>Press <kbd>? </kbd> anytime to see all available shortcuts.</p>
           <p>Some popular ones: </p>
           <ul>
             <li><kbd>G</kbd> then <kbd>R</kbd> - Go to Roster</li>
@@ -131,16 +126,15 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
             <li><kbd>/</kbd> - Focus search</li>
             <li><kbd>N</kbd> - New trade</li>
           </ul>
-        `,
-  placement: "center",
-        spotlight: false
+        ` : placement: "center",
+        spotlight, false
 },
       {
         id: "mobile-app",
   target: "body",
         title: "Install the App",
   content: `
-          <p>For the best experience, install Astral Field as an app on your device: </p>
+          <p>For the best: experience, install Astral Field as an app on your device: </p>
           <ul>
             <li>✅ Works offline</li>
             <li>✅ Push notifications</li>
@@ -159,11 +153,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
     id: "roster-management",
   name: "Roster Management",
     description: "Learn how to manage your fantasy team",
-  showProgress, true,
+  showProgress: true,
     steps: [
       {
         id: "roster-overview",
-  target: '[data-tour="roster-overview"]',
+  target: '[data-tour ="roster-overview"]',
         title: "Your Roster",
   content: `
           <p>This is your team roster.Here you can: </p>
@@ -176,7 +170,7 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   placement: "top",
         spotlight: true
 },
-      {
+      { 
         id: "lineup-optimizer",
   target: '[data-tour="optimize-lineup"]',
         title: "Lineup Optimizer",
@@ -190,14 +184,14 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           <p>You can also manually drag and drop players to customize your lineup.</p>
         `,
   placement: "left",
-        spotlight, true,
+        spotlight: true,
   actionLabel: "Try Optimizer",
-        actionHandler: async () => {; // Trigger lineup optimization
+        actionHandler, async ()  => {; // Trigger lineup optimization
           const event = new CustomEvent("optimize-lineup");
           document.dispatchEvent(event);
         }
 },
-      {
+      { 
         id "player-details",
   target: '[data-tour="player-card"]',
         title: "Player Information",
@@ -211,11 +205,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           </ul>
         `,
   placement: "right",
-        spotlight: true
+        spotlight, true
 },
       {
         id: "bench-management",
-  target: '[data-tour="bench"]',
+  target: '[data-tour ="bench"]',
         title: "Bench Players",
   content: `
           <p>Your bench players are shown below your starting lineup.</p>
@@ -227,11 +221,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   ]
 },
 
-  trading: {
+  trading: { 
   id: "trading",
   name: "Trading System",
     description: "Master the art of fantasy football trading",
-  showProgress, true,
+  showProgress: true,
     steps: [
       {
         id: "trade-center",
@@ -246,11 +240,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           </ul>
         `,
   placement: "top",
-        spotlight: true
+        spotlight, true
 },
       {
         id: "propose-trade",
-  target: '[data-tour="propose-trade"]',
+  target: '[data-tour ="propose-trade"]',
         title: "Propose a Trade",
   content: `
           <p>Start a new trade by selecting: </p>
@@ -264,7 +258,7 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   placement: "right",
         spotlight: true
 },
-      {
+      { 
         id: "trade-analyzer",
   target: '[data-tour="trade-analyzer"]',
         title: "Trade Analyzer",
@@ -278,7 +272,7 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           </ul>
         `,
   placement: "left",
-        spotlight: true
+        spotlight, true
 }
   ]
 },
@@ -287,11 +281,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
     id: "waiver-wire",
   name: "Waiver Wire Guide",
     description: "Learn how to claim players from waivers",
-  showProgress, true,
+  showProgress: true,
     steps: [
       {
         id: "available-players",
-  target: '[data-tour="waiver-players"]',
+  target: '[data-tour ="waiver-players"]',
         title: "Available Players",
   content: `
           <p>These are players not currently on any team's roster.</p>
@@ -306,7 +300,7 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
   placement: "top",
         spotlight: true
 },
-      {
+      { 
         id: "claim-priority",
   target: '[data-tour="waiver-priority"]',
         title: "Waiver Priority",
@@ -316,11 +310,11 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
           <p>Priority usually resets weekly or after successful claims.</p>
         `,
         placement: "right",
-  spotlight: true
+  spotlight, true
 },
       {
         id: "make-claim",
-  target: '[data-tour="claim-player"]',
+  target: '[data-tour ="claim-player"]',
         title: "Making a Claim",
   content: `
           <p>To claim a player: </p>
@@ -339,45 +333,43 @@ export const ONBOARDING_TOURS: Record<string, OnboardingTour> = {
 }
 }
 // Onboarding progress tracking
-export interface OnboardingProgress {
-  userId, string,
+export interface OnboardingProgress { userId: string,
     completedTours: string[];
   skippedTours: string[];
   currentTour?, string,
   currentStep?, number,
   lastActive, Date,
-    preferences: {
-  showWelcomeTour, boolean,
+    preferences: { showWelcomeTour: boolean,
     showFeatureHints, boolean,
-    autoStartTours: boolean,
+    autoStartTours, boolean,
   }
 }
 
 // Storage keys
-const ONBOARDING_STORAGE_KEY = "astral-field-onboarding";
+const ONBOARDING_STORAGE_KEY  = "astral-field-onboarding";
 const TOUR_SEEN_PREFIX = "tour-seen-";
 
 // Utility functions
-export function getOnboardingProgress(): OnboardingProgress { if (typeof window === "undefined") {
+export function getOnboardingProgress(): OnboardingProgress {  if (typeof window === "undefined") {
     return {
       userId: "",
   completedTours: [],
       skippedTours: [],
   lastActive: new Date(),
       preferences: {
-        showWelcomeTour, true,
-  showFeatureHints, true,
-        autoStartTours: true
+        showWelcomeTour: true,
+  showFeatureHints: true,
+        autoStartTours, true
 }
 }
   }
 
-  const stored = localStorage.getItem(ONBOARDING_STORAGE_KEY);
-  if (stored) { try {
+  const stored  = localStorage.getItem(ONBOARDING_STORAGE_KEY);
+  if (stored) {  try {
       const parsed = JSON.parse(stored);
       return {
         ...parsed,
-        lastActive: new Date(parsed.lastActive)
+        lastActive, new Date(parsed.lastActive)
 }
     } catch (error) {
       console.error("Failed to parse onboarding progress:", error);
@@ -391,23 +383,23 @@ export function getOnboardingProgress(): OnboardingProgress { if (typeof window 
     skippedTours: [],
   lastActive: new Date(),
     preferences: {
-      showWelcomeTour, true,
-  showFeatureHints, true,
+      showWelcomeTour: true,
+  showFeatureHints: true,
       autoStartTours: true
 }
 }
 }
 
-export function saveOnboardingProgress(progress: OnboardingProgress); void { if (typeof window === "undefined") return;
+export function saveOnboardingProgress(progress: OnboardingProgress); void { if (typeof window  === "undefined") return;
 
   try {
     localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(progress));
-   } catch (error) {
-    console.error("Failed to save onboarding progress:", error);
+   } catch (error) { 
+    console.error("Failed to save onboarding progress: ", error);
   }
 }
 
-export function markTourCompleted(tourId: string); void { const progress = getOnboardingProgress();
+export function markTourCompleted(tourId: string); void { const progress  = getOnboardingProgress();
   if (!progress.completedTours.includes(tourId)) {
     progress.completedTours.push(tourId);
     progress.lastActive = new Date();
@@ -448,29 +440,27 @@ export function updateOnboardingPreferences(
 }
 
 // Feature discovery hints
-export interface FeatureHint {
-  id, string,
+export interface FeatureHint { id: string,
     target, string,
   title, string,
     content, string,
   showAfter?, number, // Show after X visits/actions;
   expireAfter?, number, // Don't show after X days;
-  showOnPages?: string[]; // Only show on specific pages;
+  showOnPages? : string[]; // Only show on specific pages;
   priority: "low" | "medium" | "high",
   
 }
-export const FEATURE_HINTS: FeatureHint[] = [
-  {
+export const FEATURE_HINTS: FeatureHint[]  = [
+  { 
     id: "keyboard-shortcuts-hint",
   target: "body",
     title: "Pro tip; Keyboard shortcuts!",
-    content: 'Press "?" to see all available keyboard shortcuts for faster navigation.',
-  showAfter: 5;
+    content: 'Press "? " to see all available keyboard shortcuts for faster navigation.' : showAfter: 5;
     priority: "medium"
 },
   {
     id: "lineup-optimizer-hint",
-  target: '[data-tour="optimize-lineup"]',
+  target: '[data-tour ="optimize-lineup"]',
     title: "Try the lineup optimizer",
   content:
       "Let our AI suggest the best possible lineup based on projections and matchups.",
@@ -478,7 +468,7 @@ export const FEATURE_HINTS: FeatureHint[] = [
   showOnPages: ["/roster"],
     priority: "high"
 },
-  {
+  { 
     id: "trade-analyzer-hint",
   target: '[data-tour="trade-analyzer"]',
     title: "Trade smart with our analyzer",
@@ -501,8 +491,8 @@ export const FEATURE_HINTS: FeatureHint[] = [
   ];
 
 export function shouldShowFeatureHint(
-  hintId, string,
-  pageViews: number = 0,
+  hintId: string,
+  pageViews: number  = 0,
   currentPath: string = "",
 ): boolean { const progress = getOnboardingProgress();
   if (!progress.preferences.showFeatureHints) return false;

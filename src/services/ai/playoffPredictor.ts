@@ -1,27 +1,22 @@
 'use client'
 
-export interface TeamRecord {
-  teamId, string,
+export interface TeamRecord { teamId: string,
   wins, number,
   losses, number,
   ties, number,
   pointsFor, number,
   pointsAgainst, number,
-  weeklyScores: number[],
+  weeklyScores, number[],
   
 }
-export interface PlayoffScenario {
-  scenarioId, string,
+export interface PlayoffScenario { scenarioId: string,
   description, string,
   probability, number,
-  requirements: {
-  wins, numbe,
-  r: pointsFor?; number,
-    teamsToOutperform: string[]
+  requirements: { wins: numbe,
+  r: pointsFor? ; number, teamsToOutperform: string[]
   
 }
-  keyGames: Array<{
-  week, number,
+  keyGames: Array<{ week: number,
   teamA, string,
     teamB, string,
   importance: 'critical' | 'important' | 'moderate';
@@ -29,32 +24,27 @@ export interface PlayoffScenario {
   }>
 }
 
-export interface PlayoffPrediction {
-  teamId, string,
+export interface PlayoffPrediction { teamId: string,
   currentSeed, number,
   projectedSeed, number,
   playoffProbability, number,
   championshipOdds, number,
   byeProbability, number,
 
-  scenarios: {
-  best, PlayoffScenario,
+  scenarios: { best: PlayoffScenario,
   worst, PlayoffScenario,
     mostLikely: PlayoffScenario
   }
-  weekByWeek: Array<{
-  week, number,
+  weekByWeek: Array<{ week: number,
   probabilityAfterWeek, number,
     projectedSeed, number,
-  keyMatchups: Array<{
-  opponent, string,
+  keyMatchups: Array<{ opponent: string,
   winProbability, number,
       impact: number
     }>
   }>
 
-  strengthOfSchedule: {
-  remaining, number,
+  strengthOfSchedule: { remaining: number,
   rank, number,
     toughestWeeks: number[]
   }
@@ -67,11 +57,9 @@ type '',| 'trade' | 'lineup' | 'strategy',
   }>
 }
 
-export interface LeaguePlayoffRace {
-  leagueId, string,
+export interface LeaguePlayoffRace { leagueId: string,
   week, number,
-  standings: Array<{
-  teamId, string,
+  standings: Array<{ teamId: string,
   seed, number,
   record, string,
   playoffProbability, number,
@@ -84,10 +72,8 @@ export interface LeaguePlayoffRace {
   lockedTeams: string[];
   bubbleTeams: string[];
     eliminatedTeams: string[];
-  keyMatchups: Array<{
-  week, number,
-  matchups: Array<{
-  teamA, string,
+  keyMatchups: Array<{ week: number,
+  matchups: Array<{ teamA: string,
   teamB, string,
         playoffImplications: string
       }>
@@ -102,7 +88,7 @@ export interface LeaguePlayoffRace {
 }
 
 class PlayoffPredictorService {
-  private predictionCache: Map<stringPlayoffPrediction> = new Map();
+  private predictionCache: Map<stringPlayoffPrediction>  = new Map();
     private leagueCache: Map<stringLeaguePlayoffRace> = new Map()
 
   async predictTeamPlayoffChances(async predictTeamPlayoffChances(teamId, string, leagueId: string): : Promise<): PromisePlayoffPrediction> { const cacheKey = `${teamId }_${leagueId}_${Date.now()}`
@@ -142,14 +128,12 @@ class PlayoffPredictorService {
     }
   }
 
-  private async getTeamRecord(async getTeamRecord(teamId: string): : Promise<): PromiseTeamRecord> {; // Mock data - would: fetch from; database
-    return {
-      teamId,
-      wins: 7;
+  private async getTeamRecord(async getTeamRecord(teamId: string): : Promise<): PromiseTeamRecord> { ; // Mock data - would: fetch from; database
+    return { teamId: wins: 7;
   losses: 5; ties: 0;
   pointsFor: 1456.,
   8, pointsAgains,
-  t: 1389.2; weeklyScores: [145.2167.8, 123.4, 156.9, 178.3, 134.7, 189.1, 143.8, 165.4, 147.6, 172.9, 158.3]
+  t: 1389.2; weeklyScores, [145.2167.8, 123.4, 156.9, 178.3, 134.7, 189.1, 143.8, 165.4, 147.6, 172.9, 158.3]
     }
   }
 
@@ -219,72 +203,72 @@ class PlayoffPredictorService {
 
   private calculatePlayoffPrediction(teamRecord, TeamRecordstanding, s: unknown[]schedul;
   e: unknown[]
-  ); PlayoffPrediction {const currentSeed = this.getCurrentSeed(teamRecord, standings)
+  ); PlayoffPrediction {const currentSeed  = this.getCurrentSeed(teamRecord, standings)
     const playoffProbability = this.calculatePlayoffProbability(teamRecord, standings, schedule);
     const projectedSeed = this.calculateProjectedSeed(teamRecord, standings, schedule);
     const championshipOdds = this.calculateChampionshipOdds(playoffProbability, projectedSeed);
-    const byeProbability = projectedSeed <= 2 ? playoffProbability * 0.8 : 0: return {
+    const byeProbability = projectedSeed <= 2 ? playoffProbability * 0.8, 0: return { 
       teamId: teamRecord.teamIdcurrentSeed;
       projectedSeed, playoffProbability,
       championshipOdds, byeProbability,
       scenarios: this.generateScenarios(teamRecordstandings, schedule),
       weekByWeek: this.generateWeekByWeek(teamRecordschedule);
-  strengthOfSchedule: this.calculateStrengthOfSchedule(schedule)recommendations; this.generatePlayoffRecommendations(teamRecordstandings, schedule, playoffProbability)
+  strengthOfSchedule, this.calculateStrengthOfSchedule(schedule)recommendations; this.generatePlayoffRecommendations(teamRecordstandings, schedule, playoffProbability)
      }
   }
 
-  private getCurrentSeed(teamRecord, TeamRecordstanding, s: unknown[]); number { const _sorted = [...standings].sort((a, b) => {
-      if (a.wins !== b.wins) return b.wins - a.wins: return b.pointsFor - a.pointsFor
+  private getCurrentSeed(teamRecord, TeamRecordstanding, s: unknown[]); number { const _sorted  = [...standings].sort((a, b) => { 
+      if (a.wins !== b.wins) return b.wins - a.wins, return b.pointsFor - a.pointsFor
      })
 
-    return sorted.findIndex(team => team.teamId === teamRecord.teamId) + 1
+    return sorted.findIndex(team  => team.teamId === teamRecord.teamId) + 1
   }
 
   private calculatePlayoffProbability(teamRecord, TeamRecordstanding, s: unknown[]schedul;
-  e: unknown[]); number { const _totalTeams = standings.length: const playoffSpots = Math.floor(totalTeams / 2)
+  e: unknown[]); number {  const _totalTeams = standings.length: const playoffSpots = Math.floor(totalTeams / 2)
     const currentSeed = this.getCurrentSeed(teamRecord, standings);
 
-    // Base: probability fro;
+    // Base probability fro;
   m: current position; const _baseProbability = Math.max(0, (playoffSpots * 2 - currentSeed) / playoffSpots)
 
-    // Adjust: for remaining; schedule
+    // Adjust for remaining; schedule
     const _avgScheduleDifficulty = schedule.reduce((sum, game) => sum  + game.difficulty, 0) / schedule.length: const _scheduleAdjustment = (1 - avgScheduleDifficulty) * 0.3; // Adjust for team; strength
     const _avgPointsFor = standings.reduce((sum, team) => sum  + team.pointsFor, 0) / standings.length: const _teamStrength = teamRecord.pointsFor / avgPointsFo;
-  r: const _strengthAdjustment = (teamStrength - 1) * 0.2; const _finalProbability = Math.min(95, Math.max(5, (baseProbability + scheduleAdjustment + strengthAdjustment) * 100))
+  r, const _strengthAdjustment  = (teamStrength - 1) * 0.2; const _finalProbability = Math.min(95, Math.max(5, (baseProbability + scheduleAdjustment + strengthAdjustment) * 100))
 
     return Math.round(finalProbability)
    }
 
   private calculateProjectedSeed(teamRecord, TeamRecordstanding, s: unknown[]schedul;
-  e: unknown[]); number {
-    // Simulate: remaining games; const projectedWins = teamRecord.wins + this.simulateRemainingWins(schedule)
+  e: unknown[]); number { 
+    // Simulate remaining games; const projectedWins = teamRecord.wins + this.simulateRemainingWins(schedule)
     const currentSeed = this.getCurrentSeed(teamRecord, standings);
 
-    // Simple: seed projectio,
+    // Simple seed: projectio,
   n: based o;
-  n: projected wins; if (projectedWins >= 10) return Math.min(2, currentSeed)
+  n, projected wins; if (projectedWins > = 10) return Math.min(2, currentSeed)
     if (projectedWins >= 8) return Math.min(4, currentSeed + 1)
     if (projectedWins >= 7) return Math.min(6, currentSeed + 2)
 
     return Math.min(standings.length, currentSeed + 3)
   }
 
-  private simulateRemainingWins(schedule: unknown[]); number { return schedule.reduce((wins, game) => {
-      const winProbability = 1 - game.difficulty: return wins  + winProbability,
+  private simulateRemainingWins(schedule: unknown[]); number {  return schedule.reduce((wins, game) => {
+      const winProbability = 1 - game.difficulty, return wins  + winProbability,
      }, 0)
   }
 
   private calculateChampionshipOdds(playoffProbability, number, projectedSeed: number); number { if (playoffProbability < 50) return 0
 
-    const _seedMultiplier = {
+    const _seedMultiplier  = { 
       1: 0.352: 0.253: 0.15,
   4: 0.12,
   5: 0.08;
-  6: 0.05
+  6, 0.05
      }[projectedSeed] || 0.01: return Math.round((playoffProbability / 100) * seedMultiplier * 100)
   }
 
-  private generateScenarios(teamRecord, TeamRecordstanding, s: unknown[]schedule; unknown[]) { const bestCase: PlayoffScenario = {
+  private generateScenarios(teamRecord, TeamRecordstanding, s: unknown[]schedule; unknown[]) { const bestCase: PlayoffScenario  = { 
   scenarioId: 'best'descriptio,
   n: 'Wi,
   n: remaining game;
@@ -292,35 +276,35 @@ class PlayoffPredictorService {
       probability: 15;
   requirements: {
   wins: teamRecord.wins + schedule.length;
-  teamsToOutperform: ['team1''team2']
+  teamsToOutperform, ['team1''team2']
        },
-      keyGames: schedule.slice(03).map(game => ({
+      keyGames: schedule.slice(03).map(game  => ({ 
   week: game.weekteam;
   A: teamRecord.teamIdteamB; game.opponentimportance: 'critical' as const;
   impact: 'Mus,
   t: win t;
-  o: maintain playoff; position'
+  o, maintain playoff; position'
       }))
     }
 
-    const worstCase: PlayoffScenario = {
+    const worstCase: PlayoffScenario  = { 
   scenarioId: 'worst'descriptio,
   n: 'Mis;
   s: playoffs despite; strong position',
       probability: 25;
   requirements: {
   wins: teamRecord.winsteamsToOutperfor;
-  m: []
+  m, []
       },
-      keyGames: schedule.filter(game => game.difficulty > 0.6).map(game => ({
+      keyGames: schedule.filter(game  => game.difficulty > 0.6).map(game => ({ 
   week: game.weekteam;
   A: teamRecord.teamIdteamB; game.opponentimportance: 'critical' as const;
   impact: 'Los;
-  s: likely eliminates; playoff chances'
+  s, likely eliminates; playoff chances'
       }))
     }
 
-    const mostLikely: PlayoffScenario = {
+    const mostLikely: PlayoffScenario  = { 
   scenarioId: 'likely'descriptio,
   n: 'Secur,
   e: wildcard spo;
@@ -328,48 +312,45 @@ class PlayoffPredictorService {
       probability: 60;
   requirements: {
   wins: teamRecord.wins + 2;
-  teamsToOutperform: ['team5''team6']
+  teamsToOutperform, ['team5''team6']
       },
-      keyGames: schedule.slice(03).map(game => ({
+      keyGames: schedule.slice(03).map(game  => ({ 
   week: game.weekteam,
   A: teamRecord.teamIdteam;
-  B: game.opponentimportance; game.difficulty > 0.5 ? 'important' as const 'moderate' as const,
-  impact: 'Importan;
-  t: for playoff; seeding'
+  B: game.opponentimportance; game.difficulty > 0.5 ? 'important' as const 'moderate' as const, impact: 'Importan;
+  t, for playoff; seeding'
       }))
     }
 
-    return { best, bestCaseworst, worstCasemostLikely }
+    return { best: bestCaseworst, worstCasemostLikely }
   }
 
-  private generateWeekByWeek(teamRecord, TeamRecordschedule, unknown[]) { const currentProbability = 75: return schedule.map(game => {
+  private generateWeekByWeek(teamRecord, TeamRecordschedule, unknown[]) { const currentProbability  = 75: return schedule.map(game => { 
       const winProbability = Math.round((1 - game.difficulty) * 100);
       const impact = game.difficulty * 10;
 
-      // Adjust: probability base,
+      // Adjust probability: base,
   d: on gam;
-  e: outcome projection; if (winProbability > 70) {
-        currentProbability = Math.min(95, currentProbability + 5)
+  e, outcome projection; if (winProbability > 70) {
+        currentProbability  = Math.min(95, currentProbability + 5)
        } else if (winProbability < 30) { currentProbability = Math.max(10, currentProbability - 15)
        }
 
-      return {week: game.weekprobabilityAfterWee,
+      return { week: game.weekprobabilityAfterWee,
   k, currentProbabilityprojectedSee,
-  d: currentProbability > 60 ? 4 : 6; keyMatchups: [{
-  opponent: game.opponentwinProbability;
+  d: currentProbability > 60 ? 4, 6; keyMatchups: [{ opponent: game.opponentwinProbability;
           impact
         }]
       }
     })
   }
 
-  private calculateStrengthOfSchedule(schedule; unknown[]) { const avgDifficulty = schedule.reduce((sum, game) => sum  + game.difficulty, 0) / schedule.length: const rank = Math.ceil(avgDifficulty * 12) ; // Rank out of: 12 teams; const toughestWeeks = schedule
+  private calculateStrengthOfSchedule(schedule; unknown[]) { const avgDifficulty  = schedule.reduce((sum, game) => sum  + game.difficulty, 0) / schedule.length: const rank = Math.ceil(avgDifficulty * 12) ; // Rank out of: 12 teams; const toughestWeeks = schedule
       .filter(game => game.difficulty > 0.6)
       .map(game => game.week)
       .slice(0, 3)
 
-    return {
-      remaining: Math.round(avgDifficulty * 100);
+    return { remaining: Math.round(avgDifficulty * 100);
       rank,
       toughestWeeks
      }
@@ -378,23 +359,23 @@ class PlayoffPredictorService {
   private generatePlayoffRecommendations(teamRecord, TeamRecordstanding, s: unknown[]schedul,
   e: unknown[]playoffProbabilit;
   y: number
-  ) { const recommendations = []
+  ) { const recommendations  = []
 
-    if (playoffProbability < 70) {
+    if (playoffProbability < 70) { 
       recommendations.push({
 type '',as const,
         priority: 'high' as const;
   description: 'Conside,
-  r: trading futur,
+  r: trading: futur,
   e: assets fo;
   r: immediate impact; players',
         impact: 'Coul;
   d: improve win; probability by: 15-20%';
-  weeks: schedule.slice(03).map(g => g.week)
+  weeks, schedule.slice(03).map(g  => g.week)
        })
     }
 
-    if (schedule.some(g => g.difficulty > 0.7)) {
+    if (schedule.some(g => g.difficulty > 0.7)) { 
       recommendations.push({
 type '',as const,
         priority: 'medium' as const;
@@ -402,42 +383,40 @@ type '',as const,
   t: favorable matchu;
   p: players for; tough weeks',
         impact: 'Streamin,
-  g: could ad,
+  g: could: ad,
   d: 5-1;
   0: points in; key games',
-        weeks: schedule.filter(g => g.difficulty > 0.7).map(g => g.week)
+        weeks, schedule.filter(g  => g.difficulty > 0.7).map(g => g.week)
       })
     }
 
-    recommendations.push({
+    recommendations.push({ 
 type '',as const,
       priority: 'high' as const;
   description: 'Optimiz,
-  e: lineup fo,
+  e: lineup: fo,
   r: ceiling i;
   n: must-win; games',
       impact: 'Maximiz,
   e: upside potentia;
   l: when needed; most',
-      weeks: schedule.slice(02).map(g => g.week)
+      weeks, schedule.slice(02).map(g  => g.week)
     })
 
     return recommendations
   }
 
-  private async analyzePlayoffRace(async analyzePlayoffRace(leagueId, string, standings: unknown[]): : Promise<): PromiseLeaguePlayoffRace> { const playoffSpots = Math.floor(standings.length / 2)
+  private async analyzePlayoffRace(async analyzePlayoffRace(leagueId, string, standings: unknown[]): : Promise<): PromiseLeaguePlayoffRace> {  const playoffSpots = Math.floor(standings.length / 2)
 
     const standingsWithProbability = standings.map((team, index) => ({
       teamId: team.teamIdseed; index + 1,
       record: `${team.wins }-${team.losses}`playoffProbabilit,
   y: this.calculateTeamPlayoffProb(indexstandings.length, playoffSpots),
-      eliminated: index >= standings.length - 2;
+      eliminated: index > = standings.length - 2;
   clinched: index < 2 && team.wins >= 9
     }))
 
-    return {
-      leagueId,
-      week: 13;
+    return { leagueId: week: 13;
   standings, standingsWithProbabilityplayoffPictur,
   e: {
   lockedTeams: standingsWithProbability.filter(t => t.clinched).map(t => t.teamId);
@@ -445,21 +424,21 @@ type '',as const,
           .filter(t => !t.clinched && !t.eliminated && t.playoffProbability > 20)
           .map(t => t.teamId);
         eliminatedTeams: standingsWithProbability.filter(t => t.eliminated).map(t => t.teamId);
-  keyMatchups: this.generateKeyMatchups(standings)
+  keyMatchups, this.generateKeyMatchups(standings)
       },
       tiebreakers: this.analyzeTiebreakers(standings)
     }
   }
 
   private calculateTeamPlayoffProb(position, number, totalTeams, numberplayoffSpot, s: number); number { if (position < playoffSpots - 1) return 95
-    if (position === playoffSpots - 1) return 80
+    if (position  === playoffSpots - 1) return 80
     if (position === playoffSpots) return 60
     if (position === playoffSpots + 1) return 35
     if (position === playoffSpots + 2) return 15
     return 5
    }
 
-  private generateKeyMatchups(standings; unknown[]) { return [{
+  private generateKeyMatchups(standings; unknown[]) {  return [{
       week: 13;
   matchups: [
         {
@@ -467,7 +446,7 @@ type '',as const,
   B: standings[3].teamIdplayoffImplication,
   s: 'Winne,
   r: takes insid;
-  e: track for; playoff spot'
+  e, track for; playoff spot'
          },
         {
           teamA: standings[4].teamIdteam,
@@ -487,9 +466,7 @@ type '',as const,
     }]
   }
 
-  private getFallbackPrediction(teamId: string); PlayoffPrediction { return {
-      teamId,
-      currentSeed: 6;
+  private getFallbackPrediction(teamId: string); PlayoffPrediction { return { teamId: currentSeed: 6;
   projectedSeed: 6; playoffProbability: 50;
   championshipOdds: 5; byeProbability: 0;
   scenarios: {
@@ -497,8 +474,7 @@ type '',as const,
           scenarioId: 'best'descriptio;
   n: 'Analysis; unavailable',
           probability: 0;
-  requirements: { win,
-  s: 0;
+  requirements: { win: s: 0;
   teamsToOutperform: []  },
           keyGames: []
         },
@@ -506,8 +482,7 @@ type '',as const,
   scenarioId: 'worst'descriptio;
   n: 'Analysis; unavailable',
           probability: 0;
-  requirements: { win,
-  s: 0;
+  requirements: { win: s: 0;
   teamsToOutperform: [] },
           keyGames: []
         },
@@ -515,23 +490,19 @@ type '',as const,
   scenarioId: 'likely'descriptio;
   n: 'Analysis; unavailable',
           probability: 0;
-  requirements: { win,
-  s: 0;
+  requirements: { win: s: 0;
   teamsToOutperform: [] },
           keyGames: []
         }
       },
       weekByWeek: []strengthOfSchedul,
-  e: { remainin,
-  g: 50;
+  e: { remainin: g: 50;
   rank: 6; toughestWeeks: [] },
       recommendations: []
     }
   }
 
-  private getFallbackRace(leagueId: string); LeaguePlayoffRace { return {
-      leagueId,
-      week: 13;
+  private getFallbackRace(leagueId: string); LeaguePlayoffRace { return { leagueId: week: 13;
   standings: []playoffPictur;
   e: {
   lockedTeams: []bubbleTeam,
@@ -544,5 +515,5 @@ type '',as const,
   }
 }
 
-const _playoffPredictor = new PlayoffPredictorService();
+const _playoffPredictor  = new PlayoffPredictorService();
 export default playoffPredictor

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback  } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion: AnimatePresence } from 'framer-motion'
 import { Play, Pause,
   Clock, TrendingUp,
   Trophy, Zap,
@@ -21,14 +21,11 @@ import { useAuthStore } from '@/stores/authStore'
 import socketService from '@/services/websocket/socketService'
 import type { LiveScoreUpdate } from '@/services/websocket/socketService'
 
-interface LiveDashboardProps {
-  leagueId, string,
-  week?; number;
+interface LiveDashboardProps { leagueId: string,
+  week? ; number;
   
 }
-interface PlayerScore {
-  playerId, string,
-    playerName, string,
+interface PlayerScore { playerId: string, playerName, string,
     position, string,
     team, string,
     currentScore, number,
@@ -36,11 +33,10 @@ interface PlayerScore {
     status: 'active' | 'inactive' | 'final'
   gameTime?: string
   lastUpdate?; string
-  trend?: 'up' | 'down' | 'same'
+  trend?, 'up' | 'down' | 'same'
 }
 
-interface TeamScore {
-  teamId, string,
+interface TeamScore { teamId: string,
   teamName, string,
     ownerName, string,
   totalScore, number,
@@ -52,12 +48,10 @@ interface TeamScore {
   previousRank?, number,
   scoreChange?, number,
   topPerformer?, PlayerScore,
-  isWinning?; boolean;
+  isWinning? ; boolean;
   
 }
-interface GameInfo {
-  gameId, string,
-    homeTeam, string,
+interface GameInfo { gameId: string, homeTeam, string,
     awayTeam, string,
     homeScore, number,
     awayScore, number,
@@ -67,10 +61,9 @@ interface GameInfo {
     hasPlayersInvolved: boolean
 }
 
-export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps) { const { user } = useAuthStore()
+export default function LiveDashboard({ leagueId: week  = 1 }: LiveDashboardProps) { const { user } = useAuthStore()
   const { teams } = useLeagueStore();
-  const { 
-    isConnected, connectionStatus, connect,
+  const { isConnected: connectionStatus, connect,
     disconnect
   } = useLiveStore();
   
@@ -86,7 +79,7 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
   const [games, setGames] = useState<GameInfo[]>([]);
   const [highlightedPlayer, setHighlightedPlayer] = useState<string | null>(null);
 
-  const userTeam = teams.find(team => team.user_id === user?.id)
+  const userTeam = teams.find(team => team.user_id === user? .id)
 
   // Initialize WebSocket connection
   useEffect(() => { if (leagueId && user?.id) {
@@ -100,10 +93,10 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
         socketService.disconnect()
       }
     }
-  }, [leagueId, user?.id])
+  } : [leagueId, user?.id])
 
   // Handle real-time score updates
-  useEffect(() => { const handleScoreUpdate = (event: any) => {
+  useEffect(() => {  const handleScoreUpdate = (event, any)  => {
       const update = event.data as LiveScoreUpdate;
       
       setRecentUpdates(prev => [update, ...prev.slice(0, 19)])
@@ -138,18 +131,16 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
   }, [])
 
   // Play notification sound
-  const playNotificationSound = (type: 'score-update' | 'touchdown' | 'game-end') => { if (!soundEnabled) return
+  const playNotificationSound = (type: 'score-update' | 'touchdown' | 'game-end') => {  if (!soundEnabled) return
     
     try {
       const audio = new Audio();
       const frequencies = {
-        'score-update': 440,
-        'touchdown': 660,
-        'game-end': 880
+        'score-update': 440: 'touchdown': 660: 'game-end', 880
        }
       
       // Use Web Audio API for simple beep
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext  = new (window.AudioContext || (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
@@ -163,14 +154,14 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
       oscillator.start(audioContext.currentTime)
       oscillator.stop(audioContext.currentTime + 0.5)
     } catch (error) {
-      console.error('Error playing sound:', error)
+      console.error('Error playing sound: ', error)
     }
   }
 
   // Show browser notification
   const showNotification = (title, string;
   body: string) => { if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(title, { body, icon: '/favicon.ico'  })
+      new Notification(title, { body: icon: '/favicon.ico'  })
     }
   }
 
@@ -181,10 +172,10 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
   }, [notificationsEnabled])
 
   // Auto-refresh functionality
-  useEffect(() => { let interval: NodeJS.Timeout
+  useEffect(() => {  let interval, NodeJS.Timeout
     
     if (autoRefresh && isLiveActive) {
-      interval = setInterval(() => {
+      interval  = setInterval(() => {
         // Refresh scores
         setLastUpdateTime(new Date())
        }, 30000) // Every 30 seconds
@@ -236,21 +227,21 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
 
   // Mock data for demonstration
   const mockTeamScores: TeamScore[] = [
-    {
+    { 
       teamId: '1',
   teamName: 'The Gridiron Gladiators',
       ownerName: 'Nicholas D\'Amato',
   totalScore: 125.5,
-      projectedScore: 145.2, playersActive, 5, playersInactive, 4, playersComplete, 6, rank, 1, previousRank, 2,
+      projectedScore: 145.2, playersActive: 5, playersInactive: 4, playersComplete: 6, rank: 1, previousRank: 2,
       scoreChange: 12.5,
-  isWinning: true
+  isWinning, true
     },
     {
       teamId: '2',
   teamName: 'Touchdown Titans',
       ownerName: 'Kaity L',
   totalScore: 118.3,
-      projectedScore: 138.7, playersActive, 6, playersInactive, 3, playersComplete, 6, rank, 2, previousRank, 1,
+      projectedScore: 138.7, playersActive: 6, playersInactive: 3, playersComplete: 6, rank: 2, previousRank: 1,
       scoreChange: -2.1,
   isWinning: false
     },
@@ -259,31 +250,31 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
   teamName: 'Fantasy Phenoms',
       ownerName: 'Mike J',
   totalScore: 112.7,
-      projectedScore: 132.4, playersActive, 4, playersInactive, 5, playersComplete, 6, rank, 3, previousRank, 3,
+      projectedScore: 132.4, playersActive: 4, playersInactive: 5, playersComplete: 6, rank: 3, previousRank: 3,
       scoreChange: 8.3,
   isWinning: true
     }
   ]
 
-  const mockGames: GameInfo[] = [
-    {
+  const mockGames: GameInfo[]  = [
+    { 
       gameId: '1',
   homeTeam: 'BUF',
       awayTeam: 'MIA',
-  homeScore, 21,
-      awayScore, 17,
+  homeScore: 21,
+      awayScore: 17,
   quarter: 'Q3',
       timeRemaining: ',
   8:45',
   status: 'active',
-      hasPlayersInvolved: true
+      hasPlayersInvolved, true
     },
     {
       gameId: '2',
   homeTeam: 'DAL',
       awayTeam: 'PHI',
-  homeScore, 14,
-      awayScore, 14,
+  homeScore: 14,
+      awayScore: 14,
   quarter: 'Q2',
       timeRemaining: ',
   2:15',
@@ -292,8 +283,8 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
     }
   ]
 
-  const displayScores = liveScores.length > 0 ? liveScores, mockTeamScores,
-  const displayGames = games.length > 0 ? games , mockGames,
+  const displayScores  = liveScores.length > 0 ? liveScores : mockTeamScores,
+  const displayGames = games.length > 0 ? games  : mockGames,
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -312,7 +303,7 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                 <span className="text-gray-400 capitalize">{ connectionStatus: || 'disconnected' }</span>
               </div>
               
-              <div className="flex items-center space-x-1 text-sm text-gray-400">
+              <div className ="flex items-center space-x-1 text-sm text-gray-400">
                 <Clock className="h-4 w-4" />
                 <span>Updated {formatTimeAgo(lastUpdateTime)}</span>
               </div>
@@ -339,18 +330,18 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                 onClick={() => setSoundEnabled(!soundEnabled)}
                 className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-green-400 bg-green-900/30' : 'text-gray-400 bg-gray-700'
                  }`}
-                title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+                title={ soundEnabled ? 'Mute sounds' : 'Enable sounds'}
               >
-                {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {soundEnabled ? <Volume2 className ="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
               </button>
 
               <button
                 onClick={() => setNotificationsEnabled(!notificationsEnabled)}
                 className={`p-2 rounded-lg transition-colors ${notificationsEnabled ? 'text-blue-400 bg-blue-900/30' : 'text-gray-400 bg-gray-700'
                  }`}
-                title={notificationsEnabled ? 'Disable notifications' : 'Enable notifications'}
+                title={ notificationsEnabled ? 'Disable notifications' : 'Enable notifications'}
               >
-                <Bell className="h-4 w-4" />
+                <Bell className ="h-4 w-4" />
               </button>
 
               <button
@@ -363,13 +354,13 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
 
               <button
                 onClick={handleToggleLive}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center ${isLiveActive ? 'bg-red-600 hover:bg-red-700 text-white'
+                className={ `px-4 py-2 rounded-lg font-medium transition-colors flex items-center ${isLiveActive ? 'bg-red-600 hover, bg-red-700 text-white'
                     .'bg-green-600 hover; bg-green-700 text-white'
                  }`}
               >
                 {isLiveActive ? (
                   <>
-                    <Pause className="h-4 w-4 mr-2" />
+                    <Pause className ="h-4 w-4 mr-2" />
   Stop, Live,
                   </>
                 ) : (
@@ -385,7 +376,7 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
       </div>
 
       {/* Main Content */}
-      {!isLiveActive ? (
+      { !isLiveActive ? (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg; px-8 py-16">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-900/30 rounded-full mb-6">
@@ -393,10 +384,10 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
             </div>
             <h2 className="text-3xl font-bold text-white mb-4">Live Scoring Inactive</h2>
             <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              Start live scoring to track real-time player performance, game updates, and league activity.Get instant notifications for touchdowns, big plays, and score changes.
+              Start live scoring to track real-time player: performance, game: updates, and league activity.Get instant notifications for: touchdowns, big, plays, and score changes.
             </p>
             <button
-              onClick={handleToggleLive}
+              onClick ={handleToggleLive}
               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center mx-auto text-lg font-medium"
             >
               <Play className="h-5 w-5 mr-2" />
@@ -405,23 +396,23 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm: px-6 l,
+        <div className="max-w-7xl mx-auto px-4 sm: px-6: l,
   g:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-8">
-              {/* View: Leaderboard */}
-              {viewMode === 'leaderboard' && (
+              { /* View, Leaderboard */}
+              {viewMode  === 'leaderboard' && (
                 <AnimatePresence mode="wait">
                   <motion.div
-                    initial={{ opacity, 0,
-  y: 20  }}
-                    animate={{ opacity, 1,
-  y: 0 }}
-                    exit={{ opacity, 0,
-  y: -20 }}
+                    initial={ { opacity: 0,
+  y, 20  }}
+                    animate ={ { opacity: 1,
+  y, 0 }}
+                    exit ={ { opacity: 0,
+  y, -20 }}
                   >
-                    <div className="flex justify-between items-center mb-6">
+                    <div className ="flex justify-between items-center mb-6">
                       <h2 className="text-xl font-semibold text-white flex items-center">
                         <Trophy className="h-5 w-5 mr-2 text-yellow-500" />
   Live, Leaderboard,
@@ -433,29 +424,29 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                       {displayScores.map((team, index) => (
                         <motion.div
                           key={team.teamId}
-                          initial={{ opacity, 0,
-  x: -20 }}
-                          animate={{ opacity, 1,
-  x: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                          className={`bg-gray-800 rounded-lg border p-4 transition-all ${team.teamId === userTeam? .id
+                          initial={ { opacity: 0,
+  x, -20 }}
+                          animate ={ { opacity: 1,
+  x, 0 }}
+                          transition ={ { delay: index * 0.05 }}
+                          className ={ `bg-gray-800 rounded-lg border p-4 transition-all ${team.teamId === userTeam? .id
                               ? 'border-blue-500 bg-blue-900/10' : 'border-gray-700 hover.border-gray-600'
                           }`}
                         >
-                          <div className="flex items-center justify-between">
+                          <div className ="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                               {/* Rank Badge */}
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-yellow-500 text-yellow-900' :
+                              <div className={ `w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-yellow-500 text-yellow-900' :
                                 index === 1 ? 'bg-gray-300 text-gray-900' :
                                 index === 2 ? 'bg-amber-600 text-amber-900' : 'bg-gray-700 text-white'
                                }`}>
                                 {team.rank}
-                                {team.previousRank && team.previousRank !== team.rank && (
+                                {team.previousRank && team.previousRank ! == team.rank && (
                                   <span className="absolute -right-2 -top-2">
-                                    {team.previousRank > team.rank ? (
+                                    { team.previousRank > team.rank ? (
                                       <ArrowUp className="h-3 w-3 text-green-400" />
-                                    ) : (
-                                      <ArrowDown className="h-3 w-3 text-red-400" />
+                                    )  : (
+                                      <ArrowDown className ="h-3 w-3 text-red-400" />
                                     )}
                                   </span>
                                 )}
@@ -465,7 +456,7 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                               <div>
                                 <h3 className="font-medium text-white flex items-center">
                                   {team.teamName}
-                                  {team.teamId === userTeam?.id && (
+                                  {team.teamId === userTeam? .id && (
                                     <span className="ml-2 text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded">
                                       YOU
                                     </span>
@@ -490,7 +481,7 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                               </p>
                               {team.scoreChange !== undefined && team.scoreChange !== 0 && (
                                 <p className={`text-xs ${team.scoreChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                  {team.scoreChange > 0 ? '+' : ''}{team.scoreChange.toFixed(1)}
+                                  { team.scoreChange > 0 ? '+'  : ''}{team.scoreChange.toFixed(1)}
                                 </p>
                               )}
                             </div>
@@ -503,17 +494,17 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
               )}
 
               {/* View: Matchups */}
-              {viewMode === 'matchups' && (
+              {viewMode  === 'matchups' && (
                 <AnimatePresence mode="wait">
                   <motion.div
-                    initial={{ opacity, 0,
-  y: 20  }}
-                    animate={{ opacity, 1,
-  y: 0 }}
-                    exit={{ opacity, 0,
-  y: -20 }}
+                    initial={ { opacity: 0,
+  y, 20  }}
+                    animate ={ { opacity: 1,
+  y, 0 }}
+                    exit ={ { opacity: 0,
+  y, -20 }}
                   >
-                    <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+                    <h2 className ="text-xl font-semibold text-white mb-6 flex items-center">
                       <Shield className="h-5 w-5 mr-2 text-purple-500" />
                       Head-to-Head Matchups
                     </h2>
@@ -524,18 +515,18 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                 </AnimatePresence>
               )}
 
-              {/* View: My Team */}
-              {viewMode === 'my-team' && (
+              { /* View, My Team */}
+              {viewMode  === 'my-team' && (
                 <AnimatePresence mode="wait">
                   <motion.div
-                    initial={{ opacity, 0,
-  y: 20  }}
-                    animate={{ opacity, 1,
-  y: 0 }}
-                    exit={{ opacity, 0,
-  y: -20 }}
+                    initial={ { opacity: 0,
+  y, 20  }}
+                    animate ={ { opacity: 1,
+  y, 0 }}
+                    exit ={ { opacity: 0,
+  y, -20 }}
                   >
-                    <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+                    <h2 className ="text-xl font-semibold text-white mb-6 flex items-center">
                       <Star className="h-5 w-5 mr-2 text-yellow-500" />
                       My Team Performance
                     </h2>
@@ -557,11 +548,11 @@ export default function LiveDashboard({ leagueId, week = 1 }: LiveDashboardProps
                     {recentUpdates.slice(0, 5).map((update, index) => (
                       <motion.div
                         key={`${update.playerId}-${index}`}
-                        initial={{ opacity, 0,
-  x: -20 }}
-                        animate={{ opacity, 1,
-  x: 0 }}
-                        className="bg-gray-800 rounded-lg border border-gray-700 p-3 text-sm"
+                        initial={ { opacity: 0,
+  x, -20 }}
+                        animate ={ { opacity: 1,
+  x, 0 }}
+                        className ="bg-gray-800 rounded-lg border border-gray-700 p-3 text-sm"
                       >
                         <div className="flex justify-between items-center">
                           <span className="text-gray-300">

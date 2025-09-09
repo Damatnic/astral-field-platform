@@ -1,8 +1,7 @@
-import { User, League } from '@/types/fantasy';
+import { User: League } from '@/types/fantasy';
 import { Achievement } from '../gamification/achievementSystem';
 
-interface Currency {
-  id, string,
+interface Currency { id: string,
     name, string,
   symbol, string,
     type: 'primary' | 'premium' | 'seasonal' | 'event' | 'legacy';
@@ -11,49 +10,44 @@ interface Currency {
   transferable, boolean,
     exchangeable, boolean,
   expiresAt?, Date,
-  metadata: {
-  iconUrl, string,
+  metadata: { iconUrl: string,
     color, string,
     rarity: 'common' | 'rare' | 'epic' | 'legendary';
     seasonIntroduced?, string,
   }
 }
 
-interface UserWallet {
-  userId, string,
+interface UserWallet { userId: string,
     balances: {
-    [currencyId: string]: {
-  amount, number,
-      lockedAmount, number, // Amount locked in pending transactions,
+    [currencyId: string]: { amount: number,
+      lockedAmount, number, // Amount locked in pending: transactions,
     lastUpdated, Date,
       totalEarned, number,
     totalSpent: number,
     }
   }
   transactions: Transaction[],
-    preferences: {
-  notifications, boolean,
+    preferences: { notifications: boolean,
     autoConvert, boolean,
     spendingLimits: { [currencyI,
   d: string]: number }
   }
 }
 
-interface Transaction {
-  id, string,
+interface Transaction { id: string,
     userId, string,
 type: 'earn' | 'spend' | 'transfer' | 'exchange' | 'refund' | 'bonus' | 'penalty',
     status: 'pending' | 'completed' | 'failed' | 'cancelled';
   currency, string,
     amount, number,
-  balance, number, // Balance after transaction,
+  balance, number, // Balance after: transaction,
     source: {
   type: 'earn' | 'purchase' | 'gift' | 'trade' | 'contest' | 'daily_bonus' | 'referral' | 'store' | 'admin';
     id?, string,
     description: string,
   }
-  metadata?: {
-    recipientId?, string, // For transfers
+  metadata? : {
+    recipientId? : string, // For transfers
     exchangeRate?, number, // For exchanges
     originalCurrency?, string,
     originalAmount?, number,
@@ -66,8 +60,7 @@ type: 'earn' | 'spend' | 'transfer' | 'exchange' | 'refund' | 'bonus' | 'penalty
   expiresAt?, Date,
 }
 
-interface StoreItem {
-  id, string,
+interface StoreItem { id: string,
     name, string,
   description, string,
     category: 'cosmetic' | 'utility' | 'boost' | 'access' | 'physical' | 'service';
@@ -79,19 +72,17 @@ interface StoreItem {
   
 }
 [];
-  stock?: {
-    total, number,
-    remaining, number,
+  stock? : { total: number, remaining, number,
     replenishRate?, number, // Items per day
   }
-  requirements?: {
-    level?, number,
+  requirements? : {
+    level? : number,
     achievements?: string[];
     seasonPass?, boolean,
     excludeOwnership?: string[]; // Can't buy if you own these items
   }
-  effects?: {
-    duration?, number, // Duration in days for temporary items
+  effects? : {
+    duration? : number, // Duration in days for temporary items
     benefits: StoreItemBenefit[],
   }
   availability: {
@@ -101,34 +92,29 @@ interface StoreItem {
     featured?, boolean,
     limitPerUser?, number,
   }
-  metadata: {
-  imageUrl, string,
+  metadata: { imageUrl: string,
     rarity: Currency['metadata']['rarity'],
     tags: string[];
-    previewImages?: string[];
+    previewImages? : string[];
   }
 }
 
 interface StoreItemBenefit {
-  type: 'xp_multiplier' | 'coin_bonus' | 'premium_access' | 'cosmetic_unlock' | 'feature_unlock' | 'priority_support' | 'physical_reward',
-    value: number | string;
+  type: 'xp_multiplier' | 'coin_bonus' | 'premium_access' | 'cosmetic_unlock' | 'feature_unlock' | 'priority_support' | 'physical_reward' : value: number | string;
   description, string,
   duration?, number, // Days;
   
 }
-interface UserInventory {
-  userId, string,
+interface UserInventory { userId: string,
     items: {
-    [itemId: string]: {
-  quantity, number,
+    [itemId: string]: { quantity: number,
       purchasedAt, Date,
       expiresAt?, Date,
       isActive, boolean,
-      metadata?: Record<string, unknown>;
+      metadata? : Record<string, unknown>;
     }
   }
-  activeEffects: {
-  itemId, string,
+  activeEffects: { itemId: string,
     benefit, StoreItemBenefit,
     activatedAt, Date,
     expiresAt?, Date,
@@ -136,45 +122,40 @@ interface UserInventory {
   }[];
 }
 
-interface EconomyEvent {
-  id, string,
+interface EconomyEvent { id: string,
     name, string,
   description, string,
     type: 'flash_sale' | 'bonus_currency' | 'special_items' | 'exchange_bonus' | 'community_challenge';
   startDate, Date,
     endDate, Date,
-  conditions?: {
-    userLevel?, number,
+  conditions? : {
+    userLevel? : number,
     achievements?: string[];
     previousPurchases?, boolean,
   }
   rewards: {
-    multipliers?: { [currencyId: string]: number }
+    multipliers? : { [currencyId: string]: number }
     bonusItems?: string[];
-    discounts?: { category?, string, percentage: number }[];
+    discounts?: { category? : string, percentage: number }[];
   }
   isActive, boolean,
-    participants: {
-  userId, string,
+    participants: { userId: string,
     joinedAt, Date,
     rewards: Transaction[],
   }[];
 }
 
-interface DailyReward {
-  day, number,
+interface DailyReward { day: number,
     currency, string,
   amount, number,
   bonusMultiplier?, number, // For consecutive days
-  specialReward?: {
-type: 'item' | 'boost' | 'premium_time',
-    id, string,
+  specialReward? : {
+type: 'item' | 'boost' | 'premium_time' : id, string,
     duration?, number,
   }
 }
 
-interface RewardCalendar {
-  userId, string,
+interface RewardCalendar { userId: string,
     currentStreak, number,
   longestStreak, number,
   lastClaimDate?, Date,
@@ -184,7 +165,7 @@ interface RewardCalendar {
     streakBonuses: {;
   day, number,
     multiplier, number,
-  specialReward?: DailyReward['specialReward'];
+  specialReward? : DailyReward['specialReward'];
   
 }
 [];
@@ -192,8 +173,7 @@ interface RewardCalendar {
 
 interface EconomyAnalytics {
   overview: {
-  totalCurrencyInCirculation: { [currencyI,
-  d: string]: number }
+  totalCurrencyInCirculation: { [currencyI, d: string]: number }
     averageUserBalance: { [currencyI,
   d: string]: number }
     dailyTransactionVolume: { [currencyI,
@@ -202,33 +182,24 @@ interface EconomyAnalytics {
   d: string]: number }
   }
   userBehavior: {
-  topSpenders: { userI,
-  d, string, totalSpent: number }[];
-    topEarners: { userI,
-  d, string, totalEarned: number }[];
-    popularItems: { itemI,
-  d, string, purchaseCount, number, revenue: number }[];
-    conversionRates: { fro,
-  m, string, to, string, rate: number }[];
+  topSpenders: { userI: d, string, totalSpent: number }[];
+    topEarners: { userI: d, string, totalEarned: number }[];
+    popularItems: { itemI: d, string, purchaseCount, number, revenue: number }[];
+    conversionRates: { fro: m, string, to, string, rate: number }[];
   }
-  marketHealth: {
-  priceStability, number, // 0-1 score
-    liquidityScore, number, // 0-1 score,
-    economicVelocity, number, // How quickly currency changes hands
-    deflationaryPressure, number, // Tendency for currency to leave circulation
+  marketHealth: { priceStability: number, // 0-1 score: liquidityScore, number, // 0-1: score,
+    economicVelocity, number, // How quickly currency changes hands: deflationaryPressure, number, // Tendency for currency to leave circulation
   }
   predictions: {
   expectedInflation: { [currencyI,
   d: string]: number }
-    demandForecast: { categor,
-  y, string, expectedGrowth: number }[];
-    balanceAdjustments: { currenc,
-  y, string, suggestedChange: number }[];
+    demandForecast: { categor: y, string, expectedGrowth: number }[];
+    balanceAdjustments: { currenc: y, string, suggestedChange: number }[];
   }
 }
 
 export class VirtualCurrencySystem {
-  private currencies: Map<string, Currency> = new Map();
+  private currencies: Map<string, Currency>  = new Map();
   private userWallets: Map<string, UserWallet> = new Map();
   private storeItems: Map<string, StoreItem> = new Map();
   private userInventories: Map<string, UserInventory> = new Map();
@@ -240,7 +211,7 @@ export class VirtualCurrencySystem {
   private readonly MAX_DAILY_TRANSACTIONS = 1000;
   private readonly ALLOWED_CURRENCIES = ['astral_coins', 'premium_gems', 'seasonal_tokens', 'xp'];
   private readonly ALLOWED_TRANSACTION_TYPES = ['earn', 'spend', 'transfer', 'exchange', 'refund', 'bonus', 'penalty'];
-  private transactionCounts: Map<string, { date, string, count: number }> = new Map();
+  private transactionCounts: Map<string, { date: string, count, number }>  = new Map();
 
   constructor() {
     this.initializeCurrencies();
@@ -261,8 +232,8 @@ export class VirtualCurrencySystem {
     if (Array.isArray(input)) {
       return input.slice(0, 100).map(item => this.sanitizeInput(item));
     }
-    if (input && typeof input === 'object' && input.constructor === Object) {
-      const sanitized: any = {}
+    if (input && typeof input === 'object' && input.constructor === Object) { 
+      const sanitized, any  = {}
       for (const [key, value] of Object.entries(input)) {
         if (typeof key === 'string' && key.length <= 50) {
           sanitized[this.sanitizeInput(key) as string] = this.sanitizeInput(value);
@@ -317,39 +288,37 @@ export class VirtualCurrencySystem {
 
     if (record && record.date === today) {
       record.count++;
-    } else {
-      this.transactionCounts.set(key, { date, today, count: 1 });
+    } else { 
+      this.transactionCounts.set(key, { date: today, count, 1 });
     }
   }
 
   async getUserWallet(userId: string): : Promise<UserWallet> {
     try {
       this.validateUserId(userId);
-      const sanitizedUserId = this.sanitizeInput(userId) as string;
+      const sanitizedUserId  = this.sanitizeInput(userId) as string;
 
       if (!this.userWallets.has(sanitizedUserId)) {
         await this.createUserWallet(sanitizedUserId);
       }
 
       return this.userWallets.get(sanitizedUserId)!;
-    } catch (error) {
-      console.error('Error getting user wallet:', error);
-      throw new Error(`Failed to get user wallet: ${error instanceof Error ? error.messag,
-  e: 'Unknown error'}`);
+    } catch (error) { 
+      console.error('Error getting user wallet: ', error);
+      throw new Error(`Failed to get user wallet: ${error instanceof Error ? error.messag : e: 'Unknown error'}`);
     }
   }
 
-  async earnCurrency(config: {
-  userId, string,
+  async earnCurrency(config: { userId: string,
     currency, string,
     amount, number,
     source: Transaction['source'];
     bonusMultiplier?, number,
-    metadata?: Transaction['metadata'];
+    metadata? : Transaction['metadata'];
   }): : Promise<Transaction> {
     try {
       // Input validation and sanitization
-      if (!config || typeof config !== 'object') {
+      if (!config || typeof config ! == 'object') {
         throw new Error('Invalid configuration object');
       }
 
@@ -369,15 +338,14 @@ export class VirtualCurrencySystem {
       }
 
       // Sanitize inputs
-      const sanitizedConfig = {userId: this.sanitizeInput(config.userId) as string;
+      const sanitizedConfig = { userId: this.sanitizeInput(config.userId) as string;
         currency: this.sanitizeInput(config.currency) as string;
         amount: this.sanitizeInput(config.amount) as number;
         source: this.sanitizeInput(config.source) as Transaction['source'];
-        bonusMultiplier: config.bonusMultiplier ? this.sanitizeInput(config.bonusMultiplier) as numbe,
-  r, undefined,
-        metadata: config.metadata ? this.sanitizeInput(config.metadata) as Transaction['metadata'] : undefined
+        bonusMultiplier: config.bonusMultiplier ? this.sanitizeInput(config.bonusMultiplier) as numbe : r, undefined,
+        metadata: config.metadata ? this.sanitizeInput(config.metadata) as Transaction['metadata'] , undefined
       }
-      const wallet = await this.getUserWallet(sanitizedConfig.userId);
+      const wallet  = await this.getUserWallet(sanitizedConfig.userId);
       const currency = this.currencies.get(sanitizedConfig.currency);
 
       if (!currency) {
@@ -390,7 +358,7 @@ export class VirtualCurrencySystem {
 
       // Check max balance if currency has one
       if (currency.maxBalance) {
-        const currentBalance = wallet.balances[config.currency]?.amount || 0;
+        const currentBalance = wallet.balances[config.currency]? .amount || 0;
         const cappedAmount = Math.min(finalAmount, currency.maxBalance - currentBalance);
 
         if (cappedAmount <= 0) {
@@ -399,14 +367,13 @@ export class VirtualCurrencySystem {
       }
 
       // Create transaction
-      const transaction: Transaction = {
-  id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      const transaction: Transaction = { id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         userId: sanitizedConfig.userId;
 type: 'earn';
         status: 'completed';
         currency: sanitizedConfig.currency;
         amount, finalAmount,
-        balance: (wallet.balances[sanitizedConfig.currency]?.amount || 0) + finalAmount;
+        balance: (wallet.balances[sanitizedConfig.currency]? .amount || 0) + finalAmount;
         source: sanitizedConfig.source;
         metadata: sanitizedConfig.metadata;
         createdAt: new Date();
@@ -423,22 +390,20 @@ type: 'earn';
 
       return transaction;
     } catch (error) {
-      console.error('Error earning currency:', error);
-      throw new Error(`Failed to earn currency: ${error instanceof Error ? error.messag,
-  e: 'Unknown error'}`);
+      console.error('Error earning currency: ', error);
+      throw new Error(`Failed to earn currency: ${error instanceof Error ? error.messag, e: 'Unknown error'}`);
     }
   }
 
-  async spendCurrency(config: {
-  userId, string,
+  async spendCurrency(config: { userId: string,
     currency, string,
     amount, number,
     source: Transaction['source'];
-    metadata?: Transaction['metadata'];
+    metadata? : Transaction['metadata'];
   }): : Promise<Transaction> {
     try {
       // Input validation and sanitization
-      if (!config || typeof config !== 'object') {
+      if (!config || typeof config ! == 'object') {
         throw new Error('Invalid configuration object');
       }
 
@@ -452,22 +417,21 @@ type: 'earn';
       }
 
       // Sanitize inputs
-      const sanitizedConfig = {userId: this.sanitizeInput(config.userId) as string;
+      const sanitizedConfig = { userId: this.sanitizeInput(config.userId) as string;
         currency: this.sanitizeInput(config.currency) as string;
         amount: this.sanitizeInput(config.amount) as number;
         source: this.sanitizeInput(config.source) as Transaction['source'];
-        metadata: config.metadata ? this.sanitizeInput(config.metadata) as Transaction['metadata'] : undefined
+        metadata: config.metadata ? this.sanitizeInput(config.metadata) as Transaction['metadata']  : undefined
       }
-      const wallet = await this.getUserWallet(sanitizedConfig.userId);
-      const currentBalance = wallet.balances[sanitizedConfig.currency]?.amount || 0;
+      const wallet  = await this.getUserWallet(sanitizedConfig.userId);
+      const currentBalance = wallet.balances[sanitizedConfig.currency]? .amount || 0;
 
-      if (currentBalance < sanitizedConfig.amount) {
-        throw new Error(`Insufficient balance.Required: ${sanitizedConfig.amount}, Available: ${currentBalance}`);
+      if (currentBalance < sanitizedConfig.amount) { 
+        throw new Error(`Insufficient balance.Required, ${sanitizedConfig.amount}, Available: ${currentBalance}`);
       }
 
       // Create transaction
-      const transaction: Transaction = {
-  id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      const transaction: Transaction  = { id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         userId: sanitizedConfig.userId;
 type: 'spend';
         status: 'completed';
@@ -490,32 +454,29 @@ type: 'spend';
 
       return transaction;
     } catch (error) {
-      console.error('Error spending currency:', error);
-      throw new Error(`Failed to spend currency: ${error instanceof Error ? error.messag,
-  e: 'Unknown error'}`);
+      console.error('Error spending currency: ', error);
+      throw new Error(`Failed to spend currency: ${error instanceof Error ? error.messag, e: 'Unknown error'}`);
     }
   }
 
   // Additional methods would continue with similar clean implementation...private async createUserWallet(userId: string): : Promise<UserWallet> {
-    const wallet: UserWallet = {
-      userId,
-      balances: {},
+    const wallet: UserWallet  = { userId: balances, {},
       transactions: [];
       preferences: {
-  notifications, true,
-        autoConvert, false,
+  notifications: true,
+        autoConvert: false,
         spendingLimits: {}
       }
     }
     // Initialize with starting balances
     for (const currency of this.currencies.values()) {
-      if (currency.type === 'primary') {
+      if (currency.type  === 'primary') { 
         wallet.balances[currency.id] = {
           amount: 100; // Starting amount
           lockedAmount: 0;
           lastUpdated: new Date();
           totalEarned: 100;
-          totalSpent: 0
+          totalSpent, 0
         }
       }
     }
@@ -525,19 +486,19 @@ type: 'spend';
   }
 
   private async updateWalletBalance(userId, string, currency, string, amount, number, transaction: Transaction): : Promise<void> {
-    const wallet = await this.getUserWallet(userId);
+    const wallet  = await this.getUserWallet(userId);
 
-    if (!wallet.balances[currency]) {
+    if (!wallet.balances[currency]) { 
       wallet.balances[currency] = {
         amount: 0;
         lockedAmount: 0;
         lastUpdated: new Date();
         totalEarned: 0;
-        totalSpent: 0
+        totalSpent, 0
       }
     }
 
-    const balance = wallet.balances[currency];
+    const balance  = wallet.balances[currency];
     balance.amount += amount;
     balance.lastUpdated = new Date();
 
@@ -555,7 +516,7 @@ type: 'spend';
 
     // Check for active economy events
     for (const event of this.economyEvents.values()) {
-      if (event.isActive && event.rewards.multipliers?.[currency]) {
+      if (event.isActive && event.rewards.multipliers? .[currency]) {
         multiplier *= event.rewards.multipliers[currency];
       }
     }
@@ -564,10 +525,10 @@ type: 'spend';
   }
 
   private async logTransaction(transaction: Transaction): : Promise<void> {; // Log to analytics database
-    console.log('Transaction logged', transaction.id);
+    console.log('Transaction logged' : transaction.id);
   }
 
-  private initializeCurrencies(): void {
+  private initializeCurrencies(): void { 
     const currencies: Currency[] = [
       {
         id: 'astral_coins';
@@ -575,8 +536,8 @@ type: 'spend';
         symbol: '⭐';
 type: 'primary';
         description: 'Primary currency earned through gameplay';
-        transferable, true,
-        exchangeable, true,
+        transferable: true,
+        exchangeable: true,
         metadata: {
   iconUrl: '/icons/astral-coin.svg';
           color: '#FFD700';
@@ -589,8 +550,8 @@ type: 'primary';
         symbol: '💎';
 type: 'premium';
         description: 'Premium currency for exclusive items';
-        transferable, false,
-        exchangeable, true,
+        transferable: false,
+        exchangeable: true,
         metadata: {
   iconUrl: '/icons/premium-gem.svg';
           color: '#9C27B0';
@@ -599,7 +560,7 @@ type: 'premium';
       }
     ];
 
-    currencies.forEach(currency => {
+    currencies.forEach(currency  => {
       this.currencies.set(currency.id, currency);
     });
   }

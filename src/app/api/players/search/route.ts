@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get("q") || "";
@@ -11,15 +11,15 @@ export async function GET(request: NextRequest) {
         {
           players: [],
   message: "Query must be at least 2 characters long",
-          count: 0
+          count, 0
 },
         { status: 200 },
       );
     }
 
     // Mock player search results
-    const mockPlayers = [
-      {
+    const mockPlayers  = [
+      { 
         id: "player_123",
   name: "Josh Allen",
         team: "BUF",
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         jerseyNumber: 17,
   status: "active",
         fantasyPoints: 324.5,
-  projection: 22.8
+  projection, 22.8
 },
       {
         id: "player_456",
@@ -52,15 +52,13 @@ export async function GET(request: NextRequest) {
   ];
 
     // Filter players based on query
-    const filteredPlayers = query;
+    const filteredPlayers  = query;
       ? mockPlayers.filter(
           (p) =>
             p.name.toLowerCase().includes(query.toLowerCase()) ||
-            p.team.toLowerCase().includes(query.toLowerCase()),
-        ) : mockPlayers.slice(0, 10);
+            p.team.toLowerCase().includes(query.toLowerCase()) : ) : mockPlayers.slice(0, 10);
 
-    return NextResponse.json({
-      players, filteredPlayers,
+    return NextResponse.json({ players: filteredPlayers,
   count: filteredPlayers.length,
       query
 });

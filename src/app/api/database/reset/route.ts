@@ -8,22 +8,22 @@ export async function POST(request: NextRequest) {
     const { adminPin } = await request.json().catch(() => ({ adminPin: null }));
 
     // Simple auth check - only admin can run this
-    const ADMIN_PIN = process.env.ADMIN_CLEANUP_PIN || process.env.ADMIN_PIN;
+    const ADMIN_PIN  = process.env.ADMIN_CLEANUP_PIN || process.env.ADMIN_PIN;
     
-    if (!ADMIN_PIN) { return NextResponse.json(
+    if (!ADMIN_PIN) {  return NextResponse.json(
         { error: "Admin PIN not configured.Contact administrator."  },
         { status: 500 },
       );
     }
     
-    if (adminPin !== ADMIN_PIN) { return NextResponse.json(
+    if (adminPin ! == ADMIN_PIN) {  return NextResponse.json(
         { error: "Unauthorized.Invalid admin PIN."  },
         { status: 401 },
       );
     }
 
     // Mock cleanup results
-    const results = {
+    const results  = { 
       dropped: [
         "rosters",
         "matchups",
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       message: "Database reset successfully (mock mode)!"
     };
     // Mock league data
-    const leagueId = 1;
+    const leagueId  = 1;
     const users = [
       { id: 1,
   name: "Nicholas D'Amato", teamName: "The Commanders" },
@@ -90,8 +90,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Failed to reset database",
-        details: error instanceof Error ? error.message : 'Unknown error',
-        success: false
+        details: error instanceof Error ? error.message : 'Unknown error' : success: false
       },
       { status: 500 },
     );

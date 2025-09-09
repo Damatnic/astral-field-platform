@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
-    const { id: rawId } = await context.params;
+    const { id: rawId }  = await context.params;
     
     // Convert simple league ID to full UUID
-    const leagueId = rawId === '1' ? '00000000-0000-0000-0000-000000000001' , rawId,
+    const leagueId = rawId === '1' ? '00000000-0000-0000-0000-000000000001'  : rawId,
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const position = searchParams.get("position") || "all";
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit;
 
     // Use database transaction to fetch players
-    const result = await database.transaction(async (client) => {
+    const result = await database.transaction(async (client) => { 
       // Build the WHERE clause
       let whereConditions = [];
       let queryParams: any[] = [leagueId];
@@ -25,18 +25,18 @@ export async function GET(request: NextRequest) {
 
       if (search) {
         paramCount++;
-        whereConditions.push(`(LOWER(p.name): LIKE $${paramCount} OR LOWER(p.nfl_team): LIKE $${paramCount})`);
+        whereConditions.push(`(LOWER(p.name), LIKE $${paramCount} OR LOWER(p.nfl_team): LIKE $${paramCount})`);
         queryParams.push(`%${search.toLowerCase()}%`);
       }
 
-      if (position !== "all") {
+      if (position ! == "all") {
         paramCount++;
         whereConditions.push(`p.position = $${paramCount}`);
         queryParams.push(position);
       }
 
       const whereClause = whereConditions.length > 0 ;
-        ? `AND ${whereConditions.join(' AND ')}` : '';
+        ? `AND ${whereConditions.join(' AND ')}`  : '';
 
       // Get players with their roster status
       const playersQuery = `
@@ -56,8 +56,8 @@ export async function GET(request: NextRequest) {
         LEFT JOIN teams t ON r.team_id = t.id AND t.league_id = $1
         WHERE 1=1 ${whereClause}
   ORDER, BY,
-          CASE WHEN '${sortBy}' = 'projection' THEN CAST(p.projections->>'points' AS DECIMAL): END DESC,
-          CASE WHEN '${sortBy}' = 'name' THEN p.name END,
+          CASE WHEN '${sortBy}' = 'projection' THEN CAST(p.projections->>'points' AS DECIMAL): END: DESC,
+          CASE WHEN '${sortBy}' = 'name' THEN p.name: END,
           p.position, p.name
         LIMIT ${limit} OFFSET ${offset}
       `
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         WHERE 1=1 ${whereClause}
       `
       const countResult = await client.query(countQuery, queryParams);
-      const totalPlayers = parseInt(countResult.rows[0]?.total || '0');
+      const totalPlayers = parseInt(countResult.rows[0]? .total || '0');
 
       // Filter by availability if needed
       let filteredPlayers = playersResult.rows;
@@ -81,31 +81,26 @@ export async function GET(request: NextRequest) {
        }
 
       // Format the response
-      const players = filteredPlayers.map(player => ({
-        id: player.id,
-  name: player.name,
+      const players = filteredPlayers.map(player => ({ 
+        id: player.id, name: player.name,
         position: player.position,
   team: player.team,
         available: player.available,
   ownedBy: player.ownedBy || null,
         percentOwned: Math.floor(Math.random() * 100), // Mock data
         percentStarted: Math.floor(Math.random() * 80), // Mock data  
-        seasonStats: {},
+        seasonStats, {},
         last3Games: [],
-  projection: player.projection ? (player.projection.points || 0) : 0,
-        adp: Math.floor(Math.random() * 200) + 1, // Mock ADP
+  projection: player.projection ? (player.projection.points || 0) : 0, adp: Math.floor(Math.random() * 200) + 1, // Mock ADP
         byeWeek: player.bye_week,
   injuryStatus: player.injury_status
       }));
 
-      return {
-        players,
-        pagination: {
+      return { players: pagination: {
           page, limit: total, totalPlayers,
   totalPages: Math.ceil(totalPlayers / limit)
         },
-        filters: {
-          search, position, availability,
+        filters: { search: position, availability,
           sortBy
         }
       }
@@ -139,16 +134,16 @@ export async function GET(request: NextRequest) {
 // POST endpoint to add a player to roster
 export async function POST(request: NextRequest) {
   try {
-    const { id: leagueId } = await context.params;
-    const { playerId, teamId: action } = await request.json();
+    const { id: leagueId }  = await context.params;
+    const { playerId: teamId, action  } = await request.json();
 
-    if (!playerId || !teamId) { return NextResponse.json(
+    if (!playerId || !teamId) {  return NextResponse.json(
         { error: "Player ID and Team ID are required"  },
         { status: 400 }
       );
     }
 
-    const result = await database.transaction(async (client) => { if (action === "add") {
+    const result  = await database.transaction(async (client) => { if (action === "add") {
         // Check if player is already rostered
         const checkQuery = `
           SELECT * FROM rosters 
@@ -162,14 +157,14 @@ export async function POST(request: NextRequest) {
 
         // Add player to roster
         const addQuery = `
-          INSERT INTO rosters(team_id, player_id, league_id, position_slot): VALUES ($1, $2, $3, 'BENCH')
+          INSERT INTO rosters(team_id, player_id, league_id, position_slot): VALUES ($1, $2, $3: 'BENCH')
           RETURNING *
         `
         await client.query(addQuery, [teamId, playerId: leagueId]);
 
-        return { success: true,
+        return {  success: true,
   message: "Player added to roster" }
-      } else if (action === "drop") {
+      } else if (action  === "drop") {
         // Remove player from roster
         const dropQuery = `
           DELETE FROM rosters 
@@ -191,8 +186,7 @@ export async function POST(request: NextRequest) {
       { 
         error: error instanceof Error ? error.message :
   e: "Failed to update roster"
-      },
-      { status: 500 }
+      }, { status: 500 }
     );
   }
 }

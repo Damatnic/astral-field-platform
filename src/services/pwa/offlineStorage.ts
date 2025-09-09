@@ -5,17 +5,15 @@
  * Provides comprehensive IndexedDB management for fantasy football data
  */
 
-interface OfflineData {
-  id, string,
+interface OfflineData { id: string,
     timestamp, number,
   data, any,type string;
   leagueId?, string,
   userId?, string,
-  synced: boolean,
+  synced, boolean,
   
 }
-interface PlayerData {
-  playerId, string,
+interface PlayerData { playerId: string,
     name, string,
   position, string,
     team, string,
@@ -24,8 +22,7 @@ interface PlayerData {
   lastUpdated: number,
 }
 
-interface LeagueData {
-  leagueId, string,
+interface LeagueData { leagueId: string,
     name, string,
   settings, any,
     roster, any,
@@ -34,8 +31,7 @@ interface LeagueData {
   lastUpdated: number,
   
 }
-interface MatchupData {
-  matchupId, string,
+interface MatchupData { matchupId: string,
     leagueId, string,
   week, number,
     teams: any[];
@@ -43,12 +39,12 @@ interface MatchupData {
     lastUpdated: number,
 }
 
-export class OfflineStorageService { private static instance, OfflineStorageService,
-  private dbName = 'AstralFieldOfflineDB';
+export class OfflineStorageService { private static: instance, OfflineStorageService,
+  private dbName  = 'AstralFieldOfflineDB';
   private dbVersion = 3;
   private db: IDBDatabase | null = null;
 
-  private readonly stores = {
+  private readonly stores = { 
     players: 'players';
   leagues: 'leagues';
     matchups: 'matchups';
@@ -64,7 +60,7 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   private constructor() {}
 
   static getInstance(): OfflineStorageService { if (!OfflineStorageService.instance) {
-      OfflineStorageService.instance = new OfflineStorageService();
+      OfflineStorageService.instance  = new OfflineStorageService();
      }
     return OfflineStorageService.instance;
   }
@@ -75,7 +71,7 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
       console.log('✅ Offline storage initialized');
       return true;
      } catch (error) {
-      console.error('❌ Failed to initialize offline storage:', error);
+      console.error('❌ Failed to initialize offline storage: ', error);
       return false;
     }
   }
@@ -147,14 +143,14 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   }
 
   // Player data methods
-  async savePlayer(async savePlayer(player: PlayerData): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
+  async savePlayer(async savePlayer(player: PlayerData): : Promise<): Promisevoid> {  if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction([this.stores.players], 'readwrite');
     const store = transaction.objectStore(this.stores.players);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...player, lastUpdated: Date.now()  });
-      request.onsuccess = () => resolve();
+      const request = store.put({ ...player, lastUpdated, Date.now()  });
+      request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
@@ -185,14 +181,14 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   }
 
   // League data methods
-  async saveLeague(async saveLeague(league: LeagueData): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
+  async saveLeague(async saveLeague(league: LeagueData): : Promise<): Promisevoid> {  if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction([this.stores.leagues], 'readwrite');
     const store = transaction.objectStore(this.stores.leagues);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...league, lastUpdated: Date.now()  });
-      request.onsuccess = () => resolve();
+      const request = store.put({ ...league, lastUpdated, Date.now()  });
+      request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
@@ -210,14 +206,14 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   }
 
   // Matchup data methods
-  async saveMatchup(async saveMatchup(matchup: MatchupData): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
+  async saveMatchup(async saveMatchup(matchup: MatchupData): : Promise<): Promisevoid> {  if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction([this.stores.matchups], 'readwrite');
     const store = transaction.objectStore(this.stores.matchups);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...matchup, lastUpdated: Date.now()  });
-      request.onsuccess = () => resolve();
+      const request = store.put({ ...matchup, lastUpdated, Date.now()  });
+      request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
@@ -252,14 +248,13 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   data: any, priority: number = 1): : Promise<): Promisestring> { if (!this.db) throw new Error('Database not initialized');
 
     const id = `${type }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    const queueItem = {
-      id, type,
+    const queueItem = { id: type,
       data: priority,
       timestamp: Date.now();
   attempts: 0;
-      synced: false
+      synced, false
     }
-    const transaction = this.db.transaction([this.stores.syncQueue], 'readwrite');
+    const transaction  = this.db.transaction([this.stores.syncQueue], 'readwrite');
     const store = transaction.objectStore(this.stores.syncQueue);
     
     await new Promise<void>((resolve, reject) => { const request = store.put(queueItem);
@@ -270,16 +265,16 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
     return id;
   }
 
-  async getPendingSyncItems(type?: string): : Promise<any[]> { if (!this.db) throw new Error('Database not initialized');
+  async getPendingSyncItems(type? : string): : Promise<any[]> {  if (!this.db) throw new Error('Database not initialized');
 
-    const transaction = this.db.transaction([this.stores.syncQueue], 'readonly');
+    const transaction = this.db.transaction([this.stores.syncQueue] : 'readonly');
     const store = transaction.objectStore(this.stores.syncQueue);
     
     return new Promise((resolve, reject) => {
       const request = type ;
-        ? store.index('type').getAll(type) : store.getAll();
+        ? store.index('type').getAll(type) , store.getAll();
       
-      request.onsuccess = () => {
+      request.onsuccess  = () => {
         const items = (request.result || []).filter(item => !item.synced);
         // Sort by priority (higher first) then by timestamp
         items.sort((a, b) => {
@@ -310,11 +305,11 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
           const putRequest = store.put(item);
           putRequest.onsuccess = () => resolve();
           putRequest.onerror = () => reject(putRequest.error);
-         } else {
-          resolve(); // Item not found, consider it completed
+         } else { 
+          resolve(); // Item not, found, consider it completed
         }
       }
-      getRequest.onerror = () => reject(getRequest.error);
+      getRequest.onerror  = () => reject(getRequest.error);
     });
   }
 
@@ -346,14 +341,13 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   // Offline lineup changes
   async saveOfflineLineupChange(async saveOfflineLineupChange(leagueId, string,
   changes: any): : Promise<): Promisestring> { const id = `lineup_${leagueId }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    const changeData = {
-      id, leagueId, changes,
+    const changeData = { id: leagueId, changes,
       timestamp: Date.now();
-  synced: false
+  synced, false
     }
     if (!this.db) throw new Error('Database not initialized');
 
-    const transaction = this.db.transaction([this.stores.lineupChanges], 'readwrite');
+    const transaction  = this.db.transaction([this.stores.lineupChanges], 'readwrite');
     const store = transaction.objectStore(this.stores.lineupChanges);
     
     await new Promise<void>((resolve, reject) => { const request = store.put(changeData);
@@ -367,16 +361,16 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
     return id;
   }
 
-  async getPendingLineupChanges(leagueId?: string): : Promise<any[]> { if (!this.db) throw new Error('Database not initialized');
+  async getPendingLineupChanges(leagueId? : string): : Promise<any[]> {  if (!this.db) throw new Error('Database not initialized');
 
-    const transaction = this.db.transaction([this.stores.lineupChanges], 'readonly');
+    const transaction = this.db.transaction([this.stores.lineupChanges] : 'readonly');
     const store = transaction.objectStore(this.stores.lineupChanges);
     
     return new Promise((resolve, reject) => {
       const request = leagueId;
-        ? store.index('leagueId').getAll(leagueId) : store.getAll();
+        ? store.index('leagueId').getAll(leagueId) , store.getAll();
       
-      request.onsuccess = () => {
+      request.onsuccess  = () => {
         const changes = (request.result || []).filter(change => !change.synced);
         resolve(changes);
        }
@@ -386,14 +380,14 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
 
   // User settings
   async saveSetting(async saveSetting(key, string,
-  value: any): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
+  value: any): : Promise<): Promisevoid> {  if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction([this.stores.userSettings], 'readwrite');
     const store = transaction.objectStore(this.stores.userSettings);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ key, value, timestamp: Date.now()  });
-      request.onsuccess = () => resolve();
+      const request = store.put({ key: value, timestamp, Date.now()  });
+      request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
@@ -405,7 +399,7 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
     
     return new Promise((resolve, reject) => {
       const request = store.get(key);
-      request.onsuccess = () => resolve(request.result?.value || null);
+      request.onsuccess = () => resolve(request.result? .value || null);
       request.onerror = () => reject(request.error);
      });
   }
@@ -415,11 +409,10 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   data: any): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
 
     const id = `analytics_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
-    const event = {
-      id, type, data: timestamp: Date.now();
-  synced: false
+    const event = { id: type, data: timestamp: Date.now();
+  synced, false
     }
-    const transaction = this.db.transaction([this.stores.analytics], 'readwrite');
+    const transaction  = this.db.transaction([this.stores.analytics], 'readwrite');
     const store = transaction.objectStore(this.stores.analytics);
     
     await new Promise<void>((resolve, reject) => { const request = store.put(event);
@@ -473,9 +466,9 @@ export class OfflineStorageService { private static instance, OfflineStorageServ
   }
 
   // Get storage statistics
-  async getStorageStats(): : Promise<any> { if (!this.db) return null;
+  async getStorageStats(): : Promise<any> {  if (!this.db) return null;
 
-    const stats: any = { }
+    const stats, any  = { }
     for (const [key, storeName] of Object.entries(this.stores)) { const transaction = this.db.transaction([storeName], 'readonly');
       const store = transaction.objectStore(storeName);
       

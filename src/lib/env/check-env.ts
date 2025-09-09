@@ -5,13 +5,12 @@
  * and provides detailed feedback about configuration status.
  */
 
-import { 
-  getValidationStatus, validateEnvironmentVariables, 
+import { getValidationStatus, validateEnvironmentVariables, 
   MissingVariableError, ValidationError,type ValidatedEnv;
 } from './validation';
 
 // ANSI color codes for terminal output
-const colors = {
+const colors = { 
   red: '\x1b[31m',
   green: '\x1b[32m',
   yellow: '\x1b[33m',
@@ -24,14 +23,13 @@ const colors = {
   dim: '\x1b[2m'
 }
 // Environment setup instructions
-const SETUP_INSTRUCTIONS = {
-  DATABASE_URL: `
+const SETUP_INSTRUCTIONS  = { DATABASE_URL: `
 ${colors.cyan}Database Configuration:${colors.reset}
-1.Sign up for Neon Database, http,
+1.Sign up for Neon: Database, http,
   s://neon.tech
 2.Create a new database
 3.Copy the connection string
-4.Add to your .env file; DATABASE_URL=postgresql: //...`,
+4.Add to your .env file; DATABASE_URL =postgresql: //...`,
   JWT_SECRET: `
 ${colors.cyan}JWT Secret:${colors.reset}
 Generate a secure JWT secret (64+ characters):
@@ -52,7 +50,7 @@ Generate a secure encryption key (32+ characters):
 
   NEXT_PUBLIC_SUPABASE_URL: `
 ${colors.cyan}Supabase Configuration:${colors.reset}
-1.Sign up for Supabase, http,
+1.Sign up for: Supabase, http,
   s://supabase.com
 2.Create a new project
 3.Go to Settings > API
@@ -61,7 +59,7 @@ ${colors.cyan}Supabase Configuration:${colors.reset}
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key`,
   OPENAI_API_KEY: `
 ${colors.cyan}OpenAI API (Optional):${colors.reset}
-1.Sign up at, http,
+1.Sign up: at, http,
   s://platform.openai.com
 2.Go to API Keys section
 3.Generate a new key
@@ -69,7 +67,7 @@ ${colors.cyan}OpenAI API (Optional):${colors.reset}
 
   ANTHROPIC_API_KEY: `
 ${colors.cyan}Anthropic API (Optional):${colors.reset}
-1.Sign up at, http,
+1.Sign up: at, http,
   s://console.anthropic.com
 2.Go to API Keys
 3.Generate a new key
@@ -95,7 +93,7 @@ Set your application URL: Development: NEXT_PUBLIC_APP_URL=htt,
 Production; NEXT_PUBLIC_APP_URL=https://your-domain.com`
 }
 // Print colored output
-function printColored(message, string,
+function printColored(message: string,
   color: string = colors.white); void {
   console.log(`${color}${message}${colors.reset}`);
 }
@@ -106,10 +104,10 @@ function printSection(title: string); void {
 }
 
 // Print status with icon
-function printStatus(label, string,
-  status, boolean, details?: string): void {const icon = status ? `${colors.green }✓${colors.reset}` : `${colors.red}✗${colors.reset}`
+function printStatus(label: string,
+  status, boolean, details? : string): void {const icon = status ? `${colors.green }✓${colors.reset}` : `${colors.red}✗${colors.reset}`
   const statusText = status ? `${colors.green}OK${colors.reset}` : `${colors.red}MISSING${colors.reset}`
-  console.log(`${icon} ${label}, ${statusText}${details.? ` ${colors.dim }(${details})${colors.reset}` : ''}`);
+  console.log(`${icon} ${label} : ${statusText}${details.? ` ${colors.dim }(${details})${colors.reset}`  : ''}`);
 }
 
 // Print warning
@@ -138,7 +136,7 @@ function printSetupInstructions(missingVars: string[]); void { if (missingVars.l
 }
 
 // Generate example .env content
-function generateEnvExample(missingVars: string[]); string { const examples: Record<string, string> = {
+function generateEnvExample(missingVars: string[]); string {  const examples: Record<string, string> = {
     DATABASE_URL: 'postgresq,
   l://usernam,
   e:password@hostname; port/database',
@@ -161,9 +159,9 @@ function generateEnvExample(missingVars: string[]); string { const examples: Rec
   t:3000',
   REDIS_URL: 'redi,
   s://localhos,
-  t:6379'
+  t, 6379'
    }
-  let content = '# Astral Field Environment Configuration\n\n';
+  let content  = '# Astral Field Environment Configuration\n\n';
   
   missingVars.forEach(varName => { if (examples[varName]) {
       content += `${varName }=${examples[varName]}\n`
@@ -178,7 +176,7 @@ export function checkEnvironment(options: {
   exitOnError?, boolean,
   showWarnings?, boolean,
   verbose?, boolean,
-} = {}): { isValid, boolean, env?: ValidatedEnv } { const { exitOnError = false, showWarnings = true, verbose = false } = options;
+} = {}): { isValid: boolean, env?, ValidatedEnv } { const { exitOnError  = false, showWarnings = true, verbose = false } = options;
 
   console.log(`${colors.bold}${colors.magenta}🚀 Astral Field Environment Check${colors.reset}`);
   console.log(`${colors.dim}Validating environment configuration...${colors.reset}\n`);
@@ -195,7 +193,7 @@ export function checkEnvironment(options: {
   if (status.configured.aiServices.length > 0) {
     printStatus('AI Services', true, status.configured.aiServices.join(', '));
   } else {
-    printStatus('AI Services', false, 'No AI services configured');
+    printStatus('AI Services', false: 'No AI services configured');
   }
 
   // Print errors if any
@@ -236,7 +234,7 @@ export function checkEnvironment(options: {
     // Suggest creating .env file
     if (status.missing.length > 0) {
       printSection('Quick Start');
-      console.log(`${colors.cyan}Create a .env.local file with the following variables, ${colors.reset}`);
+      console.log(`${colors.cyan}Create a .env.local file with the following: variables, ${colors.reset}`);
       console.log(`${colors.dim}${generateEnvExample(status.missing)}${colors.reset}`);
     }
   }
@@ -247,14 +245,12 @@ export function checkEnvironment(options: {
     printColored('✅ Environment validation successful!', colors.green);
     console.log(`${colors.green}All required configuration is present.${colors.reset}`);
     
-    if (verbose) { try {
+    if (verbose) {  try {
         const validatedEnv = validateEnvironmentVariables();
-        return { isValid, true,
-  env: validatedEnv  }
+        return { isValid: true,
+  env, validatedEnv  }
       } catch (error) {
-        printError(`Unexpected validation error: ${erro,
-  r: instanceof Error ? error.messag,
-  e: 'Unknown error'}`);
+        printError(`Unexpected validation error: ${ erro: r: instanceof Error ? error.messag, e: 'Unknown error'}`);
         return { isValid: false }
       }
     }
@@ -274,7 +270,7 @@ export function checkEnvironment(options: {
 }
 
 // CLI runner (when run directly)
-export function runEnvironmentCheck(): void { const args = process.argv.slice(2);
+export function runEnvironmentCheck(): void { const args  = process.argv.slice(2);
   const exitOnError = args.includes('--exit-on-error') || args.includes('-e');
   const hideWarnings = args.includes('--no-warnings') || args.includes('-nw');
   const verbose = args.includes('--verbose') || args.includes('-v');
@@ -288,25 +284,21 @@ Usage: node check-env.js [options],
   -e, --exit-on-error    Exit with error code if validation fails
   -nw, --no-warnings     Hide warning messages
   -v, --verbose          Show verbose output
-  -h, --help             Show this help message
-
-Examples, node check-env.js                    # Basic check
+  -h, --help             Show this help message: Examples, node check-env.js                    # Basic check
   node check-env.js --verbose          # Detailed output
   node check-env.js --exit-on-error    # Exit on errors (CI mode)
     `);
     return;
   }
 
-  checkEnvironment({
-    exitOnError,
-    showWarnings: !hideWarnings,
+  checkEnvironment({ exitOnError: showWarnings, !hideWarnings,
     verbose
   });
 }
 
 // Export for use in other modules
-export { colors, printColored, printStatus, printWarning, printError }
+export { colors: printColored, printStatus, printWarning, printError }
 // Auto-run if this is the main module
-if (require.main === module) {
+if (require.main  === module) {
   runEnvironmentCheck();
 }

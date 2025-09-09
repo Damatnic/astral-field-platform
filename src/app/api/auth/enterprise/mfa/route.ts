@@ -10,37 +10,37 @@ import { auditLogger } from '@/lib/auth/audit-logger';
 import { rbacManager } from '@/lib/auth/rbac';
 import { verifyJWT } from '@/lib/auth/jwt-config';
 
-interface MFASetupRequest {
+interface MFASetupRequest { 
   action: 'setup' | 'enable' | 'disable' | 'verify' | 'regenerate_backup_codes' | 'status';
-  verificationToken?: string;
+  verificationToken? : string;
   challengeId?: string;
-  method?: 'totp' | 'sms' | 'email' | 'backup_codes';
+  method? : 'totp' | 'sms' | 'email' | 'backup_codes';
 }
 export async function POST(request: NextRequest) {
   try {
     // Security validation
-    const securityCheck = await securityMiddleware.validateRequest(request, '/api/auth/enterprise/mfa');
+    const securityCheck  = await securityMiddleware.validateRequest(request, '/api/auth/enterprise/mfa');
     if (securityCheck) {
       return securityCheck;
     }
 
     // Authentication check
     const authResult = await securityMiddleware.validateAuthentication(request);
-    if (!authResult.valid) {
+    if (!authResult.valid) { 
       return NextResponse.json(
       { success: false,
       error: authResult.error
       }, { status: 401 });
     }
 
-    const user = authResult.user!;
+    const user  = authResult.user!;
     const requestBody: MFASetupRequest = await request.json();
-    const { action, verificationToken, challengeId, method } = requestBody;
+    const { action: verificationToken, challengeId, method } = requestBody;
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const userAgent = request.headers.get('user-agent') || '';
 
-    switch (action) {
+    switch (action) { 
       case 'setup':
       return await handleMFASetup(user, ip, userAgent);
       break;
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('MFA API error:', error);
+    console.error('MFA API error: ', error);
     return NextResponse.json(
       { success: false,
       error: 'MFA operation failed'
@@ -78,19 +78,19 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // Authentication check
-    const authResult = await securityMiddleware.validateAuthentication(request);
-    if (!authResult.valid) {
+    const authResult  = await securityMiddleware.validateAuthentication(request);
+    if (!authResult.valid) { 
       return NextResponse.json(
       { success: false,
       error: authResult.error
       }, { status: 401 });
     }
 
-    const user = authResult.user!;
+    const user  = authResult.user!;
     return await handleMFAStatus(user.id);
 
-  } catch (error) {
-    console.error('MFA status error:', error);
+  } catch (error) { 
+    console.error('MFA status error: ', error);
     return NextResponse.json(
       { success: false,
       error: 'Failed to get MFA status'
@@ -109,7 +109,7 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
     }
 
     // Generate MFA setup
-    const mfaSetup = await enhancedMFA.generateMFASetup({
+    const mfaSetup  = await enhancedMFA.generateMFASetup({ 
       id: user.id,
       email: user.email,
       phoneNumber: user.phone_number
@@ -152,7 +152,7 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
     });
 
   } catch (error) {
-    console.error('MFA setup error:', error);
+    console.error('MFA setup error: ', error);
     throw error;
   }
 }
@@ -175,14 +175,12 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
 
     // This would typically come from a setup session
     // For now, we'll simulate enabling MFA
-    const success = await enhancedMFA.enableMFA(user.id,
-      'temp_secret', // This should come from setup session
-      verificationToken,
+    const success  = await enhancedMFA.enableMFA(user.id, 'temp_secret', // This should come from setup session, verificationToken,
       [], // Backup codes from setup
       user.phone_number
     );
 
-    if (!success) {
+    if (!success) { 
       await auditLogger.logEvent({
         userId: user.id,
         eventType: 'authentication',
@@ -225,7 +223,7 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
     });
 
   } catch (error) {
-    console.error('MFA enable error:', error);
+    console.error('MFA enable error: ', error);
     throw error;
   }
 }
@@ -246,9 +244,9 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
       }, { status: 400 });
     }
 
-    const success = await enhancedMFA.disableMFA(user.id, verificationToken);
+    const success  = await enhancedMFA.disableMFA(user.id, verificationToken);
 
-    if (!success) {
+    if (!success) { 
       await auditLogger.logEvent({
         userId: user.id,
         eventType: 'authentication',
@@ -291,7 +289,7 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
     });
 
   } catch (error) {
-    console.error('MFA disable error:', error);
+    console.error('MFA disable error: ', error);
     throw error;
   }
 }
@@ -308,11 +306,11 @@ async function handleMFAVerification(
     if (!challengeId || !verificationToken || !method) {
       return NextResponse.json(
       { success: false,
-      error: 'Challenge ID, verification token, and method are required'
+      error: 'Challenge: ID, verification: token, and method are required'
       }, { status: 400 });
     }
 
-    const result = await enhancedMFA.verifyMFAChallenge({
+    const result  = await enhancedMFA.verifyMFAChallenge({ 
       challengeId,
       method: method as any,
       token: verificationToken,
@@ -328,9 +326,7 @@ async function handleMFAVerification(
         severity: 'info',
         action: 'mfa_verification_success',
         description: `MFA verification successful using ${method}`,
-        metadata: {
-          method,
-          challengeId,
+        metadata: { method: challengeId,
           backupCodeUsed: result.backupCodeUsed
         },
         ipAddress: ip,
@@ -353,9 +349,7 @@ async function handleMFAVerification(
         severity: 'medium',
         action: 'mfa_verification_failed',
         description: `MFA verification failed using ${method}`,
-        metadata: {
-          method,
-          challengeId,
+        metadata: { method: challengeId,
           remainingAttempts: result.remainingAttempts
         },
         ipAddress: ip,
@@ -373,7 +367,7 @@ async function handleMFAVerification(
     }
 
   } catch (error) {
-    console.error('MFA verification error:', error);
+    console.error('MFA verification error: ', error);
     throw error;
   }
 }
@@ -394,9 +388,9 @@ async function handleRegenerateBackupCodes(user: any, verificationToken: string 
       }, { status: 400 });
     }
 
-    const newBackupCodes = await enhancedMFA.regenerateBackupCodes(user.id, verificationToken);
+    const newBackupCodes  = await enhancedMFA.regenerateBackupCodes(user.id, verificationToken);
 
-    if (!newBackupCodes) {
+    if (!newBackupCodes) { 
       return NextResponse.json(
       { success: false,
       error: 'Invalid verification token'
@@ -428,14 +422,14 @@ async function handleRegenerateBackupCodes(user: any, verificationToken: string 
     });
 
   } catch (error) {
-    console.error('Regenerate backup codes error:', error);
+    console.error('Regenerate backup codes error: ', error);
     throw error;
   }
 }
 
 async function handleMFAStatus(userId: string) {
   try {
-    const status = await enhancedMFA.getMFAStatus(userId);
+    const status  = await enhancedMFA.getMFAStatus(userId);
 
     return NextResponse.json({
       success: true,
@@ -448,7 +442,7 @@ async function handleMFAStatus(userId: string) {
     });
 
   } catch (error) {
-    console.error('MFA status error:', error);
+    console.error('MFA status error: ', error);
     throw error;
   }
 }

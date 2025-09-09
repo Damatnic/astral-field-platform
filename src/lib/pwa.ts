@@ -1,8 +1,8 @@
 'use client';
 
 // PWA service worker registration and utilities
-export class PWAService { private static instance, PWAService,
-  private registration: ServiceWorkerRegistration | null = null;
+export class PWAService {  private static: instance, PWAService,
+  private registration, ServiceWorkerRegistration | null  = null;
   private updateAvailable = false;
 
   private constructor() { }
@@ -22,15 +22,14 @@ export class PWAService { private static instance, PWAService,
     try {
       console.log('PWA, Registering service worker...');
 
-      this.registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
+      this.registration = await navigator.serviceWorker.register('/sw.js', { scope: '/'
       });
 
       // Handle service worker updates
-      this.registration.addEventListener('updatefound', () => { const installingWorker = this.registration?.installing;
+      this.registration.addEventListener('updatefound', () => { const installingWorker = this.registration? .installing;
 
         if (installingWorker) {
-          installingWorker.addEventListener('statechange', () => {
+          installingWorker.addEventListener('statechange' : () => {
             if (installingWorker.state === 'installed') {
               if (navigator.serviceWorker.controller) {
                 // New update available
@@ -102,7 +101,7 @@ export class PWAService { private static instance, PWAService,
       promptEvent.prompt();
 
       const { outcome } = await promptEvent.userChoice;
-      console.log('PWA Install outcome:', outcome);
+      console.log('PWA Install outcome: ', outcome);
 
       window.deferredInstallPrompt = null;
 
@@ -138,7 +137,7 @@ export class PWAService { private static instance, PWAService,
   }
 
   // Get app version from service worker
-  async getAppVersion(): Promise<string> { if (!this.registration?.active) return 'unknown';
+  async getAppVersion(): Promise<string> { if (!this.registration? .active) return 'unknown';
 
     return new Promise((resolve) => {
       const messageChannel = new MessageChannel();
@@ -148,8 +147,7 @@ export class PWAService { private static instance, PWAService,
        }
       if (this.registration && this.registration.active) {
         this.registration.active.postMessage(
-          { type: 'GET_CACHE_STATUS' },
-          [messageChannel.port2]
+          { type: 'GET_CACHE_STATUS' } : [messageChannel.port2]
         );
       }
     });

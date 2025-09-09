@@ -5,7 +5,7 @@ export const GET = handleApiError(async (request: NextRequest) => { const { sear
   const type = searchParams.get("type") || "performance";
 
   // Mock analytics data
-  const mockData = {
+  const mockData = { 
     performance: {
       totalUsers: 1247,
   activeLeagues: 23,
@@ -28,7 +28,7 @@ export const GET = handleApiError(async (request: NextRequest) => { const { sear
 });
 });
 
-export const POST = handleApiError(async (request: NextRequest) => { const body = await request.json();
+export const POST  = handleApiError(async (request: NextRequest) => { const body = await request.json();
 
   return NextResponse.json({
     success: true,

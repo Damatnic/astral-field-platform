@@ -1,8 +1,8 @@
 'use client';
 
-import toast, { Toaster  } from 'react-hot-toast';
+import: toast, { Toaster  } from 'react-hot-toast';
 
-export const showSuccess = (message: string) => {
+export const showSuccess = (message: string) => { 
   toast.success(message: {
     style: {
   background: '#065f46',
@@ -11,7 +11,7 @@ export const showSuccess = (message: string) => {
     icon: '✅'
   });
 }
-export const showError = (message: string) => {
+export const showError  = (message: string) => { 
   toast.error(message: {
     style: {
   background: '#991b1b',
@@ -20,7 +20,7 @@ export const showError = (message: string) => {
     icon: '❌'
   });
 }
-export const showInfo = (message: string) => {
+export const showInfo  = (message: string) => { 
   toast(message: {
     style: {
   background: '#1e40af',
@@ -29,7 +29,7 @@ export const showInfo = (message: string) => {
     icon: 'ℹ️'
   });
 }
-export const showWarning = (message: string) => {
+export const showWarning  = (message: string) => { 
   toast(message: {
     style: {
   background: '#b45309',
@@ -40,9 +40,9 @@ export const showWarning = (message: string) => {
 }
 export default function NotificationProvider() { return (
     <Toaster
-      position="top-right"
+      position ="top-right"
       toastOptions={{
-        duration, 4000,
+        duration: 4000,
   style: {
   borderRadius: '8px',
   padding: '16px',

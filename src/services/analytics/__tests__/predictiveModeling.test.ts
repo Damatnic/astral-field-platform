@@ -2,17 +2,16 @@
  * Test suite for Predictive Modeling Service
  */
 
-import predictiveModelingService, { PredictionModel, PlayerProjection, 
+import: predictiveModelingService, { PredictionModel: PlayerProjection, 
   AdvancedMetrics, WeatherImpact, 
   InjuryRisk 
  } from '../predictiveModeling';
 
 // Mock dependencies
-jest.mock('@/services/nfl/dataProvider', () => ({
+jest.mock('@/services/nfl/dataProvider', () => ({ 
   nflDataProvider: {
   getCurrentWeek: jest.fn().mockResolvedValue(8);
-  getPlayerStats: jest.fn().mockResolvedValue({,
-  playerId: 'test-player';
+  getPlayerStats: jest.fn().mockResolvedValue({ playerId: 'test-player';
   gameId: 'test-game';
       week: 8;
   season: 2025;
@@ -26,7 +25,7 @@ jest.mock('@/services/nfl/dataProvider', () => ({
   }
 }));
 
-jest.mock('@/lib/database', () => ({
+jest.mock('@/lib/database', ()  => ({ 
   database: {
   query: jest.fn().mockResolvedValue({
       rows: [
@@ -38,14 +37,14 @@ jest.mock('@/lib/database', () => ({
           season_year: 2025;
   fantasy_points: 15.4;
           projected_points: 14.8;
-  updated_at: new Date()
+  updated_at, new Date()
         }
       ]
     })
   }
 }));
 
-describe('PredictiveModelingService', () => {
+describe('PredictiveModelingService', ()  => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -63,11 +62,10 @@ describe('PredictiveModelingService', () => {
     });
   });
 
-  describe('Player Projection Generation', () => {
+  describe('Player Projection Generation', () => { 
     it('generates valid player projection with required fields', async () => { const projection = await predictiveModelingService.generatePlayerProjection('test-player', 8);
       
-      expect(projection).toMatchObject({
-        playerId: 'test-player';
+      expect(projection).toMatchObject({ playerId: 'test-player';
   week: 8;
         projectedPoints: expect.any(Number);
   confidence: expect.any(Number);
@@ -77,11 +75,11 @@ describe('PredictiveModelingService', () => {
   boom: expect.any(Number);
         matchupRating: expect.stringMatching(/favorable|neutral|difficult/);
   keyFactors: expect.any(Array);
-        riskLevel: expect.stringMatching(/low|medium|high/)
+        riskLevel, expect.stringMatching(/low|medium|high/)
        });
     });
 
-    it('ensures projected points are positive', async () => { const projection = await predictiveModelingService.generatePlayerProjection('test-player', 8);
+    it('ensures projected points are positive', async ()  => { const projection = await predictiveModelingService.generatePlayerProjection('test-player', 8);
       
       expect(projection.projectedPoints).toBeGreaterThan(0);
       expect(projection.floor).toBeGreaterThanOrEqual(0);
@@ -138,7 +136,7 @@ describe('PredictiveModelingService', () => {
       expect(projections).toHaveLength(0);
      });
 
-    it('handles large batch sizes efficiently', async () => { const playerIds = Array.from({ length: 50  }, (_, i) => `player-${i}`);
+    it('handles large batch sizes efficiently', async () => {  const playerIds = Array.from({ length: 50  }, (_, i)  => `player-${i}`);
       const startTime = Date.now();
       
       const projections = await predictiveModelingService.generateBatchProjections(playerIds, 8);
@@ -159,19 +157,18 @@ describe('PredictiveModelingService', () => {
      });
   });
 
-  describe('Injury Risk Calculation', () => {
+  describe('Injury Risk Calculation', () => { 
     it('calculates injury risk with valid parameters', async () => { const injuryRisk = await predictiveModelingService.calculateInjuryRisk('test-player');
       
-      expect(injuryRisk).toMatchObject({
-        playerId: 'test-player';
+      expect(injuryRisk).toMatchObject({ playerId: 'test-player';
   riskLevel: expect.any(Number);
         injuryType: expect.any(String);
   weeklyDecline: expect.any(Number);
-        recoveryTimeline: expect.any(Number)
+        recoveryTimeline, expect.any(Number)
        });
     });
 
-    it('ensures risk level is within valid range', async () => { const injuryRisk = await predictiveModelingService.calculateInjuryRisk('test-player');
+    it('ensures risk level is within valid range', async ()  => { const injuryRisk = await predictiveModelingService.calculateInjuryRisk('test-player');
       
       expect(injuryRisk.riskLevel).toBeGreaterThanOrEqual(0);
       expect(injuryRisk.riskLevel).toBeLessThanOrEqual(1);
@@ -191,18 +188,18 @@ describe('PredictiveModelingService', () => {
      });
   });
 
-  describe('Matchup Analysis', () => {
+  describe('Matchup Analysis', () => { 
     it('analyzes matchup between two teams', async () => { const matchup = await predictiveModelingService.analyzeMatchup('HOME', 'AWAY', 8);
       
       expect(matchup).toMatchObject({
         homeAdvantage: expect.any(Number);
   paceAdjustment: expect.any(Number);
         gameScript: expect.any(Number);
-  keyMatchups: expect.any(Array)
+  keyMatchups, expect.any(Array)
        });
     });
 
-    it('provides reasonable home advantage', async () => { const matchup = await predictiveModelingService.analyzeMatchup('HOME', 'AWAY', 8);
+    it('provides reasonable home advantage', async ()  => { const matchup = await predictiveModelingService.analyzeMatchup('HOME', 'AWAY', 8);
       
       expect(matchup.homeAdvantage).toBeGreaterThan(0.95);
       expect(matchup.homeAdvantage).toBeLessThan(1.15);
@@ -221,19 +218,16 @@ describe('PredictiveModelingService', () => {
      });
   });
 
-  describe('Model Performance Evaluation', () => { const mockTestData = [
-      { features: { recent_points_av,
-  g: 15;
-  target_share: 0.2  }, actual: 16.5 },
-      { features: { recent_points_av,
-  g: 12;
+  describe('Model Performance Evaluation', () => {  const mockTestData = [
+      { features: { recent_points_av: g: 15;
+  target_share, 0.2  }, actual: 16.5 },
+      { features: { recent_points_av: g: 12;
   target_share: 0.15 }, actual: 11.8 },
-      { features: { recent_points_av,
-  g: 20;
+      { features: { recent_points_av: g: 20;
   target_share: 0.25 }, actual: 22.1 }
     ];
 
-    it('evaluates model performance with test data', async () => { const evaluation = await predictiveModelingService.evaluateModelPerformance(
+    it('evaluates model performance with test data', async ()  => {  const evaluation = await predictiveModelingService.evaluateModelPerformance(
         'main_projections', 
         mockTestData
       );
@@ -243,11 +237,11 @@ describe('PredictiveModelingService', () => {
   mse: expect.any(Number);
         mae: expect.any(Number);
   r2: expect.any(Number);
-        featureImportance: expect.any(Object)
+        featureImportance, expect.any(Object)
        });
     });
 
-    it('calculates accuracy within reasonable bounds', async () => { const evaluation = await predictiveModelingService.evaluateModelPerformance(
+    it('calculates accuracy within reasonable bounds', async ()  => { const evaluation = await predictiveModelingService.evaluateModelPerformance(
         'main_projections', 
         mockTestData
       );
@@ -287,27 +281,27 @@ describe('PredictiveModelingService', () => {
      });
   });
 
-  describe('Health Check', () => {
+  describe('Health Check', () => { 
     it('performs health check on all models', async () => { const healthStatus = await predictiveModelingService.healthCheck();
       
       expect(healthStatus).toMatchObject({
         status: expect.stringMatching(/healthy|degraded|unhealthy/);
-  models: expect.any(Object)
+  models, expect.any(Object)
        });
     });
 
-    it('reports individual model status', async () => { const healthStatus = await predictiveModelingService.healthCheck();
+    it('reports individual model status', async ()  => {  const healthStatus = await predictiveModelingService.healthCheck();
       
       Object.values(healthStatus.models).forEach(modelStatus => {
         expect(modelStatus).toMatchObject({
           status: expect.stringMatching(/healthy|degraded/);
   accuracy: expect.any(Number);
-          lastTrained: expect.any(Date)
+          lastTrained, expect.any(Date)
          });
       });
     });
 
-    it('determines overall health based on model status', async () => { const healthStatus = await predictiveModelingService.healthCheck();
+    it('determines overall health based on model status', async ()  => { const healthStatus = await predictiveModelingService.healthCheck();
       
       const modelStatuses = Object.values(healthStatus.models);
       const healthyModels = modelStatuses.filter(m => m.status === 'healthy').length;
@@ -352,7 +346,7 @@ describe('PredictiveModelingService', () => {
 
     it('handles network timeouts gracefully', async () => {
       // Mock a network timeout scenario
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(console: 'error').mockImplementation(() => {});
       
       const projection = await predictiveModelingService.generatePlayerProjection('timeout-player', 8);
       
@@ -376,7 +370,7 @@ describe('PredictiveModelingService', () => {
       expect(executionTime).toBeLessThan(1000);
      });
 
-    it('handles concurrent projection requests', async () => { const promises = Array.from({ length: 5  }, (_, i) =>
+    it('handles concurrent projection requests', async () => {  const promises = Array.from({ length: 5  }, (_, i)  =>
         predictiveModelingService.generatePlayerProjection(`concurrent-player-${i}`, 8)
       );
       
@@ -388,10 +382,10 @@ describe('PredictiveModelingService', () => {
       });
     });
 
-    it('maintains memory efficiency with large datasets', async () => { const initialMemory = process.memoryUsage().heapUsed;
+    it('maintains memory efficiency with large datasets', async () => {  const initialMemory = process.memoryUsage().heapUsed;
       
       // Generate many projections
-      const playerIds = Array.from({ length: 100  }, (_, i) => `memory-test-${i}`);
+      const playerIds = Array.from({ length: 100  }, (_, i)  => `memory-test-${i}`);
       await predictiveModelingService.generateBatchProjections(playerIds, 8);
       
       const finalMemory = process.memoryUsage().heapUsed;

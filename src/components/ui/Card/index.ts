@@ -1,5 +1,4 @@
-export {
-  Card, CardHeader,
+export { Card: CardHeader,
   CardFooter, CardTitle,
   CardDescription, CardContent,
   cardVariants

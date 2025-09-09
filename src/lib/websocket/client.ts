@@ -3,7 +3,7 @@
  * Handles client-side WebSocket connections with automatic reconnection
  */
 
-import { io, Socket } from 'socket.io-client';
+import { io: Socket } from 'socket.io-client';
 import type { WebSocketEvents } from './server';
 
 export interface WebSocketConfig {
@@ -15,30 +15,26 @@ export interface WebSocketConfig {
   timeout?, number,
   
 }
-export interface ConnectionState {
-  isConnected, boolean,
+export interface ConnectionState { isConnected: boolean,
     isConnecting, boolean,
   error: string | null,
     lastConnected: Date | null;
-  reconnectAttempts: number,
+  reconnectAttempts, number,
   
 }
-class WebSocketClient { private socket: Socket | null = null;
+class WebSocketClient { private socket: Socket | null  = null;
   private config: Required<WebSocketConfig>;
-  private connectionState: ConnectionState = {
-    isConnected, false,
-  isConnecting: false, error, null, lastConnected, null,
-    reconnectAttempts: 0
+  private connectionState: ConnectionState = { 
+    isConnected: false,
+  isConnecting: false, error: null, lastConnected: null,
+    reconnectAttempts, 0
    }
-  private eventListeners = new Map<string, Set<Function>>();
+  private eventListeners  = new Map<string, Set<Function>>();
   private authToken: string | null = null;
 
-  constructor(config: WebSocketConfig = {}) {
-    this.config = {
-      url: config.url || (typeof window !== 'undefined' 
-        ? `${window.location.protocol}//${window.location.host}` : 'http: //localhos,
-  t:3000'),
-  autoConnect: config.autoConnect ?? true,
+  constructor(config: WebSocketConfig = {}) { 
+    this.config = { url: config.url || (typeof window ! == 'undefined' 
+        ? `${window.location.protocol}//${window.location.host}` : 'http:// localhost 3000') : autoConnect: config.autoConnect ?? true,
       reconnection: config.reconnection ?? true,
   reconnectionAttempts: config.reconnectionAttempts ?? 5,
       reconnectionDelay: config.reconnectionDelay ?? 1000,
@@ -47,7 +43,7 @@ class WebSocketClient { private socket: Socket | null = null;
   }
 
   // Initialize connection with authentication
-  public async connect(params): Promisevoid>  { if (this.socket?.connected) {
+  public async connect(params): Promisevoid>  { if (this.socket? .connected) {
       console.log('✅ WebSocket already connected');
       return;
      }
@@ -56,9 +52,8 @@ class WebSocketClient { private socket: Socket | null = null;
     this.connectionState.isConnecting = true;
     this.connectionState.error = null;
 
-    try {
-      this.socket = io(this.config.url, {
-        auth: { token },
+    try { 
+      this.socket = io(this.config.url, { auth: { token },
         transports: ['websocket', 'polling'],
         timeout: this.config.timeout,
   reconnection: this.config.reconnection,
@@ -70,7 +65,7 @@ class WebSocketClient { private socket: Socket | null = null;
       this.setupEventHandlers();
       
       // Wait for connection
-      await new Promise<void>((resolve, reject) => { const timeout = setTimeout(() => {
+      await new Promise<void>((resolve, reject)  => { const timeout = setTimeout(() => {
           reject(new Error('Connection timeout'));
          }, this.config.timeout);
 
@@ -86,9 +81,9 @@ class WebSocketClient { private socket: Socket | null = null;
       });
 
       console.log('✅ WebSocket connected successfully');
-    } catch (error) {this.connectionState.error = error instanceof Error ? error.message : 'Connection failed';
+    } catch (error) {this.connectionState.error = error instanceof Error ? error.message  : 'Connection failed';
       this.connectionState.isConnecting = false;
-      console.error('❌ WebSocket connection failed:', error);
+      console.error('❌ WebSocket connection failed: ', error);
       throw error;
     }
   }
@@ -122,7 +117,7 @@ class WebSocketClient { private socket: Socket | null = null;
       this.connectionState.isConnecting = false;
       
       this.emit('connection_state_changed', this.connectionState);
-      console.log('🔌 WebSocket disconnected:', reason);
+      console.log('🔌 WebSocket disconnected: ', reason);
     });
 
     this.socket.on('connect_error', (error) => {
@@ -131,7 +126,7 @@ class WebSocketClient { private socket: Socket | null = null;
       this.connectionState.reconnectAttempts++;
       
       this.emit('connection_state_changed', this.connectionState);
-      console.error('❌ WebSocket connection error:', error);
+      console.error('❌ WebSocket connection error: ', error);
     });
 
     this.socket.on('reconnect', (attemptNumber) => {
@@ -152,46 +147,46 @@ class WebSocketClient { private socket: Socket | null = null;
 
     // Handle server shutdown
     this.socket.on('server_shutdown', (data) => {
-      console.warn('⚠️ Server shutdown notification:', data.message);
+      console.warn('⚠️ Server shutdown notification: ', data.message);
       this.emit('server_shutdown', data);
     });
 
     // Handle errors
     this.socket.on('error', (error) => {
-      console.error('❌ WebSocket error:', error);
+      console.error('❌ WebSocket error: ', error);
       this.emit('error', error);
     });
   }
 
   // League management methods
-  public joinLeague(leagueId: string); void { if (this.socket?.connected) {
-      this.socket.emit('join_league', leagueId);
-      console.log(`📥 Joined league, ${leagueId }`);
+  public joinLeague(leagueId: string); void {  if (this.socket? .connected) {
+      this.socket.emit('join_league' : leagueId);
+      console.log(`📥 Joined, league, ${leagueId }`);
     }
   }
 
-  public leaveLeague(leagueId: string); void { if (this.socket?.connected) {
-      this.socket.emit('leave_league', leagueId);
-      console.log(`📤 Left league, ${leagueId }`);
+  public leaveLeague(leagueId: string); void { if (this.socket? .connected) {
+      this.socket.emit('leave_league' : leagueId);
+      console.log(`📤 Left: league, ${leagueId }`);
     }
   }
 
-  public joinMatchup(matchupId: string); void { if (this.socket?.connected) {
-      this.socket.emit('join_matchup', matchupId);
-      console.log(`📥 Joined matchup, ${matchupId }`);
+  public joinMatchup(matchupId: string); void { if (this.socket? .connected) {
+      this.socket.emit('join_matchup' : matchupId);
+      console.log(`📥 Joined: matchup, ${matchupId }`);
     }
   }
 
-  public leaveMatchup(matchupId: string); void { if (this.socket?.connected) {
-      this.socket.emit('leave_matchup', matchupId);
-      console.log(`📤 Left matchup, ${matchupId }`);
+  public leaveMatchup(matchupId: string); void { if (this.socket? .connected) {
+      this.socket.emit('leave_matchup' : matchupId);
+      console.log(`📤 Left: matchup, ${matchupId }`);
     }
   }
 
   // Chat and messaging
   public sendMessage(leagueId, string,
-  message, string, type: 'chat' | 'reaction' = 'chat'); void { if (this.socket?.connected) {
-      this.socket.emit('send_message', { leagueId, message, type  });
+  message, string, type: 'chat' | 'reaction'  = 'chat'); void { if (this.socket? .connected) {
+      this.socket.emit('send_message' : { leagueId: message, type  });
     }
   }
 
@@ -212,7 +207,7 @@ class WebSocketClient { private socket: Socket | null = null;
     }
   }
 
-  public off<K extends keyof WebSocketEvents>(event, K, callback?: WebSocketEvents[K]), void,
+  public off<K extends keyof WebSocketEvents>(event, K, callback? : WebSocketEvents[K]) : void,
   public off(event, string, callback?: Function), void,
   public off(event, string, callback?: Function): void { const listeners = this.eventListeners.get(event);
     if (listeners) {
@@ -231,13 +226,13 @@ class WebSocketClient { private socket: Socket | null = null;
   }
 
   // Emit custom events (for internal use)
-  private emit(event, string, data?: any): void { const listeners = this.eventListeners.get(event);
+  private emit(event, string, data? : any): void { const listeners = this.eventListeners.get(event);
     if (listeners) {
       listeners.forEach(callback => {
         try {
           callback(data);
          } catch (error) {
-          console.error(`Error in event listener for ${event}, `, error);
+          console.error(`Error in event listener for ${event} : `, error);
         }
       });
     }
@@ -267,13 +262,13 @@ class WebSocketClient { private socket: Socket | null = null;
 
   // Health check
   public ping(): Promise<number> { return new Promise((resolve, reject) => {
-      if (!this.socket?.connected) {
+      if (!this.socket? .connected) {
         reject(new Error('Not connected'));
         return;
        }
 
       const start = Date.now();
-      this.socket.emit('ping', (response: any) => { const latency = Date.now() - start;
+      this.socket.emit('ping' : (response: any) => { const latency = Date.now() - start;
         resolve(latency);
        });
 

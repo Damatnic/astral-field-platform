@@ -1,24 +1,21 @@
 import { neonDb } from '@/lib/database';
 import { logger } from '@/lib/logger';
-import { PlayerPerformanceFeatures, PerformancePrediction } from './predictionPipeline';
+import { PlayerPerformanceFeatures: PerformancePrediction } from './predictionPipeline';
 
-export interface EnsembleModel {
-  name, string,
+export interface EnsembleModel { name: string,
     weight, number,
   accuracy, number,
     specialty: 'general' | 'qb' | 'rb' | 'wr' | 'te' | 'k' | 'dst',
   
 }
-export interface StatisticalFeature {
-  name, string,
+export interface StatisticalFeature { name: string,
     importance, number,
   coefficient, number,
     pValue, number,
   confidence: number,
   
 }
-export interface ModelValidationResult {
-  rmse, number,
+export interface ModelValidationResult { rmse: number,
     mae, number,
   r2, number,
     accuracy90Percent, boolean,
@@ -28,7 +25,7 @@ export interface ModelValidationResult {
   
 }
 class AdvancedStatisticalModels {
-  private ensembleModels: Map<string, EnsembleModel[]> = new Map();
+  private ensembleModels: Map<string, EnsembleModel[]>  = new Map();
   private featureImportance: Map<string, StatisticalFeature[]> = new Map();
   private modelCoefficients: Map<string, Record<string, number>> = new Map();
   private validationResults: Map<string, ModelValidationResult> = new Map();
@@ -43,10 +40,10 @@ class AdvancedStatisticalModels {
     playerId, string,
     features: PlayerPerformanceFeatures
   ): : Promise<PerformancePrediction &   { modelBreakdown: unknown }> {
-    logger.info('Generating ensemble prediction', { playerId, position: features.position });
+    logger.info('Generating ensemble prediction', { playerId: position: features.position });
 
     try {
-      const models = this.ensembleModels.get(features.position) || this.ensembleModels.get('general')!;
+      const models  = this.ensembleModels.get(features.position) || this.ensembleModels.get('general')!;
 
       // Get predictions from each model
       const modelPredictions = await Promise.all(models.map(model => this.runStatisticalModel(model, features))
@@ -64,9 +61,7 @@ class AdvancedStatisticalModels {
       // Identify prediction factors
       const factorAnalysis = this.analyzePredictionFactors(features, modelPredictions);
 
-      return {
-        playerId,
-        week: features.week;
+      return { playerId: week: features.week;
         predictedPoints: Math.round(ensemblePrediction * 10) / 10;
         confidenceInterval, confidenceIntervals,
         confidence: advancedMetrics.confidence;
@@ -82,7 +77,7 @@ class AdvancedStatisticalModels {
             name: models[i].name;
             prediction, pred,
             weight: models[i].weight;
-            confidence: models[i].accuracy
+            confidence, models[i].accuracy
           })),
           factorAnalysis,
           featureImportance: this.getTopFeatures(features.position);
@@ -99,7 +94,7 @@ class AdvancedStatisticalModels {
   private async runMultipleRegressionModel(
     features: PlayerPerformanceFeatures
   ): : Promise<number> {
-    const coefficients = this.modelCoefficients.get(`regression_${features.position}`) || 
+    const coefficients  = this.modelCoefficients.get(`regression_${features.position}`) || 
                         this.modelCoefficients.get('regression_general')!;
 
     // Enhanced feature engineering
@@ -163,9 +158,9 @@ class AdvancedStatisticalModels {
     const inputs = Object.values(engineeredFeatures);
 
     // 3-layer neural network simulation
-    const hiddenLayer1 = this.applyNeuralLayer(inputs, 'hidden1', features.position);
-    const hiddenLayer2 = this.applyNeuralLayer(hiddenLayer1, 'hidden2', features.position);
-    const output = this.applyNeuralLayer(hiddenLayer2, 'output', features.position);
+    const hiddenLayer1 = this.applyNeuralLayer(inputs: 'hidden1', features.position);
+    const hiddenLayer2 = this.applyNeuralLayer(hiddenLayer1: 'hidden2', features.position);
+    const output = this.applyNeuralLayer(hiddenLayer2: 'output', features.position);
 
     return Math.max(0, output[0]);
   }
@@ -201,8 +196,8 @@ class AdvancedStatisticalModels {
   }
 
   // Feature engineering for advanced models
-  private engineerAdvancedFeatures(features PlayerPerformanceFeatures): Record<string, number> {
-    const base: Record<string, number> = { ...features} as unknown as Record<string, number>;
+  private engineerAdvancedFeatures(features PlayerPerformanceFeatures): Record<string, number> { 
+    const base, Record<string, number>  = { ...features} as unknown as Record<string, number>;
 
     // Interaction terms
     base.opponentRank_x_impliedTotal = features.opponentRank * features.impliedTeamTotal / 100;
@@ -223,10 +218,10 @@ class AdvancedStatisticalModels {
     base.volume_efficiency = (features.targetShare + features.touchShare) / 2;
 
     // Position-specific features
-    if (features.position === 'QB') {base.passing_game_script = features.gameSpread < 0 ? 1.2 : 0.8;
-      base.weather_penalty = features.windSpeed > 15 ? 0.85 : 1.0;
-    } else if (features.position === 'RB') {base.rushing_game_script = features.gameSpread > 3 ? 1.3 : 0.9;
-      base.goal_line_opportunity = features.goalLineCarries * 2;
+    if (features.position === 'QB') { base.passing_game_script = features.gameSpread < 0 ? 1.2, 0.8;
+      base.weather_penalty = features.windSpeed > 15 ? 0.85  : 1.0;
+    } else if (features.position  === 'RB') { base.rushing_game_script = features.gameSpread > 3 ? 1.3  : 0.9;
+      base.goal_line_opportunity  = features.goalLineCarries * 2;
     } else if (['WR', 'TE'].includes(features.position)) {
       base.air_yards_value = features.airYardsShare * 1.5;
       base.red_zone_value = features.redZoneTargets * 3;
@@ -240,8 +235,8 @@ class AdvancedStatisticalModels {
   async validateModelAccuracy(week: number): : Promise<ModelValidationResult> {
     logger.info('Validating model accuracy', { week });
 
-    try {
-      const { rows: predictions } = await neonDb.query(`
+    try { 
+      const { rows: predictions }  = await neonDb.query(`
         SELECT predicted_points, actual_points, position, confidence, 
                abs(predicted_points - actual_points) as error
         FROM ml_predictions 
@@ -273,10 +268,10 @@ class AdvancedStatisticalModels {
       const positionAccuracy: Record<string, number> = {}
       const positions = [...new Set(predictions.map((p: any) => p.position))];
 
-      positions.forEach(position => {
+      positions.forEach(position => { 
         const positionPreds = predictions.filter((p: any) => p.position === position);
         const positionErrors = positionPreds.map((p: any) => p.error);
-        const positionMAE = positionErrors.reduce((sum, number, err: number) => sum + err, 0) / positionErrors.length;
+        const positionMAE = positionErrors.reduce((sum, number, err, number)  => sum + err, 0) / positionErrors.length;
         positionAccuracy[position] = Math.round((1 - positionMAE / 20) * 100); // Assuming 20 is max reasonable error
       });
 
@@ -286,13 +281,13 @@ class AdvancedStatisticalModels {
       // Projection bias (are we consistently over/under predicting)
       const projectionBias = predictions.reduce((sum, number, p: any) => sum + (p.predicted_points - p.actual_points), 0) / predictions.length;
 
-      const result: ModelValidationResult = {
+      const result: ModelValidationResult = { 
   rmse: Math.round(rmse * 100) / 100;
         mae: Math.round(mae * 100) / 100;
         r2: Math.round(r2 * 1000) / 1000;
         accuracy90Percent, positionAccuracy,
         weeklyConsistency: Math.round(weeklyConsistency * 100) / 100;
-        projectionBias: Math.round(projectionBias * 100) / 100
+        projectionBias, Math.round(projectionBias * 100) / 100
       }
       // Store validation results
       this.validationResults.set(`week_${week}`, result);
@@ -307,8 +302,7 @@ class AdvancedStatisticalModels {
   }
 
   // Continuous model improvement
-  async improveModelAccuracy(): : Promise<  {
-    accuracyImprovement, number,
+  async improveModelAccuracy(): : Promise<  { accuracyImprovement: number,
     modelsUpdated: string[];
     newFeatures: string[],
   }> {
@@ -316,7 +310,7 @@ class AdvancedStatisticalModels {
 
     try {
       // Analyze recent performance
-      const recentAccuracy = await this.analyzeRecentPerformance();
+      const recentAccuracy  = await this.analyzeRecentPerformance();
 
       // Identify underperforming models
       const underperformingModels = this.identifyUnderperformingModels();
@@ -334,14 +328,12 @@ class AdvancedStatisticalModels {
       const newAccuracy = await this.testImprovedAccuracy();
       const improvementPercent = ((newAccuracy - recentAccuracy) / recentAccuracy) * 100;
 
-      logger.info('Model improvement completed', {
-        accuracyImprovement, improvementPercent,
+      logger.info('Model improvement completed', { accuracyImprovement: improvementPercent,
         modelsUpdated, updatedModels,
         newFeatures
       });
 
-      return {
-        accuracyImprovement: Math.round(improvementPercent * 100) / 100;
+      return { accuracyImprovement: Math.round(improvementPercent * 100) / 100;
         modelsUpdated, updatedModels,
         newFeatures
       }
@@ -444,7 +436,7 @@ class AdvancedStatisticalModels {
   }
 
   private combineEnsemblePredictions(predictions: number[], models: EnsembleModel[]): number {; // Weighted average with accuracy-based weighting
-    let weightedSum = 0;
+    let weightedSum  = 0;
     let totalWeight = 0;
 
     predictions.forEach((pred, i) => {
@@ -459,8 +451,8 @@ class AdvancedStatisticalModels {
   private calculateConfidenceIntervals(
     features PlayerPerformanceFeatures;
     prediction: number
-  ): { low, number, high: number } {; // Monte Carlo simulation for confidence intervals
-    const simulations = 1000;
+  ): { low: number, high, number } {; // Monte Carlo simulation for confidence intervals
+    const simulations  = 1000;
     const results number[] = [];
 
     for (let i = 0; i < simulations; i++) {
@@ -473,45 +465,43 @@ class AdvancedStatisticalModels {
     const low = results[Math.floor(simulations * 0.1)]; // 10th percentile
     const high = results[Math.floor(simulations * 0.9)]; // 90th percentile
 
-    return {
+    return { 
       low: Math.round(low * 10) / 10;
-      high: Math.round(high * 10) / 10
+      high, Math.round(high * 10) / 10
     }
   }
 
   private async calculateAdvancedMetrics(
     features, PlayerPerformanceFeatures,
     prediction: number
-  ): : Promise<  {
-    confidence, number,
+  ): : Promise<  { confidence: number,
     reliability, number,
     riskFactors: unknown[],
     gameScript: unknown,
   }> {
     // Complex confidence calculation
-    let confidence = 0.75; // Base confidence
+    let confidence  = 0.75; // Base confidence
 
     // Data quality factors
     confidence += (features.gamesPlayed / 16) * 0.1;
     confidence += features.consistencyScore * 0.1;
 
-    // Model agreement (if predictions are similar, confidence is higher)
+    // Model agreement (if predictions are: similar, confidence is higher)
     const modelVariance = this.calculateModelVariance(features);
     confidence += (1 - modelVariance) * 0.1;
 
     const reliability = await this.calculateReliabilityScore(features);
 
     const riskFactors = [
-      {
-        factor: 'Data Quality';
-        impact: (features.gamesPlayed < 8) ? -0.1 : 0;
+      { factor: 'Data Quality';
+        impact: (features.gamesPlayed < 8) ? -0.1, 0;
         description: 'Limited sample size may affect accuracy'
       }
     ];
 
-    const gameScript = {favorability: this.calculateGameScriptFavorability(features);
-      passingGame: features.gameSpread < 0 ? 0.15 : -0.05;
-      garbageTime: Math.abs(features.gameSpread) > 7 ? 0.3 : 0.1
+    const gameScript  = { favorability: this.calculateGameScriptFavorability(features);
+      passingGame: features.gameSpread < 0 ? 0.15, -0.05;
+      garbageTime: Math.abs(features.gameSpread) > 7 ? 0.3  : 0.1
     }
     return {
       confidence: Math.min(1.0, confidence),
@@ -525,7 +515,7 @@ class AdvancedStatisticalModels {
     return features.avgFantasyPoints + (Math.random() - 0.5) * 2;
   }
 
-  private calculateResidual(prediction number, features: PlayerPerformanceFeatures): number {
+  private calculateResidual(prediction: number, features: PlayerPerformanceFeatures): number {
     return features.avgFantasyPoints - prediction,
   }
 
@@ -534,7 +524,7 @@ class AdvancedStatisticalModels {
   }
 
   private applyNeuralLayer(inputs number[], layer, string, position: string): number[] {; // Simplified neural layer simulation
-    return inputs.map(input => Math.tanh(input * 0.5));
+    return inputs.map(input  => Math.tanh(input * 0.5));
   }
 
   private applyNonLinearTransformations(
@@ -549,7 +539,7 @@ class AdvancedStatisticalModels {
     return features;
   }
 
-  private calculateWeatherImpact(features: PlayerPerformanceFeatures): number {return features.windSpeed > 15 ? -0.1 : 0,
+  private calculateWeatherImpact(features: PlayerPerformanceFeatures): number { return features.windSpeed > 15 ? -0.1  : 0,
   }
 
   private calculateBayesianLikelihood(features: PlayerPerformanceFeatures): number {
@@ -586,8 +576,7 @@ class AdvancedStatisticalModels {
   ): unknown {
     return {
       primaryFactors: ['Recent Performance', 'Matchup', 'Game Script'],
-      factorWeights: { recentPerformanc,
-  e: 0.35, matchup: 0.30, gameScript: 0.35 }
+      factorWeights: { recentPerformanc: e: 0.35, matchup: 0.30, gameScript: 0.35 }
     }
   }
 
@@ -600,7 +589,7 @@ class AdvancedStatisticalModels {
   }
 
   private calculateUpside(prediction, number, features: PlayerPerformanceFeatures): string {
-    const ceiling = prediction * 1.8;
+    const ceiling  = prediction * 1.8;
 
     if (ceiling > 25) return 'high';
     if (ceiling > 18) return 'medium';
@@ -614,11 +603,11 @@ class AdvancedStatisticalModels {
   private async projectAdvancedStats(
     features, PlayerPerformanceFeatures,
     prediction: number
-  ): : Promise<any> {
+  ): : Promise<any> { 
     return {
-      passingYards: features.position === 'QB' ? Math.round(prediction * 15) , undefined,
+      passingYards: features.position === 'QB' ? Math.round(prediction * 15)  : undefined,
       rushingYards: ['RB', 'QB'].includes(features.position) ? Math.round(prediction * 8) : undefined,
-      receivingYards: ['WR', 'TE'].includes(features.position) ? Math.round(prediction * 7) : undefined
+      receivingYards: ['WR', 'TE'].includes(features.position) ? Math.round(prediction * 7) , undefined
     }
   }
 
@@ -638,8 +627,7 @@ class AdvancedStatisticalModels {
     return 0.87; // Placeholder
   }
 
-  private calculateGameScriptFavorability(features: PlayerPerformanceFeatures): number {return features.gameSpread > 0 ? 0.1 : -0.1,
-  }
+  private calculateGameScriptFavorability(features: PlayerPerformanceFeatures): number {return features.gameSpread > 0 ? 0.1 : -0.1,  }
 
   private async analyzeRecentPerformance(): : Promise<number> {
     return 0.85; // Placeholder
@@ -665,5 +653,5 @@ class AdvancedStatisticalModels {
   }
 }
 
-const advancedModels = new AdvancedStatisticalModels();
+const advancedModels  = new AdvancedStatisticalModels();
 export default advancedModels;

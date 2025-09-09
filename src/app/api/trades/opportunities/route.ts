@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) { 
   try {
     const searchParams = req.nextUrl.searchParams;
     const action = searchParams.get("action") || "list";
@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
 
     switch (action) {
       case "list": {
-        const opportunities = [
-          {
+        const opportunities  = [
+          { 
             id: "opp_1",
 type: "buy_low",
             playerName: "Cooper Kupp",
@@ -36,7 +36,7 @@ type: "sell_high",
             position: "WR",
   currentValue: 12.5,
             projectedValue: 9.2,
-  reasoning: "Unsustainable target share, sell before regression",
+  reasoning: "Unsustainable target: share, sell before regression",
             confidence: 76,
   targetTeam: "team_7"
 }
@@ -44,16 +44,14 @@ type: "sell_high",
 
         return NextResponse.json({
           success: true,
-  data: {
-            opportunities,
-            count: opportunities.length
+  data: { opportunities: count: opportunities.length
 }
 });
       }
 
-      case "league_scan_status": { const scanStatus = {
+      case "league_scan_status": { const scanStatus  = {
           lastScan: new Date().toISOString(),
-  scanInProgress, false,
+  scanInProgress: false,
           nextScan: new Date(Date.now() + 3600000).toISOString(),
   opportunitiesFound: 5,
           teamsAnalyzed: 12
@@ -64,8 +62,7 @@ type: "sell_high",
 });
       }
 
-      default: return NextResponse.json({ erro,
-  r: "Invalid action" }, { status: 400 });
+      default: return NextResponse.json({ erro: r: "Invalid action" }, { status: 400 });
     }
   } catch { return NextResponse.json(
       { error: "Failed to fetch trade opportunities"  },

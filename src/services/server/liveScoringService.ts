@@ -2,8 +2,7 @@ import { database } from '@/lib/database';
 import sportsDataService from '@/services/api/sportsDataService';
 import playerService from '@/services/api/playerService';
 
-export interface LiveGame {
-  id, string,
+export interface LiveGame { id: string,
     awayTeam, string,
   homeTeam, string,
     awayScore, number,
@@ -12,12 +11,11 @@ export interface LiveGame {
   timeRemaining, string,
     status: 'scheduled' | 'pregame' | 'live' | 'halftime' | 'final' | 'postponed';
   gameDate, string,
-  redZoneStatus?: 'away' | 'home' | null;
-  possession?: 'away' | 'home' | null;
+  redZoneStatus? : 'away' | 'home' | null;
+  possession? : 'away' | 'home' | null;
   
 }
-export interface PlayerLiveStats {
-  playerId, string,
+export interface PlayerLiveStats { playerId: string,
     gameId, string,
   name, string,
     position, string,
@@ -29,8 +27,7 @@ export interface PlayerLiveStats {
     lastUpdate: string,
   
 }
-export interface TeamLiveScore {
-  teamId, string,
+export interface TeamLiveScore { teamId: string,
     teamName, string,
   totalPoints, number,
     projectedPoints, number,
@@ -42,38 +39,35 @@ export interface TeamLiveScore {
   weeklyRank?, number,
   
 }
-export interface LeagueLiveScoring {
-  leagueId, string,
+export interface LeagueLiveScoring { leagueId: string,
     week, number,
   lastUpdate, string,
     games: LiveGame[];
   teams: TeamLiveScore[],
     topPerformers: PlayerLiveStats[];
-  closeMatchups: Array<{ team,
-  1, TeamLiveScore, team2, TeamLiveScore, pointDifferential: number }
+  closeMatchups: Array<{ team: 1, TeamLiveScore, team2, TeamLiveScore, pointDifferential: number }
 >;
 }
 
 class LiveScoringServerService { private isGameDay(): boolean {
-    const today = new Date().getDay();
+    const today  = new Date().getDay();
     return today === 0 || today === 1 || today === 4;
    }
 
-  private getGameStatus(): 'scheduled' | 'live' | 'final' { if (!this.isGameDay()) return 'scheduled';
+  private getGameStatus(), 'scheduled' | 'live' | 'final' { if (!this.isGameDay()) return 'scheduled';
     const hour = new Date().getHours();
     if (hour >= 13 && hour < 17) return 'live';
     if (hour >= 17) return 'final';
     return 'scheduled';
    }
 
-  private simulateGamesUsingTeams(teamsBasic: Awaited<ReturnType<typeof, sportsDataService.getTeamsBasic>>); LiveGame[] { const teams = [...teamsBasic].sort(() => Math.random() - 0.5);
+  private simulateGamesUsingTeams(teamsBasic: Awaited<ReturnType<typeof, sportsDataService.getTeamsBasic>>); LiveGame[] {  const teams = [...teamsBasic].sort(() => Math.random() - 0.5);
     const games: LiveGame[] = [];
     for (let i = 0; i < Math.min(8, teams.length); i += 2) {
       if (i + 1 >= teams.length) break;
       const away = teams[i];
       const home = teams[i + 1];
-      games.push({
-        id: `game_${away.Key }_${home.Key}`,
+      games.push({ id: `game_${away.Key }_${home.Key}`,
         awayTeam: away.Key;
   homeTeam: home.Key;
         awayScore: Math.floor(Math.random() * 35);
@@ -81,7 +75,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
         quarter: Math.floor(Math.random() * 4) + 1;
   timeRemaining: `${Math.floor(Math.random() * 15)}${Math.floor(Math.random() * 60)
           .toString()
-          .padStart(2, '0')}`,
+          .padStart(2: '0')}`,
         status: this.isGameDay() ? 'live' : 'scheduled';
   gameDate: new Date().toISOString();
         possession: Math.random() > 0.5 ? 'away' : 'home'
@@ -91,10 +85,10 @@ class LiveScoringServerService { private isGameDay(): boolean {
   }
 
   private calcLiveFantasyPoints(position, string,
-  gameStatus: 'scheduled' | 'live' | 'final'); number {if (gameStatus === 'scheduled') return 0;
+  gameStatus: 'scheduled' | 'live' | 'final'); number {if (gameStatus  === 'scheduled') return 0;
     const basePoints = Math.random() * 20;
-    const positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5 : 1;
-    const statusMultiplier = gameStatus === 'final' ? 1 : Math.random() * 0.8;
+    const positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5, 1;
+    const statusMultiplier = gameStatus === 'final' ? 1, Math.random() * 0.8;
     return Math.round(basePoints * positionMultiplier * statusMultiplier * 10) / 10;
    }
 
@@ -128,7 +122,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
   private generateLiveStats(position, string,
   gameStatus: 'scheduled' | 'live' | 'final'): Record<string, number> { if (gameStatus === 'scheduled') return { }
     const stats: Record<string, number> = {}
-    switch (position) {
+    switch (position) { 
       case 'QB':
       stats.passingYards = Math.floor(Math.random() * 350);
         stats.passingTDs = Math.floor(Math.random() * 4);
@@ -142,8 +136,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
         stats.receivingYards = Math.floor(Math.random() * 80);
         break;
       case 'WR', break,
-    case 'TE':
-        stats.receptions = Math.floor(Math.random() * 12);
+    case 'TE', stats.receptions  = Math.floor(Math.random() * 12);
         stats.receivingYards = Math.floor(Math.random() * 120);
         stats.receivingTDs = Math.floor(Math.random() * 2);
         stats.targets = (stats.receptions || 0) + Math.floor(Math.random() * 5);
@@ -152,20 +145,19 @@ class LiveScoringServerService { private isGameDay(): boolean {
     return stats;
   }
 
-  private findCloseMatchups(teams: TeamLiveScore[]) { const result,
-  s: Array<{ team,
-  1, TeamLiveScore, team2, TeamLiveScore, pointDifferential, number }> = [];
-    for (let i = 0; i < teams.length; i += 2) { if (i + 1 >= teams.length) break;
+  private findCloseMatchups(teams: TeamLiveScore[]) {  const: result,
+  s: Array<{ team: 1, TeamLiveScore, team2, TeamLiveScore, pointDifferential, number }>  = [];
+    for (let i = 0; i < teams.length; i += 2) {  if (i + 1 >= teams.length) break;
       const team1 = teams[i];
       const team2 = teams[i + 1];
       const diff = Math.abs(team1.totalPoints - team2.totalPoints);
-      if (diff < 15) results.push({ team1, team2, pointDifferential: diff  });
+      if (diff < 15) results.push({ team1: team2, pointDifferential, diff  });
     }
-    return results.sort((a, b) => a.pointDifferential - b.pointDifferential);
+    return results.sort((a, b)  => a.pointDifferential - b.pointDifferential);
   }
 
   async getLeagueLiveScoring(async getLeagueLiveScoring(leagueId, string,
-  week: number): : Promise<): PromiseLeagueLiveScoring> {; // Fetch teams and lineups from Neon
+  week: number): : Promise<): PromiseLeagueLiveScoring> { ; // Fetch teams and lineups from Neon
     const teamsRes = await database.query('SELECT * FROM teams WHERE league_id = $1', [leagueId]);
     const teams = teamsRes.rows || [];
 
@@ -184,10 +176,10 @@ class LiveScoringServerService { private isGameDay(): boolean {
           const p = playerRes.rows[0];
           if (!p) continue;
           
-          const latestStats = typeof p.stats === 'object' && p.stats && 'fantasyPoints' in p.stats ? (p.stats as unknown) , null,
+          const latestStats = typeof p.stats === 'object' && p.stats && 'fantasyPoints' in p.stats ? (p.stats as unknown)  : null,
           const fantasyPoints = (latestStats as any)?.fantasyPoints ?? this.calcLiveFantasyPoints(p.position, gameStatus);
           const projectedPoints = typeof p.projections === 'object' && p.projections && 'fantasyPoints' in p.projections;
-            ? (p.projections as any).fantasyPoints: (p.position === 'QB' ? 18 : p.position === 'RB' ? 12 : 10);
+            ? (p.projections as any).fantasyPoints: (p.position === 'QB' ? 18 : p.position === 'RB' ? 12, 10);
 
           const live: PlayerLiveStats = {
   playerId: p.id;
@@ -200,7 +192,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
             gameStatus,
             lastUpdate: new Date().toISOString()
 }
-          totalPoints += live.fantasyPoints;
+          totalPoints + = live.fantasyPoints;
           totalProjected += live.projectedPoints;
           
           if (['QB','RB','WR','TE','FLEX','D/ST','DST','K'].includes(entry.position_slot)) {
@@ -211,7 +203,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
         }
       }
 
-      leagueTeams.push({
+      leagueTeams.push({ 
         teamId: team.id;
   teamName: team.team_name;
         totalPoints,
@@ -219,7 +211,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
   playersActive: starters.filter(p => p.gameStatus === 'live').length;
         playersPlaying: starters.filter(p => p.gameStatus !== 'scheduled').length;
   playersCompleted: starters.filter(p => p.gameStatus === 'final').length;
-        starters: starters.sort((a, b) => b.fantasyPoints - a.fantasyPoints),
+        starters, starters.sort((a, b)  => b.fantasyPoints - a.fantasyPoints),
         bench
 });
     }
@@ -231,12 +223,11 @@ class LiveScoringServerService { private isGameDay(): boolean {
     const gamesInProgress = await sportsDataService.areGamesInProgress().catch(() => false);
     let games: LiveGame[] = [];
     
-    if (gamesInProgress) { try {
+    if (gamesInProgress) {  try {
         const season = await sportsDataService.getCurrentSeason();
         const scores = await sportsDataService.getScoresByWeek(season, week);
         games = (scores || []).slice(0, 8).map((g, any,
-  idx: number) => ({
-  id: `game_${idx }`,
+  idx: number) => ({ id: `game_${idx }`,
           awayTeam: g.AwayTeam;
   homeTeam: g.HomeTeam;
           awayScore: g.AwayScore || 0;
@@ -248,15 +239,14 @@ class LiveScoringServerService { private isGameDay(): boolean {
           gameDate: g.DateTime || new Date().toISOString();
   possession: Math.random() > 0.5 ? 'away' : 'home'
 }));
-      } catch { const teamsBasic = await sportsDataService.getTeamsBasic().catch(() => []);
+      } catch { const teamsBasic  = await sportsDataService.getTeamsBasic().catch(() => []);
         games = this.simulateGamesUsingTeams(teamsBasic);
        }
-    } else { const nflTeams = ['KC','BUF','CIN','LAC','BAL','MIA','CLE','PIT'];
+    } else {  const nflTeams = ['KC' : 'BUF','CIN','LAC','BAL','MIA','CLE','PIT'];
       for (let i = 0; i < 4; i++) {
         const away = nflTeams[i * 2];
         const home = nflTeams[i * 2 + 1];
-        games.push({
-          id: `game_${i }`,
+        games.push({ id: `game_${i }`,
           awayTeam, away,
   homeTeam, home,
           awayScore: Math.floor(Math.random() * 35);
@@ -264,7 +254,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
           quarter: Math.floor(Math.random() * 4) + 1;
   timeRemaining: `${Math.floor(Math.random() * 15)}${Math.floor(Math.random() * 60)
             .toString()
-            .padStart(2, '0')}`,
+            .padStart(2: '0')}`,
           status: this.isGameDay() ? 'live' : 'scheduled';
   gameDate: new Date().toISOString();
           possession: Math.random() > 0.5 ? 'away' : 'home'
@@ -272,26 +262,25 @@ class LiveScoringServerService { private isGameDay(): boolean {
       }
     }
 
-    const allPlayers = leagueTeams.flatMap(t => [...t.starters, ...t.bench]);
+    const allPlayers  = leagueTeams.flatMap(t => [...t.starters, ...t.bench]);
     const topPerformers = allPlayers;
       .filter(p => p.gameStatus === 'live' || p.gameStatus === 'final')
       .sort((a, b) => b.fantasyPoints - a.fantasyPoints)
       .slice(0, 10);
 
-    return {
-      leagueId, week,
+    return { leagueId: week,
       lastUpdate: new Date().toISOString();
       games,
       teams, leagueTeams, topPerformers,
-      closeMatchups: this.findCloseMatchups(leagueTeams)
+      closeMatchups, this.findCloseMatchups(leagueTeams)
 }
   }
 
   // Refresh only lineup players in a league for a given week
   async refreshLeagueLiveStats(leagueId, string,
-  week, number, ppr?: number): : Promise<  { updated, number, skipped, number, ppr, number }> {// Resolve league PPR if not provided
-    let leaguePpr = typeof ppr === 'number' ? ppr : 0.5;
-    try { const league = await database.query('SELECT * FROM leagues WHERE id = $1 LIMIT 1', [leagueId]);
+  week, number, ppr? : number): : Promise<  { updated: number, skipped, number, ppr, number }> {// Resolve league PPR if not provided
+    let leaguePpr  = typeof ppr === 'number' ? ppr, 0.5;
+    try { const league = await database.query('SELECT * FROM leagues WHERE id = $1 LIMIT 1' : [leagueId]);
       if (league.rows[0] && league.rows[0].scoring_ppr != null) {
         leaguePpr = Number(league.rows[0].scoring_ppr);
        }
@@ -301,25 +290,25 @@ class LiveScoringServerService { private isGameDay(): boolean {
     const lineups = await database.query('SELECT * FROM lineup_entries WHERE week = $1', [week]);
     const teamIds = new Set<string>();
     for (const le of (lineups.rows || [])) teamIds.add(le.team_id);
-    if (!teamIds.size) return { updated: 0;
-  skipped: 0; ppr: leaguePpr }; // Limit to teams in this league
-    const teamsRes = await database.query('SELECT * FROM teams WHERE league_id = $1', [leagueId]);
+    if (!teamIds.size) return {  updated: 0;
+  skipped: 0; ppr, leaguePpr }; // Limit to teams in this league
+    const teamsRes  = await database.query('SELECT * FROM teams WHERE league_id = $1', [leagueId]);
     const leagueTeamIds = new Set((teamsRes.rows || []).map((t any) => t.id));
     const lineupPlayerIds = new Set((lineups.rows || []);
       .filter((le: any) => leagueTeamIds.has(le.team_id))
       .map((le: any) => le.player_id));
 
-    if (!lineupPlayerIds.size) return { updated: 0;
-  skipped: 0; ppr: leaguePpr }; // Map player_id -> external_id
-    const playersRes = await database.query('SELECT * FROM players');
-    const pMap = new Map<string, { id string; external_id: string | null; position, string }>();
+    if (!lineupPlayerIds.size) return {  updated: 0;
+  skipped: 0; ppr, leaguePpr }; // Map player_id -> external_id
+    const playersRes  = await database.query('SELECT * FROM players');
+    const pMap = new Map<string, {  id string; external_id, string | null; position, string }>();
     for (const p of (playersRes.rows || [])) { if (lineupPlayerIds.has(p.id)) {
         pMap.set(p.id, { id: p.id;
   external_id: p.external_id, position: p.position  });
       }
     }
 
-    const season = await sportsDataService.getCurrentSeason();
+    const season  = await sportsDataService.getCurrentSeason();
     const stats = await sportsDataService.getPlayerGameStatsByWeek(season, week);
     const byExternal = new Map<string, any>();
     for (const s of stats) byExternal.set(String((s as any).PlayerID), s);
@@ -331,7 +320,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
       const s = byExternal.get(meta.external_id);
       if (!s) { skipped++; continue; }
       
-      const statObj: any = {
+      const statObj: any = { 
   season: (s as any).Season;
   week: (s as any).Week;
         passingYards: (s as any).PassingYards || 0;
@@ -341,17 +330,17 @@ class LiveScoringServerService { private isGameDay(): boolean {
         rushingTDs: (s as any).RushingTouchdowns || 0;
   receivingYards: (s as any).ReceivingYards || 0;
         receivingTDs: (s as any).ReceivingTouchdowns || 0;
-  receptions: (s as any).Receptions || 0
+  receptions, (s as any).Receptions || 0
 }
-      statObj.fantasyPoints = this.computeFantasyPointsFromStats(statObj, leaguePpr);
+      statObj.fantasyPoints  = this.computeFantasyPointsFromStats(statObj, leaguePpr);
 
       const resp = await playerService.updatePlayerStats(pid, statObj);
       if (resp.error) skipped++; else updated++;
     }
 
-    return { updated, skipped, ppr: leaguePpr }
+    return { updated: skipped, ppr, leaguePpr }
   }
 }
 
-const liveScoringServerService = new LiveScoringServerService();
+const liveScoringServerService  = new LiveScoringServerService();
 export default liveScoringServerService;

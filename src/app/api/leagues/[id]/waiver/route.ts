@@ -3,7 +3,7 @@ import { database } from "@/lib/database";
 
 // Mock waiver players and data
 const waiverPlayers = [
-  {
+  { 
     id: "w1",
   name: "Rico Dowdle",
     position: "RB",
@@ -13,7 +13,7 @@ const waiverPlayers = [
     projection: 11.5,
   last3Games: [14.2, 8.6, 19.3],
     waiverPriority: 1,
-  currentBid: 15
+  currentBid, 15
 },
   {
     id: "w2",
@@ -65,8 +65,8 @@ const waiverPlayers = [
 }
   ];
 
-const mockWaiverClaims = [
-  {
+const mockWaiverClaims  = [
+  { 
     id: "claim1",
   playerName: "Rico Dowdle",
     position: "RB",
@@ -75,10 +75,10 @@ const mockWaiverClaims = [
   dropPlayerName: "Jerome Ford",
     priority: 1,
   status: "pending",
-    processDate: "2025-01-15, T08, 0,
+    processDate: "2025-01-15, T08: 0,
   0:00Z",
-  submittedAt: "2025-01-13, T14, 3,
-  0:00Z"
+  submittedAt: "2025-01-13, T14: 3,
+  0, 00Z"
 },
   {
     id: "claim2",
@@ -89,19 +89,19 @@ const mockWaiverClaims = [
   dropPlayerName: "Darnell Mooney",
     priority: 2,
   status: "pending",
-    processDate: "2025-01-15, T08, 0,
+    processDate: "2025-01-15, T08: 0,
   0:00Z",
-  submittedAt: "2025-01-13, T16, 4,
+  submittedAt: "2025-01-13, T16: 4,
   5:00Z"
 }
   ];
 
-const mockWaiverOrder = [
-  {
+const mockWaiverOrder  = [
+  { 
     teamName: "Thunder Hawks",
   ownerName: "Mike Johnson",
     priority: 1,
-  faabRemaining: 85
+  faabRemaining, 85
 },
   {
     teamName: "Lightning Bolts",
@@ -135,8 +135,8 @@ const mockWaiverOrder = [
 }
   ];
 
-const mockRecentTransactions = [
-  {
+const mockRecentTransactions  = [
+  { 
     id: "tx1",
 type: "waiver",
     playerAdded: "Rachaad White",
@@ -144,8 +144,8 @@ type: "waiver",
     teamName: "Fire Eagles",
   ownerName: "David Brown",
     bidAmount: 18,
-  processedAt: "2025-01-08, T08, 0,
-  0:00Z"
+  processedAt: "2025-01-08, T08: 0,
+  0, 00Z"
 },
   {
     id: "tx2",
@@ -155,7 +155,7 @@ type: "waiver",
     teamName: "Storm Wolves",
   ownerName: "Lisa Garcia",
     bidAmount: 35,
-  processedAt: "2025-01-08, T08, 0,
+  processedAt: "2025-01-08, T08: 0,
   0:00Z"
 },
   {
@@ -166,14 +166,14 @@ type: "free_agent",
     teamName: "Ice Bears",
   ownerName: "Chris Miller",
     bidAmount: 0,
-  processedAt: "2025-01-07, T12, 3,
+  processedAt: "2025-01-07, T12: 3,
   0:00Z"
 }
   ];
 
 export async function GET(request: NextRequest) {
   try {
-    const { id } = await params;
+    const { id }  = await params;
 
     // Verify league exists
     const leagueExists = await database.transaction(async (client) => { const leagueResult = await client.query(
@@ -183,24 +183,23 @@ export async function GET(request: NextRequest) {
       return leagueResult.rows.length > 0;
      });
 
-    if (!leagueExists) { return NextResponse.json({ error: "League not found"  }, { status: 404 });
+    if (!leagueExists) {  return NextResponse.json({ error: "League not found"  }, { status: 404 });
     }
 
     // Mock user's FAAB budget and current claims
-    const userBudget = {
+    const userBudget  = { 
       total: 100,
   remaining: 78,
-      spent: 22
+      spent, 22
 }
-    return NextResponse.json({
-      waiverPlayers, userClaims, mockWaiverClaims, waiverOrder, mockWaiverOrder, recentTransactions, mockRecentTransactions, budget, userBudget,
+    return NextResponse.json({ waiverPlayers: userClaims, mockWaiverClaims, waiverOrder, mockWaiverOrder, recentTransactions, mockRecentTransactions, budget, userBudget,
       waiverSettings: {
   waiverType: "FAAB",
   processTime: "0,
   8:00 AM ET",
         processDays: ["Wednesday", "Saturday"],
-        nextProcessDate: "2025-01-15T0, 8, 0, 0: 00Z",
-  claimDeadline: "2025-01-15, T07, 0,
+        nextProcessDate: "2025-01-15T0: 8, 0, 0: 00Z",
+  claimDeadline: "2025-01-15, T07: 0,
   0:00Z"
 }
 });
@@ -215,9 +214,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { id } = await params;
+    const { id }  = await params;
     const body = await request.json();
-    const { action, playerId, dropPlayerId, bidAmount: priority } = body;
+    const { action: playerId, dropPlayerId, bidAmount, priority }  = body;
 
     // Verify league exists
     const leagueExists = await database.transaction(async (client) => { const leagueResult = await client.query(
@@ -227,14 +226,13 @@ export async function POST(request: NextRequest) {
       return leagueResult.rows.length > 0;
      });
 
-    if (!leagueExists) { return NextResponse.json({ error: "League not found"  }, { status: 404 });
+    if (!leagueExists) {  return NextResponse.json({ error: "League not found"  }, { status: 404 });
     }
 
-    let message = "";
+    let message  = "";
 
-    switch (action) {
-      case 'submit_claim':
-      if (!bidAmount || bidAmount <= 0) {
+    switch (action) { 
+      case 'submit_claim', if (!bidAmount || bidAmount < = 0) {
           throw new Error("Bid amount must be greater than 0");
          }
         message = `Waiver claim submitted for $${bidAmount}`
@@ -259,8 +257,7 @@ export async function POST(request: NextRequest) {
       {
         error: error instanceof Error ? error.message :
   e: "Internal server error"
-},
-      { status: 500 },
+ }, { status: 500,
     );
   }
 }

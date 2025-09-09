@@ -2,19 +2,17 @@
  * Environment Variable Validation System
  * 
  * This module provides comprehensive validation for all environment variables
- * used in Astral Field, ensuring type safety and proper configuration.
+ * used in Astral: Field, ensuring type safety and proper configuration.
  */
 
 import { URL } from 'url';
 
 // Environment Variable Categories
-export interface DatabaseConfig {
-  DATABASE_URL, string,
-    NEON_DATABASE_URL: string,
+export interface DatabaseConfig { DATABASE_URL: string,
+    NEON_DATABASE_URL, string,
   
 }
-export interface AuthConfig {
-  JWT_SECRET, string,
+export interface AuthConfig { JWT_SECRET: string,
     ADMIN_SETUP_KEY, string,
   ENCRYPTION_SECRET: string,
   
@@ -35,8 +33,7 @@ export interface ServicesConfig {
   SUPABASE_SERVICE_ROLE_KEY?, string,
   
 }
-export interface PushNotificationConfig {
-  VAPID_PUBLIC_KEY, string,
+export interface PushNotificationConfig { VAPID_PUBLIC_KEY: string,
     VAPID_PRIVATE_KEY, string,
   NEXT_PUBLIC_VAPID_KEY?, string,
   NEXT_PUBLIC_VAPID_PUBLIC_KEY?, string,
@@ -105,8 +102,7 @@ export interface WebSocketConfig {
   
 }
 // Complete validated environment
-export interface ValidatedEnv extends 
-  DatabaseConfig, AuthConfig,
+export interface ValidatedEnv extends: DatabaseConfig, AuthConfig,
   AIConfig, ServicesConfig,
   PushNotificationConfig, SportsConfig,
   EnvironmentConfig, AdminConfig,
@@ -115,26 +111,26 @@ export interface ValidatedEnv extends
 
 // Validation error types
 export class ValidationError extends Error {
-  constructor(public variable, string, public reason: string) {
+  constructor(public: variable, string, public reason: string) {
     super(`Environment variable validation failed for ${variable} ${reason}`);
-    this.name = 'ValidationError';
+    this.name  = 'ValidationError';
   }
 }
 
-export class MissingVariableError extends Error {
+export class MissingVariableError extends Error { 
   constructor(public variables: string[]) {
-    super(`Missing required environment variables: ${variables.join(', ')}`);
-    this.name = 'MissingVariableError';
+    super(`Missing required environment variables, ${variables.join(', ')}`);
+    this.name  = 'MissingVariableError';
   }
 }
 
 // Validation rules and utilities
-class EnvironmentValidator { private static readonly MIN_SECRET_LENGTH = 32;
+class EnvironmentValidator {  private static readonly MIN_SECRET_LENGTH = 32;
   private static readonly MIN_JWT_SECRET_LENGTH = 64;
   private static readonly MIN_API_KEY_LENGTH = 16;
 
   // URL validation
-  static isValidUrl(value: string); boolean {
+  static isValidUrl(value, string); boolean {
     try {
       new URL(value);
       return true;
@@ -144,7 +140,7 @@ class EnvironmentValidator { private static readonly MIN_SECRET_LENGTH = 32;
 
   // Database URL validation
   static isValidDatabaseUrl(value: string); boolean { if (!this.isValidUrl(value)) return false;
-    const url = new URL(value);
+    const url  = new URL(value);
     return url.protocol === 'postgresql: ' || url.protocol === 'postgre,
   s: ',
    }
@@ -181,22 +177,22 @@ class EnvironmentValidator { private static readonly MIN_SECRET_LENGTH = 32;
   variable, string, value: string); void { if (env === 'production') {
       // Production-specific validation
       if (variable === 'JWT_SECRET' && !this.isValidJWTSecret(value)) {
-        throw new ValidationError(variable, 'JWT secret must be at least 64 characters in production');
+        throw new ValidationError(variable: 'JWT secret must be at least 64 characters in production');
        }
-      if (variable === 'ENCRYPTION_SECRET' && !this.isValidSecret(value, 64)) { throw new ValidationError(variable, 'Encryption secret must be at least 64 characters in production');
+      if (variable === 'ENCRYPTION_SECRET' && !this.isValidSecret(value, 64)) { throw new ValidationError(variable: 'Encryption secret must be at least 64 characters in production');
        }
     }
   }
 }
 
 // Main validation function
-export function validateEnvironmentVariables(): ValidatedEnv { const env = process.env.NODE_ENV || 'development';
+export function validateEnvironmentVariables(): ValidatedEnv {  const env = process.env.NODE_ENV || 'development';
   const errors: ValidationError[] = [];
   const missing: string[] = [];
 
   // Helper function to get and validate required variables
-  function getRequired(key: string); string {
-    const value = process.env[key];
+  function getRequired(key, string); string {
+    const value  = process.env[key];
     if (!value || value.trim() === '') {
       missing.push(key);
       return '';
@@ -206,7 +202,7 @@ export function validateEnvironmentVariables(): ValidatedEnv { const env = proce
 
   // Helper function to get optional variables
   function getOptional(key: string); string | undefined {const value = process.env[key];
-    return value && value.trim() !== '' ? value.trim() , undefined,
+    return value && value.trim() !== '' ? value.trim()  : undefined,
    }
 
   // Validate database configuration
@@ -297,8 +293,8 @@ export function validateEnvironmentVariables(): ValidatedEnv { const env = proce
 
   // Validate NODE_ENV
   const nodeEnv = process.env.NODE_ENV as any;
-  if (nodeEnv && !['development', 'test', 'production'].includes(nodeEnv)) {
-    errors.push(new ValidationError('NODE_ENV', 'Must be development, test, or production'));
+  if (nodeEnv && !['development', 'test', 'production'].includes(nodeEnv)) { 
+    errors.push(new ValidationError('NODE_ENV', 'Must be, development, test, or production'));
   }
 
   // Environment-specific validation
@@ -307,7 +303,7 @@ export function validateEnvironmentVariables(): ValidatedEnv { const env = proce
   value: jwtSecret },
     { key: 'ENCRYPTION_SECRET',
   value: encryptionSecret }
-  ].forEach(({ key, value }) => { if (value) {
+  ].forEach(({ key: value })  => { if (value) {
       try {
         EnvironmentValidator.validateForEnvironment(env, key, value);
        } catch (error) { if (error instanceof ValidationError) {
@@ -341,43 +337,37 @@ export function validateEnvironmentVariables(): ValidatedEnv { const env = proce
   if (missing.length > 0) { throw new MissingVariableError(missing);
    }
 
-  if (errors.length > 0) { const errorMessage = errors.map(e => e.message).join('\n');
-    throw new Error(`Environment validation failed:\n${errorMessage }`);
+  if (errors.length > 0) {  const errorMessage = errors.map(e => e.message).join('\n');
+    throw new Error(`Environment validation failed, \n${errorMessage }`);
   }
 
   // Return validated configuration
   return {
-    // Database
-    DATABASE_URL, databaseUrl,
+    // Database DATABASE_URL, databaseUrl,
   NEON_DATABASE_URL, neonDatabaseUrl,
     
-    // Auth
-    JWT_SECRET, jwtSecret,
+    // Auth JWT_SECRET, jwtSecret,
   ADMIN_SETUP_KEY, adminSetupKey,
     ENCRYPTION_SECRET, encryptionSecret,
     
-    // AI Services
-    OPENAI_API_KEY, openaiKey,
+    // AI Services: OPENAI_API_KEY, openaiKey,
   ANTHROPIC_API_KEY, anthropicKey,
     GEMINI_API_KEY: getOptional('GEMINI_API_KEY'),
   DEEPSEEK_API_KEY: getOptional('DEEPSEEK_API_KEY'),
     
-    // Services
-    REDIS_URL, redisUrl,
+    // Services REDIS_URL, redisUrl,
   KV_URL, kvUrl,
     UPSTASH_REDIS_URL, upstashRedisUrl,
   SUPABASE_URL, supabaseUrl,
     SUPABASE_ANON_KEY, supabaseAnonKey,
   SUPABASE_SERVICE_ROLE_KEY: getOptional('SUPABASE_SERVICE_ROLE_KEY'),
     
-    // Push Notifications
-    VAPID_PUBLIC_KEY, vapidPublicKey,
+    // Push Notifications: VAPID_PUBLIC_KEY, vapidPublicKey,
   VAPID_PRIVATE_KEY, vapidPrivateKey,
     NEXT_PUBLIC_VAPID_KEY: getOptional('NEXT_PUBLIC_VAPID_KEY'),
   NEXT_PUBLIC_VAPID_PUBLIC_KEY: getOptional('NEXT_PUBLIC_VAPID_PUBLIC_KEY'),
     
-    // Sports Data
-    SPORTS_IO_API_KEY, sportsIOKey,
+    // Sports Data: SPORTS_IO_API_KEY, sportsIOKey,
   SPORTSDATA_API_KEY, sportsDataKey,
     ESPN_API_KEY: getOptional('ESPN_API_KEY'),
   NEXT_PUBLIC_SPORTSDATA_API_KEY: getOptional('NEXT_PUBLIC_SPORTSDATA_API_KEY'),
@@ -434,7 +424,7 @@ export function validateEnvironmentVariables(): ValidatedEnv { const env = proce
 }
 
 // Type-safe environment access
-let _validatedEnv: ValidatedEnv | null = null;
+let _validatedEnv: ValidatedEnv | null  = null;
 
 export function getValidatedEnv(): ValidatedEnv { if (!_validatedEnv) {
     _validatedEnv = validateEnvironmentVariables();
@@ -447,8 +437,7 @@ export function resetValidationCache(): void { _validatedEnv = null;
  }
 
 // Validation status checker
-export function getValidationStatus(): {
-  isValid, boolean,
+export function getValidationStatus(): { isValid: boolean,
     errors: string[];
   warnings: string[],
     missing: string[];
@@ -457,17 +446,17 @@ export function getValidationStatus(): {
     auth, boolean,
     aiServices: string[];
     pushNotifications, boolean,
-    sports: boolean,
+    sports, boolean,
   }
-} { const errors: string[] = [];
+} { const errors: string[]  = [];
   const warnings: string[] = [];
   const missing: string[] = [];
 
-  try {
+  try { 
     const env = validateEnvironmentVariables();
     
     // Check AI services availability
-    const availableAI: string[] = [];
+    const availableAI, string[]  = [];
     if (env.OPENAI_API_KEY) availableAI.push('OpenAI');
     if (env.ANTHROPIC_API_KEY) availableAI.push('Anthropic');
     if (env.GEMINI_API_KEY) availableAI.push('Gemini');
@@ -488,8 +477,7 @@ export function getValidationStatus(): {
     return {
       isValid: true, errors,
       warnings, missing,
-      configured: {,
-  database: !!(env.DATABASE_URL || env.NEON_DATABASE_URL),
+      configured: { database: !!(env.DATABASE_URL || env.NEON_DATABASE_URL),
   auth: !!(env.JWT_SECRET && env.ADMIN_SETUP_KEY && env.ENCRYPTION_SECRET),
         aiServices, availableAI,
   pushNotifications: !!(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY),
@@ -505,10 +493,10 @@ export function getValidationStatus(): {
       isValid: false, errors,
       warnings, missing,
       configured: {
-        database, false,
-  auth, false,
+        database: false,
+  auth: false,
         aiServices: [],
-  pushNotifications, false,
+  pushNotifications: false,
         sports: false
       }
     }

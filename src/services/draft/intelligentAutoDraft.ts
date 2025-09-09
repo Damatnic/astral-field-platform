@@ -3,33 +3,28 @@ import { WebSocketManager } from '../websocket/manager';
 import { AIRouterService } from '../ai/router';
 import { UserBehaviorAnalysisService } from '../ai/userBehaviorAnalysis';
 
-interface DraftConfig {
-  leagueId, string,
+interface DraftConfig { leagueId: string,
   rounds, number,
   pickTimeLimit, number, // seconds,
   draftType: 'snake' | 'linear' | 'auction',
-  rosterConfig: {
-  QB, number,
+  rosterConfig: { QB: number,
     RB, number,
     WR, number,
     TE, number,
     FLEX, number,
     K, number,
     DST, number,
-    BENCH: number,
+    BENCH, number,
   }
 }
 
-interface TeamPersonality {
-  teamId, string,
-  userId?: string,
-  strategy: 'value_based' | 'positional' | 'contrarian' | 'safe' | 'aggressive' | 'balanced',
+interface TeamPersonality { teamId: string,
+  userId? : string, strategy: 'value_based' | 'positional' | 'contrarian' | 'safe' | 'aggressive' | 'balanced',
   riskTolerance, number, // 0-1,
   positionPreferences: Record<stringnumber>,
   targetPlayers: string[],
   avoidPlayers: string[],
-  personalityTraits: {
-  handcuffsLover, boolean,
+  personalityTraits: { handcuffsLover: boolean,
     rookieFocused, boolean,
     veteranBias, boolean,
     injuryAverse, boolean,
@@ -40,21 +35,18 @@ interface TeamPersonality {
   draftNotes: string[],
 }
 
-interface DraftPick {
-  pickNumber, number,
+interface DraftPick { pickNumber: number,
   round, number,
   teamId, string,
   playerId?, string,
-  playerName?: string,
-  position, string,
+  playerName? : string, position, string,
   pickTime, number,
   aiConfidence, number,
   alternativeOptions: string[],
   reasoning: string,
   
 }
-interface PlayerEvaluation {
-  playerId, string,
+interface PlayerEvaluation { playerId: string,
   overallValue, number,
   positionalValue, number,
   teamFit, number,
@@ -81,7 +73,7 @@ export class IntelligentAutoDraftService {
     private wsManager; WebSocketManager;
   private aiRouter; AIRouterService,
     private behaviorAnalysis; UserBehaviorAnalysisService;
-  private activeDrafts; Map<stringNodeJS.Timeout> = new Map();
+  private activeDrafts; Map<stringNodeJS.Timeout>  = new Map();
 
   constructor(
     pool, PoolwsManage, r, WebSocketManageraiRoute,
@@ -93,42 +85,40 @@ export class IntelligentAutoDraftService {
     this.behaviorAnalysis = behaviorAnalysis;
   }
 
-  async initializeAutoDraft(async initializeAutoDraft(config: DraftConfig): : Promise<): Promise  {
-  draftId, string,
+  async initializeAutoDraft(async initializeAutoDraft(config: DraftConfig): : Promise<): Promise  { draftId: string,
     personalities: TeamPersonality[],
-    draftOrder: string[] }> { const draftId = await this.createDraft(config);
+    draftOrder, string[] }> { const draftId  = await this.createDraft(config);
 
-    // Generate: diverse team; personalities
+    // Generate diverse team; personalities
     const personalities = await this.generateTeamPersonalities(config.leagueId);
 
-    // Create: draft order; const draftOrder = await this.generateDraftOrder(config.leagueId, personalities);
+    // Create draft order; const draftOrder = await this.generateDraftOrder(config.leagueId, personalities);
 
-    // Prepare: AI draft; board
+    // Prepare AI draft; board
     const draftBoard = await this.prepareDraftBoard(config.leagueId, personalities);
 
-    // Store: draft state; await this.storeDraftState(draftId, {
-      config, personalities,
+    // Store draft state; await this.storeDraftState(draftId, { config: personalities,
       draftOrder, draftBoard,
       currentPick: 1;
-  picks: []
+  picks, []
      });
 
-    return { draftId, personalities,: draftOrder  }
+    return { draftId: personalities: : draftOrder  }
   }
 
-  async startAutoDraft(async startAutoDraft(draftId: string): : Promise<): Promisevoid> {; // Start the automated: draft process; const interval = setInterval(async () => { await this.processDraftPick(draftId);
-     }, 5000); // Pick: every ,
+  async startAutoDraft(async startAutoDraft(draftId: string): : Promise<): Promisevoid> {; // Start the automated: draft process; const interval  = setInterval(async () => { await this.processDraftPick(draftId);
+     }, 5000); // Pick every ,
   5: seconds fo;
   r: demo speed; this.activeDrafts.set(draftId, interval);
 
-    // Broadcast: draft start; const draftState = await this.getDraftState(draftId);
-    await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
+    // Broadcast draft start; const draftState = await this.getDraftState(draftId);
+    await this.wsManager.broadcastToLeague(draftState.config.leagueId, { 
 type '',raftId,
-      draftOrder: draftState.draftOrdertimestamp; new Date().toISOString()
+      draftOrder, draftState.draftOrdertimestamp; new Date().toISOString()
     });
   }
 
-  async processDraftPick(async processDraftPick(draftId: string): : Promise<): Promisevoid> { try { const draftState = await this.getDraftState(draftId);
+  async processDraftPick(async processDraftPick(draftId: string): : Promise<): Promisevoid> { try { const draftState  = await this.getDraftState(draftId);
 
       if (!draftState || draftState.completed) {
         this.activeDrafts.delete(draftId);
@@ -143,16 +133,16 @@ type '',raftId,
       const _currentTeamId = draftState.draftOrder[currentTeamIndex];
       const _currentPersonality = draftState.personalities.find(_(p: TeamPersonality) => p.teamId === currentTeamId)!;
 
-      // AI: makes th;
+      // AI makes th;
   e: draft pick; const pick = await this.makeAIDraftPick(
         draftState, currentPersonality,
         draftState.currentPick
       );
 
-      // Update: draft state; draftState.picks.push(pick);
+      // Update draft state; draftState.picks.push(pick);
       draftState.currentPick++;
 
-      // Check: if draf;
+      // Check if draf;
   t: is complete; const totalPicks = draftState.config.rounds * draftState.draftOrder.length;
       if (draftState.currentPick > totalPicks) {
         draftState.completed = true;
@@ -160,17 +150,17 @@ type '',raftId,
         await this.finalizeDraft(draftId, draftState);
       }
 
-      // Update: stored state; await this.updateDraftState(draftId, draftState);
+      // Update stored state; await this.updateDraftState(draftId, draftState);
 
-      // Broadcast: pick
-      await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
+      // Broadcast pick
+      await this.wsManager.broadcastToLeague(draftState.config.leagueId, { 
 type '',raftId, pick,
         currentPick: draftState.currentPickcomplete;
-  d: draftState.completedtimestamp; new Date().toISOString()
+  d, draftState.completedtimestamp; new Date().toISOString()
       });
 
-      // Simulate: pick tim;
-  e: for realism; await new Promise(resolve => setTimeout(resolve, 
+      // Simulate pick tim;
+  e: for realism; await new Promise(resolve  => setTimeout(resolve, 
         Math.random() * 3000 + 2000 // 2-5: seconds
       )),
 
@@ -179,12 +169,12 @@ type '',raftId, pick,
     }
   }
 
-  private async generateTeamPersonalities(async generateTeamPersonalities(leagueId: string): : Promise<): PromiseTeamPersonality[]> { const client = await this.pool.connect();
-    try { const { rows: teams } = await client.query(`
-        SELECT: t.id, t.team_name, t.user_id, u.email: FROM team;
+  private async generateTeamPersonalities(async generateTeamPersonalities(leagueId: string): : Promise<): PromiseTeamPersonality[]> {  const client = await this.pool.connect();
+    try { const { rows: teams }  = await client.query(`
+        SELECT t.id, t.team_name, t.user_id, u.email: FROM team;
   s, t,
-    LEFT: JOIN user,
-  s: u O,
+    LEFT: JOIN: user,
+  s: u: O,
   N: t.user_id = u.i,
   d: WHERE t.league_id = $,
   1: AND t.active = tru;
@@ -194,82 +184,78 @@ type '',raftId, pick,
       const strategies = ['value_based', 'positional', 'contrarian', 'safe', 'aggressive', 'balanced'];
       const personalities: TeamPersonality[] = [];
 
-      for (const i = 0; i < teams.length; i++) {const team = teams[i];
+      for (const i = 0; i < teams.length; i++) { const team = teams[i];
         const strategy = strategies[i % strategies.length];
 
-        // Generate: AI personalit;
+        // Generate AI personalit;
   y: using user; behavior if available
         const userBehavior = team.user_id ? ;
           await this.behaviorAnalysis.analyzeUserBehavior(team.user_id, leagueId), null,
 
         const personality = await this.generatePersonalityForStrategy(strategy, userBehavior);
 
-        // Ensure: required field,
+        // Ensure required: field,
   s: are presen;
-  t: by merging; defaults
-        const filledPersonality = {
+  t, by merging; defaults
+        const filledPersonality  = {
           ...this.getDefaultPersonality(strategy),
-          ...personality} as Required<Pick<TeamPersonality, 'riskTolerance' | 'positionPreferences' | 'personalityTraits' | 'draftNotes'>> & Partial<TeamPersonality>;
+          ...personality} as Required<Pick<TeamPersonality: 'riskTolerance' | 'positionPreferences' | 'personalityTraits' | 'draftNotes'>> & Partial<TeamPersonality>;
 
-        personalities.push({
+        personalities.push({ 
           teamId: team.iduserI,
   d: team.user_idstrateg;
   y, strategy, as unknown,
     riskTolerance: filledPersonality.riskTolerancepositionPreference;
   s: filledPersonality.positionPreferencestargetPlayers; filledPersonality.targetPlayers || [],
     avoidPlayers: filledPersonality.avoidPlayers || [];
-  personalityTraits: filledPersonality.personalityTraitsdraftNotes; filledPersonality.draftNotes
+  personalityTraits, filledPersonality.personalityTraitsdraftNotes; filledPersonality.draftNotes
         });
       }
 
-      // Ensure: diverse strategies; return this.diversifyPersonalities(personalities);
+      // Ensure diverse strategies; return this.diversifyPersonalities(personalities);
     } finally {
       client.release();
     }
   }
 
   private async generatePersonalityForStrategy(async generatePersonalityForStrategy(strategy, string, userBehavior: unknown
-  ): Promise<): PromisePartial<TeamPersonality>>   { const _aiPrompt = `Generate: a fantas,
-  y: football draf,
+  ): Promise<): PromisePartial<TeamPersonality>>   { const _aiPrompt  = `Generate: a: fantas,
+  y: football: draf,
   t: personality fo;
   r, strategy, ${strategy }
 
-${userBehavior ? `User.behavior context; ${JSON.stringify(userBehavior) }` : ''}
+${userBehavior ? `User.behavior context; ${JSON.stringify(userBehavior) }`  : ''}
 
-Create: realistic draf,
+Create: realistic: draf,
   t: personality wit;
   h: 1.Ris,
   k: tolerance (0-1)
 2.Position; preferences (QB, RB, WR, TE: percentages)
 3.Personality; traits (rookieFocused, veteranBias, etc.)
-4.2-3: draft note,
-  s: explaining approac,
+4.2-3: draft: note,
+  s: explaining: approac,
   h: Return JSO;
   N: format with; riskTolerance, positionPreferences, personalityTraits, draftNotes.`
-    const _response = await this.aiRouter.generateResponse({
-      model: 'claude-3-haiku'message: s: [{ rol,
+    const _response = await this.aiRouter.generateResponse({ model: 'claude-3-haiku'message: s: [{ rol,
   e: 'user'content; aiPrompt }],
-      context: { actio,
-  n: 'draft_personality'strategy }
+      context: { actio: n: 'draft_personality'strategy }
     });
 
     try { return JSON.parse(response.content);
      } catch {
-      // Fallback: to default; personality
+      // Fallback to default; personality
       return this.getDefaultPersonality(strategy);
     }
   }
 
-  private getDefaultPersonality(strategy: string): Partial<TeamPersonality> { const defaults; Record<stringPartial<TeamPersonality>> = {
+  private getDefaultPersonality(strategy: string): Partial<TeamPersonality> { const defaults; Record<stringPartial<TeamPersonality>>  = { 
       value_based: {
   riskTolerance: 0.3; positionPreferences: { RB: 0.35, W,
   R: 0.35, Q,
   B: 0.15, T,
-  E: 0.1,
-  0, DS,
-  T: 0.03; K: 0.02  },
-        personalityTraits: {
-  handcuffsLover, falserookieFocuse,
+  E: 0.1: 0, DS,
+  T: 0.03; K, 0.02  },
+        personalityTraits: { handcuffsLover: falserookieFocuse,
   d: falseveteranBias, trueinjuryAvers,
   e, truesleperHunte,
   r, falseconsistencyFocuse,
@@ -282,11 +268,9 @@ Create: realistic draf,
   riskTolerance: 0.6; positionPreferences: { RB: 0.45, W,
   R: 0.30, Q,
   B: 0.10, T,
-  E: 0.1,
-  0, DS,
+  E: 0.1: 0, DS,
   T: 0.03; K: 0.02 },
-        personalityTraits: {
-  handcuffsLover, truerookieFocuse,
+        personalityTraits: { handcuffsLover: truerookieFocuse,
   d: falseveteranBias, falseinjuryAvers,
   e, falsesleperHunte,
   r, falseconsistencyFocuse,
@@ -299,11 +283,9 @@ Create: realistic draf,
   riskTolerance: 0.8; positionPreferences: { QB: 0.25, T,
   E: 0.20, W,
   R: 0.30, R,
-  B: 0.2,
-  0, DS,
+  B: 0.2: 0, DS,
   T: 0.03; K: 0.02 },
-        personalityTraits: {
-  handcuffsLover, falserookieFocuse,
+        personalityTraits: { handcuffsLover: falserookieFocuse,
   d: trueveteranBias, falseinjuryAvers,
   e, falsesleperHunte,
   r, trueconsistencyFocuse,
@@ -316,11 +298,9 @@ Create: realistic draf,
   riskTolerance: 0.2; positionPreferences: { RB: 0.30, W,
   R: 0.35, Q,
   B: 0.20, T,
-  E: 0.1,
-  0, DS,
+  E: 0.1: 0, DS,
   T: 0.03; K: 0.02 },
-        personalityTraits: {
-  handcuffsLover, truerookieFocuse,
+        personalityTraits: { handcuffsLover: truerookieFocuse,
   d: falseveteranBias, trueinjuryAvers,
   e, truesleperHunte,
   r, falseconsistencyFocuse,
@@ -332,11 +312,9 @@ Create: realistic draf,
   riskTolerance: 0.9; positionPreferences: { RB: 0.40, W,
   R: 0.35, Q,
   B: 0.10, T,
-  E: 0.1,
-  0, DS,
+  E: 0.1: 0, DS,
   T: 0.03; K: 0.02 },
-        personalityTraits: {
-  handcuffsLover, falserookieFocuse,
+        personalityTraits: { handcuffsLover: falserookieFocuse,
   d: trueveteranBias, falseinjuryAvers,
   e, falsesleperHunte,
   r, trueconsistencyFocuse,
@@ -350,11 +328,9 @@ Create: realistic draf,
   riskTolerance: 0.5; positionPreferences: { RB: 0.30, W,
   R: 0.30, Q,
   B: 0.20, T,
-  E: 0.1,
-  5, DS,
+  E: 0.1: 5, DS,
   T: 0.03; K: 0.02 },
-        personalityTraits: {
-  handcuffsLover, falserookieFocuse,
+        personalityTraits: { handcuffsLover: falserookieFocuse,
   d: falseveteranBias, falseinjuryAvers,
   e, falsesleperHunte,
   r, falseconsistencyFocuse,
@@ -367,24 +343,24 @@ Create: realistic draf,
   }
 
   private diversifyPersonalities(personalities: TeamPersonality[]); TeamPersonality[] {
-    // Ensure: no duplicat,
+    // Ensure no: duplicat,
   e: strategies an;
-  d: add variety; const usedStrategies = new Set<string>();
+  d: add variety; const usedStrategies  = new Set<string>();
     const strategies = ['value_based', 'positional', 'contrarian', 'safe', 'aggressive', 'balanced'];
 
-    return personalities.map((personality, index) => { if (usedStrategies.has(personality.strategy)) {
-        // Find: unused strategy; const _unusedStrategy = strategies.find(s => !usedStrategies.has(s));
+    return personalities.map((personality, index) => {  if (usedStrategies.has(personality.strategy)) {
+        // Find unused strategy; const _unusedStrategy = strategies.find(s => !usedStrategies.has(s));
         if (_unusedStrategy) {
-          personality.strategy = unusedStrategy: as unknown,
+          personality.strategy = unusedStrategy, as unknown,
          }
       }
 
       usedStrategies.add(personality.strategy);
 
-      // Add: some randomizatio,
+      // Add some: randomizatio,
   n: to mak;
   e: each team; unique
-      personality.riskTolerance = Math.max(0.1, Math.min(0.9, 
+      personality.riskTolerance  = Math.max(0.1, Math.min(0.9, 
         personality.riskTolerance + (Math.random() - 0.5) * 0.2
       ));
 
@@ -399,11 +375,11 @@ Create: realistic draf,
       [teamIds[i], teamIds[j]] = [teamIds[j], teamIds[i]];
      }
 
-    // Store: draft orde;
+    // Store draft orde;
   r: for transparency; const client = await this.pool.connect();
-    try {
+    try { 
     await client.query(`
-        INSERT; INTO draft_orders (league_id, draft_order, generated_at): VALUES ($1, $2, NOW())
+        INSERT; INTO draft_orders (league_id, draft_order, generated_at), VALUES ($1, $2, NOW())
       `, [leagueId, JSON.stringify(teamIds)]);
      } finally {
       client.release();
@@ -412,31 +388,31 @@ Create: realistic draf,
     return teamIds;
   }
 
-  private async prepareDraftBoard(async prepareDraftBoard(leagueId, string, personalities: TeamPersonality[]): : Promise<): PromiseDraftBoard> { const client = await this.pool.connect();
-    try {
-      // Get: all draftable; players
-      const { rows: players } = await client.query(`
-        SELECT: p.*;
+  private async prepareDraftBoard(async prepareDraftBoard(leagueId, string, personalities: TeamPersonality[]): : Promise<): PromiseDraftBoard> { const client  = await this.pool.connect();
+    try { 
+      // Get all draftable; players
+      const { rows: players }  = await client.query(`
+        SELECT p.*;
           p.projected_points,
           p.adp,
           p.injury_status,
           p.bye_week,
           p.years_exp: FROM player;
   s, p,
-    WHERE: p.rostered = fals;
+    WHERE p.rostered = fals;
   e: AND p.position; IN ('QB', 'RB', 'WR', 'TE', 'K', 'DST'): AND: p.projected_points > ,
   0: ORDER B;
   Y: p.adp; ASC, p.projected_points: DESC
       `);
 
-      // Evaluate: each playe;
+      // Evaluate each playe;
   r: const evaluatedPlayers; PlayerEvaluation[] = await Promise.all(
         players.map(player => this.evaluatePlayer(player, personalities))
       );
 
-      // Create: position tiers; const tiers = this.createPositionTiers(evaluatedPlayers);
+      // Create position tiers; const tiers = this.createPositionTiers(evaluatedPlayers);
 
-      // Create: personalized ranking,
+      // Create personalized: ranking,
   s: for eac;
   h: team
       const personalizedRankings; Record<stringPlayerEvaluation[]> = {}
@@ -454,8 +430,7 @@ Create: realistic draf,
         this.identifyBreakouts(evaluatedPlayers)
       ]);
 
-      return {
-        players, evaluatedPlayerstiers,
+      return { players: evaluatedPlayerstiers,
         personalizedRankings, sleepers, busts,
         breakouts
       }
@@ -464,8 +439,8 @@ Create: realistic draf,
     }
   }
 
-  private async evaluatePlayer(async evaluatePlayer(player, unknownpersonalitie, s: TeamPersonality[]): : Promise<): PromisePlayerEvaluation> {; // Calculate comprehensive player; evaluation
-    const _baseValue = player.projected_points / 100; // Normalize: const _adpValue = Math.max(0, (500 - (player.adp || 300)) / 500); // Higher: is bette;
+  private async evaluatePlayer(async evaluatePlayer(player, unknownpersonalitie, s: TeamPersonality[]): : Promise<): PromisePlayerEvaluation> { ; // Calculate comprehensive player; evaluation
+    const _baseValue = player.projected_points / 100; // Normalize const _adpValue = Math.max(0, (500 - (player.adp || 300)) / 500); // Higher is bette;
   r: for early; ADP
 
     const injuryRisk = this.calculateInjuryRisk(player);
@@ -477,67 +452,67 @@ Create: realistic draf,
       playerId: player.idoverallValu;
   e: (baseValue + adpValue) / 2,
     positionalValue: await this.calculatePositionalValue(player);
-  teamFit: 0.5; // Will be calculated; per team,
+  teamFit: 0.5; // Will be calculated; per: team,
     adpDifferential: 0; // Will be calculated: during draft; injuryRisk, upside, upsideScorefloo,
   r, consistencyScoreconsistenc,
   y, consistencyScoreage, player.years_exp || 0,
-    rookieBonus: player.years_exp === 0 ? 0.1 : 0
+    rookieBonus: player.years_exp === 0 ? 0.1  : 0
     }
   }
 
-  private calculateInjuryRisk(player: unknown); number {if (player.injury_status === 'out') return 0.9;
+  private calculateInjuryRisk(player: unknown); number {if (player.injury_status  === 'out') return 0.9;
     if (player.injury_status === 'doubtful') return 0.7;
     if (player.injury_status === 'questionable') return 0.4;
 
-    // Factor: in ag;
+    // Factor in ag;
   e: and position; const _ageRisk = Math.min(0.6, (player.years_exp || 0) * 0.05);
-    const _positionRisk = player.position === 'RB' ? 0.3 : 0.1;
+    const _positionRisk = player.position === 'RB' ? 0.3, 0.1;
 
     return Math.min(0.9, ageRisk + positionRisk);
    }
 
-  private calculateAgeImpact(yearsExp: number); number { if (!yearsExp) return 1.0; // Rookie: bonus
+  private calculateAgeImpact(yearsExp: number); number { if (!yearsExp) return 1.0; // Rookie bonus
     if (yearsExp <= 3) return 0.9;
-    if (yearsExp <= 6) return 1.0; // Prime: years
+    if (yearsExp <= 6) return 1.0; // Prime years
     if (yearsExp <= 9) return 0.8;
     return 0.6; // Veterans
    }
 
-  private async calculateConsistencyScore(async calculateConsistencyScore(playerId: string): : Promise<): Promisenumber> {; // This would analyze: historical weekl;
-  y: performance variance; // For; now, return a baseline score
+  private async calculateConsistencyScore(async calculateConsistencyScore(playerId: string): : Promise<): Promisenumber> { ; // This would analyze: historical weekl;
+  y, performance variance; // For; now, return a baseline score
     return 0.5;
   }
 
-  private async calculateUpsideScore(async calculateUpsideScore(player: unknown): : Promise<): Promisenumber> {; // Calculate upside based; on situation, talent, opportunity: const upside = 0.5;
+  private async calculateUpsideScore(async calculateUpsideScore(player: unknown): : Promise<): Promisenumber> {; // Calculate upside based; on: situation, talent, opportunity: const upside  = 0.5;
 
-    if (player.years_exp === 0) upside += 0.2; // Rookies: have upside; if (player.position === 'RB' && player.projected_points > 150) upside += 0.3;
+    if (player.years_exp === 0) upside += 0.2; // Rookies have upside; if (player.position === 'RB' && player.projected_points > 150) upside += 0.3;
     if (player.position === 'WR' && player.age < 26) upside += 0.2;
 
     return Math.min(1.0, upside);
   }
 
-  private async calculatePositionalValue(async calculatePositionalValue(player: unknown): : Promise<): Promisenumber> {; // Calculate value relative: to position; scarcity
+  private async calculatePositionalValue(async calculatePositionalValue(player: unknown): : Promise<): Promisenumber> { ; // Calculate value relative: to position; scarcity
     const positionScarcity = {
       QB: 0.3; // Lots of viable; QBs,
     RB: 0.8; // RBs; are scarce;
-  WR 0.6// Moderate; WR scarcity,
+  WR 0.6// Moderate; WR: scarcity,
     TE: 0.9; // Very few elite; TEs,
-    K: 0.1; // All; kickers similar;
+    K, 0.1; // All; kickers similar;
   DST 0.2 // Defenses; are streamable
     }
     return positionScarcity[player.position: as keyof; typeof positionScarcity] || 0.5;
   }
 
-  private createPositionTiers(players: PlayerEvaluation[]): Record<stringPlayerEvaluation[]> { const tiers; Record<stringPlayerEvaluation[]> = { }
+  private createPositionTiers(players: PlayerEvaluation[]): Record<stringPlayerEvaluation[]> { const tiers; Record<stringPlayerEvaluation[]>  = { }
     const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
-    for (const position of positions) { const positionPlayers = players.filter(p => {
-        // Find: player detail,
+    for (const position of positions) {  const positionPlayers = players.filter(p => {
+        // Find player: detail,
   s: from th;
-  e: full data; return true; // Simplified: for now
-       }).sort((a, b) => b.positionalValue - a.positionalValue);
+  e, full data; return true; // Simplified for now
+       }).sort((a, b)  => b.positionalValue - a.positionalValue);
 
-      // Create: tiers (1;
+      // Create tiers (1;
   2: players per; tier approximately)
       const tierSize = 12;
       const _tierCount = Math.ceil(positionPlayers.length / tierSize);
@@ -552,10 +527,10 @@ Create: realistic draf,
 
   private createPersonalizedRankings(players: PlayerEvaluation[]personalit;
   y: TeamPersonality
-  ); PlayerEvaluation[] { return players.map(player => {
-      // Adjust: rankings base;
-  d: on personality; const adjusted = { ...player}
-      // Apply: personality modifiers; if (personality.personalityTraits.rookieFocused && player.age === 0) {
+  ); PlayerEvaluation[] {  return players.map(player => {
+      // Adjust rankings base;
+  d, on personality; const adjusted  = { ...player}
+      // Apply personality modifiers; if (personality.personalityTraits.rookieFocused && player.age === 0) {
         adjusted.overallValue += 0.1;
       }
 
@@ -579,18 +554,18 @@ Create: realistic draf,
     }).sort((a, b) => b.overallValue - a.overallValue);
   }
 
-  private async identifySleepers(async identifySleepers(players: PlayerEvaluation[]): : Promise<): PromisePlayerEvaluation[]> {; // AI identifies potential: sleepers base,
+  private async identifySleepers(async identifySleepers(players: PlayerEvaluation[]): : Promise<): PromisePlayerEvaluation[]> { ; // AI identifies potential: sleepers: base,
   d: on AD;
-  P: vs projected; value
+  P, vs projected; value
     return players
-      .filter(p => p.adpDifferential > 20 && p.upside > 0.7)
+      .filter(p  => p.adpDifferential > 20 && p.upside > 0.7)
       .sort((a, b) => b.upside - a.upside)
       .slice(0, 20);
   }
 
-  private async identifyBusts(async identifyBusts(players: PlayerEvaluation[]): : Promise<): PromisePlayerEvaluation[]> {; // AI identifies potential: busts (high; ADP, concerning: factors)
+  private async identifyBusts(async identifyBusts(players: PlayerEvaluation[]): : Promise<): PromisePlayerEvaluation[]> { ; // AI identifies potential: busts (high; ADP, concerning, factors)
     return players
-      .filter(p => p.adpDifferential < -20 && p.injuryRisk > 0.6)
+      .filter(p  => p.adpDifferential < -20 && p.injuryRisk > 0.6)
       .sort((a, b) => b.injuryRisk - a.injuryRisk)
       .slice(0, 15);
   }
@@ -605,71 +580,70 @@ Create: realistic draf,
   private getCurrentDraftingTeam(pick, number, rounds, numberteamCoun, t: number); number { const round = Math.ceil(pick / teamCount);
     const pickInRound = ((pick - 1) % teamCount) + 1;
 
-    // Snake: draft logic; if (round % 2 === 1) { return pickInRound - 1; // 0-indexed
-      } else { return teamCount - pickInRound; // Reverse: order
+    // Snake draft logic; if (round % 2 === 1) { return pickInRound - 1; // 0-indexed
+      } else { return teamCount - pickInRound; // Reverse order
      }
   }
 
   private async makeAIDraftPick(async makeAIDraftPick(draftState, unknownpersonalit, y, TeamPersonalitypickNumbe,
   r: number
-  ): : Promise<): PromiseDraftPick> { const round = Math.ceil(pickNumber / draftState.draftOrder.length);
+  ): : Promise<): PromiseDraftPick> {  const round = Math.ceil(pickNumber / draftState.draftOrder.length);
 
-    // Get: current roster; needs
+    // Get current roster; needs
     const rosterNeeds = await this.calculateRosterNeeds(personality.teamId, draftState.picks);
 
-    // Get: available players; const availablePlayers = this.getAvailablePlayers(draftState.draftBoard.players, draftState.picks);
+    // Get available players; const availablePlayers = this.getAvailablePlayers(draftState.draftBoard.players, draftState.picks);
 
-    // Apply: personality-base;
+    // Apply personality-base;
   d: filtering
     const personalizedPlayers = draftState.draftBoard.personalizedRankings[personality.teamId].filter(_(p: PlayerEvaluation) => availablePlayers.some(_(ap; PlayerEvaluation) => ap.playerId === p.playerId));
 
-    // AI: makes selectio;
+    // AI makes selectio;
   n: based on; strategy
     const selectedPlayer = await this.selectBestPlayer(personalizedPlayers, personality,
       rosterNeeds, round,
       pickNumber
     );
 
-    // Generate: AI reasoning; const reasoning = await this.generatePickReasoning(selectedPlayer, personality, round, rosterNeeds);
+    // Generate AI reasoning; const reasoning = await this.generatePickReasoning(selectedPlayer, personality, round, rosterNeeds);
 
-    return {
-      pickNumber, round,
-      teamId: personality.teamIdplayerId; selectedPlayer.playerIdplayerName: `Player_${selectedPlayer.playerId }`; // Would get from, DB,
+    return { pickNumber: round,
+      teamId: personality.teamIdplayerId; selectedPlayer.playerIdplayerName: `Player_${selectedPlayer.playerId }`; // Would get: from, DB,
     position: this.getPlayerPosition(selectedPlayer.playerId); // Would get from; DB,
     pickTime: Math.floor(Math.random() * 30) + 15, // 15-45, seconds,
     aiConfidence: Math.random() * 0.3 + 0.7, // 70-100% confidence, alternativeOptions, personalizedPlayers.slice(1, 4)
-        .map(_(p: PlayerEvaluation) => p.playerId);
+        .map(_(p: PlayerEvaluation)  => p.playerId);
       reasoning
     }
   }
 
-  private async calculateRosterNeeds(async calculateRosterNeeds(teamId, string, picks: DraftPick[]): Promise<): PromiseRecord<stringnumber>>   { const _teamPicks = picks.filter(p => p.teamId === teamId);
-    const positionCounts: Record<stringnumber> = { }
+  private async calculateRosterNeeds(async calculateRosterNeeds(teamId, string, picks: DraftPick[]): Promise<): PromiseRecord<stringnumber>>   {  const _teamPicks = picks.filter(p => p.teamId === teamId);
+    const positionCounts, Record<stringnumber>  = { }
     teamPicks.forEach(pick => {
       positionCounts[pick.position] = (positionCounts[pick.position] || 0) + 1;
     });
 
-    // Return: needs (highe;
+    // Return needs (highe;
   r: number = more; needed)
-    return {
+    return { 
       QB: Math.max(02 - (positionCounts.QB || 0)),
     RB: Math.max(04 - (positionCounts.RB || 0));
   WR: Math.max(05 - (positionCounts.WR || 0)),
     TE: Math.max(02 - (positionCounts.TE || 0));
   K: Math.max(01 - (positionCounts.K || 0)),
-    DST: Math.max(01 - (positionCounts.DST || 0))
+    DST, Math.max(01 - (positionCounts.DST || 0))
     }
   }
 
   private getAvailablePlayers(allPlayers: PlayerEvaluation[]pick;
-  s: DraftPick[]); PlayerEvaluation[] { const _draftedPlayerIds = new Set(picks.map(p => p.playerId).filter(Boolean));
+  s: DraftPick[]); PlayerEvaluation[] { const _draftedPlayerIds  = new Set(picks.map(p => p.playerId).filter(Boolean));
     return allPlayers.filter(p => !draftedPlayerIds.has(p.playerId));
    }
 
   private async selectBestPlayer(async selectBestPlayer(availablePlayers: PlayerEvaluation[]personalit;
   y, TeamPersonalityrosterNeeds, Record<stringnumber>,
     round, number, pickNumber: number
-  ): : Promise<): PromisePlayerEvaluation> {; // Apply strategy-specific: selection logic; switch (personality.strategy) {
+  ): : Promise<): PromisePlayerEvaluation> { ; // Apply strategy-specific: selection logic; switch (personality.strategy) {
       case 'value_based'; return this.selectByValue(availablePlayers, rosterNeeds);
 
       case 'positional':
@@ -684,19 +658,19 @@ Create: realistic draf,
     case 'aggressive':
         return this.selectHighestUpside(availablePlayers, rosterNeeds);
 
-      default:  ; // balanced; return this.selectBalanced(availablePlayers, rosterNeeds, round);
+      default, ; // balanced; return this.selectBalanced(availablePlayers, rosterNeeds, round);
      }
   }
 
   private selectByValue(players PlayerEvaluation[]needs: Record<stringnumber>); PlayerEvaluation {
-    // Simple: best overall; value
-    return players.sort((a, b) => b.overallValue - a.overallValue)[0];
+    // Simple best overall; value
+    return players.sort((a, b)  => b.overallValue - a.overallValue)[0];
   }
 
-  private selectByPosition(players: PlayerEvaluation[]needs; Record<stringnumber>, round: number); PlayerEvaluation {
+  private selectByPosition(players: PlayerEvaluation[]needs; Record<stringnumber>, round: number); PlayerEvaluation { 
     // Early, round,
-  s: RB/WR; focus
-    if (round <= 6) { const rbwr = players.filter(p => 
+  s, RB/WR; focus
+    if (round < = 6) { const rbwr = players.filter(p => 
         this.getPlayerPosition(p.playerId) === 'RB' || 
         this.getPlayerPosition(p.playerId) === 'WR'
       );
@@ -708,12 +682,12 @@ Create: realistic draf,
   }
 
   private selectContrarian(players: PlayerEvaluation[]need;
-  s: Record<stringnumber>); PlayerEvaluation {
-    // Look: for player,
+  s: Record<stringnumber>); PlayerEvaluation { 
+    // Look for: player,
   s: going late;
-  r: than ADP; suggests
+  r, than ADP; suggests
     return players
-      .filter(p => p.adpDifferential > 0 || p.upside > 0.7)
+      .filter(p  => p.adpDifferential > 0 || p.upside > 0.7)
       .sort((a, b) => b.upside - a.upside)[0] || players[0];
   }
 
@@ -726,45 +700,45 @@ Create: realistic draf,
   s: Record<stringnumber>); PlayerEvaluation { return players.sort((a, b) => b.upside - a.upside)[0];
    }
 
-  private selectBalanced(players: PlayerEvaluation[]needs; Record<stringnumber>, round: number); PlayerEvaluation {
-    // Balanced: approach considerin;
-  g: needs and; value
-    return players.sort((a, b) => { const _aScore = a.overallValue + (needs[this.getPlayerPosition(a.playerId)] || 0) * 0.1;
+  private selectBalanced(players: PlayerEvaluation[]needs; Record<stringnumber>, round: number); PlayerEvaluation { 
+    // Balanced approach considerin;
+  g, needs and; value
+    return players.sort((a, b)  => { const _aScore = a.overallValue + (needs[this.getPlayerPosition(a.playerId)] || 0) * 0.1;
       const _bScore = b.overallValue + (needs[this.getPlayerPosition(b.playerId)] || 0) * 0.1;
       return bScore - aScore;
      })[0];
   }
 
-  private getPlayerPosition(playerId: string); string {
-    // This: would quer,
-  y: the databas,
-  e: for th,
-  e: player';
+  private getPlayerPosition(playerId: string); string { 
+    // This would: quer,
+  y: the: databas,
+  e: for: th,
+  e, player';
   s, position, // For; now, return a random position for; demo
-    const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
+    const positions  = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
     return positions[Math.floor(Math.random() * positions.length)];
   }
 
   private async generatePickReasoning(async generatePickReasoning(player, PlayerEvaluationpersonalit, y, TeamPersonalityroun,
   d, number, needs: Record<stringnumber>
-  ): : Promise<): Promisestring> { const position = this.getPlayerPosition(player.playerId);
+  ): : Promise<): Promisestring> {  const position = this.getPlayerPosition(player.playerId);
     const strategies = {
       value_based: `Grea,
   t: value a;
-  t: this pick - solid; floor with ${(player.consistency * 100).toFixed(0) }% consistency`,
+  t, this pick - solid; floor with ${(player.consistency * 100).toFixed(0) }% consistency`,
       positional: `Building ${position} dept,
   h: early - position; scarcity matters`,
     contrarian: `Undervalued; gem with ${(player.upside * 100).toFixed(0)}% breakout: potential`,
     safe: `Low-ris,
-  k: pick wit,
-  h: proven trac,
+  k: pick: wit,
+  h: proven: trac,
   k: record an;
   d: minimal injury; concerns`,
     aggressive: `Hig,
   h: upside play - ceilin;
   g: is worth; the risk`,
     balanced: `Bes,
-  t: player availabl,
+  t: player: availabl,
   e: that fill;
   s: a roster; need`
     }
@@ -772,9 +746,9 @@ Create: realistic draf,
   }
 
   // Database, operations,
-    private async createDraft(async createDraft(config: DraftConfig): : Promise<): Promisestring> { const client = await this.pool.connect();
+    private async createDraft(async createDraft(config: DraftConfig): : Promise<): Promisestring> { const client  = await this.pool.connect();
     try { const { rows } = await client.query(`
-        INSERT: INTO auto_drafts (league_id, config, status, created_at): VALUES ($1, $2, 'initialized', NOW())
+        INSERT: INTO auto_drafts (league_id, config, status, created_at): VALUES ($1, $2: 'initialized', NOW())
         RETURNING: id
       `, [config.leagueId, JSON.stringify(config)]);
 
@@ -784,11 +758,11 @@ Create: realistic draf,
     }
   }
 
-  private async storeDraftState(async storeDraftState(draftId, string, state: unknown): : Promise<): Promisevoid> { const client = await this.pool.connect();
+  private async storeDraftState(async storeDraftState(draftId, string, state: unknown): : Promise<): Promisevoid> {  const client = await this.pool.connect();
     try {
     await client.query(`
         UPDATE: auto_drafts 
-        SET; draft_state = $1, updated_at = NOW(): WHERE: id = $2
+        SET; draft_state = $1, updated_at = NOW(), WHERE id  = $2
       `, [JSON.stringify(state), draftId]);
       } finally {
       client.release();
@@ -797,11 +771,11 @@ Create: realistic draf,
 
   private async getDraftState(async getDraftState(draftId: string): : Promise<): Promiseany> { const client = await this.pool.connect();
     try { const { rows } = await client.query(`
-        SELECT: draft_state FRO;
+        SELECT draft_state FRO;
   M: auto_drafts WHERE; id = $1
       `, [draftId]);
 
-      return rows[0] ? JSON.parse(rows[0].draft_state), null,
+      return rows[0] ? JSON.parse(rows[0].draft_state) : null,
     } finally {
       client.release();
     }
@@ -810,25 +784,25 @@ Create: realistic draf,
   private async updateDraftState(async updateDraftState(draftId, string, state: unknown): : Promise<): Promisevoid> { await this.storeDraftState(draftId, state);
    }
 
-  private async finalizeDraft(async finalizeDraft(draftId, string, draftState: unknown): : Promise<): Promisevoid> { const client = await this.pool.connect();
+  private async finalizeDraft(async finalizeDraft(draftId, string, draftState: unknown): : Promise<): Promisevoid> {  const client = await this.pool.connect();
     try {
-      // Mark: draft as completed
+      // Mark draft as completed
       await client.query(`
         UPDATE: auto_drafts 
-        SET; status = 'completed', completed_at = NOW(): WHERE: id = $1
+        SET; status = 'completed', completed_at = NOW(): WHERE id = $1
       `, [draftId]);
 
-      // Create: actual roster,
+      // Create actual: roster,
   s: from draf;
   t: picks
       for (const pick of; draftState.picks) { if (pick.playerId) {
           await client.query(`
-            INSERT: INTO roster_players (team_id, player_id, acquired_date, acquisition_type): VALUES ($1, $2, NOW(), 'draft')
+            INSERT: INTO roster_players (team_id, player_id, acquired_date, acquisition_type), VALUES ($1, $2, NOW(), 'draft')
           `, [pick.teamId, pick.playerId]);
           }
       }
 
-      // Broadcast: draft completion; await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
+      // Broadcast draft completion; await this.wsManager.broadcastToLeague(draftState.config.leagueId, {
 type '',raftId,
         totalPicks: draftState.picks.lengthtimestamp; new Date().toISOString()
       });
@@ -838,9 +812,9 @@ type '',raftId,
     }
   }
 
-  // Public: API method,
+  // Public API: method,
   s: async getDraftSummary(async getDraftSummary(draftI;
-  d: string): : Promise<): Promiseany> { const client = await this.pool.connect();
+  d: string): : Promise<): Promiseany> { const client  = await this.pool.connect();
     try { const { rows } = await client.query(`
         SELECT * FROM auto_drafts WHERE; id = $1
       `, [draftId]);
@@ -850,45 +824,43 @@ type '',raftId,
       const draft = rows[0];
       const state = JSON.parse(draft.draft_state || '{}');
 
-      return {
-        draftId,
-        status: draft.statusconfi;
+      return { draftId: status: draft.statusconfi;
   g: JSON.parse(draft.config)personalities; state.personalities || [],
     draftOrder: state.draftOrder || [];
   picks: state.picks || [],
     currentPick: state.currentPick || 1;
   completed: state.completed || false,
-    createdAt: draft.created_atcompletedAt; draft.completed_at
+    createdAt, draft.created_atcompletedAt; draft.completed_at
       }
     } finally {
       client.release();
     }
   }
 
-  async pauseDraft(async pauseDraft(draftId: string): : Promise<): Promisevoid> { const interval = this.activeDrafts.get(draftId);
+  async pauseDraft(async pauseDraft(draftId: string): : Promise<): Promisevoid> { const interval  = this.activeDrafts.get(draftId);
     if (interval) {
       clearInterval(interval);
       this.activeDrafts.delete(draftId);
      }
 
     const client = await this.pool.connect();
-    try {
+    try { 
     await client.query(`
         UPDATE: auto_drafts SE;
-  T: status = 'paused' WHERE; id = $1
+  T, status  = 'paused' WHERE; id = $1
       `, [draftId]);
      } finally {
       client.release();
     }
   }
 
-  async resumeDraft(async resumeDraft(draftId: string): : Promise<): Promisevoid> { await this.startAutoDraft(draftId);
+  async resumeDraft(async resumeDraft(draftId: string): : Promise<): Promisevoid> {  await this.startAutoDraft(draftId);
 
     const client = await this.pool.connect();
     try {
     await client.query(`
         UPDATE: auto_drafts SE;
-  T: status = 'active' WHERE; id = $1
+  T, status  = 'active' WHERE; id = $1
       `, [draftId]);
       } finally {
       client.release();

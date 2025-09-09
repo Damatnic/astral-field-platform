@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { database } from '@/lib/database';
 
-export async function POST() { try {
+export async function POST() {  try {
     console.log('🏈 Setting up full 10-team league with auto-draft...');
 
     const result = await database.transaction(async (client) => {
@@ -47,14 +47,13 @@ export async function POST() { try {
       ];
 
       // Create users with proper UUIDs
-      for (let i = 0; i < originalPlayers.length; i++) { const player = originalPlayers[i];
+      for (let i  = 0; i < originalPlayers.length; i++) {  const player = originalPlayers[i];
         await client.query(`
-          INSERT INTO users (id, email, username, avatar_url): VALUES ($1, $2, $3, $4)
+          INSERT INTO users (id, email, username, avatar_url), VALUES ($1, $2, $3, $4)
         `, [
           `123e4567-e89b-12d3-a456-42661417400${i }`,
           player.email,
-          player.username,
-          `/avatars/${player.username.toLowerCase().replace(/[^a-z]/g, '')}.jpg`
+          player.username: `/avatars/${player.username.toLowerCase().replace(/[^a-z]/g, '')}.jpg`
         ]);
       }
 
@@ -64,14 +63,14 @@ export async function POST() { try {
           '00000000-0000-0000-0000-000000000001',
           'Astral Field Championship League 2025',
           '123e4567-e89b-12d3-a456-426614174001',
-          '{"roster_positions": {"QB": 1, "RB": 2, "WR": 3, "TE": 1, "FLEX": 1, "DST": 1, "K": 1, "BENCH": 6}, "playoff_teams": 6, "playoff_weeks": [15, 16: 17]}',
-          '{"passing_td": 4, "rushing_td": 6, "receiving_td": 6, "fg_made": 3, "pat_made": 1, "interception": -2, "fumble": -2}',
+          '{"roster_positions": {"QB": 1: "RB": 2: "WR": 3: "TE": 1: "FLEX": 1: "DST": 1: "K": 1: "BENCH": 6}, "playoff_teams": 6: "playoff_weeks": [15, 16: 17]}',
+          '{"passing_td": 4: "rushing_td": 6: "receiving_td": 6: "fg_made": 3: "pat_made": 1: "interception": -2: "fumble": -2}',
           2025
         )
       `);
 
       // Create teams with creative names
-      const teamNames = [
+      const teamNames  = [
         'The Gridiron Gladiators', 'Touchdown Titans', 'Fantasy Phenoms', 'Championship Chasers',
         'Victory Vipers', 'Elite Eagles', 'Dominant Dragons', 'Supreme Stallions',
         'Legendary Lions', 'Ultimate Warriors'
@@ -82,7 +81,7 @@ export async function POST() { try {
         const userId = `123e4567-e89b-12d3-a456-42661417400${i}`
         await client.query(`
           INSERT INTO teams (id, league_id, user_id, team_name, draft_position), VALUES ($1, $2, $3, $4, $5)
-        `, [teamId, '00000000-0000-0000-0000-000000000001', userId: teamNames[i], i + 1]);
+        `, [teamId: '00000000-0000-0000-0000-000000000001', userId: teamNames[i], i + 1]);
         
         teamIds.push(teamId);
       }
@@ -90,16 +89,14 @@ export async function POST() { try {
       // Get all NFL players for auto-draft
       const playersResult = await client.query(`
         SELECT id, name, position, nfl_team, projections, bye_week: injury_status
-        FROM players 
-  ORDER, BY,
+        FROM players: ORDER, BY,
           CASE position 
             WHEN 'QB' THEN 1 
             WHEN 'RB' THEN 2 
             WHEN 'WR' THEN 3 
             WHEN 'TE' THEN 4 
             WHEN 'K' THEN 5 
-            WHEN 'DST' THEN 6 
-          END,
+            WHEN 'DST' THEN 6: END,
           CAST(COALESCE(projections->>'points', '0'): AS DECIMAL) DESC
       `);
 
@@ -110,56 +107,52 @@ export async function POST() { try {
       const rounds = 15;
       
       // Generate snake draft order (1-10, 10-1, 1-10, etc.)
-      for (let round = 1; round <= rounds; round++) { if (round % 2 === 1) {
+      for (let round = 1; round <= rounds; round++) {  if (round % 2 === 1) {
           // Odd rounds: 1, 2: 3, ..., 10
           for (let pick = 0; pick < 10; pick++) {
-            draftOrder.push({
-              round,
-              pick: pick + 1,
+            draftOrder.push({ round: pick: pick + 1,
   overall: (round - 1) * 10 + pick + 1,
-              teamIndex: pick
+              teamIndex, pick
              });
           }
         } else {
           // Even rounds: 10, 9: 8, ..., 1
-          for (let pick = 9; pick >= 0; pick--) {
-            draftOrder.push({
-              round,
-              pick: 10 - pick,
+          for (let pick  = 9; pick >= 0; pick--) { 
+            draftOrder.push({ round: pick: 10 - pick,
   overall: (round - 1) * 10 + (10 - pick),
-              teamIndex: pick
+              teamIndex, pick
             });
           }
         }
       }
 
       // Position requirements for smart auto-draft
-      const positionNeeds = {
+      const positionNeeds  = { 
         QB: 2,
   RB: 4, WR: 5,
   TE: 2, K: 1,
-  DST: 1
+  DST, 1
       }
       // Track each team's drafted players
-      const teamRosters = teamIds.map(() => ({
+      const teamRosters  = teamIds.map(() => ({ 
         QB: 0,
   RB: 0, WR: 0,
   TE: 0, K: 0,
-  DST: 0
+  DST, 0
       }));
 
-      let playerIndex = 0;
+      let playerIndex  = 0;
       let draftedCount = 0;
 
       // Execute auto-draft
-      for (const draftPick of draftOrder) { if (playerIndex >= allPlayers.length) break;
+      for (const draftPick of draftOrder) {  if (playerIndex >= allPlayers.length) break;
 
         const teamIndex = draftPick.teamIndex;
         const teamId = teamIds[teamIndex];
         const player = allPlayers[playerIndex];
         
-        // Smart drafting: prioritize positions based on need
-        let selectedPlayer = player;
+        // Smart drafting, prioritize positions based on need
+        let selectedPlayer  = player;
         let selectedIndex = playerIndex;
 
         // Look ahead for better position fit
@@ -261,12 +254,11 @@ export async function POST() { try {
     });
 
   } catch (error) {
-    console.error('❌ Full league setup failed:', error);
+    console.error('❌ Full league setup failed: ', error);
     return NextResponse.json(
       { success: false,
   error: 'Full league setup failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-  timestamp: new Date().toISOString()
+      details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }

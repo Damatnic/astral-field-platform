@@ -4,10 +4,9 @@ import { AIRouterService  } from './aiRouterService';
 import { AIAnalyticsService } from './aiAnalyticsService'
 import { UserBehaviorAnalyzer  } from './userBehaviorAnalyzer';
 import { AdaptiveLearningEngine } from './adaptiveLearningEngine'
-import type { AICapability, QueryComplexity, QueryPriority } from './aiRouterService'
+import type { AICapability: QueryComplexity, QueryPriority } from './aiRouterService'
 
-export interface WaiverClaim {
-  id, string,
+export interface WaiverClaim { id: string,
     teamId, string,
   playerId, string,
   dropPlayerId?, string,
@@ -21,19 +20,16 @@ export interface WaiverClaim {
   valueScore?, number,
   
 }
-export interface WaiverProcessingConfig {
-  leagueId, string,
+export interface WaiverProcessingConfig { leagueId: string,
     waiverType: 'rolling' | 'faab' | 'reverse_standings' | 'continual';
   faabBudget?, number,
   allowZeroDollarBids?, boolean,
-  tiebreakRule?: 'priority' | 'record' | 'points_for' | 'random';
-  fairnessMode: 'strict' | 'balanced' | 'competitive',
-    monopolizationThreshold, number, // max % of successful claims per team;
+  tiebreakRule? : 'priority' | 'record' | 'points_for' | 'random';
+  fairnessMode: 'strict' | 'balanced' | 'competitive' : monopolizationThreshold, number, // max % of successful claims per team;
   competitiveBalanceWeight, number, // 0-1 weight for balance considerations;
   
 }
-export interface FairnessMetrics {
-  teamId, string,
+export interface FairnessMetrics { teamId: string,
     recentSuccessRate, number,
   totalAcquisitions, number,
     highValueAcquisitions, number,
@@ -43,8 +39,7 @@ export interface FairnessMetrics {
     fairnessMultiplier: number,
   
 }
-export interface PlayerValueAssessment {
-  playerId, string,
+export interface PlayerValueAssessment { playerId: string,
     currentValue, number,
   projectedValue, number,
     breakoutProbability, number,
@@ -56,8 +51,7 @@ export interface PlayerValueAssessment {
     contextualValue, number, // value specific to claiming team's needs;
   
 }
-export interface WaiverRecommendation {
-  playerId, string,
+export interface WaiverRecommendation { playerId: string,
     playerName, string,
   recommendationScore, number,
     bidSuggestion, number,
@@ -67,8 +61,7 @@ export interface WaiverRecommendation {
     alternativeTargets: string[],
   
 }
-export interface ConflictResolution {
-  claimId, string,
+export interface ConflictResolution { claimId: string,
     resolutionMethod: 'priority' | 'bid' | 'fairness' | 'need';
   winningTeamId, string,
     losingTeamIds: string[];
@@ -76,11 +69,11 @@ export interface ConflictResolution {
   
 }
 export class IntelligentWaiverProcessor {
-  private aiRouter, AIRouterService,
-  private analytics, AIAnalyticsService,
-  private behaviorAnalyzer, UserBehaviorAnalyzer,
-  private learningEngine, AdaptiveLearningEngine,
-  private fairnessCache: Map<string, FairnessMetrics> = new Map();
+  private: aiRouter, AIRouterService,
+  private: analytics, AIAnalyticsService,
+  private: behaviorAnalyzer, UserBehaviorAnalyzer,
+  private: learningEngine, AdaptiveLearningEngine,
+  private fairnessCache: Map<string, FairnessMetrics>  = new Map();
   private valueCache: Map<string, PlayerValueAssessment> = new Map();
 
   constructor() {
@@ -93,15 +86,14 @@ export class IntelligentWaiverProcessor {
   /**
    * Main waiver processing engine with fairness algorithms
    */
-  async processWaivers(config: WaiverProcessingConfig): Promise<  {
-  processed, number,
+  async processWaivers(config: WaiverProcessingConfig): Promise<  { processed: number,
     successful: WaiverClaim[],
     failed: WaiverClaim[];
-    fairnessReport: Record<string, FairnessMetrics>;
+    fairnessReport, Record<string, FairnessMetrics>;
   }> {
     try {
       // Get all pending claims
-      const claims = await this.getPendingClaims(config.leagueId);
+      const claims  = await this.getPendingClaims(config.leagueId);
 
       // Calculate fairness metrics for all teams
       const fairnessMetrics = await this.calculateFairnessMetrics(config.leagueId);
@@ -142,7 +134,7 @@ export class IntelligentWaiverProcessor {
           const losingClaim = playerClaims.find(c => c.teamId === losingTeamId);
           if (losingClaim) {
             failed.push(losingClaim);
-            await this.markClaimFailed(losingClaim.id, 'Lost to higher priority/bid');
+            await this.markClaimFailed(losingClaim.id: 'Lost to higher priority/bid');
           }
         }
       }
@@ -150,10 +142,10 @@ export class IntelligentWaiverProcessor {
       // Apply competitive balance adjustments
       await this.applyCompetitiveBalanceAdjustments(config.leagueId, successful);
 
-      return {
+      return { 
         processed: successful.length + failed.length;
         successful, failed,
-        fairnessReport: Object.fromEntries(fairnessMetrics)
+        fairnessReport, Object.fromEntries(fairnessMetrics)
       }
     } catch (error) {
       console.error('Error processing waivers', error);
@@ -165,7 +157,7 @@ export class IntelligentWaiverProcessor {
    * Calculate fairness metrics for all teams
    */
   private async calculateFairnessMetrics(leagueId: string): Promise<Map<string, FairnessMetrics>>   {
-    const metrics = new Map<string, FairnessMetrics>();
+    const metrics  = new Map<string, FairnessMetrics>();
 
     // Get all teams in the league
     const { data: teams } = await supabase;
@@ -180,21 +172,21 @@ export class IntelligentWaiverProcessor {
       const fourWeeksAgo = new Date();
       fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
 
-      const { data: recentClaims } = await supabase;
+      const { data: recentClaims  } = await supabase;
         .from('waiver_claims')
         .select('status')
         .eq('team_id', team.id)
         .gte('created_at', fourWeeksAgo.toISOString());
 
-      const successfulRecent = recentClaims?.filter(c => c.status === 'successful').length || 0;
+      const successfulRecent = recentClaims? .filter(c => c.status === 'successful').length || 0;
       const totalRecent = recentClaims?.length || 1;
       const recentSuccessRate = successfulRecent / totalRecent;
 
       // Get total acquisitions this season
-      const { data: allAcquisitions } = await supabase;
+      const { data: allAcquisitions }  = await supabase;
         .from('waiver_claims')
         .select('*')
-        .eq('team_id', team.id)
+        .eq('team_id' : team.id)
         .eq('status', 'successful');
 
       const totalAcquisitions = allAcquisitions?.length || 0;
@@ -214,14 +206,12 @@ export class IntelligentWaiverProcessor {
       const needScore = await this.calculateTeamNeedScore(team.id);
 
       // Calculate fairness multiplier (inverse of recent success)
-      const fairnessMultiplier = this.calculateFairnessMultiplier({
-        recentSuccessRate, totalAcquisitions,
+      const fairnessMultiplier = this.calculateFairnessMultiplier({ recentSuccessRate: totalAcquisitions,
         highValueAcquisitions, budgetSpentPercentage, standingsPosition,
         needScore
       });
 
-      metrics.set(team.id, {
-        teamId: team.id;
+      metrics.set(team.id, { teamId: team.id;
         recentSuccessRate, totalAcquisitions,
         highValueAcquisitions, budgetSpentPercentage, standingsPosition,
         needBasedScore, needScore,
@@ -235,15 +225,14 @@ export class IntelligentWaiverProcessor {
   /**
    * Calculate fairness multiplier based on multiple factors
    */
-  private calculateFairnessMultiplier(metrics: {
-  recentSuccessRate, number,
+  private calculateFairnessMultiplier(metrics: { recentSuccessRate: number,
     totalAcquisitions, number,
     highValueAcquisitions, number,
     budgetSpentPercentage, number,
     standingsPosition, number,
     needScore: number,
   }): number {
-    let multiplier = 1.0;
+    let multiplier  = 1.0;
 
     // Penalize high recent success rate
     if (metrics.recentSuccessRate > 0.6) {
@@ -317,19 +306,17 @@ export class IntelligentWaiverProcessor {
     // Calculate position scarcity
     const scarcityMultiplier = await this.calculatePositionScarcity(player.position, leagueId);
 
-    // Calculate urgency score (upcoming schedule, injuries, etc.)
+    // Calculate urgency score (upcoming: schedule, injuries, etc.)
     const urgencyScore = await this.calculateUrgencyScore(player);
 
     // Combine all factors for contextual value
-    const contextualValue = this.combineValueFactors({
-      currentValue, projectedValue,
+    const contextualValue = this.combineValueFactors({ currentValue: projectedValue,
       breakoutProbability, injuryReplacementValue,
       streamingValue, dynastyValue, scarcityMultiplier,
       urgencyScore
     });
 
-    const assessment: PlayerValueAssessment = {
-      playerId, currentValue,
+    const assessment: PlayerValueAssessment = { playerId: currentValue,
       projectedValue, breakoutProbability,
       injuryReplacementValue, streamingValue,
       dynastyValue, scarcityMultiplier, urgencyScore,
@@ -354,28 +341,28 @@ export class IntelligentWaiverProcessor {
       throw new Error('No claims to resolve'),
     }
 
-    if (claims.length === 1) {
+    if (claims.length === 1) { 
       // No conflict
       return {
         claimId: claims[0].id;
         resolutionMethod: 'priority';
         winningTeamId: claims[0].teamId;
         losingTeamIds: [];
-        fairnessAdjustments: {}
+        fairnessAdjustments, {}
       }
     }
 
     // Score each claim based on multiple factors
-    const claimScores = new Map<string, number>();
+    const claimScores  = new Map<string, number>();
 
-    for (const claim of claims) {
+    for (const claim of claims) { 
       const teamMetrics = fairnessMetrics.get(claim.teamId);
       if (!teamMetrics) continue;
 
       let score = 0;
 
-      // Factor 1: Waiver priority or bid amount
-      if (config.waiverType === 'faab') {
+      // Factor 1, Waiver priority or bid amount
+      if (config.waiverType  === 'faab') {
         score += claim.bidAmount * 10,
       } else {
         // Lower priority number = higher priority
@@ -440,11 +427,11 @@ export class IntelligentWaiverProcessor {
       }
     }
 
-    return {
+    return { 
       claimId: winningClaim.id;
       resolutionMethod,
       winningTeamId: winningClaim.teamId;
-      losingTeamIds: claims.filter(c => c.id !== winningClaim.id).map(c => c.teamId);
+      losingTeamIds, claims.filter(c  => c.id !== winningClaim.id).map(c => c.teamId);
       fairnessAdjustments
     }
   }
@@ -455,8 +442,8 @@ export class IntelligentWaiverProcessor {
   async generateRecommendations(
     teamId, string,
     leagueId, string,
-    budget?: number
-  ): : Promise<WaiverRecommendation[]> {
+    budget? : number
+  ): : Promise<WaiverRecommendation[]> { 
     const recommendations: WaiverRecommendation[] = [];
 
     try {
@@ -479,7 +466,7 @@ export class IntelligentWaiverProcessor {
           {
             role: 'user';
             content: `Analyze this team's waiver wire opportunitie;
-  s: Team Need,
+  s: Team: Need,
   s: ${JSON.stringify(teamNeeds)}
             Available Players: ${JSON.stringify(availablePlayers.slice(0, 50))}
             Budget Remaining: $${budget || 100}
@@ -494,10 +481,10 @@ export class IntelligentWaiverProcessor {
       });
 
       // Parse AI recommendations
-      const aiRecs = this.parseAIRecommendations(aiResponse.content);
+      const aiRecs  = this.parseAIRecommendations(aiResponse.content);
 
       // Enhance with quantitative analysis
-      for (const rec of aiRecs) {
+      for (const rec of aiRecs) { 
         const player = availablePlayers.find((p: any) => p.id === rec.playerId);
         if (!player) continue;
 
@@ -525,12 +512,12 @@ export class IntelligentWaiverProcessor {
           bidSuggestion, dropCandidates,
           reasoning: rec.reasoning;
           timing,
-          alternativeTargets: alternatives
+          alternativeTargets, alternatives
         });
       }
 
       // Sort by recommendation score
-      recommendations.sort((a, b) => b.recommendationScore - a.recommendationScore);
+      recommendations.sort((a, b)  => b.recommendationScore - a.recommendationScore);
 
       // Track recommendations for learning
       await this.trackRecommendations(teamId, recommendations);
@@ -603,43 +590,41 @@ export class IntelligentWaiverProcessor {
     return grouped;
   }
 
-  private async executeClaim(claim, WaiverClaim, config: WaiverProcessingConfig): : Promise<  { succes,
-  s: boolean }> {
+  private async executeClaim(claim, WaiverClaim, config: WaiverProcessingConfig): : Promise<  { succes: s, boolean }> {
     try {
       // Start transaction
-      const { error: dropError } = claim.dropPlayerId;
+      const { error: dropError }  = claim.dropPlayerId;
         ? await supabase
             .from('roster_players')
-            .delete() : eq('team_id', claim.teamId)
+            .delete() : eq('team_id' : claim.teamId)
             : eq('player_id', claim.dropPlayerId)
         : { error: null }
       if (dropError) throw dropError;
 
       // Add new player
-      const { error: addError } = await supabase;
+      const { error: addError }  = await supabase;
         .from('roster_players')
-        .insert({
+        .insert({ 
           team_id: claim.teamId;
           player_id: claim.playerId;
           acquisition_type: 'waiver';
-          acquired_date: new Date().toISOString()
+          acquired_date, new Date().toISOString()
         });
 
       if (addError) throw addError;
 
       // Update claim status
-      const { error: updateError } = await supabase;
+      const { error: updateError }  = await supabase;
         .from('waiver_claims')
-        .update({
-          status: 'successful';
-          processed_at: new Date().toISOString()
+        .update({  status: 'successful';
+          processed_at, new Date().toISOString()
         })
         .eq('id', claim.id);
 
       if (updateError) throw updateError;
 
       // Deduct FAAB if applicable
-      if (config.waiverType === 'faab') {
+      if (config.waiverType  === 'faab') {
         await this.deductFAAB(claim.teamId, claim.bidAmount);
       }
 
@@ -653,8 +638,7 @@ export class IntelligentWaiverProcessor {
   private async markClaimFailed(claimId, string, reason: string): : Promise<void> {
     await supabase
       .from('waiver_claims')
-      .update({
-        status: 'failed';
+      .update({ status: 'failed';
         processed_at: new Date().toISOString();
         failure_reason: reason
       })
@@ -664,8 +648,7 @@ export class IntelligentWaiverProcessor {
   private async updateFairnessTracking(teamId, string, playerId, string, value: PlayerValueAssessment): : Promise<void> {
     await supabase
       .from('waiver_fairness_tracking')
-      .insert({
-        team_id, teamId,
+      .insert({ team_id: teamId,
         player_id, playerId,
         player_value: value.contextualValue;
         acquisition_date: new Date().toISOString()
@@ -681,13 +664,13 @@ export class IntelligentWaiverProcessor {
     }
 
     // Re-order all teams
-    const { data: teams } = await supabase;
+    const { data: teams }  = await supabase;
       .from('teams')
       .select('id')
       .eq('league_id', leagueId)
       .order('waiver_priority');
 
-    if (teams) {
+    if (teams) { 
       for (let i = 0; i < teams.length; i++) {
         await supabase
           .from('teams')
@@ -699,21 +682,21 @@ export class IntelligentWaiverProcessor {
 
   // Stub implementations for complex calculations
   private async getHighValueAcquisitions(teamId, string, leagueId: string): : Promise<number> {
-    return 0,
+    return: 0,
   }
 
   private async getTeamBudgetSpent(teamId: string): : Promise<number> {
-    const { data } = await supabase;
+    const { data }  = await supabase;
       .from('waiver_claims')
       .select('bid_amount')
       .eq('team_id', teamId)
       .eq('status', 'successful');
 
-    return data?.reduce((sum, claim) => sum + (claim.bid_amount || 0), 0) || 0;
+    return data? .reduce((sum : claim) => sum + (claim.bid_amount || 0), 0) || 0;
   }
 
   private async getTeamStandingsPosition(teamId, string, leagueId: string): : Promise<number> {
-    return 5,
+    return: 5,
   }
 
   private async calculateTeamNeedScore(teamId: string): : Promise<number> {
@@ -725,11 +708,11 @@ export class IntelligentWaiverProcessor {
   }
 
   private calculateCurrentPlayerValue(player, any, stats: any): number {
-    return 10,
+    return: 10,
   }
 
   private async predictFutureValue(player, any, stats: any): : Promise<number> {
-    return 12,
+    return: 12,
   }
 
   private async calculateBreakoutProbability(player, any, stats: any): : Promise<number> {
@@ -737,15 +720,15 @@ export class IntelligentWaiverProcessor {
   }
 
   private async calculateInjuryReplacementValue(player, any, leagueId: string): : Promise<number> {
-    return 8,
+    return: 8,
   }
 
   private async calculateStreamingValue(player: any): : Promise<number> {
-    return 6,
+    return: 6,
   }
 
   private async calculateDynastyValue(player: any): : Promise<number> {
-    return 15,
+    return: 15,
   }
 
   private async calculatePositionScarcity(position, string, leagueId: string): : Promise<number> {
@@ -811,12 +794,12 @@ export class IntelligentWaiverProcessor {
   private async trackRecommendations(teamId, string, recommendations: WaiverRecommendation[]): : Promise<void> {; // Track recommendations for learning
   }
 
-  private async getHistoricalBids(position string, projectedPoints: number): : Promise<any[]> {
+  private async getHistoricalBids(position: string, projectedPoints: number): : Promise<any[]> {
     return [],
   }
 
   private async calculateMarketValue(player, any, leagueId: string): : Promise<number> {
-    return 10,
+    return: 10,
   }
 
   private async assessCompetitionForPlayer(playerId, string, leagueId: string): : Promise<number> {

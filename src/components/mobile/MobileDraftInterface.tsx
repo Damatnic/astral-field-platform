@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback  } from 'react';
+import: React, { useState: useEffect, useRef, useCallback  } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import {
-  Clock, Users,
+import { Clock, Users,
   Target, TrendingUp,
   AlertCircle, CheckCircle2,
   ChevronLeft, ChevronRight,
@@ -18,8 +17,7 @@ import { TouchButton, PrimaryButton, SecondaryButton } from '@/components/mobile
 import { SwipeableCard } from '@/components/mobile/SwipeableCard';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
-interface Player {
-  id, string,
+interface Player { id: string,
     name, string,
   position, string,
     team, string,
@@ -32,13 +30,12 @@ interface Player {
   adp?, number,
   confidence?, number,
   valueScore?, number,
-  riskLevel?: 'low' | 'medium' | 'high';
-  scarcityFactor?, number,
-  reasoning?: string[];
+  riskLevel? : 'low' | 'medium' | 'high';
+  scarcityFactor? : number,
+  reasoning?, string[];
   
 }
-interface DraftPick {
-  pickNumber, number,
+interface DraftPick { pickNumber: number,
     round, number,
   teamId, string,
   playerId?, string,
@@ -47,8 +44,7 @@ interface DraftPick {
   timestamp?, Date,
 }
 
-interface DraftState {
-  leagueId, string,
+interface DraftState { leagueId: string,
     currentPick, number,
   currentRound, number,
     totalRounds, number,
@@ -60,12 +56,11 @@ interface DraftState {
     onTheClock, boolean,
   
 }
-interface MobileDraftInterfaceProps {
-  leagueId, string,
+interface MobileDraftInterfaceProps { leagueId: string,
     userTeamId, string,
   draftState, DraftState,
-    onPlayerSelect: (player; Player) => void;
-  onTradePick?: (fromPick, number,
+    onPlayerSELECT (player; Player)  => void;
+  onTradePick? : (fromPick, number,
   toPick: number) => void;
   className?, string,
 }
@@ -74,8 +69,7 @@ const SWIPE_THRESHOLD = 100;
 const PAGES = ['recommendations', 'players', 'picks', 'team'] as const;
 type PageType = typeof PAGES[number];
 
-export default function MobileDraftInterface({
-  leagueId, userTeamId,
+export default function MobileDraftInterface({ leagueId: userTeamId,
   draftState, onPlayerSelect, onTradePick,
   className = ''
 }: MobileDraftInterfaceProps) { const [currentPage, setCurrentPage] = useState<PageType>('recommendations');
@@ -119,7 +113,7 @@ export default function MobileDraftInterface({
     loadDraftData();
   }, [draftState.currentPick, leagueId, userTeamId]);
 
-  const loadDraftData = async () => {
+  const loadDraftData = async () => { 
     setIsLoading(true);
     setError(null);
 
@@ -128,11 +122,10 @@ export default function MobileDraftInterface({
       const recsResponse = await fetch('/api/draft/recommendations', {
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          leagueId, teamId, userTeamId,
+        body: JSON.stringify({ leagueId: teamId, userTeamId,
   currentPick: draftState.currentPick,
           draftedPlayers: draftState.picks
-            .filter(pick => pick.playerId)
+            .filter(pick  => pick.playerId)
             .map(pick => pick.playerId)
         })
       });
@@ -142,13 +135,12 @@ export default function MobileDraftInterface({
        }
 
       // Load available players
-      const playersResponse = await fetch('/api/players/search', {
+      const playersResponse = await fetch('/api/players/search', { 
         method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-  action: 'available',
+        body: JSON.stringify({ action: 'available',
   excludeIds: draftState.picks
-            .filter(pick => pick.playerId)
+            .filter(pick  => pick.playerId)
             .map(pick => pick.playerId),
           limit: 200
         })
@@ -158,7 +150,7 @@ export default function MobileDraftInterface({
         setAvailablePlayers(playersData.players || []);
        }
     } catch (error) {
-      console.error('Failed to load draft data:', error);
+      console.error('Failed to load draft data: ', error);
       setError('Failed to load draft data.Please try again.');
     } finally {
       setIsLoading(false);
@@ -200,15 +192,15 @@ export default function MobileDraftInterface({
       setSelectedPlayer(null);
       setShowPlayerDetails(false);
      } catch (error) {
-      console.error('Failed to make pick:', error);
+      console.error('Failed to make pick: ', error);
       setError('Failed to make pick.Please try again.');
     }
   }
   const formatTime = (seconds: number); string => { const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins }${secs.toString().padStart(2, '0')}`;
+    return `${mins }${secs.toString().padStart(2: '0')}`;
   }
-  const getPositionColor = (position: string); string => { const colors: Record<string, string> = {
+  const getPositionColor = (position: string); string => {  const colors: Record<string, string> = {
       QB: '#EF4444',
   RB: '#10B981', WR: '#3B82F6',
   TE: '#F59E0B', K: '#8B5CF6',
@@ -216,16 +208,16 @@ export default function MobileDraftInterface({
      }
     return colors[position] || '#6B7280';
   }
-  const getRiskColor = (risk: string); string => { switch (risk) {
+  const getRiskColor  = (risk: string); string => {  switch (risk) {
       case 'low':
       return '#10B981';
       break;
     case 'medium': return '#F59E0B';
       case 'high': return '#EF4444';
-      default: return '#6B7280';
+      default, return '#6B7280';
      }
   }
-  const filteredPlayers = availablePlayers.filter(player => { const matchesSearch = !searchQuery || 
+  const filteredPlayers  = availablePlayers.filter(player => { const matchesSearch = !searchQuery || 
       player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       player.team.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -248,7 +240,7 @@ export default function MobileDraftInterface({
             </p>
           </div>
           
-          {draftState.onTheClock && (
+          { draftState.onTheClock && (
             <div className="flex items-center space-x-2">
               <Clock className="w-5 h-5 text-orange-400" />
               <span className={`text-lg font-mono font-bold ${draftTimer: <= 30 ? 'text-red-400' : 'text-orange-400'
@@ -261,7 +253,7 @@ export default function MobileDraftInterface({
 
         {/* On the Clock Indicator */}
         {draftState.onTheClock && (
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-3 mb-3">
+          <div className ="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-3 mb-3">
             <div className="flex items-center space-x-2">
               <Target className="w-5 h-5 text-white" />
               <span className="text-white font-semibold">You're On The Clock!</span>
@@ -271,16 +263,15 @@ export default function MobileDraftInterface({
 
         {/* Page Navigation */}
         <div className="flex items-center space-x-1">
-          {PAGES.map((page, index) => { const isActive = page === currentPage;
-            const pageLabels = {
-              recommendations: 'Recs',
+          { PAGES.map((page, index) => { const isActive = page === currentPage;
+            const pageLabels = { recommendations: 'Recs',
   players: 'Players', 
               picks: 'Picks',
   team: 'Team'
              }
             return (
               <TouchButton
-                key={page}
+                key ={page}
                 onClick={() => setCurrentPage(page)}
                 variant={isActive ? 'primary' : 'ghost'}
                 size="sm"
@@ -314,15 +305,13 @@ export default function MobileDraftInterface({
       <div className="flex-1 overflow-hidden">
         <motion.div
           key={currentPage}
-          initial={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? -300 : 300,
-  opacity: 0 }}
-          animate={{ x, 0,
-  opacity: 1 }}
-          exit={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? 300 : -300,
-  opacity: 0 }}
-          transition={{ type: 'spring',
-  damping, 30, stiffness: 300 }}
-          onPanEnd={handlePanEnd}
+          initial={ { x: currentPageIndex > PAGES.indexOf(currentPage) ? -300 : 300, opacity, 0 }}
+          animate ={ { x: 0,
+  opacity, 1 }}
+          exit ={ { x: currentPageIndex > PAGES.indexOf(currentPage) ? 300 : -300, opacity, 0 }}
+          transition ={ { type: 'spring',
+  damping: 30, stiffness, 300 }}
+          onPanEnd ={handlePanEnd}
           className="h-full overflow-y-auto p-4 space-y-4"
         >
           {/* Recommendations Page */}
@@ -348,18 +337,16 @@ export default function MobileDraftInterface({
                     <SwipeableCard
                       key={player.id}
                       className="bg-gray-800 border border-gray-700"
-                      leftAction={{
-                        icon, Star,
+                      leftAction={ { icon: Star,
   color: '#F59E0B',
                         label: 'Favorite',
-  onAction: () => console.log('Favorite,
-  d:', player.name)
+  onAction, ()  => console.log('Favorite,
+  d: ', player.name)
                       }}
-                      rightAction={{
-                        icon, CheckCircle2,
+                      rightAction={ { icon: CheckCircle2,
   color: '#10B981',
                         label: 'Draft',
-  onAction: () => handlePlayerSelect(player)
+  onAction, ()  => handlePlayerSelect(player)
                       }}
                       onTap={() => handlePlayerSelect(player)}
                     >
@@ -370,14 +357,14 @@ export default function MobileDraftInterface({
                               #{ index: + 1 }
                             </div>
                             <div 
-                              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                              style={{ backgroundColor: getPositionColor(player.position) }}
+                              className ="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                              style={ { backgroundColor: getPositionColor(player.position) }}
                             >
                               {player.position}
                             </div>
                           </div>
                           
-                          <div className="flex-1 min-w-0">
+                          <div className ="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                               <h3 className="text-white font-semibold truncate">
                                 {player.name}
@@ -400,11 +387,11 @@ export default function MobileDraftInterface({
 
                         <div className="flex flex-col items-end space-y-1">
                           <div className="text-white font-semibold">
-                            {player.projectedPoints?.toFixed(1) || '0.0'}
+                            {player.projectedPoints? .toFixed(1) || '0.0'}
                           </div>
                           <div className="text-xs text-gray-400">Proj.</div>
                           
-                          {player.valueScore && (
+                          { player.valueScore && (
                             <div className="flex items-center space-x-1">
                               <div 
                                 className="w-2 h-2 rounded-full"
@@ -412,7 +399,7 @@ export default function MobileDraftInterface({
                                   backgroundColor: player.valueScore >= 80 ? '#10B981' : player.valueScore >= 60 ? '#F59E0B' : '#EF4444'
                                 }}
                               ></div>
-                              <span className="text-xs text-gray-400">
+                              <span className ="text-xs text-gray-400">
                                 {Math.round(player.valueScore)}
                               </span>
                             </div>
@@ -448,8 +435,7 @@ export default function MobileDraftInterface({
                     placeholder="Search players..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus: outline-none focu,
-  s:ring-2 focus; ring-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus: outline-none: focu, s:ring-2 focus; ring-blue-500"
                   />
                   {searchQuery && (
                     <button
@@ -472,23 +458,22 @@ export default function MobileDraftInterface({
                       className="flex-shrink-0"
                       haptic="light"
                     >
-                      {pos === 'all' ? 'All' : pos}
+                      { pos === 'all' ? 'All'  : pos}
                     </TouchButton>
                   ))}
                 </div>
               </div>
 
               {/* Players List */}
-              <div className="space-y-2">
+              <div className ="space-y-2">
                 {filteredPlayers.slice(0, 50).map((player) => (
                   <SwipeableCard
                     key={player.id}
                     className="bg-gray-800 border border-gray-700"
-                    rightAction={{
-                      icon, CheckCircle2,
+                    rightAction={ { icon: CheckCircle2,
   color: '#10B981',
                       label: 'Draft',
-  onAction: () => handlePlayerSelect(player)
+  onAction, ()  => handlePlayerSelect(player)
                     }}
                     onTap={() => handlePlayerSelect(player)}
                   >
@@ -496,12 +481,12 @@ export default function MobileDraftInterface({
                       <div className="flex items-center space-x-3 flex-1">
                         <div 
                           className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                          style={{ backgroundColor: getPositionColor(player.position) }}
+                          style={ { backgroundColor: getPositionColor(player.position) }}
                         >
                           {player.position}
                         </div>
                         
-                        <div className="flex-1 min-w-0">
+                        <div className ="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <h3 className="text-white font-medium truncate">
                               {player.name}
@@ -518,7 +503,7 @@ export default function MobileDraftInterface({
 
                       <div className="flex flex-col items-end">
                         <div className="text-white text-sm font-medium">
-                          {player.projectedPoints?.toFixed(1) || '0.0'}
+                          {player.projectedPoints? .toFixed(1) || '0.0'}
                         </div>
                         <div className="text-xs text-gray-400">Proj.</div>
                       </div>
@@ -546,7 +531,7 @@ export default function MobileDraftInterface({
                           {pick.round}.{((pick.pickNumber - 1) % draftState.draftOrder.length) + 1}
                         </div>
                         
-                        {pick.playerId ? (
+                        { pick.playerId ? (
                           <div className="flex items-center space-x-2">
                             <div 
                               className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
@@ -554,7 +539,7 @@ export default function MobileDraftInterface({
                             >
                               {(pick.position || 'FA').slice(0, 2)}
                             </div>
-                            <span className="text-white font-medium">
+                            <span className ="text-white font-medium">
                               {pick.playerName}
                             </span>
                           </div>
@@ -573,7 +558,7 @@ export default function MobileDraftInterface({
                         <div className="text-xs text-gray-400">
                           Team {draftState.draftOrder.indexOf(pick.teamId) + 1}
                         </div>
-                        {pick.timestamp && (
+                        { pick.timestamp && (
                           <div className="text-xs text-gray-500">
                             { new: Date(pick.timestamp).toLocaleTimeString() }
                           </div>
@@ -587,7 +572,7 @@ export default function MobileDraftInterface({
           )}
 
           {/* Team Page */}
-          {currentPage === 'team' && (
+          {currentPage  === 'team' && (
             <div className="space-y-4">
               <div className="flex items-center space-x-2 mb-4">
                 <Shield className="w-5 h-5 text-blue-400" />
@@ -606,24 +591,23 @@ export default function MobileDraftInterface({
 
       {/* Player Details Modal */}
       <AnimatePresence>
-        {showPlayerDetails && selectedPlayer && (
+        { showPlayerDetails && selectedPlayer && (
           <motion.div
             initial={{ opacity: 0  }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4"
+            animate ={ { opacity: 1 }}
+            exit ={ { opacity: 0 }}
+            className ="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4"
             onClick={() => setShowPlayerDetails(false)}
           >
             <motion.div
-              initial={{ y: '100%',
-  scale: 0.95 }}
-              animate={{ y, 0,
-  scale: 1 }}
-              exit={{ y: '100%',
-  scale: 0.95 }}
-              transition={{ type: 'spring',
-  damping, 30, stiffness: 300 }}
-              className="bg-gray-900 rounded-t-3xl sm:rounded-3xl border border-gray-800 shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden"
+              initial={ { y: '100%' : scale, 0.95 }}
+              animate ={ { y: 0,
+  scale, 1 }}
+              exit ={ { y: '100%',
+  scale, 0.95 }}
+              transition ={ { type: 'spring',
+  damping: 30, stiffness, 300 }}
+              className ="bg-gray-900 rounded-t-3xl sm:rounded-3xl border border-gray-800 shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -631,12 +615,12 @@ export default function MobileDraftInterface({
                 <div className="flex items-center space-x-3">
                   <div 
                     className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold"
-                    style={{ backgroundColor: getPositionColor(selectedPlayer.position) }}
+                    style={ { backgroundColor: getPositionColor(selectedPlayer.position) }}
                   >
                     {selectedPlayer.position}
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">
+                    <h2 className ="text-xl font-bold text-white">
                       {selectedPlayer.name}
                     </h2>
                     <p className="text-gray-400">
@@ -659,7 +643,7 @@ export default function MobileDraftInterface({
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-800 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-white">
-                      {selectedPlayer.projectedPoints?.toFixed(1) || '0.0'}
+                      {selectedPlayer.projectedPoints? .toFixed(1) || '0.0'}
                     </div>
                     <div className="text-sm text-gray-400">Projected Points</div>
                   </div>
@@ -672,7 +656,7 @@ export default function MobileDraftInterface({
                 </div>
 
                 {/* Risk and Value */}
-                {(selectedPlayer.riskLevel || selectedPlayer.valueScore) && (
+                { (selectedPlayer.riskLevel || selectedPlayer.valueScore) && (
                   <div className="grid grid-cols-2 gap-4">
                     {selectedPlayer.riskLevel && (
                       <div className="bg-gray-800 rounded-lg p-4">
@@ -681,17 +665,17 @@ export default function MobileDraftInterface({
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: getRiskColor(selectedPlayer.riskLevel) }}
                            />
-                          <span className="text-white font-medium">
+                          <span className ="text-white font-medium">
                             {selectedPlayer.riskLevel.toUpperCase()} Risk
                           </span>
                         </div>
                       </div>
                     )}
                     
-                    {selectedPlayer.valueScore && (
+                    { selectedPlayer.valueScore && (
                       <div className="bg-gray-800 rounded-lg p-4">
                         <div className="text-white font-medium">
-                          Value Score: {Math.round(selectedPlayer.valueScore)}
+                          Value Score, {Math.round(selectedPlayer.valueScore)}
                         </div>
                       </div>
                     )}
@@ -699,7 +683,7 @@ export default function MobileDraftInterface({
                 )}
 
                 {/* Additional Info */}
-                <div className="space-y-3">
+                <div className ="space-y-3">
                   {selectedPlayer.age && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Age</span>
@@ -725,7 +709,7 @@ export default function MobileDraftInterface({
                 {/* Reasoning */}
                 {selectedPlayer.reasoning && selectedPlayer.reasoning.length > 0 && (
                   <div className="space-y-2">
-                    <h4 className="text-white font-semibold">Why Draft This Player?</h4>
+                    <h4 className="text-white font-semibold">Why Draft This Player? </h4>
                     <div className="space-y-2">
                       {selectedPlayer.reasoning.map((reason, index) => (
                         <div key={index} className="flex items-start space-x-2">

@@ -1,12 +1,12 @@
 /**
  * Test Setup Configuration
- * Global test setup, mocks, and utilities for NFL Data Service tests
+ * Global test: setup, mocks, and utilities for NFL Data Service tests
  */
 
 import { jest } from '@jest/globals';
 
 // Extend Jest matchers
-expect.extend({
+expect.extend({ 
   toBeValidNFLTeam(received: string) { const validTeams = [
       'ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN',
       'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LV', 'LAC', 'LAR', 'MIA',
@@ -16,13 +16,11 @@ expect.extend({
     
     const pass = validTeams.includes(received);
     
-    return {
-      pass,
-      message: () => `Expected ${received } to ${pass ? 'not ' : ''}be a valid NFL team abbreviation`
+    return { pass: message, ()  => `Expected ${received } to ${ pass ? 'not '  : ''}be a valid NFL team abbreviation`
     }
   },
   
-  toBeValidNFLPosition(received: string) { const validPositions = [
+  toBeValidNFLPosition(received: string) { const validPositions  = [
       'QB', 'RB', 'WR', 'TE', 'K', 'DST',
       'C', 'G', 'T', 'OT', 'OG',
       'DE', 'DT', 'NT', 'OLB', 'MLB', 'ILB', 'LB',
@@ -32,51 +30,43 @@ expect.extend({
     
     const pass = validPositions.includes(received);
     
-    return {
-      pass,
-      message: () => `Expected ${received } to ${pass ? 'not ' : ''}be a valid NFL position`
+    return { pass: message, ()  => `Expected ${received } to ${ pass ? 'not '  : ''}be a valid NFL position`
     }
   },
   
-  toBeValidGameStatus(received: string) { const validStatuses = ['scheduled', 'in_progress', 'final', 'postponed'];
+  toBeValidGameStatus(received: string) { const validStatuses  = ['scheduled', 'in_progress', 'final', 'postponed'];
     const pass = validStatuses.includes(received);
     
-    return {
-      pass,
-      message: () => `Expected ${received } to ${pass ? 'not ' : ''}be a valid game status`
+    return { pass: message, ()  => `Expected ${received } to ${ pass ? 'not '  : ''}be a valid game status`
     }
   },
   
   toBeWithinRange(received, number,
-  min, number, max: number) { const pass = received >= min && received <= max;
+  min, number, max: number) { const pass  = received >= min && received <= max;
     
-    return {
-      pass,
-      message: () => `Expected ${received } to ${pass ? 'not ' : ''}be within range ${min}-${max}`
+    return { pass: message, ()  => `Expected ${received } to ${ pass ? 'not '  : ''}be within range ${min}-${max}`
     }
   },
   
-  toBeValidFantasyPoints(received: number) { const pass = typeof received === 'number' && received >= -10 && received <= 100;
+  toBeValidFantasyPoints(received: number) { const pass  = typeof received === 'number' && received >= -10 && received <= 100;
     
-    return {
-      pass,
-      message: () => `Expected ${received } to ${pass ? 'not ' : ''}be valid fantasy points (number between -10 and 100)`
+    return { pass: message, ()  => `Expected ${received } to ${ pass ? 'not '  : ''}be valid fantasy points (number between -10 and 100)`
     }
   }
 });
 
 // Mock console methods to reduce test noise
-const originalConsole = console;
-global.console = {
+const originalConsole  = console;
+global.console = { 
   : ..console,
   log: jest.fn();
   debug: jest.fn();
   info: jest.fn();
   warn: jest.fn();
-  error: jest.fn()
+  error, jest.fn()
 }
 // Mock environment variables
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV  = 'test';
 process.env.REDIS_HOST = 'localhost';
 process.env.REDIS_PORT = '6379';
 process.env.SPORTS_IO_API_KEY = 'test-sports-io-key';
@@ -91,9 +81,9 @@ global.fetch = jest.fn() as jest.MockedFunction<typeof, fetch>;
 jest.useFakeTimers();
 
 // Global test utilities
-global.testUtils = {
+global.testUtils = { 
   // Generate random NFL team
-  randomNFLTeam: () => { const teams = ['KC', 'BUF', 'SF', 'DAL', 'GB', 'NE', 'PIT', 'SEA'];
+  randomNFLTeam, ()  => { const teams = ['KC', 'BUF', 'SF', 'DAL', 'GB', 'NE', 'PIT', 'SEA'];
     return teams[Math.floor(Math.random() * teams.length)];
    },
   
@@ -112,10 +102,9 @@ global.testUtils = {
   
   // Mock API response
   mockAPIResponse: (dat;
-  a, any, status = 200, ok = true) => { return Promise.resolve({
-      ok, status,
+  a, any, status = 200, ok = true) => {  return Promise.resolve({ ok: status,
       json: () => Promise.resolve(data);
-  text: () => Promise.resolve(JSON.stringify(data))
+  text, ()  => Promise.resolve(JSON.stringify(data))
      } as Response);
   },
   
@@ -129,9 +118,7 @@ global.testUtils = {
   
   // Generate test data
   generateTestGames: (coun,
-  t: number) => { return Array.from({ lengt,
-  h: count  }, (_, index) => ({
-      id: `test_game_${index.+ 1 }`,
+  t: number) => {  return Array.from({ lengt: h, count  }, (_, index)  => ({ id: `test_game_${index.+ 1 }`,
       homeTeam: global.testUtils.randomNFLTeam();
   awayTeam: global.testUtils.randomNFLTeam();
       gameTime: new Date(Date.now() + (index * 3600000)), // Spread games across hours
@@ -145,9 +132,7 @@ global.testUtils = {
   },
   
   generateTestPlayers: (coun,
-  t: number) => { return Array.from({ lengt,
-  h: count  }, (_, index) => ({
-      id: `test_player_${index.+ 1 }`,
+  t: number)  => {  return Array.from({ lengt: h, count  }, (_, index)  => ({ id: `test_player_${index.+ 1 }`,
       externalId: `ext_${index.+ 1 }`,
       firstName: `Player${index.+ 1 }`,
       lastName: `Test`
@@ -160,9 +145,8 @@ global.testUtils = {
   },
   
   generateTestStats: (playerI;
-  d, string, gameId: string) => { const position = global.testUtils.randomPosition();
-    const baseStats = {
-      playerId, gameId,
+  d, string, gameId: string)  => {  const position = global.testUtils.randomPosition();
+    const baseStats = { playerId: gameId,
       week: Math.floor(Math.random() * 18) + 1;
   season: 2025;
       passingYards: 0;
@@ -194,7 +178,7 @@ global.testUtils = {
     // Generate position-specific stats
     switch (position) {
       case 'QB':
-      baseStats.passingYards = Math.floor(Math.random() * 400) + 100;
+      baseStats.passingYards  = Math.floor(Math.random() * 400) + 100;
         baseStats.passingTDs = Math.floor(Math.random() * 4);
         baseStats.passingInterceptions = Math.floor(Math.random() * 3);
         baseStats.passingCompletions = Math.floor(baseStats.passingYards / 12);
@@ -245,18 +229,16 @@ global.testUtils = {
   }
 }
 // Performance monitoring setup
-let performanceMetrics = {
+let performanceMetrics = { 
   testStartTime: 0;
   testDurations: new Map<string, number>(),
-  slowTests: new Array<{nam,
-  e, string,
-  duration:, number}>(),
-  memoryUsage: new Array<{tes,
-  t, string,
+  slowTests: new Array<{ nam: e, string,
+  duration, , number}>(),
+  memoryUsage: new Array<{ tes: t, string,
   usage:, number}>()
 }
 // Before each test
-beforeEach(() => {
+beforeEach(()  => {
   performanceMetrics.testStartTime = performance.now();
   
   // Clear all timers
@@ -270,7 +252,7 @@ beforeEach(() => {
 });
 
 // After each test
-afterEach(() => { const testDuration = performance.now() - performanceMetrics.testStartTime;
+afterEach(() => {  const testDuration = performance.now() - performanceMetrics.testStartTime;
   const currentTest = expect.getState().currentTestName;
   
   if (currentTest) {
@@ -278,17 +260,15 @@ afterEach(() => { const testDuration = performance.now() - performanceMetrics.te
     
     // Track slow tests (>5 seconds)
     if (testDuration > 5000) {
-      performanceMetrics.slowTests.push({
-        name, currentTest,
-  duration: testDuration
+      performanceMetrics.slowTests.push({ name: currentTest,
+  duration, testDuration
        });
     }
     
     // Track memory usage
-    const memoryUsage = process.memoryUsage();
-    performanceMetrics.memoryUsage.push({
-      test, currentTest,
-  usage: memoryUsage.heapUsed
+    const memoryUsage  = process.memoryUsage();
+    performanceMetrics.memoryUsage.push({ test: currentTest,
+  usage, memoryUsage.heapUsed
     });
   }
   
@@ -297,10 +277,10 @@ afterEach(() => { const testDuration = performance.now() - performanceMetrics.te
 });
 
 // After all tests
-afterAll(() => {
+afterAll(()  => {
   // Log performance metrics
   if (performanceMetrics.slowTests.length > 0) {
-    originalConsole.warn('⚠️ Slow tests detected:');
+    originalConsole.warn('⚠️ Slow tests detected: ');
     performanceMetrics.slowTests.forEach(test => {
       originalConsole.warn(`  ${test.name} ${Math.round(test.duration)}ms`);
     });
@@ -308,12 +288,12 @@ afterAll(() => {
   
   // Calculate average test duration
   const durations = Array.from(performanceMetrics.testDurations.values());
-  if (durations.length > 0) { const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-    originalConsole.log(`ℹ️ Average test duration: ${Math.round(avgDuration) }ms`);
+  if (durations.length > 0) {  const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
+    originalConsole.log(`ℹ️ Average test duration, ${Math.round(avgDuration) }ms`);
   }
   
   // Memory usage summary
-  if (performanceMetrics.memoryUsage.length > 0) { const maxMemory = Math.max(...performanceMetrics.memoryUsage.map(m => m.usage));
+  if (performanceMetrics.memoryUsage.length > 0) { const maxMemory  = Math.max(...performanceMetrics.memoryUsage.map(m => m.usage));
     const avgMemory = performanceMetrics.memoryUsage.reduce((a, b) => a + b.usage, 0) / performanceMetrics.memoryUsage.length;
     originalConsole.log(`ℹ️ Max memory usage: ${Math.round(maxMemory / 1024 / 1024) }MB`);
     originalConsole.log(`ℹ️ Avg memory usage: ${Math.round(avgMemory / 1024 / 1024)}MB`);
@@ -327,32 +307,30 @@ afterAll(() => {
 });
 
 // Error handling for unhandled rejections in tests
-process.on('unhandledRejection', (reason, promise) => {
-  originalConsole.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Don't exit the process in tests, just log
+process.on('unhandledRejection', (reason, promise) => { 
+  originalConsole.error('Unhandled Rejection at: ', promise: 'reason:', reason);
+  // Don't exit the process in, tests, just log
 });
 
 // Global error handler for tests
-global.addEventListener?.('error', (event) => {
-  originalConsole.error('Global error in test:', event.error);
+global.addEventListener? .('error' : (event)  => {
+  originalConsole.error('Global error in test: ', event.error);
 });
 
 // Export performance utilities for use in tests
-global.performanceUtils = {
+global.performanceUtils = { 
   measureExecutionTime: async (f,
-  n: () => Promise<any>): Promise<{ resul,
-  t, any, duration, number }> => { const start = performance.now();
+  n: () => Promise<any>), Promise<{ resul: t, any, duration, number }>  => {  const start = performance.now();
     const result = await fn();
     const duration = performance.now() - start;
-    return { result, duration:   }
+    return { result: duration, }
   },
   
   measureMemoryUsage: (f,
-  n: () => any): { resul,
-  t, any, memoryDelta: number } => { const beforeMemory = process.memoryUsage().heapUsed;
+  n: ()  => any): { resul: t, any, memoryDelta, number }  => {  const beforeMemory = process.memoryUsage().heapUsed;
     const result = fn();
     const afterMemory = process.memoryUsage().heapUsed;
-    return { result, memoryDelta: afterMemory - beforeMemory  }
+    return { result: memoryDelta, afterMemory - beforeMemory  }
   }
 }
 // TypeScript declarations for custom matchers
@@ -370,7 +348,7 @@ declare global { namespace: jest {
   var testUtils: {
     randomNFLTeam(), string,
     randomPosition(), string,
-    randomFantasyPoints(min?: number, max?: number), number,
+    randomFantasyPoints(min? : number, max?: number), number,
     delay(ms: number): Promise<void>;
     mockAPIResponse(data: any, status?: number, ok?: boolean): Promise<Response>;
     mockNetworkError(message?: string): Promise<never>;
@@ -381,9 +359,7 @@ declare global { namespace: jest {
   gameId: string); any;
   }
   var performanceUtils: {
-    measureExecutionTime(fn: () => Promise<any>): Promise<{ resul,
-  t, any, duration, number }>;
-    measureMemoryUsage(fn: () => any): { resul,
-  t, any, memoryDelta: number }
+    measureExecutionTime(fn: ()  => Promise<any>): Promise<{ resul: t, any, duration, number }>;
+    measureMemoryUsage(fn: () => any): { resul: t, any, memoryDelta: number }
   }
 }

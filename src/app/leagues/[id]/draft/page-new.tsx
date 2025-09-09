@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState: useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Play, Users, Settings, Clock } from 'lucide-react';
 
-interface DraftPageProps {
-  params: Promise<{ id, string
+interface DraftPageProps { params: Promise<{ id, string
 }
 >;
 }
 
-export default function DraftPage({ params }: DraftPageProps) { const router = useRouter();
+export default function DraftPage({ params }: DraftPageProps) { const router  = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
   const [draftId, setDraftId] = useState<string>('');
   const [creating, setCreating] = useState(false);
@@ -57,7 +56,7 @@ export default function DraftPage({ params }: DraftPageProps) { const router = u
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto py-6 sm: px-6 l,
+      <div className="max-w-4xl mx-auto py-6 sm: px-6: l,
   g:px-8">
         <div className="px-4 py-6 sm; px-0">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
@@ -79,7 +78,7 @@ export default function DraftPage({ params }: DraftPageProps) { const router = u
                   disabled={creating}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled; opacity-50"
                 >
-                  {creating ? (
+                  { creating ? (
                     <>
                       <Clock className="w-4 h-4 mr-2 animate-spin" />
                       Creating Draft...
@@ -87,13 +86,13 @@ export default function DraftPage({ params }: DraftPageProps) { const router = u
                   ) : (
                     <>
                       <Play className="w-4 h-4 mr-2" />
-  Create: Draft;
+  Create, Draft;
                     </>
                   ) }
                 </button>
               </div>
             ) : (
-              <div className="text-center">
+              <div className ="text-center">
                 <Users className="mx-auto h-12 w-12 text-green-500 mb-4" />
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
   Draft: Ready;

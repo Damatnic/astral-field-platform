@@ -3,9 +3,9 @@
 import React from "react";
 
 export default function PerformanceAttributionDashboard({ leagueId
-}: { leagueId, string,
+}: { leagueId: string,
  }) { return (
-    <div className="space-y-4">
+    <div className ="space-y-4">
       <h2 className="text-xl font-semibold">Performance Attribution</h2>
       <div className="p-4 border rounded bg-white">
         <p className="text-gray-700">
