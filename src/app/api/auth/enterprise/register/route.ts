@@ -239,7 +239,7 @@ export async function POST(request: NextRequest) {
     });
 
     await auditLogger.logUserManagement('system', userId, 'create', {
-      inviterUserId,
+      reason: inviterUserId ? `User registration with invite from ${inviterUserId}` : 'User registration',
       ipAddress: ip
     });
 
