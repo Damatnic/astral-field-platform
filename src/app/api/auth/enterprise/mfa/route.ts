@@ -131,7 +131,8 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
       },
       ipAddress: ip,
       userAgent,
-      success: true
+      success: true,
+      complianceRelevant: true
     });
 
     return NextResponse.json({
@@ -214,7 +215,8 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
       description: 'MFA successfully enabled for user account',
       ipAddress: ip,
       userAgent,
-      success: true
+      success: true,
+      complianceRelevant: true
     });
 
     return NextResponse.json({
@@ -278,7 +280,8 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
       description: 'MFA disabled for user account',
       ipAddress: ip,
       userAgent,
-      success: true
+      success: true,
+      complianceRelevant: true
     });
 
     return NextResponse.json({
@@ -333,7 +336,8 @@ async function handleMFAVerification(
         },
         ipAddress: ip,
         userAgent,
-        success: true
+        success: true,
+      complianceRelevant: true
       });
 
       return NextResponse.json({
@@ -412,7 +416,8 @@ async function handleRegenerateBackupCodes(user: any, verificationToken: string 
       },
       ipAddress: ip,
       userAgent,
-      success: true
+      success: true,
+      complianceRelevant: true
     });
 
     return NextResponse.json({
