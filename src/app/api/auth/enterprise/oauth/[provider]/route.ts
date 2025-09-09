@@ -178,7 +178,7 @@ export async function POST(
 
       // Log user creation
       await auditLogger.logUserManagement('system', userId, 'create', {
-        method: `oauth_${provider}`,
+        reason: `OAuth registration via ${provider}`,
         ipAddress: ip
       });
     } else {
