@@ -25,8 +25,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/Button/Button'
 import { Progress } from '@/components/ui/progress'
 import EnhancedPlayerCard from '@/components/features/player/EnhancedPlayerCard'
-import WaiverWireIntelligence from '@/components/features/waiver/WaiverWireIntelligence'
-import TradeImpactAnalysis from '@/components/features/trade/TradeImpactAnalysis'
+// import WaiverWireIntelligence from '@/components/features/waiver/WaiverWireIntelligence' // Temporarily disabled due to build errors
+// import TradeImpactAnalysis from '@/components/features/trade/TradeImpactAnalysis' // Temporarily disabled due to build errors
 import DraftBoardVisualization from '@/components/features/draft/DraftBoardVisualization'
 import type { Database } from '@/types/database'
 

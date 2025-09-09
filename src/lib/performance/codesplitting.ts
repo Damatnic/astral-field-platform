@@ -182,10 +182,10 @@ export const RouteComponents = {
   ),
   
   // Analytics (heavy component, load on demand)
-  AnalyticsDashboard: createSmartLoader(
-    () => import('@/components/analytics/AnalyticsDashboard'),
-    { chunkName: 'analytics', timeout: 15000 }
-  ),
+  // AnalyticsDashboard: createSmartLoader(
+  //   () => import('@/components/analytics/AnalyticsDashboard'),
+  //   { chunkName: 'analytics', timeout: 15000 }
+  // ),
   
   // Chat components
   ChatInterface: createSmartLoader(
