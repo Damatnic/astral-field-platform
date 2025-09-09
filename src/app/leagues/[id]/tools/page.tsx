@@ -13,87 +13,88 @@ import StartSitRecommendations from "@/components/tools/StartSitRecommendations"
 import PlayoffCalculator from "@/components/tools/PlayoffCalculator";
 
 interface ToolsPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
 interface FantasyTool {
   id: string;
-  name: string;
+    name: string;
   description: string;
-  icon: React.ComponentType<any>;
+    icon: React.ComponentType<any>;
   color: string;
-  premium: boolean;
-  category: 'lineup' | 'analysis' | 'planning' | 'research';
-  popularity: number;
+    premium: boolean;
+  category: 'lineup' | 'analysis' | 'planning' | 'research',
+    popularity: number;
   lastUpdated?: string;
+  
 }
-
 const FANTASY_TOOLS: FantasyTool[] = [
   {
     id: 'lineup-optimizer',
-    name: 'AI Lineup Optimizer',
+  name: 'AI Lineup Optimizer',
     description: 'Optimize your lineup with weather data, matchups, and advanced analytics',
-    icon: Brain,
-    color: 'from-purple-500 to-pink-500',
-    premium: true,
-    category: 'lineup',
-    popularity: 95,
-    lastUpdated: '5 minutes ago'
+    icon, Brain,
+  color: 'from-purple-500 to-pink-500',
+    premium, true,
+  category: 'lineup',
+    popularity, 95,
+  lastUpdated: '5 minutes ago'
   },
   {
     id: 'start-sit',
-    name: 'Start/Sit Recommendations',
+  name: 'Start/Sit Recommendations',
     description: 'AI-powered start/sit decisions with detailed analysis and confidence ratings',
-    icon: Target,
+  icon, Target,
     color: 'from-green-500 to-blue-500',
-    premium: true,
+  premium, true,
     category: 'lineup',
-    popularity: 92
+  popularity: 92
   },
   {
     id: 'playoff-calculator',
-    name: 'Playoff Scenario Calculator',
+  name: 'Playoff Scenario Calculator',
     description: 'Calculate playoff odds and scenarios with Monte Carlo simulations',
-    icon: Calculator,
+  icon, Calculator,
     color: 'from-yellow-500 to-orange-500',
-    premium: false,
+  premium, false,
     category: 'planning',
-    popularity: 88
+  popularity: 88
   },
   {
     id: 'sleeper-alerts',
-    name: 'Sleeper & Breakout Alerts',
+  name: 'Sleeper & Breakout Alerts',
     description: 'Identify potential breakout players before they hit the mainstream',
-    icon: Zap,
+  icon, Zap,
     color: 'from-blue-500 to-purple-500',
-    premium: true,
+  premium, true,
     category: 'research',
-    popularity: 84
+  popularity: 84
   },
   {
     id: 'keeper-calculator',
-    name: 'Keeper Value Calculator',
+  name: 'Keeper Value Calculator',
     description: 'Calculate optimal keeper values and dynasty rankings for future seasons',
-    icon: Crown,
+  icon, Crown,
     color: 'from-amber-500 to-yellow-500',
-    premium: true,
+  premium, true,
     category: 'planning',
-    popularity: 76
+  popularity: 76
   },
   {
     id: 'trade-analyzer',
-    name: 'Advanced Trade Analyzer',
+  name: 'Advanced Trade Analyzer',
     description: 'Analyze trade proposals with win probability changes and long-term impact',
-    icon: TrendingUp,
+  icon, TrendingUp,
     color: 'from-indigo-500 to-blue-500',
-    premium: true,
+  premium, true,
     category: 'analysis',
-    popularity: 91
+  popularity: 91
   }
 ];
 
-export default function ToolsPage({ params }: ToolsPageProps) {
-  const router = useRouter();
+export default function ToolsPage({ params }: ToolsPageProps) { const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [activeTool, setActiveTool] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -102,35 +103,38 @@ export default function ToolsPage({ params }: ToolsPageProps) {
     params.then((resolved) => {
       setLeagueId(resolved.id);
       setLoading(false);
-    });
+     });
   }, [params]);
 
   const categories = [
-    { id: 'lineup', label: 'Lineup Tools', icon: Target, description: 'Optimize your weekly lineups' },
-    { id: 'analysis', label: 'Analysis Tools', icon: BarChart3, description: 'Deep dive into player & team data' },
-    { id: 'planning', label: 'Planning Tools', icon: Calendar, description: 'Long-term strategy & scenarios' },
-    { id: 'research', label: 'Research Tools', icon: Star, description: 'Discover hidden gems & trends' }
+    { id: 'lineup',
+  label: 'Lineup Tools', icon, Target,
+  description: 'Optimize your weekly lineups' },
+    { id: 'analysis',
+  label: 'Analysis Tools', icon, BarChart3,
+  description: 'Deep dive into player & team data' },
+    { id: 'planning',
+  label: 'Planning Tools', icon, Calendar,
+  description: 'Long-term strategy & scenarios' },
+    { id: 'research',
+  label: 'Research Tools', icon, Star,
+  description: 'Discover hidden gems & trends' }
   ];
 
-  const getToolsByCategory = (category: string) => {
-    return FANTASY_TOOLS.filter(tool => tool.category === category)
+  const getToolsByCategory = (category: string) => { return FANTASY_TOOLS.filter(tool => tool.category === category)
       .sort((a, b) => b.popularity - a.popularity);
-  };
-
+   }
   const handleToolSelect = (toolId: string) => {
     setActiveTool(toolId);
-  };
-
-  const renderToolCard = (tool: FantasyTool) => {
-    const IconComponent = tool.icon;
+  }
+  const renderToolCard = (tool: FantasyTool) => { const IconComponent = tool.icon;
     
     return (
       <div 
-        key={tool.id}
+        key={tool.id }
         onClick={() => handleToolSelect(tool.id)}
-        className={`p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 cursor-pointer group ${
-          activeTool === tool.id ? 'ring-2 ring-primary-500 shadow-lg' : 'hover:border-gray-300 dark:hover:border-gray-600'
-        }`}
+        className={`p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover; shadow-lg transition-all duration-200 cursor-pointer group ${activeTool === tool.id ? 'ring-2 ring-primary-500 shadow-lg' : 'hover:border-gray-300 dark.hover; border-gray-600'
+         }`}
       >
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-lg bg-gradient-to-br ${tool.color}`}>
@@ -152,7 +156,9 @@ export default function ToolsPage({ params }: ToolsPageProps) {
           </div>
         </div>
         
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+        <h3 className="text-lg font-semibold text-gray-900 dark: text-white mb-2 group-hove,
+  r:text-primary-600 dar,
+  k:group-hover; text-primary-400 transition-colors">
           {tool.name}
         </h3>
         
@@ -171,19 +177,18 @@ export default function ToolsPage({ params }: ToolsPageProps) {
         </div>
       </div>
     );
-  };
-
-  const renderActiveTool = () => {
-    switch (activeTool) {
+  }
+  const renderActiveTool = () => { switch (activeTool) {
       case 'lineup-optimizer':
-        return (
+      return (
           <LineupOptimizer
-            leagueId={leagueId}
+            leagueId={leagueId }
             rosterSlots={['QB', 'RB', 'RB', 'WR', 'WR', 'TE', 'FLEX', 'K', 'DST']}
             availablePlayers={[]}
           />
         );
-      case 'start-sit':
+      break;
+    case 'start-sit':
         return (
           <StartSitRecommendations
             leagueId={leagueId}
@@ -201,8 +206,7 @@ export default function ToolsPage({ params }: ToolsPageProps) {
             teams={[]}
           />
         );
-      default:
-        return (
+      default: return (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-12 shadow text-center">
             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
               <Brain className="h-12 w-12 text-gray-400" />
@@ -210,25 +214,24 @@ export default function ToolsPage({ params }: ToolsPageProps) {
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Select a Fantasy Tool
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+            <p className="text-gray-600 dark; text-gray-400 max-w-md mx-auto">
               Choose from our suite of AI-powered fantasy football tools to optimize your lineup, 
               analyze players, and plan your season strategy.
             </p>
           </div>
         );
     }
-  };
-
-  if (loading) {
-    return (
+  }
+  if (loading) { return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
-          <div className="h-16 bg-white dark:bg-gray-800 mb-4"></div>
+          <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6 w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-6 w-1/3" />
+            <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-64 bg-gray-300 dark:bg-gray-700 rounded-xl"></div>
+                <div key={i } className="h-64 bg-gray-300 dark:bg-gray-700 rounded-xl" />
               ))}
             </div>
           </div>
@@ -272,18 +275,17 @@ export default function ToolsPage({ params }: ToolsPageProps) {
             </div>
 
             {/* Categories */}
-            {categories.map(category => {
-              const CategoryIcon = category.icon;
+            {categories.map(category => { const CategoryIcon = category.icon;
               const tools = getToolsByCategory(category.id);
               
               return (
-                <div key={category.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div key={category.id } className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                       <CategoryIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <h3 className="font-semibold text-gray-900 dark; text-white">
                         {category.label}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -293,17 +295,17 @@ export default function ToolsPage({ params }: ToolsPageProps) {
                   </div>
                   
                   <div className="space-y-2">
-                    {tools.map(tool => {
-                      const ToolIcon = tool.icon;
+                    {tools.map(tool => { const ToolIcon = tool.icon;
                       return (
                         <button
-                          key={tool.id}
+                          key={tool.id }
                           onClick={() => handleToolSelect(tool.id)}
-                          className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${
-                            activeTool === tool.id
-                              ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                              : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                          }`}
+                          className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${activeTool === tool.id
+                              ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
+  k:text-primary-300'
+                              : 'hover: bg-gray-100 dar,
+  k:hover.bg-gray-700 text-gray-700 dark; text-gray-300'
+                           }`}
                         >
                           <ToolIcon className="h-4 w-4" />
                           <div className="flex-1 min-w-0">
@@ -334,11 +336,12 @@ export default function ToolsPage({ params }: ToolsPageProps) {
         {/* Feature Highlights */}
         {!activeTool && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Featured Tools
+            <h2 className="text-2xl font-bold text-gray-900 dark: text-white mb-6">,
+    Featured: Tools;
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-6">
               {FANTASY_TOOLS.filter(tool => tool.popularity >= 90).map(renderToolCard)}
             </div>
           </div>

@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { Play, Users, Settings, Clock } from 'lucide-react';
 
 interface DraftPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
-export default function DraftPage({ params }: DraftPageProps) {
-  const router = useRouter();
+export default function DraftPage({ params }: DraftPageProps) { const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
   const [draftId, setDraftId] = useState<string>('');
   const [creating, setCreating] = useState(false);
@@ -18,7 +19,7 @@ export default function DraftPage({ params }: DraftPageProps) {
   useEffect(() => {
     params.then(resolved => {
       setLeagueId(resolved.id);
-      setDraftId(`draft_${resolved.id}`);
+      setDraftId(`draft_${resolved.id }`);
     });
   }, [params]);
 
@@ -30,11 +31,10 @@ export default function DraftPage({ params }: DraftPageProps) {
     }
   }, [router]);
 
-  useEffect(() => {
-    if (leagueId) {
+  useEffect(() => { if (leagueId) {
       // Check if draft exists
       setDraftExists(Math.random() > 0.5); // Mock check
-    }
+     }
   }, [leagueId]);
 
   const handleCreateDraft = async () => {
@@ -44,26 +44,24 @@ export default function DraftPage({ params }: DraftPageProps) {
       setDraftExists(true);
       setCreating(false);
     }, 2000);
-  };
-
+  }
   const handleJoinDraft = () => {
     router.push(`/leagues/${leagueId}/draft/${draftId}`);
-  };
-
-  if (!leagueId) {
-    return (
+  }
+  if (!leagueId) { return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
-  }
+   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <div className="max-w-4xl mx-auto py-6 sm: px-6 l,
+  g:px-8">
+        <div className="px-4 py-6 sm; px-0">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            Draft Center
+  Draft: Center;
           </h1>
           
           <div className="bg-white shadow rounded-lg p-6">
@@ -79,7 +77,7 @@ export default function DraftPage({ params }: DraftPageProps) {
                 <button
                   onClick={handleCreateDraft}
                   disabled={creating}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled; opacity-50"
                 >
                   {creating ? (
                     <>
@@ -89,16 +87,16 @@ export default function DraftPage({ params }: DraftPageProps) {
                   ) : (
                     <>
                       <Play className="w-4 h-4 mr-2" />
-                      Create Draft
+  Create: Draft;
                     </>
-                  )}
+                  ) }
                 </button>
               </div>
             ) : (
               <div className="text-center">
                 <Users className="mx-auto h-12 w-12 text-green-500 mb-4" />
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  Draft Ready
+  Draft: Ready;
                 </h2>
                 <p className="text-gray-600 mb-6">
                   Your league draft is ready to begin.
@@ -109,7 +107,7 @@ export default function DraftPage({ params }: DraftPageProps) {
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
                   >
                     <Play className="w-4 h-4 mr-2" />
-                    Join Draft
+  Join: Draft;
                   </button>
                   <div className="text-sm text-gray-500">
                     Draft ID: {draftId}

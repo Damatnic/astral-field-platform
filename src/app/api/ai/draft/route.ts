@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
         
         if (!leagueId || !teamId || !currentPick) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId, and currentPick' },
+            { error: 'Missing required parameters: leagueId, teamId and currentPick' },
             { status: 400 }
           );
         }
@@ -35,9 +35,7 @@ export async function GET(request: NextRequest) {
         }
 
         const recommendations = await draftAssistant.getDraftRecommendations(
-          leagueId,
-          teamId,
-          pickNumber,
+          leagueId, teamId, pickNumber,
           availablePlayers
         );
 
@@ -147,12 +145,7 @@ export async function POST(request: NextRequest) {
 
     switch (type) {
       case 'track_pick':
-        const {
-          leagueId,
-          pickNumber,
-          teamId,
-          playerId
-        } = data;
+        const { leagueId, pickNumber, teamId, playerId } = data;
 
         if (!leagueId || pickNumber === undefined || !teamId || !playerId) {
           return NextResponse.json(
@@ -170,10 +163,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'start_mock_draft':
-        const {
-          userTeamId,
-          settings
-        } = data;
+        const { userTeamId, settings } = data;
 
         if (!userTeamId || !settings) {
           return NextResponse.json(
@@ -223,11 +213,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'make_user_pick':
-        const {
-          draftId: userDraftId,
-          userTeamId: pickUserTeamId,
-          playerId: pickPlayerId
-        } = data;
+        const { userDraftId, pickUserTeamId, pickPlayerId } = data;
 
         if (!userDraftId || !pickUserTeamId || !pickPlayerId) {
           return NextResponse.json(
@@ -236,11 +222,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const userPick = await mockDraftSimulator.makeUserPick(
-          userDraftId,
-          pickUserTeamId,
-          pickPlayerId
-        );
+        const userPick = await mockDraftSimulator.makeUserPick(userDraftId, pickUserTeamId, pickPlayerId);
 
         return NextResponse.json({
           success: true,
@@ -249,11 +231,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'get_pick_recommendations':
-        const {
-          draftId: recDraftId,
-          userTeamId: recUserTeamId,
-          count
-        } = data;
+        const { recDraftId, recUserTeamId, count } = data;
 
         if (!recDraftId || !recUserTeamId) {
           return NextResponse.json(
@@ -262,11 +240,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const pickRecommendations = await mockDraftSimulator.getPickRecommendations(
-          recDraftId,
-          recUserTeamId,
-          count || 5
-        );
+        const pickRecommendations = await mockDraftSimulator.getPickRecommendations(recDraftId, recUserTeamId, count || 5);
 
         return NextResponse.json({
           success: true,

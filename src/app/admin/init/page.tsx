@@ -38,13 +38,12 @@ export default function InitializeLeaguePage() {
       }
     } catch (error) {
       setStatus('error');
-      setMessage('Network error. Please try again.');
+      setMessage('Network error.Please try again.');
       console.error('Init error:', error);
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
   const checkLeagueStatus = async () => {
     setIsLoading(true);
     try {
@@ -56,7 +55,7 @@ export default function InitializeLeaguePage() {
         setLeagueData(data.league);
         setStatus('success');
       } else {
-        setMessage('League is not initialized. Click "Initialize League" to set it up.');
+        setMessage('League is not initialized.Click "Initialize League" to set it up.');
         setStatus('idle');
       }
     } catch (error) {
@@ -65,8 +64,7 @@ export default function InitializeLeaguePage() {
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
       <div className="max-w-4xl mx-auto">
@@ -97,26 +95,24 @@ export default function InitializeLeaguePage() {
                 League Members & Teams:
               </h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="text-gray-300">1. Nicholas D'Amato - The Commanders</div>
-                <div className="text-gray-300">2. Brittany Bergum - Purple Reign</div>
-                <div className="text-gray-300">3. Cason Minor - Minor Threat</div>
-                <div className="text-gray-300">4. David Jarvey - Jarvey's Giants</div>
-                <div className="text-gray-300">5. Demo User 1 - Dynasty Builders</div>
-                <div className="text-gray-300">6. Demo User 2 - Trophy Hunters</div>
-                <div className="text-gray-300">7. Demo User 3 - Rocket Squad</div>
-                <div className="text-gray-300">8. Demo User 4 - Fire Starters</div>
-                <div className="text-gray-300">9. Demo User 5 - Diamond Dogs</div>
-                <div className="text-gray-300">10. Admin User - Crown Royale (Commissioner)</div>
+                <div className="text-gray-300">1.Nicholas D'Amato - The Commanders</div>
+                <div className="text-gray-300">2.Brittany Bergum - Purple Reign</div>
+                <div className="text-gray-300">3.Cason Minor - Minor Threat</div>
+                <div className="text-gray-300">4.David Jarvey - Jarvey's Giants</div>
+                <div className="text-gray-300">5.Demo User 1 - Dynasty Builders</div>
+                <div className="text-gray-300">6.Demo User 2 - Trophy Hunters</div>
+                <div className="text-gray-300">7.Demo User 3 - Rocket Squad</div>
+                <div className="text-gray-300">8.Demo User 4 - Fire Starters</div>
+                <div className="text-gray-300">9.Demo User 5 - Diamond Dogs</div>
+                <div className="text-gray-300">10.Admin User - Crown Royale (Commissioner)</div>
               </div>
             </div>
 
             {/* Status Messages */}
             {message && (
-              <div className={`rounded-lg p-4 ${
-                status === 'success' ? 'bg-green-600/20 text-green-400' :
-                status === 'error' ? 'bg-red-600/20 text-red-400' :
-                'bg-blue-600/20 text-blue-400'
-              }`}>
+              <div className={`rounded-lg p-4 ${status === 'success' ? 'bg-green-600/20 text-green-400' :
+                status === 'error' ? 'bg-red-600/20 text-red-400' : 'bg-blue-600/20 text-blue-400'
+               }`}>
                 {message}
               </div>
             )}
@@ -141,11 +137,9 @@ export default function InitializeLeaguePage() {
               <button
                 onClick={initializeLeague}
                 disabled={isLoading || status === 'success'}
-                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                  isLoading || status === 'success'
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700 text-white'
-                }`}
+                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || status === 'success'
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'
+                 }`}
               >
                 {isLoading ? 'Initializing...' : 'Initialize League'}
               </button>
@@ -153,11 +147,8 @@ export default function InitializeLeaguePage() {
               <button
                 onClick={checkLeagueStatus}
                 disabled={isLoading}
-                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                  isLoading
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
+                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                 }`}
               >
                 Check Status
               </button>
@@ -177,8 +168,7 @@ export default function InitializeLeaguePage() {
         {/* Instructions */}
         <div className="mt-8 bg-yellow-600/10 border border-yellow-600/30 rounded-lg p-4">
           <p className="text-yellow-400 text-sm">
-            <strong>Note:</strong> This will create the database tables and initialize all 10 players in a single league. 
-            Run this only once to set up the league structure.
+            <strong>Note:</strong> This will create the database tables and initialize all 10 players in a single league.Run this only once to set up the league structure.
           </p>
         </div>
       </div>

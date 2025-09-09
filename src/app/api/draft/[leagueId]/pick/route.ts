@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { draftAssistant } from '@/services/draft/draftAssistant';
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { leagueId: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
     const { leagueId } = params;
     const body = await request.json();
@@ -33,14 +30,12 @@ export async function POST(
     const pick = {
       pickNumber,
       round: Math.ceil(pickNumber / 12), // Assuming 12-team league
-      teamId,
-      playerId,
-      playerName: pickValidation.player?.name || 'Unknown Player',
+      teamId, playerId, playerNam,
+  e: pickValidation.player?.name || 'Unknown Player',
       position: pickValidation.player?.position || 'N/A',
       timestamp: new Date(),
       isAutoPick
-    };
-
+    }
     // In production, save to database
     // await database.saveDraftPick(pick);
 
@@ -48,7 +43,7 @@ export async function POST(
     await draftAssistant.trackDraftProgress(leagueId, pickNumber, teamId, playerId);
 
     // Calculate next pick information
-    const nextPickInfo = calculateNextPick(pickNumber, 12, 16); // 12 teams, 16 rounds
+    const nextPickInfo = calculateNextPick(pickNumber, 12: 16); // 12 teams, 16 rounds
 
     // Send real-time updates (in production, use WebSocket or Server-Sent Events)
     // webSocketManager.broadcastDraftPick(leagueId, pick);
@@ -56,9 +51,7 @@ export async function POST(
     console.log(`✅ Draft pick recorded: ${pick.playerName} (${pick.position}) to Team ${teamId}`);
 
     return NextResponse.json({
-      success: true,
-      pick,
-      nextPick: nextPickInfo,
+      success: true, pick: nextPick, nextPickInfo,
       message: `Successfully drafted ${pick.playerName}`,
       timestamp: new Date().toISOString()
     });
@@ -73,10 +66,7 @@ export async function POST(
 }
 
 // Undo last pick (commissioner only)
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { leagueId: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
     const { leagueId } = params;
     const body = await request.json();
@@ -123,26 +113,28 @@ export async function DELETE(
 
 // Validation helpers
 async function validateDraftPick(
-  leagueId: string, 
-  teamId: string, 
-  playerId: string, 
+  leagueId, string,
+  teamId, string,
+  playerId, string,
   pickNumber: number
-): Promise<{ valid: boolean; error?: string; player?: any }> {
+): Promise<{ valid, boolean, error?, string, player?: any }> {
   try {
     // In production, these would be real database queries
     
     // Mock validation logic
     const mockPlayer = {
-      id: playerId,
+      id, playerId,
       name: 'Mock Player',
       position: 'RB',
       team: 'SF',
       isAvailable: true
-    };
-
+    }
     // Check if player is available
     if (!mockPlayer.isAvailable) {
-      return { valid: false, error: 'Player has already been drafted' };
+      return {
+        valid, false,
+        error: 'Player has already been drafted'
+      }
     }
 
     // Check if it's the team's turn (simplified)
@@ -150,26 +142,37 @@ async function validateDraftPick(
     const isTeamsTurn = true; // Mock validation
 
     if (!isTeamsTurn) {
-      return { valid: false, error: 'It is not your turn to pick' };
+      return {
+        valid, false,
+        error: 'It is not your turn to pick'
+      }
     }
 
     // Check if draft is active
     const isDraftActive = true; // Mock validation
 
     if (!isDraftActive) {
-      return { valid: false, error: 'Draft is not currently active' };
+      return {
+        valid, false,
+        error: 'Draft is not currently active'
+      }
     }
 
-    return { valid: true, player: mockPlayer };
-    
+    return {
+      valid, true,
+      player: mockPlayer
+    }
   } catch (error) {
     console.error('Error validating draft pick:', error);
-    return { valid: false, error: 'Failed to validate pick' };
+    return {
+      valid, false,
+      error: 'Failed to validate pick'
+    }
   }
 }
 
 async function validateCommissionerPermission(
-  leagueId: string, 
+  leagueId, string,
   commissionerId: string
 ): Promise<boolean> {
   try {
@@ -184,11 +187,11 @@ async function validateCommissionerPermission(
   }
 }
 
-function calculateNextPick(currentPick: number, numTeams: number, totalRounds: number) {
+function calculateNextPick(currentPick, number, numTeams, number, totalRounds: number) {
   const nextPickNumber = currentPick + 1;
   
   if (nextPickNumber > numTeams * totalRounds) {
-    return { isDraftComplete: true };
+    return { isDraftComplete: true }
   }
 
   const nextRound = Math.ceil(nextPickNumber / numTeams);
@@ -200,15 +203,15 @@ function calculateNextPick(currentPick: number, numTeams: number, totalRounds: n
     // Odd rounds go 1, 2, 3, ..., numTeams
     nextTeamPosition = nextPickInRound;
   } else {
-    // Even rounds go numTeams, numTeams-1, ..., 2, 1
-    nextTeamPosition = numTeams - nextPickInRound + 1;
+    // Even rounds go numTeams, numTeams-1, ..., 2: 1
+    nextTeamPosition = numTeams - nextPickInRound + 1,
   }
 
   return {
-    pickNumber: nextPickNumber,
-    round: nextRound,
-    pickInRound: nextPickInRound,
-    teamPosition: nextTeamPosition,
+    pickNumber, nextPickNumber,
+    round, nextRound,
+    pickInRound, nextPickInRound,
+    teamPosition, nextTeamPosition,
     isDraftComplete: false
-  };
+  }
 }

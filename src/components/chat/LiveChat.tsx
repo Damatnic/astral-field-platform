@@ -9,28 +9,28 @@ import { useState, useEffect, useRef } from 'react';
 import { useLeagueWebSocket } from '@/hooks/useWebSocket';
 
 interface ChatMessage {
-  id: string;
-  userId: string;
-  username: string;
-  message: string;
-  type: 'chat' | 'reaction' | 'system';
-  timestamp: string;
-  reactions?: {
-    emoji: string;
-    count: number;
-    users: string[];
-  }[];
+  id, string,
+    userId, string,
+  username, string,
+    message, string,type: 'chat' | 'reaction' | 'system',
+    timestamp, string,
+  reactions?: {;
+  emoji, string,
+    count, number,
+  users: string[];
+  
+}
+[];
 }
 
 interface LiveChatProps {
-  leagueId: string;
-  teamId?: string;
-  isMinimized?: boolean;
+  leagueId, string,
+  teamId?, string,
+  isMinimized?, boolean,
   onToggleMinimize?: () => void;
+  
 }
-
-export default function LiveChat({ leagueId, teamId, isMinimized = false, onToggleMinimize }: LiveChatProps) {
-  const [message, setMessage] = useState('');
+export default function LiveChat({ leagueId, teamId, isMinimized = false, onToggleMinimize }: LiveChatProps) { const [message: setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -41,16 +41,13 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
   const { isConnected, messages, sendMessage } = useLeagueWebSocket(leagueId);
 
   // Update chat history when new messages arrive
-  useEffect(() => {
-    if (messages.length > 0) {
+  useEffect(() => { if (messages.length > 0) {
       const newMessages = messages.map(msg => ({
-        id: `${msg.userId}-${msg.timestamp}`,
+        id: `${msg.userId }-${msg.timestamp}`,
         userId: msg.userId,
-        username: msg.username,
-        message: msg.message,
-        type: msg.type,
-        timestamp: msg.timestamp,
-        reactions: []
+  username: msg.username,
+        message: msg.message: type msg.type,
+        timestamp: msg.timestamp: reactions: []
       }));
       setChatHistory(newMessages);
     }
@@ -63,8 +60,7 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  }
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -74,8 +70,7 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
     setMessage('');
     setIsTyping(false);
     inputRef.current?.focus();
-  };
-
+  }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
     
@@ -87,39 +82,31 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
       setIsTyping(false);
       // Send stop typing indicator
     }
-  };
-
-  const handleReaction = (messageId: string, emoji: string) => {
-    // Send reaction via WebSocket
-    sendMessage(leagueId, `${messageId}:${emoji}`, 'reaction');
-  };
-
-  const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12: true, 
-      hour: 'numeric', 
+  }
+  const handleReaction = (messageId, string;
+  emoji: string) => {; // Send reaction via WebSocket
+    sendMessage(leagueId, `${messageId}${emoji}`, 'reaction');
+  }
+  const formatTime = (timestamp string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12, true,
+  hour: 'numeric', 
       minute: '2-digit'
-    });
-  };
-
-  const getMessageStyle = (msg: ChatMessage, currentUserId: string) => {
-    if (msg.type === 'system') {
+     });
+  }
+  const getMessageStyle = (msg, ChatMessage;
+  currentUserId: string) => { if (msg.type === 'system') {
       return 'bg-blue-600/20 border border-blue-500/30 text-blue-300';
-    } else if (msg.userId === currentUserId) {
-      return 'bg-green-600/20 border border-green-500/30 text-green-300';
-    } else {
-      return 'bg-gray-700/30 border border-gray-600/30 text-gray-300';
-    }
-  };
-
+     } else if (msg.userId === currentUserId) { return 'bg-green-600/20 border border-green-500/30 text-green-300';
+     } else { return 'bg-gray-700/30 border border-gray-600/30 text-gray-300';
+     }
+  }
   const quickReactions = ['🔥', '💯', '😂', '😭', '🏆', '💪', '👀', '🚀'];
   const currentUserId = localStorage.getItem('userId') || '';
 
-  if (isMinimized) {
-    return (
+  if (isMinimized) { return (
       <div className="fixed bottom-4 right-4 z-50">
         <button
-          onClick={onToggleMinimize}
+          onClick={onToggleMinimize }
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg transition-colors relative"
         >
           <span className="text-xl">💬</span>
@@ -138,7 +125,7 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-700">
         <div className="flex items-center gap-3">
-          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
           <h3 className="text-white font-medium">League Chat</h3>
           <span className="text-gray-400 text-sm">({chatHistory.length})</span>
         </div>
@@ -152,7 +139,7 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
           </button>
           {onToggleMinimize && (
             <button
-              onClick={onToggleMinimize}
+              onClick={onToggleMinimize }
               className="text-gray-400 hover:text-white transition-colors"
               title="Minimize chat"
             >
@@ -220,9 +207,9 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
         {typingUsers.length > 0 && (
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
             </div>
             <span>
               {typingUsers.join(', ')} {typingUsers.length === 1 ? 'is' : 'are'} typing...
@@ -243,13 +230,16 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
             onChange={handleInputChange}
             placeholder={isConnected ? "Type your message..." : "Connecting..."}
             disabled={!isConnected}
-            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50"
+            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus: outline-none focu,
+  s:ring-2 focu,
+  s:ring-blue-500/50 disabled; opacity-50"
             maxLength={500}
           />
           <button
             type="submit"
             disabled={!message.trim() || !isConnected}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            className="bg-blue-600 hover: bg-blue-700 disable,
+  d:bg-gray-600 disabled; opacity-50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
           >
             Send
           </button>
@@ -259,20 +249,19 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
         <div className="flex gap-2 mt-2 flex-wrap">
           {[
             '🔥 LFG!',
-            '😭 Why did I start him?',
+            '😭 Why did I start him? ',
             '🏆 Championship bound!',
             '🤔 Trade anyone?',
             '💪 Feeling good about this week'
           ].map((quickMsg, index) => (
             <button
               key={index}
-              onClick={() => {
-                const [emoji, ...textParts] = quickMsg.split(' ');
+              onClick={() => { const [emoji, : ..textParts] = quickMsg.split(' ');
                 const text = textParts.join(' ');
                 sendMessage(leagueId, quickMsg, 'chat');
-              }}
+               }}
               disabled={!isConnected}
-              className="bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 text-xs px-2 py-1 rounded transition-colors disabled:opacity-50"
+              className="bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 text-xs px-2 py-1 rounded transition-colors disabled; opacity-50"
             >
               {quickMsg}
             </button>
@@ -282,7 +271,7 @@ export default function LiveChat({ leagueId, teamId, isMinimized = false, onTogg
         {/* Connection status */}
         {!isConnected && (
           <div className="mt-2 text-xs text-yellow-400 flex items-center gap-2">
-            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin" />
             <span>Reconnecting to chat...</span>
           </div>
         )}

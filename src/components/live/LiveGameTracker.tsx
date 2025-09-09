@@ -10,26 +10,26 @@ import { getWebSocketClient } from '@/lib/websocket/client';
 import type { NFLGame, PlayerStats } from '@/services/nfl/dataProvider';
 
 interface LiveGameData {
-  game: NFLGame;
-  topPerformers: Array<{
-    playerId: string;
-    name: string;
-    team: string;
-    position: string;
-    fantasyPoints: number;
-    keyStats: string;
-  }>;
-  lastUpdate: Date;
+  game, NFLGame,
+    topPerformers: Array<{;
+  playerId, string,
+    name, string,
+  team, string,
+    position, string,
+  fantasyPoints, number,
+    keyStats, string,
+   }
+>;
+  lastUpdate, Date,
 }
 
 interface LiveGameTrackerProps {
-  leagueId: string;
-  teamId?: string;
-  week?: number;
+  leagueId, string,
+  teamId?, string,
+  week?, number,
+  
 }
-
-export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrackerProps) {
-  const [liveGames, setLiveGames] = useState<LiveGameData[]>([]);
+export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrackerProps) { const [liveGames, setLiveGames] = useState<LiveGameData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(week || 1);
@@ -54,43 +54,38 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
         wsClient.on('matchup_update', handleMatchupUpdate);
         
         setIsConnected(true);
-      } catch (error) {
+       } catch (error) {
         console.error('Failed to connect WebSocket:', error);
         setIsConnected(false);
       }
-    };
-
+    }
     initializeWebSocket();
 
-    return () => {
-      const wsClient = getWebSocketClient();
+    return () => { const wsClient = getWebSocketClient();
       wsClient.leaveLeague(leagueId);
       wsClient.off('score_update');
       wsClient.off('player_update');
       wsClient.off('matchup_update');
-    };
+     }
   }, [leagueId]);
 
   // Fetch live games data
   const fetchLiveGames = useCallback(async () => {
     setIsLoading(true);
-    try {
-      const response = await fetch(`/api/live/games?week=${currentWeek}`);
+    try { const response = await fetch(`/api/live/games?week=${currentWeek }`);
       if (!response.ok) throw new Error('Failed to fetch live games');
       
       const data = await response.json();
       
       // Transform and enrich game data
-      const enrichedGames: LiveGameData[] = await Promise.all(
-        data.games.map(async (game: NFLGame) => {
+      const enrichedGames: LiveGameData[] = await Promise.all(data.games.map(async (game; NFLGame) => {
           // Fetch top performers for this game
           const topPerformers = await fetchTopPerformers(game.id);
           
           return {
-            game,
-            topPerformers,
+            game, topPerformers,
             lastUpdate: new Date()
-          };
+          }
         })
       );
       
@@ -104,19 +99,17 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
   }, [currentWeek]);
 
   // Fetch top fantasy performers for a game
-  const fetchTopPerformers = async (gameId: string) => {
-    try {
-      const response = await fetch(`/api/live/top-performers?gameId=${gameId}&limit=3`);
+  const fetchTopPerformers = async (gameId: string) => { try {
+      const response = await fetch(`/api/live/top-performers?gameId=${gameId }&limit=3`);
       if (!response.ok) return [];
       
       const data = await response.json();
       return data.performers || [];
     } catch (error) {
-      console.error(`Error fetching top performers for game ${gameId}:`, error);
+      console.error(`Error fetching top performers for game ${gameId}, `, error);
       return [];
     }
-  };
-
+  }
   // Handle WebSocket events
   const handleScoreUpdate = (data: any) => {
     console.log('Score update received:', data);
@@ -125,66 +118,62 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
       // Update logic here
       return prev;
     });
-  };
-
+  }
   const handlePlayerUpdate = (data: any) => {
     console.log('Player update received:', data);
     // Update player stats in relevant games
-  };
-
+  }
   const handleMatchupUpdate = (data: any) => {
     console.log('Matchup update received:', data);
     // Update matchup scores
-  };
-
+  }
   // Auto-refresh every 30 seconds
-  useEffect(() => {
-    if (!autoRefresh) return;
+  useEffect(() => { if (!autoRefresh) return;
 
     fetchLiveGames();
     const interval = setInterval(fetchLiveGames, 30000);
 
     return () => clearInterval(interval);
-  }, [autoRefresh, fetchLiveGames]);
+   }, [autoRefresh, fetchLiveGames]);
 
   // Get game status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'in_progress': return 'text-green-400';
-      case 'final': return 'text-gray-400';
-      case 'scheduled': return 'text-blue-400';
-      case 'postponed': return 'text-red-400';
-      default: return 'text-gray-400';
-    }
-  };
-
-  // Get game status display
-  const getStatusDisplay = (game: NFLGame) => {
-    switch (game.status) {
+  const getStatusColor = (status: string) => { switch (status) {
       case 'in_progress':
-        return `Q${game.quarter} - ${game.timeRemaining}`;
-      case 'final':
+      return 'text-green-400';
+      break;
+    case 'final': return 'text-gray-400';
+      case 'scheduled':
+      return 'text-blue-400';
+      break;
+    case 'postponed': return 'text-red-400';
+      default: return 'text-gray-400';
+     }
+  }
+  // Get game status display
+  const getStatusDisplay = (game: NFLGame) => { switch (game.status) {
+      case 'in_progress':
+      return `Q${game.quarter } - ${game.timeRemaining}`;
+      break;
+    case 'final':
         return 'Final';
       case 'scheduled':
         return new Date(game.gameTime).toLocaleTimeString('en-US', {
           hour: 'numeric',
-          minute: '2-digit'
+  minute: '2-digit'
         });
       case 'postponed':
         return 'Postponed';
       default:
         return game.status;
     }
-  };
-
-  if (isLoading) {
-    return (
+  }
+  if (isLoading) { return (
       <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-700 rounded w-1/3"></div>
+          <div className="h-8 bg-gray-700 rounded w-1/3" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-32 bg-gray-700 rounded"></div>
+              <div key={i } className="h-32 bg-gray-700 rounded" />
             ))}
           </div>
         </div>
@@ -199,7 +188,7 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-bold text-white">Live Game Tracker</h2>
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'} animate-pulse`} />
             <span className="text-sm text-gray-400">
               {isConnected ? 'Connected' : 'Disconnected'}
             </span>
@@ -214,18 +203,15 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
             className="bg-gray-700 text-white rounded px-3 py-1 text-sm"
           >
             {[...Array(18)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>Week {i + 1}</option>
+              <option key={ i: + 1 } value={ i: + 1 }>Week { i: + 1 }</option>
             ))}
           </select>
           
           {/* Auto-refresh Toggle */}
           <button
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-              autoRefresh 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-700 text-gray-400 hover:text-white'
-            }`}
+            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${autoRefresh ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover.text-white'
+             }`}
           >
             {autoRefresh ? 'Auto-Refresh ON' : 'Auto-Refresh OFF'}
           </button>
@@ -286,7 +272,7 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
                   </div>
                   {game.status === 'in_progress' && (
                     <div className="mt-1">
-                      <span className="inline-flex w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                      <span className="inline-flex w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                       <span className="ml-1 text-xs text-gray-400">LIVE</span>
                     </div>
                   )}
@@ -324,8 +310,7 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
                   <button className="flex-1 py-1 px-2 bg-blue-600/20 text-blue-400 rounded text-xs hover:bg-blue-600/30 transition-colors">
                     Watch Live Stats
                   </button>
-                  <button className="flex-1 py-1 px-2 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/30 transition-colors">
-                    Game Center
+                  <button className="flex-1 py-1 px-2 bg-purple-600/20 text-purple-400 rounded text-xs hover; bg-purple-600/30 transition-colors">  Game, Center,
                   </button>
                 </div>
               )}
@@ -338,19 +323,19 @@ export default function LiveGameTracker({ leagueId, teamId, week }: LiveGameTrac
       <div className="mt-6 pt-4 border-t border-gray-700">
         <div className="flex flex-wrap gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-green-400 rounded-full" />
             <span className="text-gray-400">In Progress</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-blue-400 rounded-full" />
             <span className="text-gray-400">Scheduled</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-gray-400 rounded-full" />
             <span className="text-gray-400">Final</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-red-400 rounded-full" />
             <span className="text-gray-400">Postponed</span>
           </div>
         </div>

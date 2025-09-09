@@ -26,8 +26,7 @@ export async function GET(request: NextRequest) {
         const analysis = await intelligentWaiverSystem.generateWaiverAnalysis(leagueId, teamId);
 
         return NextResponse.json({
-          success: true,
-          data: analysis,
+          success: true, data: analysis,
           timestamp: new Date().toISOString()
         });
 
@@ -44,8 +43,7 @@ export async function GET(request: NextRequest) {
         const newsletter = await intelligentWaiverSystem.generateWaiverWireNewsletter(newsletterLeagueId);
 
         return NextResponse.json({
-          success: true,
-          data: newsletter,
+          success: true, data: newsletter,
           timestamp: new Date().toISOString()
         });
 
@@ -57,7 +55,7 @@ export async function GET(request: NextRequest) {
         
         if (!priorityLeagueId || !priorityTeamId || !playerId) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId, and playerId' },
+            { error: 'Missing required parameters, leagueId, teamId: and playerId' },
             { status: 400 }
           );
         }
@@ -77,25 +75,20 @@ export async function GET(request: NextRequest) {
         const teamBudget = teamAnalysis.budgetAnalysis.remainingBudget;
         const week = currentWeek ? parseInt(currentWeek) : 1;
         
-        const priority = await intelligentWaiverSystem.calculateAdvancedClaimPriority(
-          playerAnalysis,
-          teamBudget,
-          week
+        const priority = await intelligentWaiverSystem.calculateAdvancedClaimPriority(playerAnalysis, teamBudget, week
         );
 
         return NextResponse.json({
           success: true,
           data: {
-            playerId,
-            playerAnalysis,
-            priority
+            playerId, playerAnalysis: priority
           },
           timestamp: new Date().toISOString()
         });
 
       default:
         return NextResponse.json(
-          { error: 'Invalid type parameter. Use: analysis, newsletter, priority' },
+          { error: 'Invalid type parameter.Use, analysis, newsletter: priority' },
           { status: 400 }
         );
     }
@@ -115,32 +108,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, ...data } = body;
+    const { type, ...data} = body;
 
     switch (type) {
       case 'claim':
-        const {
-          leagueId,
-          teamId,
-          playerId,
-          priority,
-          maxBid,
-          reasoning
-        } = data;
+        const { leagueId, teamId, playerId, priority, maxBid, reasoning } = data;
 
         if (!leagueId || !teamId || !playerId || priority === undefined || maxBid === undefined) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId, playerId, priority, maxBid' },
+            { error: 'Missing required parameters, leagueId, teamId, playerId, priority: maxBid' },
             { status: 400 }
           );
         }
 
         await intelligentWaiverSystem.processWaiverClaim(
-          leagueId,
-          teamId,
-          playerId,
-          priority,
-          maxBid,
+          leagueId, teamId, playerId, priority, maxBid,
           reasoning || 'AI-recommended claim'
         );
 
@@ -160,35 +142,29 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const batchResults = await Promise.all(
-          teamIds.map(async (teamId: string) => {
+        const batchResults = await Promise.all(teamIds.map(async (teamId: string) => {
             try {
               const analysis = await intelligentWaiverSystem.generateWaiverAnalysis(batchLeagueId, teamId);
-              return { teamId, success: true, analysis };
+              return { teamId, success: true, analysis }
             } catch (error) {
               return { 
                 teamId, 
-                success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );
 
         return NextResponse.json({
-          success: true,
-          data: batchResults,
+          success: true, data: batchResults,
           total: teamIds.length,
           successful: batchResults.filter(r => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'custom_analysis':
-        const { 
-          leagueId: customLeagueId, 
-          teamId: customTeamId, 
-          availablePlayers 
-        } = data;
+        const { leagueId: customLeagueId, teamId: customTeamId, availablePlayers } = data;
         
         if (!customLeagueId || !customTeamId) {
           return NextResponse.json(
@@ -197,29 +173,20 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const customAnalysis = await intelligentWaiverSystem.generateWaiverAnalysis(
-          customLeagueId,
-          customTeamId,
-          availablePlayers
+        const customAnalysis = await intelligentWaiverSystem.generateWaiverAnalysis(customLeagueId, customTeamId, availablePlayers
         );
 
         return NextResponse.json({
-          success: true,
-          data: customAnalysis,
+          success: true, data: customAnalysis,
           timestamp: new Date().toISOString()
         });
 
       case 'bulk_priority':
-        const { 
-          leagueId: bulkLeagueId, 
-          teamId: bulkTeamId, 
-          playerIds,
-          currentWeek: bulkCurrentWeek
-        } = data;
+        const { leagueId: bulkLeagueId, teamId: bulkTeamId, playerIds, currentWeek: bulkCurrentWeek } = data;
         
         if (!bulkLeagueId || !bulkTeamId || !Array.isArray(playerIds)) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId, and playerIds (array)' },
+            { error: 'Missing required parameters, leagueId, teamId: and playerIds (array)' },
             { status: 400 }
           );
         }
@@ -229,35 +196,31 @@ export async function POST(request: NextRequest) {
         const teamBudget = bulkTeamAnalysis.budgetAnalysis.remainingBudget;
         const week = bulkCurrentWeek ? parseInt(bulkCurrentWeek) : 1;
 
-        const bulkPriorities = await Promise.all(
-          playerIds.map(async (playerId: string) => {
+        const bulkPriorities = await Promise.all(playerIds.map(async (playerId: string) => {
             try {
               const playerAnalysis = bulkTeamAnalysis.topTargets.find(target => target.playerId === playerId);
               
               if (!playerAnalysis) {
-                return { playerId, success: false, error: 'Player not in analysis' };
+                return { playerId, success: false,
+                  error: 'Player not in analysis' }
               }
 
-              const priority = await intelligentWaiverSystem.calculateAdvancedClaimPriority(
-                playerAnalysis,
-                teamBudget,
-                week
+              const priority = await intelligentWaiverSystem.calculateAdvancedClaimPriority(playerAnalysis, teamBudget, week
               );
 
-              return { playerId, success: true, priority };
+              return { playerId, success: true, priority }
             } catch (error) {
               return { 
                 playerId, 
-                success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );
 
         return NextResponse.json({
-          success: true,
-          data: bulkPriorities,
+          success: true, data: bulkPriorities,
           total: playerIds.length,
           successful: bulkPriorities.filter(r => r.success).length,
           timestamp: new Date().toISOString()
@@ -265,7 +228,7 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid operation type. Use: claim, batch_analysis, custom_analysis, bulk_priority' },
+          { error: 'Invalid operation type.Use, claim, batch_analysis, custom_analysis, bulk_priority' },
           { status: 400 }
         );
     }

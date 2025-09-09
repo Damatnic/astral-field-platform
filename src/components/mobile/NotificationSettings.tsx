@@ -1,22 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, 
-  BellOff, 
-  Smartphone, 
-  ToggleLeft, 
-  ToggleRight,
-  AlertCircle,
-  CheckCircle2,
-  X,
-  Settings,
-  TrendingUp,
-  Users,
-  Shuffle,
-  Calendar,
-  MessageCircle,
+  Bell, BellOff, 
+  Smartphone, ToggleLeft, 
+  ToggleRight, AlertCircle,
+  CheckCircle2, X,
+  Settings, TrendingUp,
+  Users, Shuffle,
+  Calendar, MessageCircle,
   Info
 } from 'lucide-react';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
@@ -24,93 +17,73 @@ import { TouchButton, PrimaryButton, SecondaryButton } from '@/components/mobile
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
 interface NotificationSettingsProps {
-  isOpen?: boolean;
+  isOpen?, boolean,
   onClose?: () => void;
-  className?: string;
+  className?, string,
+  
 }
-
-const notificationTypes = [
+const notificationTypes = [;
   {
     key: 'scoreUpdates' as const,
-    title: 'Live Score Updates',
+  title: 'Live Score Updates',
     description: 'Get notified when your players score points',
-    icon: TrendingUp,
+  icon, TrendingUp,
     color: '#10B981',
-    category: 'Game Updates'
+  category: 'Game Updates'
   },
   {
     key: 'matchupReminders' as const,
-    title: 'Matchup Reminders',
+  title: 'Matchup Reminders',
     description: 'Reminders before your weekly matchups start',
-    icon: Calendar,
+  icon, Calendar,
     color: '#3B82F6',
-    category: 'Game Updates'
+  category: 'Game Updates'
   },
   {
     key: 'waiverAlerts' as const,
-    title: 'Waiver Wire Alerts',
+  title: 'Waiver Wire Alerts',
     description: 'Updates on waiver claims and deadlines',
-    icon: Shuffle,
+  icon, Shuffle,
     color: '#F59E0B',
-    category: 'League Management'
+  category: 'League Management'
   },
   {
     key: 'tradeNotifications' as const,
-    title: 'Trade Notifications',
+  title: 'Trade Notifications',
     description: 'New trade proposals and trade completions',
-    icon: Users,
+  icon, Users,
     color: '#8B5CF6',
-    category: 'League Management'
+  category: 'League Management'
   },
   {
     key: 'draftReminders' as const,
-    title: 'Draft Reminders',
+  title: 'Draft Reminders',
     description: 'Alerts for upcoming draft sessions',
-    icon: Calendar,
+  icon, Calendar,
     color: '#EF4444',
-    category: 'Draft'
+  category: 'Draft'
   },
   {
     key: 'chatMessages' as const,
-    title: 'Chat Messages',
+  title: 'Chat Messages',
     description: 'New messages in league chat',
-    icon: MessageCircle,
+  icon, MessageCircle,
     color: '#06B6D4',
-    category: 'Social'
+  category: 'Social'
   },
   {
     key: 'general' as const,
-    title: 'General Updates',
+  title: 'General Updates',
     description: 'Important announcements and app updates',
-    icon: Info,
+  icon, Info,
     color: '#6B7280',
-    category: 'System'
+  category: 'System'
   }
 ];
 
-export default function NotificationSettings({ 
-  isOpen = true, 
-  onClose, 
+export default function NotificationSettings({ isOpen = true, onClose, 
   className = '' 
-}: NotificationSettingsProps) {
-  const {
-    isSupported,
-    permission,
-    isSubscribed,
-    isLoading,
-    preferences,
-    error,
-    requestPermission,
-    subscribe,
-    unsubscribe,
-    updatePreferences,
-    sendTestNotification,
-    clearError,
-    canSubscribe,
-    canUnsubscribe,
-    needsPermission,
-    isBlocked
-  } = usePushNotifications();
+ }: NotificationSettingsProps) { const { isSupported, permission, isSubscribed, isLoading, preferences, error, requestPermission, subscribe, unsubscribe, updatePreferences, sendTestNotification, clearError, canSubscribe, canUnsubscribe, needsPermission, isBlocked } = usePushNotifications();
 
   const [testNotificationSent, setTestNotificationSent] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -119,70 +92,59 @@ export default function NotificationSettings({
     hapticFeedback('light');
     
     try {
-      await updatePreferences({ [key]: !preferences[key] });
+    await updatePreferences({ [key]: !preferences[key]  });
     } catch (error) {
       console.error('Failed to update notification preference:', error);
     }
-  };
-
+  }
   const handleSubscribe = async () => {
     hapticFeedback('medium');
     
-    try {
-      if (needsPermission) {
+    try { if (needsPermission) {
         await requestPermission();
-      } else {
-        await subscribe();
-      }
+       } else { await subscribe();
+       }
     } catch (error) {
       console.error('Failed to subscribe:', error);
     }
-  };
-
+  }
   const handleUnsubscribe = async () => {
     hapticFeedback('medium');
     
     try {
-      await unsubscribe();
-    } catch (error) {
+    await unsubscribe();
+     } catch (error) {
       console.error('Failed to unsubscribe:', error);
     }
-  };
-
+  }
   const handleTestNotification = async () => {
     hapticFeedback('light');
     
     try {
-      await sendTestNotification();
+    await sendTestNotification();
       setTestNotificationSent(true);
       setTimeout(() => setTestNotificationSent(false), 3000);
-    } catch (error) {
+     } catch (error) {
       console.error('Failed to send test notification:', error);
     }
-  };
-
-  const getStatusColor = () => {
-    if (isBlocked) return '#EF4444';
+  }
+  const getStatusColor = () => { if (isBlocked) return '#EF4444';
     if (isSubscribed) return '#10B981';
     if (needsPermission) return '#F59E0B';
     return '#6B7280';
-  };
-
-  const getStatusText = () => {
-    if (isBlocked) return 'Blocked';
+   }
+  const getStatusText = () => { if (isBlocked) return 'Blocked';
     if (isSubscribed) return 'Active';
     if (needsPermission) return 'Permission Needed';
     if (!isSupported) return 'Not Supported';
     return 'Disabled';
-  };
-
-  const groupedNotifications = notificationTypes.reduce((acc, notification) => {
-    if (!acc[notification.category]) {
+   }
+  const groupedNotifications = notificationTypes.reduce((acc, notification) => { if (!acc[notification.category]) {
       acc[notification.category] = [];
-    }
+     }
     acc[notification.category].push(notification);
     return acc;
-  }, {} as Record<string, typeof notificationTypes>);
+  }, {} as Record<string, typeof, notificationTypes>);
 
   if (!isOpen) return null;
 
@@ -196,15 +158,17 @@ export default function NotificationSettings({
         onClick={onClose}
       >
         <motion.div
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className={`
-            bg-gray-900 rounded-t-3xl sm:rounded-3xl 
+          initial={{ y: '100%',
+  opacity: 0 }}
+          animate={{ y, 0,
+  opacity: 1 }}
+          exit={{ y: '100%',
+  opacity: 0 }}
+          transition={{ type: 'spring',
+  damping, 30, stiffness: 300 }}
+          className={`bg-gray-900 rounded-t-3xl sm:rounded-3xl 
             border border-gray-800 shadow-2xl
-            w-full max-w-md max-h-[90vh] overflow-hidden
-            ${className}
+            w-full max-w-md max-h-[90vh] overflow-hidden ${className}
           `}
           onClick={(e) => e.stopPropagation()}
         >
@@ -216,7 +180,7 @@ export default function NotificationSettings({
                 style={{ backgroundColor: `${getStatusColor()}20` }}
               >
                 {isSubscribed ? (
-                  <Bell className="w-5 h-5" style={{ color: getStatusColor() }} />
+                  <Bell className="w-5 h-5" style={{ color: getStatusColor()  }} />
                 ) : (
                   <BellOff className="w-5 h-5" style={{ color: getStatusColor() }} />
                 )}
@@ -229,8 +193,8 @@ export default function NotificationSettings({
             
             {onClose && (
               <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors"
+                onClick={onClose }
+                className="p-2 text-gray-400 hover:text-white rounded-lg hover; bg-gray-800 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -242,8 +206,10 @@ export default function NotificationSettings({
             {/* Error Display */}
             {error && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity, 0,
+  y: -10  }}
+                animate={{ opacity, 1,
+  y: 0 }}
                 className="mx-6 mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start space-x-3"
               >
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
@@ -269,7 +235,7 @@ export default function NotificationSettings({
                     Notifications Not Supported
                   </h3>
                   <p className="text-gray-400 text-sm">
-                    Your browser doesn't support push notifications. Try using a modern browser or updating your current one.
+                    Your browser doesn't support push notifications.Try using a modern browser or updating your current one.
                   </p>
                 </div>
               </div>
@@ -280,49 +246,46 @@ export default function NotificationSettings({
               <div className="p-6">
                 <div className="text-center">
                   <BellOff className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-white mb-2">
-                    Notifications Blocked
+                  <h3 className="text-lg font-medium text-white mb-2">  Notifications, Blocked,
                   </h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    You've blocked notifications for this site. To enable them, click the lock icon in your browser's address bar and allow notifications.
+                    You've blocked notifications for this site.To enable them, click the lock icon in your browser's address bar and allow notifications.
                   </p>
                 </div>
               </div>
-            )}
+            ) }
 
             {/* Main Controls */}
             {isSupported && !isBlocked && (
               <div className="p-6 space-y-6">
-                {/* Enable/Disable Notifications */}
+                {/* Enable/Disable Notifications */ }
                 <div className="space-y-4">
                   {needsPermission && (
                     <div className="text-center">
                       <Bell className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-white mb-2">
-                        Stay Updated
+                      <h3 className="text-lg font-medium text-white mb-2">  Stay, Updated,
                       </h3>
                       <p className="text-gray-400 text-sm mb-4">
                         Enable notifications to get real-time updates about your fantasy teams, trades, and more.
                       </p>
                     </div>
-                  )}
+                  ) }
 
                   {canSubscribe && (
                     <PrimaryButton
-                      onClick={handleSubscribe}
+                      onClick={handleSubscribe }
                       loading={isLoading}
                       fullWidth
                       icon={Bell}
                       haptic="medium"
-                    >
-                      Enable Notifications
+                    >  Enable, Notifications,
                     </PrimaryButton>
                   )}
 
                   {canUnsubscribe && (
                     <div className="space-y-3">
                       <SecondaryButton
-                        onClick={handleUnsubscribe}
+                        onClick={handleUnsubscribe }
                         loading={isLoading}
                         fullWidth
                         icon={BellOff}
@@ -350,19 +313,18 @@ export default function NotificationSettings({
                 {isSubscribed && (
                   <div className="space-y-6">
                     {Object.entries(groupedNotifications).map(([category, notifications]) => (
-                      <div key={category}>
+                      <div key={category }>
                         <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
                           {category}
                         </h4>
                         
                         <div className="space-y-3">
-                          {notifications.map((notification) => {
-                            const Icon = notification.icon;
+                          {notifications.map((notification) => { const Icon = notification.icon;
                             const isEnabled = preferences[notification.key];
                             
                             return (
                               <motion.button
-                                key={notification.key}
+                                key={notification.key }
                                 onClick={() => handleToggleNotification(notification.key)}
                                 className="w-full flex items-center space-x-4 p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl transition-colors touch-manipulation"
                                 whileTap={{ scale: 0.98 }}
@@ -387,7 +349,7 @@ export default function NotificationSettings({
                                 </div>
                                 
                                 <motion.div
-                                  animate={{ rotate: isEnabled ? 0 : 180 }}
+                                  animate={{ rotate: isEnabled ? 0 : 180}}
                                   transition={{ duration: 0.2 }}
                                 >
                                   {isEnabled ? (
@@ -398,7 +360,7 @@ export default function NotificationSettings({
                                     <ToggleLeft 
                                       className="w-8 h-8 text-gray-600" 
                                     />
-                                  )}
+                                  ) }
                                 </motion.div>
                               </motion.button>
                             );
@@ -420,9 +382,12 @@ export default function NotificationSettings({
                       <AnimatePresence>
                         {showAdvanced && (
                           <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
+                            initial={{ opacity, 0,
+  height: 0  }}
+                            animate={{ opacity, 1,
+  height: 'auto' }}
+                            exit={{ opacity, 0,
+  height: 0 }}
                             className="mt-4 p-4 bg-gray-800/30 rounded-xl"
                           >
                             <div className="space-y-3 text-sm text-gray-400">

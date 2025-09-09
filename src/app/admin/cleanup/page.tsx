@@ -30,8 +30,7 @@ export default function DatabaseCleanupPage() {
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
   const runCleanup = async () => {
     // For security, admin PIN should be validated on the server side
     // The PIN check will be done by the API endpoint
@@ -72,13 +71,12 @@ export default function DatabaseCleanupPage() {
       }
     } catch (error) {
       setStatus('error');
-      setMessage('Network error. Please try again.');
+      setMessage('Network error.Please try again.');
       console.error('Cleanup error:', error);
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
       <div className="max-w-4xl mx-auto">
@@ -155,17 +153,17 @@ export default function DatabaseCleanupPage() {
               onChange={(e) => setAdminPin(e.target.value)}
               placeholder="Enter admin PIN"
               maxLength={4}
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus: outline-none focu,
+  s:ring-2 focu,
+  s:ring-red-500"
             />
           </div>
 
           {/* Status Messages */}
           {message && (
-            <div className={`rounded-lg p-4 mb-6 ${
-              status === 'success' ? 'bg-green-600/20 text-green-400' :
-              status === 'error' ? 'bg-red-600/20 text-red-400' :
-              'bg-blue-600/20 text-blue-400'
-            }`}>
+            <div className={`rounded-lg p-4 mb-6 ${status === 'success' ? 'bg-green-600/20 text-green-400' :
+              status === 'error' ? 'bg-red-600/20 text-red-400' : 'bg-blue-600/20 text-blue-400'
+             }`}>
               {message}
             </div>
           )}
@@ -191,11 +189,8 @@ export default function DatabaseCleanupPage() {
             <button
               onClick={checkDatabaseStatus}
               disabled={isLoading}
-              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                isLoading
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              }`}
+              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+               }`}
             >
               Check Status
             </button>
@@ -203,11 +198,9 @@ export default function DatabaseCleanupPage() {
             <button
               onClick={runCleanup}
               disabled={isLoading || !adminPin || adminPin.length !== 4}
-              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                isLoading || adminPin !== '9999'
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-red-600 hover:bg-red-700 text-white'
-              }`}
+              className={`flex-1 py-3 rounded-lg font-semibold transition-all ${isLoading || adminPin !== '9999'
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 text-white'
+               }`}
             >
               {isLoading ? 'Processing...' : '🗑️ CLEANUP & RESET'}
             </button>

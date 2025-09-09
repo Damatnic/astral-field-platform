@@ -1,6 +1,6 @@
 /**
  * Trade Response API Endpoint
- * Handles accepting, rejecting, and countering trade proposals
+ * Handles accepting, rejecting: and countering trade proposals
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -14,7 +14,7 @@ const tradeResponseSchema = z.object({
   userId: z.string().uuid(),
   message: z.string().max(500).optional(),
   counterOffer: z.object({
-    proposedPlayers: z.array(z.object({
+  proposedPlayers: z.array(z.object({
       playerId: z.string().uuid(),
       playerName: z.string(),
       position: z.string(),
@@ -23,7 +23,7 @@ const tradeResponseSchema = z.object({
       projectedPoints: z.number()
     })).optional(),
     requestedPlayers: z.array(z.object({
-      playerId: z.string().uuid(),
+  playerId: z.string().uuid(),
       playerName: z.string(),
       position: z.string(),
       team: z.string(),
@@ -31,7 +31,7 @@ const tradeResponseSchema = z.object({
       projectedPoints: z.number()
     })).optional(),
     proposedDraftPicks: z.array(z.object({
-      year: z.number().int().min(2024).max(2030),
+  year: z.number().int().min(2024).max(2030),
       round: z.number().int().min(1).max(7),
       originalTeamId: z.string().uuid(),
       estimatedValue: z.number(),
@@ -39,7 +39,7 @@ const tradeResponseSchema = z.object({
       conditions: z.string().optional()
     })).optional(),
     requestedDraftPicks: z.array(z.object({
-      year: z.number().int().min(2024).max(2030),
+  year: z.number().int().min(2024).max(2030),
       round: z.number().int().min(1).max(7),
       originalTeamId: z.string().uuid(),
       estimatedValue: z.number(),
@@ -52,14 +52,11 @@ const tradeResponseSchema = z.object({
   }).optional()
 });
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { tradeId: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
     const { tradeId } = params;
     const body = await request.json();
-    const { action, teamId, userId, message, counterOffer } = tradeResponseSchema.parse(body);
+    const { action, teamId, userId, message: counterOffer } = tradeResponseSchema.parse(body);
 
     console.log(`🤝 Trade response: ${action} by team ${teamId} for trade ${tradeId}`);
 
@@ -125,11 +122,11 @@ export async function POST(
 
     switch (action) {
       case 'accept':
-        result = await handleAcceptTrade(tradeId, teamId, userId, message);
+      result = await handleAcceptTrade(tradeId, teamId, userId, message);
         responseMessage = 'Trade accepted successfully';
         break;
-
-      case 'reject':
+      break;
+    case 'reject':
         result = await handleRejectTrade(tradeId, teamId, userId, message);
         responseMessage = 'Trade rejected';
         break;
@@ -156,9 +153,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      action,
-      result,
-      message: responseMessage,
+    action, result, message: responseMessage,
       timestamp: new Date().toISOString()
     });
 
@@ -167,10 +162,10 @@ export async function POST(
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid request data',
           details: error.errors.map(e => ({
-            field: e.path.join('.'),
+  field: e.path.join('.'),
             message: e.message
           }))
         },
@@ -179,8 +174,7 @@ export async function POST(
     }
     
     return NextResponse.json(
-      { 
-        error: 'Failed to process trade response',
+      {error: 'Failed to process trade response',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
@@ -188,18 +182,15 @@ export async function POST(
   }
 }
 
-async function handleAcceptTrade(tradeId: string, teamId: string, userId: string, message?: string) {
-  // Use the trade engine to accept the trade
-  const updatedTrade = await tradeEngine.respondToTrade(tradeId, teamId, 'accept');
+async function handleAcceptTrade(tradeId, string, teamId, string, userId, string, message?: string) {
+; // Use the trade engine to accept the trade
+  const updatedTrade = await tradeEngine.respondToTrade(tradeId, teamId 'accept');
 
   // Log the acceptance
   await database.query(`
-    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp)
-    VALUES ($1, 'accepted', $2, $3, $4, NOW())
+    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp) VALUES ($1, 'accepted', $2, $3, $4, NOW())
   `, [
-    tradeId,
-    userId,
-    teamId,
+    tradeId, userId, teamId,
     JSON.stringify({
       message: message || '',
       acceptedAt: new Date().toISOString()
@@ -212,28 +203,22 @@ async function handleAcceptTrade(tradeId: string, teamId: string, userId: string
     await startReviewPeriod(tradeId, reviewPeriodHours);
   }
 
-  return {
-    tradeId,
+  return {tradeId,
     status: updatedTrade.status,
     acceptedAt: new Date().toISOString(),
-    reviewPeriodEnds: reviewPeriodHours > 0 
-      ? new Date(Date.now() + reviewPeriodHours * 60 * 60 * 1000).toISOString()
-      : null
-  };
+    reviewPeriodEnds: reviewPeriodHours > 0 ? new Date(Date.now() + reviewPeriodHours * 60 * 60 * 1000).toISOString() : null
+  }
 }
 
-async function handleRejectTrade(tradeId: string, teamId: string, userId: string, message?: string) {
-  // Use trade engine to reject
-  const updatedTrade = await tradeEngine.respondToTrade(tradeId, teamId, 'reject');
+async function handleRejectTrade(tradeId, string, teamId, string, userId, string, message?: string) {
+; // Use trade engine to reject
+  const updatedTrade = await tradeEngine.respondToTrade(tradeId, teamId 'reject');
 
   // Log the rejection
   await database.query(`
-    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp)
-    VALUES ($1, 'rejected', $2, $3, $4, NOW())
+    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp) VALUES ($1, 'rejected', $2, $3, $4, NOW())
   `, [
-    tradeId,
-    userId,
-    teamId,
+    tradeId, userId, teamId,
     JSON.stringify({
       message: message || '',
       rejectedAt: new Date().toISOString()
@@ -244,11 +229,11 @@ async function handleRejectTrade(tradeId: string, teamId: string, userId: string
     tradeId,
     status: updatedTrade.status,
     rejectedAt: new Date().toISOString()
-  };
+  }
 }
 
-async function handleCounterTrade(originalTrade: any, teamId: string, userId: string, counterOffer: any) {
-  // Create expiration date for counter offer
+async function handleCounterTrade(originalTrade, any, teamId, string, userId, string, counterOffer: any) {
+; // Create expiration date for counter offer
   const expirationDate = new Date();
   expirationDate.setHours(expirationDate.getHours() + counterOffer.expirationHours);
 
@@ -261,32 +246,24 @@ async function handleCounterTrade(originalTrade: any, teamId: string, userId: st
   }
 
   // Create the counter offer through trade engine
-  const counterTrade = await tradeEngine.respondToTrade(
-    originalTrade.id, 
-    teamId, 
-    'counter',
+  const counterTrade = await tradeEngine.respondToTrade(originalTrade.id, teamId 'counter',
     {
-      leagueId: originalTrade.league_id,
-      proposingTeamId: teamId, // Counter offer reverses the roles
+      leagueId: originalTrade.league_id, proposingTeamId, teamId, // Counter offer reverses the roles
       receivingTeamId: originalTrade.team_sender_id,
       proposedPlayers: counterOffer.proposedPlayers || [],
       requestedPlayers: counterOffer.requestedPlayers || [],
       proposedDraftPicks: counterOffer.proposedDraftPicks || [],
       requestedDraftPicks: counterOffer.requestedDraftPicks || [],
       faabAmount: counterOffer.faabAmount,
-      message: counterOffer.message,
-      expirationDate
+      message: counterOffer.message: expirationDate
     }
   );
 
   // Log the counter offer
   await database.query(`
-    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp)
-    VALUES ($1, 'countered', $2, $3, $4, NOW())
+    INSERT INTO trade_audit_log (trade_id, action, actor_user_id, actor_team_id, details, timestamp) VALUES ($1, 'countered', $2, $3, $4, NOW())
   `, [
-    originalTrade.id,
-    userId,
-    teamId,
+    originalTrade.id, userId, teamId,
     JSON.stringify({
       counterTradeId: counterTrade.id,
       message: counterOffer.message || '',
@@ -297,16 +274,12 @@ async function handleCounterTrade(originalTrade: any, teamId: string, userId: st
   // Store the negotiation record
   await database.query(`
     INSERT INTO trade_negotiations (
-      original_trade_id, proposing_team_id, receiving_team_id,
-      proposed_changes, message, created_at, expires_at
+      original_trade_id, proposing_team_id, receiving_team_id, proposed_changes, message, created_at: expires_at
     ) VALUES ($1, $2, $3, $4, $5, NOW(), $6)
   `, [
-    originalTrade.id,
-    teamId,
-    originalTrade.team_sender_id,
+    originalTrade.id, teamId: originalTrade.team_sender_id,
     JSON.stringify(counterOffer),
-    counterOffer.message,
-    expirationDate
+    counterOffer.message: expirationDate
   ]);
 
   return {
@@ -315,10 +288,10 @@ async function handleCounterTrade(originalTrade: any, teamId: string, userId: st
     status: counterTrade.status,
     expiresAt: expirationDate.toISOString(),
     counteredAt: new Date().toISOString()
-  };
+  }
 }
 
-async function startReviewPeriod(tradeId: string, hours: number) {
+async function startReviewPeriod(tradeId, string, hours: number) {
   const reviewEndTime = new Date();
   reviewEndTime.setHours(reviewEndTime.getHours() + hours);
 
@@ -326,8 +299,7 @@ async function startReviewPeriod(tradeId: string, hours: number) {
     UPDATE trades 
     SET status = 'review_period', 
         review_period_ends = $1,
-        updated_at = NOW()
-    WHERE id = $2
+        updated_at = NOW() WHERE id = $2
   `, [reviewEndTime, tradeId]);
 
   // Schedule automatic approval if no vetoes
@@ -338,7 +310,7 @@ async function startReviewPeriod(tradeId: string, hours: number) {
 
 async function checkAndApproveTradeAfterReview(tradeId: string) {
   const tradeResult = await database.query(`
-    SELECT status, veto_votes, veto_threshold FROM trades WHERE id = $1
+    SELECT status, veto_votes: veto_threshold FROM trades WHERE id = $1
   `, [tradeId]);
 
   if (tradeResult.rows.length === 0) return;
@@ -356,7 +328,7 @@ async function checkAndApproveTradeAfterReview(tradeId: string) {
   }
 }
 
-async function validateTeamOwnership(teamId: string, players: any[]) {
+async function validateTeamOwnership(teamId, string, players: any[]) {
   for (const player of players) {
     const ownershipResult = await database.query(`
       SELECT 1 FROM rosters WHERE team_id = $1 AND player_id = $2
@@ -369,15 +341,12 @@ async function validateTeamOwnership(teamId: string, players: any[]) {
 }
 
 // Multi-team trade response endpoint
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { tradeId: string } }
-) {
+export async function PATCH(request: NextRequest) {
   try {
     const { tradeId } = params;
     const body = await request.json();
     
-    const { action, teamId, userId } = z.object({
+    const { action, teamId: userId } = z.object({
       action: z.enum(['accept', 'reject']),
       teamId: z.string().uuid(),
       userId: z.string().uuid()
@@ -431,8 +400,7 @@ export async function PATCH(
       // Reject multi-team trade
       await database.query(`
         UPDATE multi_team_trades 
-        SET status = 'rejected', processed_at = NOW() 
-        WHERE id = $1
+        SET status = 'rejected', processed_at = NOW() WHERE id = $1
       `, [tradeId]);
 
       return NextResponse.json({
@@ -446,7 +414,7 @@ export async function PATCH(
   } catch (error) {
     console.error('❌ Multi-team trade response error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to process multi-team trade response',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

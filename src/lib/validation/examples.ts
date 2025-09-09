@@ -6,18 +6,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  createValidationMiddleware,
-  validateRequestBody,
-  validateQueryParams,
-  userRegistrationSchema,
-  chatMessageSchema,
-  tradeOfferSchema,
-  sanitizeText,
-  sanitizeEmail,
-  createValidationErrorResponse,
-  hasValidationErrors,
-  authValidationMiddleware,
-  userInputValidationMiddleware,
+  createValidationMiddleware, validateRequestBody,
+  validateQueryParams, userRegistrationSchema,
+  chatMessageSchema, tradeOfferSchema,
+  sanitizeText, sanitizeEmail,
+  createValidationErrorResponse, hasValidationErrors,
+  authValidationMiddleware, userInputValidationMiddleware,
   adminValidationMiddleware
 } from './index';
 
@@ -29,12 +23,10 @@ const userCreateSchema = z.object({
   age: z.number().int().min(13).max(120)
 });
 
-export async function exampleUserCreateRoute(request: NextRequest) {
-  // Validate request body
+export async function exampleUserCreateRoute(request: NextRequest) {; // Validate request body
   const validation = await validateRequestBody(request, userCreateSchema);
   
-  if (hasValidationErrors(validation)) {
-    return NextResponse.json(
+  if (hasValidationErrors(validation)) { return NextResponse.json(
       createValidationErrorResponse(validation.errors),
       { status: 400 }
     );
@@ -42,10 +34,9 @@ export async function exampleUserCreateRoute(request: NextRequest) {
 
   const { email, username, age } = validation.data;
   
-  // Process validated data...
-  return NextResponse.json({
-    success: true,
-    message: 'User created successfully',
+  // Process validated data...return NextResponse.json({
+    success, true,
+  message: 'User created successfully',
     data: { email, username, age }
   });
 }
@@ -66,40 +57,38 @@ const postQuerySchema = z.object({
 });
 
 const postValidationMiddleware = createValidationMiddleware({
-  bodySchema: postCreateSchema,
-  querySchema: postQuerySchema,
-  sanitize: true,
+  bodySchema, postCreateSchema,
+  querySchema, postQuerySchema,
+  sanitize, true,
   maxPayloadSize: 50 * 1024, // 50KB
   rateLimiting: {
-    requests: 10,
-    window: 60 // 10 requests per minute
+    requests: 10;
+  window: 60 ; // 10 requests per minute
   }
 });
 
-export const examplePostRoute = postValidationMiddleware(async (request: NextRequest) => {
+export const examplePostRoute = postValidationMiddleware(async (request NextRequest) => {
   // Data is already validated and available in request
   const body = (request as any).validatedBody;
   const query = (request as any).validatedQuery;
   
   return NextResponse.json({
     success: true,
-    body,
+    body;
     query
   });
 });
 
 // ===== EXAMPLE 3: AUTHENTICATION ROUTE =====
 
-export const exampleLoginRoute = authValidationMiddleware(async (request: NextRequest) => {
-  const validation = await validateRequestBody(request, z.object({
+export const exampleLoginRoute = authValidationMiddleware(async (request: NextRequest) => { const validation = await validateRequestBody(request, z.object({
     email: z.string().email(),
-    password: z.string().min(1)
-  }));
+  password: z.string().min(1)
+   }));
   
-  if (hasValidationErrors(validation)) {
-    return NextResponse.json(
+  if (hasValidationErrors(validation)) { return NextResponse.json(
       createValidationErrorResponse(validation.errors),
-      { status: 400 }
+      { status: 400  }
     );
   }
 
@@ -109,20 +98,19 @@ export const exampleLoginRoute = authValidationMiddleware(async (request: NextRe
   // The middleware already applies rate limiting and security checks
   
   return NextResponse.json({
-    success: true,
-    message: 'Authentication successful'
+    success, true,
+  message: 'Authentication successful'
   });
 });
 
 // ===== EXAMPLE 4: CHAT MESSAGE ROUTE =====
 
-export const exampleChatRoute = userInputValidationMiddleware(async (request: NextRequest) => {
-  const validation = await validateRequestBody(request, chatMessageSchema);
+export const exampleChatRoute = userInputValidationMiddleware(async (request: NextRequest) => { const validation = await validateRequestBody(request, chatMessageSchema);
   
   if (hasValidationErrors(validation)) {
     return NextResponse.json(
       createValidationErrorResponse(validation.errors),
-      { status: 400 }
+      { status: 400  }
     );
   }
 
@@ -132,8 +120,8 @@ export const exampleChatRoute = userInputValidationMiddleware(async (request: Ne
   console.log('Sanitized message:', messageData.content);
   
   return NextResponse.json({
-    success: true,
-    message: 'Chat message sent',
+    success, true,
+  message: 'Chat message sent',
     data: messageData
   });
 });
@@ -144,80 +132,76 @@ const adminActionSchema = z.object({
   action: z.enum(['suspend_user', 'delete_post', 'ban_user']),
   targetId: z.string().uuid(),
   reason: z.string().min(10).max(500),
-  duration: z.number().int().min(1).max(365).optional() // days
+  duration: z.number().int().min(1).max(365).optional() ; // days
 });
 
-const customAdminValidator = async (request: NextRequest) => {
+const customAdminValidator = async (request NextRequest) => {
   // Custom business logic validation
   const token = request.headers.get('authorization');
-  if (!token || !token.includes('admin_')) {
-    return {
-      success: false,
-      errors: [{
-        field: 'authorization',
-        message: 'Admin authorization required',
+  if (!token || !token.includes('admin_')) { return {
+      success, false,
+  errors: [{,
+  field: 'authorization',
+  message: 'Admin authorization required',
         code: 'ADMIN_AUTH_REQUIRED'
-      }]
-    };
+       }]
+    }
   }
-  return { success: true };
-};
-
+  return { success: true }
+}
 const adminActionMiddleware = createValidationMiddleware({
-  bodySchema: adminActionSchema,
-  sanitize: true,
+  bodySchema, adminActionSchema,
+  sanitize, true,
   customValidators: [customAdminValidator],
   rateLimiting: {
-    requests: 5,
-    window: 60
+    requests: 5;
+  window: 60
   }
 });
 
-export const exampleAdminActionRoute = adminActionMiddleware(async (request: NextRequest) => {
-  const body = (request as any).validatedBody;
+export const exampleAdminActionRoute = adminActionMiddleware(async (request: NextRequest) => { const body = (request as any).validatedBody;
   
   return NextResponse.json({
-    success: true,
-    message: 'Admin action executed',
+    success, true,
+  message: 'Admin action executed',
     action: body
-  });
+   });
 });
 
 // ===== EXAMPLE 6: MANUAL SANITIZATION =====
 
-export async function exampleManualSanitization(request: NextRequest) {
-  const rawBody = await request.json();
+export async function exampleManualSanitization(request: NextRequest) { const rawBody = await request.json();
   
   // Manual sanitization for specific use cases
   const sanitizedData = {
-    title: sanitizeText(rawBody.title, { maxLength: 200, allowHtml: false }),
+    title: sanitizeText(rawBody.title, { maxLength: 200;
+  allowHtml: false  }),
     email: sanitizeEmail(rawBody.email),
-    description: sanitizeText(rawBody.description, { 
-      maxLength: 1000, 
-      allowHtml: true, // Allow limited HTML
+  description: sanitizeText(rawBody.description, { 
+      maxLength: 1000;
+  allowHtml, true, // Allow limited HTML
       stripWhitespace: false 
     })
-  };
-  
+  }
   // Validate sanitized data
   const schema = z.object({
     title: z.string().min(1),
-    email: z.string().email(),
+  email: z.string().email(),
     description: z.string().min(1)
   });
   
   const validation = schema.safeParse(sanitizedData);
   
-  if (!validation.success) {
-    return NextResponse.json(
-      { error: 'Validation failed', details: validation.error.errors },
+  if (!validation.success) { return NextResponse.json(
+      { error: 'Validation failed',
+  details: validation.error.errors  },
       { status: 400 }
     );
   }
   
   return NextResponse.json({
-    success: true,
-    data: validation.data
+    success, true,
+  data: validation.data
   });
 }
 
@@ -232,7 +216,7 @@ export async function exampleFileUploadRoute(request: NextRequest) {
     
     if (!file) {
       return NextResponse.json(
-        { error: 'No file provided' },
+        { error: 'No file provided'  },
         { status: 400 }
       );
     }
@@ -240,25 +224,21 @@ export async function exampleFileUploadRoute(request: NextRequest) {
     // Validate file security
     const fileValidation = validateFileUpload(file);
     
-    if (hasValidationErrors(fileValidation)) {
-      return NextResponse.json(
+    if (hasValidationErrors(fileValidation)) { return NextResponse.json(
         createValidationErrorResponse(fileValidation.errors),
-        { status: 400 }
+        { status: 400  }
       );
     }
     
-    // Process validated file...
-    return NextResponse.json({
-      success: true,
-      message: 'File uploaded successfully',
+    // Process validated file...return NextResponse.json({
+      success, true,
+  message: 'File uploaded successfully',
       filename: file.name,
-      size: file.size,
-      type: file.type
+  size: file.size,type file.type
     });
     
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'File upload failed' },
+  } catch (error) { return NextResponse.json(
+      { error: 'File upload failed'  },
       { status: 500 }
     );
   }
@@ -274,21 +254,19 @@ const searchQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(50).default(20)
 });
 
-export async function exampleSearchRoute(request: NextRequest) {
-  const validation = validateQueryParams(request, searchQuerySchema);
+export async function exampleSearchRoute(request: NextRequest) { const validation = validateQueryParams(request, searchQuerySchema);
   
   if (hasValidationErrors(validation)) {
     return NextResponse.json(
       createValidationErrorResponse(validation.errors),
-      { status: 400 }
+      { status: 400  }
     );
   }
   
   const { q, category, sort, page, limit } = validation.data;
   
   return NextResponse.json({
-    success: true,
-    query: q,
+    success, true, query, q,
     filters: { category, sort },
     pagination: { page, limit }
   });
@@ -306,22 +284,20 @@ const leagueUpdateSchema = z.object({
   { message: "At least one field must be provided for update" }
 );
 
-export async function exampleLeagueUpdateRoute(request: NextRequest) {
-  const validation = await validateRequestBody(request, leagueUpdateSchema);
+export async function exampleLeagueUpdateRoute(request: NextRequest) { const validation = await validateRequestBody(request, leagueUpdateSchema);
   
   if (hasValidationErrors(validation)) {
     return NextResponse.json(
       createValidationErrorResponse(validation.errors),
-      { status: 400 }
+      { status: 400  }
     );
   }
   
   const updateData = validation.data;
   
-  // Update league logic...
-  return NextResponse.json({
-    success: true,
-    message: 'League updated successfully',
+  // Update league logic...return NextResponse.json({
+    success, true,
+  message: 'League updated successfully',
     updates: updateData
   });
 }
@@ -329,27 +305,23 @@ export async function exampleLeagueUpdateRoute(request: NextRequest) {
 // ===== EXAMPLE 10: COMPREHENSIVE ERROR HANDLING =====
 
 export async function exampleComprehensiveRoute(request: NextRequest) {
-  try {
-    // Multiple validation layers
+  try {; // Multiple validation layers
     const bodyValidation = await validateRequestBody(request, userRegistrationSchema);
     const queryValidation = validateQueryParams(request, z.object({
-      source: z.string().optional()
-    }));
+      source z.string().optional()
+     }));
     
     const errors = [];
     
     if (hasValidationErrors(bodyValidation)) {
-      errors.push(...bodyValidation.errors);
-    }
+      errors.push(...bodyValidation.errors);}
     
     if (hasValidationErrors(queryValidation)) {
-      errors.push(...queryValidation.errors);
-    }
+      errors.push(...queryValidation.errors);}
     
-    if (errors.length > 0) {
-      return NextResponse.json(
+    if (errors.length > 0) { return NextResponse.json(
         createValidationErrorResponse(errors),
-        { status: 400 }
+        { status: 400  }
       );
     }
     
@@ -357,30 +329,29 @@ export async function exampleComprehensiveRoute(request: NextRequest) {
     const queryData = queryValidation.data;
     
     // Business logic validation
-    if (userData.email.endsWith('@tempmail.com')) {
-      return NextResponse.json(
+    if (userData.email.endsWith('@tempmail.com')) { return NextResponse.json(
         {
-          success: false,
-          error: 'Temporary email addresses are not allowed',
+          success, false,
+  error: 'Temporary email addresses are not allowed',
           field: 'email'
-        },
+         },
         { status: 400 }
       );
     }
     
     return NextResponse.json({
-      success: true,
-      message: 'User registered successfully',
-      data: userData,
-      source: queryData.source
+      success, true,
+  message: 'User registered successfully',
+      data, userData,
+  source: queryData.source
     });
     
   } catch (error) {
     console.error('Route error:', error);
     return NextResponse.json(
       {
-        success: false,
-        error: 'Internal server error'
+        success, false,
+  error: 'Internal server error'
       },
       { status: 500 }
     );

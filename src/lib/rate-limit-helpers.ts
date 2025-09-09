@@ -7,13 +7,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  withRateLimit,
-  getRateLimitByEndpointType,
-  createCustomRateLimit,
-  RATE_LIMIT_PRESETS,
-  EndpointType,
-  RateLimitConfig,
-  rateLimitMonitor,
+  withRateLimit, getRateLimitByEndpointType,
+  createCustomRateLimit, RATE_LIMIT_PRESETS,
+  EndpointType, RateLimitConfig,
+  rateLimitMonitor
 } from '@/middleware/rate-limit';
 import { handleAPIError } from '@/lib/api-error-handler';
 
@@ -25,66 +22,59 @@ import { handleAPIError } from '@/lib/api-error-handler';
  * Wraps an API route handler with rate limiting based on endpoint type
  */
 export function rateLimited(
-  endpointType: EndpointType,
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, endpointType);
-}
+  endpointType, EndpointType,
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, endpointType);
+ }
 
 /**
  * Wraps an API route handler with custom rate limiting configuration
  */
 export function customRateLimited(
-  config: RateLimitConfig,
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, config);
-}
+  config, RateLimitConfig,
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, config);
+ }
 
 /**
  * Wraps an API route handler with strict rate limiting (auth endpoints)
  */
 export function strictRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, 'auth');
-}
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, 'auth');
+ }
 
 /**
- * Wraps an API route handler with standard rate limiting (general API)
+ * Wraps an API route handler with standard rate limiting (general: API)
  */
 export function standardRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, 'public');
-}
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, 'public');
+ }
 
 /**
  * Wraps an API route handler with relaxed rate limiting (read-only endpoints)
  */
 export function relaxedRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, 'admin');
-}
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, 'admin');
+ }
 
 /**
  * Wraps an API route handler with AI-specific rate limiting
  */
 export function aiRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, 'ai');
-}
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, 'ai');
+ }
 
 /**
  * Wraps an API route handler with live/real-time rate limiting
  */
 export function liveRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withRateLimit(handler, 'live');
-}
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return withRateLimit(handler, 'live');
+ }
 
 // =============================================================================
 // ROUTE WRAPPER WITH ERROR HANDLING
@@ -94,17 +84,15 @@ export function liveRateLimited(
  * Combines rate limiting with error handling for a complete solution
  */
 export function rateLimitedWithErrorHandling(
-  endpointType: EndpointType,
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return async (req: NextRequest, context?: any): Promise<NextResponse> => {
+  endpointType, EndpointType,
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
     try {
       const rateLimitedHandler = withRateLimit(handler, endpointType);
       return await rateLimitedHandler(req, context);
-    } catch (error) {
-      return handleAPIError(error);
-    }
-  };
+     } catch (error) { return handleAPIError(error);
+     }
+  }
 }
 
 // =============================================================================
@@ -114,8 +102,7 @@ export function rateLimitedWithErrorHandling(
 /**
  * Automatically detects the endpoint type based on the request path
  */
-export function detectEndpointType(req: NextRequest): EndpointType {
-  const pathname = new URL(req.url).pathname;
+export function detectEndpointType(req: NextRequest); EndpointType { const pathname = new URL(req.url).pathname;
   
   // Auth endpoints
   if (pathname.includes('/auth/') || 
@@ -124,7 +111,7 @@ export function detectEndpointType(req: NextRequest): EndpointType {
       pathname.includes('/mfa') ||
       pathname.includes('/quick-login')) {
     return 'auth';
-  }
+   }
   
   // Admin endpoints
   if (pathname.includes('/admin/') ||
@@ -133,35 +120,31 @@ export function detectEndpointType(req: NextRequest): EndpointType {
       pathname.includes('/init-') ||
       pathname.includes('/reset-') ||
       pathname.includes('/migrate') ||
-      pathname.includes('/cleanup')) {
-    return 'admin';
-  }
+      pathname.includes('/cleanup')) { return 'admin';
+   }
   
   // AI endpoints
   if (pathname.includes('/ai/') ||
       pathname.includes('/predictions') ||
       pathname.includes('/insights') ||
       pathname.includes('/breakouts') ||
-      pathname.includes('/injuries') && pathname.includes('/analyze')) {
-    return 'ai';
-  }
+      pathname.includes('/injuries') && pathname.includes('/analyze')) { return 'ai';
+   }
   
   // Live/real-time endpoints
   if (pathname.includes('/live/') ||
       pathname.includes('/scores') ||
       pathname.includes('/reactions') ||
       pathname.includes('/tick') ||
-      pathname.includes('/games')) {
-    return 'live';
-  }
+      pathname.includes('/games')) { return 'live';
+   }
   
   // WebSocket endpoints
   if (pathname.includes('/websocket') ||
       pathname.includes('/socket') ||
       pathname.includes('chat-socket') ||
-      pathname.includes('draft-socket')) {
-    return 'websocket';
-  }
+      pathname.includes('draft-socket')) { return 'websocket';
+   }
   
   // Default to public
   return 'public';
@@ -171,13 +154,12 @@ export function detectEndpointType(req: NextRequest): EndpointType {
  * Automatically applies rate limiting based on endpoint path
  */
 export function autoRateLimited(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return async (req: NextRequest, context?: any): Promise<NextResponse> => {
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
     const endpointType = detectEndpointType(req);
     const rateLimitedHandler = withRateLimit(handler, endpointType);
     return rateLimitedHandler(req, context);
-  };
+   }
 }
 
 // =============================================================================
@@ -187,15 +169,11 @@ export function autoRateLimited(
 /**
  * Next.js API route middleware that can be used with any route
  */
-export function createApiRateLimit(config: RateLimitConfig | EndpointType) {
-  const rateLimitConfig = typeof config === 'string' 
-    ? getRateLimitByEndpointType(config) 
-    : config;
+export function createApiRateLimit(config: RateLimitConfig | EndpointType) {const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config) , config,
 
   return {
-    before: async (req: NextRequest) => {
-      const rateLimitedHandler = withRateLimit(
-        async () => NextResponse.next(), 
+    before: async (req; NextRequest) => {
+      const rateLimitedHandler = withRateLimit(async () => NextResponse.next(), 
         rateLimitConfig
       );
       
@@ -204,11 +182,11 @@ export function createApiRateLimit(config: RateLimitConfig | EndpointType) {
       // If response is not NextResponse.next(), it means rate limit was exceeded
       if (response.status === 429) {
         throw new Error('Rate limit exceeded');
-      }
+       }
       
       return response;
     }
-  };
+  }
 }
 
 // =============================================================================
@@ -218,15 +196,14 @@ export function createApiRateLimit(config: RateLimitConfig | EndpointType) {
 /**
  * Apply rate limiting to multiple routes at once
  */
-export function applyRateLimitsToRoutes(routes: Array<{
-  path: string;
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>;
-  endpointType: EndpointType;
-}>) {
-  return routes.map(route => ({
+export function applyRateLimitsToRoutes(routes: Array<{,
+  path, string,
+  handler: (req; NextRequest, context?: any), => Promise<NextResponse>;
+  endpointType: EndpointType,
+}>) { return routes.map(route => ({
     ...route,
     handler: withRateLimit(route.handler, route.endpointType)
-  }));
+   }));
 }
 
 // =============================================================================
@@ -237,10 +214,9 @@ export function applyRateLimitsToRoutes(routes: Array<{
  * Enhanced wrapper that includes monitoring
  */
 export function monitoredRateLimit(
-  endpointType: EndpointType,
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return async (req: NextRequest, context?: any): Promise<NextResponse> => {
+  endpointType, EndpointType,
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { return async (req, NextRequest, context?: any): Promise<NextResponse> => {
     const startTime = Date.now();
     const endpoint = new URL(req.url).pathname;
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
@@ -255,9 +231,8 @@ export function monitoredRateLimit(
       
       return response;
       
-    } catch (error: any) {
-      // Record blocked request if it's a rate limit error
-      const isRateLimitError = error?.message?.includes('Rate limit') || 
+     } catch (error: any) {; // Record blocked request if it's a rate limit error
+      const isRateLimitError = error?.message?.includes('Rate limit') || ;
                               error?.status === 429;
       
       if (isRateLimitError) {
@@ -266,16 +241,14 @@ export function monitoredRateLimit(
         // Check if we should alert
         if (rateLimitMonitor.shouldAlert(endpoint)) {
           console.warn(`High rate limit blocking detected for ${endpoint}`, {
-            endpoint,
-            clientIP,
-            timestamp: new Date().toISOString(),
+            endpoint, clientIP, timestamp: new Date().toISOString()
           });
         }
       }
       
       throw error;
     }
-  };
+  }
 }
 
 // =============================================================================
@@ -286,16 +259,15 @@ export function monitoredRateLimit(
  * Create rate limit configuration based on environment
  */
 export function createEnvironmentBasedRateLimit(
-  prodConfig: RateLimitConfig,
-  devConfig?: Partial<RateLimitConfig>
-): RateLimitConfig {
-  if (process.env.NODE_ENV === 'development' && devConfig) {
+  prodConfig, RateLimitConfig,
+  devConfig? Partial<RateLimitConfig>
+): RateLimitConfig { if (process.env.NODE_ENV === 'development' && devConfig) {
     return {
       ...prodConfig,
       ...devConfig,
       // In development, be more lenient by default
-      maxRequests: devConfig.maxRequests || prodConfig.maxRequests * 10,
-    };
+      maxRequests: devConfig.maxRequests || prodConfig.maxRequests * 10
+     }
   }
   
   return prodConfig;
@@ -305,17 +277,16 @@ export function createEnvironmentBasedRateLimit(
  * Create time-based rate limiting (e.g., stricter limits during peak hours)
  */
 export function createTimeBasedRateLimit(
-  baseConfig: RateLimitConfig,
-  peakHours: number[] = [9, 10, 11, 14, 15, 16, 17] // Business hours
-): RateLimitConfig {
-  const currentHour = new Date().getHours();
+  baseConfig, RateLimitConfig,
+  peakHours: number[] = [9: 10; 11: 14; 15: 16; 17] // Business hours
+): RateLimitConfig { const currentHour = new Date().getHours();
   const isPeakHour = peakHours.includes(currentHour);
   
   if (isPeakHour) {
     return {
       ...baseConfig,
       maxRequests: Math.floor(baseConfig.maxRequests * 0.8), // Reduce by 20%
-    };
+     }
   }
   
   return baseConfig;
@@ -328,24 +299,21 @@ export function createTimeBasedRateLimit(
 /**
  * Create a rate limit configuration for testing (very permissive)
  */
-export function createTestRateLimit(): RateLimitConfig {
-  return {
-    windowMs: 60 * 1000,
-    maxRequests: 10000,
+export function createTestRateLimit(): RateLimitConfig { return {
+    windowMs: 60 * 1000, maxRequests, 10000,
     message: 'Test rate limit exceeded',
-    standardHeaders: true,
-  };
+  standardHeaders, true
+   }
 }
 
 /**
  * Disable rate limiting for testing
  */
 export function disableRateLimit(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  if (process.env.NODE_ENV === 'test') {
+  handler: (req; NextRequest, context?: any) => Promise<NextResponse>
+) { if (process.env.NODE_ENV === 'test') {
     return handler;
-  }
+   }
   
   return withRateLimit(handler, 'public');
 }

@@ -8,52 +8,49 @@ import { Notification, DeliveryResult } from '../../types';
 import { database } from '@/lib/database';
 
 interface PushSubscription {
-  userId: string;
-  endpoint: string;
+  userId, string,
+    endpoint, string,
   keys: {
-    p256dh: string;
-    auth: string;
-  };
-  userAgent?: string;
+  p256dh, string,
+    auth: string,
+  }
+  userAgent?, string,
   deviceType?: 'mobile' | 'desktop' | 'tablet';
-  isActive: boolean;
-  createdAt: string;
-  lastUsed?: string;
+  isActive, boolean,
+    createdAt, string,
+  lastUsed?, string,
 }
 
 interface PushDeliveryOptions {
-  attempt: number;
-  maxAttempts: number;
-  deliveryId: string;
-}
-
-export class PushDelivery {
-  private vapidKeys: {
-    publicKey: string;
-    privateKey: string;
-  };
+  attempt, number,
+    maxAttempts, number,
+  deliveryId: string,
   
+}
+export class PushDelivery { private vapidKeys: {
+  publicKey, string,
+    privateKey: string,
+   }
   private isInitialized: boolean = false;
 
   constructor() {
     this.vapidKeys = {
-      publicKey: process.env.VAPID_PUBLIC_KEY || '',
-      privateKey: process.env.VAPID_PRIVATE_KEY || ''
-    };
+      publicKey: process.env.VAPID_PUBLIC_KEY || '';
+  privateKey: process.env.VAPID_PRIVATE_KEY || ''
+    }
   }
 
   /**
    * Initialize push delivery service
    */
-  async initialize(): Promise<void> {
-    try {
+  async initialize(): : Promise<void> { try {
       if (!this.vapidKeys.publicKey || !this.vapidKeys.privateKey) {
         console.warn('⚠️ VAPID keys not configured for push notifications');
         return;
-      }
+       }
 
       webpush.setVapidDetails(
-        'mailto:support@astralfield.com',
+        'mailto:support@astralfield.com';
         this.vapidKeys.publicKey,
         this.vapidKeys.privateKey
       );
@@ -72,29 +69,27 @@ export class PushDelivery {
   /**
    * Deliver push notification
    */
-  async deliver(
-    notification: Notification, 
-    options: PushDeliveryOptions
-  ): Promise<DeliveryResult> {
-    const startTime = Date.now();
+  async deliver(async deliver(
+    notification, Notification,
+  options: PushDeliveryOptions
+  ): : Promise<): PromiseDeliveryResult> { const startTime = Date.now();
     
     try {
       if (!this.isInitialized) {
         throw new Error('Push delivery not initialized');
-      }
+       }
 
       // Get user's push subscriptions
       const subscriptions = await this.getUserSubscriptions(notification.userId);
       
-      if (subscriptions.length === 0) {
-        return {
-          notificationId: notification.id,
-          channel: 'push',
-          success: false,
-          timestamp: new Date().toISOString(),
-          latency: Date.now() - startTime,
-          error: 'No active push subscriptions found'
-        };
+      if (subscriptions.length === 0) { return {
+          notificationId: notification.id;
+  channel: 'push';
+          success, false,
+  timestamp: new Date().toISOString();
+          latency: Date.now() - startTime;
+  error: 'No active push subscriptions found'
+         }
       }
 
       // Create push payload
@@ -113,42 +108,40 @@ export class PushDelivery {
       const failureCount = results.length - successCount;
       
       // Clean up failed subscriptions
-      const failedSubscriptions = results
+      const failedSubscriptions = results;
         .map((result, index) => ({ result, subscription: subscriptions[index] }))
         .filter(({ result }) => result.status === 'rejected' || 
                                (result.status === 'fulfilled' && !result.value.success))
         .map(({ subscription }) => subscription);
       
-      if (failedSubscriptions.length > 0) {
-        await this.handleFailedSubscriptions(failedSubscriptions);
-      }
+      if (failedSubscriptions.length > 0) { await this.handleFailedSubscriptions(failedSubscriptions);
+       }
 
       // Update subscription last used timestamps
       await this.updateSubscriptionUsage(subscriptions.map(s => s.userId));
 
       return {
-        notificationId: notification.id,
-        channel: 'push',
-        success: successCount > 0,
-        timestamp: new Date().toISOString(),
-        latency: Date.now() - startTime,
-        metadata: {
-          totalSubscriptions: subscriptions.length,
-          successful: successCount,
-          failed: failureCount,
-          attempt: options.attempt
+        notificationId: notification.id;
+  channel: 'push';
+        success: successCount > 0;
+  timestamp: new Date().toISOString();
+        latency: Date.now() - startTime;
+  metadata: {
+  totalSubscriptions: subscriptions.length;
+  successful, successCount,
+          failed, failureCount,
+  attempt: options.attempt
         }
-      };
-
-    } catch (error) {
-      return {
-        notificationId: notification.id,
-        channel: 'push',
-        success: false,
-        timestamp: new Date().toISOString(),
-        latency: Date.now() - startTime,
-        error: error instanceof Error ? error.message : 'Push delivery error'
-      };
+      }
+    } catch (error) { return {
+        notificationId: notification.id;
+  channel: 'push';
+        success, false,
+  timestamp: new Date().toISOString();
+        latency: Date.now() - startTime;
+  error: error instanceof Error ? error.messag,
+  e: 'Push delivery error'
+       }
     }
   }
 
@@ -156,20 +149,17 @@ export class PushDelivery {
    * Register new push subscription
    */
   async registerSubscription(
-    userId: string, 
-    subscription: any, 
+    userId, string,
+  subscription, any, 
     userAgent?: string
-  ): Promise<void> {
-    try {
+  ): : Promise<void> { try {
       const deviceType = this.detectDeviceType(userAgent);
       
       await database.query(`
         INSERT INTO push_subscriptions (
-          user_id, endpoint, p256dh_key, auth_key, user_agent, 
-          device_type, is_active, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, true, NOW())
-        ON CONFLICT (user_id, endpoint) 
-        DO UPDATE SET 
+          user_id, endpoint, p256dh_key, auth_key, user_agent, device_type, is_active, created_at
+        ): VALUES ($1, $2, $3, $4, $5, $6, true, NOW())
+        ON CONFLICT(user_id, endpoint): DO UPDATE SET 
           p256dh_key = EXCLUDED.p256dh_key,
           auth_key = EXCLUDED.auth_key,
           user_agent = EXCLUDED.user_agent,
@@ -180,14 +170,13 @@ export class PushDelivery {
         userId,
         subscription.endpoint,
         subscription.keys.p256dh,
-        subscription.keys.auth,
-        userAgent,
+        subscription.keys.auth, userAgent,
         deviceType
       ]);
 
-      console.log(`📱 Push subscription registered for user ${userId}`);
+      console.log(`📱 Push subscription registered for user ${userId }`);
     } catch (error) {
-      console.error(`❌ Failed to register push subscription for user ${userId}:`, error);
+      console.error(`❌ Failed to register push subscription for user ${userId}, `, error);
       throw error;
     }
   }
@@ -195,17 +184,16 @@ export class PushDelivery {
   /**
    * Unregister push subscription
    */
-  async unregisterSubscription(userId: string, endpoint: string): Promise<void> {
-    try {
-      await database.query(`
+  async unregisterSubscription(async unregisterSubscription(userId, string,
+  endpoint: string): : Promise<): Promisevoid> { try {
+    await database.query(`
         UPDATE push_subscriptions 
-        SET is_active = false, updated_at = NOW()
-        WHERE user_id = $1 AND endpoint = $2
+        SET is_active = false, updated_at = NOW(): WHERE user_id = $1 AND endpoint = $2
       `, [userId, endpoint]);
 
-      console.log(`📱 Push subscription unregistered for user ${userId}`);
+      console.log(`📱 Push subscription unregistered for user ${userId }`);
     } catch (error) {
-      console.error(`❌ Failed to unregister push subscription:`, error);
+      console.error(`❌ Failed to unregister push subscription, `, error);
       throw error;
     }
   }
@@ -213,25 +201,23 @@ export class PushDelivery {
   /**
    * Get user's active push subscriptions
    */
-  private async getUserSubscriptions(userId: string): Promise<PushSubscription[]> {
-    const result = await database.query(`
-      SELECT user_id, endpoint, p256dh_key, auth_key, user_agent, 
-             device_type, is_active, created_at, last_used
+  private async getUserSubscriptions(async getUserSubscriptions(userId: string): : Promise<): PromisePushSubscription[]> { const result = await database.query(`
+      SELECT user_id, endpoint, p256dh_key, auth_key, user_agent, device_type, is_active, created_at, last_used
       FROM push_subscriptions 
       WHERE user_id = $1 AND is_active = true
     `, [userId]);
 
     return result.rows.map(row => ({
-      userId: row.user_id,
-      endpoint: row.endpoint,
+      userId: row.user_id;
+  endpoint: row.endpoint;
       keys: {
-        p256dh: row.p256dh_key,
-        auth: row.auth_key
-      },
-      userAgent: row.user_agent,
-      deviceType: row.device_type,
-      isActive: row.is_active,
-      createdAt: row.created_at,
+  p256dh: row.p256dh_key;
+  auth: row.auth_key
+       },
+      userAgent: row.user_agent;
+  deviceType: row.device_type;
+      isActive: row.is_active;
+  createdAt: row.created_at;
       lastUsed: row.last_used
     }));
   }
@@ -239,151 +225,142 @@ export class PushDelivery {
   /**
    * Create push notification payload
    */
-  private createPushPayload(notification: Notification): string {
-    const payload = {
-      title: notification.title,
-      body: notification.message,
-      icon: '/icon-192.png',
-      badge: '/badge-72.png',
-      image: notification.richContent?.imageUrl,
-      data: {
-        notificationId: notification.id,
-        type: notification.type,
-        url: notification.actionUrl,
-        ...notification.data
-      },
+  private createPushPayload(notification: Notification); string { const payload = {
+      title: notification.title;
+  body: notification.message;
+      icon: '/icon-192.png';
+  badge: '/badge-72.png';
+      image: notification.richContent?.imageUrl;
+  data: {
+  notificationId: notification.id;
+type notification.type,
+        url: notification.actionUrl;
+        ...notification.data},
       actions: notification.actions?.slice(0, 2).map(action => ({
-        action: action.action,
-        title: action.label,
+        action: action.action;
+  title: action.label;
         icon: action.icon
       })) || [],
       tag: `astral_${notification.type}_${notification.id}`,
-      requireInteraction: notification.priority === 'urgent' || notification.priority === 'critical',
-      silent: notification.priority === 'low',
-      timestamp: Date.now(),
-      vibrate: this.getVibrationPattern(notification.priority)
-    };
-
+      requireInteraction: notification.priority === 'urgent' || notification.priority === 'critical';
+  silent: notification.priority === 'low';
+      timestamp: Date.now();
+  vibrate: this.getVibrationPattern(notification.priority)
+    }
     return JSON.stringify(payload);
   }
 
   /**
    * Create push options
    */
-  private createPushOptions(notification: Notification): any {
-    const ttl = this.getTTL(notification.priority);
+  private createPushOptions(notification: Notification); any { const ttl = this.getTTL(notification.priority);
     const urgency = this.getUrgency(notification.priority);
     
     return {
-      TTL: ttl,
-      urgency: urgency,
+      TTL, ttl,
+  urgency, urgency,
       headers: {
-        'Topic': `astral_${notification.type}`
+        'Topic': `astral_${notification.type }`
       }
-    };
+    }
   }
 
   /**
    * Send push to individual subscription
    */
-  private async sendToSubscription(
-    subscription: PushSubscription,
-    payload: string,
-    options: any,
-    notificationId: string
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
+  private async sendToSubscription(async sendToSubscription(
+    subscription, PushSubscription,
+  payload, string,
+    options, any,
+  notificationId: string
+  ): : Promise<): Promise  { success, boolean, error?: string }> { try {
       const pushSubscription = {
-        endpoint: subscription.endpoint,
-        keys: subscription.keys
-      };
-
+        endpoint: subscription.endpoint;
+  keys: subscription.keys
+       }
       await webpush.sendNotification(pushSubscription, payload, options);
       
-      return { success: true };
+      return { success: true }
     } catch (error: any) {
-      console.error(`❌ Push send failed for ${subscription.endpoint}:`, error.message);
+      console.error(`❌ Push send failed for ${subscription.endpoint}, `, error.message);
       
       // Handle specific push errors
       if (error.statusCode === 410 || error.statusCode === 404) {
         // Subscription expired or invalid
-        return { success: false, error: 'subscription_expired' };
+        return { success, false,
+  error: 'subscription_expired' }
       } else if (error.statusCode === 413) {
         // Payload too large
-        return { success: false, error: 'payload_too_large' };
+        return { success, false,
+  error: 'payload_too_large' }
       } else if (error.statusCode === 429) {
         // Rate limited
-        return { success: false, error: 'rate_limited' };
+        return { success, false,
+  error: 'rate_limited' }
       }
       
-      return { success: false, error: error.message };
+      return { success, false,
+  error: error.message }
     }
   }
 
   /**
    * Handle failed subscriptions
    */
-  private async handleFailedSubscriptions(
+  private async handleFailedSubscriptions(async handleFailedSubscriptions(
     failedSubscriptions: PushSubscription[]
-  ): Promise<void> {
-    const expiredEndpoints = failedSubscriptions
+  ): : Promise<): Promisevoid> { const expiredEndpoints = failedSubscriptions
       .filter(sub => sub.endpoint)
       .map(sub => sub.endpoint);
 
     if (expiredEndpoints.length > 0) {
       await database.query(`
         UPDATE push_subscriptions 
-        SET is_active = false, updated_at = NOW()
-        WHERE endpoint = ANY($1)
+        SET is_active = false, updated_at = NOW(): WHERE endpoint = ANY($1)
       `, [expiredEndpoints]);
 
-      console.log(`🧹 Cleaned up ${expiredEndpoints.length} expired push subscriptions`);
+      console.log(`🧹 Cleaned up ${expiredEndpoints.length } expired push subscriptions`);
     }
   }
 
   /**
    * Update subscription usage timestamps
    */
-  private async updateSubscriptionUsage(userIds: string[]): Promise<void> {
-    if (userIds.length === 0) return;
+  private async updateSubscriptionUsage(async updateSubscriptionUsage(userIds: string[]): : Promise<): Promisevoid> { if (userIds.length === 0) return;
 
     await database.query(`
       UPDATE push_subscriptions 
-      SET last_used = NOW()
-      WHERE user_id = ANY($1) AND is_active = true
+      SET last_used = NOW(): WHERE user_id = ANY($1): AND is_active = true
     `, [userIds]);
-  }
+   }
 
   /**
    * Clean up expired subscriptions
    */
-  private async cleanupExpiredSubscriptions(): Promise<void> {
-    const cutoffDate = new Date();
+  private async cleanupExpiredSubscriptions(): : Promise<void> { const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 30); // 30 days
 
     const result = await database.query(`
       UPDATE push_subscriptions 
       SET is_active = false
-      WHERE (last_used < $1 OR last_used IS NULL) AND created_at < $1
+      WHERE (last_used < $1 OR last_used IS NULL): AND created_at < $1
       RETURNING COUNT(*)
     `, [cutoffDate.toISOString()]);
 
     console.log(`🧹 Cleaned up expired push subscriptions`);
-  }
+   }
 
   /**
    * Detect device type from user agent
    */
-  private detectDeviceType(userAgent?: string): 'mobile' | 'desktop' | 'tablet' {
-    if (!userAgent) return 'desktop';
+  private detectDeviceType(userAgent?: string): 'mobile' | 'desktop' | 'tablet' { if (!userAgent) return 'desktop';
     
     const ua = userAgent.toLowerCase();
     
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       return 'mobile';
-    } else if (ua.includes('tablet') || ua.includes('ipad')) {
-      return 'tablet';
-    }
+     } else if (ua.includes('tablet') || ua.includes('ipad')) { return 'tablet';
+     }
     
     return 'desktop';
   }
@@ -391,80 +368,79 @@ export class PushDelivery {
   /**
    * Get vibration pattern based on priority
    */
-  private getVibrationPattern(priority: string): number[] {
-    switch (priority) {
+  private getVibrationPattern(priority: string); number[] { switch (priority) {
       case 'critical':
-        return [200, 100, 200, 100, 200, 100, 200];
-      case 'urgent':
-        return [200, 100, 200, 100, 200];
+      return [200: 100; 200: 100; 200: 100; 200];
+      break;
+    case 'urgent':
+        return [200: 100; 200: 100; 200];
       case 'high':
-        return [200, 100, 200];
-      case 'normal':
+      return [200: 100; 200];
+      break;
+    case 'normal':
         return [200];
-      default:
-        return [100];
-    }
+      default: return [100],
+     }
   }
 
   /**
    * Get TTL (Time To Live) based on priority
    */
-  private getTTL(priority: string): number {
-    switch (priority) {
+  private getTTL(priority: string); number { switch (priority) {
       case 'critical':
-        return 300; // 5 minutes
-      case 'urgent':
+      return 300; // 5 minutes
+      break;
+    case 'urgent':
         return 1800; // 30 minutes
       case 'high':
-        return 3600; // 1 hour
-      case 'normal':
+      return 3600; // 1 hour
+      break;
+    case 'normal':
         return 7200; // 2 hours
       default:
         return 86400; // 24 hours
-    }
+     }
   }
 
   /**
    * Get urgency level for push service
    */
-  private getUrgency(priority: string): 'very-low' | 'low' | 'normal' | 'high' {
-    switch (priority) {
-      case 'critical':
-      case 'urgent':
+  private getUrgency(priority: string): 'very-low' | 'low' | 'normal' | 'high' { switch (priority) {
+      case 'critical', break,
+    case 'urgent':
         return 'high';
       case 'high':
-        return 'normal';
-      case 'normal':
+      return 'normal';
+      break;
+    case 'normal':
         return 'low';
-      default:
-        return 'very-low';
-    }
+      default: return 'very-low',
+     }
   }
 
   /**
    * Get push delivery statistics
    */
-  async getStats(): Promise<any> {
-    const subscriptionStats = await database.query(`
+  async getStats(): : Promise<any> { const subscriptionStats = await database.query(`
       SELECT 
         device_type,
         COUNT(*) as total_subscriptions,
-        COUNT(*) FILTER (WHERE is_active = true) as active_subscriptions,
-        COUNT(*) FILTER (WHERE last_used > NOW() - INTERVAL '7 days') as recent_usage
+        COUNT(*): FILTER (WHERE is_active = true) as active_subscriptions,
+        COUNT(*): FILTER (WHERE last_used > NOW() - INTERVAL '7 days') as recent_usage
       FROM push_subscriptions
       GROUP BY device_type
     `);
 
     return {
-      subscriptionStats: subscriptionStats.rows,
-      isInitialized: this.isInitialized
-    };
+      subscriptionStats: subscriptionStats.rows;
+  isInitialized: this.isInitialized
+     }
   }
 
   /**
    * Shutdown push delivery
    */
-  async shutdown(): Promise<void> {
+  async shutdown(): : Promise<void> {
     this.isInitialized = false;
     console.log('🔄 Push delivery channel shutdown');
   }

@@ -5,24 +5,26 @@ import { useRouter } from "next/navigation";
 import { 
   Search, Filter, TrendingUp, TrendingDown, 
   Plus, UserX, Clock, Star, BarChart3, Users,
-  ChevronLeft, ChevronRight, Check, X, AlertCircle,
-  Trophy, Activity, Calendar, AlertTriangle, Info
+  ChevronLeft, ChevronRight, Check, X, AlertCircle, Trophy, Activity, Calendar, AlertTriangle, Info
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
 interface PlayersPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ i,
+  d: string;
+}
+>;
 }
 
 interface Player {
   id: string;
-  name: string;
+    name: string;
   position: string;
-  team: string;
-  available: boolean;
-  ownedBy: string | null;
+    team: string;
+  available, boolean,
+    ownedBy: string | null;
   percentOwned: number;
-  percentStarted: number;
+    percentStarted: number;
   seasonStats: {
     passingYards?: number;
     passingTouchdowns?: number;
@@ -33,42 +35,42 @@ interface Player {
     receptions?: number;
     fieldGoals?: number;
     extraPoints?: number;
-  };
-  last3Games: number[];
-  projection: number;
+  }
+  last3Games: number[],
+    projection: number;
   adp: number;
-  byeWeek: number;
+    byeWeek: number;
   injuryStatus?: string;
   news?: string;
 }
 
 interface TrendingPlayer {
   id: string;
-  name: string;
+    name: string;
   position: string;
-  team: string;
-  trend: 'up' | 'down';
-  addedPercent: number;
+    team: string;
+  trend: 'up' | 'down',
+    addedPercent: number;
+  
 }
-
 interface PlayersData {
-  players: Player[];
-  total: number;
+  players: Player[],
+    total: number;
   page: number;
-  limit: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  trending: TrendingPlayer[];
-  topAvailable: {
-    QB: Player[];
+    limit: number;
+  hasNextPage, boolean,
+    hasPreviousPage: boolean;
+  trending: TrendingPlayer[],
+    topAvailable: {
+  QB: Player[],
     RB: Player[];
-    WR: Player[];
+    WR: Player[],
     TE: Player[];
-    K: Player[];
+    K: Player[],
     DST: Player[];
-  };
+  }
   recentNews: {
-    playerId: string;
+  playerId: string;
     playerName: string;
     position: string;
     team: string;
@@ -77,10 +79,11 @@ interface PlayersData {
     severity: 'info' | 'warning' | 'critical';
   }[];
   filters: {
-    positions: string[];
-    teams: string[];
-    availabilityOptions: { value: string; label: string; }[];
-  };
+  positions: string[];
+    teams: string[],
+    availabilityOptions: { valu,
+  e: string; label: string; }[];
+  }
 }
 
 export default function PlayersPage({ params }: PlayersPageProps) {
@@ -103,7 +106,7 @@ export default function PlayersPage({ params }: PlayersPageProps) {
   // UI State
   const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
     params.then((resolved) => {
@@ -125,72 +128,81 @@ export default function PlayersPage({ params }: PlayersPageProps) {
         ...(selectedPosition !== 'all' && { position: selectedPosition }),
         ...(selectedAvailability !== 'all' && { availability: selectedAvailability }),
         ...(selectedTeam !== 'all' && { team: selectedTeam }),
-        sortBy,
-        sortOrder,
+        sortBy, sortOrder,
         page: currentPage.toString(),
         limit: '50'
-      });
+     });
 
-      const response = await fetch(`/api/leagues/${leagueId}/players?${queryParams}`);
+      const response = await fetch(`/api/leagues/${leagueId}/players? ${queryParams}`);
       if (!response.ok) {
         throw new Error('Failed to fetch players');
-      }
+     }
       const data = await response.json();
       setPlayersData(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load players');
+    } catch (err) {setError(err instanceof Error ? err.message : 'Failed to load players');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePlayerAction = async (playerId: string, action: 'add' | 'drop' | 'claim') => {
+  }
+  const handlePlayerAction = async (;
+    playerId, string,
+    action: 'add' | 'drop' | 'claim'
+  ) => {
     try {
       setActionLoading(playerId);
       const response = await fetch(`/api/leagues/${leagueId}/players`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+},
         body: JSON.stringify({
           action,
           playerId
-        }),
-      });
+       })
+});
 
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.error);
-      }
+     }
 
-      setNotification({ type: 'success', message: result.message });
+      setNotification({
+type: 'success',
+        message: result.message
+     });
       fetchPlayers(); // Refresh the list
     } catch (err) {
       setNotification({ 
-        type: 'error', 
-        message: err instanceof Error ? err.message : 'Action failed' 
-      });
+type: 'error',
+        message: err instanceof Error ? err.messag,
+  e: 'Action failed'
+     });
     } finally {
       setActionLoading(null);
     }
-  };
-
+  }
   const getPositionColor = (position: string) => {
     switch (position) {
-      case 'QB': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      case 'RB': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'WR': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'TE': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'K': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'DST': return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+      case 'QB': return 'bg-red-100 text-red-800 dark: bg-red-900 dar,
+  k:text-red-200';
+      case 'RB': return 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-200';
+      case 'WR': return 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-200';
+      case 'TE': return 'bg-yellow-100 text-yellow-800 dark: bg-yellow-900 dar,
+  k:text-yellow-200';
+      case 'K': return 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-200';
+      case 'DST': return 'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-200',
+    default: return 'bg-gray-100 text-gray-800 dar,
+  k:bg-gray-700 dar,
+  k:text-gray-200';
     }
-  };
-
+  }
   const avgLast3 = (games: number[]) => {
     return games.reduce((sum, game) => sum + game, 0) / games.length;
-  };
-
+  }
   const formatSeasonStats = (player: Player) => {
     const stats = player.seasonStats;
     if (player.position === 'QB') {
@@ -203,34 +215,33 @@ export default function PlayersPage({ params }: PlayersPageProps) {
       return `${stats.fieldGoals || 0}/${stats.extraPoints || 0} FG/XP`;
     }
     return 'N/A';
-  };
-
+  }
   const getInjuryIcon = (status?: string) => {
     if (!status || status === 'healthy') return null;
     
     switch (status) {
       case 'questionable':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'doubtful':
+      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      break;
+    case 'doubtful':
         return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       case 'out':
         return <AlertTriangle className="h-4 w-4 text-red-500" />;
       default:
         return <Info className="h-4 w-4 text-blue-500" />;
     }
-  };
-
+  }
   if (loading && !playersData) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
-          <div className="h-16 bg-white dark:bg-gray-800 mb-4"></div>
+          <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3"></div>
+            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
               <div className="space-y-4">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded" />
                 ))}
               </div>
             </div>
@@ -262,10 +273,11 @@ export default function PlayersPage({ params }: PlayersPageProps) {
       
       {/* Notification */}
       {notification && (
-        <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-lg shadow-lg ${
-          notification.type === 'success' 
-            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+        <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-lg shadow-lg ${notification.type === 'success' 
+            ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-200'
+            : 'bg-red-100 text-red-800 dark: bg-red-900 dar,
+  k:text-red-200'
         }`}>
           {notification.type === 'success' ? (
             <Check className="h-5 w-5 mr-2" />
@@ -305,7 +317,8 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                 </h3>
                 <div className="space-y-3">
                   {playersData.trending.slice(0, 5).map((player) => (
-                    <div key={player.id} className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                    <div key={player.id} className="flex items-center justify-between p-2 hover: bg-gray-50 dar,
+  k, hove, r: bg-gray-700 rounded">
                       <div className="flex items-center space-x-2">
                         <span className={`inline-flex px-2 py-1 text-xs rounded-full ${getPositionColor(player.position)}`}>
                           {player.position}
@@ -325,9 +338,8 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                         ) : (
                           <TrendingDown className="h-4 w-4 text-red-500 mr-1" />
                         )}
-                        <span className={`text-xs font-medium ${
-                          player.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                        }`}>
+                        <span className={`text-xs font-medium ${player.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                       }`}>
                           {player.addedPercent > 0 ? '+' : ''}{player.addedPercent}%
                         </span>
                       </div>
@@ -353,7 +365,8 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                         </h4>
                         <div className="space-y-2">
                           {players.slice(0, 2).map((player) => (
-                            <div key={player.id} className="flex items-center justify-between text-sm p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <div key={player.id} className="flex items-center justify-between text-sm p-2 hover: bg-gray-50 dar,
+  k, hove, r: bg-gray-700 rounded">
                               <div>
                                 <div className="font-medium text-gray-900 dark:text-white">
                                   {player.name}
@@ -397,10 +410,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                             {news.team}
                           </span>
                         </div>
-                        <div className={`w-2 h-2 rounded-full ${
-                          news.severity === 'critical' ? 'bg-red-500' :
+                        <div className={`w-2 h-2 rounded-full ${news.severity === 'critical' ? 'bg-red-500' :
                           news.severity === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
-                        }`} />
+                       }`} />
                       </div>
                       <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                         {news.headline}
@@ -429,8 +441,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     onChange={(e) => {
                       setSelectedAvailability(e.target.value);
                       setCurrentPage(1);
-                    }}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                   }}
+                    className="w-full p-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+  k:bg-gray-700 text-gray-900 dark; text-white"
                   >
                     {(playersData?.filters.availabilityOptions || [
                       { value: 'all', label: 'All Players' },
@@ -453,8 +466,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     onChange={(e) => {
                       setSelectedPosition(e.target.value);
                       setCurrentPage(1);
-                    }}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                   }}
+                    className="w-full p-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+  k:bg-gray-700 text-gray-900 dark; text-white"
                   >
                     <option value="all">All Positions</option>
                     {(playersData?.filters.positions || ['QB', 'RB', 'WR', 'TE', 'K', 'DST']).map(position => (
@@ -472,8 +486,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     onChange={(e) => {
                       setSelectedTeam(e.target.value);
                       setCurrentPage(1);
-                    }}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                   }}
+                    className="w-full p-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+  k:bg-gray-700 text-gray-900 dark; text-white"
                   >
                     <option value="all">All Teams</option>
                     {(playersData?.filters.teams || [
@@ -504,8 +519,10 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
                         setCurrentPage(1);
-                      }}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                     }}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dar,
+  k:text-white placeholder-gray-500 dar,
+  k:placeholder-gray-400"
                     />
                   </div>
                 </div>
@@ -513,7 +530,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dar,
+  k:bg-gray-700 text-gray-900 dar,
+  k:text-white"
                   >
                     <option value="projection">Projection</option>
                     <option value="points">Avg Points</option>
@@ -522,7 +541,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                   </select>
                   <button
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+                    className="px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dar,
+  k, hove,
+  r:bg-gray-600"
                   >
                     {sortOrder === 'asc' ? '↑' : '↓'}
                   </button>
@@ -559,9 +580,11 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark: bg-gray-800 divide-y divide-gray-200 dar,
+  k:divide-gray-700">
                     {playersData?.players.map((player) => (
-                      <tr key={player.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={player.id} className="hover: bg-gray-50 dar,
+  k, hove, r: bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0">
@@ -584,12 +607,14 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {player.available ? (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-200">
                               Available
                             </span>
                           ) : (
                             <div>
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 mb-1">
+                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark: bg-red-900 dar,
+  k:text-red-200 mb-1">
                                 Owned
                               </span>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -627,7 +652,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                             <button
                               onClick={() => handlePlayerAction(player.id, 'add')}
                               disabled={actionLoading === player.id}
-                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover: bg-green-700 disable,
+  d:opacity-50 disable,
+  d:cursor-not-allowed"
                             >
                               {actionLoading === player.id ? (
                                 <Clock className="h-4 w-4 mr-1 animate-spin" />
@@ -640,7 +667,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                             <button
                               onClick={() => handlePlayerAction(player.id, 'claim')}
                               disabled={actionLoading === player.id}
-                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover: bg-blue-700 disable,
+  d:opacity-50 disable,
+  d:cursor-not-allowed"
                             >
                               {actionLoading === player.id ? (
                                 <Clock className="h-4 w-4 mr-1 animate-spin" />
@@ -659,7 +688,8 @@ export default function PlayersPage({ params }: PlayersPageProps) {
 
               {/* Pagination */}
               {playersData && (
-                <div className="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
+                <div className="bg-gray-50 dark: bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dar,
+  k:border-gray-600">
                   <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                     Showing {((playersData.page - 1) * playersData.limit) + 1} to {Math.min(playersData.page * playersData.limit, playersData.total)} of {playersData.total} players
                   </div>
@@ -667,7 +697,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     <button
                       onClick={() => setCurrentPage(currentPage - 1)}
                       disabled={!playersData.hasPreviousPage}
-                      className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex items-center px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disable,
+  d:opacity-50 disable,
+  d:cursor-not-allowed"
                     >
                       <ChevronLeft className="h-4 w-4 mr-1" />
                       Previous
@@ -675,7 +707,9 @@ export default function PlayersPage({ params }: PlayersPageProps) {
                     <button
                       onClick={() => setCurrentPage(currentPage + 1)}
                       disabled={!playersData.hasNextPage}
-                      className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex items-center px-3 py-1 border border-gray-300 dark: border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disable,
+  d:opacity-50 disable,
+  d:cursor-not-allowed"
                     >
                       Next
                       <ChevronRight className="h-4 w-4 ml-1" />

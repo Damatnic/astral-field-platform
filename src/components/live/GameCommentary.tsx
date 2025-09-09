@@ -5,61 +5,64 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface GamePlay {
-  id: string;
-  gameId: string;
-  quarter: number;
-  time: string;
-  description: string;
-  playType: 'touchdown' | 'field-goal' | 'interception' | 'fumble' | 'sack' | 'big-play' | 'regular';
-  playerId?: string;
-  playerName?: string;
-  yards?: number;
-  points?: number;
-  timestamp: string;
-  reactions: {
-    [emoji: string]: {
-      count: number;
-      users: { userId: string; username: string }[];
-    };
-  };
+  id, string,
+    gameId, string,
+  quarter, number,
+    time, string,
+  description, string,
+    playType: 'touchdown' | 'field-goal' | 'interception' | 'fumble' | 'sack' | 'big-play' | 'regular';
+  playerId?, string,
+  playerName?, string,
+  yards?, number,
+  points?, number,
+  timestamp, string,
+    reactions: {;
+  [emoji: string]: {;
+  count, number,
+  users: { userI,
+  d, string, username, string,
+}
+[];
+    }
+  }
 }
 
 interface UserReaction {
-  userId: string;
-  username: string;
-  emoji: string;
-  message?: string;
-  timestamp: string;
+  userId, string,
+    username, string,
+  emoji, string,
+  message?, string,
+  timestamp, string,
+  
 }
-
 interface GameCommentaryProps {
-  gameId: string;
-  leagueId: string;
-  homeTeam: string;
-  awayTeam: string;
-  isLive?: boolean;
+  gameId, string,
+    leagueId, string,
+  homeTeam, string,
+    awayTeam, string,
+  isLive?, boolean,
 }
 
 const REACTION_EMOJIS = ['🔥', '💯', '😱', '🏆', '💪', '😂', '😭', '🤯', '⚡', '🚀'];
 const CELEBRATION_EMOJIS = ['🎉', '🥳', '🎊', '👏', '🙌', '💃', '🕺', '🎯', '🏈', '🏃‍♂️'];
 
-export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, isLive = true }: GameCommentaryProps) {
-  const [plays, setPlays] = useState<GamePlay[]>([]);
+export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, isLive = true }: GameCommentaryProps) { const [plays, setPlays] = useState<GamePlay[]>([]);
   const [userReactions, setUserReactions] = useState<UserReaction[]>([]);
-  const [showReactionPicker, setShowReactionPicker] = useState<{ playId: string | null; isOpen: boolean }>({
-    playId: null,
-    isOpen: false
+  const [showReactionPicker, setShowReactionPicker] = useState<{ playId: string | null; isOpen, boolean  }>({
+    playId, null,
+  isOpen: false
   });
   const [commentInput, setCommentInput] = useState('');
   const [gameStatus, setGameStatus] = useState({
-    quarter: 1,
-    time: '15:00',
-    homeScore: 0,
-    awayScore: 0,
+    quarter, 1,
+  time: '1,
+  5:00',
+    homeScore, 0,
+  awayScore, 0,
     possession: homeTeam
   });
   const [highlightedPlay, setHighlightedPlay] = useState<string | null>(null);
@@ -68,33 +71,27 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
   const { isConnected, on, off, joinMatchup, leaveMatchup } = useWebSocket();
 
   // Join game thread
-  useEffect(() => {
-    if (isConnected) {
+  useEffect(() => { if (isConnected) {
       joinMatchup(gameId);
-    }
+     }
     
-    return () => {
-      if (isConnected) {
+    return () => { if (isConnected) {
         leaveMatchup(gameId);
-      }
-    };
+       }
+    }
   }, [isConnected, gameId]);
 
   // Setup game event listeners
-  useEffect(() => {
-    if (!isConnected) return;
+  useEffect(() => { if (!isConnected) return;
 
     const handleGameUpdate = (update: any) => {
       if (update.gameId === gameId) {
         setGameStatus(prev => ({
           ...prev,
-          ...update
-        }));
+          ...update}));
       }
-    };
-
-    const handleNewPlay = (play: GamePlay) => {
-      if (play.gameId === gameId) {
+    }
+    const handleNewPlay = (play: GamePlay) => { if (play.gameId === gameId) {
         setPlays(prev => {
           const exists = prev.find(p => p.id === play.id);
           if (exists) return prev;
@@ -107,56 +104,50 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
           if (['touchdown', 'interception', 'fumble', 'big-play'].includes(play.playType)) {
             setHighlightedPlay(play.id);
             setTimeout(() => setHighlightedPlay(null), 5000);
-          }
+           }
           
           return newPlays;
         });
       }
-    };
-
-    const handlePlayReaction = (reaction: {
-      playId: string;
-      emoji: string;
-      userId: string;
-      username: string;
-      action: 'add' | 'remove';
+    }
+    const handlePlayReaction = (reaction: {,
+  playId, string,
+      emoji, string,
+    userId, string,
+      username, string,
+    action: 'add' | 'remove';
     }) => {
-      setPlays(prev => prev.map(play => {
-        if (play.id === reaction.playId) {
-          const reactions = { ...play.reactions };
-          
+      setPlays(prev => prev.map(play => { if (play.id === reaction.playId) {
+          const reactions = { ...play.reactions}
           if (!reactions[reaction.emoji]) {
-            reactions[reaction.emoji] = { count: 0, users: [] };
+            reactions[reaction.emoji] = { count, 0,
+  users: [] }
           }
           
-          if (reaction.action === 'add') {
-            const existingUser = reactions[reaction.emoji].users.find(u => u.userId === reaction.userId);
+          if (reaction.action === 'add') { const existingUser = reactions[reaction.emoji].users.find(u => u.userId === reaction.userId);
             if (!existingUser) {
               reactions[reaction.emoji].count++;
               reactions[reaction.emoji].users.push({
                 userId: reaction.userId,
-                username: reaction.username
-              });
+  username: reaction.username
+               });
             }
           } else {
             reactions[reaction.emoji].users = reactions[reaction.emoji].users.filter(u => u.userId !== reaction.userId);
             reactions[reaction.emoji].count = Math.max(0, reactions[reaction.emoji].count - 1);
             
-            if (reactions[reaction.emoji].count === 0) {
-              delete reactions[reaction.emoji];
-            }
+            if (reactions[reaction.emoji].count === 0) { delete: reactions[reaction.emoji];
+             }
           }
           
-          return { ...play, reactions };
+          return { ...play,: reactions  }
         }
         return play;
       }));
-    };
-
+    }
     const handleUserReaction = (reaction: UserReaction) => {
       setUserReactions(prev => [...prev, reaction].slice(-20)); // Keep last 20 reactions
-    };
-
+    }
     on('game_update', handleGameUpdate);
     on('new_play', handleNewPlay);
     on('play_reaction', handlePlayReaction);
@@ -167,7 +158,7 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
       off('new_play', handleNewPlay);
       off('play_reaction', handlePlayReaction);
       off('user_reaction', handleUserReaction);
-    };
+    }
   }, [isConnected, gameId]);
 
   // Auto-scroll to latest plays
@@ -175,98 +166,93 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
     playsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [plays.length]);
 
-  const addPlayReaction = async (playId: string, emoji: string) => {
-    try {
+  const addPlayReaction = async (playId, string;
+  emoji: string) => { try {
       const response = await fetch('/api/live/reactions', {
         method: 'POST',
-        headers: {
+  headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
         },
         body: JSON.stringify({
-          playId,
-          emoji,
-          gameId,
+          playId, emoji, gameId,
           leagueId
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to add reaction');
-      }
+      if (!response.ok) { throw new Error('Failed to add reaction');
+       }
 
-      setShowReactionPicker({ playId: null, isOpen: false });
+      setShowReactionPicker({ playId, null,
+  isOpen: false });
     } catch (error) {
       console.error('Error adding play reaction:', error);
     }
-  };
-
-  const sendUserReaction = async (emoji: string, message?: string) => {
-    try {
+  }
+  const sendUserReaction = async (emoji, string, message?: string) => { try {
       const response = await fetch('/api/live/user-reactions', {
         method: 'POST',
-        headers: {
+  headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
         },
         body: JSON.stringify({
-          gameId,
-          leagueId,
-          emoji,
+          gameId, leagueId, emoji,
           message
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send reaction');
-      }
+      if (!response.ok) { throw new Error('Failed to send reaction');
+       }
 
       setCommentInput('');
     } catch (error) {
       console.error('Error sending user reaction:', error);
     }
-  };
-
-  const getPlayIcon = (playType: string) => {
-    switch (playType) {
-      case 'touchdown': return '🏈';
-      case 'field-goal': return '🥅';
-      case 'interception': return '🙌';
-      case 'fumble': return '😱';
-      case 'sack': return '💥';
-      case 'big-play': return '⚡';
+  }
+  const getPlayIcon = (playType: string) => { switch (playType) {
+      case 'touchdown':
+      return '🏈';
+      break;
+    case 'field-goal': return '🥅';
+      case 'interception':
+      return '🙌';
+      break;
+    case 'fumble': return '😱';
+      case 'sack':
+      return '💥';
+      break;
+    case 'big-play': return '⚡';
       default: return '🏃‍♂️';
-    }
-  };
-
-  const getPlayStyle = (play: GamePlay) => {
-    const baseStyle = 'p-4 rounded-lg border transition-all duration-300 hover:shadow-lg';
+     }
+  }
+  const getPlayStyle = (play: GamePlay) => { const baseStyle = 'p-4 rounded-lg border transition-all duration-300 hove,
+  r:shadow-lg';
     
     if (highlightedPlay === play.id) {
-      return `${baseStyle} bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/50 shadow-lg animate-pulse`;
+      return `${baseStyle } bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/50 shadow-lg animate-pulse`;
     }
     
     switch (play.playType) {
       case 'touchdown':
-        return `${baseStyle} bg-green-600/10 border-green-500/30`;
-      case 'interception':
+      return `${baseStyle } bg-green-600/10 border-green-500/30`;
+      break;
+    case 'interception':
       case 'fumble':
-        return `${baseStyle} bg-red-600/10 border-red-500/30`;
-      case 'big-play':
+      return `${baseStyle} bg-red-600/10 border-red-500/30`;
+      break;
+    case 'big-play':
         return `${baseStyle} bg-blue-600/10 border-blue-500/30`;
       default:
         return `${baseStyle} bg-gray-700/20 border-gray-600/30`;
     }
-  };
-
-  const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12: true, 
-      hour: 'numeric', 
+  }
+  const formatTime = (timestamp: string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12, true,
+  hour: 'numeric', 
       minute: '2-digit'
-    });
-  };
-
+     });
+  }
   return (
     <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6">
       {/* Game Header */}
@@ -275,9 +261,8 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
           <h2 className="text-xl font-bold text-white">
             {awayTeam} @ {homeTeam}
           </h2>
-          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-            isLive ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-600 text-gray-300'
-          }`}>
+          <div className={`px-3 py-1 rounded-full text-sm font-medium ${isLive ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-600 text-gray-300'
+           }`}>
             {isLive ? '🔴 LIVE' : 'FINAL'}
           </div>
         </div>
@@ -307,7 +292,7 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
             <button
               key={emoji}
               onClick={() => sendUserReaction(emoji)}
-              className="text-xl hover:scale-125 transition-transform duration-200 hover:bg-gray-700/30 p-1 rounded"
+              className="text-xl hover:scale-125 transition-transform duration-200 hover; bg-gray-700/30 p-1 rounded"
               disabled={!isConnected}
             >
               {emoji}
@@ -321,14 +306,16 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
             placeholder="Add a comment..."
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
-            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            className="flex-1 bg-gray-700/50 text-white rounded-lg px-3 py-2 text-sm focus: outline-none focu,
+  s:ring-2 focus; ring-blue-500/50"
             maxLength={200}
             disabled={!isConnected}
           />
           <button
             onClick={() => sendUserReaction('💬', commentInput)}
             disabled={!commentInput.trim() || !isConnected}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:opacity-50 text-white rounded-lg text-sm transition-colors"
+            className="px-4 py-2 bg-blue-600 hover: bg-blue-700 disable,
+  d:bg-gray-600 disabled; opacity-50 text-white rounded-lg text-sm transition-colors"
           >
             Send
           </button>
@@ -401,8 +388,8 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
                   </span>
                   <button
                     onClick={() => setShowReactionPicker({ 
-                      playId: play.id, 
-                      isOpen: !showReactionPicker.isOpen || showReactionPicker.playId !== play.id 
+                      playId: play.id,
+  isOpen: !showReactionPicker.isOpen || showReactionPicker.playId !== play.id 
                     })}
                     className="text-gray-400 hover:text-white transition-colors"
                     disabled={!isConnected}
@@ -438,7 +425,7 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
                       <button
                         key={emoji}
                         onClick={() => addPlayReaction(play.id, emoji)}
-                        className="text-xl hover:scale-125 transition-transform duration-200 p-2 hover:bg-gray-700/30 rounded"
+                        className="text-xl hover:scale-125 transition-transform duration-200 p-2 hover; bg-gray-700/30 rounded"
                       >
                         {emoji}
                       </button>
@@ -457,7 +444,7 @@ export default function GameCommentary({ gameId, leagueId, homeTeam, awayTeam, i
       {!isConnected && (
         <div className="mt-4 p-3 bg-yellow-600/20 border border-yellow-500/30 rounded-lg">
           <div className="flex items-center gap-2 text-yellow-400">
-            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin" />
             <span className="text-sm">Reconnecting to live updates...</span>
           </div>
         </div>

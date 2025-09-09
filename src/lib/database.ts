@@ -3,10 +3,9 @@ import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 type Health = {
   status: "healthy" | "unhealthy";
   details?: Record<string, unknown>;
-};
-
+}
 class DatabaseManager {
-  private static instance: DatabaseManager;
+  private static instance, DatabaseManager,
   private pool: Pool | null = null;
 
   private constructor() {
@@ -33,13 +32,14 @@ class DatabaseManager {
 
     const pool = new Pool({
       connectionString,
-      ssl: needsSSL ? { rejectUnauthorized: false } : undefined,
+      ssl: needsSSL ? { rejectUnauthorize,
+  d: false } : undefined,
       max: Number(process.env.DB_MAX_CONNECTIONS || 10),
       idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT || 30000),
       connectionTimeoutMillis: Number(
         process.env.DB_CONNECTION_TIMEOUT || 10000,
-      ),
-    });
+      )
+});
     pool.on("error", (err) => {
       console.error("Database pool error", err);
     });
@@ -47,7 +47,7 @@ class DatabaseManager {
   }
 
   async query<T extends QueryResultRow = any>(
-    text: string,
+    text, string,
     params?: unknown[],
   ): Promise<QueryResult<T>> {
     if (!this.pool)
@@ -61,16 +61,17 @@ class DatabaseManager {
     return this.pool.connect();
   }
 
-  async transaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  async transaction<T>(fn: (clien,
+  t: PoolClient) => Promise<T>): Promise<T> {
     const client = await this.getClient();
     try {
-      await client.query("BEGIN");
+    await client.query("BEGIN");
       const result = await fn(client);
       await client.query("COMMIT");
       return result;
     } catch (err) {
       try {
-        await client.query("ROLLBACK");
+    await client.query("ROLLBACK");
       } catch {}
       throw err;
     } finally {
@@ -81,19 +82,20 @@ class DatabaseManager {
   async healthCheck(): Promise<Health> {
     try {
       if (!this.pool)
-        return { status: "unhealthy", details: { connected: false } };
+        return { status: "unhealthy", details: { connecte,
+  d: false } }
       const start = Date.now();
       await this.query("SELECT 1");
       const duration = Date.now() - start;
       return {
         status: "healthy",
-        details: { connected: true, responseTimeMs: duration },
-      };
+        details: { connected, true, responseTimeMs: duration }
+}
     } catch (error) {
       return {
         status: "unhealthy",
-        details: { connected: false, error: (error as Error).message },
-      };
+        details: { connected, false, error: (error as Error).message }
+}
     }
   }
 

@@ -4,44 +4,41 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 interface PageTransitionProps {
-  children: ReactNode;
-  className?: string;
+  children, ReactNode,
+  className?, string,
+  
 }
-
 const pageVariants = {
   initial: {
-    opacity: 0,
-    y: 20,
-    scale: 0.98,
-  },
+    opacity, 0,
+  y, 20,
+    scale: 0.98
+},
   in: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-  },
+    opacity, 1,
+  y, 0,
+    scale: 1
+},
   out: {
-    opacity: 0,
-    y: -20,
-    scale: 1.02,
-  },
-};
-
+    opacity, 0,
+  y: -20,
+    scale: 1.02
+}
+}
 const pageTransition = {
-  type: "tween",
+type: "tween",
   ease: "anticipate",
-  duration: 0.4,
-};
-
+  duration: 0.4
+}
 export function PageTransition({
   children,
-  className = "",
-}: PageTransitionProps) {
-  return (
+  className = ""
+}: PageTransitionProps) { return (
     <motion.div
       initial="initial"
       animate="in"
       exit="out"
-      variants={pageVariants}
+      variants={pageVariants }
       transition={pageTransition}
       className={className}
     >
@@ -50,24 +47,22 @@ export function PageTransition({
   );
 }
 
-export function FadeInUp({
-  children,
+export function FadeInUp({ children,
   delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
+  className = ""
+}: { children, ReactNode,
+  delay?, number,
+  className?, string,
+ }) { return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity, 0,
+  y: 30  }}
+      animate={{ opacity, 1,
+  y: 0 }}
       transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.21, 1.02, 0.73, 1],
-      }}
+        duration: 0.6, delay,
+        ease: [0.21, 1.02, 0.73, 1]
+}}
       className={className}
     >
       {children}
@@ -75,24 +70,22 @@ export function FadeInUp({
   );
 }
 
-export function ScaleIn({
-  children,
+export function ScaleIn({ children,
   delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
+  className = ""
+}: { children, ReactNode,
+  delay?, number,
+  className?, string,
+ }) { return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity, 0,
+  scale: 0.9  }}
+      animate={{ opacity, 1,
+  scale: 1 }}
       transition={{
-        duration: 0.4,
-        delay,
-        ease: "easeOut",
-      }}
+        duration: 0.4, delay,
+        ease: "easeOut"
+}}
       className={className}
     >
       {children}
@@ -100,24 +93,22 @@ export function ScaleIn({
   );
 }
 
-export function SlideInFromLeft({
-  children,
+export function SlideInFromLeft({ children,
   delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
+  className = ""
+}: { children, ReactNode,
+  delay?, number,
+  className?, string,
+ }) { return (
     <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity, 0,
+  x: -50  }}
+      animate={{ opacity, 1,
+  x: 0 }}
       transition={{
-        duration: 0.5,
-        delay,
-        ease: "easeOut",
-      }}
+        duration: 0.5, delay,
+        ease: "easeOut"
+}}
       className={className}
     >
       {children}
@@ -125,24 +116,22 @@ export function SlideInFromLeft({
   );
 }
 
-export function SlideInFromRight({
-  children,
+export function SlideInFromRight({ children,
   delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
+  className = ""
+}: { children, ReactNode,
+  delay?, number,
+  className?, string,
+ }) { return (
     <motion.div
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity, 0,
+  x: 50  }}
+      animate={{ opacity, 1,
+  x: 0 }}
       transition={{
-        duration: 0.5,
-        delay,
-        ease: "easeOut",
-      }}
+        duration: 0.5, delay,
+        ease: "easeOut"
+}}
       className={className}
     >
       {children}
@@ -150,25 +139,22 @@ export function SlideInFromRight({
   );
 }
 
-export function StaggerChildren({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
+export function StaggerChildren({ children,
+  className = ""
+}: { children, ReactNode,
+  className?, string,
+ }) { return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={{
-        hidden: {},
+        hidden: { },
         visible: {
-          transition: {
-            staggerChildren: 0.1,
-          },
-        },
-      }}
+  transition: {
+            staggerChildren: 0.1
+}
+}
+}}
       className={className}
     >
       {children}
@@ -176,26 +162,24 @@ export function StaggerChildren({
   );
 }
 
-export function StaggerChild({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
+export function StaggerChild({ children,
+  className = ""
+}: { children, ReactNode,
+  className?, string,
+ }) { return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity, 0,
+  y: 20  },
         visible: {
-          opacity: 1,
-          y: 0,
+          opacity, 1,
+  y, 0,
           transition: {
-            duration: 0.4,
-            ease: "easeOut",
-          },
-        },
-      }}
+  duration: 0.4,
+  ease: "easeOut"
+}
+}
+}}
       className={className}
     >
       {children}

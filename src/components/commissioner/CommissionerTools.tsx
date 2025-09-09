@@ -2,143 +2,148 @@
 
 import { useState } from 'react';
 import {
-  Settings, Shield, Users, Calendar, BarChart3,
-  DollarSign, MessageCircle, AlertTriangle, Crown,
-  Edit, Trash2, Plus, Eye, Lock, Unlock,
-  RefreshCw, Download, Upload, Mail, Bell,
-  CheckCircle, XCircle, Clock, Target, TrendingUp,
-  Award, FileText, Database, Activity, Zap,
-  UserCheck, Ban, AlertCircle, Filter, Search,
-  MoreHorizontal, ChevronDown, ChevronUp, Star,
-  History, Gavel, Users2, Scale, ExternalLink
+  Settings, Shield, Users, Calendar, BarChart3, DollarSign, MessageCircle, AlertTriangle, Crown, Edit, Trash2, Plus, Eye, Lock, Unlock, RefreshCw, Download, Upload, Mail, Bell,
+  CheckCircle, XCircle, Clock, Target, TrendingUp, Award, FileText, Database, Activity, Zap,
+  UserCheck, Ban, AlertCircle, Filter, Search, MoreHorizontal, ChevronDown, ChevronUp, Star, History, Gavel, Users2, Scale, ExternalLink
 } from 'lucide-react';
 
 interface CommissionerToolsProps {
-  leagueId: string;
+  leagueId, string,
+  
 }
-
 interface LeagueSettings {
-  league_name: string;
-  scoring_type: string;
-  roster_size: number;
-  bench_size: number;
-  ir_slots: number;
-  trade_deadline: string;
-  playoff_start_week: number;
-  playoff_teams: number;
-  faab_budget: number;
-  max_acquisitions: number;
+  league_name, string,
+    scoring_type, string,
+  roster_size, number,
+    bench_size, number,
+  ir_slots, number,
+    trade_deadline, string,
+  playoff_start_week, number,
+    playoff_teams, number,
+  faab_budget, number,
+    max_acquisitions, number,
 }
 
 interface Team {
-  id: string;
-  team_name: string;
-  owner_name: string;
-  owner_email: string;
-  is_active: boolean;
-  wins: number;
-  losses: number;
-  ties: number;
-  points_for: number;
-  points_against: number;
+  id, string,
+    team_name, string,
+  owner_name, string,
+    owner_email, string,
+  is_active: boolean,
+    wins, number,
+  losses, number,
+    ties, number,
+  points_for, number,
+    points_against, number,
+  
 }
-
 interface Transaction {
-  id: string;
-  type: 'trade' | 'waiver' | 'free_agent' | 'drop';
-  status: 'pending' | 'approved' | 'vetoed';
-  team_name: string;
-  details: string;
-  timestamp: string;
-  requires_approval: boolean;
+  id, string,
+    type: 'trade' | 'waiver' | 'free_agent' | 'drop';
+  status: 'pending' | 'approved' | 'vetoed',
+    team_name, string,
+  details, string,
+    timestamp, string,
+  requires_approval, boolean,
 }
 
-export default function CommissionerTools({ leagueId }: CommissionerToolsProps) {
-  const [activeTab, setActiveTab] = useState<'settings' | 'teams' | 'transactions' | 'schedule' | 'communications' | 'analytics' | 'moderation' | 'automation'>('settings');
+export default function CommissionerTools({ leagueId }:CommissionerToolsProps) { const [activeTab, setActiveTab] = useState<'settings' | 'teams' | 'transactions' | 'schedule' | 'communications' | 'analytics' | 'moderation' | 'automation'>('settings');
   const [showConfirmModal, setShowConfirmModal] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock data - in real app, this would come from API
   const [leagueSettings, setLeagueSettings] = useState<LeagueSettings>({
     league_name: "Astral Field Fantasy League",
-    scoring_type: "ppr",
+  scoring_type: "ppr",
     roster_size: 16,
-    bench_size: 7,
+  bench_size: 7,
     ir_slots: 2,
-    trade_deadline: "2024-11-26",
+  trade_deadline: "2024-11-26",
     playoff_start_week: 15,
-    playoff_teams: 6,
+  playoff_teams: 6,
     faab_budget: 1000,
-    max_acquisitions: 25
-  });
+  max_acquisitions: 25
+   });
 
   const [teams, setTeams] = useState<Team[]>([
-    { id: "1", team_name: "Gridiron Gladiators", owner_name: "Nicholas D'Amato", owner_email: "nick@example.com", is_active: true, wins: 9, losses: 3, ties: 0, points_for: 1547.2, points_against: 1398.5 },
-    { id: "2", team_name: "Touchdown Titans", owner_name: "Sarah Johnson", owner_email: "sarah@example.com", is_active: true, wins: 8, losses: 4, ties: 0, points_for: 1523.8, points_against: 1425.1 },
-    { id: "3", team_name: "Field Goal Phantoms", owner_name: "Mike Chen", owner_email: "mike@example.com", is_active: true, wins: 8, losses: 4, ties: 0, points_for: 1489.3, points_against: 1456.2 }
+    { id: "1",
+  team_name: "Gridiron Gladiators", owner_name: "Nicholas D'Amato",
+  owner_email: "nick@example.com", is_active: true,
+  wins: 9, losses: 3,
+  ties: 0, points_for: 1547.2,
+  points_against: 1398.5 },
+    { id: "2",
+  team_name: "Touchdown Titans", owner_name: "Sarah Johnson",
+  owner_email: "sarah@example.com", is_active: true,
+  wins: 8, losses: 4,
+  ties: 0, points_for: 1523.8,
+  points_against: 1425.1 },
+    { id: "3",
+  team_name: "Field Goal Phantoms", owner_name: "Mike Chen",
+  owner_email: "mike@example.com", is_active: true,
+  wins: 8, losses: 4,
+  ties: 0, points_for: 1489.3,
+  points_against: 1456.2 }
   ]);
 
   const [pendingTransactions, setPendingTransactions] = useState<Transaction[]>([
     {
       id: "t1",
-      type: "trade",
+type: "trade",
       status: "pending",
-      team_name: "Gridiron Gladiators",
+  team_name: "Gridiron Gladiators",
       details: "Trading Tyreek Hill for Davante Adams with Touchdown Titans",
-      timestamp: "2024-12-01T10:00:00Z",
-      requires_approval: true
+  timestamp: "2024-12-01T10:00:00Z",
+  requires_approval:true
     },
     {
-      id: "w1", 
-      type: "waiver",
+      id: "w1",
+type: "waiver",
       status: "pending",
-      team_name: "Field Goal Phantoms",
+  team_name: "Field Goal Phantoms",
       details: "Claiming Jordan Mason for $15 FAAB, dropping Romeo Doubs",
       timestamp: "2024-12-01T08:30:00Z",
-      requires_approval: false
+  requires_approval:false
     }
   ]);
 
-  const handleSettingsChange = (field: keyof LeagueSettings, value: string | number) => {
-    setLeagueSettings(prev => ({ ...prev, [field]: value }));
-  };
-
+  const handleSettingsChange = (field:keyof LeagueSettings,
+  value:string | number)  => {
+    setLeagueSettings(prev => ({ ...prev, [field]:value }));
+  }
   const handleSaveSettings = async () => {
     setIsLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsLoading(false);
     alert('Settings saved successfully!');
-  };
-
-  const handleTransactionAction = async (transactionId: string, action: 'approve' | 'veto') => {
+  }
+  const handleTransactionAction = async (transactionId, string,
+  action: 'approve' | 'veto') => {
     setIsLoading(true);
     setPendingTransactions(prev => 
-      prev.map(t => t.id === transactionId ? { ...t, status: action === 'approve' ? 'approved' : 'vetoed' } : t)
+      prev.map(t => t.id === transactionId ? { ...t, status:action === 'approve' ? 'approved' : 'vetoed' } :t)
     );
     await new Promise(resolve => setTimeout(resolve, 500));
     setIsLoading(false);
-  };
-
-  const handleTeamAction = (teamId: string, action: 'edit' | 'deactivate' | 'reset_password') => {
+  }
+  const handleTeamAction = (teamId, string,
+  action: 'edit' | 'deactivate' | 'reset_password') => {
     setShowConfirmModal(`${action}-${teamId}`);
-  };
-
+  }
   const confirmAction = async () => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsLoading(false);
     setShowConfirmModal(null);
     alert('Action completed successfully!');
-  };
-
+  }
   const handleBulkEmail = async () => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsLoading(false);
     alert('Email sent to all league members!');
-  };
-
+  }
   return (
     <div className="space-y-6">
       {/* Commissioner Header */}
@@ -156,23 +161,30 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
       <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8 overflow-x-auto">
           {[
-            { id: 'settings', label: 'League Settings', icon: Settings },
-            { id: 'teams', label: 'Team Management', icon: Users },
-            { id: 'transactions', label: 'Transactions', icon: DollarSign },
-            { id: 'schedule', label: 'Schedule Tools', icon: Calendar },
-            { id: 'communications', label: 'Communications', icon: MessageCircle },
-            { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-            { id: 'moderation', label: 'Moderation', icon: Shield },
-            { id: 'automation', label: 'Automation', icon: Zap }
-          ].map(({ id, label, icon: Icon }) => (
+            { id: 'settings',
+  label: 'League Settings', icon:Settings },
+            { id: 'teams',
+  label: 'Team Management', icon:Users },
+            { id: 'transactions',
+  label: 'Transactions', icon:DollarSign },
+            { id: 'schedule',
+  label: 'Schedule Tools', icon:Calendar },
+            { id: 'communications',
+  label: 'Communications', icon:MessageCircle },
+            { id: 'analytics',
+  label: 'Analytics', icon:BarChart3 },
+            { id: 'moderation',
+  label: 'Moderation', icon:Shield },
+            { id: 'automation',
+  label: 'Automation', icon:Zap }
+          ].map(({ id, label, icon:Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id as 'transactions' | 'teams' | 'settings' | 'schedule' | 'communications' | 'analytics' | 'moderation' | 'automation')}
-              className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === id
+              className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === id
                   ? 'border-red-500 text-red-600 dark:text-red-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400'
-              }`}
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover.border-gray-300 dark:text-gray-400'
+               }`}
             >
               <Icon className="w-5 h-5 mr-2" />
               {label}
@@ -200,11 +212,11 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  League Name
+  League Name
                 </label>
                 <input
                   type="text"
-                  value={leagueSettings.league_name}
+                  value={leagueSettings.league_name }
                   onChange={(e) => handleSettingsChange('league_name', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                 />
@@ -212,7 +224,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Scoring Type
+  Scoring Type
                 </label>
                 <select
                   value={leagueSettings.scoring_type}
@@ -227,7 +239,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Roster Size
+  Roster Size
                 </label>
                 <input
                   type="number"
@@ -239,7 +251,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Bench Size
+  Bench Size
                 </label>
                 <input
                   type="number"
@@ -251,7 +263,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Trade Deadline
+  Trade Deadline
                 </label>
                 <input
                   type="date"
@@ -263,7 +275,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  FAAB Budget
+  FAAB Budget
                 </label>
                 <input
                   type="number"
@@ -278,14 +290,14 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
               <button
                 onClick={handleSaveSettings}
                 disabled={isLoading}
-                className="inline-flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                className="inline-flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled opacity-50 transition-colors"
               >
                 {isLoading ? (
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <CheckCircle className="h-4 w-4 mr-2" />
-                )}
-                Save Settings
+                ) }
+  Save Settings
               </button>
             </div>
           </div>
@@ -298,12 +310,12 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Team Management
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">,
+    Team Management
                 </h3>
                 <button className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Team
+  Add Team
                 </button>
               </div>
             </div>
@@ -331,7 +343,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {teams.map((team) => (
-                    <tr key={team.id}>
+                    <tr key={team.id }>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -357,8 +369,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          team.is_active 
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${team.is_active 
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
                         }`}>
@@ -401,7 +412,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
         <div className="space-y-6">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-              Pending Transactions
+  Pending Transactions
             </h3>
             
             <div className="space-y-4">
@@ -412,13 +423,11 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                 </div>
               ) : (
                 pendingTransactions.map((transaction) => (
-                  <div key={transaction.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                  <div key={transaction.id } className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                            transaction.type === 'trade' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
-                            transaction.type === 'waiver' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${transaction.type === 'trade' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :transaction.type === 'waiver' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
                             'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                           }`}>
                             {transaction.type.toUpperCase()}
@@ -427,7 +436,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                             {transaction.team_name}
                           </span>
                           <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {new Date(transaction.timestamp).toLocaleString()}
+                            { new Date(transaction.timestamp).toLocaleString() }
                           </span>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -440,7 +449,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                           <button
                             onClick={() => handleTransactionAction(transaction.id, 'approve')}
                             disabled={isLoading}
-                            className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled opacity-50 transition-colors"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
                             Approve
@@ -448,7 +457,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                           <button
                             onClick={() => handleTransactionAction(transaction.id, 'veto')}
                             disabled={isLoading}
-                            className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled opacity-50 transition-colors"
                           >
                             <XCircle className="h-4 w-4 mr-1" />
                             Veto
@@ -457,8 +466,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                       )}
                       
                       {transaction.status !== 'pending' && (
-                        <span className={`px-3 py-1 text-sm rounded-full font-medium ${
-                          transaction.status === 'approved' 
+                        <span className={`px-3 py-1 text-sm rounded-full font-medium ${transaction.status === 'approved' 
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
                             : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
                         }`}>
@@ -479,17 +487,17 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Schedule Management
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">,
+    Schedule Management
               </h3>
               <div className="space-y-4">
                 <button className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                   <RefreshCw className="h-4 w-4 mr-2" />
-                  Regenerate Schedule
+  Regenerate Schedule
                 </button>
                 <button className="w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                   <Download className="h-4 w-4 mr-2" />
-                  Export Schedule
+  Export Schedule
                 </button>
                 <button className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                   <Calendar className="h-4 w-4 mr-2" />
@@ -499,8 +507,8 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
             </div>
             
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Scoring Adjustments
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">,
+    Scoring Adjustments
               </h3>
               <div className="space-y-4">
                 <button className="w-full flex items-center justify-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
@@ -511,7 +519,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Apply Stat Corrections
                 </button>
-                <button className="w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                <button className="w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover bg-red-700 transition-colors">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Reset Week Scores
                 </button>
@@ -519,14 +527,14 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
             </div>
           </div>
         </div>
-      )}
+      ) }
 
       {/* Communications Tab */}
       {activeTab === 'communications' && (
         <div className="space-y-6">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-              League Communications
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">,
+    League Communications
             </h3>
             
             <div className="space-y-6">
@@ -535,7 +543,7 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                   Send Message to League
                 </label>
                 <textarea
-                  rows={4}
+                  rows={4 }
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter your message to all league members..."
                 />
@@ -553,26 +561,26 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                   <button
                     onClick={handleBulkEmail}
                     disabled={isLoading}
-                    className="inline-flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                    className="inline-flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled opacity-50 transition-colors"
                   >
                     {isLoading ? (
                       <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
                     ) : (
                       <Mail className="h-4 w-4 mr-2" />
-                    )}
-                    Send Message
+                    ) }
+  Send Message
                   </button>
                 </div>
               </div>
               
               <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">
-                  Quick Actions
+                <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">,
+    Quick Actions
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <button className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     <Bell className="h-4 w-4 mr-2" />
-                    Playoff Reminder
+  Playoff Reminder
                   </button>
                   <button className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                     <Target className="h-4 w-4 mr-2" />
@@ -580,9 +588,9 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
                   </button>
                   <button className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                     <Clock className="h-4 w-4 mr-2" />
-                    Lineup Reminder
+  Lineup Reminder
                   </button>
-                  <button className="flex items-center justify-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                  <button className="flex items-center justify-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover bg-yellow-700 transition-colors">
                     <DollarSign className="h-4 w-4 mr-2" />
                     FAAB Balance Alert
                   </button>
@@ -595,17 +603,17 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
 
       {/* Analytics Tab */}
       {activeTab === 'analytics' && (
-        <AnalyticsTab leagueId={leagueId} />
+        <AnalyticsTab leagueId={leagueId } />
       )}
 
       {/* Moderation Tab */}
       {activeTab === 'moderation' && (
-        <ModerationTab leagueId={leagueId} />
+        <ModerationTab leagueId={leagueId } />
       )}
 
       {/* Automation Tab */}
       {activeTab === 'automation' && (
-        <AutomationTab leagueId={leagueId} />
+        <AutomationTab leagueId={leagueId } />
       )}
 
       {/* Confirmation Modal */}
@@ -614,8 +622,8 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <div className="flex items-center space-x-3 mb-4">
               <AlertTriangle className="h-6 w-6 text-yellow-500" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Confirm Action
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">,
+    Confirm Action
               </h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -623,15 +631,15 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
             </p>
             <div className="flex items-center justify-end space-x-4">
               <button
-                onClick={() => setShowConfirmModal(null)}
-                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                onClick={() => setShowConfirmModal(null) }
+                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover text-gray-200"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmAction}
                 disabled={isLoading}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled opacity-50 transition-colors"
               >
                 {isLoading ? 'Processing...' : 'Confirm'}
               </button>
@@ -644,24 +652,37 @@ export default function CommissionerTools({ leagueId }: CommissionerToolsProps) 
 }
 
 // Analytics Tab Component
-function AnalyticsTab({ leagueId }: { leagueId: string }) {
-  const [analyticsData] = useState({
+function AnalyticsTab({  leagueId   }: {  leagueId:string   }) { const [analyticsData] = useState({
     weeklyActivity: [
-      { week: 'Week 1', trades: 12, waivers: 34, lineupChanges: 89 },
-      { week: 'Week 2', trades: 8, waivers: 28, lineupChanges: 76 },
-      { week: 'Week 3', trades: 15, waivers: 31, lineupChanges: 82 },
-      { week: 'Week 4', trades: 10, waivers: 25, lineupChanges: 73 },
-    ],
+      { week: 'Week 1',
+  trades: 12, waivers: 34,
+  lineupChanges: 89  },
+      { week: 'Week 2',
+  trades: 8, waivers: 28,
+  lineupChanges: 76 },
+      { week: 'Week 3',
+  trades: 15, waivers: 31,
+  lineupChanges: 82 },
+      { week: 'Week 4',
+  trades: 10, waivers: 25,
+  lineupChanges: 73 }
+  ],
     leagueHealth: {
       engagement: 87,
-      activityScore: 92,
+  activityScore: 92,
       competitiveness: 78,
-      fairnessIndex: 96
+  fairnessIndex: 96
     },
     teamPerformance: [
-      { team: 'Gridiron Gladiators', efficiency: 94, consistency: 89, luck: 67 },
-      { team: 'Touchdown Titans', efficiency: 88, consistency: 92, luck: 73 },
-      { team: 'Field Goal Phantoms', efficiency: 82, consistency: 85, luck: 81 }
+      { team: 'Gridiron Gladiators',
+  efficiency: 94, consistency: 89,
+  luck: 67 },
+      { team: 'Touchdown Titans',
+  efficiency: 88, consistency: 92,
+  luck: 73 },
+      { team: 'Field Goal Phantoms',
+  efficiency: 82, consistency: 85,
+  luck: 81 }
     ]
   });
 
@@ -672,8 +693,8 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
         <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                Engagement Score
+              <p className="text-sm font-medium text-green-600 dark:text-green-400">,
+    Engagement Score
               </p>
               <p className="text-3xl font-bold text-green-700 dark:text-green-300">
                 {analyticsData.leagueHealth.engagement}%
@@ -694,8 +715,8 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                Activity Score
+              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">,
+    Activity Score
               </p>
               <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
                 {analyticsData.leagueHealth.activityScore}%
@@ -738,8 +759,8 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                Fairness Index
+              <p className="text-sm font-medium text-orange-600 dark:text-orange-400">,
+    Fairness Index
               </p>
               <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">
                 {analyticsData.leagueHealth.fairnessIndex}%
@@ -771,19 +792,19 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
               </span>
               <div className="flex items-center space-x-4 text-sm">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-blue-500 rounded-full" />
                   <span className="text-gray-600 dark:text-gray-400">
                     {week.trades} trades
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
                   <span className="text-gray-600 dark:text-gray-400">
                     {week.waivers} waivers
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-purple-500 rounded-full" />
                   <span className="text-gray-600 dark:text-gray-400">
                     {week.lineupChanges} lineup changes
                   </span>
@@ -812,8 +833,8 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Consistency
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Luck Factor
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">,
+    Luck Factor
                 </th>
               </tr>
             </thead>
@@ -824,19 +845,13 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
                     {team.team}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`text-sm font-medium ${
-                      team.efficiency >= 90 ? 'text-green-600 dark:text-green-400' :
-                      team.efficiency >= 80 ? 'text-yellow-600 dark:text-yellow-400' :
-                      'text-red-600 dark:text-red-400'
+                    <span className={`text-sm font-medium ${team.efficiency >= 90 ? 'text-green-600 dark:text-green-400' :team.efficiency >= 80 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
                     }`}>
                       {team.efficiency}%
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`text-sm font-medium ${
-                      team.consistency >= 90 ? 'text-green-600 dark:text-green-400' :
-                      team.consistency >= 80 ? 'text-yellow-600 dark:text-yellow-400' :
-                      'text-red-600 dark:text-red-400'
+                    <span className={`text-sm font-medium ${team.consistency >= 90 ? 'text-green-600 dark:text-green-400' :team.consistency >= 80 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
                     }`}>
                       {team.consistency}%
                     </span>
@@ -855,8 +870,8 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
 
       {/* Export Options */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Analytics Export
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">,
+    Analytics Export
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -867,9 +882,9 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
             <FileText className="h-4 w-4 mr-2" />
             Generate League Summary
           </button>
-          <button className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+          <button className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover bg-purple-700 transition-colors">
             <BarChart3 className="h-4 w-4 mr-2" />
-            Performance Dashboard
+  Performance Dashboard
           </button>
         </div>
       </div>
@@ -878,33 +893,32 @@ function AnalyticsTab({ leagueId }: { leagueId: string }) {
 }
 
 // Moderation Tab Component
-function ModerationTab({ leagueId }: { leagueId: string }) {
-  const [moderationActions] = useState([
+function ModerationTab({  leagueId   }: {  leagueId:string   }) { const [moderationActions] = useState([
     {
       id: '1',
-      type: 'warning',
+type: 'warning',
       user: 'Mike Chen',
-      reason: 'Inappropriate team name',
+  reason: 'Inappropriate team name',
       action: 'Team name changed to "Field Goal Phantoms"',
-      date: '2024-11-15',
+  date: '2024-11-15',
       status: 'resolved'
-    },
+     },
     {
       id: '2',
-      type: 'trade_review',
+type: 'trade_review',
       user: 'Sarah Johnson',
-      reason: 'Suspicious trade reported by league members',
+  reason: 'Suspicious trade reported by league members',
       action: 'Trade reviewed and approved - fair value exchange',
-      date: '2024-11-10',
+  date: '2024-11-10',
       status: 'resolved'
     },
     {
       id: '3',
-      type: 'collusion_check',
+type: 'collusion_check',
       user: 'Alex Rodriguez',
-      reason: 'Potential roster sharing with eliminated team',
+  reason: 'Potential roster sharing with eliminated team',
       action: 'Investigation ongoing',
-      date: '2024-11-18',
+  date: '2024-11-18',
       status: 'pending'
     }
   ]);
@@ -912,23 +926,23 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
   const [reportedIssues] = useState([
     {
       id: '1',
-      reporter: 'Jessica Martinez',
+  reporter: 'Jessica Martinez',
       reported: 'Mike Chen',
-      category: 'Unsportsmanlike Conduct',
+  category: 'Unsportsmanlike Conduct',
       description: 'Excessive trash talk in league chat',
-      severity: 'medium',
+  severity: 'medium',
       status: 'under_review',
-      date: '2024-11-20'
+  date: '2024-11-20'
     },
     {
       id: '2',
-      reporter: 'Nicholas D\'Amato',
+  reporter: 'Nicholas D\'Amato',
       reported: 'Sarah Johnson',
-      category: 'Roster Manipulation',
+  category: 'Roster Manipulation',
       description: 'Starting injured players to potentially lose games',
-      severity: 'high',
+  severity: 'high',
       status: 'investigating',
-      date: '2024-11-19'
+  date: '2024-11-19'
     }
   ]);
 
@@ -983,9 +997,9 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Recent Moderation Actions
           </h3>
-          <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+          <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover bg-red-700 transition-colors">
             <Plus className="h-4 w-4 mr-2 inline" />
-            New Action
+  New Action
           </button>
         </div>
 
@@ -995,9 +1009,7 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      action.type === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
-                      action.type === 'trade_review' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${action.type === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :action.type === 'trade_review' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                       'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
                     }`}>
                       {action.type.replace('_', ' ').toUpperCase()}
@@ -1016,8 +1028,7 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
                     <strong>Action:</strong> {action.action}
                   </p>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                  action.status === 'resolved' 
+                <span className={`px-2 py-1 text-xs rounded-full font-medium ${action.status === 'resolved' 
                     ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
                     : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
                 }`}>
@@ -1032,7 +1043,7 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
       {/* Reported Issues */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          Reported Issues
+  Reported Issues
         </h3>
 
         <div className="space-y-4">
@@ -1041,9 +1052,7 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      issue.severity === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' :
-                      issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${issue.severity === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' :issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
                       'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}>
                       {issue.severity.toUpperCase()}
@@ -1070,14 +1079,13 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
                       <Eye className="h-3 w-3 mr-1 inline" />
                       Investigate
                     </button>
-                    <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                    <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover bg-red-700">
                       <Ban className="h-3 w-3 mr-1 inline" />
-                      Take Action
+  Take Action
                     </button>
                   </div>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                  issue.status === 'under_review' 
+                <span className={`px-2 py-1 text-xs rounded-full font-medium ${issue.status === 'under_review' 
                     ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
                     : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300'
                 }`}>
@@ -1091,21 +1099,21 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
 
       {/* Moderation Tools */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Moderation Tools
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">,
+    Moderation Tools
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="flex items-center justify-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
             <AlertTriangle className="h-4 w-4 mr-2" />
-            Issue Warning
+  Issue Warning
           </button>
           <button className="flex items-center justify-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
             <UserCheck className="h-4 w-4 mr-2" />
             Review User Activity
           </button>
-          <button className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+          <button className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover bg-red-700 transition-colors">
             <Ban className="h-4 w-4 mr-2" />
-            Suspend User
+  Suspend User
           </button>
         </div>
       </div>
@@ -1114,33 +1122,32 @@ function ModerationTab({ leagueId }: { leagueId: string }) {
 }
 
 // Automation Tab Component
-function AutomationTab({ leagueId }: { leagueId: string }) {
-  const [automationRules] = useState([
+function AutomationTab({  leagueId   }: {  leagueId:string   }) { const [automationRules] = useState([
     {
       id: '1',
-      name: 'Auto-approve small FAAB claims',
+  name: 'Auto-approve small FAAB claims',
       description: 'Automatically approve waiver claims under $5 FAAB',
-      enabled: true,
-      type: 'transaction',
-      conditions: 'FAAB amount < $5 AND no objections within 24 hours',
+  enabled: true,
+type: 'transaction',
+  conditions: 'FAAB amount < $5 AND no objections within 24 hours',
       lastTriggered: '2024-11-20'
-    },
+     },
     {
       id: '2',
-      name: 'Lineup reminder notifications',
+  name: 'Lineup reminder notifications',
       description: 'Send reminders to teams with incomplete lineups',
-      enabled: true,
-      type: 'notification',
-      conditions: 'Thursday 6 PM if lineup not set',
+  enabled: true,
+type: 'notification',
+  conditions: 'Thursday 6 PM if lineup not set',
       lastTriggered: '2024-11-21'
     },
     {
       id: '3',
-      name: 'Suspicious activity alerts',
+  name: 'Suspicious activity alerts',
       description: 'Alert commissioner of potential collusion',
-      enabled: true,
-      type: 'monitoring',
-      conditions: 'Multiple beneficial trades between same teams',
+  enabled: true,
+type: 'monitoring',
+  conditions: 'Multiple beneficial trades between same teams',
       lastTriggered: 'Never'
     }
   ]);
@@ -1148,23 +1155,20 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
   const [scheduledTasks] = useState([
     {
       id: '1',
-      task: 'Process weekly waivers',
-      schedule: 'Wednesday 3:00 AM',
-      nextRun: '2024-11-27 03:00:00',
+  task: 'Process weekly waivers',
+      schedule: 'Wednesday 3: 00 AM', nextRun: '2024-11-27 03:00:00',
       status: 'active'
     },
     {
       id: '2',
-      task: 'Generate weekly reports',
-      schedule: 'Tuesday 9:00 AM',
-      nextRun: '2024-11-26 09:00:00',
+  task: 'Generate weekly reports',
+      schedule: 'Tuesday 9: 00 AM', nextRun: '2024-11-26 09:00:00',
       status: 'active'
     },
     {
       id: '3',
-      task: 'Backup league data',
-      schedule: 'Daily 2:00 AM',
-      nextRun: '2024-11-25 02:00:00',
+  task: 'Backup league data',
+      schedule: 'Daily 2: 00 AM', nextRun: '2024-11-25 02:00:00',
       status: 'active'
     }
   ]);
@@ -1217,12 +1221,12 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
       {/* Automation Rules */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Automation Rules
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">,
+    Automation Rules
           </h3>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover bg-blue-700 transition-colors">
             <Plus className="h-4 w-4 mr-2 inline" />
-            Create Rule
+  Create Rule
           </button>
         </div>
 
@@ -1235,9 +1239,7 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
                     <h4 className="font-medium text-gray-900 dark:text-white">
                       {rule.name}
                     </h4>
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      rule.type === 'transaction' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
-                      rule.type === 'notification' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${rule.type === 'transaction' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :rule.type === 'notification' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                       'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
                     }`}>
                       {rule.type}
@@ -1250,7 +1252,9 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
                           className="sr-only peer"
                           readOnly
                         />
-                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checke,
+  d, afte, r:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checke,
+  d:bg-blue-600" />
                       </label>
                     </div>
                   </div>
@@ -1268,7 +1272,7 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
                   <button className="p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
                     <Edit className="h-4 w-4" />
                   </button>
-                  <button className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400">
+                  <button className="p-1 text-gray-400 hover:text-red-600 dark:hover text-red-400">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -1280,8 +1284,8 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
 
       {/* Scheduled Tasks */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          Scheduled Tasks
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">,
+    Scheduled Tasks
         </h3>
 
         <div className="overflow-x-auto">
@@ -1294,8 +1298,8 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Schedule
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Next Run
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">,
+    Next Run
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
@@ -1315,11 +1319,10 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
                     {task.schedule}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                    {new Date(task.nextRun).toLocaleString()}
+                    { new Date(task.nextRun).toLocaleString() }
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      task.status === 'active' 
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${task.status === 'active' 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
                         : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}>
@@ -1348,43 +1351,43 @@ function AutomationTab({ leagueId }: { leagueId: string }) {
 
       {/* Automation Templates */}
       <div className="bg-white dark:bg-gray-700 rounded-lg p-6 shadow">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Automation Templates
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">,
+    Automation Templates
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Trade Processing
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">,
+    Trade Processing
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               Auto-process trades after review period
             </p>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-              Use Template
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">,
+    Use Template
             </button>
           </div>
 
           <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Injury Notifications
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">,
+    Injury Notifications
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               Alert owners when their players get injured
             </p>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-              Use Template
+            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">,
+    Use Template
             </button>
           </div>
 
           <div className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Weekly Reports
+            <h4 className="font-medium text-gray-900 dark:text-white mb-2">,
+    Weekly Reports
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
               Generate and send weekly league summaries
             </p>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-              Use Template
+            <button className="text-blue-600 hover text-blue-700 text-sm font-medium">
+  Use Template
             </button>
           </div>
         </div>

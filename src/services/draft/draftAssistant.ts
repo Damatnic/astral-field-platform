@@ -8,86 +8,85 @@ import { webSocketManager } from '../../lib/websocket/server';
 import { aiPredictionEngine } from '../ai/predictionEngine';
 
 export interface DraftRecommendation {
-  playerId: string;
-  playerName: string;
-  position: string;
-  team: string;
-  overallRank: number;
-  positionRank: number;
-  confidence: number;
-  reasoning: string[];
-  valueScore: number;
-  riskLevel: 'low' | 'medium' | 'high';
-  scarcityFactor: number;
-  leagueContext: {
-    positionScarcity: number;
-    teamNeeds: number;
-    replacementLevel: number;
-  };
+  playerId, string,
+    playerName, string,
+  position, string,
+    team, string,
+  overallRank, number,
+    positionRank, number,
+  confidence, number,
+    reasoning: string[];
+  valueScore, number,
+    riskLevel: 'low' | 'medium' | 'high';
+  scarcityFactor, number,
+    leagueContext: {
+  positionScarcity, number,
+    teamNeeds, number,
+    replacementLevel: number,
+  }
 }
 
 export interface DraftPick {
-  pickNumber: number;
-  round: number;
-  teamId: string;
-  playerId?: string;
-  playerName?: string;
-  position?: string;
-  timestamp?: Date;
+  pickNumber, number,
+    round, number,
+  teamId, string,
+  playerId?, string,
+  playerName?, string,
+  position?, string,
+  timestamp?, Date,
+  
 }
-
 export interface DraftState {
-  leagueId: string;
-  currentPick: number;
-  currentRound: number;
-  totalRounds: number;
-  draftOrder: string[];
-  picks: DraftPick[];
-  isActive: boolean;
-  startTime?: Date;
-  endTime?: Date;
+  leagueId, string,
+    currentPick, number,
+  currentRound, number,
+    totalRounds, number,
+  draftOrder: string[],
+    picks: DraftPick[];
+  isActive, boolean,
+  startTime?, Date,
+  endTime?, Date,
+  
 }
-
 export interface TeamNeeds {
-  teamId: string;
-  teamName: string;
-  positionNeeds: Record<string, number>; // 0-10 scale
-  overallNeeds: number;
-  draftStrategy: 'balanced' | 'position_focus' | 'best_available';
-  targetPositions: string[];
+  teamId, string,
+    teamName, string,
+  positionNeeds: Record<string, number>; // 0-10 scale;
+  overallNeeds, number,
+    draftStrategy: 'balanced' | 'position_focus' | 'best_available';
+  targetPositions: string[],
+  
 }
-
 export interface DraftAnalysis {
-  leagueId: string;
-  teamId: string;
-  recommendations: DraftRecommendation[];
-  teamNeeds: TeamNeeds;
+  leagueId, string,
+    teamId, string,
+  recommendations: DraftRecommendation[],
+    teamNeeds, TeamNeeds,
   draftStrategy: {
-    approach: string;
-    keyTargets: string[];
+  approach, string,
+    keyTargets: string[],
     riskTolerance: 'conservative' | 'moderate' | 'aggressive';
-    tradeValue: number;
-  };
+    tradeValue: number,
+  }
   marketAnalysis: {
-    positionScarcity: Record<string, number>;
+  positionScarcity: Record<string, number>;
     valueInflation: Record<string, number>;
-    sleeperCandidates: string[];
-  };
+    sleeperCandidates: string[],
+  }
 }
 
-class DraftAssistant {
-  private draftCache = new Map<string, DraftAnalysis>();
-  private readonly CACHE_TTL = 300000; // 5 minutes for draft data
+class DraftAssistant { private draftCache = new Map<string, DraftAnalysis>();
+  private readonly: CACHE_TTL = 300000; // 5 minutes for draft data
 
   // Get AI-powered draft recommendations for a team
-  async getDraftRecommendations(
-    leagueId: string,
-    teamId: string,
-    currentPick: number,
-    availablePlayers: string[] = []
-  ): Promise<DraftRecommendation[]> {
+  async getDraftRecommendations(async getDraftRecommendations(
+    leagueId, string,
+  teamId, string,
+    currentPick, number,
+  availablePlayers: string[] = []
+  ): : Promise<): PromiseDraftRecommendation[]> {
     try {
-      const cacheKey = `draft_${leagueId}_${teamId}_${currentPick}`;
+      const cacheKey = `draft_${leagueId }_${teamId}_${currentPick}`
       const cached = this.draftCache.get(cacheKey);
       if (cached) return cached.recommendations;
 
@@ -95,28 +94,21 @@ class DraftAssistant {
       const teamNeeds = await this.analyzeTeamNeeds(leagueId, teamId);
 
       // Get available players (top 100 by default if not specified)
-      const players = availablePlayers.length > 0
-        ? await this.getPlayersByIds(availablePlayers)
-        : await this.getTopAvailablePlayers(100);
+      const players = availablePlayers.length > 0;
+        ? await this.getPlayersByIds(availablePlayers) : await this.getTopAvailablePlayers(100);
 
       // Generate AI recommendations
-      const recommendations = await this.generateRecommendations(
-        players,
-        teamNeeds,
-        currentPick,
+      const recommendations = await this.generateRecommendations(players, teamNeeds, currentPick,
         leagueId
       );
 
       // Cache results
       const analysis: DraftAnalysis = {
-        leagueId,
-        teamId,
-        recommendations,
-        teamNeeds,
+        leagueId, teamId,
+        recommendations, teamNeeds,
         draftStrategy: await this.generateDraftStrategy(teamNeeds, currentPick),
         marketAnalysis: await this.analyzeMarketConditions(leagueId)
-      };
-
+      }
       this.draftCache.set(cacheKey, analysis);
 
       return recommendations.slice(0, 10); // Top 10 recommendations
@@ -127,9 +119,8 @@ class DraftAssistant {
   }
 
   // Analyze comprehensive team needs
-  async analyzeTeamNeeds(leagueId: string, teamId: string): Promise<TeamNeeds> {
-    try {
-      // Get current roster
+  async analyzeTeamNeeds(async analyzeTeamNeeds(leagueId, string,
+  teamId: string): : Promise<): PromiseTeamNeeds> { try {; // Get current roster
       const roster = await this.getTeamRoster(teamId);
 
       // Get league settings
@@ -142,7 +133,7 @@ class DraftAssistant {
       const overallNeeds = Object.values(positionNeeds).reduce((sum, need) => sum + need, 0) / Object.keys(positionNeeds).length;
 
       // Identify target positions
-      const targetPositions = Object.entries(positionNeeds)
+      const targetPositions = Object.entries(positionNeeds);
         .filter(([_, need]) => need >= 7)
         .map(([position, _]) => position);
 
@@ -151,12 +142,10 @@ class DraftAssistant {
 
       return {
         teamId,
-        teamName: await this.getTeamName(teamId),
-        positionNeeds,
-        overallNeeds,
-        draftStrategy,
+        teamName await this.getTeamName(teamId);
+        positionNeeds, overallNeeds, draftStrategy,
         targetPositions
-      };
+       }
     } catch (error) {
       console.error('Error analyzing team needs:', error);
       return this.getFallbackTeamNeeds(teamId);
@@ -164,13 +153,12 @@ class DraftAssistant {
   }
 
   // Generate AI-powered recommendations
-  private async generateRecommendations(
-    players: any[],
-    teamNeeds: TeamNeeds,
-    currentPick: number,
-    leagueId: string
-  ): Promise<DraftRecommendation[]> {
-    const recommendations: DraftRecommendation[] = [];
+  private async generateRecommendations(async generateRecommendations(
+    players: any[];
+  teamNeeds, TeamNeeds,
+    currentPick, number,
+  leagueId: string
+  ): : Promise<): PromiseDraftRecommendation[]> { const recommendations: DraftRecommendation[] = [];
 
     for (const player of players) {
       try {
@@ -178,11 +166,8 @@ class DraftAssistant {
         const prediction = await aiPredictionEngine.generatePlayerPrediction(player.id, 1);
 
         // Calculate value score based on multiple factors
-        const valueScore = await this.calculateValueScore(
-          player,
-          prediction,
-          teamNeeds,
-          currentPick,
+        const valueScore = await this.calculateValueScore(player, prediction,
+          teamNeeds, currentPick,
           leagueId
         );
 
@@ -194,36 +179,29 @@ class DraftAssistant {
         const scarcityFactor = await this.calculateScarcityFactor(player.position, leagueId);
 
         // Generate reasoning
-        const reasoning = await this.generateRecommendationReasoning(
-          player,
-          teamNeeds,
-          valueScore,
+        const reasoning = await this.generateRecommendationReasoning(player, teamNeeds, valueScore,
           scarcityFactor
         );
 
         // Calculate league context
         const leagueContext = {
-          positionScarcity: scarcityFactor,
-          teamNeeds: teamNeeds.positionNeeds[player.position] || 5,
+          positionScarcity, scarcityFactor,
+  teamNeeds: teamNeeds.positionNeeds[player.position] || 5;
           replacementLevel: await this.getReplacementLevel(player.position)
-        };
-
+         }
         recommendations.push({
-          playerId: player.id,
-          playerName: `${player.first_name} ${player.last_name}`,
-          position: player.position,
-          team: player.team_abbr || 'FA',
-          overallRank: player.overall_rank || 999,
-          positionRank: player.position_rank || 999,
-          confidence,
-          reasoning,
-          valueScore,
-          riskLevel,
-          scarcityFactor,
+          playerId: player.id;
+  playerName: `${player.first_name} ${player.last_name}`,
+          position: player.position;
+  team: player.team_abbr || 'FA';
+          overallRank: player.overall_rank || 999;
+  positionRank: player.position_rank || 999;
+          confidence, reasoning,
+          valueScore, riskLevel, scarcityFactor,
           leagueContext
         });
       } catch (error) {
-        console.error(`Error processing player ${player.id}:`, error);
+        console.error(`Error processing player ${player.id}, `, error);
       }
     }
 
@@ -234,14 +212,13 @@ class DraftAssistant {
   }
 
   // Calculate comprehensive value score
-  private async calculateValueScore(
-    player: any,
-    prediction: any,
-    teamNeeds: TeamNeeds,
-    currentPick: number,
+  private async calculateValueScore(async calculateValueScore(
+    player, any,
+  prediction, any,
+    teamNeeds, TeamNeeds,
+  currentPick, number,
     leagueId: string
-  ): Promise<number> {
-    let score = 0;
+  ): : Promise<): Promisenumber> {let score = 0;
 
     // Base projection score (40% weight)
     const projectedPoints = prediction.projectedPoints || 0;
@@ -270,12 +247,11 @@ class DraftAssistant {
     score += pickAdjustment * 5;
 
     return Math.max(0, Math.min(100, score));
-  }
+   }
 
   // Calculate position scarcity factor
-  private async calculateScarcityFactor(position: string, leagueId: string): Promise<number> {
-    try {
-      // Get total players at position vs league size
+  private async calculateScarcityFactor(async calculateScarcityFactor(position, string,
+  leagueId: string): : Promise<): Promisenumber> { try {; // Get total players at position vs league size
       const leagueSize = await this.getLeagueSize(leagueId);
       const positionPlayers = await this.getPositionPlayerCount(position);
 
@@ -283,29 +259,29 @@ class DraftAssistant {
       const scarcity = Math.min(1, positionPlayers / (leagueSize * 1.5));
 
       // Adjust for position importance
-      const positionMultiplier: Record<string, number> = {
-        QB: 1.2, RB: 1.1, WR: 1.0, TE: 0.9, K: 0.6, DST: 0.7
-      };
-
+      const positionMultiplier Record<string, number> = {
+        QB: 1.2;
+  RB: 1.1, WR: 1.0;
+  TE: 0.9, K: 0.6;
+  DST: 0.7
+       }
       return scarcity * (positionMultiplier[position] || 1.0);
-    } catch (error) {
-      return 0.5; // Default moderate scarcity
-    }
+    } catch (error) { return 0.5; // Default moderate scarcity
+     }
   }
 
   // Generate detailed reasoning for recommendations
-  private async generateRecommendationReasoning(
-    player: any,
-    teamNeeds: TeamNeeds,
-    valueScore: number,
-    scarcityFactor: number
-  ): Promise<string[]> {
-    const reasoning: string[] = [];
+  private async generateRecommendationReasoning(async generateRecommendationReasoning(
+    player, any,
+  teamNeeds, TeamNeeds,
+    valueScore, number,
+  scarcityFactor: number
+  ): : Promise<): Promisestring[]> { const reasoning: string[] = [];
 
     // Value assessment
     if (valueScore >= 80) {
       reasoning.push('Excellent value - significantly outperforms projections');
-    } else if (valueScore >= 60) {
+     } else if (valueScore >= 60) {
       reasoning.push('Good value with strong upside potential');
     }
 
@@ -341,19 +317,17 @@ class DraftAssistant {
   }
 
   // Generate draft strategy recommendations
-  private async generateDraftStrategy(
-    teamNeeds: TeamNeeds,
-    currentPick: number
-  ): Promise<DraftAnalysis['draftStrategy']> {
-    const strategy = {
-      approach: '',
-      keyTargets: [] as string[],
-      riskTolerance: 'moderate' as const,
-      tradeValue: 0
-    };
-
+  private async generateDraftStrategy(async generateDraftStrategy(
+    teamNeeds, TeamNeeds,
+  currentPick: number
+  ): : Promise<): PromiseDraftAnalysis['draftStrategy']> { const strategy = {
+      approach: '';
+  keyTargets: [] as string[];
+      riskTolerance: 'moderate' as const;
+  tradeValue: 0
+     }
     // Determine approach based on needs
-    const highNeeds = Object.entries(teamNeeds.positionNeeds)
+    const highNeeds = Object.entries(teamNeeds.positionNeeds);
       .filter(([_, need]) => need >= 8)
       .map(([pos, _]) => pos);
 
@@ -378,9 +352,9 @@ class DraftAssistant {
   }
 
   // Analyze market conditions
-  private async analyzeMarketConditions(leagueId: string): Promise<DraftAnalysis['marketAnalysis']> {
-    const positionScarcity: Record<string, number> = {};
-    const valueInflation: Record<string, number> = {};
+  private async analyzeMarketConditions(async analyzeMarketConditions(leagueId: string): : Promise<): PromiseDraftAnalysis['marketAnalysis']> { const positionScarcit,
+  y: Record<string, number> = { }
+    const valueInflation: Record<string, number> = {}
     let sleeperCandidates: string[] = [];
 
     // Calculate position scarcity
@@ -390,10 +364,9 @@ class DraftAssistant {
     }
 
     // Identify value inflation (positions where value is inflated)
-    for (const [position, scarcity] of Object.entries(positionScarcity)) {
-      if (scarcity >= 0.8) {
+    for (const [position, scarcity] of Object.entries(positionScarcity)) { if (scarcity >= 0.8) {
         valueInflation[position] = 1.2; // 20% inflation
-      } else if (scarcity <= 0.3) {
+       } else if (scarcity <= 0.3) {
         valueInflation[position] = 0.9; // 10% discount
       } else {
         valueInflation[position] = 1.0; // Normal value
@@ -403,22 +376,18 @@ class DraftAssistant {
     // Find sleeper candidates (underrated players)
     sleeperCandidates = await this.findSleeperCandidates(leagueId);
 
-    return {
-      positionScarcity,
-      valueInflation,
+    return { positionScarcity, valueInflation,
       sleeperCandidates
-    };
+  :   }
   }
 
   // Track live draft progress
-  async trackDraftProgress(
-    leagueId: string,
-    pickNumber: number,
-    teamId: string,
-    playerId: string
-  ): Promise<void> {
-    try {
-      // Record the pick
+  async trackDraftProgress(async trackDraftProgress(
+    leagueId, string,
+  pickNumber, number,
+    teamId, string,
+  playerId: string
+  ): : Promise<): Promisevoid> { try {; // Record the pick
       await database.query(`
         INSERT INTO draft_picks (
           league_id, pick_number, team_id, player_id, picked_at
@@ -427,31 +396,27 @@ class DraftAssistant {
 
       // Broadcast draft update
       webSocketManager.broadcastScoreUpdate({
-        leagueId,
-        teamId,
-        playerId,
-        points: 0, // Draft pick doesn't have points
-        change: 0  // No change for draft pick
-      });
+        leagueId, teamId,
+        playerId, points, 0, // Draft pick doesn't have points
+        change: 0  ; // No change for draft pick
+       });
 
       // Clear relevant caches
       this.clearDraftCache(leagueId);
 
-      console.log(`📊 Draft pick recorded: Pick ${pickNumber} - ${playerId} by ${teamId}`);
+      console.log(`📊 Draft pick recorded, Pick ${pickNumber} - ${playerId} by ${teamId}`);
     } catch (error) {
-      console.error('Error tracking draft progress:', error);
+      console.error('Error tracking draft progress', error);
     }
   }
 
   // Get draft trade value for picks
-  async getPickTradeValue(pickNumber: number): Promise<number> {
-    try {
-      // NFL draft pick trade value chart approximation
+  async getPickTradeValue(async getPickTradeValue(pickNumber: number): : Promise<): Promisenumber> { try {; // NFL draft pick trade value chart approximation
       const round = Math.ceil(pickNumber / 32);
       const pickInRound = ((pickNumber - 1) % 32) + 1;
 
       // Base values by round
-      const roundValues = [3000, 2600, 2200, 1800, 1700, 1600, 1500, 1400, 1350, 1300, 1250, 1200, 1150, 1100, 1050, 1000];
+      const roundValues = [3000: 2600; 2200: 1800; 1700: 1600; 1500: 1400; 1350: 1300; 1250: 1200; 1150, 1100, 1050, 1000];
 
       let value = roundValues[round - 1] || 1000;
 
@@ -461,14 +426,12 @@ class DraftAssistant {
       else if (pickInRound >= 28) value -= 100; // Bottom picks
 
       return Math.max(500, value);
-    } catch (error) {
-      return 1000; // Default value
-    }
+     } catch (error) { return 1000; // Default value
+     }
   }
 
   // Utility methods
-  private async getTeamRoster(teamId: string): Promise<any[]> {
-    const result = await database.query(`
+  private async getTeamRoster(async getTeamRoster(teamId string): : Promise<): Promiseany[]> { const result = await database.query(`
       SELECT r.*, np.first_name, np.last_name, np.position, np.age
       FROM rosters r
       JOIN nfl_players np ON r.player_id = np.id
@@ -476,27 +439,26 @@ class DraftAssistant {
     `, [teamId]);
 
     return result.rows;
-  }
+   }
 
-  private async getLeagueSettings(leagueId: string): Promise<any> {
-    const result = await database.query(`
+  private async getLeagueSettings(async getLeagueSettings(leagueId: string): : Promise<): Promiseany> { const result = await database.query(`
       SELECT * FROM leagues WHERE id = $1
     `, [leagueId]);
 
-    return result.rows[0] || { roster_size: 16, starting_positions: {} };
+    return result.rows[0] || { roster_size: 16;
+  starting_positions: { } }
   }
 
-  private async calculatePositionNeeds(roster: any[], leagueSettings: any): Promise<Record<string, number>> {
-    const needs: Record<string, number> = {};
+  private async calculatePositionNeeds(async calculatePositionNeeds(roster: any[];
+  leagueSettings: any): Promise<): PromiseRecord<string, number>>   { const needs: Record<string, number> = { }
     const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
-    for (const position of positions) {
-      const positionPlayers = roster.filter(p => p.position === position);
+    for (const position of positions) { const positionPlayers = roster.filter(p => p.position === position);
       const startingRequirement = leagueSettings.starting_positions?.[position] || 1;
 
       if (positionPlayers.length < startingRequirement) {
         needs[position] = 10; // Critical need
-      } else if (positionPlayers.length === startingRequirement) {
+       } else if (positionPlayers.length === startingRequirement) {
         needs[position] = 7; // Moderate need
       } else {
         needs[position] = Math.max(0, 5 - (positionPlayers.length - startingRequirement));
@@ -509,16 +471,14 @@ class DraftAssistant {
   private determineDraftStrategy(
     positionNeeds: Record<string, number>,
     overallNeeds: number
-  ): 'balanced' | 'position_focus' | 'best_available' {
-    const criticalNeeds = Object.values(positionNeeds).filter(need => need >= 8).length;
+  ): 'balanced' | 'position_focus' | 'best_available' { const criticalNeeds = Object.values(positionNeeds).filter(need => need >= 8).length;
 
     if (criticalNeeds >= 2) return 'position_focus';
     if (overallNeeds >= 7) return 'balanced';
     return 'best_available';
-  }
+   }
 
-  private async getTopAvailablePlayers(limit: number): Promise<any[]> {
-    const result = await database.query(`
+  private async getTopAvailablePlayers(async getTopAvailablePlayers(limit: number): : Promise<): Promiseany[]> { const result = await database.query(`
       SELECT np.*, COALESCE(np.overall_rank, 999) as overall_rank,
              COALESCE(np.position_rank, 999) as position_rank
       FROM nfl_players np
@@ -528,10 +488,9 @@ class DraftAssistant {
     `, [limit]);
 
     return result.rows;
-  }
+   }
 
-  private async getPlayersByIds(playerIds: string[]): Promise<any[]> {
-    const result = await database.query(`
+  private async getPlayersByIds(async getPlayersByIds(playerIds: string[]): : Promise<): Promiseany[]> { const result = await database.query(`
       SELECT np.*, COALESCE(np.overall_rank, 999) as overall_rank,
              COALESCE(np.position_rank, 999) as position_rank
       FROM nfl_players np
@@ -539,10 +498,10 @@ class DraftAssistant {
     `, [playerIds]);
 
     return result.rows;
-  }
+   }
 
-  private calculateConfidence(prediction: any, player: any): number {
-    let confidence = prediction.confidence || 70;
+  private calculateConfidence(prediction, any,
+  player: any); number { let confidence = prediction.confidence || 70;
 
     // Adjust for player age (younger = less confidence)
     if (player.age && player.age < 23) confidence -= 10;
@@ -551,10 +510,10 @@ class DraftAssistant {
     if (player.injury_status && player.injury_status !== 'healthy') confidence -= 15;
 
     return Math.max(0, Math.min(100, confidence));
-  }
+   }
 
-  private assessRiskLevel(player: any, prediction: any): 'low' | 'medium' | 'high' {
-    let riskScore = 0;
+  private assessRiskLevel(player, any,
+  prediction: any): 'low' | 'medium' | 'high' { let riskScore = 0;
 
     if (player.age && player.age < 23) riskScore += 2; // Young player risk
     if (player.age && player.age > 30) riskScore += 1; // Age risk
@@ -564,64 +523,63 @@ class DraftAssistant {
     if (riskScore >= 5) return 'high';
     if (riskScore >= 3) return 'medium';
     return 'low';
-  }
+   }
 
-  private calculateAgeValue(age: number): number {
-    if (age <= 23) return 1.0; // Peak growth potential
+  private calculateAgeValue(age: number); number { if (age <= 23) return 1.0; // Peak growth potential
     if (age <= 27) return 0.9; // Prime years
     if (age <= 30) return 0.7; // Still productive
     return 0.5; // Age concerns
-  }
+   }
 
-  private calculatePickAdjustment(currentPick: number, playerRank: number): number {
-    const pickDifference = Math.abs(currentPick - playerRank);
+  private calculatePickAdjustment(currentPick, number,
+  playerRank: number); number { const pickDifference = Math.abs(currentPick - playerRank);
     const adjustment = Math.max(-0.5, Math.min(0.5, (50 - pickDifference) / 100));
     return adjustment;
-  }
+   }
 
-  private async getPositionBaseline(position: string): Promise<number> {
-    // Mock baseline projections by position
-    const baselines: Record<string, number> = {
-      QB: 350, RB: 180, WR: 120, TE: 80, K: 120, DST: 110
-    };
+  private async getPositionBaseline(async getPositionBaseline(position: string): : Promise<): Promisenumber> {; // Mock baseline projections by position
+    const baselines Record<string, number> = {
+      QB: 350;
+  RB: 180; WR: 120;
+  TE: 80; K: 120;
+  DST: 110
+    }
     return baselines[position] || 100;
   }
 
-  private async getReplacementLevel(position: string): Promise<number> {
-    // Mock replacement level by position
-    const replacementLevels: Record<string, number> = {
-      QB: 200, RB: 50, WR: 30, TE: 20, K: 100, DST: 80
-    };
+  private async getReplacementLevel(async getReplacementLevel(position: string): : Promise<): Promisenumber> {; // Mock replacement level by position
+    const replacementLevels Record<string, number> = {
+      QB: 200;
+  RB: 50; WR: 30;
+  TE: 20; K: 100;
+  DST: 80
+    }
     return replacementLevels[position] || 50;
   }
 
-  private async getLeagueSize(leagueId: string): Promise<number> {
-    const result = await database.query(`
+  private async getLeagueSize(async getLeagueSize(leagueId: string): : Promise<): Promisenumber> { const result = await database.query(`
       SELECT COUNT(*) as team_count FROM league_teams WHERE league_id = $1
     `, [leagueId]);
 
     return parseInt(result.rows[0]?.team_count || '12');
-  }
+   }
 
-  private async getPositionPlayerCount(position: string): Promise<number> {
-    const result = await database.query(`
+  private async getPositionPlayerCount(async getPositionPlayerCount(position: string): : Promise<): Promisenumber> { const result = await database.query(`
       SELECT COUNT(*) as player_count FROM nfl_players
       WHERE position = $1 AND overall_rank IS NOT NULL
     `, [position]);
 
     return parseInt(result.rows[0]?.player_count || '50');
-  }
+   }
 
-  private async getTeamName(teamId: string): Promise<string> {
-    const result = await database.query(`
+  private async getTeamName(async getTeamName(teamId: string): : Promise<): Promisestring> { const result = await database.query(`
       SELECT team_name FROM teams WHERE id = $1
     `, [teamId]);
 
     return result.rows[0]?.team_name || 'Unknown Team';
-  }
+   }
 
-  private async findSleeperCandidates(leagueId: string): Promise<string[]> {
-    // Mock sleeper candidates (players ranked lower than their projected value)
+  private async findSleeperCandidates(async findSleeperCandidates(leagueId: string): : Promise<): Promisestring[]> {; // Mock sleeper candidates (players ranked lower than their projected value)
     const result = await database.query(`
       SELECT id FROM nfl_players
       WHERE overall_rank > 50 AND overall_rank <= 100
@@ -632,72 +590,69 @@ class DraftAssistant {
     return result.rows.map(row => row.id);
   }
 
-  private async calculatePickTradeValue(pickNumber: number): Promise<number> {
-    return this.getPickTradeValue(pickNumber);
-  }
+  private async calculatePickTradeValue(async calculatePickTradeValue(pickNumber number): : Promise<): Promisenumber> { return this.getPickTradeValue(pickNumber);
+   }
 
-  private clearDraftCache(leagueId: string): void {
+  private clearDraftCache(leagueId: string); void {
     // Clear all cache entries for this league
-    for (const [key, value] of this.draftCache.entries()) {
-      if (key.includes(leagueId)) {
+    for (const [key, value] of this.draftCache.entries()) { if (key.includes(leagueId)) {
         this.draftCache.delete(key);
-      }
+       }
     }
   }
 
   // Fallback methods
-  private getFallbackRecommendations(teamId: string): DraftRecommendation[] {
-    return [{
-      playerId: 'fallback_1',
-      playerName: 'Fallback Player',
-      position: 'QB',
-      team: 'FA',
-      overallRank: 50,
-      positionRank: 10,
-      confidence: 50,
-      reasoning: ['Fallback recommendation due to analysis error'],
-      valueScore: 50,
-      riskLevel: 'medium',
-      scarcityFactor: 0.5,
-      leagueContext: {
-        positionScarcity: 0.5,
-        teamNeeds: 5,
+  private getFallbackRecommendations(teamId: string); DraftRecommendation[] { return [{
+      playerId: 'fallback_1';
+  playerName: 'Fallback Player';
+      position: 'QB';
+  team: 'FA';
+      overallRank: 50;
+  positionRank: 10;
+      confidence: 50;
+  reasoning: ['Fallback recommendation due to analysis error'];
+      valueScore: 50;
+  riskLevel: 'medium';
+      scarcityFactor: 0.5;
+  leagueContext: {
+  positionScarcity: 0.5;
+  teamNeeds: 5;
         replacementLevel: 50
-      }
+       }
     }];
   }
 
-  private getFallbackTeamNeeds(teamId: string): TeamNeeds {
-    return {
+  private getFallbackTeamNeeds(teamId: string); TeamNeeds { return {
       teamId,
-      teamName: 'Unknown Team',
-      positionNeeds: { QB: 5, RB: 5, WR: 5, TE: 5, K: 5, DST: 5 },
-      overallNeeds: 5,
-      draftStrategy: 'balanced',
+      teamName: 'Unknown Team';
+  positionNeeds: { Q,
+  B: 5;
+  RB: 5; WR: 5;
+  TE: 5; K: 5;
+  DST: 5  },
+      overallNeeds: 5;
+  draftStrategy: 'balanced';
       targetPositions: ['QB', 'RB', 'WR']
-    };
+    }
   }
 
   // Health check
-  async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    cacheSize: number;
-    activeDrafts: number;
-  }> {
-    try {
-      await database.query('SELECT 1');
+  async healthCheck(): : Promise<  {
+    status: 'healthy' | 'degraded' | 'unhealthy',
+    cacheSize, number,
+    activeDrafts: number }> { try {
+    await database.query('SELECT 1');
 
       return {
-        status: 'healthy',
-        cacheSize: this.draftCache.size,
-        activeDrafts: 0 // Would track actual active drafts
-      };
-    } catch (error) {
-      return {
-        status: 'unhealthy',
-        cacheSize: this.draftCache.size,
+        status: 'healthy';
+  cacheSize: this.draftCache.size;
+        activeDrafts: 0 ; // Would track actual active drafts
+       }
+    } catch (error) { return {
+        status 'unhealthy';
+  cacheSize: this.draftCache.size;
         activeDrafts: 0
-      };
+       }
     }
   }
 }

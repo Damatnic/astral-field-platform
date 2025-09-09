@@ -1,68 +1,65 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo  } from 'react';
 
 interface RadarDataPoint {
-  axis: string;
-  value: number;
-  maxValue?: number;
+  axis, string,
+    value, number,
+  maxValue?, number,
+  
 }
-
 interface RadarDataset {
-  label: string;
-  data: RadarDataPoint[];
-  color: string;
-  fill?: boolean;
-  opacity?: number;
+  label, string,
+    data: RadarDataPoint[];
+  color, string,
+  fill?, boolean,
+  opacity?, number,
 }
 
 interface RadarChartProps {
   datasets: RadarDataset[];
-  height?: number;
-  showGrid?: boolean;
-  showLegend?: boolean;
-  showValues?: boolean;
-  animate?: boolean;
-  title?: string;
-  className?: string;
+  height?, number,
+  showGrid?, boolean,
+  showLegend?, boolean,
+  showValues?, boolean,
+  animate?, boolean,
+  title?, string,
+  className?, string,
   theme?: 'dark' | 'light';
-  levels?: number;
+  levels?, number,
+  
 }
-
 export function RadarChart({
   datasets,
   height = 400,
   showGrid = true,
   showLegend = true,
   showValues = true,
-  animate = true,
-  title,
+  animate = true, title,
   className = '',
   theme = 'dark',
   levels = 5
-}: RadarChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+}: RadarChartProps) { const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
 
   const colors = useMemo(() => ({
     dark: {
-      background: '#111827',
-      grid: '#374151',
+  background: '#111827',
+  grid: '#374151',
       text: '#9ca3af',
-      axisLabel: '#d1d5db'
-    },
+  axisLabel: '#d1d5db'
+     },
     light: {
-      background: '#ffffff',
-      grid: '#e5e7eb',
+  background: '#ffffff',
+  grid: '#e5e7eb',
       text: '#6b7280',
-      axisLabel: '#374151'
+  axisLabel: '#374151'
     }
   }), []);
 
   const currentTheme = colors[theme];
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
+  useEffect(() => {const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -81,7 +78,7 @@ export function RadarChart({
     const radius = size * 0.35;
 
     // Get all axes from first dataset
-    const axes = datasets[0]?.data.map(d => d.axis) || [];
+    const axes = datasets[0]? .data.map(d => d.axis) || [];
     const numAxes = axes.length;
     const angleSlice = (Math.PI * 2) / numAxes;
 
@@ -99,9 +96,8 @@ export function RadarChart({
       if (animate) {
         progress = Math.min((Date.now() - startTime) / animationDuration, 1);
         progress = easeInOutCubic(progress);
-      } else {
-        progress = 1;
-      }
+       } else { progress = 1;
+       }
 
       // Draw grid circles
       if (showGrid) {
@@ -112,14 +108,13 @@ export function RadarChart({
           ctx.beginPath();
           const levelRadius = (radius / levels) * i;
           
-          for (let j = 0; j <= numAxes; j++) {
-            const angle = j * angleSlice - Math.PI / 2;
+          for (let j = 0; j <= numAxes; j++) { const angle = j * angleSlice - Math.PI / 2;
             const x = centerX + Math.cos(angle) * levelRadius;
             const y = centerY + Math.sin(angle) * levelRadius;
             
             if (j === 0) {
               ctx.moveTo(x, y);
-            } else {
+             } else {
               ctx.lineTo(x, y);
             }
           }
@@ -153,8 +148,7 @@ export function RadarChart({
       ctx.fillStyle = currentTheme.axisLabel;
       ctx.font = 'bold 12px Inter, system-ui, sans-serif';
       
-      for (let i = 0; i < numAxes; i++) {
-        const angle = i * angleSlice - Math.PI / 2;
+      for (let i = 0; i < numAxes; i++) { const angle = i * angleSlice - Math.PI / 2;
         const labelDistance = radius + 30;
         const x = centerX + Math.cos(angle) * labelDistance;
         const y = centerY + Math.sin(angle) * labelDistance;
@@ -165,7 +159,7 @@ export function RadarChart({
         // Adjust text alignment based on position
         if (Math.abs(x - centerX) < 10) {
           ctx.textAlign = 'center';
-        } else if (x < centerX) {
+         } else if (x < centerX) {
           ctx.textAlign = 'right';
         } else {
           ctx.textAlign = 'left';
@@ -175,15 +169,13 @@ export function RadarChart({
       }
 
       // Draw datasets
-      datasets.forEach((dataset, datasetIndex) => {
-        ctx.strokeStyle = dataset.color;
+      datasets.forEach((dataset, datasetIndex) => {ctx.strokeStyle = dataset.color;
         ctx.lineWidth = 2;
         ctx.fillStyle = dataset.color + (dataset.opacity ? Math.round(dataset.opacity * 255).toString(16) : '40');
 
         ctx.beginPath();
         
-        dataset.data.forEach((point, i) => {
-          const maxValue = point.maxValue || 100;
+        dataset.data.forEach((point, i) => { const maxValue = point.maxValue || 100;
           const normalizedValue = (point.value / maxValue) * progress;
           const angle = i * angleSlice - Math.PI / 2;
           const x = centerX + Math.cos(angle) * radius * normalizedValue;
@@ -191,7 +183,7 @@ export function RadarChart({
           
           if (i === 0) {
             ctx.moveTo(x, y);
-          } else {
+           } else {
             ctx.lineTo(x, y);
           }
         });
@@ -205,8 +197,7 @@ export function RadarChart({
 
         // Draw data points
         ctx.fillStyle = dataset.color;
-        dataset.data.forEach((point, i) => {
-          const maxValue = point.maxValue || 100;
+        dataset.data.forEach((point, i) => { const maxValue = point.maxValue || 100;
           const normalizedValue = (point.value / maxValue) * progress;
           const angle = i * angleSlice - Math.PI / 2;
           const x = centerX + Math.cos(angle) * radius * normalizedValue;
@@ -223,7 +214,7 @@ export function RadarChart({
             ctx.textAlign = 'center';
             ctx.fillText(point.value.toFixed(0), x, y - 10);
             ctx.fillStyle = dataset.color;
-          }
+           }
         });
       });
 
@@ -236,8 +227,7 @@ export function RadarChart({
       }
 
       // Draw legend
-      if (showLegend && datasets.length > 1) {
-        const legendY = size - 40;
+      if (showLegend && datasets.length > 1) { const legendY = size - 40;
         const legendItemWidth = 120;
         const startX = centerX - (datasets.length * legendItemWidth) / 2;
 
@@ -254,28 +244,24 @@ export function RadarChart({
           ctx.fillStyle = currentTheme.text;
           ctx.textAlign = 'left';
           ctx.fillText(dataset.label, x + 18, legendY + 10);
-        });
+         });
       }
 
       // Continue animation
       if (animate && progress < 1) {
         animationRef.current = requestAnimationFrame(draw);
       }
-    };
-
+    }
     draw();
 
-    return () => {
-      if (animationRef.current) {
+    return () => { if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
-      }
-    };
+       }
+    }
   }, [datasets, height, showGrid, showLegend, showValues, animate, title, theme, currentTheme, levels]);
 
-  const easeInOutCubic = (t: number): number => {
-    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-  };
-
+  const easeInOutCubic = (t: number); number => {return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+   }
   return (
     <div className={`flex justify-center ${className}`}>
       <canvas

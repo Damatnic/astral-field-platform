@@ -22,8 +22,7 @@ export async function GET(request: NextRequest) {
     if (service) {
       const serviceHealth = await getServiceHealth(service);
       return NextResponse.json({
-        success: true,
-        service: serviceHealth,
+        success: true, service, serviceHealth,
         timestamp: new Date().toISOString()
       });
     }
@@ -50,17 +49,17 @@ export async function GET(request: NextRequest) {
       uptime: formatUptime(systemHealth.uptime),
       services: systemHealth.services,
       metrics: {
-        current: systemHealth.metrics,
+  current: systemHealth.metrics,
         historical: await performanceMonitor.getHistoricalMetrics(1)
       },
       alerts: systemHealth.alerts,
       dependencies: await checkDependencies(),
       resourceUsage: await getResourceUsage(),
       timestamp: new Date().toISOString()
-    };
-    
+    }
     // Set appropriate status code based on health
     const statusCode = systemHealth.overall === 'healthy' ? 200 :
+;
                       systemHealth.overall === 'degraded' ? 206 : 503;
     
     return NextResponse.json(detailedHealth, { status: statusCode });
@@ -83,26 +82,27 @@ async function getServiceHealth(serviceName: string) {
   switch (serviceName.toLowerCase()) {
     case 'database':
       return await checkDatabaseHealth();
+      break;
     case 'nfl':
       return await checkNFLDataHealth();
     case 'scoring':
       return await checkScoringEngineHealth();
+      break;
     case 'api':
       return await checkAPIHealth();
-    default:
-      throw new Error(`Unknown service: ${serviceName}`);
+    default: throw new Error(`Unknown servic,
+  e: ${serviceName}`);
   }
 }
 
 async function checkDatabaseHealth() {
   const startTime = Date.now();
   const checks = {
-    connectivity: false,
-    performance: false,
-    replication: false,
+    connectivity, false,
+    performance, false,
+    replication, false,
     diskSpace: false
-  };
-  
+  }
   try {
     // Check basic connectivity
     await database.query('SELECT 1');
@@ -134,14 +134,11 @@ async function checkDatabaseHealth() {
   const healthyChecks = Object.values(checks).filter(Boolean).length;
   const totalChecks = Object.keys(checks).length;
   
-  return {
-    service: 'Database',
-    status: healthyChecks === totalChecks ? 'healthy' :
-            healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy',
-    latency: Date.now() - startTime,
-    checks,
-    healthScore: Math.round((healthyChecks / totalChecks) * 100)
-  };
+  return {service: 'Database',
+    status: healthyChecks === totalChecks ? 'healthy' : healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy',
+    latency: Date.now() - startTime, checks, healthScor,
+  e: Math.round((healthyChecks / totalChecks) * 100)
+  }
 }
 
 async function checkNFLDataHealth() {
@@ -155,7 +152,7 @@ async function checkNFLDataHealth() {
     sources: health.sources,
     cacheSize: health.cacheSize,
     healthScore: Math.round((healthySources / totalSources) * 100)
-  };
+  }
 }
 
 async function checkScoringEngineHealth() {
@@ -167,9 +164,8 @@ async function checkScoringEngineHealth() {
     isProcessing: health.isProcessing,
     cacheSize: health.cacheSize,
     lastUpdate: health.lastUpdate,
-    healthScore: health.status === 'healthy' ? 100 : 
-                health.status === 'degraded' ? 75 : 0
-  };
+    healthScore: health.status === 'healthy' ? 100 : health.status === 'degraded' ? 75 : 0
+  }
 }
 
 async function checkAPIHealth() {
@@ -180,24 +176,24 @@ async function checkAPIHealth() {
     '/api/live/scores'
   ];
   
-  const results = await Promise.allSettled(
-    endpoints.map(async endpoint => {
+  const results = await Promise.allSettled(endpoints.map(async endpoint => {
       const startTime = Date.now();
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${endpoint}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http: //localhos,
+  t:3000'}${endpoint}`);
         return {
           endpoint,
           success: response.ok,
           latency: Date.now() - startTime,
           status: response.status
-        };
+        }
       } catch (error) {
         return {
           endpoint,
           success: false,
           latency: Date.now() - startTime,
           status: 0
-        };
+        }
       }
     })
   );
@@ -206,23 +202,21 @@ async function checkAPIHealth() {
     r.status === 'fulfilled' && r.value.success
   ).length;
   
-  return {
-    service: 'API',
-    status: successfulEndpoints === endpoints.length ? 'healthy' :
-            successfulEndpoints > 0 ? 'degraded' : 'unhealthy',
-    endpoints: results.map(r => r.status === 'fulfilled' ? r.value : null).filter(Boolean),
+  return {service: 'API',
+    status: successfulEndpoints === endpoints.length ? 'healthy' : successfulEndpoints > 0 ? 'degraded' : 'unhealthy',
+    endpoints: results.map(r => r.status === 'fulfilled' ? r.valu,
+  e: null).filter(Boolean),
     healthScore: Math.round((successfulEndpoints / endpoints.length) * 100)
-  };
+  }
 }
 
 async function checkDependencies() {
   const dependencies = {
-    postgresql: false,
-    redis: false,
-    websocket: false,
+    postgresql, false,
+    redis, false,
+    websocket, false,
     external_apis: false
-  };
-  
+  }
   // Check PostgreSQL
   try {
     await database.query('SELECT 1');
@@ -251,32 +245,32 @@ async function getResourceUsage() {
   
   return {
     memory: {
-      total: os.totalmem(),
+  total: os.totalmem(),
       free: os.freemem(),
       used: os.totalmem() - os.freemem(),
       percentage: Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
     },
     cpu: {
-      cores: os.cpus().length,
+  cores: os.cpus().length,
       model: os.cpus()[0].model,
       usage: await getCPUUsage()
     },
     process: {
-      uptime: process.uptime(),
+  uptime: process.uptime(),
       memory: process.memoryUsage(),
       pid: process.pid,
       version: process.version
     }
-  };
+  }
 }
 
 async function getCPUUsage(): Promise<number> {
-  // Calculate CPU usage (simplified)
+; // Calculate CPU usage (simplified)
   const cpus = require('os').cpus();
   let totalIdle = 0;
   let totalTick = 0;
   
-  cpus.forEach((cpu: any) => {
+  cpus.forEach((cpu any) => {
     for (const type in cpu.times) {
       totalTick += cpu.times[type];
     }
@@ -297,17 +291,17 @@ function formatUptime(milliseconds: number): string {
   const days = Math.floor(hours / 24);
   
   if (days > 0) {
-    return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    return `${days}d ${hours % 24}h ${minutes % 60}m`
   } else if (hours > 0) {
-    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    return `${hours}h ${minutes % 60}m ${seconds % 60}s`
   } else if (minutes > 0) {
-    return `${minutes}m ${seconds % 60}s`;
+    return `${minutes}m ${seconds % 60}s`
   } else {
-    return `${seconds}s`;
+    return `${seconds}s`
   }
 }
 
-// Health check for monitoring services (Uptime Robot, Pingdom, etc.)
+// Health check for monitoring services (Uptime Robot, Pingdom: etc.)
 export async function HEAD() {
   try {
     // Quick health check

@@ -1,21 +1,16 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET() {
-  try {
+export async function GET() { try {
     const result = await database.transaction(async (client) => {
       // Get all demo users with their PINs
       const usersResult = await client.query(`
-        SELECT 
-          id,
-          username,
-          email,
-          pin,
-          is_demo_user,
+        SELECT
+          id, username, email, pin, is_demo_user,
           created_at
         FROM users
         WHERE is_demo_user = true OR pin IS NOT NULL
-        ORDER BY 
+  ORDER, BY,
           CASE 
             WHEN email LIKE '%damato%' THEN 0
             ELSE 1
@@ -25,7 +20,7 @@ export async function GET() {
 
       // Get league info
       const leagueResult = await client.query(`
-        SELECT 
+        SELECT
           l.id,
           l.name,
           l.season_year,
@@ -39,7 +34,7 @@ export async function GET() {
 
       // Get teams
       const teamsResult = await client.query(`
-        SELECT 
+        SELECT
           t.team_name,
           t.team_abbreviation,
           t.wins,
@@ -53,14 +48,14 @@ export async function GET() {
 
       return {
         users: usersResult.rows,
-        league: leagueResult.rows[0] || null,
+  league: leagueResult.rows[0] || null,
         teams: teamsResult.rows
-      };
+       }
     });
 
     return NextResponse.json({
       success: true,
-      message: "Current users and their PINs",
+  message: "Current users and their PINs",
       correctPins: {
         "Nicholas D'Amato": "1009 (Admin/Commissioner)",
         "Jon Kornbeck": "1001",
@@ -73,18 +68,17 @@ export async function GET() {
         "Renee McCaigue": "1008",
         "Kaity Lorbecki": "1010"
       },
-      currentData: result,
-      instructions: [
+      currentData, result,
+  instructions: [
         "If PINs don't match above, run /api/reset-and-setup to fix",
         "Nicholas D'Amato should have PIN 1009",
         "Old PIN 1234 should NOT work anymore"
       ]
     });
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: "Failed to verify users",
-      details: error instanceof Error ? error.message : "Unknown error"
-    }, { status: 500 });
+  } catch (error) { return NextResponse.json(
+      { success: false,
+  error: "Failed to verify users",
+      details: error instanceof Error ? error.message : 'Unknown error'
+     }, { status: 500 });
   }
 }

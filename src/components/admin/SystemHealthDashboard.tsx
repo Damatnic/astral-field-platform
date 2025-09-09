@@ -2,8 +2,7 @@
 
 import React from "react";
 
-export default function SystemHealthDashboard() {
-  return (
+export default function SystemHealthDashboard() { return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">System Health Dashboard</h1>
       <div className="p-4 border rounded bg-white">
@@ -11,4 +10,4 @@ export default function SystemHealthDashboard() {
       </div>
     </div>
   );
-}
+ }

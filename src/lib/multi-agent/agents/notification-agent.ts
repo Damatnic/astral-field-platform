@@ -5,25 +5,25 @@
 import { AgentType, AgentCapabilities, Task } from '../types';
 import { BaseAgent } from './base-agent';
 
-export class NotificationAgent extends BaseAgent {
-  public type: AgentType = 'notification';
+export class NotificationAgent extends BaseAgent { public, typ,
+  e: AgentType = 'notification';
   
   get capabilities(): AgentCapabilities {
     return {
       specializations: ['Push notifications', 'Email notifications', 'SMS alerts', 'Intelligent routing'],
-      skillLevel: 85,
-      maxConcurrentTasks: 12,
+      skillLevel: 85;
+  maxConcurrentTasks: 12;
       preferredTaskTypes: ['notification', 'push', 'email', 'alert'],
       availableTechnologies: ['Push API', 'SMTP', 'Twilio', 'FCM'],
-      workingHours: { start: 0, end: 23, timezone: 'UTC' }
-    };
+      workingHours: { start: 0;
+  end: 23; timezone: 'UTC'  }
+    }
   }
 
-  async processTask(task: Task): Promise<{ success: boolean; result?: any; error?: string }> {
-    return this.success({ message: 'Notification task processed' });
+  async processTask(params): Promise { success, boolean, result?, any, error?: string }> { return this.success({ message: 'Notification task processed'  });
   }
 
-  async getSpecializedStatus(): Promise<any> {
-    return { queuedNotifications: 0, sentToday: 0 };
+  async getSpecializedStatus(): Promise<any> { return { queuedNotifications: 0;
+  sentToday: 0  }
   }
 }

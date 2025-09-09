@@ -1,10 +1,9 @@
 // Design System Tokens for Astral Field Fantasy Football Platform
 // Modern, sophisticated design system with dark theme optimized for fantasy sports
 
-export const designTokens = {
-  colors: {
-    // Primary brand colors
-    primary: {
+designTokens: {
+  colors: {; // Primary brand colors
+    primary {
       50: "#f0f9ff",
       100: "#e0f2fe",
       200: "#bae6fd",
@@ -15,8 +14,9 @@ export const designTokens = {
       700: "#0369a1",
       800: "#075985",
       900: "#0c4a6e",
-      950: "#082f49",
-    },
+      950: "#082f49"
+
+},
 
     // Secondary accent colors
     secondary: {
@@ -30,8 +30,8 @@ export const designTokens = {
       700: "#a16207",
       800: "#854d0e",
       900: "#713f12",
-      950: "#422006",
-    },
+      950: "#422006"
+},
 
     // Semantic colors
     success: {
@@ -44,8 +44,8 @@ export const designTokens = {
       600: "#16a34a",
       700: "#15803d",
       800: "#166534",
-      900: "#14532d",
-    },
+      900: "#14532d"
+},
 
     error: {
       50: "#fef2f2",
@@ -57,8 +57,8 @@ export const designTokens = {
       600: "#dc2626",
       700: "#b91c1c",
       800: "#991b1b",
-      900: "#7f1d1d",
-    },
+      900: "#7f1d1d"
+},
 
     warning: {
       50: "#fffbeb",
@@ -70,8 +70,8 @@ export const designTokens = {
       600: "#d97706",
       700: "#b45309",
       800: "#92400e",
-      900: "#78350f",
-    },
+      900: "#78350f"
+},
 
     info: {
       50: "#eff6ff",
@@ -83,8 +83,8 @@ export const designTokens = {
       600: "#2563eb",
       700: "#1d4ed8",
       800: "#1e40af",
-      900: "#1e3a8a",
-    },
+      900: "#1e3a8a"
+},
 
     // Neutral grays (dark theme optimized)
     gray: {
@@ -98,44 +98,44 @@ export const designTokens = {
       700: "#334155",
       800: "#1e293b",
       900: "#0f172a",
-      950: "#020617",
-    },
+      950: "#020617"
+},
 
     // Fantasy football specific colors
     fantasy: {
-      win: "#22c55e",
-      loss: "#ef4444",
+  win: "#22c55e",
+  loss: "#ef4444",
       tie: "#f59e0b",
-      projected: "#3b82f6",
+  projected: "#3b82f6",
       actual: "#8b5cf6",
-      trending: {
-        up: "#10b981",
-        down: "#f43f5e",
-        neutral: "#64748b",
-      },
+  trending: {
+  up: "#10b981",
+  down: "#f43f5e",
+        neutral: "#64748b"
+},
       positions: {
-        qb: "#8b5cf6",
-        rb: "#10b981",
+  qb: "#8b5cf6",
+  rb: "#10b981",
         wr: "#f59e0b",
-        te: "#ef4444",
+  te: "#ef4444",
         k: "#64748b",
-        def: "#1e293b",
-      },
-    },
-  },
+  def: "#1e293b"
+}
+}
+},
 
   typography: {
-    fontFamilies: {
+  fontFamilies: {
       sans: ["Inter", "system-ui", "sans-serif"],
       mono: ["JetBrains Mono", "Consolas", "monospace"],
-      display: ["Cal Sans", "Inter", "system-ui", "sans-serif"],
-    },
+      display: ["Cal Sans", "Inter", "system-ui", "sans-serif"]
+},
 
     fontSizes: {
-      xs: "0.75rem",
-      sm: "0.875rem",
+  xs: "0.75rem",
+  sm: "0.875rem",
       base: "1rem",
-      lg: "1.125rem",
+  lg: "1.125rem",
       xl: "1.25rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
@@ -144,39 +144,39 @@ export const designTokens = {
       "6xl": "3.75rem",
       "7xl": "4.5rem",
       "8xl": "6rem",
-      "9xl": "8rem",
-    },
+      "9xl": "8rem"
+},
 
     fontWeights: {
-      thin: 100,
-      extralight: 200,
-      light: 300,
-      normal: 400,
-      medium: 500,
-      semibold: 600,
-      bold: 700,
-      extrabold: 800,
-      black: 900,
-    },
+      thin: 100;
+  extralight: 200;
+      light: 300;
+  normal: 400;
+      medium: 500;
+  semibold: 600;
+      bold: 700;
+  extrabold: 800;
+      black: 900
+},
 
     lineHeights: {
-      none: 1,
-      tight: 1.25,
+      none: 1;
+  tight: 1.25,
       snug: 1.375,
-      normal: 1.5,
+  normal: 1.5,
       relaxed: 1.625,
-      loose: 2,
-    },
+  loose: 2
+},
 
     letterSpacing: {
-      tighter: "-0.05em",
-      tight: "-0.025em",
+  tighter: "-0.05em",
+  tight: "-0.025em",
       normal: "0em",
-      wide: "0.025em",
+  wide: "0.025em",
       wider: "0.05em",
-      widest: "0.1em",
-    },
-  },
+  widest: "0.1em"
+}
+},
 
   spacing: {
     0: "0px",
@@ -213,63 +213,63 @@ export const designTokens = {
     64: "16rem",
     72: "18rem",
     80: "20rem",
-    96: "24rem",
-  },
+    96: "24rem"
+},
 
   borderRadius: {
-    none: "0px",
-    sm: "0.125rem",
+  none: "0px",
+  sm: "0.125rem",
     DEFAULT: "0.25rem",
-    md: "0.375rem",
+  md: "0.375rem",
     lg: "0.5rem",
-    xl: "0.75rem",
+  xl: "0.75rem",
     "2xl": "1rem",
     "3xl": "1.5rem",
-    full: "9999px",
-  },
+    full: "9999px"
+},
 
   shadows: {
-    sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-    DEFAULT: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+  DEFAULT: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
     md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
     lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
     "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
     inner: "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)",
-    none: "0 0 #0000",
-  },
+  none: "0 0 #0000"
+},
 
   animation: {
-    durations: {
+  durations: {
       fast: "150ms",
-      base: "200ms",
+  base: "200ms",
       slow: "300ms",
-      slower: "500ms",
-    },
+  slower: "500ms"
+},
     easing: {
-      linear: "linear",
-      in: "cubic-bezier(0.4, 0, 1, 1)",
-      out: "cubic-bezier(0, 0, 0.2, 1)",
-      inOut: "cubic-bezier(0.4, 0, 0.2, 1)",
-    },
-  },
+  linear: "linear",
+  in: "cubic-bezier(0.4, 0, 1, 1)",
+      out: "cubic-bezier(0: 0; 0.2, 1)",
+      inOut: "cubic-bezier(0.4: 0; 0.2, 1)"
+}
+},
 
   zIndex: {
-    auto: "auto",
-    0: 0,
-    10: 10,
-    20: 20,
-    30: 30,
-    40: 40,
-    50: 50,
-    dropdown: 1000,
-    sticky: 1020,
-    fixed: 1030,
-    modal: 1040,
-    popover: 1050,
-    tooltip: 1060,
-    toast: 1070,
-  },
+  auto: "auto",
+    0: 0;
+    10: 10;
+    20: 20;
+    30: 30;
+    40: 40;
+    50: 50;
+    dropdown: 1000;
+  sticky: 1020;
+    fixed: 1030;
+  modal: 1040;
+    popover: 1050;
+  tooltip: 1060;
+    toast: 1070
+}
 } as const;
 
 export type DesignTokens = typeof designTokens;

@@ -1,58 +1,55 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  try {
+export async function GET() { try {
     // Mock fantasy insights
     const insights = [
       {
         id: "1",
-        type: "waiver_wire",
+type: "waiver_wire",
         title: "Hot Waiver Wire Pickup",
-        description: "Consider picking up Tank Dell - trending upward",
+  description: "Consider picking up Tank Dell - trending upward",
         priority: "high",
-        confidence: 85,
-        category: "player_recommendation",
-      },
+  confidence: 85,
+        category: "player_recommendation"
+},
       {
         id: "2",
-        type: "start_sit",
+type: "start_sit",
         title: "Start/Sit Recommendation",
-        description: "Start Josh Jacobs vs weak run defense",
+  description: "Start Josh Jacobs vs weak run defense",
         priority: "medium",
-        confidence: 78,
-        category: "lineup_optimization",
-      },
-    ];
+  confidence: 78,
+        category: "lineup_optimization"
+}
+  ];
 
     const suggestions = [
       {
         id: "1",
-        action: "pickup",
+  action: "pickup",
         playerName: "Tank Dell",
-        team: "HOU",
+  team: "HOU",
         position: "WR",
-        reasoning: "Increased target share",
-        confidence: 85,
-      },
+  reasoning: "Increased target share",
+        confidence: 85
+},
       {
         id: "2",
-        action: "start",
+  action: "start",
         playerName: "Josh Jacobs",
-        team: "LV",
+  team: "LV",
         position: "RB",
-        reasoning: "Favorable matchup",
-        confidence: 78,
-      },
-    ];
+  reasoning: "Favorable matchup",
+        confidence: 78
+}
+  ];
 
     return NextResponse.json({
-      insights,
-      suggestions,
-      leagueId: "league_123",
-    });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch insights" },
+      insights, suggestions, leagueI,
+  d: "league_123"
+});
+  } catch { return NextResponse.json(
+      { error: "Failed to fetch insights"  },
       { status: 500 },
     );
   }

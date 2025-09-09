@@ -5,65 +5,63 @@ import { useRouter } from "next/navigation";
 import { Brain, TrendingUp, Target } from "lucide-react";
 
 interface OraclePageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
 type Insight = {
   id: string;
-  title: string;
+    title: string;
   description: string;
-  action: string;
+    action: string;
   priority: "low" | "medium" | "high";
-};
-
-export default function OraclePage({ params }: OraclePageProps) {
-  const router = useRouter();
+}
+export default function OraclePage({ params }: OraclePageProps) { const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>("");
   const [insights, setInsights] = useState<Insight[]>([]);
 
   useEffect(() => {
     params.then((resolved) => setLeagueId(resolved.id));
-  }, [params]);
+   }, [params]);
 
-  useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  useEffect(() => {const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!token) {
       router.push("/auth/login");
-    }
+     }
   }, [router]);
 
-  useEffect(() => {
-    if (leagueId) {
+  useEffect(() => { if (leagueId) {
       setInsights([
         {
           id: "1",
-          title: "Waiver Wire Opportunity",
+  title: "Waiver Wire Opportunity",
           description: "Tank Dell has high upside potential this week",
-          action: "Consider adding to your roster",
-          priority: "high",
-        },
+  action: "Consider adding to your roster",
+          priority: "high"
+},
         {
           id: "2",
-          title: "Trade Suggestion",
+  title: "Trade Suggestion",
           description: "Your RB depth could use improvement",
-          action: "Explore RB trade opportunities",
-          priority: "medium",
-        },
-      ]);
+  action: "Explore RB trade opportunities",
+          priority: "medium"
+}
+  ]);
     }
   }, [leagueId]);
 
-  if (!leagueId) {
-    return (
+  if (!leagueId) { return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
-  }
+   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+  g:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex items-center mb-6">
             <Brain className="w-8 h-8 text-purple-600 mr-3" />

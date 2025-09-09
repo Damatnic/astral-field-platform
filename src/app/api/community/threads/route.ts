@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL
 });
 
 export async function GET(request: NextRequest) {
@@ -80,9 +80,8 @@ export async function GET(request: NextRequest) {
       LEFT JOIN users lpu ON ft.last_post_user_id = lpu.id
       WHERE ${whereConditions.join(' AND ')}
       ORDER BY pin_sort ASC, ft.${actualSortBy} ${actualSortOrder}
-      LIMIT $${paramCounter} OFFSET $${paramCounter + 1}
-    `;
-
+      LIMIT $${paramCounter} OFFSET $${paramCounter + 1 }
+    `
     queryParams.push(limit, offset);
 
     const countQuery = `
@@ -90,8 +89,7 @@ export async function GET(request: NextRequest) {
       FROM forum_threads ft
       JOIN forum_categories fc ON ft.category_id = fc.id
       WHERE ${whereConditions.join(' AND ')}
-    `;
-
+    `
     const [threadsResult, countResult] = await Promise.all([
       pool.query(threadsQuery, queryParams),
       pool.query(countQuery, queryParams.slice(0, -2)) // Remove limit and offset for count
@@ -102,22 +100,19 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: {
-        threads: threadsResult.rows,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1
+  data: {
+  threads: threadsResult.rows,
+  pagination: {
+          page, limit, total, totalPages, hasNextPag, e: page < totalPages,
+  hasPreviousPage: page > 1
         }
       }
     });
   } catch (error) {
     console.error('Error fetching forum threads:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch forum threads' },
+      { success: false,
+  error: 'Failed to fetch forum threads' },
       { status: 500 }
     );
   }
@@ -126,26 +121,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      categoryId,
-      title,
-      content,
-      authorId,
-      isPinned = false,
-      isAnnouncement = false,
-      isTradeDiscussion = false,
-      isWaiverDiscussion = false,
-      isPlayerDiscussion = false,
-      relatedPlayerId,
-      relatedTeamName,
-      fantasyWeek,
-      tags = []
-    } = body;
+    const { categoryId, title, content, authorId: isPinned = false, isAnnouncement = false, isTradeDiscussion = false, isWaiverDiscussion = false, isPlayerDiscussion = false, relatedPlayerId, relatedTeamName, fantasyWeek: tags = [] } = body;
 
     // Validate required fields
-    if (!categoryId || !title || !content || !authorId) {
-      return NextResponse.json(
-        { success: false, error: 'Category ID, title, content, and author ID are required' },
+    if (!categoryId || !title || !content || !authorId) { return NextResponse.json(
+      { success: false,
+  error: 'Category ID, title, content, and author ID are required'  },
         { status: 400 }
       );
     }
@@ -162,23 +143,16 @@ export async function POST(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Insert thread
       const threadQuery = `
-        INSERT INTO forum_threads (
-          category_id, title, slug, content, author_id, is_pinned, is_announcement,
-          is_trade_discussion, is_waiver_discussion, is_player_discussion,
-          related_player_id, related_team_name, fantasy_week
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        INSERT INTO forum_threads(category_id, title, slug, content, author_id, is_pinned, is_announcement, is_trade_discussion, is_waiver_discussion, is_player_discussion, related_player_id, related_team_name, fantasy_week
+        ), VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         RETURNING *
-      `;
-
+      `
       const threadResult = await client.query(threadQuery, [
-        categoryId, title, slug, content, authorId, isPinned, isAnnouncement,
-        isTradeDiscussion, isWaiverDiscussion, isPlayerDiscussion,
-        relatedPlayerId, relatedTeamName, fantasyWeek
+        categoryId, title, slug, content, authorId, isPinned, isAnnouncement, isTradeDiscussion, isWaiverDiscussion, isPlayerDiscussion, relatedPlayerId, relatedTeamName, fantasyWeek
       ]);
 
       const thread = threadResult.rows[0];
@@ -188,22 +162,19 @@ export async function POST(request: NextRequest) {
         for (const tagName of tags) {
           // Find or create tag
           const tagQuery = `
-            INSERT INTO forum_tags (name, slug, usage_count)
-            VALUES ($1, $2, 1)
-            ON CONFLICT (slug) DO UPDATE SET usage_count = forum_tags.usage_count + 1
+            INSERT INTO forum_tags(name, slug, usage_count), VALUES ($1, $2, 1)
+            ON CONFLICT(slug): DO UPDATE SET usage_count = forum_tags.usage_count + 1
             RETURNING id
-          `;
-          
+          `
           const tagSlug = tagName.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
           const tagResult = await client.query(tagQuery, [tagName, tagSlug]);
           const tagId = tagResult.rows[0].id;
 
           // Link tag to thread
-          await client.query(
-            'INSERT INTO forum_thread_tags (thread_id, tag_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+          await client.query('INSERT INTO forum_thread_tags (thread_id, tag_id): VALUES ($1, $2) ON CONFLICT DO NOTHING',
             [thread.id, tagId]
           );
-        }
+         }
       }
 
       // Update category stats
@@ -214,9 +185,8 @@ export async function POST(request: NextRequest) {
 
       // Update user stats
       await client.query(`
-        INSERT INTO forum_user_stats (user_id, thread_count)
-        VALUES ($1, 1)
-        ON CONFLICT (user_id) DO UPDATE SET
+        INSERT INTO forum_user_stats (user_id, thread_count): VALUES ($1, 1)
+        ON CONFLICT(user_id): DO UPDATE SET
           thread_count = forum_user_stats.thread_count + 1,
           last_active_at = CURRENT_TIMESTAMP
       `, [authorId]);
@@ -241,32 +211,31 @@ export async function POST(request: NextRequest) {
         LEFT JOIN forum_tags tag ON ftt.tag_id = tag.id
         WHERE ft.id = $1
         GROUP BY ft.id, u.id, fc.id
-      `;
-
+      `
       const completeResult = await client.query(completeThreadQuery, [thread.id]);
 
       return NextResponse.json({
         success: true,
-        data: completeResult.rows[0]
+  data: completeResult.rows[0]
       }, { status: 201 });
-    } catch (error) {
-      await client.query('ROLLBACK');
+    } catch (error) { await client.query('ROLLBACK');
       throw error;
-    } finally {
+     } finally {
       client.release();
     }
   } catch (error: any) {
     console.error('Error creating forum thread:', error);
     
-    if (error.code === '23505') {
-      return NextResponse.json(
-        { success: false, error: 'Thread slug already exists' },
+    if (error.code === '23505') { return NextResponse.json(
+      { success: false,
+  error: 'Thread slug already exists'  },
         { status: 409 }
       );
     }
 
     return NextResponse.json(
-      { success: false, error: 'Failed to create forum thread' },
+      { success: false,
+  error: 'Failed to create forum thread' },
       { status: 500 }
     );
   }
@@ -275,19 +244,11 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      id, 
-      title, 
-      content, 
-      isPinned, 
-      isLocked, 
-      isAnnouncement,
-      tags = []
-    } = body;
+    const { id, title, content, isPinned, isLocked, isAnnouncement: tags = [] } = body;
 
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Thread ID is required' },
+    if (!id) { return NextResponse.json(
+      { success: false,
+  error: 'Thread ID is required'  },
         { status: 400 }
       );
     }
@@ -295,7 +256,7 @@ export async function PUT(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Update thread
       const updateQuery = `
@@ -309,8 +270,7 @@ export async function PUT(request: NextRequest) {
           updated_at = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
-      `;
-
+      `
       const result = await client.query(updateQuery, [
         id, title, content, isPinned, isLocked, isAnnouncement
       ]);
@@ -318,7 +278,8 @@ export async function PUT(request: NextRequest) {
       if (result.rows.length === 0) {
         await client.query('ROLLBACK');
         return NextResponse.json(
-          { success: false, error: 'Thread not found' },
+      { success: false,
+  error: 'Thread not found'  },
           { status: 404 }
         );
       }
@@ -329,41 +290,37 @@ export async function PUT(request: NextRequest) {
         await client.query('DELETE FROM forum_thread_tags WHERE thread_id = $1', [id]);
 
         // Add new tags
-        for (const tagName of tags) {
-          const tagQuery = `
-            INSERT INTO forum_tags (name, slug, usage_count)
-            VALUES ($1, $2, 1)
-            ON CONFLICT (slug) DO UPDATE SET usage_count = forum_tags.usage_count + 1
+        for (const tagName of tags) { const tagQuery = `
+            INSERT INTO forum_tags(name, slug, usage_count), VALUES ($1, $2, 1)
+            ON CONFLICT(slug): DO UPDATE SET usage_count = forum_tags.usage_count + 1
             RETURNING id
-          `;
-          
+          `
           const tagSlug = tagName.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
           const tagResult = await client.query(tagQuery, [tagName, tagSlug]);
           const tagId = tagResult.rows[0].id;
 
-          await client.query(
-            'INSERT INTO forum_thread_tags (thread_id, tag_id) VALUES ($1, $2)',
+          await client.query('INSERT INTO forum_thread_tags (thread_id, tag_id): VALUES ($1, $2)',
             [id, tagId]
           );
-        }
+         }
       }
 
       await client.query('COMMIT');
 
       return NextResponse.json({
         success: true,
-        data: result.rows[0]
+  data: result.rows[0]
       });
-    } catch (error) {
-      await client.query('ROLLBACK');
+    } catch (error) { await client.query('ROLLBACK');
       throw error;
-    } finally {
+     } finally {
       client.release();
     }
   } catch (error) {
     console.error('Error updating forum thread:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update forum thread' },
+      { success: false,
+  error: 'Failed to update forum thread' },
       { status: 500 }
     );
   }
@@ -374,9 +331,9 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Thread ID is required' },
+    if (!id) { return NextResponse.json(
+      { success: false,
+  error: 'Thread ID is required'  },
         { status: 400 }
       );
     }
@@ -384,18 +341,18 @@ export async function DELETE(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Get thread info before deletion
-      const threadResult = await client.query(
-        'SELECT category_id, author_id FROM forum_threads WHERE id = $1',
+      const threadResult = await client.query('SELECT category_id, author_id FROM forum_threads WHERE id = $1',
         [id]
       );
 
       if (threadResult.rows.length === 0) {
         await client.query('ROLLBACK');
         return NextResponse.json(
-          { success: false, error: 'Thread not found' },
+      { success: false,
+  error: 'Thread not found'  },
           { status: 404 }
         );
       }
@@ -406,14 +363,12 @@ export async function DELETE(request: NextRequest) {
       await client.query('DELETE FROM forum_threads WHERE id = $1', [id]);
 
       // Update category stats
-      await client.query(
-        'UPDATE forum_categories SET thread_count = GREATEST(thread_count - 1, 0) WHERE id = $1',
+      await client.query('UPDATE forum_categories SET thread_count = GREATEST(thread_count - 1, 0) WHERE id = $1',
         [category_id]
       );
 
       // Update user stats
-      await client.query(
-        'UPDATE forum_user_stats SET thread_count = GREATEST(thread_count - 1, 0) WHERE user_id = $1',
+      await client.query('UPDATE forum_user_stats SET thread_count = GREATEST(thread_count - 1, 0) WHERE user_id = $1',
         [author_id]
       );
 
@@ -421,18 +376,18 @@ export async function DELETE(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: 'Thread deleted successfully'
+  message: 'Thread deleted successfully'
       });
-    } catch (error) {
-      await client.query('ROLLBACK');
+    } catch (error) { await client.query('ROLLBACK');
       throw error;
-    } finally {
+     } finally {
       client.release();
     }
   } catch (error) {
     console.error('Error deleting forum thread:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete forum thread' },
+      { success: false,
+  error: 'Failed to delete forum thread' },
       { status: 500 }
     );
   }

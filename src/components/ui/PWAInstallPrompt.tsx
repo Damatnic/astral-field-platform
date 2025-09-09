@@ -1,41 +1,32 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { X, Download, Smartphone, Bell, Wifi, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button/Button';
 import { Card, CardContent } from '@/components/ui/Card/Card';
 import { usePWA } from '@/hooks/usePWA';
 
-export function PWAInstallPrompt() {
-  const [showPrompt, setShowPrompt] = useState(false);
+export function PWAInstallPrompt() { const [showPrompt, setShowPrompt] = useState(false);
   const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   
-  const {
-    status,
-    installPWA,
-    updateServiceWorker,
-    requestNotificationPermission,
-    subscribeToPush
-  } = usePWA({
+  const { status, installPWA, updateServiceWorker, requestNotificationPermission, subscribeToPush } = usePWA({
     onUpdate: () => setShowUpdatePrompt(true),
-    onOffline: () => setIsOnline(false),
+  onOffline: () => setIsOnline(false),
     onOnline: () => setIsOnline(true)
   });
 
   useEffect(() => {
     // Show install prompt after user has engaged with the app
-    const timer = setTimeout(() => {
-      if (status.canInstall && !status.isInstalled) {
+    const timer = setTimeout(() => { if (status.canInstall && !status.isInstalled) {
         setShowPrompt(true);
-      }
+       }
     }, 30000); // Show after 30 seconds
 
     return () => clearTimeout(timer);
   }, [status.canInstall, status.isInstalled]);
 
-  const handleInstall = async () => {
-    const installed = await installPWA();
+  const handleInstall = async () => { const installed = await installPWA();
     if (installed) {
       setShowPrompt(false);
       
@@ -43,41 +34,33 @@ export function PWAInstallPrompt() {
       const notificationGranted = await requestNotificationPermission();
       if (notificationGranted) {
         await subscribeToPush();
-      }
+       }
     }
-  };
-
+  }
   const handleUpdate = () => {
     updateServiceWorker();
     setShowUpdatePrompt(false);
-  };
-
+  }
   const handleDismiss = () => {
     setShowPrompt(false);
     // Don't show again for 7 days
     localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
-  };
-
+  }
   // Check if prompt was recently dismissed
-  useEffect(() => {
-    const dismissed = localStorage.getItem('pwa-prompt-dismissed');
+  useEffect(() => { const dismissed = localStorage.getItem('pwa-prompt-dismissed');
     if (dismissed) {
       const dismissedTime = parseInt(dismissed);
       const daysSinceDismissed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
       if (daysSinceDismissed < 7) {
         setShowPrompt(false);
-      }
+       }
     }
   }, []);
 
   // Network status indicator
   const NetworkStatus = () => (
-    <div className={`
-      fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-2 rounded-lg
-      transition-all duration-300 transform
-      ${isOnline 
-        ? 'bg-green-500/10 border border-green-500/20 translate-y-20' 
-        : 'bg-red-500/10 border border-red-500/20 translate-y-0'}
+    <div className={`fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-2 rounded-lg
+      transition-all duration-300 transform ${isOnline ? 'bg-green-500/10 border border-green-500/20 translate-y-20' : 'bg-red-500/10 border border-red-500/20 translate-y-0'}
     `}>
       {isOnline ? (
         <>
@@ -89,19 +72,18 @@ export function PWAInstallPrompt() {
           <WifiOff className="w-4 h-4 text-red-400" />
           <span className="text-sm text-red-400">Offline Mode</span>
         </>
-      )}
+      ) }
     </div>
   );
 
   // Install prompt
-  if (showPrompt && status.canInstall) {
-    return (
+  if (showPrompt && status.canInstall) { return (
       <>
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <Card className="max-w-md w-full bg-gray-900 border-gray-700 animate-in slide-in-from-bottom duration-300">
             <CardContent className="p-6">
               <button
-                onClick={handleDismiss}
+                onClick={handleDismiss }
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"
               >
                 <X className="w-5 h-5" />
@@ -160,7 +142,7 @@ export function PWAInstallPrompt() {
                   className="flex-1"
                   onClick={handleDismiss}
                 >
-                  Not Now
+  Not, Now,
                 </Button>
                 <Button
                   variant="primary"
@@ -180,8 +162,7 @@ export function PWAInstallPrompt() {
   }
 
   // Update prompt
-  if (showUpdatePrompt && status.updateAvailable) {
-    return (
+  if (showUpdatePrompt && status.updateAvailable) { return (
       <>
         <div className="fixed bottom-4 right-4 z-50 max-w-sm">
           <Card className="bg-gray-900 border-blue-500/20">
@@ -192,7 +173,7 @@ export function PWAInstallPrompt() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-100 mb-1">
-                    Update Available
+  Update, Available,
                   </h3>
                   <p className="text-sm text-gray-400 mb-3">
                     A new version of Astral Field is ready to install.
@@ -201,7 +182,7 @@ export function PWAInstallPrompt() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowUpdatePrompt(false)}
+                      onClick={() => setShowUpdatePrompt(false) }
                     >
                       Later
                     </Button>
@@ -210,7 +191,7 @@ export function PWAInstallPrompt() {
                       size="sm"
                       onClick={handleUpdate}
                     >
-                      Update Now
+  Update, Now,
                     </Button>
                   </div>
                 </div>

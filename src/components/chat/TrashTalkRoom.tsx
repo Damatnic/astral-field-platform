@@ -5,40 +5,43 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface TrashTalkMessage {
-  id: string;
-  userId: string;
-  username: string;
-  content: string;
+  id, string,
+    userId, string,
+  username, string,
+    content, string,
   messageType: 'text' | 'gif' | 'meme';
-  gifUrl?: string;
-  memeUrl?: string;
-  isRoast?: boolean;
-  targetUserId?: string;
-  targetUsername?: string;
-  reactions?: {
-    [emoji: string]: {
-      count: number;
-      users: { userId: string; username: string }[];
-    };
-  };
-  createdAt: string;
-  isModerated?: boolean;
-  moderationReason?: string;
+  gifUrl?, string,
+  memeUrl?, string,
+  isRoast?, boolean,
+  targetUserId?, string,
+  targetUsername?, string,
+  reactions?: {;
+  [emoji: string]: {;
+  count, number,
+  users: { userI,
+  d, string, username, string,
+}
+[];
+    }
+  }
+  createdAt, string,
+  isModerated?, boolean,
+  moderationReason?, string,
 }
 
 interface TrashTalkRoomProps {
-  leagueId: string;
-  userId: string;
-  username: string;
-  isCommissioner?: boolean;
+  leagueId, string,
+    userId, string,
+  username, string,
+  isCommissioner?, boolean,
+  
 }
-
 const TRASH_TALK_EMOJIS = ['🔥', '😂', '💀', '🤡', '💯', '🗿', '😈', '🎯', '💣', '⚰️'];
-const ROAST_TEMPLATES = [
+const ROAST_TEMPLATES = [;
   "Your team is so bad, even the waiver wire won't take them!",
   "I've seen better lineups at a retirement home fantasy league.",
   "Your draft strategy was clearly 'close your eyes and hope for the best.'",
@@ -46,29 +49,31 @@ const ROAST_TEMPLATES = [
   "I'd say good luck this week, but we both know it won't help."
 ];
 
-const TRASH_TALK_GIFS = [
+const TRASH_TALK_GIFS = [;
   {
-    url: 'https://media.giphy.com/media/3o7TKwmnDgQb5jemjK/giphy.gif',
-    title: 'Burn!'
+    url: 'http,
+  s://media.giphy.com/media/3o7TKwmnDgQb5jemjK/giphy.gif',
+  title: 'Burn!'
   },
   {
-    url: 'https://media.giphy.com/media/26BRrSvJUa0crqw4E/giphy.gif',
-    title: 'Savage'
+    url: 'http,
+  s://media.giphy.com/media/26BRrSvJUa0crqw4E/giphy.gif',
+  title: 'Savage'
   },
   {
-    url: 'https://media.giphy.com/media/l0MYryZTmQgvHI5TG/giphy.gif',
-    title: 'Roasted'
+    url: 'http,
+  s://media.giphy.com/media/l0MYryZTmQgvHI5TG/giphy.gif',
+  title: 'Roasted'
   }
 ];
 
-export default function TrashTalkRoom({ leagueId, userId, username, isCommissioner = false }: TrashTalkRoomProps) {
-  const [messages, setMessages] = useState<TrashTalkMessage[]>([]);
+export default function TrashTalkRoom({ leagueId, userId, username, isCommissioner = false }: TrashTalkRoomProps) { const [messages, setMessages] = useState<TrashTalkMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedTarget, setSelectedTarget] = useState<string>('');
   const [showRoastGenerator, setShowRoastGenerator] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [showModerationPanel, setShowModerationPanel] = useState(false);
-  const [leagueMembers, setLeagueMembers] = useState<Array<{ id: string; username: string; teamName: string }>>([]);
+  const [leagueMembers, setLeagueMembers] = useState<Array<{ id, string, username, string, teamName, string }>>([]);
   const [moderationQueue, setModerationQueue] = useState<TrashTalkMessage[]>([]);
   const [filter, setFilter] = useState<'all' | 'my_roasts' | 'targeting_me'>('all');
   const [isTyping, setIsTyping] = useState(false);
@@ -87,42 +92,38 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
   }, [leagueId]);
 
   // Setup WebSocket listeners
-  useEffect(() => {
-    if (!isConnected) return;
+  useEffect(() => { if (!isConnected) return;
 
     const handleTrashTalkMessage = (message: TrashTalkMessage) => {
       if (message.userId !== userId) { // Don't add our own messages (already added optimistically)
         setMessages(prev => [...prev, message]);
-      }
-    };
-
-    const handleMessageModerated = (data: {
-      messageId: string;
-      action: 'hide' | 'delete' | 'warn';
-      moderatedBy: string;
-      reason: string;
+       }
+    }
+    const handleMessageModerated = (data: {,
+  messageId, string,
+      action: 'hide' | 'delete' | 'warn',
+    moderatedBy, string,
+      reason, string,
     }) => {
       setMessages(prev => 
         prev.map(msg => 
           msg.id === data.messageId
-            ? {
-                ...msg,
-                isModerated: true,
-                moderationReason: data.reason,
+            ? { : ..msg,
+                isModerated, true,
+  moderationReason: data.reason,
                 content: data.action === 'hide' ? '[Message hidden by moderator]' : msg.content
               }
             : msg
         ).filter(msg => !(msg.id === data.messageId && data.action === 'delete'))
       );
-    };
-
+    }
     on('trash_talk_message', handleTrashTalkMessage);
     on('message_moderated', handleMessageModerated);
 
     return () => {
       off('trash_talk_message', handleTrashTalkMessage);
       off('message_moderated', handleMessageModerated);
-    };
+    }
   }, [isConnected, userId]);
 
   // Auto-scroll to bottom
@@ -130,72 +131,61 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
-  const loadTrashTalkMessages = async () => {
-    try {
-      const response = await fetch(`/api/chat/trash-talk?leagueId=${leagueId}&limit=100`, {
+  const loadTrashTalkMessages = async () => { try {
+      const response = await fetch(`/api/chat/trash-talk?leagueId=${leagueId }&limit=100`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.ok) { const data = await response.json();
         setMessages(data.messages || []);
-      }
+       }
     } catch (error) {
       console.error('Error loading trash talk messages:', error);
     }
-  };
-
-  const loadLeagueMembers = async () => {
-    try {
-      const response = await fetch(`/api/leagues/${leagueId}/members`, {
+  }
+  const loadLeagueMembers = async () => { try {
+      const response = await fetch(`/api/leagues/${leagueId }/members`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.ok) { const data = await response.json();
         setLeagueMembers(data.members?.filter((m: any) => m.id !== userId) || []);
-      }
+       }
     } catch (error) {
       console.error('Error loading league members:', error);
     }
-  };
-
-  const loadModerationQueue = async () => {
-    try {
-      const response = await fetch(`/api/chat/moderation/queue?leagueId=${leagueId}`, {
+  }
+  const loadModerationQueue = async () => { try {
+      const response = await fetch(`/api/chat/moderation/queue?leagueId=${leagueId }`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.ok) { const data = await response.json();
         setModerationQueue(data.messages || []);
-      }
+       }
     } catch (error) {
       console.error('Error loading moderation queue:', error);
     }
-  };
-
-  const sendMessage = async (content: string, type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => {
-    try {
+  }
+  const sendMessage = async (content, string;
+type: 'text' | 'gif' | 'roast' = 'text', gifUrl?: string) => { try {
       const response = await fetch('/api/chat/trash-talk', {
         method: 'POST',
-        headers: {
+  headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
         },
         body: JSON.stringify({
-          leagueId,
-          content,
-          messageType: type,
-          gifUrl,
+          leagueId, content,
+          messageType, type, gifUrl,
           targetUserId: selectedTarget || undefined,
-          isRoast: type === 'roast' || selectedTarget !== ''
+  isRoast: type === 'roast' || selectedTarget !== ''
         })
       });
 
@@ -209,20 +199,17 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
     } catch (error) {
       console.error('Error sending trash talk message:', error);
     }
-  };
-
-  const moderateMessage = async (messageId: string, action: 'hide' | 'delete' | 'warn', reason: string) => {
-    try {
+  }
+  const moderateMessage = async (messageId, string;
+  action: 'hide' | 'delete' | 'warn', reason: string) => { try {
       const response = await fetch('/api/chat/moderation', {
         method: 'POST',
-        headers: {
+  headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken') }`
         },
         body: JSON.stringify({
-          messageId,
-          action,
-          reason,
+          messageId, action, reason,
           leagueId
         })
       });
@@ -233,13 +220,11 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
     } catch (error) {
       console.error('Error moderating message:', error);
     }
-  };
-
-  const startTyping = () => {
-    if (!isTyping) {
+  }
+  const startTyping = () => { if (!isTyping) {
       setIsTyping(true);
       // Send typing indicator via WebSocket
-    }
+     }
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -248,61 +233,51 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
     typingTimeoutRef.current = setTimeout(() => {
       stopTyping();
     }, 3000);
-  };
-
-  const stopTyping = () => {
-    if (isTyping) {
+  }
+  const stopTyping = () => { if (isTyping) {
       setIsTyping(false);
       // Send stop typing indicator via WebSocket
-    }
+     }
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-  };
-
-  const generateRoast = () => {
-    const randomRoast = ROAST_TEMPLATES[Math.floor(Math.random() * ROAST_TEMPLATES.length)];
+  }
+  const generateRoast = () => { const randomRoast = ROAST_TEMPLATES[Math.floor(Math.random() * ROAST_TEMPLATES.length)];
     setNewMessage(randomRoast);
-  };
-
-  const filteredMessages = messages.filter(msg => {
-    switch (filter) {
+   }
+  const filteredMessages = messages.filter(msg => { switch (filter) {
       case 'my_roasts':
-        return msg.userId === userId && msg.isRoast;
-      case 'targeting_me':
+      return msg.userId === userId && msg.isRoast;
+      break;
+    case 'targeting_me':
         return msg.targetUserId === userId;
       default:
         return true;
-    }
+     }
   });
 
-  const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', { 
-      hour12: true, 
-      hour: 'numeric', 
+  const formatTime = (timestamp: string) => { return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour12, true,
+  hour: 'numeric', 
       minute: '2-digit'
-    });
-  };
-
-  const getMessageStyle = (msg: TrashTalkMessage) => {
-    let baseStyle = 'p-4 rounded-lg border transition-all duration-300 hover:shadow-lg';
+     });
+  }
+  const getMessageStyle = (msg: TrashTalkMessage) => { let baseStyle = 'p-4 rounded-lg border transition-all duration-300 hove,
+  r:shadow-lg';
     
     if (msg.isModerated) {
-      return `${baseStyle} bg-red-600/10 border-red-500/30 opacity-60`;
+      return `${baseStyle } bg-red-600/10 border-red-500/30 opacity-60`;
     }
     
-    if (msg.isRoast && msg.targetUserId === userId) {
-      return `${baseStyle} bg-red-600/20 border-red-500/40 shadow-lg`;
+    if (msg.isRoast && msg.targetUserId === userId) { return `${baseStyle } bg-red-600/20 border-red-500/40 shadow-lg`;
     }
     
-    if (msg.userId === userId) {
-      return `${baseStyle} bg-blue-600/20 border-blue-500/30`;
+    if (msg.userId === userId) { return `${baseStyle } bg-blue-600/20 border-blue-500/30`;
     }
     
     return `${baseStyle} bg-gray-700/20 border-gray-600/30`;
-  };
-
+  }
   return (
     <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden flex flex-col h-full">
       {/* Header */}
@@ -320,7 +295,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
           <div className="flex items-center gap-2">
             {isCommissioner && (
               <button
-                onClick={() => setShowModerationPanel(!showModerationPanel)}
+                onClick={() => setShowModerationPanel(!showModerationPanel) }
                 className="p-2 bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-400 rounded-lg transition-colors relative"
                 title="Moderation Panel"
               >
@@ -336,7 +311,8 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as any)}
-              className="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-gray-700 text-white rounded-lg px-3 py-1 text-sm border border-gray-600 focus: outline-none focu,
+  s:ring-2 focus; ring-blue-500"
             >
               <option value="all">All Messages</option>
               <option value="my_roasts">My Roasts</option>
@@ -355,7 +331,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
           ) : (
             <div className="space-y-2">
               {moderationQueue.slice(0, 3).map(msg => (
-                <div key={msg.id} className="bg-gray-800/50 rounded-lg p-3">
+                <div key={msg.id } className="bg-gray-800/50 rounded-lg p-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="text-sm text-gray-400 mb-1">
@@ -474,7 +450,8 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
             <select
               value={selectedTarget}
               onChange={(e) => setSelectedTarget(e.target.value)}
-              className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="bg-gray-700 text-white rounded-lg px-3 py-2 text-sm border border-gray-600 focus: outline-none focu,
+  s:ring-2 focus; ring-red-500"
             >
               <option value="">General trash talk</option>
               {leagueMembers.map(member => (
@@ -508,7 +485,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
             <div className="flex justify-between items-center mb-2">
               <h4 className="text-sm font-medium text-orange-400">🎯 Auto-Roast Generator</h4>
               <button
-                onClick={generateRoast}
+                onClick={generateRoast }
                 className="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded"
               >
                 Generate
@@ -527,7 +504,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
             <div className="grid grid-cols-3 gap-2">
               {TRASH_TALK_GIFS.map((gif, index) => (
                 <button
-                  key={index}
+                  key={index }
                   onClick={() => sendMessage(gif.title, 'gif', gif.url)}
                   className="hover:opacity-80 transition-opacity"
                 >
@@ -556,27 +533,27 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
                 stopTyping();
               }
             }}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+            onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (newMessage.trim()) {
                   sendMessage(newMessage.trim(), selectedTarget ? 'roast' : 'text');
-                }
+                 }
               }
             }}
-            className="flex-1 bg-gray-700/50 text-white rounded-lg px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 border border-gray-600"
+            className="flex-1 bg-gray-700/50 text-white rounded-lg px-4 py-3 placeholder-gray-400 focus: outline-none focu,
+  s:ring-2 focus; ring-red-500 border border-gray-600"
             maxLength={500}
             disabled={!isConnected}
           />
           
           <button
-            onClick={() => {
-              if (newMessage.trim()) {
+            onClick={() => { if (newMessage.trim()) {
                 sendMessage(newMessage.trim(), selectedTarget ? 'roast' : 'text');
-              }
+               }
             }}
             disabled={!newMessage.trim() || !isConnected}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+            className="px-6 py-3 bg-red-600 hover: bg-red-700 disable,
+  d:bg-gray-600 disabled; opacity-50 text-white rounded-lg font-medium transition-colors"
           >
             🔥
           </button>
@@ -588,7 +565,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
             <button
               key={emoji}
               onClick={() => sendMessage(emoji, 'text')}
-              className="text-lg hover:scale-125 transition-transform duration-200 p-1 hover:bg-gray-700/30 rounded"
+              className="text-lg hover:scale-125 transition-transform duration-200 p-1 hover; bg-gray-700/30 rounded"
               disabled={!isConnected}
             >
               {emoji}
@@ -599,7 +576,7 @@ export default function TrashTalkRoom({ leagueId, userId, username, isCommission
         {/* Connection Status */}
         {!isConnected && (
           <div className="mt-2 text-xs text-yellow-400 flex items-center gap-2">
-            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-3 h-3 border border-yellow-400 border-t-transparent rounded-full animate-spin" />
             <span>Reconnecting to trash talk...</span>
           </div>
         )}

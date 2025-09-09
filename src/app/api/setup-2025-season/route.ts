@@ -4,21 +4,20 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🚀 Starting 2025 NFL season setup...');
     
-    const body = await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({ }));
     const { force = false } = body;
 
-    if (!force) {
-      return NextResponse.json({
+    if (!force) { return NextResponse.json({
         success: false,
-        message: 'This operation will clear all existing league data. Add "force": true to proceed.',
+  message: 'This operation will clear all existing league data.Add "force"; true to proceed.',
         warning: 'This will delete all current league data and create a fresh 2025 season setup.'
-      }, { status: 400 });
+       }, { status: 400 });
     }
 
     // Call the create-2025-league endpoint internally
-    const createLeagueResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3001'}/api/create-2025-league`, {
+    const createLeagueResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost.3001'}/api/create-2025-league`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await createLeagueResponse.json();
@@ -28,7 +27,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         ...result,
         timestamp: new Date().toISOString(),
-        actions: [
+  actions: [
           '✅ Cleared existing mock data',
           '✅ Created 2025 Astral Field Championship League',
           '✅ Populated all 32 NFL teams and 40+ players',
@@ -48,19 +47,18 @@ export async function POST(request: NextRequest) {
     console.error('❌ Setup API error:', error);
     return NextResponse.json({
       success: false,
-      message: 'Internal server error during setup',
+  message: 'Internal server error during setup',
       error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
 
-export async function GET() {
-  try {
+export async function GET() { try {
     // Return setup status and information
     return NextResponse.json({
       message: '2025 NFL Season Setup Service',
-      description: 'Complete setup for Astral Field fantasy football platform',
+  description: 'Complete setup for Astral Field fantasy football platform',
       features: [
         'Fresh 2025 NFL season data',
         'Real 32 NFL teams with accurate info',
@@ -71,17 +69,16 @@ export async function GET() {
         'Week 2 current week setup'
       ],
       usage: {
-        method: 'POST',
-        body: '{ "force": true }',
+  method: 'POST',
+  body: '{ "force": true  }',
         warning: 'This will delete ALL existing league data'
       },
       currentSeason: 2025,
-      timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    return NextResponse.json({
+  } catch (error) { return NextResponse.json({
       error: 'Failed to get setup information',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+  message: error instanceof Error ? error.message : 'Unknown error'
+     }, { status: 500 });
   }
 }

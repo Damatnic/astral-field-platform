@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  return NextResponse.json({
+export async function GET() { return NextResponse.json({
     success: true,
-    message: "Cleanup endpoint is working",
-    timestamp: new Date().toISOString(),
-  });
+  message: "Cleanup endpoint is working",
+    timestamp: new Date().toISOString()
+});
 }

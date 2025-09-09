@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card/Card';
 import { Button } from '@/components/ui/Button/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,25 +11,40 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface Player {
-  id: string;
-  name: string;
-  position: string;
-  team: string;
+  id, string,
+    name, string,
+  position, string,
+    team, string,
+  
 }
-
 const mockPlayers: Player[] = [
-  { id: 'p1', name: 'Patrick Mahomes', position: 'QB', team: 'KC' },
-  { id: 'p2', name: 'Josh Allen', position: 'QB', team: 'BUF' },
-  { id: 'p3', name: 'Christian McCaffrey', position: 'RB', team: 'SF' },
-  { id: 'p4', name: 'Austin Ekeler', position: 'RB', team: 'LAC' },
-  { id: 'p5', name: 'Tyreek Hill', position: 'WR', team: 'MIA' },
-  { id: 'p6', name: 'Justin Jefferson', position: 'WR', team: 'MIN' },
-  { id: 'p7', name: 'Travis Kelce', position: 'TE', team: 'KC' },
-  { id: 'p8', name: 'Mark Andrews', position: 'TE', team: 'BAL' }
+  { id: 'p1',
+  name: 'Patrick Mahomes', position: 'QB',
+  team: 'KC' },
+  { id: 'p2',
+  name: 'Josh Allen', position: 'QB',
+  team: 'BUF' },
+  { id: 'p3',
+  name: 'Christian McCaffrey', position: 'RB',
+  team: 'SF' },
+  { id: 'p4',
+  name: 'Austin Ekeler', position: 'RB',
+  team: 'LAC' },
+  { id: 'p5',
+  name: 'Tyreek Hill', position: 'WR',
+  team: 'MIA' },
+  { id: 'p6',
+  name: 'Justin Jefferson', position: 'WR',
+  team: 'MIN' },
+  { id: 'p7',
+  name: 'Travis Kelce', position: 'TE',
+  team: 'KC' },
+  { id: 'p8',
+  name: 'Mark Andrews', position: 'TE',
+  team: 'BAL' }
 ];
 
-export default function OracleDashboard() {
-  const [selectedWeek, setSelectedWeek] = useState(1);
+export default function OracleDashboard() { const [selectedWeek, setSelectedWeek] = useState(1);
   const [predictions, setPredictions] = useState<PlayerPrediction[]>([]);
   const [comparisons, setComparisons] = useState<PlayerComparison[]>([]);
   const [loading, setLoading] = useState(false);
@@ -39,22 +54,17 @@ export default function OracleDashboard() {
   useEffect(() => {
     loadPredictions();
     checkServiceStatus();
-  }, [selectedWeek, selectedPosition]);
+   }, [selectedWeek, selectedPosition]);
 
-  const checkServiceStatus = () => {
-    const status = oracleService.getServiceStatus();
+  const checkServiceStatus = () => { const status = oracleService.getServiceStatus();
     setServiceStatus(status);
-  };
-
+   }
   const loadPredictions = async () => {
     setLoading(true);
-    try {
-      const playersToPredict = selectedPosition === 'ALL' 
-        ? mockPlayers 
-        : mockPlayers.filter(p => p.position === selectedPosition);
+    try { const playersToPredict = selectedPosition === 'ALL' 
+        ? mockPlayers : mockPlayers.filter(p => p.position === selectedPosition);
 
-      const preds = await Promise.all(
-        playersToPredict.map(player =>
+      const preds = await Promise.all(playersToPredict.map(player =>
           oracleService.generatePlayerPrediction(
             player.id,
             player.name,
@@ -69,32 +79,26 @@ export default function OracleDashboard() {
 
       // Generate some comparisons
       if (preds.length >= 2) {
-        const comp1 = await oracleService.comparePlayerPredictions(
-          playersToPredict[0],
+        const comp1 = await oracleService.comparePlayerPredictions(playersToPredict[0],
           playersToPredict[1],
           selectedWeek
         );
         setComparisons([comp1]);
-      }
+       }
     } catch (error) {
       console.error('Failed to load predictions:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.8) return 'text-green-500';
+  }
+  const getConfidenceColor = (confidence: number) => { if (confidence >= 0.8) return 'text-green-500';
     if (confidence >= 0.6) return 'text-yellow-500';
     return 'text-red-500';
-  };
-
-  const getTrendIcon = (trend: string) => {
-    if (trend === 'improving') return <TrendingUp className="h-4 w-4 text-green-500" />;
+   }
+  const getTrendIcon = (trend: string) => { if (trend === 'improving') return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (trend === 'declining') return <TrendingDown className="h-4 w-4 text-red-500" />;
     return <Activity className="h-4 w-4 text-gray-500" />;
-  };
-
+   }
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -116,7 +120,7 @@ export default function OracleDashboard() {
                 <span>Oracle Active</span>
               </div>
               <div className="text-xs text-muted-foreground">
-                {serviceStatus.modelsLoaded} models loaded
+                {serviceStatus.modelsLoaded } models loaded
               </div>
               <div className="text-xs text-muted-foreground">
                 Cache: {serviceStatus.cacheSize} predictions
@@ -164,9 +168,9 @@ export default function OracleDashboard() {
           <Button
             variant="outline"
             onClick={() => setSelectedWeek(Math.max(1, selectedWeek - 1))}
-            disabled={selectedWeek <= 1}
+            disabled={ selectedWeek: <= 1 }
           >
-            ← Week {selectedWeek - 1}
+            ← Week { selectedWeek: - 1 }
           </Button>
           <Button variant="primary">
             Week {selectedWeek}
@@ -174,9 +178,9 @@ export default function OracleDashboard() {
           <Button
             variant="outline"
             onClick={() => setSelectedWeek(Math.min(17, selectedWeek + 1))}
-            disabled={selectedWeek >= 17}
+            disabled={ selectedWeek: >= 17 }
           >
-            Week {selectedWeek + 1} →
+            Week { selectedWeek: + 1 } →
           </Button>
         </div>
         <Button onClick={loadPredictions} disabled={loading}>
@@ -203,12 +207,12 @@ export default function OracleDashboard() {
           ) : (
             <div className="grid gap-4">
               {predictions.map((prediction, index) => (
-                <Card key={prediction.playerId} className="hover:shadow-lg transition-shadow">
+                <Card key={prediction.playerId } className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-3">
                         <div className="text-2xl font-bold text-muted-foreground">
-                          #{index + 1}
+                          #{ index: + 1 }
                         </div>
                         <div>
                           <CardTitle className="text-xl">

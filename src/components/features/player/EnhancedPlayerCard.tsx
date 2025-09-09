@@ -1,25 +1,15 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp,
-  TrendingDown,
-  Cloud,
-  Sun,
-  CloudRain,
-  Snowflake,
-  Wind,
-  AlertTriangle,
-  Heart,
-  Activity,
-  Target,
-  Calendar,
-  BarChart3,
-  Info,
-  Shield,
-  Sword,
-  Clock,
-  User,
-  ChevronDown,
+  TrendingUp, TrendingDown,
+  Cloud, Sun,
+  CloudRain, Snowflake,
+  Wind, AlertTriangle,
+  Heart, Activity,
+  Target, Calendar,
+  BarChart3, Info,
+  Shield, Sword,
+  Clock, User, ChevronDown,
   ChevronUp
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -28,64 +18,60 @@ import { Progress } from '@/components/ui/progress';
 import type { Database } from '@/types/database';
 
 type Player = Database['public']['Tables']['players']['Row'] & {
-  projections?: any;
-  stats?: any;
-  news?: any;
-  weatherForecast?: any;
-  matchupAnalysis?: any;
-  restOfSeasonOutlook?: any;
-  trends?: any;
-};
-
+  projections?, any,
+  stats?, any,
+  news?, any,
+  weatherForecast?, any,
+  matchupAnalysis?, any,
+  restOfSeasonOutlook?, any,
+  trends?, any,
+}
 interface EnhancedPlayerCardProps {
-  player: Player;
-  leagueId?: string;
-  showDetailedView?: boolean;
+  player, Player,
+  leagueId?, string,
+  showDetailedView?, boolean,
   onPlayerSelect?: (player: Player) => void;
   onAddToWatchlist?: (playerId: string) => void;
   onTradeTarget?: (playerId: string) => void;
+  
 }
-
 interface NewsItem {
-  id: string;
-  title: string;
-  summary: string;
-  timestamp: string;
-  impact: 'positive' | 'negative' | 'neutral';
-  source: string;
+  id, string,
+    title, string,
+  summary, string,
+    timestamp, string,
+  impact: 'positive' | 'negative' | 'neutral',
+    source, string,
 }
 
 interface WeatherCondition {
-  temperature: number;
-  condition: 'sunny' | 'cloudy' | 'rain' | 'snow' | 'wind';
-  windSpeed: number;
-  precipitation: number;
+  temperature, number,
+    condition: 'sunny' | 'cloudy' | 'rain' | 'snow' | 'wind';
+  windSpeed, number,
+    precipitation, number,
   impact: 'positive' | 'negative' | 'neutral';
+  
 }
-
 interface MatchupAnalysis {
-  difficulty: 'easy' | 'medium' | 'hard';
-  rank: number;
-  pointsAllowed: number;
-  opponentTeam: string;
-  gameLocation: 'home' | 'away';
-  primetime: boolean;
+  difficulty: 'easy' | 'medium' | 'hard',
+    rank, number,
+  pointsAllowed, number,
+    opponentTeam, string,
+  gameLocation: 'home' | 'away',
+    primetime, boolean,
 }
 
 interface RestOfSeasonOutlook {
-  difficulty: number;
-  byeWeek: number;
-  playoffSchedule: 'easy' | 'medium' | 'hard';
-  injuryRisk: 'low' | 'medium' | 'high';
+  difficulty, number,
+    byeWeek, number,
+  playoffSchedule: 'easy' | 'medium' | 'hard',
+    injuryRisk: 'low' | 'medium' | 'high';
   upcomingMatchups: string[];
+  
 }
-
 const EnhancedPlayerCard = memo(function EnhancedPlayerCard({ 
-  player, 
-  leagueId, 
-  showDetailedView = false,
-  onPlayerSelect,
-  onAddToWatchlist,
+  player, leagueId, 
+  showDetailedView = false, onPlayerSelect, onAddToWatchlist,
   onTradeTarget 
 }: EnhancedPlayerCardProps) {
   const [expanded, setExpanded] = useState(showDetailedView);
@@ -100,7 +86,7 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
       timestamp: '2 hours ago',
       impact: 'positive',
       source: 'ESPN'
-    },
+     },
     {
       id: '2',
       title: 'Increased target share expected',
@@ -112,118 +98,118 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
   ];
   
   const mockWeather: WeatherCondition = {
-    temperature: 72,
+    temperature, 72,
     condition: 'sunny',
-    windSpeed: 8,
-    precipitation: 0,
+    windSpeed, 8,
+    precipitation, 0,
     impact: 'positive'
-  };
-  
-  const mockMatchup: MatchupAnalysis = {
-    difficulty: 'easy',
-    rank: 28,
+  }
+  const mockMatchup: MatchupAnalysis = {,
+  difficulty: 'easy',
+    rank, 28,
     pointsAllowed: 24.8,
     opponentTeam: 'BUF',
     gameLocation: 'home',
     primetime: false
-  };
-  
-  const mockOutlook: RestOfSeasonOutlook = {
-    difficulty: 6.5,
+  }
+  const mockOutlook: RestOfSeasonOutlook = {,
+  difficulty: 6.5,
     byeWeek: player.bye_week || 7,
     playoffSchedule: 'medium',
     injuryRisk: 'low',
     upcomingMatchups: ['vs BUF', '@MIA', 'vs NYJ', '@NE']
-  };
-  
+  }
   const getInjuryStatusIcon = (status: string | null) => {
     switch (status?.toUpperCase()) {
-      case 'OUT': 
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case 'DOUBTFUL': 
+      case 'OUT':
+      return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      break;
+    case 'DOUBTFUL': 
         return <AlertTriangle className="h-4 w-4 text-red-400" />;
-      case 'QUESTIONABLE': 
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'PROBABLE': 
+      case 'QUESTIONABLE':
+      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      break;
+    case 'PROBABLE': 
         return <Heart className="h-4 w-4 text-green-400" />;
       default: 
         return <Heart className="h-4 w-4 text-green-500" />;
     }
-  };
-  
+  }
   const getInjuryStatusColor = (status: string | null) => {
     switch (status?.toUpperCase()) {
-      case 'OUT': 
-        return 'text-red-400 bg-red-900/30';
-      case 'DOUBTFUL': 
+      case 'OUT':
+      return 'text-red-400 bg-red-900/30';
+      break;
+    case 'DOUBTFUL': 
         return 'text-red-300 bg-red-900/20';
-      case 'QUESTIONABLE': 
-        return 'text-yellow-400 bg-yellow-900/30';
-      case 'PROBABLE': 
+      case 'QUESTIONABLE':
+      return 'text-yellow-400 bg-yellow-900/30';
+      break;
+    case 'PROBABLE': 
         return 'text-green-300 bg-green-900/20';
       default: 
         return 'text-green-400 bg-green-900/30';
     }
-  };
-  
+  }
   const getWeatherIcon = (condition: string) => {
     switch (condition) {
-      case 'sunny': 
-        return <Sun className="h-4 w-4 text-yellow-500" />;
-      case 'cloudy': 
+      case 'sunny':
+      return <Sun className="h-4 w-4 text-yellow-500" />;
+      break;
+    case 'cloudy': 
         return <Cloud className="h-4 w-4 text-gray-400" />;
-      case 'rain': 
-        return <CloudRain className="h-4 w-4 text-blue-400" />;
-      case 'snow': 
+      case 'rain':
+      return <CloudRain className="h-4 w-4 text-blue-400" />;
+      break;
+    case 'snow': 
         return <Snowflake className="h-4 w-4 text-blue-300" />;
       case 'wind': 
         return <Wind className="h-4 w-4 text-gray-300" />;
       default: 
         return <Cloud className="h-4 w-4 text-gray-400" />;
     }
-  };
-  
+  }
   const getPositionColor = (position: string | null) => {
     switch (position) {
-      case 'QB': 
-        return 'bg-red-600';
-      case 'RB': 
+      case 'QB':
+      return 'bg-red-600';
+      break;
+    case 'RB': 
         return 'bg-green-600';
-      case 'WR': 
-        return 'bg-blue-600';
-      case 'TE': 
+      case 'WR':
+      return 'bg-blue-600';
+      break;
+    case 'TE': 
         return 'bg-orange-600';
-      case 'K': 
-        return 'bg-purple-600';
-      case 'DEF': 
+      case 'K':
+      return 'bg-purple-600';
+      break;
+    case 'DEF': 
         return 'bg-gray-600';
       default: 
         return 'bg-gray-500';
     }
-  };
-  
+  }
   const getTrendIcon = (trend: number) => {
     if (trend > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
     if (trend < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
     return null;
-  };
-  
+  }
   const formatStatValue = (value: any) => {
     if (value === null || value === undefined) return '-';
     if (typeof value === 'number') return value.toFixed(1);
     return value;
-  };
-  
+  }
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity, 0, y: 20 }}
+      animate={{ opacity, 1, y: 0 }}
       className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
     >
       {/* Main Card Content */}
       <div 
         className="p-4 cursor-pointer"
-        onClick={() => onPlayerSelect?.(player)}
+        onClick={() => onPlayerSelect? .(player)}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
@@ -326,8 +312,7 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === tab
-                      ? 'text-blue-400 border-b-2 border-blue-400'
-                      : 'text-gray-400 hover:text-white'
+                      ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}

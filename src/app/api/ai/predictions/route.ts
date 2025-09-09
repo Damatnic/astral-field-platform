@@ -9,11 +9,7 @@ import { adaptiveLearningSystem } from '@/services/ai/adaptiveLearningSystem';
 import { aiRateLimited } from '@/lib/rate-limit-helpers';
 import { z } from 'zod';
 import { 
-  validateQueryParams,
-  validateRequestBody,
-  createValidationErrorResponse,
-  hasValidationErrors,
-  idSchema,
+  validateQueryParams, validateRequestBody, createValidationErrorResponse, hasValidationErrors, idSchema,
   positiveIntSchema
 } from '@/lib/validation';
 
@@ -25,8 +21,7 @@ const aiPredictionQuerySchema = z.object({
 });
 
 // AI prediction POST body schemas
-const recordOutcomeSchema = z.object({
-  type: z.literal('record_outcome'),
+const recordOutcomeSchema = z.object({ type: z.literal('record_outcome'),
   predictionId: idSchema,
   playerId: idSchema,
   week: z.number().int().min(1).max(18),
@@ -37,19 +32,17 @@ const recordOutcomeSchema = z.object({
   modelWeights: z.record(z.string(), z.number()).optional()
 });
 
-const batchPredictionsSchema = z.object({
-  type: z.literal('batch_predictions'),
+const batchPredictionsSchema = z.object({ type: z.literal('batch_predictions'),
   playerIds: z.array(idSchema).min(1).max(50), // Limit batch size
   week: z.number().int().min(1).max(18),
   enhanced: z.boolean().default(false)
 });
 
-const aiPredictionBodySchema = z.discriminatedUnion('type', [
-  recordOutcomeSchema,
+const aiPredictionBodySchema = z.discriminatedUnion('type', [recordOutcomeSchema,
   batchPredictionsSchema
 ]);
 
-export const GET = aiRateLimited(async (request: NextRequest) => {
+export const GET = aiRateLimited(async (request: NextRequest) => { 
   try {
     // Validate query parameters
     const queryValidation = validateQueryParams(request, aiPredictionQuerySchema);
@@ -61,16 +54,16 @@ export const GET = aiRateLimited(async (request: NextRequest) => {
       );
     }
 
-    const { playerId, week: weekNum, enhanced } = queryValidation.data!;
+    const { playerId, week, enhanced } = queryValidation.data!;
 
     let prediction;
     
     if (enhanced === 'true') {
       // Use adaptive learning system for enhanced predictions
-      prediction = await adaptiveLearningSystem.generateEnhancedPrediction(playerId, weekNum);
+      prediction = await adaptiveLearningSystem.generateEnhancedPrediction(playerId, week);
     } else {
       // Use base AI prediction engine
-      prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, weekNum);
+      prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, week);
     }
 
     return NextResponse.json({
@@ -92,7 +85,7 @@ export const GET = aiRateLimited(async (request: NextRequest) => {
   }
 });
 
-export const POST = aiRateLimited(async (request: NextRequest) => {
+export const POST = aiRateLimited(async (request: NextRequest) => { 
   try {
     // Validate request body
     const bodyValidation = await validateRequestBody(request, aiPredictionBodySchema);
@@ -108,25 +101,10 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
 
     switch (body.type) {
       case 'record_outcome':
-        const {
-          predictionId,
-          playerId,
-          week,
-          season,
-          predictedPoints,
-          actualPoints,
-          factors,
-          modelWeights
-        } = body;
+        const { predictionId, playerId, week, season, predictedPoints, actualPoints, factors, modelWeights} = body;
 
         await adaptiveLearningSystem.recordPredictionOutcome(
-          predictionId,
-          playerId,
-          week,
-          season,
-          predictedPoints,
-          actualPoints,
-          factors,
+          predictionId, playerId, week, season, predictedPoints, actualPoints, factors,
           modelWeights || {}
         );
 
@@ -138,22 +116,25 @@ export const POST = aiRateLimited(async (request: NextRequest) => {
       case 'batch_predictions':
         const { playerIds, week: batchWeek, enhanced: batchEnhanced } = body;
 
-        const predictions = await Promise.all(
-          playerIds.map(async (playerId: string) => {
+        const predictions = await Promise.all(playerIds.map(async (playerId: string) => { 
             try {
               let prediction;
               if (batchEnhanced) {
                 prediction = await adaptiveLearningSystem.generateEnhancedPrediction(playerId, batchWeek);
-              } else {
+              } else { 
                 prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, batchWeek);
-              }
-              return { playerId, success: true, prediction };
-            } catch (error) {
+               }
               return { 
-                playerId, 
-                success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                playerId,
+                success: true, 
+                prediction 
+              }
+            } catch (error) { 
+              return { 
+                playerId,
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+               }
             }
           })
         );

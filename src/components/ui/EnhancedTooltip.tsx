@@ -1,34 +1,33 @@
 'use client'
 
-import { useState, useRef, useEffect, ReactNode, cloneElement, Children, isValidElement } from 'react'
+import { useState, useRef, useEffect, ReactNode, cloneElement, Children, isValidElement  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 
 interface TooltipPosition {
-  x: number
-  y: number
+  x, number,
+  y, number,
+  
 }
-
 export interface EnhancedTooltipProps {
-  content: ReactNode
-  children: ReactNode
-  placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto'
-  delay?: number
-  offset?: number
-  interactive?: boolean
-  arrow?: boolean
-  maxWidth?: number
-  disabled?: boolean
-  className?: string
-  contentClassName?: string
-  showOnFocus?: boolean
-  showOnClick?: boolean
-  closeOnScroll?: boolean
+  content, ReactNode,
+  children, ReactNode,
+  placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
+  delay?, number,
+  offset?, number,
+  interactive?, boolean,
+  arrow?, boolean,
+  maxWidth?, number,
+  disabled?, boolean,
+  className?, string,
+  contentClassName?, string,
+  showOnFocus?, boolean,
+  showOnClick?, boolean,
+  closeOnScroll?; boolean;
+  
 }
-
 export function EnhancedTooltip({
-  content,
-  children,
+  content, children,
   placement = 'auto',
   delay = 200,
   offset = 8,
@@ -41,54 +40,49 @@ export function EnhancedTooltip({
   showOnFocus = false,
   showOnClick = false,
   closeOnScroll = true
-}: EnhancedTooltipProps) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [position, setPosition] = useState<TooltipPosition>({ x: 0, y: 0 })
-  const [actualPlacement, setActualPlacement] = useState<'top' | 'bottom' | 'left' | 'right'>('top')
-  const [mounted, setMounted] = useState(false)
-  
-  const triggerRef = useRef<HTMLElement>(null)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>()
-  const closeTimeoutRef = useRef<NodeJS.Timeout>()
+}: EnhancedTooltipProps) { const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState<TooltipPosition>({ x, 0,
+  y: 0  })
+  const [actualPlacement, setActualPlacement] = useState<'top' | 'bottom' | 'left' | 'right'>('top');
+  const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<HTMLElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const closeTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
 
-  const calculatePosition = (): { position: TooltipPosition; placement: typeof actualPlacement } => {
-    if (!triggerRef.current || !tooltipRef.current) {
-      return { position: { x: 0, y: 0 }, placement: 'top' }
+  const calculatePosition = (): { position, TooltipPosition, placement: typeof actualPlacement } => { if (!triggerRef.current || !tooltipRef.current) {
+      return { position: { x, 0,
+  y: 0  }, placement: 'top' }
     }
 
-    const triggerRect = triggerRef.current.getBoundingClientRect()
-    const tooltipRect = tooltipRef.current.getBoundingClientRect()
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
-    const scrollX = window.scrollX
-    const scrollY = window.scrollY
+    const triggerRect = triggerRef.current.getBoundingClientRect();
+    const tooltipRect = tooltipRef.current.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
 
-    let optimalPlacement = placement
-    let x = 0
-    let y = 0
+    let optimalPlacement = placement;
+    let x = 0;
+    let y = 0;
 
     // Auto placement - choose best position
-    if (placement === 'auto') {
-      const spaceTop = triggerRect.top
-      const spaceBottom = viewportHeight - triggerRect.bottom
-      const spaceLeft = triggerRect.left
-      const spaceRight = viewportWidth - triggerRect.right
+    if (placement === 'auto') { const spaceTop = triggerRect.top
+      const spaceBottom = viewportHeight - triggerRect.bottom;
+      const spaceLeft = triggerRect.left;
+      const spaceRight = viewportWidth - triggerRect.right;
 
       if (spaceBottom >= tooltipRect.height + offset) {
         optimalPlacement = 'bottom'
-      } else if (spaceTop >= tooltipRect.height + offset) {
-        optimalPlacement = 'top'
-      } else if (spaceRight >= tooltipRect.width + offset) {
-        optimalPlacement = 'right'
-      } else if (spaceLeft >= tooltipRect.width + offset) {
-        optimalPlacement = 'left'
-      } else {
+       } else if (spaceTop >= tooltipRect.height + offset) { optimalPlacement = 'top'
+       } else if (spaceRight >= tooltipRect.width + offset) { optimalPlacement = 'right'
+       } else if (spaceLeft >= tooltipRect.width + offset) { optimalPlacement = 'left'
+       } else {
         // Default to top if no space is ideal
         optimalPlacement = 'top'
       }
@@ -97,41 +91,42 @@ export function EnhancedTooltip({
     // Calculate position based on placement
     switch (optimalPlacement) {
       case 'top':
-        x = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
+      x = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
         y = triggerRect.top - tooltipRect.height - offset
         break
-      case 'bottom':
+      break;
+    case 'bottom':
         x = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2
         y = triggerRect.bottom + offset
         break
       case 'left':
-        x = triggerRect.left - tooltipRect.width - offset
+      x = triggerRect.left - tooltipRect.width - offset
         y = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2
         break
-      case 'right':
+      break;
+    case 'right':
         x = triggerRect.right + offset
         y = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2
         break
-    }
+     }
 
     // Viewport boundary adjustments
     if (x < 8) x = 8
-    if (x + tooltipRect.width > viewportWidth - 8) {
-      x = viewportWidth - tooltipRect.width - 8
-    }
+    if (x + tooltipRect.width > viewportWidth - 8) { x = viewportWidth - tooltipRect.width - 8
+     }
     if (y < 8) y = 8
-    if (y + tooltipRect.height > viewportHeight - 8) {
-      y = viewportHeight - tooltipRect.height - 8
-    }
+    if (y + tooltipRect.height > viewportHeight - 8) { y = viewportHeight - tooltipRect.height - 8
+     }
 
     return {
-      position: { x: x + scrollX, y: y + scrollY },
+      position: { ,
+  x: x + scrollX,
+  y: y + scrollY },
       placement: optimalPlacement
     }
   }
 
-  const showTooltip = () => {
-    if (disabled || !content) return
+  const showTooltip = () => { if (disabled || !content) return
 
     clearTimeout(closeTimeoutRef.current)
     
@@ -140,15 +135,15 @@ export function EnhancedTooltip({
         setIsVisible(true)
         // Calculate position after tooltip is rendered
         setTimeout(() => {
-          const { position: newPosition, placement: newPlacement } = calculatePosition()
+          const { position, newPosition, placement: newPlacement } = calculatePosition();
           setPosition(newPosition)
           setActualPlacement(newPlacement)
         }, 0)
       }, delay)
     } else {
       setIsVisible(true)
-      setTimeout(() => {
-        const { position: newPosition, placement: newPlacement } = calculatePosition()
+      setTimeout(() => { const { position, newPosition,
+  placement: newPlacement  } = calculatePosition()
         setPosition(newPosition)
         setActualPlacement(newPlacement)
       }, 0)
@@ -167,55 +162,49 @@ export function EnhancedTooltip({
     }
   }
 
-  const handleTooltipEnter = () => {
-    if (interactive) {
+  const handleTooltipEnter = () => { if (interactive) {
       clearTimeout(closeTimeoutRef.current)
-    }
+     }
   }
 
-  const handleTooltipLeave = () => {
-    if (interactive) {
+  const handleTooltipLeave = () => { if (interactive) {
       hideTooltip()
-    }
+     }
   }
 
-  const handleClick = () => {
-    if (showOnClick) {
+  const handleClick = () => { if (showOnClick) {
       if (isVisible) {
         hideTooltip()
-      } else {
+       } else {
         showTooltip()
       }
     }
   }
 
-  const handleFocus = () => {
-    if (showOnFocus) {
+  const handleFocus = () => { if (showOnFocus) {
       showTooltip()
-    }
+     }
   }
 
-  const handleBlur = () => {
-    if (showOnFocus) {
+  const handleBlur = () => { if (showOnFocus) {
       hideTooltip()
-    }
+     }
   }
 
   // Handle scroll to close tooltip
-  useEffect(() => {
-    if (closeOnScroll && isVisible) {
+  useEffect(() => { if (closeOnScroll && isVisible) {
       const handleScroll = () => hideTooltip()
       
       window.addEventListener('scroll', handleScroll, true)
       return () => window.removeEventListener('scroll', handleScroll, true)
-    }
+     }
   }, [isVisible, closeOnScroll])
 
   // Update position on window resize
-  useEffect(() => {
-    if (isVisible) {
+  useEffect(() => { if (isVisible) {
       const handleResize = () => {
-        const { position: newPosition, placement: newPlacement } = calculatePosition()
+        const { position, newPosition,
+  placement: newPlacement  } = calculatePosition();
         setPosition(newPosition)
         setActualPlacement(newPlacement)
       }
@@ -226,66 +215,61 @@ export function EnhancedTooltip({
   }, [isVisible])
 
   // Cleanup timeouts
-  useEffect(() => {
-    return () => {
+  useEffect(() => { return () => {
       clearTimeout(timeoutRef.current)
       clearTimeout(closeTimeoutRef.current)
-    }
+     }
   }, [])
 
   const triggerProps = {
-    onMouseEnter: showTooltip,
-    onMouseLeave: hideTooltip,
-    onFocus: handleFocus,
-    onBlur: handleBlur,
-    onClick: handleClick,
-    ref: triggerRef
+    onMouseEnter, showTooltip,
+  onMouseLeave, hideTooltip,
+    onFocus, handleFocus,
+  onBlur, handleBlur,
+    onClick, handleClick,
+  ref: triggerRef
   }
 
   // Clone child with trigger props
-  const trigger = Children.only(children)
-  const triggerElement = isValidElement(trigger)
-    ? cloneElement(trigger, {
-        ...triggerProps,
+  const trigger = Children.only(children);
+  const triggerElement = isValidElement(trigger);
+    ? cloneElement(trigger, { : ..triggerProps,
         className: `${trigger.props.className || ''} ${className}`.trim()
       })
     : children
 
-  const tooltipPortal = mounted && isVisible && createPortal(
-    <AnimatePresence>
+  const tooltipPortal = mounted && isVisible && createPortal(<AnimatePresence>
       <motion.div
         ref={tooltipRef}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.15, ease: 'easeOut' }}
-        className={`
-          fixed z-[9999] pointer-events-none
-          ${interactive ? 'pointer-events-auto' : ''}
+        initial={{ opacity, 0,
+  scale: 0.8 }}
+        animate={{ opacity, 1,
+  scale: 1 }}
+        exit={{ opacity, 0,
+  scale: 0.8 }}
+        transition={{ duration: 0.15,
+  ease: 'easeOut' }}
+        className={`fixed z-[9999] pointer-events-none ${interactive ? 'pointer-events-auto' : ''}
         `}
         style={{
           left: position.x,
-          top: position.y,
+  top: position.y,
           maxWidth
         }}
         onMouseEnter={handleTooltipEnter}
         onMouseLeave={handleTooltipLeave}
       >
         <div
-          className={`
-            relative bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl border border-gray-700
-            ${contentClassName}
+          className={`relative bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl border border-gray-700 ${contentClassName}
           `}
         >
           {/* Arrow */}
           {arrow && (
             <div
-              className={`
-                absolute w-2 h-2 bg-gray-900 border border-gray-700 rotate-45
+              className={`absolute w-2 h-2 bg-gray-900 border border-gray-700 rotate-45
                 ${actualPlacement === 'top' ? 'bottom-[-5px] left-1/2 transform -translate-x-1/2 border-t-0 border-l-0' : ''}
                 ${actualPlacement === 'bottom' ? 'top-[-5px] left-1/2 transform -translate-x-1/2 border-b-0 border-r-0' : ''}
-                ${actualPlacement === 'left' ? 'right-[-5px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0' : ''}
-                ${actualPlacement === 'right' ? 'left-[-5px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
+                ${actualPlacement === 'left' ? 'right-[-5px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0' : ''} ${actualPlacement === 'right' ? 'left-[-5px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
               `}
             />
           )}
@@ -300,10 +284,8 @@ export function EnhancedTooltip({
   )
 
   return (
-    <>
-      {triggerElement}
-      {tooltipPortal}
-    </>
+    <>{triggerElement}
+      {tooltipPortal}</>
   )
 }
 
@@ -312,8 +294,8 @@ interface RichTooltipProps extends Omit<EnhancedTooltipProps, 'content'> {
   title?: string
   description?: ReactNode
   actions?: Array<{
-    label: string
-    onClick: () => void
+    label, string,
+    onClick: (), => void
     variant?: 'primary' | 'secondary'
   }>
   image?: string
@@ -321,33 +303,29 @@ interface RichTooltipProps extends Omit<EnhancedTooltipProps, 'content'> {
 }
 
 export function RichTooltip({
-  title,
-  description,
+  title, description,
   actions = [],
   image,
-  loading = false,
-  children,
-  ...tooltipProps
-}: RichTooltipProps) {
-  const content = (
+  loading = false, children,
+  ...tooltipProps}: RichTooltipProps) { const content = (
     <div className="space-y-3 min-w-0">
       {image && (
         <img 
-          src={image} 
-          alt={title || 'Tooltip image'} 
+          src={image } 
+          alt={ title: || 'Tooltip image' } 
           className="w-full h-24 object-cover rounded"
         />
       )}
       
       {title && (
         <div className="font-semibold text-white">
-          {title}
+          {title }
         </div>
       )}
       
       {description && (
         <div className="text-gray-300 text-sm leading-relaxed">
-          {description}
+          {description }
         </div>
       )}
       
@@ -357,11 +335,9 @@ export function RichTooltip({
             <button
               key={index}
               onClick={action.onClick}
-              className={`
-                px-3 py-1 text-xs font-medium rounded transition-colors
-                ${action.variant === 'primary' 
+              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${action.variant === 'primary' 
                   ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                  : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                  .'bg-gray-700 hover; bg-gray-600 text-gray-300'
                 }
               `}
             >
@@ -373,10 +349,10 @@ export function RichTooltip({
       
       {loading && (
         <div className="flex items-center space-x-2 text-sm text-gray-400">
-          <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full"></div>
+          <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full" />
           <span>Loading...</span>
         </div>
-      )}
+      ) }
     </div>
   )
 
@@ -393,20 +369,14 @@ export function RichTooltip({
 }
 
 // Tooltip for keyboard shortcuts
-export function ShortcutTooltip({
-  shortcut,
-  description,
-  children,
-  ...tooltipProps
-}: {
-  shortcut: string
+export function ShortcutTooltip({ shortcut, description, children,
+  ...tooltipProps}: { shortcut: string
   description?: string
-  children: ReactNode
-} & Omit<EnhancedTooltipProps, 'content'>) {
-  const content = (
+  children; ReactNode
+ } & Omit<EnhancedTooltipProps, 'content'>) { const content = (
     <div className="flex items-center space-x-2">
       {description && (
-        <span className="text-gray-300">{description}</span>
+        <span className="text-gray-300">{description }</span>
       )}
       <kbd className="px-2 py-1 text-xs font-mono bg-gray-700 border border-gray-600 rounded">
         {shortcut}
@@ -430,25 +400,21 @@ export function ShortcutTooltip({
 export function HelpTooltip({
   content,
   className = '',
-  ...tooltipProps
-}: Omit<EnhancedTooltipProps, 'children'> & {
+  ...tooltipProps}: Omit<EnhancedTooltipProps, 'children'> & {
   content: ReactNode
-  className?: string
-}) {
-  return (
+  className?; string
+}) { return (
     <EnhancedTooltip
-      content={content}
+      content={content }
       placement="top"
       interactive={true}
       maxWidth={250}
       {...tooltipProps}
     >
       <button
-        className={`
-          inline-flex items-center justify-center w-4 h-4 rounded-full 
+        className={`inline-flex items-center justify-center w-4 h-4 rounded-full 
           bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold
-          transition-colors cursor-help
-          ${className}
+          transition-colors cursor-help ${className}
         `}
       >
         ?
@@ -458,17 +424,12 @@ export function HelpTooltip({
 }
 
 // Tooltip hook for programmatic control
-export function useTooltip() {
-  const [isVisible, setIsVisible] = useState(false)
-  
+export function useTooltip() { const [isVisible, setIsVisible] = useState(false);
   const show = () => setIsVisible(true)
   const hide = () => setIsVisible(false)
   const toggle = () => setIsVisible(prev => !prev)
   
-  return {
-    isVisible,
-    show,
-    hide,
+  return { isVisible, show, hide,
     toggle
-  }
+ :   }
 }

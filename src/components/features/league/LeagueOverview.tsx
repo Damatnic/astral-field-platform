@@ -2,14 +2,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
-  Trophy, 
-  Users, 
-  Calendar, 
-  Settings,
-  UserPlus,
-  LogOut,
-  Crown,
-  Zap,
+  Trophy, Users, 
+  Calendar, Settings,
+  UserPlus, LogOut,
+  Crown, Zap,
   TrendingUp
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
@@ -19,56 +15,44 @@ import type { Database } from '@/types/database';
 type League = Database['public']['Tables']['leagues']['Row'];
 type Team = Database['public']['Tables']['teams']['Row'] & {
   users: {
-    username: string;
-    email: string;
+  username, string,
+    email, string,
     avatar_url: string | null;
-  };
-};
-
-interface LeagueOverviewProps {
-  leagueId: string;
+  }
 }
-
-export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
-  const router = useRouter();
+interface LeagueOverviewProps {
+  leagueId, string,
+  
+}
+export default function LeagueOverview({ leagueId }: LeagueOverviewProps) { const router = useRouter();
   const { user } = useAuthStore();
-  const { 
-    currentLeague, 
-    teams, 
-    selectLeague, 
-    fetchLeagueTeams,
-    isLoading,
-    error 
-  } = useLeagueStore();
+  const { currentLeague, teams, selectLeague, fetchLeagueTeams, isLoading, error } = useLeagueStore();
   
   const [showJoinForm, setShowJoinForm] = useState(false);
   
-  useEffect(() => {
-    if (leagueId) {
+  useEffect(() => { if (leagueId) {
       selectLeague(leagueId);
       fetchLeagueTeams(leagueId);
-    }
+     }
   }, [leagueId, selectLeague, fetchLeagueTeams]);
   
   const userTeam = teams.find(team => team.user_id === user?.id);
   const isCommissioner = currentLeague?.commissioner_id === user?.id;
   const canJoin = !userTeam && teams.length < ((currentLeague?.settings as any)?.maxTeams || 12);
   
-  if (isLoading) {
-    return (
+  if (isLoading) { return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
       </div>
     );
-  }
+   }
   
-  if (error || !currentLeague) {
-    return (
+  if (error || !currentLeague) { return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <Trophy className="h-16 w-16 text-gray-500 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">League not found</h2>
-          <p className="text-gray-400 mb-4">{error || 'This league does not exist or you don\'t have access.'}</p>
+          <p className="text-gray-400 mb-4">{error || 'This league does not exist or you don\'t have access.' }</p>
           <button
             onClick={() => router.push('/dashboard')}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
@@ -87,7 +71,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
       <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg; px-8 py-6">
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center">
@@ -106,7 +90,8 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                 {currentLeague.draft_date && (
                   <div className="flex items-center">
                     <Zap className="h-4 w-4 mr-1" />
-                    Draft: {new Date(currentLeague.draft_date).toLocaleDateString()}
+                    Draft: { ne,
+  w: Date(currentLeague.draft_date).toLocaleDateString() }
                   </div>
                 )}
               </div>
@@ -115,11 +100,11 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
             <div className="flex items-center space-x-3">
               {canJoin && (
                 <button
-                  onClick={() => setShowJoinForm(true)}
+                  onClick={() => setShowJoinForm(true) }
                   className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Join League
+  Join, League,
                 </button>
               )}
               
@@ -128,12 +113,12 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                 className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center"
               >
                 <Zap className="h-4 w-4 mr-2" />
-                Draft Room
+  Draft, Room,
               </button>
               
               {isCommissioner && (
                 <button
-                  onClick={() => router.push(`/leagues/${leagueId}/settings`)}
+                  onClick={() => router.push(`/leagues/${leagueId }/settings`)}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center"
                 >
                   <Settings className="h-4 w-4 mr-2" />
@@ -145,7 +130,8 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm: px-6 l,
+  g:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
@@ -216,8 +202,10 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                   {teams.map((team, index) => (
                     <motion.div
                       key={team.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity, 0,
+  y: 10 }}
+                      animate={{ opacity, 1,
+  y: 0 }}
                       transition={{ delay: index * 0.1 }}
                       className="flex items-center justify-between p-3 bg-gray-700 rounded-lg"
                     >
@@ -249,7 +237,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                 {canJoin && (
                   <div className="p-4 border-t border-gray-700">
                     <button
-                      onClick={() => setShowJoinForm(true)}
+                      onClick={() => setShowJoinForm(true) }
                       className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center"
                     >
                       <UserPlus className="h-4 w-4 mr-2" />
@@ -266,25 +254,25 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                 <h2 className="text-xl font-semibold text-white mb-4">Commissioner Tools</h2>
                 <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 space-y-2">
                   <button
-                    onClick={() => router.push(`/leagues/${leagueId}/settings`)}
+                    onClick={() => router.push(`/leagues/${leagueId }/settings`)}
                     className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors flex items-center text-gray-300"
                   >
                     <Settings className="h-4 w-4 mr-2" />
-                    League Settings
+  League, Settings,
                   </button>
                   <button
                     onClick={() => router.push(`/leagues/${leagueId}/draft/settings`)}
                     className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors flex items-center text-gray-300"
                   >
                     <Zap className="h-4 w-4 mr-2" />
-                    Draft Settings
+  Draft, Settings,
                   </button>
                   <button
                     onClick={() => router.push(`/leagues/${leagueId}/invites`)}
                     className="w-full text-left px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors flex items-center text-gray-300"
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Invite Members
+  Invite, Members,
                   </button>
                 </div>
               </section>
@@ -297,9 +285,9 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
       {showJoinForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-xl font-semibold text-white mb-4">Join {currentLeague.name}</h3>
+            <h3 className="text-xl font-semibold text-white mb-4">Join {currentLeague.name }</h3>
             <p className="text-gray-400 mb-6">
-              You're about to join this league. Make sure you're ready to compete!
+              You're about to join this league.Make sure you're ready to compete!
             </p>
             <div className="flex space-x-3">
               <button
@@ -315,7 +303,7 @@ export default function LeagueOverview({ leagueId }: LeagueOverviewProps) {
                 }}
                 className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
-                Join League
+  Join, League,
               </button>
             </div>
           </div>

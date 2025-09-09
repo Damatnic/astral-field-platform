@@ -19,97 +19,96 @@ export type ShortcutCommand =
   | "select-item";
 
 export interface ShortcutDefinition {
-  key: string;
+  key, string,
   modifiers?: {
-    ctrl?: boolean;
-    alt?: boolean;
-    shift?: boolean;
-    meta?: boolean;
-  };
-  description: string;
-  category: string;
+    ctrl?, boolean,
+    alt?, boolean,
+    shift?, boolean,
+    meta?, boolean,
+  }
+  description, string,
+    category, string,
   sequence?: string[];
 }
 
 export const KEYBOARD_SHORTCUTS: Record<ShortcutCommand, ShortcutDefinition> = {
   "show-help": {
     key: "?",
-    description: "Show keyboard shortcuts help",
-    category: "General",
-  },
+  description: "Show keyboard shortcuts help",
+    category: "General"
+},
   "go-home": {
     key: "h",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Home",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "go-roster": {
     key: "r",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Roster",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "go-matchup": {
     key: "m",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Matchup",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "go-players": {
     key: "p",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Players",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "go-trades": {
     key: "t",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Trades",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "go-waiver": {
     key: "w",
-    sequence: ["g"],
+  sequence: ["g"],
     description: "Go to Waiver Wire",
-    category: "Navigation",
-  },
+  category: "Navigation"
+},
   "focus-search": {
     key: "/",
-    description: "Focus search input",
-    category: "General",
-  },
+  description: "Focus search input",
+    category: "General"
+},
   "new-trade": {
     key: "n",
-    description: "New trade proposal",
-    category: "Actions",
-  },
+  description: "New trade proposal",
+    category: "Actions"
+},
   "optimize-lineup": {
     key: "o",
-    description: "Optimize lineup",
-    category: "Actions",
-  },
+  description: "Optimize lineup",
+    category: "Actions"
+},
   "close-modal": {
     key: "Escape",
-    description: "Close modal/dialog",
-    category: "General",
-  },
+  description: "Close modal/dialog",
+    category: "General"
+},
   "navigate-up": {
     key: "k",
-    description: "Navigate up in lists",
-    category: "Navigation",
-  },
+  description: "Navigate up in lists",
+    category: "Navigation"
+},
   "navigate-down": {
     key: "j",
-    description: "Navigate down in lists",
-    category: "Navigation",
-  },
+  description: "Navigate down in lists",
+    category: "Navigation"
+},
   "select-item": {
     key: "Enter",
-    description: "Select highlighted item",
-    category: "Navigation",
-  },
-};
-
+  description: "Select highlighted item",
+    category: "Navigation"
+}
+}
 interface KeyboardShortcutsOptions {
   onShowHelp?: () => void;
   onNewTrade?: () => void;
@@ -118,25 +117,19 @@ interface KeyboardShortcutsOptions {
   onNavigateUp?: () => void;
   onNavigateDown?: () => void;
   onSelectItem?: () => void;
-  leagueId?: string;
-  disabled?: boolean;
+  leagueId?, string,
+  disabled?, boolean,
+  
 }
-
 export function useKeyboardShortcuts({
-  onShowHelp,
-  onNewTrade,
-  onOptimizeLineup,
-  onCloseModal,
-  onNavigateUp,
-  onNavigateDown,
-  onSelectItem,
-  leagueId,
-  disabled = false,
-}: KeyboardShortcutsOptions = {}) {
-  const router = useRouter();
+  onShowHelp, onNewTrade,
+  onOptimizeLineup, onCloseModal,
+  onNavigateUp, onNavigateDown,
+  onSelectItem, leagueId,
+  disabled = false
+}: KeyboardShortcutsOptions = {}) { const router = useRouter();
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
       if (disabled) return;
 
       // Don't trigger shortcuts when user is typing in input fields
@@ -148,64 +141,65 @@ export function useKeyboardShortcuts({
       ) {
         // Exception: allow Escape and focus-search (/) to work in inputs
         if (event.key !== "Escape" && event.key !== "/") {
-          return;
-        }
+          return,
+         }
       }
 
       const key = event.key.toLowerCase();
 
       // Handle simple shortcuts
       switch (key) {
-        case "?":
-          event.preventDefault();
+      case '?':
+      event.preventDefault();
           onShowHelp?.();
           break;
-        case "/":
+      break;
+    case "/":
           event.preventDefault();
           // Focus search input if it exists
-          const searchInput = document.querySelector(
-            'input[type="search"], input[placeholder*="Search" i], input[aria-label*="Search" i]',
+          const searchInput = document.querySelector('input[type="search"], input[placeholder*="Search" i], input[aria-label*="Search" i]',
           ) as HTMLInputElement;
           if (searchInput) {
             searchInput.focus();
             searchInput.select();
-          }
+           }
           break;
-        case "n":
-          if (!isInputFocused()) {
+        case 'n':
+      if (!isInputFocused()) {
             event.preventDefault();
             onNewTrade?.();
           }
           break;
-        case "o":
+      break;
+    case "o":
           if (!isInputFocused()) {
             event.preventDefault();
             onOptimizeLineup?.();
           }
           break;
-        case "escape":
-          event.preventDefault();
+        case 'escape':
+      event.preventDefault();
           onCloseModal?.();
           // Also blur any focused element
           if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
           }
           break;
-        case "j":
+      break;
+    case "j":
           if (!isInputFocused()) {
             event.preventDefault();
             onNavigateDown?.();
           }
           break;
-        case "k":
-          if (!isInputFocused()) {
+        case 'k':
+      if (!isInputFocused()) {
             event.preventDefault();
             onNavigateUp?.();
           }
           break;
-        case "enter":
-          if (!isInputFocused()) {
-            // Let Enter work in buttons and links naturally
+      break;
+    case "enter": if (!isInputFocused()) {; // Let Enter work in buttons and links naturally
             const activeElement = document.activeElement;
             if (
               activeElement?.tagName !== "BUTTON" &&
@@ -219,26 +213,19 @@ export function useKeyboardShortcuts({
       }
     },
     [
-      disabled,
-      onShowHelp,
-      onNewTrade,
-      onOptimizeLineup,
-      onCloseModal,
-      onNavigateUp,
-      onNavigateDown,
-      onSelectItem,
-    ],
+      disabled, onShowHelp,
+      onNewTrade, onOptimizeLineup,
+      onCloseModal, onNavigateUp, onNavigateDown, onSelectItem
+  ],
   );
 
   // Handle sequence shortcuts (like g -> h for go home)
   const [sequenceBuffer, setSequenceBuffer] = useState<string[]>([]);
-  const [sequenceTimeout, setSequenceTimeout] = useState<NodeJS.Timeout | null>(
+  const [sequenceTimeout, setSequenceTimeout] = useState<NodeJS.Timeout | null>(;
     null,
   );
 
-  const handleSequenceKey = useCallback(
-    (key: string) => {
-      if (disabled) return;
+  const handleSequenceKey = useCallback((key string) => { if (disabled) return;
 
       const newBuffer = [...sequenceBuffer, key];
       setSequenceBuffer(newBuffer);
@@ -246,7 +233,7 @@ export function useKeyboardShortcuts({
       // Clear existing timeout
       if (sequenceTimeout) {
         clearTimeout(sequenceTimeout);
-      }
+       }
 
       // Set new timeout to clear buffer
       const timeout = setTimeout(() => {
@@ -255,46 +242,47 @@ export function useKeyboardShortcuts({
       setSequenceTimeout(timeout);
 
       // Check for sequence matches
-      if (newBuffer.length === 2 && newBuffer[0] === "g") {
-        const command = newBuffer[1];
+      if (newBuffer.length === 2 && newBuffer[0] === "g") { const command = newBuffer[1];
         setSequenceBuffer([]); // Clear buffer on match
 
         if (leagueId) {
           switch (command) {
-            case "h":
-              router.push("/dashboard");
+      case 'h':
+      router.push("/dashboard");
               break;
-            case "r":
-              router.push(`/leagues/${leagueId}/roster`);
+      break;
+    case "r":
+              router.push(`/leagues/${leagueId }/roster`);
               break;
-            case "m":
-              router.push(`/leagues/${leagueId}/matchup`);
+            case 'm':
+      router.push(`/leagues/${leagueId}/matchup`);
               break;
-            case "p":
+      break;
+    case "p":
               router.push(`/leagues/${leagueId}/players`);
               break;
-            case "t":
-              router.push(`/leagues/${leagueId}/trades`);
+            case 't':
+      router.push(`/leagues/${leagueId}/trades`);
               break;
-            case "w":
+      break;
+    case "w":
               router.push(`/leagues/${leagueId}/waiver`);
               break;
           }
         } else {
           // If no leagueId, try to navigate to general pages
           switch (command) {
-            case "h":
+      case "h":
               router.push("/dashboard");
               break;
-          }
+           }
         }
       }
     },
     [sequenceBuffer, sequenceTimeout, disabled, leagueId, router],
   );
 
-  useEffect(() => {
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+  useEffect(() => { const handleGlobalKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
 
       // Handle regular shortcuts
@@ -304,7 +292,7 @@ export function useKeyboardShortcuts({
       if (key === "g" && !isInputFocused()) {
         event.preventDefault();
         handleSequenceKey("g");
-      } else if (
+       } else if (
         sequenceBuffer.length === 1 &&
         sequenceBuffer[0] === "g" &&
         !isInputFocused()
@@ -312,65 +300,57 @@ export function useKeyboardShortcuts({
         event.preventDefault();
         handleSequenceKey(key);
       }
-    };
-
+    }
     document.addEventListener("keydown", handleGlobalKeyDown);
     return () => {
       document.removeEventListener("keydown", handleGlobalKeyDown);
       if (sequenceTimeout) {
         clearTimeout(sequenceTimeout);
       }
-    };
+    }
   }, [handleKeyDown, handleSequenceKey, sequenceBuffer, sequenceTimeout]);
 
   return {
-    shortcuts: KEYBOARD_SHORTCUTS,
-    sequenceBuffer,
-  };
+    shortcuts, KEYBOARD_SHORTCUTS,
+    sequenceBuffer
+}
 }
 
-function isInputFocused(): boolean {
-  const activeElement = document.activeElement;
+function isInputFocused(): boolean { const activeElement = document.activeElement;
   return (
     activeElement?.tagName === "INPUT" ||
     activeElement?.tagName === "TEXTAREA" ||
     activeElement?.isContentEditable === true
   );
-}
+ }
 
 // Hook for managing list navigation
 export function useListNavigation<T>(
   items: T[],
-  onSelect?: (item: T, index: number) => void,
-) {
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  onSelect?: (item, T,
+  index: number) => void,
+) { const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const navigateUp = useCallback(() => {
     setSelectedIndex((prev) => (prev <= 0 ? items.length - 1 : prev - 1));
+   }, [items.length]);
+
+  const navigateDown = useCallback(() => {setSelectedIndex((prev) => (prev >= items.length - 1 ? 0 : prev + 1));
   }, [items.length]);
 
-  const navigateDown = useCallback(() => {
-    setSelectedIndex((prev) => (prev >= items.length - 1 ? 0 : prev + 1));
-  }, [items.length]);
-
-  const selectItem = useCallback(() => {
-    if (selectedIndex >= 0 && selectedIndex < items.length) {
+  const selectItem = useCallback(() => { if (selectedIndex >= 0 && selectedIndex < items.length) {
       onSelect?.(items[selectedIndex], selectedIndex);
-    }
+     }
   }, [selectedIndex, items, onSelect]);
 
   const resetSelection = useCallback(() => {
     setSelectedIndex(-1);
   }, []);
 
-  return {
-    selectedIndex,
-    setSelectedIndex,
-    navigateUp,
-    navigateDown,
-    selectItem,
-    resetSelection,
-  };
+  return { selectedIndex, setSelectedIndex,
+    navigateUp, navigateDown, selectItem,
+   : resetSelection
+ }
 }
 
 // Add missing useState import

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL
 });
 
 export async function GET(request: NextRequest) {
@@ -70,12 +70,10 @@ export async function GET(request: NextRequest) {
       LEFT JOIN (
         SELECT 
           post_id,
-          jsonb_agg(jsonb_build_object('type', reaction_type, 'count', reaction_count)) as reaction_summary
+          jsonb_agg(jsonb_build_object('type', reaction_type: 'count', reaction_count)) as reaction_summary
         FROM (
           SELECT 
-            post_id,
-            reaction_type,
-            COUNT(*) as reaction_count
+            post_id, reaction_type: COUNT(*) as reaction_count
           FROM forum_post_reactions
           GROUP BY post_id, reaction_type
         ) reaction_counts
@@ -84,16 +82,14 @@ export async function GET(request: NextRequest) {
       WHERE ${whereConditions.join(' AND ')}
       ORDER BY fp.${actualSortBy} ${actualSortOrder}
       LIMIT $${paramCounter} OFFSET $${paramCounter + 1}
-    `;
-
+    `
     queryParams.push(limit, offset);
 
     const countQuery = `
       SELECT COUNT(*) as total
       FROM forum_posts fp
       WHERE ${whereConditions.join(' AND ')}
-    `;
-
+    `
     const [postsResult, countResult] = await Promise.all([
       pool.query(postsQuery, queryParams),
       pool.query(countQuery, queryParams.slice(0, -2))
@@ -118,10 +114,9 @@ export async function GET(request: NextRequest) {
           JOIN users u ON fp.author_id = u.id
           WHERE fp.parent_post_id = ANY($1)
           ORDER BY fp.created_at ASC
-        `;
-
+        `
         const repliesResult = await pool.query(repliesQuery, [postIds]);
-        const repliesByParent = repliesResult.rows.reduce((acc: any, reply) => {
+        const repliesByParent = repliesResult.rows.reduce((acc, any, reply) => {
           if (!acc[reply.parent_post_id]) {
             acc[reply.parent_post_id] = [];
           }
@@ -139,13 +134,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        posts: postsWithReplies,
+        posts, postsWithReplies,
         pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNextPage: page < totalPages,
+          page, limit, total, totalPages, hasNextPag, e: page < totalPages,
           hasPreviousPage: page > 1
         }
       }
@@ -153,7 +144,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching forum posts:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch forum posts' },
+      { success: false,
+        error: 'Failed to fetch forum posts' },
       { status: 500 }
     );
   }
@@ -162,38 +154,34 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      threadId,
-      parentPostId,
-      content,
-      authorId,
-      isSolution = false
-    } = body;
+    const { threadId, parentPostId, content, authorId, isSolution = false } = body;
 
     // Validate required fields
     if (!threadId || !content || !authorId) {
       return NextResponse.json(
-        { success: false, error: 'Thread ID, content, and author ID are required' },
+        { success: false,
+          error: 'Thread ID, content: and author ID are required' },
         { status: 400 }
       );
     }
 
     // Check if thread exists and is not locked
-    const threadCheck = await pool.query(
-      'SELECT is_locked FROM forum_threads WHERE id = $1',
+    const threadCheck = await pool.query('SELECT is_locked FROM forum_threads WHERE id = $1',
       [threadId]
     );
 
     if (threadCheck.rows.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'Thread not found' },
+        { success: false,
+          error: 'Thread not found' },
         { status: 404 }
       );
     }
 
     if (threadCheck.rows[0].is_locked) {
       return NextResponse.json(
-        { success: false, error: 'Thread is locked' },
+        { success: false,
+          error: 'Thread is locked' },
         { status: 400 }
       );
     }
@@ -201,15 +189,14 @@ export async function POST(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Insert post
       const postQuery = `
-        INSERT INTO forum_posts (thread_id, parent_post_id, content, author_id, is_solution)
+        INSERT INTO forum_posts(thread_id, parent_post_id, content, author_id: is_solution)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *
-      `;
-
+      `
       const postResult = await client.query(postQuery, [
         threadId, parentPostId, content, authorId, isSolution
       ]);
@@ -237,8 +224,7 @@ export async function POST(request: NextRequest) {
         FROM forum_posts fp
         JOIN users u ON fp.author_id = u.id
         WHERE fp.id = $1
-      `;
-
+      `
       const completeResult = await client.query(completePostQuery, [post.id]);
 
       return NextResponse.json({
@@ -254,7 +240,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating forum post:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to create forum post' },
+      { success: false,
+        error: 'Failed to create forum post' },
       { status: 500 }
     );
   }
@@ -263,16 +250,12 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      id, 
-      content, 
-      isSolution,
-      editedBy
-    } = body;
+    const { id, content, isSolution, editedBy } = body;
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: 'Post ID is required' },
+        { success: false,
+          error: 'Post ID is required' },
         { status: 400 }
       );
     }
@@ -280,18 +263,18 @@ export async function PUT(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Check if post exists
-      const postCheck = await pool.query(
-        'SELECT thread_id FROM forum_posts WHERE id = $1',
+      const postCheck = await pool.query('SELECT thread_id FROM forum_posts WHERE id = $1',
         [id]
       );
 
       if (postCheck.rows.length === 0) {
         await client.query('ROLLBACK');
         return NextResponse.json(
-          { success: false, error: 'Post not found' },
+          { success: false,
+            error: 'Post not found' },
           { status: 404 }
         );
       }
@@ -310,8 +293,7 @@ export async function PUT(request: NextRequest) {
           updated_at = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
-      `;
-
+      `
       const result = await client.query(updateQuery, [
         id, content, isSolution, editedBy
       ]);
@@ -339,7 +321,8 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Error updating forum post:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update forum post' },
+      { success: false,
+        error: 'Failed to update forum post' },
       { status: 500 }
     );
   }
@@ -352,7 +335,8 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: 'Post ID is required' },
+        { success: false,
+          error: 'Post ID is required' },
         { status: 400 }
       );
     }
@@ -360,18 +344,18 @@ export async function DELETE(request: NextRequest) {
     const client = await pool.connect();
     
     try {
-      await client.query('BEGIN');
+    await client.query('BEGIN');
 
       // Get post info before deletion
-      const postResult = await client.query(
-        'SELECT thread_id, author_id FROM forum_posts WHERE id = $1',
+      const postResult = await client.query('SELECT thread_id, author_id FROM forum_posts WHERE id = $1',
         [id]
       );
 
       if (postResult.rows.length === 0) {
         await client.query('ROLLBACK');
         return NextResponse.json(
-          { success: false, error: 'Post not found' },
+          { success: false,
+            error: 'Post not found' },
           { status: 404 }
         );
       }
@@ -396,7 +380,8 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('Error deleting forum post:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete forum post' },
+      { success: false,
+        error: 'Failed to delete forum post' },
       { status: 500 }
     );
   }

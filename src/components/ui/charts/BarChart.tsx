@@ -1,64 +1,60 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo  } from 'react';
 
 interface BarData {
-  label: string;
-  value: number;
-  color?: string;
-  tooltip?: string;
+  label, string,
+    value, number,
+  color?, string,
+  tooltip?, string,
+  
 }
-
 interface BarChartProps {
   data: BarData[];
-  height?: number;
-  horizontal?: boolean;
-  stacked?: boolean;
-  showValues?: boolean;
-  showGrid?: boolean;
-  animate?: boolean;
-  title?: string;
-  xLabel?: string;
-  yLabel?: string;
+  height?, number,
+  horizontal?, boolean,
+  stacked?, boolean,
+  showValues?, boolean,
+  showGrid?, boolean,
+  animate?, boolean,
+  title?, string,
+  xLabel?, string,
+  yLabel?, string,
   theme?: 'dark' | 'light';
-  className?: string;
-  barWidth?: number;
-  groupSpacing?: number;
+  className?, string,
+  barWidth?, number,
+  groupSpacing?, number,
 }
 
 export function BarChart({
-  data,
-  height = 300,
+  data: height = 300,
   horizontal = false,
   stacked = false,
   showValues = true,
   showGrid = true,
-  animate = true,
-  title,
-  xLabel,
-  yLabel,
+  animate = true, title,
+  xLabel, yLabel,
   theme = 'dark',
   className = '',
   barWidth = 0.7,
   groupSpacing = 0.2
-}: BarChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+}: BarChartProps) { const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const colors = useMemo(() => ({
     dark: {
-      background: '#111827',
-      grid: '#374151',
+  background: '#111827',
+  grid: '#374151',
       text: '#9ca3af',
-      tooltip: '#1f2937',
+  tooltip: '#1f2937',
       defaultBar: '#3b82f6'
-    },
+     },
     light: {
-      background: '#ffffff',
-      grid: '#e5e7eb',
+  background: '#ffffff',
+  grid: '#e5e7eb',
       text: '#6b7280',
-      tooltip: '#f3f4f6',
+  tooltip: '#f3f4f6',
       defaultBar: '#3b82f6'
     }
   }), []);
@@ -71,8 +67,7 @@ export function BarChart({
     '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
   ];
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
+  useEffect(() => { const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -85,7 +80,9 @@ export function BarChart({
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     // Calculate bounds
-    const padding = { top: 50, right: 30, bottom: 70, left: 70 };
+    const padding = { top, 50,
+  right, 30, bottom, 70,
+  left: 70  }
     const chartWidth = rect.width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
@@ -109,12 +106,10 @@ export function BarChart({
       ctx.translate(padding.left, padding.top);
 
       // Calculate animation progress
-      if (animate) {
-        progress = Math.min((Date.now() - startTime) / animationDuration, 1);
+      if (animate) { progress = Math.min((Date.now() - startTime) / animationDuration, 1);
         progress = easeOutElastic(progress);
-      } else {
-        progress = 1;
-      }
+       } else { progress = 1;
+       }
 
       // Draw grid
       if (showGrid) {
@@ -124,22 +119,20 @@ export function BarChart({
 
         if (horizontal) {
           // Vertical grid lines
-          for (let i = 0; i <= 5; i++) {
-            const x = (chartWidth / 5) * i;
+          for (let i = 0; i <= 5; i++) { const x = (chartWidth / 5) * i;
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, chartHeight);
             ctx.stroke();
-          }
+           }
         } else {
           // Horizontal grid lines
-          for (let i = 0; i <= 5; i++) {
-            const y = (chartHeight / 5) * i;
+          for (let i = 0; i <= 5; i++) { const y = (chartHeight / 5) * i;
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(chartWidth, y);
             ctx.stroke();
-          }
+           }
         }
 
         ctx.setLineDash([]);
@@ -162,45 +155,40 @@ export function BarChart({
       if (horizontal) {
         // X-axis values
         ctx.textAlign = 'center';
-        for (let i = 0; i <= 5; i++) {
-          const value = (maxValue / 5) * i;
+        for (let i = 0; i <= 5; i++) { const value = (maxValue / 5) * i;
           const x = (chartWidth / 5) * i;
           ctx.fillText(value.toFixed(0), x, chartHeight + 20);
-        }
+         }
 
         // Y-axis labels
         ctx.textAlign = 'right';
-        data.forEach((item, index) => {
-          const y = (index + 0.5) * (chartHeight / data.length);
+        data.forEach((item, index) => { const y = (index + 0.5) * (chartHeight / data.length);
           ctx.fillText(item.label, -10, y + 4);
-        });
+         });
       } else {
         // Y-axis values
         ctx.textAlign = 'right';
-        for (let i = 0; i <= 5; i++) {
-          const value = minValue + (valueRange / 5) * (5 - i);
+        for (let i = 0; i <= 5; i++) { const value = minValue + (valueRange / 5) * (5 - i);
           const y = (chartHeight / 5) * i;
           ctx.fillText(value.toFixed(0), -10, y + 4);
-        }
+         }
 
         // X-axis labels
         ctx.textAlign = 'center';
         ctx.save();
-        data.forEach((item, index) => {
-          const x = (index + 0.5) * (chartWidth / data.length);
+        data.forEach((item, index) => { const x = (index + 0.5) * (chartWidth / data.length);
           ctx.save();
           ctx.translate(x, chartHeight + 20);
           ctx.rotate(-Math.PI / 4);
           ctx.textAlign = 'right';
           ctx.fillText(item.label, 0, 0);
           ctx.restore();
-        });
+         });
         ctx.restore();
       }
 
       // Draw bars
-      data.forEach((item, index) => {
-        const barColor = item.color || defaultColors[index % defaultColors.length];
+      data.forEach((item, index) => { const barColor = item.color || defaultColors[index % defaultColors.length];
         
         if (horizontal) {
           const barHeight = (chartHeight / data.length) * barWidth;
@@ -217,9 +205,8 @@ export function BarChart({
             ctx.font = 'bold 11px Inter, system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText(item.value.toFixed(1), barLength + 5, y + barHeight / 2 + 4);
-          }
-        } else {
-          const barWidth2 = (chartWidth / data.length) * barWidth;
+           }
+        } else { const barWidth2 = (chartWidth / data.length) * barWidth;
           const x = (index + 0.5) * (chartWidth / data.length) - barWidth2 / 2;
           const normalizedValue = (item.value - minValue) / valueRange;
           const barHeight = normalizedValue * chartHeight * progress;
@@ -242,7 +229,7 @@ export function BarChart({
             ctx.font = 'bold 11px Inter, system-ui, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(item.value.toFixed(1), x + barWidth2 / 2, y - 5);
-          }
+           }
         }
       });
 
@@ -278,13 +265,11 @@ export function BarChart({
       if (animate && progress < 1) {
         animationRef.current = requestAnimationFrame(draw);
       }
-    };
-
+    }
     draw();
 
     // Mouse interaction for tooltip
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!tooltipRef.current) return;
+    const handleMouseMove = (e: MouseEvent) => { if (!tooltipRef.current) return;
 
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left - padding.left;
@@ -298,17 +283,16 @@ export function BarChart({
           const barLength = (data[barIndex].value / maxValue) * chartWidth;
           if (x >= 0 && x <= barLength) {
             hoveredBar = data[barIndex];
-          }
+           }
         }
-      } else {
-        const barIndex = Math.floor(x / (chartWidth / data.length));
+      } else { const barIndex = Math.floor(x / (chartWidth / data.length));
         if (barIndex >= 0 && barIndex < data.length) {
           const normalizedValue = (data[barIndex].value - minValue) / valueRange;
           const barHeight = normalizedValue * chartHeight;
           const barY = chartHeight - barHeight;
           if (y >= barY && y <= chartHeight) {
             hoveredBar = data[barIndex];
-          }
+           }
         }
       }
 
@@ -320,37 +304,31 @@ export function BarChart({
           <div style="background: ${currentTheme.tooltip}; padding: 8px; border-radius: 4px; border: 1px solid ${currentTheme.grid};">
             <div style="color: ${hoveredBar.color || currentTheme.defaultBar}; font-weight: 600;">${hoveredBar.label}</div>
             <div style="color: ${currentTheme.text};">Value: ${hoveredBar.value.toFixed(2)}</div>
-            ${hoveredBar.tooltip ? `<div style="color: ${currentTheme.text}; font-size: 11px;">${hoveredBar.tooltip}</div>` : ''}
+            ${hoveredBar.tooltip ? `<div style="color.${currentTheme.text}; font-size: 11px;">${hoveredBar.tooltip}</div>` : ''}
           </div>
         `;
       } else {
         tooltipRef.current.style.display = 'none';
       }
-    };
-
-    const handleMouseLeave = () => {
-      if (tooltipRef.current) {
+    }
+    const handleMouseLeave = () => { if (tooltipRef.current) {
         tooltipRef.current.style.display = 'none';
-      }
-    };
-
+       }
+    }
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
 
-    return () => {
-      if (animationRef.current) {
+    return () => { if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
-      }
+       }
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [data, height, horizontal, showValues, showGrid, animate, title, xLabel, yLabel, theme, currentTheme, barWidth]);
+    }
+  }, [data: height, horizontal, showValues, showGrid, animate, title, xLabel, yLabel, theme, currentTheme, barWidth]);
 
-  const easeOutElastic = (t: number): number => {
-    const p = 0.3;
+  const easeOutElastic = (t: number); number => { const p = 0.3;
     return Math.pow(2, -10 * t) * Math.sin((t - p / 4) * (2 * Math.PI) / p) + 1;
-  };
-
+   }
   return (
     <div className={`relative ${className}`}>
       <canvas

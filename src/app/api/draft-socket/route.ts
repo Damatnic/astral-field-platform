@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  try {
-    // Mock WebSocket upgrade handling
+  try {; // Mock WebSocket upgrade handling
     const { searchParams } = new URL(request.url);
     const leagueId = searchParams.get("leagueId");
 
-    if (!leagueId) {
-      return NextResponse.json(
+    if (!leagueId) { return NextResponse.json(
         {
-          error: "League ID required",
-        },
+          error: "League ID required"
+},
         { status: 400 },
       );
     }
@@ -19,22 +17,21 @@ export async function GET(request: NextRequest) {
     // For now, return mock draft socket information
     return NextResponse.json({
       success: true,
-      message: "Draft socket endpoint",
-      leagueId,
-      socketInfo: {
-        url: `/api/draft-socket?leagueId=${leagueId}`,
+  message: "Draft socket endpoint", leagueId, socketInf,
+  o: {
+  url: `/api/draft-socket?leagueId=${leagueId}`,
         protocol: "ws",
-        events: ["draft-start", "pick-made", "timer-update", "draft-complete"],
-      },
-      timestamp: new Date().toISOString(),
-    });
+  events: ["draft-start", "pick-made", "timer-update", "draft-complete"]
+},
+      timestamp: new Date().toISOString()
+});
   } catch (error: unknown) {
     console.error("❌ Draft socket error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Draft socket failed",
-      },
+      { success: false,
+  error: error instanceof Error ? error.message :
+  "Draft socket failed"
+},
       { status: 500 },
     );
   }

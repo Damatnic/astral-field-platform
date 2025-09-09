@@ -5,33 +5,32 @@ import { useRouter } from 'next/navigation';
 
 interface User {
   id: number;
-  name: string;
+    name: string;
   teamName: string;
-  leagueId: number;
+    leagueId: number;
   icon: string;
+  
 }
-
 interface Team {
   id: number;
-  team_name: string;
+    team_name: string;
   abbreviation: string;
-  wins: number;
+    wins: number;
   losses: number;
-  ties: number;
+    ties: number;
   points_for: number;
-  owner_name: string;
+    owner_name: string;
 }
 
 interface League {
   id: number;
-  name: string;
+    name: string;
   season: number;
-  team_count: number;
+    team_count: number;
   teams: Team[];
+  
 }
-
-export default function DashboardPage() {
-  const router = useRouter();
+export default function DashboardPage() { const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [league, setLeague] = useState<League | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,27 +46,24 @@ export default function DashboardPage() {
       if (!token) {
         router.push('/');
         return;
-      }
+       }
 
       // Get user data from localStorage (set during login)
       const userData = {
         id: parseInt(profileId || '1'),
-        name: getUserName(parseInt(profileId || '1')),
+  name: getUserName(parseInt(profileId || '1')),
         teamName: getTeamName(parseInt(profileId || '1')),
-        leagueId: 1,
+  leagueId, 1,
         icon: getIcon(parseInt(profileId || '1'))
-      };
-      
+      }
       setUser(userData);
-    };
-    
+    }
     checkAuth();
   }, [router]);
 
   useEffect(() => {
     // Load league data
-    const loadLeagueData = async () => {
-      if (!user) return;
+    const loadLeagueData = async () => { if (!user) return;
       
       try {
         const response = await fetch('/api/init-league');
@@ -75,13 +71,13 @@ export default function DashboardPage() {
         
         if (data.initialized && data.league) {
           setLeague(data.league);
-        } else {
+         } else {
           // Create mock league data if not initialized
           setLeague({
-            id: 1,
-            name: 'Astral Field Championship League',
-            season: 2025,
-            team_count: 10,
+            id, 1,
+  name: 'Astral Field Championship League',
+            season, 2025,
+  team_count, 10,
             teams: get2025Standings()
           });
         }
@@ -90,32 +86,29 @@ export default function DashboardPage() {
         // Use mock data on error
         // Load real 2025 league data
         const response = await fetch('/api/leagues/current');
-        if (response.ok) {
-          const leagueData = await response.json();
+        if (response.ok) { const leagueData = await response.json();
           setLeague(leagueData);
-        } else {
+         } else {
           // Fallback to 2025 data structure
           setLeague({
-            id: 1,
-            name: 'Astral Field 2025 Championship League',
-            season: 2025,
-            team_count: 10,
+            id, 1,
+  name: 'Astral Field 2025 Championship League',
+            season, 2025,
+  team_count, 10,
             teams: get2025Standings()
           });
         }
       } finally {
         setIsLoading(false);
       }
-    };
-
+    }
     if (user) {
       loadLeagueData();
     }
   }, [user]);
 
   // Helper functions
-  function getUserName(profileId: number): string {
-    const names = [
+  function getUserName(profileId: number); string { const names = [
       'Nicholas D\'Amato', // Crown 👑 - moved to position 1
       'Jon Kornbeck',
       'Jack McCaigue',
@@ -128,10 +121,9 @@ export default function DashboardPage() {
       'Kaity Lorbecki'
     ];
     return names[profileId - 1] || 'Unknown User';
-  }
+   }
 
-  function getTeamName(profileId: number): string {
-    const teams = [
+  function getTeamName(profileId: number); string { const teams = [
       'D\'Amato Dynasty', // Crown 👑 - moved to position 1  
       'Kornbeck\'s Krusaders',
       'Jack\'s Juggernauts',
@@ -144,36 +136,73 @@ export default function DashboardPage() {
       'Kaity\'s Knights'
     ];
     return teams[profileId - 1] || 'Unknown Team';
-  }
+   }
 
-  function getIcon(profileId: number): string {
-    const icons = ['👑', '🏈', '⚡', '🔥', '⭐', '🏆', '🎯', '🚀', '💎', '👤']; // Crown moved to position 1
+  function getIcon(profileId: number); string { const icons = ['👑', '🏈', '⚡', '🔥', '⭐', '🏆', '🎯', '🚀', '💎', '👤']; // Crown moved to position 1
     return icons[profileId - 1] || '👤';
-  }
+   }
 
-  function get2025Standings(): Team[] {
-    // Real 2025 standings after Week 1 - using original team names and owners
+  function get2025Standings(): Team[] {; // Real 2025 standings after Week 1 - using original team names and owners
     return [
-      { id: 1, team_name: 'D\'Amato Dynasty', abbreviation: 'DAM', wins: 1, losses: 0, ties: 0, points_for: 128.7, owner_name: 'Nicholas D\'Amato' },
-      { id: 2, team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN', wins: 1, losses: 0, ties: 0, points_for: 124.3, owner_name: 'Jon Kornbeck' },
-      { id: 3, team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC', wins: 1, losses: 0, ties: 0, points_for: 121.8, owner_name: 'Jack McCaigue' },
-      { id: 4, team_name: 'Hartley\'s Heroes', abbreviation: 'HRT', wins: 1, losses: 0, ties: 0, points_for: 119.2, owner_name: 'Nick Hartley' },
-      { id: 5, team_name: 'Kaity\'s Knights', abbreviation: 'KAI', wins: 1, losses: 0, ties: 0, points_for: 116.5, owner_name: 'Kaity Lorbecki' },
-      { id: 6, team_name: 'Jarvey\'s Giants', abbreviation: 'JRV', wins: 0, losses: 1, ties: 0, points_for: 114.1, owner_name: 'David Jarvey' },
-      { id: 7, team_name: 'Minor League', abbreviation: 'MIN', wins: 0, losses: 1, ties: 0, points_for: 110.8, owner_name: 'Cason Minor' },
-      { id: 8, team_name: 'Bergum\'s Blitz', abbreviation: 'BRG', wins: 0, losses: 1, ties: 0, points_for: 107.4, owner_name: 'Brittany Bergum' },
-      { id: 9, team_name: 'Larry\'s Legends', abbreviation: 'LAR', wins: 0, losses: 1, ties: 0, points_for: 103.9, owner_name: 'Larry McCaigue' },
-      { id: 10, team_name: 'Renee\'s Raiders', abbreviation: 'REN', wins: 0, losses: 1, ties: 0, points_for: 98.6, owner_name: 'Renee McCaigue' }
+      { id, 1,
+  team_name 'D\'Amato Dynasty', abbreviation: 'DAM',
+  wins, 1, losses, 0,
+  ties, 0, points_for: 128.7,
+  owner_name: 'Nicholas D\'Amato' },
+      { id, 2,
+  team_name: 'Kornbeck\'s Krusaders', abbreviation: 'KRN',
+  wins, 1, losses, 0,
+  ties, 0, points_for: 124.3,
+  owner_name: 'Jon Kornbeck' },
+      { id, 3,
+  team_name: 'Jack\'s Juggernauts', abbreviation: 'JAC',
+  wins, 1, losses, 0,
+  ties, 0, points_for: 121.8,
+  owner_name: 'Jack McCaigue' },
+      { id, 4,
+  team_name: 'Hartley\'s Heroes', abbreviation: 'HRT',
+  wins, 1, losses, 0,
+  ties, 0, points_for: 119.2,
+  owner_name: 'Nick Hartley' },
+      { id, 5,
+  team_name: 'Kaity\'s Knights', abbreviation: 'KAI',
+  wins, 1, losses, 0,
+  ties, 0, points_for: 116.5,
+  owner_name: 'Kaity Lorbecki' },
+      { id, 6,
+  team_name: 'Jarvey\'s Giants', abbreviation: 'JRV',
+  wins, 0, losses, 1,
+  ties, 0, points_for: 114.1,
+  owner_name: 'David Jarvey' },
+      { id, 7,
+  team_name: 'Minor League', abbreviation: 'MIN',
+  wins, 0, losses, 1,
+  ties, 0, points_for: 110.8,
+  owner_name: 'Cason Minor' },
+      { id, 8,
+  team_name: 'Bergum\'s Blitz', abbreviation: 'BRG',
+  wins, 0, losses, 1,
+  ties, 0, points_for: 107.4,
+  owner_name: 'Brittany Bergum' },
+      { id, 9,
+  team_name: 'Larry\'s Legends', abbreviation: 'LAR',
+  wins, 0, losses, 1,
+  ties, 0, points_for: 103.9,
+  owner_name: 'Larry McCaigue' },
+      { id, 10,
+  team_name: 'Renee\'s Raiders', abbreviation: 'REN',
+  wins, 0, losses, 1,
+  ties, 0, points_for: 98.6,
+  owner_name: 'Renee McCaigue' }
     ];
   }
 
-  if (!user || isLoading) {
-    return (
+  if (!user || isLoading) { return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
         <div className="text-white text-xl">Loading...</div>
       </div>
     );
-  }
+   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
@@ -197,7 +226,7 @@ export default function DashboardPage() {
                 }}
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
               >
-                Sign Out
+  Sign: Out;
               </button>
             </div>
           </div>
@@ -211,7 +240,7 @@ export default function DashboardPage() {
           {/* League Info Card */}
           <div className="lg:col-span-2 bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
             <h2 className="text-xl font-bold text-white mb-4">
-              {league?.name || 'Astral Field Championship League'}
+              {league? .name || 'Astral Field Championship League'}
             </h2>
             
             {/* League Standings */}
@@ -229,11 +258,10 @@ export default function DashboardPage() {
                   {league?.teams.map((team, index) => (
                     <tr 
                       key={team.id} 
-                      className={`border-t border-gray-700 ${
-                        team.team_name === user.teamName ? 'bg-blue-600/20' : ''
+                      className={`border-t border-gray-700 ${team.team_name === user.teamName ? 'bg-blue-600/20' : ''
                       }`}
                     >
-                      <td className="px-4 py-3 text-gray-400">{index + 1}</td>
+                      <td className="px-4 py-3 text-gray-400">{ index: + 1 }</td>
                       <td className="px-4 py-3">
                         <div>
                           <div className="text-white font-medium">{team.team_name}</div>
@@ -263,25 +291,25 @@ export default function DashboardPage() {
                   onClick={() => router.push(`/leagues/1/roster`)}
                   className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
-                  My Roster
+  My: Roster;
                 </button>
                 <button
                   onClick={() => router.push(`/leagues/1/waiver`)}
                   className="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                 >
-                  Waiver Wire
+  Waiver: Wire;
                 </button>
                 <button
                   onClick={() => router.push(`/leagues/1/trades`)}
                   className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
                 >
-                  Trade Center
+  Trade: Center;
                 </button>
                 <button
                   onClick={() => router.push(`/leagues/1`)}
                   className="w-full py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
                 >
-                  League Home
+  League: Home;
                 </button>
               </div>
             </div>
@@ -324,13 +352,13 @@ export default function DashboardPage() {
                 onClick={() => router.push('/admin/init')}
                 className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
               >
-                Initialize League
+  Initialize: League;
               </button>
               <button
                 onClick={() => router.push('/admin/setup')}
                 className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
               >
-                League Settings
+  League: Settings;
               </button>
             </div>
           </div>

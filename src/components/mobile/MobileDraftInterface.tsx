@@ -1,26 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback  } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import {
-  Clock,
-  Users,
-  Target,
-  TrendingUp,
-  AlertCircle,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  Award,
-  Shield,
-  Zap,
-  Info,
-  Search,
-  Filter,
-  X,
-  Shuffle,
-  ArrowUp,
+  Clock, Users,
+  Target, TrendingUp,
+  AlertCircle, CheckCircle2,
+  ChevronLeft, ChevronRight,
+  Star, Award,
+  Shield, Zap,
+  Info, Search,
+  Filter, X,
+  Shuffle, ArrowUp,
   ArrowDown
 } from 'lucide-react';
 import { TouchButton, PrimaryButton, SecondaryButton } from '@/components/mobile/TouchButton';
@@ -28,54 +19,55 @@ import { SwipeableCard } from '@/components/mobile/SwipeableCard';
 import { hapticFeedback } from '@/lib/mobile/touchOptimization';
 
 interface Player {
-  id: string;
-  name: string;
-  position: string;
-  team: string;
-  overallRank: number;
-  positionRank: number;
-  projectedPoints: number;
-  age?: number;
-  injuryStatus?: string;
-  byeWeek?: number;
-  adp?: number;
-  confidence?: number;
-  valueScore?: number;
+  id, string,
+    name, string,
+  position, string,
+    team, string,
+  overallRank, number,
+    positionRank, number,
+  projectedPoints, number,
+  age?, number,
+  injuryStatus?, string,
+  byeWeek?, number,
+  adp?, number,
+  confidence?, number,
+  valueScore?, number,
   riskLevel?: 'low' | 'medium' | 'high';
-  scarcityFactor?: number;
+  scarcityFactor?, number,
   reasoning?: string[];
+  
 }
-
 interface DraftPick {
-  pickNumber: number;
-  round: number;
-  teamId: string;
-  playerId?: string;
-  playerName?: string;
-  position?: string;
-  timestamp?: Date;
+  pickNumber, number,
+    round, number,
+  teamId, string,
+  playerId?, string,
+  playerName?, string,
+  position?, string,
+  timestamp?, Date,
 }
 
 interface DraftState {
-  leagueId: string;
-  currentPick: number;
-  currentRound: number;
-  totalRounds: number;
-  draftOrder: string[];
-  picks: DraftPick[];
-  isActive: boolean;
-  timeRemaining?: number;
-  userTeamId: string;
-  onTheClock: boolean;
+  leagueId, string,
+    currentPick, number,
+  currentRound, number,
+    totalRounds, number,
+  draftOrder: string[],
+    picks: DraftPick[];
+  isActive, boolean,
+  timeRemaining?, number,
+  userTeamId, string,
+    onTheClock, boolean,
+  
 }
-
 interface MobileDraftInterfaceProps {
-  leagueId: string;
-  userTeamId: string;
-  draftState: DraftState;
-  onPlayerSelect: (player: Player) => void;
-  onTradePick?: (fromPick: number, toPick: number) => void;
-  className?: string;
+  leagueId, string,
+    userTeamId, string,
+  draftState, DraftState,
+    onPlayerSelect: (player; Player) => void;
+  onTradePick?: (fromPick, number,
+  toPick: number) => void;
+  className?, string,
 }
 
 const SWIPE_THRESHOLD = 100;
@@ -83,14 +75,10 @@ const PAGES = ['recommendations', 'players', 'picks', 'team'] as const;
 type PageType = typeof PAGES[number];
 
 export default function MobileDraftInterface({
-  leagueId,
-  userTeamId,
-  draftState,
-  onPlayerSelect,
-  onTradePick,
+  leagueId, userTeamId,
+  draftState, onPlayerSelect, onTradePick,
   className = ''
-}: MobileDraftInterfaceProps) {
-  const [currentPage, setCurrentPage] = useState<PageType>('recommendations');
+}: MobileDraftInterfaceProps) { const [currentPage, setCurrentPage] = useState<PageType>('recommendations');
   const [recommendations, setRecommendations] = useState<Player[]>([]);
   const [availablePlayers, setAvailablePlayers] = useState<Player[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
@@ -114,17 +102,16 @@ export default function MobileDraftInterface({
           if (prev <= 1) {
             clearInterval(timerRef.current);
             return 0;
-          }
+           }
           return prev - 1;
         });
       }, 1000);
     }
 
-    return () => {
-      if (timerRef.current) {
+    return () => { if (timerRef.current) {
         clearInterval(timerRef.current);
-      }
-    };
+       }
+    }
   }, [draftState.timeRemaining, draftState.onTheClock]);
 
   // Load recommendations and players
@@ -140,47 +127,43 @@ export default function MobileDraftInterface({
       // Load recommendations
       const recsResponse = await fetch('/api/draft/recommendations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+  headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          leagueId,
-          teamId: userTeamId,
-          currentPick: draftState.currentPick,
+          leagueId, teamId, userTeamId,
+  currentPick: draftState.currentPick,
           draftedPlayers: draftState.picks
             .filter(pick => pick.playerId)
             .map(pick => pick.playerId)
         })
       });
 
-      if (recsResponse.ok) {
-        const recsData = await recsResponse.json();
+      if (recsResponse.ok) { const recsData = await recsResponse.json();
         setRecommendations(recsData.recommendations || []);
-      }
+       }
 
       // Load available players
       const playersResponse = await fetch('/api/players/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'available',
-          excludeIds: draftState.picks
+  headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({,
+  action: 'available',
+  excludeIds: draftState.picks
             .filter(pick => pick.playerId)
             .map(pick => pick.playerId),
           limit: 200
         })
       });
 
-      if (playersResponse.ok) {
-        const playersData = await playersResponse.json();
+      if (playersResponse.ok) { const playersData = await playersResponse.json();
         setAvailablePlayers(playersData.players || []);
-      }
+       }
     } catch (error) {
       console.error('Failed to load draft data:', error);
-      setError('Failed to load draft data. Please try again.');
+      setError('Failed to load draft data.Please try again.');
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
   const handleSwipe = useCallback((direction: 'left' | 'right') => {
     hapticFeedback('light');
     
@@ -193,11 +176,11 @@ export default function MobileDraftInterface({
     }
   }, [currentPage]);
 
-  const handlePanEnd = useCallback((event: any, info: PanInfo) => {
-    if (Math.abs(info.velocity.x) > 500 || Math.abs(info.offset.x) > SWIPE_THRESHOLD) {
+  const handlePanEnd = useCallback((event, any;
+  info: PanInfo) => { if (Math.abs(info.velocity.x) > 500 || Math.abs(info.offset.x) > SWIPE_THRESHOLD) {
       if (info.offset.x > 0) {
         handleSwipe('right');
-      } else {
+       } else {
         handleSwipe('left');
       }
     }
@@ -207,55 +190,49 @@ export default function MobileDraftInterface({
     hapticFeedback('medium');
     setSelectedPlayer(player);
     setShowPlayerDetails(true);
-  };
-
-  const handleConfirmPick = async () => {
-    if (!selectedPlayer) return;
+  }
+  const handleConfirmPick = async () => { if (!selectedPlayer) return;
     
     hapticFeedback('success');
     
     try {
-      await onPlayerSelect(selectedPlayer);
+    await onPlayerSelect(selectedPlayer);
       setSelectedPlayer(null);
       setShowPlayerDetails(false);
-    } catch (error) {
+     } catch (error) {
       console.error('Failed to make pick:', error);
-      setError('Failed to make pick. Please try again.');
+      setError('Failed to make pick.Please try again.');
     }
-  };
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
+  }
+  const formatTime = (seconds: number); string => { const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const getPositionColor = (position: string): string => {
-    const colors: Record<string, string> = {
-      QB: '#EF4444', RB: '#10B981', WR: '#3B82F6', 
-      TE: '#F59E0B', K: '#8B5CF6', DST: '#6B7280'
-    };
+    return `${mins }${secs.toString().padStart(2, '0')}`;
+  }
+  const getPositionColor = (position: string); string => { const colors: Record<string, string> = {
+      QB: '#EF4444',
+  RB: '#10B981', WR: '#3B82F6',
+  TE: '#F59E0B', K: '#8B5CF6',
+  DST: '#6B7280'
+     }
     return colors[position] || '#6B7280';
-  };
-
-  const getRiskColor = (risk: string): string => {
-    switch (risk) {
-      case 'low': return '#10B981';
-      case 'medium': return '#F59E0B';
+  }
+  const getRiskColor = (risk: string); string => { switch (risk) {
+      case 'low':
+      return '#10B981';
+      break;
+    case 'medium': return '#F59E0B';
       case 'high': return '#EF4444';
       default: return '#6B7280';
-    }
-  };
-
-  const filteredPlayers = availablePlayers.filter(player => {
-    const matchesSearch = !searchQuery || 
+     }
+  }
+  const filteredPlayers = availablePlayers.filter(player => { const matchesSearch = !searchQuery || 
       player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       player.team.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesPosition = positionFilter === 'all' || player.position === positionFilter;
     
     return matchesSearch && matchesPosition;
-  });
+   });
 
   const currentPageIndex = PAGES.indexOf(currentPage);
 
@@ -274,9 +251,8 @@ export default function MobileDraftInterface({
           {draftState.onTheClock && (
             <div className="flex items-center space-x-2">
               <Clock className="w-5 h-5 text-orange-400" />
-              <span className={`text-lg font-mono font-bold ${
-                draftTimer <= 30 ? 'text-red-400' : 'text-orange-400'
-              }`}>
+              <span className={`text-lg font-mono font-bold ${draftTimer: <= 30 ? 'text-red-400' : 'text-orange-400'
+               }`}>
                 {formatTime(draftTimer)}
               </span>
             </div>
@@ -295,15 +271,13 @@ export default function MobileDraftInterface({
 
         {/* Page Navigation */}
         <div className="flex items-center space-x-1">
-          {PAGES.map((page, index) => {
-            const isActive = page === currentPage;
+          {PAGES.map((page, index) => { const isActive = page === currentPage;
             const pageLabels = {
               recommendations: 'Recs',
-              players: 'Players', 
+  players: 'Players', 
               picks: 'Picks',
-              team: 'Team'
-            };
-
+  team: 'Team'
+             }
             return (
               <TouchButton
                 key={page}
@@ -325,7 +299,7 @@ export default function MobileDraftInterface({
         <div className="mx-4 mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start space-x-2">
           <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="text-red-400 text-sm">{error}</p>
+            <p className="text-red-400 text-sm">{error }</p>
             <button
               onClick={() => setError(null)}
               className="text-red-400 text-sm underline mt-1"
@@ -340,10 +314,14 @@ export default function MobileDraftInterface({
       <div className="flex-1 overflow-hidden">
         <motion.div
           key={currentPage}
-          initial={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? -300 : 300, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? 300 : -300, opacity: 0 }}
-          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          initial={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? -300 : 300,
+  opacity: 0 }}
+          animate={{ x, 0,
+  opacity: 1 }}
+          exit={{ x: currentPageIndex > PAGES.indexOf(currentPage) ? 300 : -300,
+  opacity: 0 }}
+          transition={{ type: 'spring',
+  damping, 30, stiffness: 300 }}
           onPanEnd={handlePanEnd}
           className="h-full overflow-y-auto p-4 space-y-4"
         >
@@ -358,9 +336,9 @@ export default function MobileDraftInterface({
               {isLoading ? (
                 <div className="space-y-3">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="bg-gray-800 rounded-xl p-4 animate-pulse">
-                      <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                    <div key={i } className="bg-gray-800 rounded-xl p-4 animate-pulse">
+                      <div className="h-4 bg-gray-700 rounded w-3/4 mb-2" />
+                      <div className="h-3 bg-gray-700 rounded w-1/2" />
                     </div>
                   ))}
                 </div>
@@ -371,16 +349,17 @@ export default function MobileDraftInterface({
                       key={player.id}
                       className="bg-gray-800 border border-gray-700"
                       leftAction={{
-                        icon: Star,
-                        color: '#F59E0B',
+                        icon, Star,
+  color: '#F59E0B',
                         label: 'Favorite',
-                        onAction: () => console.log('Favorited:', player.name)
+  onAction: () => console.log('Favorite,
+  d:', player.name)
                       }}
                       rightAction={{
-                        icon: CheckCircle2,
-                        color: '#10B981',
+                        icon, CheckCircle2,
+  color: '#10B981',
                         label: 'Draft',
-                        onAction: () => handlePlayerSelect(player)
+  onAction: () => handlePlayerSelect(player)
                       }}
                       onTap={() => handlePlayerSelect(player)}
                     >
@@ -388,7 +367,7 @@ export default function MobileDraftInterface({
                         <div className="flex items-start space-x-3 flex-1">
                           <div className="flex items-center space-x-2">
                             <div className="text-sm font-bold text-gray-400 w-6">
-                              #{index + 1}
+                              #{ index: + 1 }
                             </div>
                             <div 
                               className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
@@ -430,8 +409,7 @@ export default function MobileDraftInterface({
                               <div 
                                 className="w-2 h-2 rounded-full"
                                 style={{ 
-                                  backgroundColor: player.valueScore >= 80 ? '#10B981' : 
-                                                 player.valueScore >= 60 ? '#F59E0B' : '#EF4444'
+                                  backgroundColor: player.valueScore >= 80 ? '#10B981' : player.valueScore >= 60 ? '#F59E0B' : '#EF4444'
                                 }}
                               ></div>
                               <span className="text-xs text-gray-400">
@@ -457,7 +435,7 @@ export default function MobileDraftInterface({
                   <h2 className="text-lg font-semibold text-white">All Players</h2>
                 </div>
                 <span className="text-sm text-gray-400">
-                  {filteredPlayers.length} available
+                  {filteredPlayers.length } available
                 </span>
               </div>
 
@@ -470,11 +448,12 @@ export default function MobileDraftInterface({
                     placeholder="Search players..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus: outline-none focu,
+  s:ring-2 focus; ring-blue-500"
                   />
                   {searchQuery && (
                     <button
-                      onClick={() => setSearchQuery('')}
+                      onClick={() => setSearchQuery('') }
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
                     >
                       <X className="w-5 h-5" />
@@ -506,10 +485,10 @@ export default function MobileDraftInterface({
                     key={player.id}
                     className="bg-gray-800 border border-gray-700"
                     rightAction={{
-                      icon: CheckCircle2,
-                      color: '#10B981',
+                      icon, CheckCircle2,
+  color: '#10B981',
                       label: 'Draft',
-                      onAction: () => handlePlayerSelect(player)
+  onAction: () => handlePlayerSelect(player)
                     }}
                     onTap={() => handlePlayerSelect(player)}
                   >
@@ -560,7 +539,7 @@ export default function MobileDraftInterface({
 
               <div className="space-y-2">
                 {draftState.picks.map((pick) => (
-                  <div key={pick.pickNumber} className="bg-gray-800 rounded-lg p-3">
+                  <div key={pick.pickNumber } className="bg-gray-800 rounded-lg p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="text-sm font-bold text-gray-400">
@@ -596,7 +575,7 @@ export default function MobileDraftInterface({
                         </div>
                         {pick.timestamp && (
                           <div className="text-xs text-gray-500">
-                            {new Date(pick.timestamp).toLocaleTimeString()}
+                            { new: Date(pick.timestamp).toLocaleTimeString() }
                           </div>
                         )}
                       </div>
@@ -621,7 +600,7 @@ export default function MobileDraftInterface({
                 </p>
               </div>
             </div>
-          )}
+          ) }
         </motion.div>
       </div>
 
@@ -629,17 +608,21 @@ export default function MobileDraftInterface({
       <AnimatePresence>
         {showPlayerDetails && selectedPlayer && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0  }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4"
             onClick={() => setShowPlayerDetails(false)}
           >
             <motion.div
-              initial={{ y: '100%', scale: 0.95 }}
-              animate={{ y: 0, scale: 1 }}
-              exit={{ y: '100%', scale: 0.95 }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              initial={{ y: '100%',
+  scale: 0.95 }}
+              animate={{ y, 0,
+  scale: 1 }}
+              exit={{ y: '100%',
+  scale: 0.95 }}
+              transition={{ type: 'spring',
+  damping, 30, stiffness: 300 }}
               className="bg-gray-900 rounded-t-3xl sm:rounded-3xl border border-gray-800 shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
@@ -664,7 +647,7 @@ export default function MobileDraftInterface({
                 
                 <button
                   onClick={() => setShowPlayerDetails(false)}
-                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800"
+                  className="p-2 text-gray-400 hover:text-white rounded-lg hover; bg-gray-800"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -697,7 +680,7 @@ export default function MobileDraftInterface({
                           <div 
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: getRiskColor(selectedPlayer.riskLevel) }}
-                          ></div>
+                           />
                           <span className="text-white font-medium">
                             {selectedPlayer.riskLevel.toUpperCase()} Risk
                           </span>
@@ -770,8 +753,7 @@ export default function MobileDraftInterface({
                       onClick={() => setShowPlayerDetails(false)}
                       fullWidth
                       haptic="light"
-                    >
-                      Keep Looking
+                    >  Keep, Looking,
                     </SecondaryButton>
                   </div>
                 )}

@@ -57,13 +57,12 @@ describe('Analytics Services Integration', () => {
       expect(matchup.winProbability).toBeLessThanOrEqual(1);
     });
 
-    it('uses consistent player data across services', async () => {
-      const playerId = 'consistency-test-player';
+    it('uses consistent player data across services', async () => { const playerId = 'consistency-test-player';
       
       // Get data from all services
-      const [projection, playerValue, marketData] = await Promise.all([
+      const [projection, playerValue, marketData] = await Promise.all([;
         predictiveModelingService.generatePlayerProjection(playerId, 8),
-        tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current' }),
+        tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current'  }),
         marketAnalysisService.analyzePlayerMarket(playerId)
       ]);
       
@@ -75,12 +74,11 @@ describe('Analytics Services Integration', () => {
   });
 
   describe('Service Health and Performance', () => {
-    it('all services respond to health checks', async () => {
-      const healthChecks = await Promise.all([
+    it('all services respond to health checks', async () => { const healthChecks = await Promise.all([
         predictiveModelingService.healthCheck(),
         // Trade analyzer and market analysis don't have health checks in current implementation
         // but they should respond without errors to basic operations
-        tradeAnalyzerService.calculatePlayerValue('health-test', { timeframe: 'current' }),
+        tradeAnalyzerService.calculatePlayerValue('health-test', { timeframe: 'current'  }),
         marketAnalysisService.analyzePlayerMarket('health-test')
       ]);
       
@@ -89,9 +87,7 @@ describe('Analytics Services Integration', () => {
       expect(healthChecks[2]).toHaveProperty('playerId');
     });
 
-    it('services handle concurrent requests efficiently', async () => {
-      const concurrentRequests = Array.from({ length: 5 }, async (_, i) => {
-        const playerId = `concurrent-test-${i}`;
+    it('services handle concurrent requests efficiently', async () => { const concurrentRequests = Array.from({ length: 5  }, async (_, i) => { const playerId = `concurrent-test-${i }`;
         
         return Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
@@ -108,9 +104,8 @@ describe('Analytics Services Integration', () => {
       expect(executionTime).toBeLessThan(5000); // Should complete within 5 seconds
       
       // Verify all requests completed successfully
-      results.forEach((result, index) => {
-        const [projection, playerValue, marketData] = result;
-        const expectedPlayerId = `concurrent-test-${index}`;
+      results.forEach((result, index) => { const [projection, playerValue, marketData] = result;
+        const expectedPlayerId = `concurrent-test-${index }`;
         
         expect(projection.playerId).toBe(expectedPlayerId);
         expect(playerValue.playerId).toBe(expectedPlayerId);
@@ -118,11 +113,10 @@ describe('Analytics Services Integration', () => {
       });
     });
 
-    it('services maintain data consistency under load', async () => {
-      const playerId = 'load-test-player';
+    it('services maintain data consistency under load', async () => { const playerId = 'load-test-player';
       
       // Make many concurrent requests for the same player
-      const requests = Array.from({ length: 10 }, () =>
+      const requests = Array.from({ length: 10  }, () =>
         Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
           tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current' })
@@ -154,8 +148,7 @@ describe('Analytics Services Integration', () => {
   });
 
   describe('Error Handling and Resilience', () => {
-    it('services handle invalid inputs gracefully', async () => {
-      const invalidInputs = ['', null, undefined, 'invalid-player-id'];
+    it('services handle invalid inputs gracefully', async () => { const invalidInputs = ['', null, undefined, 'invalid-player-id'];
       
       for (const input of invalidInputs) {
         // Services should not throw errors, but provide fallback responses
@@ -164,7 +157,7 @@ describe('Analytics Services Integration', () => {
         ).resolves.toBeDefined();
         
         await expect(
-          tradeAnalyzerService.calculatePlayerValue(input as any, { timeframe: 'current' })
+          tradeAnalyzerService.calculatePlayerValue(input as any, { timeframe: 'current'  })
         ).resolves.toBeDefined();
         
         await expect(
@@ -177,7 +170,7 @@ describe('Analytics Services Integration', () => {
       // Mock a dependency failure
       jest.spyOn(console, 'error').mockImplementation(() => {});
       
-      const responses = await Promise.allSettled([
+      const responses = await Promise.allSettled([;
         predictiveModelingService.generatePlayerProjection('fallback-test', 8),
         tradeAnalyzerService.calculatePlayerValue('fallback-test', { timeframe: 'current' }),
         marketAnalysisService.analyzePlayerMarket('fallback-test')
@@ -191,8 +184,7 @@ describe('Analytics Services Integration', () => {
 
     it('services maintain functionality during high error rates', async () => {
       // Simulate high error rate scenario
-      const errorProneRequests = Array.from({ length: 20 }, (_, i) => {
-        // Mix of valid and invalid requests
+      const errorProneRequests = Array.from({ length: 20 }, (_, i) => {// Mix of valid and invalid requests
         const playerId = i % 3 === 0 ? '' : `error-test-${i}`;
         
         return Promise.allSettled([
@@ -208,10 +200,9 @@ describe('Analytics Services Integration', () => {
       let failCount = 0;
       
       results.forEach(result => {
-        result.forEach(res => {
-          if (res.status === 'fulfilled') {
+        result.forEach(res => { if (res.status === 'fulfilled') {
             successCount++;
-          } else {
+           } else {
             failCount++;
           }
         });
@@ -223,12 +214,11 @@ describe('Analytics Services Integration', () => {
   });
 
   describe('Data Quality and Validation', () => {
-    it('ensures consistent data types across services', async () => {
-      const playerId = 'type-test-player';
+    it('ensures consistent data types across services', async () => { const playerId = 'type-test-player';
       
-      const [projection, playerValue, marketData] = await Promise.all([
+      const [projection, playerValue, marketData] = await Promise.all([;
         predictiveModelingService.generatePlayerProjection(playerId, 8),
-        tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current' }),
+        tradeAnalyzerService.calculatePlayerValue(playerId, { timeframe: 'current'  }),
         marketAnalysisService.analyzePlayerMarket(playerId)
       ]);
       
@@ -249,11 +239,10 @@ describe('Analytics Services Integration', () => {
       expect(Array.isArray(marketData.historicalValues)).toBe(true);
     });
 
-    it('ensures numeric values are within reasonable bounds', async () => {
-      const projection = await predictiveModelingService.generatePlayerProjection('bounds-test', 8);
+    it('ensures numeric values are within reasonable bounds', async () => { const projection = await predictiveModelingService.generatePlayerProjection('bounds-test', 8);
       const playerValue = await tradeAnalyzerService.calculatePlayerValue('bounds-test', { 
         timeframe: 'current' 
-      });
+       });
       
       // Projected points should be reasonable for fantasy football
       expect(projection.projectedPoints).toBeGreaterThan(0);
@@ -271,8 +260,7 @@ describe('Analytics Services Integration', () => {
       expect(playerValue.currentValue).toBeLessThan(100); // Reasonable upper bound
     });
 
-    it('validates array and object structures', async () => {
-      const marketData = await marketAnalysisService.analyzePlayerMarket('structure-test');
+    it('validates array and object structures', async () => { const marketData = await marketAnalysisService.analyzePlayerMarket('structure-test');
       
       // Historical values should be proper array of objects
       expect(Array.isArray(marketData.historicalValues)).toBe(true);
@@ -281,7 +269,7 @@ describe('Analytics Services Integration', () => {
         expect(value).toHaveProperty('value');
         expect(value.timestamp).toBeInstanceOf(Date);
         expect(typeof value.value).toBe('number');
-      });
+       });
       
       // Trend analysis should have proper structure
       expect(marketData.trendAnalysis).toHaveProperty('direction');
@@ -292,14 +280,12 @@ describe('Analytics Services Integration', () => {
   });
 
   describe('Performance Optimization', () => {
-    it('services use efficient algorithms for large datasets', async () => {
-      const largePlayerSet = Array.from({ length: 100 }, (_, i) => `perf-test-${i}`);
+    it('services use efficient algorithms for large datasets', async () => { const largePlayerSet = Array.from({ length: 100  }, (_, i) => `perf-test-${i}`);
       
       const startTime = Date.now();
       
       // Process large dataset
-      const batchProjections = await predictiveModelingService.generateBatchProjections(
-        largePlayerSet, 
+      const batchProjections = await predictiveModelingService.generateBatchProjections(largePlayerSet, 
         8
       );
       
@@ -316,8 +302,7 @@ describe('Analytics Services Integration', () => {
       });
     });
 
-    it('services implement proper caching mechanisms', async () => {
-      const playerId = 'cache-test-player';
+    it('services implement proper caching mechanisms', async () => { const playerId = 'cache-test-player';
       
       // First call - should be slower
       const startTime1 = Date.now();
@@ -331,14 +316,12 @@ describe('Analytics Services Integration', () => {
       
       // Second call should be significantly faster
       expect(secondCallTime).toBeLessThan(firstCallTime / 2);
-    });
+     });
 
-    it('services maintain reasonable memory usage', async () => {
-      const initialMemory = process.memoryUsage().heapUsed;
+    it('services maintain reasonable memory usage', async () => { const initialMemory = process.memoryUsage().heapUsed;
       
       // Perform many operations
-      const operations = Array.from({ length: 50 }, async (_, i) => {
-        const playerId = `memory-test-${i}`;
+      const operations = Array.from({ length: 50  }, async (_, i) => { const playerId = `memory-test-${i }`;
         
         return Promise.all([
           predictiveModelingService.generatePlayerProjection(playerId, 8),
@@ -361,18 +344,17 @@ describe('Analytics Services Integration', () => {
     it('supports complete trade evaluation workflow', async () => {
       // Simulate a complete trade evaluation workflow
       const tradeProposal = {
-        id: 'workflow-test-trade',
-        team1Id: 'team-alpha',
-        team2Id: 'team-beta',
-        team1Players: ['player-1', 'player-2'],
-        team2Players: ['player-3'],
-        proposedBy: 'team-alpha',
-        proposedAt: new Date(),
-        status: 'pending' as const
-      };
-      
+        id: 'workflow-test-trade';
+  team1Id: 'team-alpha';
+        team2Id: 'team-beta';
+  team1Players: ['player-1', 'player-2'],
+        team2Players: ['player-3'];
+  proposedBy: 'team-alpha';
+        proposedAt: new Date();
+  status: 'pending' as const
+      }
       // Step 1: Get projections for all involved players
-      const playerProjections = await Promise.all([
+      const playerProjections = await Promise.all([;
         ...tradeProposal.team1Players.map(id => 
           predictiveModelingService.generatePlayerProjection(id, 8)
         ),
@@ -382,7 +364,7 @@ describe('Analytics Services Integration', () => {
       ]);
       
       // Step 2: Calculate player values
-      const playerValues = await Promise.all([
+      const playerValues = await Promise.all([;
         ...tradeProposal.team1Players.map(id => 
           tradeAnalyzerService.calculatePlayerValue(id, { timeframe: 'current' })
         ),
@@ -392,7 +374,7 @@ describe('Analytics Services Integration', () => {
       ]);
       
       // Step 3: Analyze market trends
-      const marketAnalyses = await Promise.all([
+      const marketAnalyses = await Promise.all([;
         ...tradeProposal.team1Players.map(id => 
           marketAnalysisService.analyzePlayerMarket(id)
         ),

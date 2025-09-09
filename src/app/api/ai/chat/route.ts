@@ -4,9 +4,9 @@ import { OpenAIService } from "@/lib/openai-service";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { messages, context, contextData } = body;
+    const { messages, context: contextData } = body;
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) { 
       return NextResponse.json(
         { error: "Messages array is required" },
         { status: 400 },
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const lastMessage = messages[messages.length - 1];
-    if (!lastMessage || lastMessage.role !== "user") {
+    if (!lastMessage || lastMessage.role !== "user") { 
       return NextResponse.json(
         { error: "Last message must be from user" },
         { status: 400 },
@@ -25,10 +25,9 @@ export async function POST(request: NextRequest) {
     let response: string;
 
     // Route to appropriate AI service method based on context
-    switch (context) {
+    switch (contextData) {
       case "matchup":
-        response = await openaiService.getCompletion(
-          `Analyze this fantasy football matchup: ${lastMessage.content}`,
+        response = await openaiService.getCompletion(`Analyze this fantasy football matchup: ${lastMessage.content}`,
           contextData?.team1 || {},
           contextData?.team2 || {},
           contextData?.week || 1,
@@ -63,23 +62,23 @@ export async function POST(request: NextRequest) {
       message: {
         role: "assistant",
         content: response,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: unknown) {
-    console.error("AI Chat Error:", error);
+    console.error("AI Chat Error: ", error);
 
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
 
-    if (errorMessage.includes("API key")) {
+    if (errorMessage.includes("API key")) { 
       return NextResponse.json(
         { error: "AI service configuration error" },
         { status: 500 },
       );
     }
 
-    if (errorMessage.includes("quota")) {
+    if (errorMessage.includes("quota")) { 
       return NextResponse.json(
         { error: "AI service quota exceeded" },
         { status: 503 },
@@ -93,14 +92,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET() { 
   try {
     return NextResponse.json({
       status: "connected",
       service: "OpenAI",
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } catch (error) { 
     return NextResponse.json(
       { error: "Failed to check AI service status" },
       { status: 500 },

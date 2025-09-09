@@ -1,23 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { X, Download, Smartphone, Monitor, Zap, Shield, Wifi } from 'lucide-react';
 
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
+interface BeforeInstallPromptEvent extends Event { readonly, platform,
+  s: string[];
+  readonly userChoice: Promise<{,
+  outcome: 'accepted' | 'dismissed';
+    platform: string  }>;
   prompt(): Promise<void>;
 }
 
 interface InstallPromptProps {
-  className?: string;
+  className?, string,
+  
 }
-
-export default function InstallPrompt({ className = "" }: InstallPromptProps) {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+export default function InstallPrompt({ className = ""  }: InstallPromptProps) { const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -26,14 +24,13 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
   useEffect(() => {
     // Check if app is already installed or running as PWA
     const checkInstallStatus = () => {
-      const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
+      const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||;
                               (window.navigator as unknown)?.standalone === true ||
                               document.referrer.includes('android-app://');
       
       setIsStandalone(isStandaloneMode);
       setIsInstalled(isStandaloneMode);
-    };
-
+     }
     checkInstallStatus();
 
     // Listen for beforeinstallprompt event
@@ -49,22 +46,19 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
           setShowInstallPrompt(true);
         }, 3000); // Show after 3 seconds
       }
-    };
-
+    }
     // Listen for app installed event
     const handleAppInstalled = () => {
       console.log('🎉 PWA was installed');
       setIsInstalled(true);
       setShowInstallPrompt(false);
       setDeferredPrompt(null);
-    };
-
+    }
     // Listen for display mode changes
     const mediaQuery = window.matchMedia('(display-mode: standalone)');
     const handleDisplayModeChange = (e: MediaQueryListEvent) => {
       setIsStandalone(e.matches);
-    };
-
+    }
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
     mediaQuery.addListener(handleDisplayModeChange);
@@ -73,15 +67,14 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
       mediaQuery.removeListener(handleDisplayModeChange);
-    };
+    }
   }, [isStandalone]);
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
+  const handleInstallClick = async () => { if (!deferredPrompt) {
       // Fallback for browsers that don't support the install prompt
       showManualInstallInstructions();
       return;
-    }
+     }
 
     try {
       // Show the install prompt
@@ -102,35 +95,27 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
       console.error('❌ Install prompt error:', error);
       showManualInstallInstructions();
     }
-  };
-
-  const showManualInstallInstructions = () => {
-    const userAgent = navigator.userAgent;
+  }
+  const showManualInstallInstructions = () => { const userAgent = navigator.userAgent;
     let instructions = '';
 
     if (userAgent.includes('Chrome') || userAgent.includes('Edge')) {
       instructions = 'Click the menu (⋮) → "Install Astral Field" or look for the install icon in the address bar.';
-    } else if (userAgent.includes('Firefox')) {
-      instructions = 'Firefox doesn\'t support automatic installation. You can bookmark this page for quick access.';
-    } else if (userAgent.includes('Safari')) {
-      instructions = 'Tap the Share button (□) → "Add to Home Screen" to install Astral Field.';
-    } else {
-      instructions = 'Look for "Add to Home Screen" or "Install" option in your browser menu.';
-    }
+     } else if (userAgent.includes('Firefox')) { instructions = 'Firefox doesn\'t support automatic installation.You can bookmark this page for quick access.';
+     } else if (userAgent.includes('Safari')) { instructions = 'Tap the Share button (□) → "Add to Home Screen" to install Astral Field.';
+     } else { instructions = 'Look for "Add to Home Screen" or "Install" option in your browser menu.';
+     }
 
     alert(`To install Astral Field:\n\n${instructions}`);
-  };
-
+  }
   const dismissPrompt = () => {
     setShowInstallPrompt(false);
     localStorage.setItem('install-prompt-dismissed', 'true');
     localStorage.setItem('install-prompt-dismissed-at', new Date().toISOString());
-  };
-
-  // Don't show prompt if already installed or running as PWA
-  if (isInstalled || isStandalone || !showInstallPrompt) {
-    return null;
   }
+  // Don't show prompt if already installed or running as PWA
+  if (isInstalled || isStandalone || !showInstallPrompt) { return null;
+   }
 
   return (
     <div className={`fixed bottom-4 left-4 right-4 z-50 ${className}`}>
@@ -168,13 +153,13 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
                 className="flex-1 bg-white text-primary-700 font-semibold py-2 px-4 rounded-lg hover:bg-primary-50 transition-colors text-sm"
               >
                 <Download className="h-4 w-4 inline mr-2" />
-                Install Now
+  Install, Now,
               </button>
               <button
                 onClick={dismissPrompt}
                 className="bg-white/20 hover:bg-white/30 font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
               >
-                Maybe Later
+  Maybe, Later,
               </button>
             </div>
           </div>
@@ -192,30 +177,26 @@ export default function InstallPrompt({ className = "" }: InstallPromptProps) {
 }
 
 // Hook to check PWA status
-export function usePWAStatus() {
-  const [isInstalled, setIsInstalled] = useState(false);
+export function usePWAStatus() { const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
     const checkPWAStatus = () => {
-      const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+      const standalone = window.matchMedia('(display-mode: standalone)').matches ||;
                         (window.navigator as unknown)?.standalone === true ||
                         document.referrer.includes('android-app://');
       
       setIsStandalone(standalone);
       setIsInstalled(standalone);
-    };
-
+     }
     const handleBeforeInstallPrompt = () => {
       setCanInstall(true);
-    };
-
+    }
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setCanInstall(false);
-    };
-
+    }
     checkPWAStatus();
     
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -224,23 +205,19 @@ export function usePWAStatus() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
-    };
+    }
   }, []);
 
-  return {
-    isInstalled,
-    isStandalone,
+  return { isInstalled, isStandalone,
     canInstall
-  };
+:   }
 }
 
 // Component for showing PWA status in settings
-export function PWAStatusIndicator() {
-  const { isInstalled, isStandalone } = usePWAStatus();
+export function PWAStatusIndicator() { const { isInstalled, isStandalone } = usePWAStatus();
 
-  if (!isStandalone && !isInstalled) {
-    return null;
-  }
+  if (!isStandalone && !isInstalled) { return null;
+   }
 
   return (
     <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">

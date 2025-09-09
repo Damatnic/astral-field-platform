@@ -2,21 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
 import { z } from 'zod';
 import { 
-  validateRouteParams,
-  createValidationErrorResponse,
-  hasValidationErrors,
+  validateRouteParams, createValidationErrorResponse, hasValidationErrors,
   idSchema
 } from "@/lib/validation";
 
 // Schema for route parameters
 const leagueParamsSchema = z.object({
-  id: idSchema.or(z.enum(['1'])) // Allow '1' for backward compatibility
+  id: idSchema.or(z.enum(['1'])) ; // Allow '1' for backward compatibility
 });
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: NextRequest) {
   try {
     const resolvedParams = await params;
     
@@ -26,20 +21,19 @@ export async function GET(
     if (hasValidationErrors(paramsValidation)) {
       return NextResponse.json(
         createValidationErrorResponse(paramsValidation.errors),
-        { status: 400 }
+        { status: 400  }
       );
     }
 
     const { id: rawId } = paramsValidation.data!;
     
     // Convert simple league ID to full UUID
-    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
+    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' , rawId,
 
     // Get league details
-    const result = await database.transaction(async (client) => {
-      const leagueResult = await client.query(
+    const result = await database.transaction(async (client) => { const leagueResult = await client.query(
       `
-      SELECT 
+      SELECT
         l.*,
         u.username as commissioner_name,
         u.email as commissioner_email
@@ -52,14 +46,13 @@ export async function GET(
 
     if (leagueResult.rows.length === 0) {
         return null;
-      }
+       }
 
       const league = leagueResult.rows[0];
 
       // Get teams (simplified to match actual schema)
-      const teamsResult = await client.query(
-      `
-      SELECT 
+      const teamsResult = await client.query(`
+      SELECT
         t.*,
         u.username as owner_name,
         u.email as owner_email
@@ -79,29 +72,26 @@ export async function GET(
       const recentActivity = [
         {
           id: 1,
-          type: "trade",
+type: "trade",
           description: "Trade between Team A and Team B",
-          timestamp: new Date().toISOString(),
-        },
+  timestamp: new Date().toISOString()
+},
         {
           id: 2,
-          type: "waiver",
+type: "waiver",
           description: "Player X claimed off waivers",
-          timestamp: new Date().toISOString(),
-        },
-      ];
+  timestamp: new Date().toISOString()
+}
+  ];
 
       return {
-        ...league,
-        current_week: currentWeek,
-        teams: teamsResult.rows,
-        matchups: mockMatchups,
-        recentActivity,
-      };
+        ...league, current_week, currentWeek,
+  teams: teamsResult.rows, matchups, mockMatchups,
+        recentActivity
+}
     });
 
-    if (!result) {
-      return NextResponse.json({ error: "League not found" }, { status: 404 });
+    if (!result) { return NextResponse.json({ error: "League not found"  }, { status: 404 });
     }
 
     return NextResponse.json({ league: result });

@@ -7,12 +7,12 @@ export async function GET(req: NextRequest) {
   return new Response(
     JSON.stringify({
       message: "Chat Socket API",
-      status: "ready",
-      path: "/api/chat-socket",
-    }),
+  status: "ready",
+      path: "/api/chat-socket"
+}),
     {
       status: 200,
-      headers: { "Content-Type": "application/json" },
-    },
+  headers: { "Content-Type": "application/json" }
+},
   );
 }

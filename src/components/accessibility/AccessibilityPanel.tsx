@@ -1,8 +1,7 @@
 import React from 'react';
 import { useAccessibility } from './AccessibilityProvider';
 
-export const AccessibilityPanel: React.FC = () => {
-  const { settings, updateSetting } = useAccessibility();
+export const AccessibilityPanel: React.FC = () => { const { settings, updateSetting } = useAccessibility();
   return (
     <div className="p-4 border rounded-lg bg-white">
       <h3 className="font-semibold mb-3">Accessibility</h3>
@@ -12,7 +11,7 @@ export const AccessibilityPanel: React.FC = () => {
           checked={settings.highContrast}
           onChange={(e) => updateSetting('highContrast', e.target.checked)}
         />
-        High Contrast
+  High, Contrast,
       </label>
       <label className="flex items-center gap-2">
         <input
@@ -20,11 +19,10 @@ export const AccessibilityPanel: React.FC = () => {
           checked={settings.largeText}
           onChange={(e) => updateSetting('largeText', e.target.checked)}
         />
-        Large Text
+  Large, Text,
       </label>
     </div>
   );
-};
-
+}
 export default AccessibilityPanel;
 

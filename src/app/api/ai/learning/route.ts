@@ -20,13 +20,12 @@ export async function GET(request: NextRequest) {
         const validTimeframes = ['week', 'month', 'season'];
         if (!validTimeframes.includes(timeframe)) {
           return NextResponse.json(
-            { error: 'timeframe must be one of: week, month, season' },
+            { error: 'timeframe must be one of, week, month: season' },
             { status: 400 }
           );
         }
 
-        const performance = await adaptiveLearningSystem.getModelPerformance(
-          modelName || undefined,
+        const performance = await adaptiveLearningSystem.getModelPerformance(modelName || undefined,
           position || undefined,
           timeframe
         );
@@ -43,14 +42,13 @@ export async function GET(request: NextRequest) {
         });
 
       case 'insights':
-        const category = searchParams.get('category') as 
+        const category = searchParams.get('category') as
           'factor_importance' | 'model_bias' | 'position_accuracy' | 'temporal_pattern' | undefined;
         
         const insights = await adaptiveLearningSystem.getLearningInsights(category);
 
         return NextResponse.json({
-          success: true,
-          data: insights,
+          success: true, data: insights,
           count: insights.length,
           category: category || 'all',
           timestamp: new Date().toISOString()
@@ -60,14 +58,11 @@ export async function GET(request: NextRequest) {
         const playerId = searchParams.get('playerId');
         const weightPosition = searchParams.get('position');
         
-        const weights = await adaptiveLearningSystem.getAdaptiveWeights(
-          playerId || undefined,
+        const weights = await adaptiveLearningSystem.getAdaptiveWeights(playerId || undefined,
           weightPosition || undefined
         );
 
-        return NextResponse.json({
-          success: true,
-          data: weights,
+        return NextResponse.json({success: true, data: weights,
           applied: weights ? 'specific' : 'none',
           timestamp: new Date().toISOString()
         });
@@ -76,14 +71,13 @@ export async function GET(request: NextRequest) {
         const healthCheck = await adaptiveLearningSystem.healthCheck();
 
         return NextResponse.json({
-          success: true,
-          data: healthCheck,
+          success: true, data: healthCheck,
           timestamp: new Date().toISOString()
         });
 
       default:
         return NextResponse.json(
-          { error: 'Invalid type parameter. Use: performance, insights, weights, health' },
+          { error: 'Invalid type parameter.Use, performance, insights, weights, health' },
           { status: 400 }
         );
     }
@@ -103,25 +97,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, ...data } = body;
+    const { type, ...data} = body;
 
     switch (type) {
       case 'record_outcome':
-        const {
-          predictionId,
-          playerId,
-          week,
-          season,
-          predictedPoints,
-          actualPoints,
-          factors,
-          modelWeights
-        } = data;
+        const { predictionId, playerId, week, season, predictedPoints, actualPoints, factors, modelWeights } = data;
 
         if (!predictionId || !playerId || week === undefined || season === undefined || 
             predictedPoints === undefined || actualPoints === undefined) {
           return NextResponse.json(
-            { error: 'Missing required parameters: predictionId, playerId, week, season, predictedPoints, actualPoints' },
+            { error: 'Missing required parameters, predictionId, playerId, week, season, predictedPoints, actualPoints' },
             { status: 400 }
           );
         }
@@ -134,12 +119,7 @@ export async function POST(request: NextRequest) {
         }
 
         await adaptiveLearningSystem.recordPredictionOutcome(
-          predictionId,
-          playerId,
-          week,
-          season,
-          predictedPoints,
-          actualPoints,
+          predictionId, playerId, week, season, predictedPoints, actualPoints,
           factors || {},
           modelWeights || {}
         );
@@ -160,10 +140,9 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const batchResults = await Promise.all(
-          outcomes.map(async (outcome: any) => {
+        const batchResults = await Promise.all(outcomes.map(async (outcome: any) => {
             try {
-              await adaptiveLearningSystem.recordPredictionOutcome(
+    await adaptiveLearningSystem.recordPredictionOutcome(
                 outcome.predictionId,
                 outcome.playerId,
                 outcome.week,
@@ -176,30 +155,26 @@ export async function POST(request: NextRequest) {
               return { 
                 predictionId: outcome.predictionId,
                 success: true 
-              };
+              }
             } catch (error) {
               return { 
                 predictionId: outcome.predictionId,
                 success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );
 
         return NextResponse.json({
-          success: true,
-          data: batchResults,
+          success: true, data: batchResults,
           total: outcomes.length,
           successful: batchResults.filter(r => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'enhanced_prediction':
-        const {
-          playerId: enhancedPlayerId,
-          week: enhancedWeek
-        } = data;
+        const { playerId: enhancedPlayerId, week: enhancedWeek } = data;
 
         if (!enhancedPlayerId || enhancedWeek === undefined) {
           return NextResponse.json(
@@ -208,23 +183,18 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const enhancedPrediction = await adaptiveLearningSystem.generateEnhancedPrediction(
-          enhancedPlayerId,
+        const enhancedPrediction = await adaptiveLearningSystem.generateEnhancedPrediction(enhancedPlayerId,
           enhancedWeek
         );
 
         return NextResponse.json({
-          success: true,
-          data: enhancedPrediction,
+          success: true, data: enhancedPrediction,
           enhanced: true,
           timestamp: new Date().toISOString()
         });
 
       case 'batch_enhanced_predictions':
-        const { 
-          playerIds: batchPlayerIds, 
-          week: batchWeek 
-        } = data;
+        const { playerIds: batchPlayerIds, week: batchWeek } = data;
         
         if (!Array.isArray(batchPlayerIds) || batchWeek === undefined) {
           return NextResponse.json(
@@ -233,31 +203,28 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const batchPredictions = await Promise.all(
-          batchPlayerIds.map(async (playerId: string) => {
+        const batchPredictions = await Promise.all(batchPlayerIds.map(async (playerId: string) => {
             try {
-              const prediction = await adaptiveLearningSystem.generateEnhancedPrediction(
-                playerId,
+              const prediction = await adaptiveLearningSystem.generateEnhancedPrediction(playerId,
                 batchWeek
               );
               return { 
                 playerId,
                 success: true, 
                 prediction 
-              };
+              }
             } catch (error) {
               return { 
                 playerId,
-                success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );
 
         return NextResponse.json({
-          success: true,
-          data: batchPredictions,
+          success: true, data: batchPredictions,
           total: batchPlayerIds.length,
           successful: batchPredictions.filter(r => r.success).length,
           enhanced: true,
@@ -266,7 +233,7 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid operation type. Use: record_outcome, batch_outcomes, enhanced_prediction, batch_enhanced_predictions' },
+          { error: 'Invalid operation type.Use, record_outcome, batch_outcomes, enhanced_prediction, batch_enhanced_predictions' },
           { status: 400 }
         );
     }

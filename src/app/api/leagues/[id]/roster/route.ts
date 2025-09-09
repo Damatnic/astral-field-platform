@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: NextRequest) {
   try {
     const { id: rawId } = await params;
     
     // Convert simple league ID to full UUID
-    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
+    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' , rawId,
 
     // Get team and league data using database transaction
     const result = await database.transaction(async (client) => {
       // Get a demo user's team (first team in the league)
-      const teamResult = await client.query(
-        `
+      const teamResult = await client.query(`
         SELECT t.*, u.username as owner_name
         FROM teams t
         JOIN users u ON t.user_id = u.id
@@ -26,16 +22,14 @@ export async function GET(
         [id],
       );
 
-      if (teamResult.rows.length === 0) {
-        return null; // Will handle 404 outside transaction
-      }
+      if (teamResult.rows.length === 0) { return null; // Will handle 404 outside transaction
+       }
 
       const team = teamResult.rows[0];
 
       // Get actual roster players from the database
-      const rosterResult = await client.query(
-        `
-        SELECT 
+      const rosterResult = await client.query(`
+        SELECT
           p.id,
           p.name,
           p.position,
@@ -47,7 +41,7 @@ export async function GET(
         FROM rosters r
         JOIN players p ON r.player_id = p.id
         WHERE r.team_id = $1
-        ORDER BY 
+  ORDER, BY,
           CASE r.position_slot
             WHEN 'QB' THEN 1
             WHEN 'RB' THEN 2
@@ -67,9 +61,8 @@ export async function GET(
       let roster = rosterResult.rows;
       if (roster.length === 0) {
         // Get Nicholas's team players from draft picks
-        const draftedPlayersResult = await client.query(
-          `
-          SELECT 
+        const draftedPlayersResult = await client.query(`
+          SELECT
             p.id,
             p.name,
             p.position,
@@ -94,189 +87,189 @@ export async function GET(
       }
 
       // If still no players, use a fallback list of elite 2025 players
-      if (roster.length === 0) {
-        roster = [
+      if (roster.length === 0) { roster = [
           {
           id: "1",
-          name: "Josh Allen",
+  name: "Josh Allen",
           position: "QB",
-          team: "BUF",
+  team: "BUF",
           roster_position: "QB",
-          projected_points: 22.5,
+  projected_points: 22.5,
           season_points: 285.7,
-          injury_status: "healthy",
-          bye_week: 12,
-          },
+  injury_status: "healthy",
+          bye_week: 12
+},
         {
         id: "2",
-        name: "Christian McCaffrey",
+  name: "Christian McCaffrey",
         position: "RB",
-        team: "SF",
+  team: "SF",
         roster_position: "RB",
-        projected_points: 18.3,
+  projected_points: 18.3,
         season_points: 198.4,
-        injury_status: "healthy",
-        bye_week: 9,
-        },
+  injury_status: "healthy",
+        bye_week: 9
+},
         {
         id: "3",
-        name: "Tyreek Hill",
+  name: "Tyreek Hill",
         position: "WR",
-        team: "MIA",
+  team: "MIA",
         roster_position: "WR",
-        projected_points: 16.8,
+  projected_points: 16.8,
         season_points: 142.6,
-        injury_status: "healthy",
-        bye_week: 6,
-        },
+  injury_status: "healthy",
+        bye_week: 6
+},
         {
         id: "4",
-        name: "Travis Kelce",
+  name: "Travis Kelce",
         position: "TE",
-        team: "KC",
+  team: "KC",
         roster_position: "TE",
-        projected_points: 14.2,
+  projected_points: 14.2,
         season_points: 128.9,
-        injury_status: "healthy",
-        bye_week: 10,
-        },
+  injury_status: "healthy",
+        bye_week: 10
+},
         {
         id: "5",
-        name: "Stefon Diggs",
+  name: "Stefon Diggs",
         position: "WR",
-        team: "HOU",
+  team: "HOU",
         roster_position: "WR",
-        projected_points: 15.1,
+  projected_points: 15.1,
         season_points: 156.3,
-        injury_status: "healthy",
-        bye_week: 14,
-        },
+  injury_status: "healthy",
+        bye_week: 14
+},
         {
         id: "6",
-        name: "Saquon Barkley",
+  name: "Saquon Barkley",
         position: "RB",
-        team: "PHI",
+  team: "PHI",
         roster_position: "FLEX",
-        projected_points: 16.7,
+  projected_points: 16.7,
         season_points: 174.2,
-        injury_status: "healthy",
-        bye_week: 5,
-        },
+  injury_status: "healthy",
+        bye_week: 5
+},
         {
         id: "7",
-        name: "Ravens DST",
+  name: "Ravens DST",
         position: "DST",
-        team: "BAL",
+  team: "BAL",
         roster_position: "DST",
-        projected_points: 8.5,
+  projected_points: 8.5,
         season_points: 89.3,
-        injury_status: "healthy",
-        bye_week: 14,
-        },
+  injury_status: "healthy",
+        bye_week: 14
+},
         {
         id: "8",
-        name: "Justin Tucker",
+  name: "Justin Tucker",
         position: "K",
-        team: "BAL",
+  team: "BAL",
         roster_position: "K",
-        projected_points: 9.2,
+  projected_points: 9.2,
         season_points: 98.7,
-        injury_status: "healthy",
-        bye_week: 14,
-        },
+  injury_status: "healthy",
+        bye_week: 14
+},
       // Bench players
         {
         id: "9",
-        name: "Tua Tagovailoa",
+  name: "Tua Tagovailoa",
         position: "QB",
-        team: "MIA",
+  team: "MIA",
         roster_position: "BENCH",
-        projected_points: 18.4,
+  projected_points: 18.4,
         season_points: 156.8,
-        injury_status: "questionable",
-        bye_week: 6,
-        },
+  injury_status: "questionable",
+        bye_week: 6
+},
         {
         id: "10",
-        name: "Aaron Jones",
+  name: "Aaron Jones",
         position: "RB",
-        team: "MIN",
+  team: "MIN",
         roster_position: "BENCH",
-        projected_points: 13.8,
+  projected_points: 13.8,
         season_points: 134.5,
-        injury_status: "healthy",
-        bye_week: 6,
-        },
+  injury_status: "healthy",
+        bye_week: 6
+},
         {
         id: "11",
-        name: "Mike Evans",
+  name: "Mike Evans",
         position: "WR",
-        team: "TB",
+  team: "TB",
         roster_position: "BENCH",
-        projected_points: 14.6,
+  projected_points: 14.6,
         season_points: 145.2,
-        injury_status: "healthy",
-        bye_week: 11,
-        },
+  injury_status: "healthy",
+        bye_week: 11
+},
         {
         id: "12",
-        name: "George Kittle",
+  name: "George Kittle",
         position: "TE",
-        team: "SF",
+  team: "SF",
         roster_position: "BENCH",
-        projected_points: 12.3,
+  projected_points: 12.3,
         season_points: 108.7,
-        injury_status: "healthy",
-        bye_week: 9,
-        },
+  injury_status: "healthy",
+        bye_week: 9
+},
         {
         id: "13",
-        name: "Courtland Sutton",
+  name: "Courtland Sutton",
         position: "WR",
-        team: "DEN",
+  team: "DEN",
         roster_position: "BENCH",
-        projected_points: 11.4,
+  projected_points: 11.4,
         season_points: 98.6,
-        injury_status: "healthy",
-        bye_week: 14,
-        },
+  injury_status: "healthy",
+        bye_week: 14
+},
         {
         id: "14",
-        name: "Antonio Gibson",
+  name: "Antonio Gibson",
         position: "RB",
-        team: "NE",
+  team: "NE",
         roster_position: "BENCH",
-        projected_points: 9.8,
+  projected_points: 9.8,
         season_points: 87.4,
-        injury_status: "healthy",
-        bye_week: 14,
-          },
+  injury_status: "healthy",
+        bye_week: 14
+},
           {
             id: "jh-6",
-            name: "Jalen Hurts",
+  name: "Jalen Hurts",
             position: "QB",
-            team: "PHI",
+  team: "PHI",
             roster_position: "QB",
-            projections: { week: 2, points: 24.5 },
-            injury_status: null,
-            bye_week: 5,
-          },
+  projections: { week: 2,
+  points: 24.5 },
+            injury_status, null,
+  bye_week: 5
+},
           {
             id: "asb-7",
-            name: "Amon-Ra St. Brown",
+  name: "Amon-Ra St.Brown",
             position: "WR",
-            team: "DET",
+  team: "DET",
             roster_position: "WR",
-            projections: { week: 2, points: 18.7 },
-            injury_status: null,
-            bye_week: 5,
-          }
+  projections: { week: 2,
+  points: 18.7 },
+            injury_status, null,
+  bye_week: 5
+}
         ];
       }
 
       // Get league roster settings
-      const leagueResult = await client.query(
-        `
+      const leagueResult = await client.query(`
         SELECT settings, season_year
         FROM leagues 
         WHERE id = $1
@@ -287,16 +280,14 @@ export async function GET(
       const league = leagueResult.rows[0];
 
       return {
-        team,
-        roster: roster,
-        rosterSettings: league?.settings?.roster_positions || {},
+        team, roster, roster,
+  rosterSettings: league?.settings?.roster_positions || {},
         currentWeek: 2, // Week 2 of 2025 season
         season: league?.season_year || 2025
-      };
+      }
     });
 
-    if (!result) {
-      return NextResponse.json({ error: "Team not found" }, { status: 404 });
+    if (!result) { return NextResponse.json({ error: "Team not found"  }, { status: 404 });
     }
 
     return NextResponse.json(result);
@@ -310,36 +301,28 @@ export async function GET(
 }
 
 // POST endpoint for roster moves (add/drop players)
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(request: NextRequest) {
   try {
     const { id: rawId } = await params;
     
     // Convert simple league ID to full UUID
-    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' : rawId;
+    const id = rawId === '1' ? '00000000-0000-0000-0000-000000000001' , rawId,
     const body = await request.json();
     const { action, playerId, dropPlayerId, position } = body;
 
     // For now, just return a mock response
-    // In a real implementation, this would:
-    // 1. Validate the move
-    // 2. Check roster limits
-    // 3. Update the database
-    // 4. Create transaction record
+    // In a real implementation, this would:  ; // 1.Validate the move
+    // 2.Check roster limits
+    // 3.Update the database
+    // 4.Create transaction record
 
     return NextResponse.json({
       success: true,
-      message: `Successfully ${action}ed player`,
+  message `Successfully ${action}ed player`,
       transaction: {
-        id: "mock-transaction-id",
-        action,
-        playerId,
-        dropPlayerId,
-        timestamp: new Date().toISOString(),
-        },
-    });
+  id: "mock-transaction-id", action, playerId, dropPlayerId, timestamp: new Date().toISOString()
+}
+});
   } catch (error) {
     console.error("Error processing roster move:", error);
     return NextResponse.json(

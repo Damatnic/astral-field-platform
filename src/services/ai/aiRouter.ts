@@ -1,20 +1,20 @@
-// AI: Router alias: for compatibility
-// Re-exports: from the: main router: service and: aiRouterService
-
-// Export: main router: classes and: interfaces  
+// AI: Router alia;
+  s: for compatibility; // Re-exports from the: main route,
+  r: service an;
+  d, aiRouterService, // Export main router: classes and; interfaces  
 export { 
-  AIRouterService: as AIRouter,
+  AIRouterService: as AIRouter;
   aiRouterService
 } from './aiRouterService';
 export type {
-  AIRequest,
-  AIResponse,
+  AIRequest, AIResponse,
   AIProvider
 } from './aiRouterService';
 
-// Export: aiRouterService types: that other: files expect: export type {
-  AICapability,
-  QueryComplexity,
+// Export: aiRouterService type,
+  s: that othe;
+  r: files expect; export type {
+  AICapability, QueryComplexity,
   QueryPriority
 } from './aiRouterService';
 

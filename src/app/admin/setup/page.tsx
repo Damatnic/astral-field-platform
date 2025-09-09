@@ -14,104 +14,100 @@ export default function AdminSetupPage() {
     try {
       const response = await fetch("/api/setup-database", { method: "POST" });
       const data = await response.json();
-      setResults({ type: "database", ...data });
+      setResults({ type: "database", ...data});
     } catch (error) {
       setResults({
-        type: "database",
+type: "database",
         success: false,
-        error: "Failed to setup database",
-      });
+        error: "Failed to setup database"
+});
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const setupProfiles = async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/setup-profiles", { method: "POST" });
       const data = await response.json();
-      setResults({ type: "profiles", ...data });
+      setResults({ type: "profiles", ...data});
     } catch (error) {
       setResults({
-        type: "profiles",
+type: "profiles",
         success: false,
-        error: "Failed to setup profiles",
-      });
+        error: "Failed to setup profiles"
+});
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const checkStatus = async () => {
     setLoading(true);
     try {
       const [dbResponse, profilesResponse] = await Promise.all([
         fetch("/api/setup-database"),
-        fetch("/api/setup-profiles"),
-      ]);
+        fetch("/api/setup-profiles")
+  ]);
 
       const dbData = await dbResponse.json();
       const profilesData = await profilesResponse.json();
 
       setResults({
-        type: "status",
-        database: dbData,
-        profiles: profilesData,
-      });
+type: "status",
+        database, dbData,
+        profiles:profilesData
+});
     } catch (error) {
       setResults({
-        type: "status",
+type: "status",
         success: false,
-        error: "Failed to check status",
-      });
+        error: "Failed to check status"
+});
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const setup2025Season = async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/setup-2025-season", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ force: true }),
-      });
+        body:JSON.stringify({ forc,
+  e:true })
+});
       const data = await response.json();
-      setResults({ type: "2025-season", ...data });
+      setResults({ type: "2025-season", ...data});
     } catch (error) {
       setResults({
-        type: "2025-season",
+type: "2025-season",
         success: false,
-        error: "Failed to setup 2025 season",
-      });
+        error: "Failed to setup 2025 season"
+});
     } finally {
       setLoading(false);
     }
-  };
-
-  const syncSportsData = async (action: string) => {
+  }
+  const syncSportsData = async (action:string) => {
     setLoading(true);
     try {
       const response = await fetch("/api/sync-sportsdata", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
+        body:JSON.stringify({ action })
+});
       const data = await response.json();
-      setResults({ type: `sync-${action}`, ...data });
+      setResults({ type: `sync-${action}`, ...data});
     } catch (error) {
       setResults({
-        type: `sync-${action}`,
+type: `sync-${action}`,
         success: false,
-        error: `Failed to sync ${action}`,
-      });
+        error: `Failed to sync ${action}`
+});
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const getSportsDataStatus = async () => {
     setLoading(true);
     try {
@@ -123,8 +119,7 @@ export default function AdminSetupPage() {
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const validateSetup = async () => {
     setLoading(true);
     try {
@@ -133,21 +128,20 @@ export default function AdminSetupPage() {
       setValidationResults(data);
     } catch (error) {
       setValidationResults({ 
-        success: false, 
+        success: false,
         error: "Failed to validate setup" 
       });
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   const oneClickSetup = async () => {
     if (!adminKey.trim()) {
       setResults({
-        type: "oneclick",
+type: "oneclick",
         success: false,
-        error: "Admin key is required. Please enter your ADMIN_SETUP_KEY.",
-      });
+        error: "Admin key is required.Please enter your ADMIN_SETUP_KEY."
+});
       return;
     }
 
@@ -160,21 +154,20 @@ export default function AdminSetupPage() {
       await fetch("/api/setup-profiles", { method: "POST" });
 
       setResults({
-        type: "oneclick",
+type: "oneclick",
         success: true,
-        message: "Complete setup finished successfully!",
-      });
+        message: "Complete setup finished successfully!"
+});
     } catch (error) {
       setResults({
-        type: "oneclick",
+type: "oneclick",
         success: false,
-        error: "One-click setup failed",
-      });
+        error: "One-click setup failed"
+});
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <div className="bg-white shadow rounded-lg p-6">
@@ -195,28 +188,32 @@ export default function AdminSetupPage() {
             <button
               onClick={setup2025Season}
               disabled={loading}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 font-semibold"
+              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disable,
+  d:opacity-50 font-semibold"
             >
               🚀 Setup Complete 2025 Season
             </button>
             <button
               onClick={() => syncSportsData("sync-all-players")}
               disabled={loading}
-              className="bg-orange-600 text-white px-4 py-3 rounded-lg hover:bg-orange-700 disabled:opacity-50"
+              className="bg-orange-600 text-white px-4 py-3 rounded-lg hover:bg-orange-700 disable,
+  d:opacity-50"
             >
               Sync All Players
             </button>
             <button
               onClick={getSportsDataStatus}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disable,
+  d:opacity-50"
             >
               Check NFL Data Status
             </button>
             <button
               onClick={validateSetup}
               disabled={loading}
-              className="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 disabled:opacity-50"
+              className="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 disable,
+  d:opacity-50"
             >
               ✅ Validate Complete Setup
             </button>
@@ -240,24 +237,18 @@ export default function AdminSetupPage() {
               
               {validationResults.success && (
                 <>
-                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 ${
-                    validationResults.summary.status === 'excellent' ? 'bg-green-100 text-green-800' :
-                    validationResults.summary.status === 'good' ? 'bg-blue-100 text-blue-800' :
-                    validationResults.summary.status === 'fair' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 ${validationResults.summary.status === 'excellent' ? 'bg-green-100 text-green-800' :validationResults.summary.status === 'good' ? 'bg-blue-100 text-blue-800' :validationResults.summary.status === 'fair' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+                   }`}>
                     {validationResults.summary.status.toUpperCase()} - {validationResults.summary.percentage}
                   </div>
                   
                   <div className="space-y-2 mb-4">
-                    {validationResults.validation.checks.map((check: any, index: number) => (
+                    {validationResults.validation.checks.map((check, any, index:number) => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                         <div className="flex items-center gap-2">
-                          <span className={`text-sm ${
-                            check.status === 'pass' ? 'text-green-600' :
-                            check.status === 'warn' ? 'text-yellow-600' : 'text-red-600'
+                          <span className={`text-sm ${check.status === 'pass' ? 'text-green-600' :check.status === 'warn' ? 'text-yellow-600' : 'text-red-600'
                           }`}>
-                            {check.status === 'pass' ? '✅' : check.status === 'warn' ? '⚠️' : '❌'}
+                            {check.status === 'pass' ? '✅' :check.status === 'warn' ? '⚠️' : '❌'}
                           </span>
                           <span className="font-medium text-sm">{check.name}</span>
                         </div>
@@ -274,7 +265,7 @@ export default function AdminSetupPage() {
 
                   {!validationResults.summary.readyForProduction && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-yellow-800 text-sm">
-                      ⚠️ <strong>Needs Attention:</strong> Some setup issues detected. Review the checks above.
+                      ⚠️ <strong>Needs Attention:</strong> Some setup issues detected.Review the checks above.
                     </div>
                   )}
                 </>
@@ -296,7 +287,8 @@ export default function AdminSetupPage() {
             <button
               onClick={setupDatabase}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disable,
+  d:opacity-50"
             >
               Setup Database
             </button>
@@ -304,7 +296,8 @@ export default function AdminSetupPage() {
             <button
               onClick={setupProfiles}
               disabled={loading}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disable,
+  d:opacity-50"
             >
               Setup Profiles
             </button>
@@ -312,7 +305,8 @@ export default function AdminSetupPage() {
             <button
               onClick={checkStatus}
               disabled={loading}
-              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 disabled:opacity-50"
+              className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 disable,
+  d:opacity-50"
             >
               Check Status
             </button>
@@ -332,7 +326,8 @@ export default function AdminSetupPage() {
             <button
               onClick={oneClickSetup}
               disabled={loading}
-              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 disable,
+  d:opacity-50"
             >
               Run Complete Setup
             </button>
@@ -341,7 +336,7 @@ export default function AdminSetupPage() {
 
         {loading && (
           <div className="text-center py-4">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
             <p className="mt-2 text-gray-600">Processing...</p>
           </div>
         )}
@@ -357,7 +352,7 @@ export default function AdminSetupPage() {
                 </div>
                 {results.actions && (
                   <div className="space-y-1">
-                    {results.actions.map((action: string, index: number) => (
+                    {results.actions.map((action, string, index:number) => (
                       <div key={index} className="text-sm text-green-700">
                         {action}
                       </div>

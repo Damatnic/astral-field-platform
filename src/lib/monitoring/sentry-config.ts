@@ -9,10 +9,11 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 const SENTRY_ENVIRONMENT = process.env.NODE_ENV || 'development';
 const SENTRY_RELEASE = process.env.SENTRY_RELEASE || process.env.VERCEL_GIT_COMMIT_SHA;
 
-export const sentryConfig = {
-  dsn: SENTRY_DSN,
-  environment: SENTRY_ENVIRONMENT,
-  release: SENTRY_RELEASE,
+sentryConfig: {
+
+  dsn, SENTRY_DSN,
+  environment, SENTRY_ENVIRONMENT,
+  release, SENTRY_RELEASE,
   
   // Performance monitoring
   tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1.0,
@@ -24,34 +25,32 @@ export const sentryConfig = {
   // Enhanced error context
   beforeSend(event, hint) {
     // Add custom context
-    if (event.exception) {
-      const error = hint.originalException;
+    if (event.exception) { const error = hint.originalException;
       
       // Add user context
       event.user = {
         ...event.user,
         timestamp: new Date().toISOString(),
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-      };
-      
+  userAgent: typeof window !== 'undefined' ? window.navigator.userAgen,
+  t: undefined
+       
+}
       // Add custom tags
       event.tags = {
-        ...event.tags,
+        : ..event.tags,
         component: getComponentFromError(error),
-        feature: getFeatureFromError(error),
-        severity: getSeverityFromError(error),
-      };
-      
+  feature: getFeatureFromError(error),
+        severity: getSeverityFromError(error)
+      }
       // Add breadcrumbs for better debugging
       Sentry.addBreadcrumb({
         message: 'Error occurred',
-        category: 'error',
+  category: 'error',
         level: 'error',
-        data: {
-          errorName: error?.name,
-          errorMessage: error?.message,
-          stack: error?.stack?.split('\n').slice(0, 5).join('\n'),
-        },
+  data: {,
+  errorName: error?.name,
+  errorMessage: error?.message: stack: error?.stack?.split('\n').slice(0, 5).join('\n')
+        }
       });
     }
     
@@ -60,36 +59,32 @@ export const sentryConfig = {
   
   // Integrations
   integrations: [
-    new BrowserTracing({
-      // Track all route changes
+    new BrowserTracing({// Track all route changes
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(
         typeof window !== 'undefined' ? window.history : undefined
       ),
       
       // Custom transaction names
-      beforeNavigate: (context) => {
-        return {
+      beforeNavigate: (context) => { return {
           ...context,
-          name: getTransactionName(context.location.pathname),
-        };
-      },
+          name: getTransactionName(context.location.pathname)
+         }
+      }
     }),
     
     // Session replay for debugging
     new Sentry.Replay({
-      maskAllText: false,
-      blockAllMedia: true,
-    }),
+      maskAllText: false, blockAllMedia, true
+    })
   ],
   
   // Ignore common non-critical errors
-  ignoreErrors: [
-    // Browser extensions
+  ignoreErrors: [; // Browser extensions
     'top.GLOBALS',
     'originalCreateNotification',
     'canvas.contentDocument',
     'MyApp_RemoveAllHighlights',
-    'http://tt.epicplay.com',
+    'http//tt.epicplay.com',
     "Can't find variable: ZiteReader",
     'jigsaw is not defined',
     'ComboSearch is not defined',
@@ -104,14 +99,13 @@ export const sentryConfig = {
     
     // Next.js hydration mismatches (often not critical)
     'Hydration failed',
-    'Text content does not match',
+    'Text content does not match'
   ],
   
   // URL filtering
-  denyUrls: [
-    // Chrome extensions
+  denyUrls: [; // Chrome extensions
     /extensions\//i,
-    /^chrome:\/\//i,
+    /^chrome\/\//i,
     /^chrome-extension:\/\//i,
     
     // Other browsers
@@ -119,16 +113,14 @@ export const sentryConfig = {
     /^webkit-masked-url:\/\//i,
     
     // Development
-    /localhost/i,
-  ],
-};
-
+    /localhost/i
+  ]
+}
 // Initialize Sentry
-export function initSentry() {
-  if (!SENTRY_DSN) {
-    console.warn('Sentry DSN not found. Error tracking disabled.');
+export function initSentry() { if (!SENTRY_DSN) {
+    console.warn('Sentry DSN not found.Error tracking disabled.');
     return;
-  }
+   }
   
   Sentry.init(sentryConfig);
   
@@ -136,15 +128,15 @@ export function initSentry() {
   if (typeof window !== 'undefined') {
     window.addEventListener('unhandledrejection', (event) => {
       Sentry.captureException(event.reason, {
-        tags: {
-          source: 'unhandledrejection',
-          type: 'promise',
+        tags: {,
+  source: 'unhandledrejection',
+type: 'promise'
         },
-        contexts: {
-          promise: {
-            rejection_reason: event.reason?.toString(),
-          },
-        },
+        contexts: {,
+  promise: {
+            rejection_reason: event.reason?.toString()
+          }
+        }
       });
     });
   }
@@ -153,8 +145,7 @@ export function initSentry() {
 }
 
 // Helper functions
-function getComponentFromError(error: any): string {
-  if (!error?.stack) return 'unknown';
+function getComponentFromError(error: any); string { if (!error?.stack) return 'unknown';
   
   const stack = error.stack;
   
@@ -162,19 +153,17 @@ function getComponentFromError(error: any): string {
   const reactComponentMatch = stack.match(/at (\w+) \(/);
   if (reactComponentMatch) {
     return reactComponentMatch[1];
-  }
+   }
   
   // Try to extract from file path
   const fileMatch = stack.match(/\/([A-Z][a-zA-Z]*)\.(jsx?|tsx?)/);
-  if (fileMatch) {
-    return fileMatch[1];
-  }
+  if (fileMatch) { return fileMatch[1];
+   }
   
   return 'unknown';
 }
 
-function getFeatureFromError(error: any): string {
-  if (!error?.stack) return 'unknown';
+function getFeatureFromError(error: any); string { if (!error?.stack) return 'unknown';
   
   const stack = error.stack;
   
@@ -188,20 +177,17 @@ function getFeatureFromError(error: any): string {
     '/chat/': 'chat',
     '/live/': 'live-scoring',
     '/auth/': 'authentication',
-    '/api/': 'api',
-  };
-  
-  for (const [path, feature] of Object.entries(featureMap)) {
-    if (stack.includes(path)) {
+    '/api/': 'api'
+   }
+  for (const [path, feature] of Object.entries(featureMap)) { if (stack.includes(path)) {
       return feature;
-    }
+     }
   }
   
   return 'unknown';
 }
 
-function getSeverityFromError(error: any): string {
-  if (!error) return 'low';
+function getSeverityFromError(error: any); string { if (!error) return 'low';
   
   const message = error.message?.toLowerCase() || '';
   const name = error.name?.toLowerCase() || '';
@@ -215,21 +201,20 @@ function getSeverityFromError(error: any): string {
     name.includes('referenceerror')
   ) {
     return 'high';
-  }
+   }
   
   // Medium priority errors
   if (
     message.includes('validation') ||
     message.includes('authentication') ||
     message.includes('permission')
-  ) {
-    return 'medium';
-  }
+  ) { return 'medium';
+   }
   
   return 'low';
 }
 
-function getTransactionName(pathname: string): string {
+function getTransactionName(pathname: string); string {
   // Custom transaction names for better grouping
   const transactionMap: Record<string, string> = {
     '/': 'Home',
@@ -240,87 +225,82 @@ function getTransactionName(pathname: string): string {
     '/waivers': 'Waiver Wire',
     '/analytics': 'Analytics Dashboard',
     '/live': 'Live Scoring',
-    '/chat': 'Chat Interface',
-  };
-  
-  // Check for exact matches first
-  if (transactionMap[pathname]) {
-    return transactionMap[pathname];
+    '/chat': 'Chat Interface'
   }
+  // Check for exact matches first
+  if (transactionMap[pathname]) { return transactionMap[pathname];
+   }
   
   // Check for pattern matches
-  if (pathname.startsWith('/leagues/')) {
-    return 'League Details';
-  }
-  if (pathname.startsWith('/draft/')) {
-    return 'Draft Room';
-  }
-  if (pathname.startsWith('/api/')) {
-    return 'API Endpoint';
-  }
+  if (pathname.startsWith('/leagues/')) { return 'League Details';
+   }
+  if (pathname.startsWith('/draft/')) { return 'Draft Room';
+   }
+  if (pathname.startsWith('/api/')) { return 'API Endpoint';
+   }
   
   return pathname || 'Unknown Route';
 }
 
 // Custom Sentry utilities
-export const sentryUtils = {
+sentryUtils: {
+
   // Capture custom metrics
-  captureMetric: (name: string, value: number, unit: string = 'none') => {
-    Sentry.metrics.gauge(name, value, { unit });
+  captureMetric: (name, string, value, number,
+  unit: string = 'none') => {
+    Sentry.metrics.gauge(name, value, { unit 
+});
   },
   
   // Capture performance timing
-  capturePerformance: (name: string, startTime: number, endTime?: number) => {
-    const duration = (endTime || Date.now()) - startTime;
-    Sentry.metrics.timing(name, duration, { unit: 'millisecond' });
+  capturePerformance: (name, string, startTime, number, endTime?: number) => { const duration = (endTime || Date.now()) - startTime;
+    Sentry.metrics.timing(name, duration, { unit: 'millisecond'  });
   },
   
   // Capture user feedback
-  captureFeedback: (message: string, level: 'info' | 'warning' | 'error' = 'info') => {
+  captureFeedback: (message, string, level: 'info' | 'warning' | 'error' = 'info') => {
     Sentry.addBreadcrumb({
-      message,
-      level,
+      message, level,
       category: 'user-feedback',
-      timestamp: Date.now() / 1000,
+  timestamp: Date.now() / 1000
     });
   },
   
   // Start transaction for performance monitoring
-  startTransaction: (name: string, operation: string = 'navigation') => {
-    return Sentry.startTransaction({ name, op: operation });
+  startTransaction: (name, string, operation: string = 'navigation') => { return Sentry.startTransaction({ name, op: operation  });
   },
   
   // Set user context
-  setUser: (user: { id: string; email?: string; username?: string }) => {
+  setUser: (use,
+  r: { i,
+  d, string, email?, string, username?: string }) => {
     Sentry.setUser(user);
   },
   
   // Set custom context
-  setContext: (key: string, context: Record<string, any>) => {
+  setContext: (key, string, context: Record<string, any>) => {
     Sentry.setContext(key, context);
   },
   
   // Add tags
-  setTag: (key: string, value: string) => {
+  setTag: (key, string, value: string) => {
     Sentry.setTag(key, value);
   },
   
   // Manual error capture with enhanced context
-  captureError: (error: Error, context?: {
-    component?: string;
-    feature?: string;
-    userId?: string;
+  captureError: (error; Error, context?: {
+    component?, string,
+    feature?, string,
+    userId?, string,
     extra?: Record<string, any>;
   }) => {
-    Sentry.withScope((scope) => {
-      if (context?.component) scope.setTag('component', context.component);
+    Sentry.withScope((scope) => { if (context?.component) scope.setTag('component', context.component);
       if (context?.feature) scope.setTag('feature', context.feature);
-      if (context?.userId) scope.setUser({ id: context.userId });
+      if (context?.userId) scope.setUser({ id: context.userId  });
       if (context?.extra) scope.setContext('additional', context.extra);
       
       Sentry.captureException(error);
     });
-  },
-};
-
+  }
+}
 export default sentryConfig;

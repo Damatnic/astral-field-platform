@@ -3,636 +3,809 @@ import { StatisticalModelingService } from './statisticalModelingService';
 import { AIProvider } from '@/types/ai';
 
 interface SimulationScenario {
-  id: string;,
-  name: string;,
-  description: string;,
-  type: '',| 'trade' | 'waiver' | 'season' | 'injury_impact' | 'weather_impact';,
-  parameters: Record<stringunknown>;,
-  iterations: number;,
-  confidence: number;,
-  createdAt: Date;
+  id, string,
+    name, string,
+  description, string,
+    type: 'draft' | 'trade' | 'waiver' | 'season' | 'injury_impact' | 'weather_impact';
+  parameters: Record<string, unknown>;
+  iterations, number,
+    confidence, number,
+  createdAt: Date,
+  
 }
-
 interface DraftSimulation {
-  draftId: string;,
-  const scenarios = {,
-    pick: number;,
-    availablePlayers: Player[];,
-    userTeam: Player[];,
-    const opponentPredictions = { teamId: string; predictedPick: Player; confidence: number }[];
-    optimalPick: Player;,
-    const alternativePicks = { player: Player; score: number; reasoning: string }[];
-    const riskAnalysis = {,
-      bustProbability: number;,
-      injuryRisk: number;,
-      upside: number;,
-      floor: number;
-    };
+  draftId, string,
+    scenarios: {
+  pick, number,
+    availablePlayers: Player[];
+    userTeam: Player[],
+    opponentPredictions: {
+  teamId, string,
+    predictedPick, Player,
+      confidence: number,
+    }[];
+    optimalPick, Player,
+    alternativePicks: {
+  player, Player,
+    score, number,
+      reasoning: string,
+    }[];
+    riskAnalysis: {
+  bustProbability, number,
+      injuryRisk, number,
+    upside, number,
+      floor: number,
+    }
   }[];
-  const overallStrategy = {,
-    approach: 'balanced' | 'high_upside' | 'safe_floor' | 'positional_scarcity';,
-    keyRounds: number[];,
-    targets: Player[];,
-    avoids: Player[];
-  };
-  const simulationResults = {,
-    projectedRanking: number;,
-    winProbability: number;,
-    playoffProbability: number;,
-    championshipProbability: number;
-  };
+  overallStrategy: {
+  approach: 'balanced' | 'high_upside' | 'safe_floor' | 'positional_scarcity';
+    keyRounds: number[],
+    targets: Player[];
+    avoids: Player[],
+  }
+  simulationResults: {
+  projectedRanking, number,
+    winProbability, number,
+    playoffProbability, number,
+    championshipProbability: number,
+  }
 }
 
 interface TradeSimulation {
-  const originalTrade = {,
-    givingUp: Player[];,
-    receiving: Player[];,
-    partnerTeam: string;
-  };
-  const simulations = {,
-    scenarioId: string;,
-    const weeklyImpact = {,
-      week: number;,
-      beforeTrade: number;,
-      afterTrade: number;,
-      difference: number;
+  originalTrade: {
+  givingUp: Player[];
+    receiving: Player[],
+    partnerTeam: string,
+  }
+  simulations: {
+  scenarioId, string,
+    weeklyImpact: {
+  week, number,
+      beforeTrade, number,
+    afterTrade, number,
+      difference: number,
     }[];
-    const seasonalImpact = {,
-      totalPoints: number;,
-      winsDifference: number;,
-      playoffProbability: number;,
-      championshipProbability: number;
-    };
-    const riskFactors = {,
-      const injury = { player: string; probability: number; impact: number }[];
-      const regression = { player: string; probability: number; impact: number }[];
-      const improvement = { player: string; probability: number; impact: number }[];
-    };
+    seasonalImpact: {
+  totalPoints, number,
+      winsDifference, number,
+    playoffProbability, number,
+      championshipProbability: number,
+    }
+    riskFactors: {
+  injury: {
+        player, string,
+    probability, number,
+        impact: number,
+      }[];
+      regression: {
+  player, string,
+        probability, number,
+    impact: number,
+      }[];
+      improvement: {
+  player, string,
+        probability, number,
+    impact: number,
+      }[];
+    }
     recommendation: 'accept' | 'decline' | 'counter';
-    counterOffers?: {,
-      const trade = { givingUp: Player[]; receiving: Player[] };
-      improvedValue: number;,
-      reasoning: string;
+    counterOffers?: {
+      trade: {
+  givingUp: Player[];
+        receiving: Player[],
+      }
+      improvedValue, number,
+    reasoning: string,
     }[];
-  };
+  }
 }
 
 interface WaiverSimulation {
-  week: number;,
-  availablePlayers: Player[];,
-  const recommendations = {,
-    player: Player;,
-    priority: number;,
-    reasoning: string;,
-    projectedImpact: number;,
-    acquisitionProbability: number;,
-    dropCandidates: Player[];
-  }[];
-  const competitorAnalysis = {,
-    teamId: string;,
-    likelyTargets: Player[];,
-    waiverPosition: number;,
-    needAreas: string[];
+  week, number,
+    availablePlayers: Player[];
+  recommendations: {;
+  player, Player,
+  priority, number,
+    reasoning, string,
+  projectedImpact, number,
+    acquisitionProbability, number,
+  dropCandidates: Player[],
+  
+}
+[];
+  competitorAnalysis: {
+  teamId, string,
+    likelyTargets: Player[],
+    waiverPosition, number,
+    needAreas: string[],
   }[];
 }
 
 interface SeasonSimulation {
-  leagueId: string;,
-  currentWeek: number;,
-  const teamProjections = {,
-    teamId: string;,
-    const projectedRecord = { wins: number; losses: number };
-    playoffProbability: number;,
-    championshipProbability: number;,
-    strengthOfSchedule: number;,
-    keyPlayers: Player[];,
-    weaknesses: string[];,
-    tradingOpportunities: string[];
+  leagueId, string,
+    currentWeek, number,
+  teamProjections: {
+  teamId, string,
+    projectedRecord: {
+  wins, number,
+      losses: number,
+    }
+    playoffProbability, number,
+    championshipProbability, number,
+    strengthOfSchedule, number,
+    keyPlayers: Player[];
+    weaknesses: string[],
+    tradingOpportunities: string[],
   }[];
-  const marketTrends = {,
-    const risingAssets = { player: Player; trend: number; reasons: string[] }[];
-    const fallingAssets = { player: Player; trend: number; reasons: string[] }[];
-    buyLowCandidates: Player[];,
-    sellHighCandidates: Player[];
-  };
-  const injuryImpactSimulation = {,
-    player: Player;,
-    injuryProbability: number;,
-    teamImpact: number;,
-    replacementOptions: Player[];,
-    marketValueChange: number;
+  marketTrends: {
+  risingAssets: {
+      player, Player,
+    trend, number,
+      reasons: string[],
+    }[];
+    fallingAssets: {
+  player, Player,
+      trend, number,
+    reasons: string[],
+    }[];
+    buyLowCandidates: Player[],
+    sellHighCandidates: Player[],
+  }
+  injuryImpactSimulation: {
+  player, Player,
+    injuryProbability, number,
+    teamImpact, number,
+    replacementOptions: Player[],
+    marketValueChange: number,
   }[];
 }
 
 interface MonteCarloResults {
-  iterations: number;,
-  const outcomes = {,
-    scenario: string;,
-    probability: number;,
-    averagePoints: number;,
-    medianPoints: number;,
-    bestCase: number;,
-    worstCase: number;,
-    confidenceInterval: [numbernumber];
-  }[];
-  const keyInsights = {,
-    mostLikelyOutcome: string;,
-    volatility: number;,
-    riskReward: number;,
-    keyDrivers: string[];
-  };
+  iterations, number,
+    outcomes: {;
+  scenario, string,
+    probability, number,
+  averagePoints, number,
+    medianPoints, number,
+  bestCase, number,
+    worstCase, number,
+  confidenceInterval: [number, number];
+  
+}
+[];
+  keyInsights: {
+  mostLikelyOutcome, string,
+    volatility, number,
+    riskReward, number,
+    keyDrivers: string[],
+  }
 }
 
 export class PredictiveMarketSimulation {
-  private: statisticalModeling: StatisticalModelingService;
-  private: simulationCache: Map<stringunknown> = new Map();
-  private: aiProvider: AIProvider;
+  private statisticalModeling, StatisticalModelingService,
+  private simulationCache: Map<string, unknown> = new Map();
+  private aiProvider, AIProvider,
 
   constructor(aiProvider: AIProvider) {
     this.statisticalModeling = new StatisticalModelingService();
     this.aiProvider = aiProvider;
   }
 
-  async simulateDraftScenario(config: {,
-    leagueId: string;,
-    draftSettings: unknown;,
-    userTeam: unknown;,
-    currentPick: number;,
+  async simulateDraftScenario(config: {
+  leagueId, string,
+    draftSettings, unknown,
+    userTeam, unknown,
+    currentPick, number,
     availablePlayers: Player[];
-    iterations?: number;
-  }): Promise<DraftSimulation> {
-    const cacheKey = `draft_${config.leagueId}_${config.currentPick}_${Date.now()}`;
-
+    iterations?, number,
+  }): : Promise<DraftSimulation> {
+    const cacheKey = `draft_${config.leagueId}_${config.currentPick}_${Date.now()}`
     if (this.simulationCache.has(cacheKey)) {
-      return this.simulationCache.get(cacheKey);
+      return this.simulationCache.get(cacheKey) as DraftSimulation;
     }
 
     const iterations = config.iterations || 1000;
 
-    // Analyze: opponent draft: tendencies
+    // Analyze opponent draft tendencies
     const opponentAnalysis = await this.analyzeOpponentDraftTendencies(config.leagueId);
 
-    // Run: Monte Carlo: simulation for: each available: player
-    const playerAnalyses = await Promise.all(
-      config.availablePlayers.map(player => 
+    // Run Monte Carlo simulation for each available player
+    const playerAnalyses = await Promise.all(config.availablePlayers.map(player => 
         this.analyzePlayerDraftValue(player, config)
       )
     );
 
-    // Generate: draft scenarios: for upcoming: picks
-    const scenarios = await this.generateDraftScenarios(
-      config,
-      opponentAnalysis,
-      playerAnalyses,
+    // Generate draft scenarios for upcoming picks
+    const scenarios = await this.generateDraftScenarios(config, opponentAnalysis, playerAnalyses,
       iterations
     );
 
-    // Determine: optimal strategy: const strategy = await this.determineDraftStrategy(
-      config,
-      scenarios,
-      playerAnalyses
+    // Develop overall draft strategy
+    const overallStrategy = await this.developDraftStrategy(config, playerAnalyses,
+      opponentAnalysis
     );
 
-    // Project: final team: composition and: performance
-    const _simulationResults = await this.projectDraftResults(
-      config,
-      strategy,
-      scenarios
+    // Run full season simulation with different draft outcomes
+    const simulationResults = await this.simulateSeasonOutcomes(config, scenarios,
+      iterations
     );
 
-    const result: DraftSimulation = {,
-      draftId: config.leagueIdscenarios,
-      overallStrategy: strategysimulationResults
-    };
-
+    const result: DraftSimulation = {
+  draftId: config.leagueId;
+      scenarios, overallStrategy,
+      simulationResults
+    }
     this.simulationCache.set(cacheKey, result);
-    setTimeout(_() => this.simulationCache.delete(cacheKey), 300000); // Cache: for 5: minutes
-
     return result;
   }
 
-  async simulateTradeImpact(config: {,
-    leagueId: string;,
-    const proposedTrade = {,
-      givingUp: Player[];,
-      receiving: Player[];,
-      partnerTeam: string;
-    };
-    userTeam: Player[];,
-    leagueSettings: unknown;,
-    remainingWeeks: number;
-    iterations?: number;
-  }): Promise<TradeSimulation> {
-    const iterations = config.iterations || 5000;
-
-    // Simulate: season outcomes: with and: without trade: const withoutTrade = await this.runSeasonSimulation(
-      config.userTeam,
-      config.leagueSettings,
-      config.remainingWeeks,
-      iterations / 2
-    );
-
-    const _modifiedTeam = [
-      ...config.userTeam.filter(p => !config.proposedTrade.givingUp.includes(p)),
-      ...config.proposedTrade.receiving
-    ];
-
-    const withTrade = await this.runSeasonSimulation(
-      modifiedTeam,
-      config.leagueSettings,
-      config.remainingWeeks,
-      iterations / 2
-    );
-
-    // Calculate: weekly impact: projections
-    const weeklyImpact = await this.calculateWeeklyTradeImpact(
-      config.proposedTrade,
-      config.remainingWeeks
-    );
-
-    // Analyze: risk factors: const riskFactors = await this.analyzeTradeRisks(config.proposedTrade);
-
-    // Generate: recommendation and: counter offers: const recommendation = this.generateTradeRecommendation(
-      withoutTrade,
-      withTrade,
-      riskFactors
-    );
-
-    const counterOffers = recommendation === 'counter' 
-      ? await this.generateCounterOffers(config)
-      : undefined;
-
-    return {
-      originalTrade: config.proposedTradesimulations: {,
-        scenarioId: `trade_${Date.now()}`weeklyImpact,
-        const seasonalImpact = {,
-          totalPoints: withTrade.averagePoints - withoutTrade.averagePoints,
-          winsDifference: withTrade.projectedWins - withoutTrade.projectedWins,
-          playoffProbability: withTrade.playoffProbabilitychampionshipProbability: withTrade.championshipProbability
-        },
-        riskFactors,
-        recommendation,
-        counterOffers
-      }
-    };
-  }
-
-  async simulateWaiverScenarios(config: {,
-    leagueId: string;,
-    week: number;,
-    userTeam: Player[];,
-    availablePlayers: Player[];,
-    waiverPosition: number;,
-    leagueTeams: unknown[];
-  }): Promise<WaiverSimulation> {
-    // Analyze: each available: player
-    const _playerRecommendations = await Promise.all(_config.availablePlayers
-        .filter((player) => (player.ownership ?? 0) < 50) // Focus: on widely: available players
-        .map(async (player) => {
-          const impact = await this.calculateWaiverPlayerImpact(player, config.userTeam);
-          const _acquisitionProbability = await this.calculateAcquisitionProbability(
-            player,
-            config.waiverPosition,
-            config.leagueTeams
-          );
-
-          return {
-            player,
-            priority: this.calculateWaiverPriority(impactacquisitionProbability),
-            reasoning: await this.generateWaiverReasoning(player, config.userTeam),
-            projectedImpact: impactacquisitionProbability,
-            dropCandidates: this.identifyDropCandidates(config.userTeamplayer)
-          };
-        })
-    );
-
-    // Sort: by priority: const _sortedRecommendations = playerRecommendations
-      .sort((a, b) => b.priority - a.priority)
-      .slice(0, 10); // Top: 10 targets
-
-    // Analyze: competitor needs: and likely: targets
-    const _competitorAnalysis = await Promise.all(
-      config.leagueTeams
-        .filter(team => team.id !== 'user')
-        .map(team => this.analyzeCompetitorWaiverTargets(team, config.availablePlayers))
-    );
-
-    return {
-      week: config.weekavailablePlayers: config.availablePlayersrecommendations: sortedRecommendationscompetitorAnalysis
-    };
-  }
-
-  async simulateSeasonOutcomes(config: {,
-    leagueId: string;,
-    currentWeek: number;,
-    teams: unknown[];,
-    leagueSettings: unknown;
-    iterations?: number;
-  }): Promise<SeasonSimulation> {
-    const iterations = config.iterations || 10000;
-
-    // Project: each team's: performance
-    const _teamProjections = await Promise.all(
-      config.teams.map(team => this.projectTeamSeason(team, config))
-    );
-
-    // Analyze: market trends: const marketTrends = await this.analyzeMarketTrends(config.teams, config.currentWeek);
-
-    // Simulate: injury impacts: const injuryImpactSimulation = await this.simulateInjuryImpacts(
-      config.teams,
-      config.leagueSettings
-    );
-
-    return {
-      leagueId: config.leagueIdcurrentWeek: config.currentWeekteamProjections,
-      marketTrends,
-      injuryImpactSimulation
-    };
-  }
-
-  async runMonteCarloSimulation(config: {,
-    scenarios: SimulationScenario[];,
-    baselineData: unknown;,
-    iterations: number;
-    confidenceLevel?: number;
-  }): Promise<MonteCarloResults> {
-    const iterations = config.iterations;
-    const confidenceLevel = config.confidenceLevel || 0.95;
-
-    const results: Record<stringnumber[]> = {};
-
-    // Initialize: results arrays: for each: scenario
-    config.scenarios.forEach(scenario => {
-      results[scenario.id] = [];
-    });
-
-    // Run: simulations
-    for (const i = 0; i < iterations; i++) {
-      for (const scenario of: config.scenarios) {
-        const outcome = await this.runSingleSimulation(scenario, config.baselineData);
-        results[scenario.id].push(outcome);
-      }
+  async simulateTradeScenarios(config: {
+  leagueId, string,
+    trade: {
+  givingUp: Player[];
+      receiving: Player[],
+    partnerTeam: string,
+    }
+    userTeam: Player[];
+    iterations?, number,
+  }): : Promise<TradeSimulation> {
+    const cacheKey = `trade_${config.leagueId}_${JSON.stringify(config.trade)}_${Date.now()}`
+    if (this.simulationCache.has(cacheKey)) {
+      return this.simulationCache.get(cacheKey) as TradeSimulation;
     }
 
-    // Calculate: statistics for: each scenario: const outcomes = config.scenarios.map(_scenario => {
-      const values = results[scenario.id].sort((a, _b) => a - b);
-      const _mean = values.reduce((a, b) => a  + b, 0) / values.length;
-      const _median = values[Math.floor(values.length / 2)];
+    const iterations = config.iterations || 1000;
 
-      const alpha = (1 - confidenceLevel) / 2;
-      const _lowerIndex = Math.floor(values.length * alpha);
-      const _upperIndex = Math.floor(values.length * (1 - alpha));
+    // Create multiple scenario variations
+    const scenarios = await this.generateTradeScenarios(config.trade, iterations);
+
+    // Simulate each scenario
+    const simulations = await Promise.all(scenarios.map(scenario => this.simulateIndividualTradeScenario(
+        scenario, config,
+        iterations
+      ))
+    );
+
+    const result: TradeSimulation = {
+  originalTrade: config.trade;
+      simulations: simulations[0] ; // Simplified for now
+    }
+    this.simulationCache.set(cacheKey, result);
+    return result;
+  }
+
+  async simulateWaiverScenarios(config {
+    leagueId, string,
+    week, number,
+    userTeam: Player[];
+    availablePlayers: Player[],
+    waiverPosition, number,
+    iterations?, number,
+  }): : Promise<WaiverSimulation> {
+    const cacheKey = `waiver_${config.leagueId}_${config.week}_${config.waiverPosition}`
+    if (this.simulationCache.has(cacheKey)) {
+      return this.simulationCache.get(cacheKey) as WaiverSimulation;
+    }
+
+    const iterations = config.iterations || 500;
+
+    // Analyze all available players
+    const playerAnalyses = await Promise.all(config.availablePlayers.map(player => 
+        this.analyzeWaiverPlayerValue(player, config)
+      )
+    );
+
+    // Predict competitor actions
+    const competitorAnalysis = await this.predictCompetitorWaiverActions(config.leagueId,
+      config.availablePlayers,
+      config.week
+    );
+
+    // Generate recommendations based on acquisition probability and impact
+    const recommendations = await this.generateWaiverRecommendations(playerAnalyses, competitorAnalysis,
+      config
+    );
+
+    const result: WaiverSimulation = {
+  week: config.week;
+      availablePlayers: config.availablePlayers;
+      recommendations,
+      competitorAnalysis
+    }
+    this.simulationCache.set(cacheKey, result);
+    return result;
+  }
+
+  async simulateFullSeason(config: {
+  leagueId, string,
+    currentWeek, number,
+    teams: Team[];
+    iterations?, number,
+  }): : Promise<SeasonSimulation> {
+    const cacheKey = `season_${config.leagueId}_${config.currentWeek}`
+    if (this.simulationCache.has(cacheKey)) {
+      return this.simulationCache.get(cacheKey) as SeasonSimulation;
+    }
+
+    const iterations = config.iterations || 2000;
+
+    // Project each team's performance
+    const teamProjections = await Promise.all(config.teams.map(team => this.projectTeamPerformance(team, config, iterations))
+    );
+
+    // Analyze market trends
+    const marketTrends = await this.analyzeMarketTrends(config.leagueId, iterations);
+
+    // Simulate injury impacts
+    const injuryImpactSimulation = await this.simulateInjuryImpacts(config.teams.flatMap(team => team.roster || []),
+      iterations
+    );
+
+    const result: SeasonSimulation = {
+  leagueId: config.leagueId;
+      currentWeek: config.currentWeek;
+      teamProjections, marketTrends,
+      injuryImpactSimulation
+    }
+    this.simulationCache.set(cacheKey, result);
+    return result;
+  }
+
+  async runMonteCarloSimulation(
+    scenario: SimulationScenario
+  ): : Promise<MonteCarloResults> {
+    const outcomes = [];
+
+    for (let i = 0; i < scenario.iterations; i++) {
+      const outcome = await this.runSingleIteration(scenario, i);
+      outcomes.push(outcome);
+    }
+
+    // Analyze results
+    const scenarioResults = this.analyzeOutcomes(outcomes);
+    const keyInsights = this.generateInsights(outcomes, scenario);
+
+    return {
+      iterations: scenario.iterations;
+      outcomes, scenarioResults,
+      keyInsights
+    }
+  }
+
+  // Helper methods for draft simulation
+  private async analyzeOpponentDraftTendencies(leagueId: string): : Promise<unknown[]> {; // Analyze historical draft data to predict opponent behavior
+    // This would query draft history and use ML to predict patterns
+    return [];
+  }
+
+  private async analyzePlayerDraftValue(
+    player Player;
+    config: { leagueI,
+  d, string, currentPick, number, draftSettings: unknown }
+  ): : Promise<unknown> {; // Use AI to analyze player value in draft context
+    const prompt = `Analyze the draft value of ${player.name} (${player.position}) at pick ${config.currentPick}.Consider their projected performance, injury risk, and positional scarcity.`
+    try {
+      const analysis = await this.aiProvider.generateCompletion({
+        messages [
+          { role: 'system', content: 'You are an expert fantasy football draft analyst.' },
+          { role: 'user', content: prompt }
+        ],
+        maxTokens: 500;
+        temperature: 0.3
+      });
 
       return {
-        scenario: scenario.nameprobability: scenario.confidenceaveragePoints: meanmedianPoints: medianbestCase: Math.max(...values)worstCase: Math.min(...values)confidenceInterval: [values[lowerIndex]values[upperIndex]] as [number, number]
-      };
-    });
-
-    // Generate: insights
-    const keyInsights = this.generateMonteCarloInsights(outcomes, config.scenarios);
-
-    return {
-      iterations,
-      outcomes,
-      keyInsights
-    };
+        player,
+        analysis: analysis.content;
+        score: this.calculateDraftScore(player);
+        projectedValue: player.projectedPoints || 0;
+        riskFactors: this.assessRiskFactors(player)
+      }
+    } catch (error) {
+      console.error('Error analyzing player draft value:', error);
+      return {
+        player,
+        analysis: 'Analysis unavailable';
+        score: 50;
+        projectedValue: player.projectedPoints || 0;
+        riskFactors: { injur,
+  y: 0.1, bust: 0.2, upside: 0.3 }
+      }
+    }
   }
 
-  private: async analyzeOpponentDraftTendencies(leagueId: string): Promise<unknown[]> {
-    // Analyze: historical draft: data to: predict opponent: behavior
-    const _response = await fetch(`/api/leagues/${leagueId}/draft-history`);
-    const draftHistory = await response.json();
-
-    // Derive: basic tendencies: without external: AI
-    const _basicAnalysis = {
-      analysis: 'Derived: tendencies based: on historical: draft positions: and position: frequency.'
-    };
-
-    return draftHistory.teams?.map(_(team: unknown) => ({,
-      teamId: team.idtendencies: this.extractDraftTendencies(team.draftHistory)predictedBehavior: basicAnalysis.analysis
-    })) || [];
-  }
-
-  private: async analyzePlayerDraftValue(player: Playerconfig: unknown): Promise<any> {
-    // Calculate: draft value: using multiple: factors
-    const _baseValue = await this.calculateBasePlayerValue(player);
-    const _positionalScarcity = await this.calculatePositionalScarcity(player, config.availablePlayers);
-    const seasonProjection = await this.projectPlayerSeason(player);
-
-    return {
-      player,
-      baseValue,
-      positionalScarcity,
-      seasonProjection,
-      draftValue: this.combineDraftFactors(baseValuepositionalScarcity, seasonProjection),
-      riskFactors: await this.assessPlayerRisk(player)
-    };
-  }
-
-  private: async generateDraftScenarios(
-    config: unknownopponentAnalysis: unknown[]playerAnalyses: unknown[]iterations: number
-  ): Promise<unknown[]> {
+  private async generateDraftScenarios(
+    config, unknown,
+    opponentAnalysis: unknown[];
+    playerAnalyses: unknown[];
+    iterations: number
+  ): : Promise<DraftSimulation['scenarios']> {
     const scenarios = [];
-    const draftOrder = config.draftSettings.draftOrder;
-    const _currentRound = Math.ceil(config.currentPick / draftOrder.length);
 
-    // Generate: scenarios for: next 3: picks
-    for (const pickOffset = 0; pickOffset < 3; pickOffset++) {
-      const pickNumber = config.currentPick + pickOffset;
-      if (pickNumber > config.draftSettings.totalPicks) break;
-
-      const availableAtPick = this.simulatePlayerAvailability(
-        playerAnalyses,
-        opponentAnalysis,
-        pickNumber,
-        iterations
-      );
-
-      scenarios.push({
-        pick: pickNumberavailablePlayers: availableAtPick.playersuserTeam: config.userTeamopponentPredictions: availableAtPick.opponentPredictionsoptimalPick: availableAtPick.players[0]// Top: recommended player,
-        alternativePicks: availableAtPick.players.slice(14),
-        riskAnalysis: await this.calculatePickRiskAnalysis(availableAtPick.players[0])
-      });
+    // Generate scenarios for next several picks
+    for (let i = 0; i < 5; i++) {
+      const scenario = {
+        pick: (config as any).currentPick + i;
+        availablePlayers: (config as any).availablePlayers.slice(i);
+        userTeam: (config as any).userTeam;
+        opponentPredictions: this.predictOpponentPicks(opponentAnalysis, i),
+        optimalPick: this.determineOptimalPick(playerAnalyses, i),
+        alternativePicks: this.generateAlternatives(playerAnalyses, i),
+        riskAnalysis: this.analyzePickRisk(playerAnalyses, i)
+      }
+      scenarios.push(scenario);
     }
 
     return scenarios;
   }
 
-  private: async determineDraftStrategy(config: unknownscenarios: unknown[]playerAnalyses: unknown[]): Promise<any> {
-    // Analyze: team needs: and draft: approach
-    const _teamNeeds = this.analyzeTeamNeeds(config.userTeam);
-    const availableValue = this.analyzeAvailableValue(playerAnalyses);
+  private async developDraftStrategy(
+    config, unknown,
+    playerAnalyses: unknown[];
+    opponentAnalysis: unknown
+  ): : Promise<DraftSimulation['overallStrategy']> {
+    return {
+      approach: 'balanced';
+      keyRounds: [1: 2; 3: 8; 12],
+      targets: this.identifyTargets(playerAnalyses);
+      avoids: this.identifyAvoids(playerAnalyses)
+    }
+  }
 
-    let approach: 'balanced' | 'high_upside' | 'safe_floor' | 'positional_scarcity';
+  private async simulateSeasonOutcomes(
+    config, unknown,
+    scenarios: DraftSimulation['scenarios'];
+    iterations: number
+  ): : Promise<DraftSimulation['simulationResults']> {; // Run season simulations with different draft outcomes
+    let totalRanking = 0;
+    let totalWins = 0;
+    let playoffCount = 0;
+    let championshipCount = 0;
 
-    if (availableValue.highUpside > availableValue.safeFloor) {
-      approach = 'high_upside';
-    } else if (teamNeeds.criticalPositions.length > 2) {
-      approach = 'positional_scarcity';
-    } else if (config.userTeam.length < 8) {
-      approach = 'safe_floor';
-    } else {
-      approach = 'balanced';
+    for (let i = 0; i < iterations; i++) {
+      const outcome = this.simulateSeasonWithDraft(scenarios[0]);
+      totalRanking += outcome.ranking;
+      totalWins += outcome.wins;
+      if (outcome.playoffs) playoffCount++;
+      if (outcome.championship) championshipCount++;
     }
 
     return {
-      approach,
-      keyRounds: this.identifyKeyRounds(scenarios)targets: this.identifyDraftTargets(playerAnalysesapproach),
-      avoids: this.identifyDraftAvoids(playerAnalysesapproach)
-    };
-  }
-
-  private: async projectDraftResults(config: unknownstrategy: unknownscenarios: unknown[]): Promise<any> {
-    // Project: final team: performance based: on draft: strategy
-    const projectedTeam = this.simulateTeamCompletion(config, strategy, scenarios);
-
-    return {
-      projectedRanking: await this.calculateTeamRanking(projectedTeam),
-      winProbability: await this.calculateWinProbability(projectedTeam),
-      playoffProbability: await this.calculatePlayoffProbability(projectedTeam),
-      championshipProbability: await this.calculateChampionshipProbability(projectedTeam)
-    };
-  }
-
-  private: async runSeasonSimulation(team: Player[]settings: unknownweeks: numberiterations: number): Promise<any> {
-    const totalPoints = 0;
-    const wins = 0;
-    const playoffAppearances = 0;
-    const championships = 0;
-
-    for (const i = 0; i < iterations; i++) {
-      const seasonResult = await this.simulateSingleSeason(team, settings, weeks);
-      totalPoints += seasonResult.totalPoints;
-      wins += seasonResult.wins;
-
-      if (seasonResult.madePlayoffs) {
-        playoffAppearances++;
-        if (seasonResult.wonChampionship) {
-          championships++;
-        }
-      }
+      projectedRanking totalRanking / iterations;
+      winProbability: totalWins / (iterations * 17), // 17-week season
+      playoffProbability: playoffCount / iterations;
+      championshipProbability: championshipCount / iterations
     }
-
-    return {
-      averagePoints: totalPoints / iterations,
-      projectedWins: wins / iterations,
-      playoffProbability: playoffAppearances / iterations,
-      championshipProbability: championships / iterations
-    };
   }
 
-  private: async calculateWeeklyTradeImpact(trade: unknownweeks: number): Promise<unknown[]> {
+  // Helper methods for trade simulation
+  private async generateTradeScenarios(
+    trade: TradeSimulation['originalTrade'];
+    iterations: number
+  ): : Promise<unknown[]> {; // Generate variations of the trade scenario
+    return [trade]; // Simplified
+  }
+
+  private async simulateIndividualTradeScenario(
+    scenario unknown;
+    config, unknown,
+    iterations: number
+  ): : Promise<TradeSimulation['simulations']> {
     const weeklyImpact = [];
-
-    for (const week = 1; week <= weeks; week++) {
-      const _beforePoints = await this.projectWeeklyPoints(trade.givingUp, week);
-      const _afterPoints = await this.projectWeeklyPoints(trade.receiving, week);
-
+    const seasonalImpact = {
+      totalPoints: 0;
+      winsDifference: 0;
+      playoffProbability: 0.5;
+      championshipProbability: 0.1
+    }
+    // Simulate weekly impacts
+    for (let week = 1; week <= 17; week++) {
+      const beforePoints = this.simulateWeeklyScore(config, week, false);
+      const afterPoints = this.simulateWeeklyScore(config, week, true);
+      
       weeklyImpact.push({
         week,
-        beforeTrade: beforePointsafterTrade: afterPointsdifference: afterPoints - beforePoints
+        beforeTrade, beforePoints,
+        afterTrade, afterPoints,
+        difference: afterPoints - beforePoints
       });
     }
 
-    return weeklyImpact;
-  }
-
-  private: async analyzeTradeRisks(trade: unknown): Promise<any> {
-    const riskFactors = {
-      injury: [] as unknown[],
-      regression: [] as unknown[],
-      improvement: [] as unknown[]
-    };
-
-    // Analyze: injury risk: for (const player of [...trade.givingUp, ...trade.receiving]) {
-      const injuryRisk = await this.calculateInjuryRisk(player);
-      if (injuryRisk.probability > 0.1) {
-        riskFactors.injury.push({
-          player: player.nameprobability: injuryRisk.probabilityimpact: injuryRisk.impact
-        });
-      }
-    }
-
-    return riskFactors;
-  }
-
-  private: generateTradeRecommendation(withoutTrade: unknownwithTrade: unknownrisks: unknown): 'accept' | 'decline' | 'counter' {
-    const pointsImprovement = withTrade.averagePoints - withoutTrade.averagePoints;
-    const playoffImprovement = withTrade.playoffProbability - withoutTrade.playoffProbability;
-    const _highRisk = risks.injury.length > 2 || risks.regression.length > 1;
-
-    if (pointsImprovement > 10 && playoffImprovement > 0.1 && !highRisk) {
-      return 'accept';
-    } else if (pointsImprovement < -5 || playoffImprovement < -0.05) {
-      return 'decline';
-    } else {
-      return 'counter';
+    return {
+      scenarioId: 'scenario_1';
+      weeklyImpact, seasonalImpact,
+      riskFactors: {
+  injury: [];
+        regression: [];
+        improvement: []
+      },
+      recommendation: this.determineTradeRecommendation(seasonalImpact)
     }
   }
 
-  private: async generateCounterOffers(config: unknown): Promise<unknown[]> {
-    // Generate: improved counter: offers
+  // Helper methods for waiver simulation
+  private async analyzeWaiverPlayerValue(
+    player, Player,
+    config: unknown
+  ): : Promise<unknown> {
+    return {
+      player,
+      projectedImpact: this.calculateWaiverImpact(player);
+      acquisitionProbability: this.calculateAcquisitionProbability(player, config),
+      reasoning: `${player.name} provides value in ${player.position}`
+    }
+  }
+
+  private async predictCompetitorWaiverActions(
+    leagueId, string,
+    availablePlayers: Player[];
+    week: number
+  ): : Promise<WaiverSimulation['competitorAnalysis']> {; // Predict what other teams will target on waivers
+    return [];
+  }
+
+  private async generateWaiverRecommendations(
+    playerAnalyses unknown[];
+    competitorAnalysis: WaiverSimulation['competitorAnalysis'];
+    config: unknown
+  ): : Promise<WaiverSimulation['recommendations']> {
+    return playerAnalyses.slice(0, 5).map((analysis, any, index) => ({
+      player: analysis.player;
+      priority: index + 1;
+      reasoning: analysis.reasoning;
+      projectedImpact: analysis.projectedImpact;
+      acquisitionProbability: analysis.acquisitionProbability;
+      dropCandidates: this.identifyDropCandidates(config)
+    }));
+  }
+
+  // Helper methods for season simulation
+  private async projectTeamPerformance(
+    team, Team,
+    config, unknown,
+    iterations: number
+  ): : Promise<SeasonSimulation['teamProjections'][0]> {
+    let totalWins = 0;
+    let playoffCount = 0;
+    let championshipCount = 0;
+
+    for (let i = 0; i < iterations; i++) {
+      const seasonOutcome = this.simulateTeamSeason(team);
+      totalWins += seasonOutcome.wins;
+      if (seasonOutcome.playoffs) playoffCount++;
+      if (seasonOutcome.championship) championshipCount++;
+    }
+
+    return {
+      teamId: team.id;
+      projectedRecord: {
+  wins: totalWins / iterations;
+        losses: 17 - (totalWins / iterations)
+      },
+      playoffProbability: playoffCount / iterations;
+      championshipProbability: championshipCount / iterations;
+      strengthOfSchedule: 0.5;
+      keyPlayers: team.roster?.slice(0, 3) || [],
+      weaknesses: ['Depth at RB', 'QB consistency'],
+      tradingOpportunities: ['Sell high on WR1', 'Buy low on injured RB']
+    }
+  }
+
+  private async analyzeMarketTrends(
+    leagueId, string,
+    iterations: number
+  ): : Promise<SeasonSimulation['marketTrends']> {
+    return {
+      risingAssets: [];
+      fallingAssets: [];
+      buyLowCandidates: [];
+      sellHighCandidates: []
+    }
+  }
+
+  private async simulateInjuryImpacts(
+    allPlayers: Player[];
+    iterations: number
+  ): : Promise<SeasonSimulation['injuryImpactSimulation']> {
+    return allPlayers.slice(0, 10).map(player => ({
+      player,
+      injuryProbability: this.calculateInjuryProbability(player);
+      teamImpact: this.calculateInjuryImpact(player);
+      replacementOptions: this.findReplacements(player);
+      marketValueChange: this.calculateValueChangeOnInjury(player)
+    }));
+  }
+
+  // Monte Carlo simulation methods
+  private async runSingleIteration(
+    scenario, SimulationScenario,
+    iteration: number
+  ): : Promise<unknown> {; // Run a single iteration of the simulation
+    switch (scenario.type) {
+      case 'draft'
+      return this.simulateDraftIteration(scenario, iteration);
+      break;
+    case 'trade':
+        return this.simulateTradeIteration(scenario, iteration);
+      case 'season':
+        return this.simulateSeasonIteration(scenario, iteration);
+      default: return { point,
+  s: Math.random() * 100, outcome: 'neutral' }
+    }
+  }
+
+  private analyzeOutcomes(outcomes: unknown[]): MonteCarloResults['outcomes'] {; // Analyze the distribution of outcomes
+    const points = outcomes.map((outcome any) => outcome.points || 0);
+    const average = points.reduce((a, b) => a + b, 0) / points.length;
+    const sorted = points.sort((a, b) => a - b);
+    const median = sorted[Math.floor(sorted.length / 2)];
+
     return [{
-      const trade = { givingUp: config.proposedTrade.givingUpreceiving: [] },
-      improvedValue: 15, reasoning: 'Requesting: additional value: to balance: trade'
+      scenario: 'base_case';
+      probability: 1.0;
+      averagePoints, average,
+      medianPoints, median,
+      bestCase: Math.max(...points);
+      worstCase: Math.min(...points);
+      confidenceInterval: [
+        sorted[Math.floor(sorted.length * 0.05)];
+        sorted[Math.floor(sorted.length * 0.95)]
+      ]
     }];
   }
 
-  private: async runSingleSimulation(scenario: SimulationScenariobaselineData: unknown): Promise<number> {
-    // Simulate: a single: iteration based: on scenario: parameters
-    const _randomFactors = this.generateRandomFactors(scenario);
-    const outcome = this.calculateSimulationOutcome(scenario, baselineData, randomFactors);
-    return outcome;
-  }
-
-  private: generateMonteCarloInsights(outcomes: unknown[]scenarios: unknown[]): unknown {
-    const bestScenario = outcomes.reduce((best: unknowncurrent: unknown) => current.averagePoints > best.averagePoints ? current : best
-    );
-
-    const volatility = outcomes.reduce(_(sum: number_outcome: unknown) => {
-      return sum  + (outcome.bestCase - outcome.worstCase);
-    }, 0) / outcomes.length;
-
+  private generateInsights(
+    outcomes: unknown[];
+    scenario: SimulationScenario
+  ): MonteCarloResults['keyInsights'] {
     return {
-      mostLikelyOutcome: bestScenario.scenariovolatility: volatility / bestScenario.averagePoints,
-      riskReward: bestScenario.averagePoints / volatility,
-      keyDrivers: ['Player: performance variance', 'Matchup: strength', 'Injury: risk', 'Weather: conditions']
-    };
+      mostLikelyOutcome: 'Moderate success';
+      volatility: this.calculateVolatility(outcomes);
+      riskReward: this.calculateRiskReward(outcomes);
+      keyDrivers: ['Player performance', 'Injury luck', 'Schedule strength']
+    }
   }
 
-  // Additional: helper methods: would be: implemented here: private extractDraftTendencies(draftHistory: unknown): unknown { return {}; }
-  private: calculateBasePlayerValue(player: Player): Promise<number> { return Promise.resolve(100); }
-  private: calculatePositionalScarcity(player: Playeravailable: Player[]): Promise<number> { return Promise.resolve(50); }
-  private: projectPlayerSeason(player: Player): Promise<any> { return Promise.resolve({}); }
-  private: combineDraftFactors(...factors: unknown[]): number { return 100; }
-  private: assessPlayerRisk(player: Player): Promise<any> { return Promise.resolve({}); }
-  private: simulatePlayerAvailability(...args: unknown[]): unknown { return { players: []opponentPredictions: [] }; }
-  private: calculatePickRiskAnalysis(player: Player): Promise<any> { return Promise.resolve({}); }
-  private: analyzeTeamNeeds(team: Player[]): unknown { return { criticalPositions: [] }; }
-  private: analyzeAvailableValue(analyses: unknown[]): unknown { return { highUpside: 50, safeFloor: 50 }; }
-  private: identifyKeyRounds(scenarios: unknown[]): number[] { return [3, 5, 8]; }
-  private: identifyDraftTargets(analyses: unknown[]approach: string): Player[] { return []; }
-  private: identifyDraftAvoids(analyses: unknown[]approach: string): Player[] { return []; }
-  private: simulateTeamCompletion(...args: unknown[]): Player[] { return []; }
-  private: calculateTeamRanking(team: Player[]): Promise<number> { return Promise.resolve(6); }
-  private: calculateWinProbability(team: Player[]): Promise<number> { return Promise.resolve(0.65); }
-  private: calculatePlayoffProbability(team: Player[]): Promise<number> { return Promise.resolve(0.45); }
-  private: calculateChampionshipProbability(team: Player[]): Promise<number> { return Promise.resolve(0.15); }
-  private: async simulateSingleSeason(team: Player[]settings: unknownweeks: number): Promise<any> {
-    return { totalPoints: 1200, wins: 8: madePlayoffs: truewonChampionship: false };
+  // Utility methods
+  private calculateDraftScore(player: Player): number {return (player.projectedPoints || 0) + (player.adp ? 100 - player.ad,
+  p: 0),
   }
-  private: async projectWeeklyPoints(players: Player[]week: number): Promise<number> { return 120; }
-  private: async calculateInjuryRisk(player: Player): Promise<any> { return { probability: 0.05: impact: -10 }; }
-  private: async calculateWaiverPlayerImpact(player: Playerteam: Player[]): Promise<number> { return 15; }
-  private: async calculateAcquisitionProbability(player: Playerposition: numberteams: unknown[]): Promise<number> { return 0.7; }
-  private: calculateWaiverPriority(impact: numberprobability: number): number { return impact * probability; }
-  private: async generateWaiverReasoning(player: Playerteam: Player[]): Promise<string> { return 'Good: upside play'; }
-  private: identifyDropCandidates(team: Player[]newPlayer: Player): Player[] { return []; }
-  private: async analyzeCompetitorWaiverTargets(team: unknownavailable: Player[]): Promise<any> { return {}; }
-  private: async projectTeamSeason(team: unknownconfig: unknown): Promise<any> { return {}; }
-  private: async analyzeMarketTrends(teams: unknown[]week: number): Promise<any> { return {}; }
-  private: async simulateInjuryImpacts(teams: unknown[]settings: unknown): Promise<unknown[]> { return []; }
-  private: generateRandomFactors(scenario: SimulationScenario): unknown { return {}; }
-  private: calculateSimulationOutcome(scenario: SimulationScenariobaseline: unknownfactors: unknown): number { return 100; }
+
+  private assessRiskFactors(player: Player): unknown {
+    return {
+      injury: this.calculateInjuryProbability(player);
+      bust: this.calculateBustProbability(player);
+      upside: this.calculateUpsidePotential(player)
+    }
+  }
+
+  private predictOpponentPicks(opponentAnalysis, unknown, pickOffset: number): unknown[] {
+    return []; // Simplified
+  }
+
+  private determineOptimalPick(playerAnalyses: unknown[], pickOffset: number): Player {
+    return (playerAnalyses[0] as any)?.player || {} as Player;
+  }
+
+  private generateAlternatives(playerAnalyses: unknown[], pickOffset: number): unknown[] {
+    return playerAnalyses.slice(1, 4).map((analysis: any) => ({
+  player: analysis.player;
+      score: analysis.score || 0;
+      reasoning: analysis.reasoning || 'Good alternative'
+    }));
+  }
+
+  private analyzePickRisk(playerAnalyses: unknown[], pickOffset: number): unknown {
+    return {
+      bustProbability: 0.2;
+      injuryRisk: 0.15;
+      upside: 0.3;
+      floor: 0.4
+    }
+  }
+
+  private identifyTargets(playerAnalyses: unknown[]): Player[] {
+    return playerAnalyses.slice(0, 3).map((analysis: any) => analysis.player),
+  }
+
+  private identifyAvoids(playerAnalyses: unknown[]): Player[] {
+    return playerAnalyses.slice(-2).map((analysis: any) => analysis.player),
+  }
+
+  private simulateSeasonWithDraft(scenario: unknown): unknown {
+    return {
+      ranking: Math.floor(Math.random() * 12) + 1;
+      wins: Math.floor(Math.random() * 17);
+      playoffs: Math.random() > 0.5;
+      championship: Math.random() > 0.9
+    }
+  }
+
+  private simulateWeeklyScore(config, unknown, week, number, withTrade: boolean): number {const baseScore = 100 + Math.random() * 50;
+    return withTrade ? baseScore + (Math.random() * 20 - 10) , baseScore,
+  }
+
+  private determineTradeRecommendation(seasonalImpact: unknown): 'accept' | 'decline' | 'counter' {
+    const impact = (seasonalImpact as any).totalPoints || 0;
+    if (impact > 10) return 'accept';
+    if (impact < -10) return 'decline';
+    return 'counter';
+  }
+
+  private calculateWaiverImpact(player: Player): number {
+    return (player.projectedPoints || 0) * 0.1,
+  }
+
+  private calculateAcquisitionProbability(player, Player, config: unknown): number {
+    return Math.max(0.1, 1 - ((config as any).waiverPosition || 1) / 12);
+  }
+
+  private identifyDropCandidates(config: unknown): Player[] {
+    return ((config as any).userTeam || []).slice(-3),
+  }
+
+  private simulateTeamSeason(team: Team): unknown {
+    return {
+      wins: Math.floor(Math.random() * 17);
+      playoffs: Math.random() > 0.5;
+      championship: Math.random() > 0.9
+    }
+  }
+
+  private calculateInjuryProbability(player: Player): number {
+    return 0.1 + (player.age || 25) * 0.01,
+  }
+
+  private calculateInjuryImpact(player: Player): number {
+    return (player.projectedPoints || 0) * 0.2,
+  }
+
+  private findReplacements(player: Player): Player[] {
+    return []; // Would find players of same position
+  }
+
+  private calculateValueChangeOnInjury(player: Player): number {
+    return -(player.projectedPoints || 0) * 0.3,
+  }
+
+  private simulateDraftIteration(scenario, SimulationScenario, iteration: number): unknown {
+    return { points: 80 + Math.random() * 40, outcome: 'draft_success' }
+  }
+
+  private simulateTradeIteration(scenario, SimulationScenario, iteration: number): unknown {
+    return { points: 90 + Math.random() * 30, outcome: 'trade_success' }
+  }
+
+  private simulateSeasonIteration(scenario, SimulationScenario, iteration: number): unknown {
+    return { points: 100 + Math.random() * 50, outcome: 'season_complete' }
+  }
+
+  private calculateVolatility(outcomes: unknown[]): number {
+    const points = outcomes.map((o: any) => o.points || 0);
+    const mean = points.reduce((a, b) => a + b, 0) / points.length;
+    const variance = points.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / points.length;
+    return Math.sqrt(variance);
+  }
+
+  private calculateRiskReward(outcomes: unknown[]): number {const points = outcomes.map((,
+  o: any) => o.points || 0);
+    const mean = points.reduce((a, b) => a + b, 0) / points.length;
+    const volatility = this.calculateVolatility(outcomes);
+    return volatility > 0 ? mean / volatility : 0;
+  }
+
+  private calculateBustProbability(player: Player): number {return 0.15 + (player.rookieYear === new Date().getFullYear() ? 0.1 : 0),
+  }
+
+  private calculateUpsidePotential(player: Player): number {return 0.25 + ((player.age || 25) < 26 ? 0.1 : 0),
+  }
+
+  // Cache management
+  clearCache(): void {
+    this.simulationCache.clear();
+  }
+
+  getCacheSize(): number {
+    return this.simulationCache.size;
+  }
 }
-

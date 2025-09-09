@@ -1,107 +1,97 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo  } from 'react';
 import { debounce, rafThrottle } from '@/utils/performance';
 
 interface VirtualListProps<T> {
-  items: T[];
-  height: number | string;
-  itemHeight: number | ((index: number) => number);
-  renderItem: (item: T, index: number) => React.ReactNode;
-  overscan?: number;
+  items: T[],
+    height: number | string;
+  itemHeight: number | ((inde,
+  x: number) => number);
+  renderItem: (item; T, index: number) => React.ReactNode;
+  overscan?, number,
   onScroll?: (scrollTop: number) => void;
-  className?: string;
+  className?, string,
   emptyMessage?: React.ReactNode;
-  headerHeight?: number;
-  footerHeight?: number;
+  headerHeight?, number,
+  footerHeight?, number,
   renderHeader?: () => React.ReactNode;
   renderFooter?: () => React.ReactNode;
-  scrollToIndex?: number;
+  scrollToIndex?, number,
   onEndReached?: () => void;
-  endReachedThreshold?: number;
-  loading?: boolean;
+  endReachedThreshold?, number,
+  loading?, boolean,
   renderLoader?: () => React.ReactNode;
 }
 
 interface VisibleRange {
-  start: number;
-  end: number;
+  start, number,
+    end, number,
+  
 }
-
 export function VirtualList<T>({
-  items,
-  height,
-  itemHeight,
-  renderItem,
-  overscan = 3,
-  onScroll,
+  items, height,
+  itemHeight, renderItem,
+  overscan = 3, onScroll,
   className = '',
   emptyMessage = 'No items to display',
   headerHeight = 0,
-  footerHeight = 0,
-  renderHeader,
-  renderFooter,
-  scrollToIndex,
-  onEndReached,
+  footerHeight = 0, renderHeader,
+  renderFooter, scrollToIndex, onEndReached,
   endReachedThreshold = 100,
   loading = false,
   renderLoader
-}: VirtualListProps<T>) {
-  const containerRef = useRef<HTMLDivElement>(null);
+}: VirtualListProps<T>) { const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
-  const [visibleRange, setVisibleRange] = useState<VisibleRange>({ start: 0, end: 0 });
+  const [visibleRange, setVisibleRange] = useState<VisibleRange>({ start, 0,
+  end: 0  });
   const lastEndReachedRef = useRef(false);
 
   // Calculate item heights and positions
-  const itemData = useMemo(() => {
-    const heights: number[] = [];
+  const itemData = useMemo(() => { const heights: number[] = [];
     const positions: number[] = [];
     let totalHeight = headerHeight;
 
     for (let i = 0; i < items.length; i++) {
-      const h = typeof itemHeight === 'function' ? itemHeight(i) : itemHeight;
+      const h = typeof itemHeight === 'function' ? itemHeight(i) , itemHeight,
       heights.push(h);
       positions.push(totalHeight);
       totalHeight += h;
-    }
+     }
 
     return {
-      heights,
-      positions,
+      heights, positions,
       totalHeight: totalHeight + footerHeight
-    };
+    }
   }, [items, itemHeight, headerHeight, footerHeight]);
 
   // Calculate visible range
-  const calculateVisibleRange = useCallback((scrollTop: number, containerHeight: number) => {
-    const { positions, heights } = itemData;
+  const calculateVisibleRange = useCallback((scrollTop, number;
+  containerHeight: number) => { const { positions, heights } = itemData;
     
     // Find first visible item
     let start = 0;
-    for (let i = 0; i < positions.length; i++) {
-      if (positions[i] + heights[i] > scrollTop - headerHeight) {
+    for (let i = 0; i < positions.length; i++) { if (positions[i] + heights[i] > scrollTop - headerHeight) {
         start = Math.max(0, i - overscan);
         break;
-      }
+       }
     }
 
     // Find last visible item
     let end = items.length - 1;
-    for (let i = start; i < positions.length; i++) {
-      if (positions[i] > scrollTop + containerHeight - headerHeight) {
+    for (let i = start; i < positions.length; i++) { if (positions[i] > scrollTop + containerHeight - headerHeight) {
         end = Math.min(items.length - 1, i + overscan);
         break;
-      }
+       }
     }
 
-    return { start, end };
+    return { start,: end  }
   }, [itemData, items.length, overscan, headerHeight]);
 
   // Handle scroll with RAF throttling for smooth performance
-  const handleScroll = rafThrottle(() => {
-    if (!scrollRef.current) return;
+  const handleScroll = rafThrottle(() => { if (!scrollRef.current) return;
     
     const newScrollTop = scrollRef.current.scrollTop;
     setScrollTop(newScrollTop);
@@ -117,15 +107,14 @@ export function VirtualList<T>({
       if (distanceFromBottom < endReachedThreshold && !lastEndReachedRef.current) {
         lastEndReachedRef.current = true;
         onEndReached();
-      } else if (distanceFromBottom >= endReachedThreshold) {
+       } else if (distanceFromBottom >= endReachedThreshold) {
         lastEndReachedRef.current = false;
       }
     }
   });
 
   // Handle container resize
-  const handleResize = debounce(() => {
-    if (!containerRef.current) return;
+  const handleResize = debounce(() => { if (!containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
     const newHeight = rect.height;
@@ -133,11 +122,10 @@ export function VirtualList<T>({
     
     const newVisibleRange = calculateVisibleRange(scrollTop, newHeight);
     setVisibleRange(newVisibleRange);
-  }, 150);
+   }, 150);
 
   // Set up resize observer
-  useEffect(() => {
-    if (!containerRef.current) return;
+  useEffect(() => { if (!containerRef.current) return;
 
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(containerRef.current);
@@ -151,23 +139,21 @@ export function VirtualList<T>({
 
     return () => {
       resizeObserver.disconnect();
-    };
+     }
   }, [handleResize, calculateVisibleRange]);
 
   // Handle scroll to index
-  useEffect(() => {
-    if (scrollToIndex !== undefined && scrollToIndex >= 0 && scrollToIndex < items.length) {
+  useEffect(() => { if (scrollToIndex !== undefined && scrollToIndex >= 0 && scrollToIndex < items.length) {
       const targetPosition = itemData.positions[scrollToIndex] + headerHeight;
       scrollRef.current?.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
+        top, targetPosition,
+  behavior: 'smooth'
+       });
     }
   }, [scrollToIndex, itemData.positions, headerHeight, items.length]);
 
   // Render visible items
-  const visibleItems = useMemo(() => {
-    const result = [];
+  const visibleItems = useMemo(() => { const result = [];
     
     for (let i = visibleRange.start; i <= visibleRange.end; i++) {
       if (i >= items.length) break;
@@ -178,12 +164,12 @@ export function VirtualList<T>({
       
       result.push(
         <div
-          key={i}
+          key={i }
           style={{
             position: 'absolute',
-            top: `${top}px`,
-            left: 0,
-            right: 0,
+  top: `${top}px`,
+            left, 0,
+  right, 0,
             height: `${height}px`,
             willChange: 'transform'
           }}
@@ -197,10 +183,9 @@ export function VirtualList<T>({
   }, [visibleRange, items, itemData, renderItem]);
 
   // Handle empty state
-  if (items.length === 0 && !loading) {
-    return (
+  if (items.length === 0 && !loading) { return (
       <div 
-        className={`flex items-center justify-center ${className}`}
+        className={`flex items-center justify-center ${className }`}
         style={{ height }}
       >
         {emptyMessage}
@@ -231,10 +216,10 @@ export function VirtualList<T>({
             <div 
               style={{ 
                 position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: `${headerHeight}px`
+  top, 0,
+                left, 0,
+  right, 0,
+                height: `${headerHeight }px`
               }}
             >
               {renderHeader()}
@@ -251,10 +236,10 @@ export function VirtualList<T>({
             <div 
               style={{ 
                 position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: `${footerHeight}px`
+  bottom, 0,
+                left, 0,
+  right, 0,
+                height: `${footerHeight }px`
               }}
             >
               {renderFooter()}
@@ -266,9 +251,9 @@ export function VirtualList<T>({
             <div 
               style={{ 
                 position: 'absolute',
-                bottom: `${footerHeight}px`,
-                left: 0,
-                right: 0
+  bottom: `${footerHeight }px`,
+                left, 0,
+  right: 0
               }}
             >
               {renderLoader()}
@@ -282,10 +267,9 @@ export function VirtualList<T>({
 
 // Hook for managing virtual list state
 export function useVirtualList<T>(items: T[], options?: {
-  pageSize?: number;
+  pageSize?, number,
   onLoadMore?: () => Promise<void>;
-}) {
-  const [loading, setLoading] = useState(false);
+}) { const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   
   const handleEndReached = useCallback(async () => {
@@ -293,8 +277,8 @@ export function useVirtualList<T>(items: T[], options?: {
     
     setLoading(true);
     try {
-      await options.onLoadMore();
-    } catch (error) {
+    await options.onLoadMore();
+     } catch (error) {
       console.error('Error loading more items:', error);
       setHasMore(false);
     } finally {
@@ -302,10 +286,7 @@ export function useVirtualList<T>(items: T[], options?: {
     }
   }, [hasMore, loading, options]);
 
-  return {
-    loading,
-    hasMore,
-    setHasMore,
+  return { loading, hasMore, setHasMore,
     handleEndReached
-  };
+:   }
 }

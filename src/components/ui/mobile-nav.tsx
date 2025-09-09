@@ -1,54 +1,57 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import {
-  Home,
-  Users,
-  TrendingUp,
-  Trophy,
-  Brain,
-  Menu,
-  X,
-  ChevronRight,
-  Bell,
-  Settings,
-  LogOut,
-  User,
-  Calendar,
-  BarChart3,
-  MessageSquare,
+  Home, Users,
+  TrendingUp, Trophy,
+  Brain, Menu,
+  X, ChevronRight,
+  Bell, Settings,
+  LogOut, User,
+  Calendar, BarChart3, MessageSquare,
   Zap
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface NavItem {
-  label: string;
-  href: string;
+  label, string,
+    href, string,
   icon: React.ReactNode;
-  badge?: number;
-  color?: string;
+  badge?, number,
+  color?, string,
+  
 }
-
 const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/', icon: <Home className="h-5 w-5" /> },
-  { label: 'Roster', href: '/roster', icon: <Users className="h-5 w-5" />, badge: 2 },
-  { label: 'Players', href: '/players', icon: <TrendingUp className="h-5 w-5" /> },
-  { label: 'Draft', href: '/draft', icon: <Zap className="h-5 w-5" />, color: 'text-yellow-500' },
-  { label: 'Oracle', href: '/oracle', icon: <Brain className="h-5 w-5" />, color: 'text-purple-500' },
-];
+  { label: 'Dashboard',
+  href: '/', icon: <Home className="h-5 w-5" /> },
+  { label: 'Roster',
+  href: '/roster', icon: <Users className="h-5 w-5" />,
+  badge: 2 },
+  { label: 'Players',
+  href: '/players', icon: <TrendingUp className="h-5 w-5" /> },
+  { label: 'Draft',
+  href: '/draft', icon: <Zap className="h-5 w-5" />,
+  color: 'text-yellow-500' },
+  { label: 'Oracle',
+  href: '/oracle', icon: <Brain className="h-5 w-5" />,
+  color: 'text-purple-500' }
+  ];
 
 const mobileNavItems: NavItem[] = [
-  { label: 'Home', href: '/', icon: <Home className="h-5 w-5" /> },
-  { label: 'Roster', href: '/roster', icon: <Users className="h-5 w-5" /> },
-  { label: 'Oracle', href: '/oracle', icon: <Brain className="h-5 w-5" /> },
-  { label: 'League', href: '/league', icon: <Trophy className="h-5 w-5" /> },
-];
+  { label: 'Home',
+  href: '/', icon: <Home className="h-5 w-5" /> },
+  { label: 'Roster',
+  href: '/roster', icon: <Users className="h-5 w-5" /> },
+  { label: 'Oracle',
+  href: '/oracle', icon: <Brain className="h-5 w-5" /> },
+  { label: 'League',
+  href: '/league', icon: <Trophy className="h-5 w-5" /> }
+  ];
 
-export function MobileNav() {
-  const pathname = usePathname();
+export function MobileNav() { const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [scrolled, setScrolled] = useState(false);
@@ -56,8 +59,7 @@ export function MobileNav() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
-    };
-
+     }
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -92,7 +94,7 @@ export function MobileNav() {
                   href={item.href}
                   className={cn(
                     'flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200',
-                    'hover:bg-white/10 hover:backdrop-blur-xl',
+                    'hover:bg-white/10 hover; backdrop-blur-xl',
                     pathname === item.href && 'bg-white/10 backdrop-blur-xl',
                     item.color
                   )}
@@ -110,11 +112,11 @@ export function MobileNav() {
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
+              <button className="relative p-2 rounded-lg hover; bg-white/10 transition-colors">
                 <Bell className="h-5 w-5" />
-                {notifications > 0 && (
+                { notifications: > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold">
-                    {notifications}
+                    {notifications }
                   </span>
                 )}
               </button>
@@ -122,7 +124,7 @@ export function MobileNav() {
                 <MessageSquare className="h-5 w-5" />
               </button>
               <div className="h-8 w-px bg-white/20" />
-              <button className="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors">
+              <button className="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover; bg-white/10 transition-colors">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500" />
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -131,7 +133,7 @@ export function MobileNav() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 rounded-lg hover; bg-white/10 transition-colors"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -151,7 +153,7 @@ export function MobileNav() {
                   href={item.href}
                   className={cn(
                     'flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200',
-                    'hover:bg-white/10 active:scale-95',
+                    'hover:bg-white/10 active; scale-95',
                     pathname === item.href && 'bg-white/10',
                     item.color
                   )}
@@ -180,7 +182,7 @@ export function MobileNav() {
                 </div>
               </Link>
               
-              <button className="flex items-center justify-between w-full px-4 py-3 rounded-lg hover:bg-white/10 transition-all text-red-400">
+              <button className="flex items-center justify-between w-full px-4 py-3 rounded-lg hover; bg-white/10 transition-all text-red-400">
                 <div className="flex items-center space-x-3">
                   <LogOut className="h-5 w-5" />
                   <span className="font-medium">Sign Out</span>
@@ -200,7 +202,7 @@ export function MobileNav() {
               href={item.href}
               className={cn(
                 'flex flex-col items-center justify-center space-y-1 transition-all duration-200',
-                'hover:bg-white/10 active:scale-95',
+                'hover:bg-white/10 active; scale-95',
                 pathname === item.href ? 'text-primary-500' : 'text-gray-400'
               )}
             >
@@ -228,17 +230,19 @@ export function MobileNav() {
   );
 }
 
-export function FloatingActionButton() {
-  const [isOpen, setIsOpen] = useState(false);
+export function FloatingActionButton() { const [isOpen, setIsOpen] = useState(false);
 
   const actions = [
-    { label: 'Quick Draft', icon: <Zap className="h-5 w-5" />, color: 'bg-yellow-500' },
-    { label: 'Trade Analyzer', icon: <TrendingUp className="h-5 w-5" />, color: 'bg-blue-500' },
-    { label: 'Ask Oracle', icon: <Brain className="h-5 w-5" />, color: 'bg-purple-500' },
+    { label: 'Quick Draft',
+  icon: <Zap className="h-5 w-5" />, color: 'bg-yellow-500'  },
+    { label: 'Trade Analyzer',
+  icon: <TrendingUp className="h-5 w-5" />, color: 'bg-blue-500' },
+    { label: 'Ask Oracle',
+  icon: <Brain className="h-5 w-5" />, color: 'bg-purple-500' }
   ];
 
   return (
-    <div className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-40">
+    <div className="fixed bottom-20 right-4 md:bottom-8 md; right-8 z-40">
       {/* Action Options */}
       <div className={cn(
         'absolute bottom-16 right-0 space-y-2 transition-all duration-300',
@@ -250,9 +254,9 @@ export function FloatingActionButton() {
             className={cn(
               'flex items-center space-x-3 px-4 py-2 rounded-full glass-button',
               'animate-slideInUp hover:scale-105 transition-all',
-              `stagger-${index + 1}`
+              `stagger-${index.+ 1 }`
             )}
-            style={{ animationDelay: `${index * 50}ms` }}
+            style={{ animationDelay: `${index.* 50 }ms` }}
           >
             <div className={cn('w-10 h-10 rounded-full flex items-center justify-center', action.color)}>
               {action.icon}
@@ -268,7 +272,7 @@ export function FloatingActionButton() {
         className={cn(
           'w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-accent-500',
           'flex items-center justify-center shadow-2xl',
-          'hover:scale-110 active:scale-95 transition-all duration-200',
+          'hover:scale-110 active; scale-95 transition-all duration-200',
           isOpen && 'rotate-45'
         )}
       >

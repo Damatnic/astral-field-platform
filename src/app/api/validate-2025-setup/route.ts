@@ -11,13 +11,15 @@ export async function GET() {
       season: 2025,
       currentWeek: 2,
       checks: [] as any[],
-      overall: { status: 'unknown', score: 0, maxScore: 0 }
-    };
-
+      overall: { ,
+  status: 'unknown',
+        score: 0, 
+        maxScore: 0 
+      }
+    }
     // Check 1: League exists
     try {
-      const leagueResult = await database.query(
-        'SELECT * FROM leagues WHERE season_year = $1',
+      const leagueResult = await database.query('SELECT * FROM leagues WHERE season_year = $1',
         [2025]
       );
       
@@ -26,7 +28,7 @@ export async function GET() {
         status: leagueResult.rows.length > 0 ? 'pass' : 'fail',
         details: `Found ${leagueResult.rows.length} league(s) for 2025`,
         score: leagueResult.rows.length > 0 ? 1 : 0
-      };
+      }
       validation.checks.push(check1);
       validation.overall.maxScore++;
       if (check1.status === 'pass') validation.overall.score++;
@@ -34,7 +36,8 @@ export async function GET() {
       validation.checks.push({
         name: 'League Setup',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
@@ -42,8 +45,7 @@ export async function GET() {
 
     // Check 2: Fantasy teams exist
     try {
-      const teamsResult = await database.query(
-        'SELECT t.*, l.name as league_name FROM teams t JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
+      const teamsResult = await database.query('SELECT t.*, l.name as league_name FROM teams t JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
         [2025]
       );
       
@@ -53,11 +55,11 @@ export async function GET() {
         details: `Found ${teamsResult.rows.length}/10 fantasy teams`,
         score: teamsResult.rows.length >= 8 ? 1 : 0,
         teams: teamsResult.rows.map(t => ({
-          name: t.team_name,
+  name: t.team_name,
           owner: t.user_id,
           draftPosition: t.draft_position
         }))
-      };
+      }
       validation.checks.push(check2);
       validation.overall.maxScore++;
       if (check2.status === 'pass') validation.overall.score++;
@@ -65,7 +67,8 @@ export async function GET() {
       validation.checks.push({
         name: 'Fantasy Teams',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
@@ -73,8 +76,7 @@ export async function GET() {
 
     // Check 3: NFL players data
     try {
-      const playersResult = await database.query(
-        'SELECT COUNT(*) as count, COUNT(DISTINCT nfl_team) as teams FROM players'
+      const playersResult = await database.query('SELECT COUNT(*) as count, COUNT(DISTINCT nfl_team) as teams FROM players'
       );
       
       const playerCount = parseInt(playersResult.rows[0]?.count || '0');
@@ -85,7 +87,7 @@ export async function GET() {
         status: playerCount >= 100 && teamCount >= 30 ? 'pass' : 'warn',
         details: `${playerCount} players across ${teamCount} NFL teams`,
         score: playerCount >= 100 ? 1 : 0
-      };
+      }
       validation.checks.push(check3);
       validation.overall.maxScore++;
       if (check3.status === 'pass') validation.overall.score++;
@@ -93,7 +95,8 @@ export async function GET() {
       validation.checks.push({
         name: 'NFL Players Data',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
@@ -101,8 +104,7 @@ export async function GET() {
 
     // Check 4: Draft completed
     try {
-      const draftResult = await database.query(
-        'SELECT COUNT(*) as picks, COUNT(DISTINCT team_id) as teams FROM draft_picks dp JOIN teams t ON dp.team_id = t.id JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
+      const draftResult = await database.query('SELECT COUNT(*) as picks, COUNT(DISTINCT team_id) as teams FROM draft_picks dp JOIN teams t ON dp.team_id = t.id JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
         [2025]
       );
       
@@ -114,7 +116,7 @@ export async function GET() {
         status: pickCount >= 100 && draftTeams >= 8 ? 'pass' : 'warn',
         details: `${pickCount} total picks by ${draftTeams} teams`,
         score: pickCount >= 100 ? 1 : 0
-      };
+      }
       validation.checks.push(check4);
       validation.overall.maxScore++;
       if (check4.status === 'pass') validation.overall.score++;
@@ -122,7 +124,8 @@ export async function GET() {
       validation.checks.push({
         name: 'Draft Completion',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
@@ -130,8 +133,7 @@ export async function GET() {
 
     // Check 5: Week 1 stats generated
     try {
-      const statsResult = await database.query(
-        'SELECT COUNT(*) as count FROM player_stats WHERE week = 1 AND season_year = $1 AND is_final = true',
+      const statsResult = await database.query('SELECT COUNT(*) as count FROM player_stats WHERE week = 1 AND season_year = $1 AND is_final = true',
         [2025]
       );
       
@@ -142,7 +144,7 @@ export async function GET() {
         status: statsCount >= 50 ? 'pass' : 'warn',
         details: `${statsCount} player stat records for Week 1`,
         score: statsCount >= 50 ? 1 : 0
-      };
+      }
       validation.checks.push(check5);
       validation.overall.maxScore++;
       if (check5.status === 'pass') validation.overall.score++;
@@ -150,7 +152,8 @@ export async function GET() {
       validation.checks.push({
         name: 'Week 1 Stats',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
@@ -178,14 +181,13 @@ export async function GET() {
       const check6 = {
         name: 'Nicholas Strategic Setup',
         status: nicholasTeam && hasGoodPicks ? 'pass' : 'warn',
-        details: nicholasTeam ? 
-          `Team "${nicholasTeam.team_name}" at pick ${nicholasTeam.draft_position} with ${nicholasTeam.draft_picks} picks` : 
-          'Nicholas team not found',
+        details: nicholasTeam ? `Team "${nicholasTeam.team_name}" at pick ${nicholasTeam.draft_position} with ${nicholasTeam.draft_picks} picks` : 'Nicholas team not found',
         score: nicholasTeam && hasGoodPicks ? 1 : 0,
-        keyPlayers: nicholasTeam?.players?.filter((p: string) => 
-          p && ['Derrick Henry', 'CeeDee Lamb', 'Jalen Hurts', 'Mark Andrews', 'Amon-Ra St. Brown', 'Jahmyr Gibbs'].includes(p)
+        keyPlayers: nicholasTeam?.players?.filter((,
+  p: string) => 
+          p && ['Derrick Henry', 'CeeDee Lamb', 'Jalen Hurts', 'Mark Andrews', 'Amon-Ra St.Brown', 'Jahmyr Gibbs'].includes(p)
         ) || []
-      };
+      }
       validation.checks.push(check6);
       validation.overall.maxScore++;
       if (check6.status === 'pass') validation.overall.score++;
@@ -193,15 +195,15 @@ export async function GET() {
       validation.checks.push({
         name: 'Nicholas Strategic Setup',
         status: 'error',
-        details: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        details: `Database erro,
+  r: ${error instanceof Error ? error.message : 'Unknown error'}`,
         score: 0
       });
       validation.overall.maxScore++;
     }
 
     // Calculate overall status
-    const successRate = validation.overall.maxScore > 0 ? 
-      (validation.overall.score / validation.overall.maxScore) * 100 : 0;
+    const successRate = validation.overall.maxScore > 0 ? (validation.overall.score / validation.overall.maxScore) * 100 : 0;
     
     if (successRate >= 90) {
       validation.overall.status = 'excellent';
@@ -213,13 +215,12 @@ export async function GET() {
       validation.overall.status = 'poor';
     }
 
-    console.log(`✅ Validation complete: ${validation.overall.score}/${validation.overall.maxScore} checks passed`);
+    console.log(`✅ Validation complete, ${validation.overall.score}/${validation.overall.maxScore} checks passed`);
 
     return NextResponse.json({
-      success: true,
-      validation,
-      summary: {
-        status: validation.overall.status,
+      success: true, validation, summar,
+  y: {
+  status: validation.overall.status,
         score: `${validation.overall.score}/${validation.overall.maxScore}`,
         percentage: `${successRate.toFixed(1)}%`,
         readyForProduction: successRate >= 80
@@ -228,9 +229,9 @@ export async function GET() {
 
   } catch (error) {
     console.error('❌ Validation failed:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Validation process failed',
+    return NextResponse.json(
+      { success: false,
+  error: 'Validation process failed',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }

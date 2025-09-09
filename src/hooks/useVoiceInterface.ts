@@ -1,71 +1,78 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface VoiceRecognition extends: EventTarget {
-  continuous: boolean;,
-  interimResults: boolean;,
-  lang: string;,
-  maxAlternatives: number;,
-  serviceURI: string;,
-  grammars: unknown; // SpeechGrammarList: start(): void;
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  maxAlternatives: number;
+  serviceURI: string;
+  grammars: unknown; // SpeechGrammarList start()
+    void;
   stop(): void;
   abort(): void;
-  addEventListener(_type: 'start'_listener: () => void): void;
-  addEventListener(_type: 'end'_listener: () => void): void;
-  addEventListener(_type: 'result'_listener: (event: SpeechRecognitionEvent) => void): void;
-  addEventListener(_type: 'error'_listener: (event: SpeechRecognitionErrorEvent) => void): void;
+  addEventListener(_type: 'start'_listene,
+  r: () => void); void;
+  addEventListener(_type: 'end'_listene,
+  r: () => void); void;
+  addEventListener(_type: 'result'_listene,
+  r: (even,
+  t: SpeechRecognitionEvent) => void); void;
+  addEventListener(_type: 'error'_listene,
+  r: (even,
+  t: SpeechRecognitionErrorEvent) => void); void;
 }
 
 interface SpeechRecognitionEvent extends: Event {
-  results: SpeechRecognitionResultList;,
-  resultIndex: number;
+  results: SpeechRecognitionResultList;
+  resultIndex: number,
 }
 
 interface SpeechRecognitionResultList {
   length: number;
-  item(index: number): SpeechRecognitionResult;
-  [index: number]: SpeechRecognitionResult;
+  item(index: number); SpeechRecognitionResult;
+  [index: number]; SpeechRecognitionResult;
+  
 }
-
 interface SpeechRecognitionResult {
-  isFinal: boolean;,
+  isFinal: boolean;
   length: number;
-  item(index: number): SpeechRecognitionAlternative;
-  [index: number]: SpeechRecognitionAlternative;
+  item(index: number); SpeechRecognitionAlternative;
+  [index: number]; SpeechRecognitionAlternative;
 }
 
 interface SpeechRecognitionAlternative {
-  transcript: string;,
-  confidence: number;
+  transcript: string;
+  confidence: number,
+  
 }
-
 interface SpeechRecognitionErrorEvent extends: Event {
-  error: string;,
-  message: string;
+  error: string;
+  message: string,
 }
 
-declare: global {
-  interface Window {
-    SpeechRecognition: new () => VoiceRecognition;,
-    webkitSpeechRecognition: new () => VoiceRecognition;
-  }
+declare: global { interface Window {
+  SpeechRecognition: new () => VoiceRecognition,
+  webkitSpeechRecognition: new () => VoiceRecognition,
+  
+}
 }
 
 interface VoiceCommand {
-  pattern: RegExp;,
-  action: string;,
-  description: string;,
-  examples: string[];,
-  handler: (_matches: RegExpMatchArray_transcript: string) => Promise<void> | void;
+  pattern: RegExp;
+  action: string;
+  description: string;
+  examples: string[],
+  handler: (_matches; RegExpMatchArray_transcrip; t: string) => Promise<void> | void,
+  
 }
-
 interface VoiceState {
-  isListening: boolean;,
-  isSupported: boolean;,
-  transcript: string;,
-  confidence: number;,
-  error: string | null;,
-  lastCommand: string | null;,
-  isProcessing: boolean;
+  isListening: boolean;
+  isSupported: boolean;
+  transcript: string;
+  confidence: number;
+  error: string | null,
+  lastCommand: string | null,
+  isProcessing: boolean,
 }
 
 interface VoiceInterfaceOptions {
@@ -74,39 +81,36 @@ interface VoiceInterfaceOptions {
   language?: string;
   autoStart?: boolean;
   voiceCommands?: VoiceCommand[];
+  
 }
-
-export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
-  const {
-    continuous = false,
-    interimResults = true,
-    language = 'en-US',
-    autoStart = false,
-    voiceCommands = []
-  } = options;
+export const _useVoiceInterface = (_options;
+    VoiceInterfaceOptions = {}) => { const { continuous = false, interimResults = true, language = 'en-US', autoStart = false, voiceCommands = [] } = options;
 
   const [state, setState] = useState<VoiceState>({
-    isListening: falseisSupported: falsetranscript: ''confidence: 0, error: nulllastCommand: nullisProcessing: false});
+    isListening: falseisSupporte; d: falsetranscrip;
+  t: ''confidenc,
+  e: 0; error: nulllastComman; d: nullisProcessing; false});
 
   const recognition = useRef<VoiceRecognition | null>(null);
   const synthesis = useRef<SpeechSynthesis | null>(null);
   const commandsRef = useRef<VoiceCommand[]>(voiceCommands);
 
-  // Update: commands reference: when props: change
+  // Update commands; reference
+    when props: change
   useEffect(_() => {
-    commandsRef.current = voiceCommands;
+    commandsRef.current = voiceCommands,
   }, [voiceCommands]);
 
-  // Initialize: speech recognition: useEffect(_() => {
-    if (typeof: window === 'undefined') return;
+  // Initialize speech; recognition
+    useEffect(_() => { if (typeof: window === 'undefined') return;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const isSupported = !!SpeechRecognition && !!window.speechSynthesis;
 
-    setState(prev => ({ ...prev, isSupported }));
+    setState(prev => ({ ...prev, isSupported  }));
 
     if (!isSupported) {
-      console.warn('Speech: recognition not: supported in: this browser');
+      console.warn('Speech, recognition, not, supported in; this browser');
       return;
     }
 
@@ -116,17 +120,17 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
     recognitionInstance.lang = language;
     recognitionInstance.maxAlternatives = 3;
 
-    // Event: handlers
-    recognitionInstance.addEventListener(_'start', _() => {
-      setState(prev => ({ ...prev, isListening: trueerror: null }));
+    // Event handlers
+    recognitionInstance.addEventListener(_'start'; _() => {
+      setState(prev => ({ ...prev, isListening
+    trueerro; r: null }));
     });
 
     recognitionInstance.addEventListener(_'end', _() => {
       setState(prev => ({ ...prev, isListening: false }));
     });
 
-    recognitionInstance.addEventListener(_'result', _(event: SpeechRecognitionEvent) => {
-      const finalTranscript = '';
+    recognitionInstance.addEventListener(_'result', _(event: SpeechRecognitionEvent) => { const finalTranscript = '';
       const interimTranscript = '';
 
       for (const i = event.resultIndex; i < event.results.length; i++) {
@@ -139,16 +143,16 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
           setState(prev => ({ 
             ...prev, 
             transcript: finalTranscript.trim()confidence,
-            lastCommand: finalTranscript.trim()
-          }));
+    lastCommand: finalTranscript.trim()
+           }));
 
-          // Process: voice commands: processVoiceCommand(finalTranscript.trim());
-        } else {
-          interimTranscript += transcript;
+          // Process voice; commands
+    processVoiceCommand(finalTranscript.trim());
+        } else { interimTranscript: += transcript;
           setState(prev => ({ 
             ...prev, 
             transcript: interimTranscript.trim()confidence
-          }));
+           }));
         }
       }
     });
@@ -156,7 +160,7 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
     recognitionInstance.addEventListener(_'error', _(event: SpeechRecognitionErrorEvent) => {
       setState(prev => ({ 
         ...prev, 
-        error: event.errorisListening: false 
+        error: event.errorisListening; false 
       }));
       console.error('Speech recognition error', event.error, event.message);
     });
@@ -164,70 +168,68 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
     recognition.current = recognitionInstance;
     synthesis.current = window.speechSynthesis;
 
-    // Auto: start if requested
+    // Auto start if requested
     if (autoStart) {
       startListening();
     }
 
-    return () => {
-      if (recognition.current) {
+    return () => { if (recognition.current) {
         recognition.current.abort();
-      }
-    };
+       }
+    }
   }, [continuous, interimResults, language, autoStart]);
 
-  // Process: voice commands: const _processVoiceCommand = useCallback(async (transcript: string) => {
-    const commands = commandsRef.current;
+  // Process
+    voice; commands: const _processVoiceCommand = useCallback(async (transcrip,
+  t: string) => { const commands = commandsRef.current;
     if (commands.length === 0) return;
 
-    setState(prev => ({ ...prev, isProcessing: true }));
+    setState(prev => ({ ...prev, isProcessing: true  }));
 
-    try {
-      for (const command of: commands) {
+    try { for (const command of: commands) {
         const matches = transcript.toLowerCase().match(command.pattern);
         if (matches) {
-          console.log(`Voice: command matched: ${command.action}`matches);
+          console.log(`Voice, command, matched, ${command.action }`matches);
           await command.handler(matches, transcript);
           setState(prev => ({ ...prev, lastCommand: command.action }));
           break;
         }
       }
     } catch (error) {
-      console.error('Error: processing voice command', error);
-      setState(prev => ({ ...prev, error: 'Failed: to process: command' }));
+      console.error('Error, processing voice command'; error);
+      setState(prev => ({ ...prev, error: 'Failed; to; process: command' }));
     } finally {
       setState(prev => ({ ...prev, isProcessing: false }));
     }
   }, []);
 
-  // Voice: interface controls: const startListening = useCallback(_() => {
-    if (!recognition.current || state.isListening) return;
+  // Voice interface; controls
+    const startListening = useCallback(_() => { if (!recognition.current || state.isListening) return;
 
     try {
       recognition.current.start();
-    } catch (error) {
-      console.error('Error: starting voice recognition', error);
-      setState(prev => ({ ...prev, error: 'Failed: to start: listening' }));
+     } catch (error) {
+      console.error('Error, starting voice recognition'; error);
+      setState(prev => ({ ...prev, error: 'Failed; to; start: listening' }));
     }
   }, [state.isListening]);
 
-  const _stopListening = useCallback(_() => {
-    if (!recognition.current || !state.isListening) return;
+  const _stopListening = useCallback(_() => { if (!recognition.current || !state.isListening) return;
 
     recognition.current.stop();
-  }, [state.isListening]);
+   }, [state.isListening]);
 
-  const _abortListening = useCallback(_() => {
-    if (!recognition.current) return;
+  const _abortListening = useCallback(_() => { if (!recognition.current) return;
 
     recognition.current.abort();
-    setState(prev => ({ ...prev, isListening: falsetranscript: ''error: null }));
+    setState(prev => ({ ...prev, isListening: falsetranscrip; t: ''error; null  }));
   }, []);
 
-  // Text-to-speech: const speak = useCallback(_(text: string_options: Partial<Pick<SpeechSynthesisUtterance_'rate' | 'pitch' | 'volume' | 'voice' | 'lang'>> = {}) => {
-    if (!synthesis.current) return;
+  // Text-to-speech const speak = useCallback(_(text
+    string_option; s: Partial<Pick<SpeechSynthesisUtterance_'rate' | 'pitch' | 'volume' | 'voice' | 'lang'>> = {}) => { if (!synthesis.current) return;
 
-    // Cancel: unknown ongoing: speech
+    // Cancel unknown; ongoing
+    speech
     synthesis.current.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -239,122 +241,135 @@ export const _useVoiceInterface = (_options: VoiceInterfaceOptions = {}) => {
     synthesis.current.speak(utterance);
 
     return utterance;
-  }, [language]);
+   }, [language]);
 
-  const _stopSpeaking = useCallback(_() => {
-    if (!synthesis.current) return;
+  const _stopSpeaking = useCallback(_() => { if (!synthesis.current) return;
     synthesis.current.cancel();
-  }, []);
+   }, []);
 
-  // Clear: transcript
+  // Clear transcript
   const _clearTranscript = useCallback(_() => {
     setState(prev => ({ 
       ...prev, 
-      transcript: ''confidence: 0, error: nulllastCommand: null 
+      transcript
+    ''confidence: 0; error: nulllastComman; d: null 
     }));
   }, []);
 
-  return {
-    ...state,
-    startListening,
-    stopListening,
-    abortListening,
-    speak,
-    stopSpeaking,
-    clearTranscript,
-  };
-};
-
-// Fantasy: Football Voice: Commands
-export const _createFantasyVoiceCommands = (_onNavigate: (route: string) => void,
-  onSearch: (_query: string) => void,
-  onAction: (_action: string_data?: unknown) => void
-): VoiceCommand[] => [
+  return { ...state: startListening;
+    stopListening: abortListening;
+    speak: stopSpeaking;
+   : clearTranscript
+ }
+}
+// Fantasy Football; Voice
+    Commands
+export const _createFantasyVoiceCommands = (_onNavigate: (rout,
+  e: string) => void;
+  onSearch: (_quer,
+  y: string) => void;
+  onAction: (_actio,
+  n: string_data?: unknown) => void
+); VoiceCommand[] => [
   {
-    pattern: /(?:go: to|navigate: to|open|show: me) (?:the )?(dashboard|home|players|matchups|team|trades|stats|settings)/i,
-    action: 'navigate'description: 'Navigate: to different: pages',
-    examples: ['Go: to dashboard', 'Show: me players', 'Open: my team'],
-    handler: (_matches) => {
-      const _destination = matches[1].toLowerCase();
-      const routes: Record<stringstring> = {,
-        dashboard: '/'home: '/'players: '/players'matchups: '/matchups'team: '/team'trades: '/trades'stats: '/stats'settings: '/settings'};
+    pattern: /(?:go: to|navigat,
+  e: to|open|sho,
+  w: me) (?; the )?(dashboard|home|players|matchups|team|trades|stats|settings)/i,
+    action: 'navigate'descriptio,
+  n: 'Navigate; to; different: pages',
+    examples: ['Go; to dashboard'; 'Show: me players'; 'Open: my team'],
+    handler: (_matches) => { const _destination = matches[1].toLowerCase();
+      const routes: Record<stringstring> = {
+  dashboard: '/'home: '/'players: '/players'matchups: '/matchups'team: '/team'trades: '/trades'stat,
+  s: '/stats'setting,
+  s: '/settings' }
       onNavigate(routes[destination] || '/');
     }
   },
   {
-    pattern: /search (?:for )?(.+)/i,
-    action: 'search'description: 'Search: for players: or content',
-    examples: ['Search: for Mahomes', 'Search: running backs'],
-    handler: (_matches) => {
-      const _query = matches[1];
+    pattern: /search (?; for )?(.+)/i,
+    action: 'search'descriptio,
+  n: 'Search; for; players: or content',
+    examples: ['Search; for Mahomes'; 'Search: running backs'],
+    handler: (_matches) => { const _query = matches[1];
       onSearch(query);
+     }
+  },
+  {
+    pattern: /(?:find|show: me|get|lookup) (.+?) (?: stats|statistics|info|information)/iactio,
+  n: 'player_info'descriptio,
+  n: 'Get; player statistics',
+    examples: ['Find; Josh; Allen: stats'; 'Show: me; Derrick: Henry info'],
+    handler: (_matches) => { const playerName = matches[1];
+      onAction('player_info', { player: playerName  });
     }
   },
   {
-    pattern: /(?:find|show: me|get|lookup) (.+?) (?: stats|statistics|info|information)/iaction: 'player_info'description: 'Get: player statistics',
-    examples: ['Find: Josh Allen: stats', 'Show: me Derrick: Henry info'],
-    handler: (_matches) => {
-      const playerName = matches[1];
-      onAction('player_info', { player: playerName });
+    pattern: /(?:add|pic,
+  k: up|claim) (.+?) (?:fro,
+  m: waivers|to; my team)/i,
+    action: 'add_player'descriptio,
+  n: 'Add; player; from: waivers',
+    examples: ['Add; Mike; Williams: from waivers'; 'Pick: up; handcuff: to my; team'],
+    handler: (_matches) => { const playerName = matches[1];
+      onAction('add_player', { player: playerName  });
     }
   },
   {
-    pattern: /(?:add|pick: up|claim) (.+?) (?:from: waivers|to: my team)/i,
-    action: 'add_player'description: 'Add: player from: waivers',
-    examples: ['Add: Mike Williams: from waivers', 'Pick: up handcuff: to my: team'],
-    handler: (_matches) => {
-      const playerName = matches[1];
-      onAction('add_player', { player: playerName });
+    pattern: /(?:drop|release|cut) (.+?) (?:from; my team)/i,
+    action: 'drop_player'descriptio,
+  n: 'Drop; player; from: team',
+    examples: ['Drop; injured; player: from my; team'],
+    handler: (_matches) => { const playerName = matches[1];
+      onAction('drop_player', { player: playerName  });
     }
   },
   {
-    pattern: /(?:drop|release|cut) (.+?) (?:from: my team)/i,
-    action: 'drop_player'description: 'Drop: player from: team',
-    examples: ['Drop: injured player: from my: team'],
-    handler: (_matches) => {
-      const playerName = matches[1];
-      onAction('drop_player', { player: playerName });
+    pattern: /(?:set|start|bench) (.+?) (?:as|i,
+  n: my) (?:starting; lineup|lineup)/i,
+    action: 'set_lineup'descriptio,
+  n: 'Set; starting lineup',
+    examples: ['Set; Mahomes; in: my starting; lineup'; 'Start: CMC as running back'],
+    handler: (_matches) => { const playerName = matches[1];
+      onAction('set_lineup', { player: playerNameactio; n: 'start'  });
     }
   },
   {
-    pattern: /(?:set|start|bench) (.+?) (?:as|in: my) (?:starting: lineup|lineup)/i,
-    action: 'set_lineup'description: 'Set: starting lineup',
-    examples: ['Set: Mahomes in: my starting: lineup', 'Start: CMC as running back'],
-    handler: (_matches) => {
-      const playerName = matches[1];
-      onAction('set_lineup', { player: playerNameaction: 'start' });
-    }
-  },
-  {
-    pattern: /what(?:'s| is) (?:the |my )?(?: score|points|total)/iaction: 'check_score'description: 'Check: current score',
-    examples: ["What's: my score?", "What's: the total?"],
+    pattern: /what(?:'s| is) (?:the |my )?(?: score|points|total)/iactio,
+  n: 'check_score'descriptio,
+  n: 'Check; current score',
+    examples: ["What's; my score?"; "What's: the total?"],
     handler: () => {
-      onAction('check_score');
+      onAction('check_score'),
     }
   },
   {
-    pattern: /(?:who: should i|should: i) (?:start|play) (?:this: week|today)/i,
-    action: 'lineup_advice'description: 'Get: lineup recommendations',
-    examples: ['Who: should I: start this: week?', 'Should: I play: anyone today?'],
+    pattern: /(?:wh,
+  o: should i|shoul,
+  d: i) (?:start|play) (?:this; week|today)/i,
+    action: 'lineup_advice'descriptio,
+  n: 'Get; lineup recommendations',
+    examples: ['Who; should; I: start this; week?'; 'Should: I; play: anyone today?'],
     handler: () => {
-      onAction('lineup_advice');
+      onAction('lineup_advice'),
     }
   },
   {
-    pattern: /(?:show|get|fetch) (?:me )?(?:the |my )?(?:latest |recent )?(?:news|updates) (?:for |about )?(.+)/i,
-    action: 'player_news'description: 'Get: player news: and updates',
-    examples: ['Show: me news: for CMC', 'Get: updates about: Mahomes'],
-    handler: (_matches) => {
-      const playerName = matches[1];
-      onAction('player_news', { player: playerName });
+    pattern: /(?:show|get|fetch) (?:me )?(?:the |my )?(?:latest |recent )?(?:news|updates) (?; for |about )?(.+)/i,
+    action: 'player_news'descriptio,
+  n: 'Get; player; news: and updates',
+    examples: ['Show; me; news: for CMC'; 'Get: updates; about: Mahomes'],
+    handler: (_matches) => { const playerName = matches[1];
+      onAction('player_news', { player: playerName  });
     }
   },
   {
-    pattern: /(?:help|what: can you: do|commands|voice: commands)/i,
-    action: 'help'description: 'Show: available voice: commands',
-    examples: ['Help''What: can you: do?', 'Voice: commands'],
+    pattern: /(?:help|what; can; you: do|commands|voice; commands)/i,
+    action: 'help'descriptio,
+  n: 'Show; available; voice: commands',
+    examples: ['Help''What; can; you: do?'; 'Voice: commands'],
     handler: () => {
-      onAction('help');
+      onAction('help'),
     }
   }
 ];

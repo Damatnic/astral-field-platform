@@ -1,73 +1,69 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo  } from 'react';
 import { Card, CardContent } from '@/components/ui/Card/Card';
 
 interface DataPoint {
-  x: number | string;
-  y: number;
-  label?: string;
+  x: number | string,
+    y, number,
+  label?, string,
+  
 }
-
 interface Dataset {
-  label: string;
-  data: DataPoint[];
-  color: string;
-  tension?: number;
-  fill?: boolean;
-  dashed?: boolean;
+  label, string,
+    data: DataPoint[];
+  color, string,
+  tension?, number,
+  fill?, boolean,
+  dashed?, boolean,
 }
 
 interface LineChartProps {
   datasets: Dataset[];
-  height?: number;
-  showGrid?: boolean;
-  showLegend?: boolean;
-  showTooltip?: boolean;
-  animate?: boolean;
-  xLabel?: string;
-  yLabel?: string;
-  title?: string;
-  className?: string;
+  height?, number,
+  showGrid?, boolean,
+  showLegend?, boolean,
+  showTooltip?, boolean,
+  animate?, boolean,
+  xLabel?, string,
+  yLabel?, string,
+  title?, string,
+  className?, string,
   theme?: 'dark' | 'light';
+  
 }
-
 export function LineChart({
   datasets,
   height = 300,
   showGrid = true,
   showLegend = true,
   showTooltip = true,
-  animate = true,
-  xLabel,
-  yLabel,
-  title,
+  animate = true, xLabel,
+  yLabel, title,
   className = '',
   theme = 'dark'
-}: LineChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+}: LineChartProps) { const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const colors = useMemo(() => ({
     dark: {
-      background: '#111827',
-      grid: '#374151',
+  background: '#111827',
+  grid: '#374151',
       text: '#9ca3af',
-      tooltip: '#1f2937'
-    },
+  tooltip: '#1f2937'
+     },
     light: {
-      background: '#ffffff',
-      grid: '#e5e7eb',
+  background: '#ffffff',
+  grid: '#e5e7eb',
       text: '#6b7280',
-      tooltip: '#f3f4f6'
+  tooltip: '#f3f4f6'
     }
   }), []);
 
   const currentTheme = colors[theme];
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
+  useEffect(() => { const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -80,7 +76,9 @@ export function LineChart({
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     // Calculate bounds
-    const padding = { top: 40, right: 20, bottom: 60, left: 60 };
+    const padding = { top, 40,
+  right, 20, bottom, 60,
+  left: 60  }
     const chartWidth = rect.width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
 
@@ -90,22 +88,18 @@ export function LineChart({
     let allPoints: DataPoint[] = [];
 
     datasets.forEach(dataset => {
-      dataset.data.forEach(point => {
-        minY = Math.min(minY, point.y);
+      dataset.data.forEach(point => { minY = Math.min(minY, point.y);
         maxY = Math.max(maxY, point.y);
         allPoints.push(point);
-      });
+       });
     });
 
     const yRange = maxY - minY;
-    const yScale = (value: number) => {
-      return chartHeight - ((value - minY) / yRange) * chartHeight;
-    };
-
-    const xScale = (index: number, total: number) => {
-      return (index / (total - 1)) * chartWidth;
-    };
-
+    const yScale = (value: number) => { return chartHeight - ((value - minY) / yRange) * chartHeight;
+     }
+    const xScale = (index, number;
+  total: number) => { return (index / (total - 1)) * chartWidth;
+     }
     // Animation
     let progress = 0;
     const animationDuration = animate ? 1000 : 0;
@@ -127,23 +121,21 @@ export function LineChart({
         ctx.setLineDash([5, 5]);
 
         // Horizontal grid lines
-        for (let i = 0; i <= 5; i++) {
-          const y = (chartHeight / 5) * i;
+        for (let i = 0; i <= 5; i++) { const y = (chartHeight / 5) * i;
           ctx.beginPath();
           ctx.moveTo(0, y);
           ctx.lineTo(chartWidth, y);
           ctx.stroke();
-        }
+         }
 
         // Vertical grid lines
         const xSteps = Math.min(10, allPoints.length);
-        for (let i = 0; i <= xSteps; i++) {
-          const x = (chartWidth / xSteps) * i;
+        for (let i = 0; i <= xSteps; i++) { const x = (chartWidth / xSteps) * i;
           ctx.beginPath();
           ctx.moveTo(x, 0);
           ctx.lineTo(x, chartHeight);
           ctx.stroke();
-        }
+         }
 
         ctx.setLineDash([]);
       }
@@ -179,37 +171,31 @@ export function LineChart({
 
       // Y-axis values
       ctx.textAlign = 'right';
-      for (let i = 0; i <= 5; i++) {
-        const value = minY + (yRange / 5) * (5 - i);
+      for (let i = 0; i <= 5; i++) { const value = minY + (yRange / 5) * (5 - i);
         const y = (chartHeight / 5) * i;
         ctx.fillText(value.toFixed(1), -10, y + 4);
-      }
+       }
 
       // Calculate animation progress
-      if (animate) {
-        progress = Math.min((Date.now() - startTime) / animationDuration, 1);
+      if (animate) { progress = Math.min((Date.now() - startTime) / animationDuration, 1);
         progress = easeInOutCubic(progress);
-      } else {
-        progress = 1;
-      }
+       } else { progress = 1;
+       }
 
       // Draw datasets
-      datasets.forEach((dataset, datasetIndex) => {
-        ctx.strokeStyle = dataset.color;
+      datasets.forEach((dataset, datasetIndex) => {ctx.strokeStyle = dataset.color;
         ctx.lineWidth = 2;
         ctx.setLineDash(dataset.dashed ? [5, 5] : []);
 
         // Draw line
         ctx.beginPath();
-        dataset.data.forEach((point, index) => {
-          const x = xScale(index, dataset.data.length);
+        dataset.data.forEach((point, index) => { const x = xScale(index, dataset.data.length);
           const targetY = yScale(point.y);
           const y = chartHeight - (chartHeight - targetY) * progress;
 
           if (index === 0) {
             ctx.moveTo(x, y);
-          } else {
-            if (dataset.tension) {
+           } else { if (dataset.tension) {
               const prevPoint = dataset.data[index - 1];
               const prevX = xScale(index - 1, dataset.data.length);
               const prevY = chartHeight - (chartHeight - yScale(prevPoint.y)) * progress;
@@ -218,7 +204,7 @@ export function LineChart({
               const cp2x = x - (x - prevX) * dataset.tension;
               const cp2y = y;
               ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
-            } else {
+             } else {
               ctx.lineTo(x, y);
             }
           }
@@ -236,8 +222,7 @@ export function LineChart({
 
         // Draw points
         ctx.fillStyle = dataset.color;
-        dataset.data.forEach((point, index) => {
-          const x = xScale(index, dataset.data.length);
+        dataset.data.forEach((point, index) => { const x = xScale(index, dataset.data.length);
           const targetY = yScale(point.y);
           const y = chartHeight - (chartHeight - targetY) * progress;
 
@@ -252,7 +237,7 @@ export function LineChart({
             ctx.textAlign = 'center';
             ctx.fillText(point.label, x, y - 8);
             ctx.fillStyle = dataset.color;
-          }
+           }
         });
 
         ctx.setLineDash([]);
@@ -287,13 +272,11 @@ export function LineChart({
       if (animate && progress < 1) {
         animationRef.current = requestAnimationFrame(draw);
       }
-    };
-
+    }
     draw();
 
     // Mouse interaction for tooltip
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!showTooltip || !tooltipRef.current) return;
+    const handleMouseMove = (e: MouseEvent) => { if (!showTooltip || !tooltipRef.current) return;
 
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left - padding.left;
@@ -314,7 +297,7 @@ export function LineChart({
             minDistance = distance;
             nearestPoint = point;
             nearestDataset = dataset;
-          }
+           }
         });
       });
 
@@ -326,36 +309,30 @@ export function LineChart({
           <div style="background: ${currentTheme.tooltip}; padding: 8px; border-radius: 4px; border: 1px solid ${currentTheme.grid};">
             <div style="color: ${nearestDataset.color}; font-weight: 600;">${nearestDataset.label}</div>
             <div style="color: ${currentTheme.text};">Value: ${nearestPoint.y.toFixed(2)}</div>
-            ${nearestPoint.label ? `<div style="color: ${currentTheme.text}; font-size: 11px;">${nearestPoint.label}</div>` : ''}
+            ${nearestPoint.label ? `<div style="color.${currentTheme.text}; font-size: 11px;">${nearestPoint.label}</div>` : ''}
           </div>
         `;
       } else {
         tooltipRef.current.style.display = 'none';
       }
-    };
-
-    const handleMouseLeave = () => {
-      if (tooltipRef.current) {
+    }
+    const handleMouseLeave = () => { if (tooltipRef.current) {
         tooltipRef.current.style.display = 'none';
-      }
-    };
-
+       }
+    }
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
 
-    return () => {
-      if (animationRef.current) {
+    return () => { if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
-      }
+       }
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
-    };
+    }
   }, [datasets, height, showGrid, showLegend, showTooltip, animate, xLabel, yLabel, title, theme, currentTheme]);
 
-  const easeInOutCubic = (t: number): number => {
-    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-  };
-
+  const easeInOutCubic = (t: number); number => {return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+   }
   return (
     <div className={`relative ${className}`}>
       <canvas
@@ -365,7 +342,7 @@ export function LineChart({
       />
       {showTooltip && (
         <div
-          ref={tooltipRef}
+          ref={tooltipRef }
           className="absolute pointer-events-none z-10"
           style={{ display: 'none' }}
         />

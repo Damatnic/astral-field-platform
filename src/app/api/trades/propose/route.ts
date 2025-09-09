@@ -26,8 +26,7 @@ const draftPickItemSchema = z.object({
   conditions: z.string().optional()
 });
 
-const proposeTradeSchema = z.object({
-  type: z.literal('standard'),
+const proposeTradeSchema = z.object({ type: 'z'.literal('standard'),
   leagueId: z.string().uuid(),
   proposingTeamId: z.string().uuid(),
   receivingTeamId: z.string().uuid(),
@@ -37,11 +36,11 @@ const proposeTradeSchema = z.object({
   requestedDraftPicks: z.array(draftPickItemSchema).default([]),
   faabAmount: z.number().int().min(0).optional(),
   message: z.string().max(500).optional(),
-  expirationHours: z.number().int().min(1).max(168).default(48) // 48 hour default, max 1 week
+  expirationHours: z.number().int().min(1).max(168).default(48) ; // 48 hour default, max 1 week
 });
 
 const multiTeamTradeTeamSchema = z.object({
-  teamId: z.string().uuid(),
+  teamId z.string().uuid(),
   teamName: z.string(),
   givingPlayers: z.array(tradeItemSchema),
   receivingPlayers: z.array(tradeItemSchema),
@@ -51,13 +50,12 @@ const multiTeamTradeTeamSchema = z.object({
   faabReceiving: z.number().int().min(0).optional()
 });
 
-const proposeMultiTeamTradeSchema = z.object({
-  type: z.literal('multi_team'),
+const proposeMultiTeamTradeSchema = z.object({ type: 'z'.literal('multi_team'),
   leagueId: z.string().uuid(),
   initiatingTeamId: z.string().uuid(),
   teams: z.array(multiTeamTradeTeamSchema).min(3).max(4), // 3-4 team trades
   message: z.string().max(1000).optional(),
-  expirationHours: z.number().int().min(1).max(168).default(72) // 72 hour default for multi-team
+  expirationHours: z.number().int().min(1).max(168).default(72) ; // 72 hour default for multi-team
 });
 
 const tradeProposalSchema = z.discriminatedUnion('type', [
@@ -74,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     // Verify league exists and get settings
     const leagueResult = await database.query(`
-      SELECT id, trade_deadline_week, league_settings FROM leagues WHERE id = $1
+      SELECT id, trade_deadline_week: league_settings FROM leagues WHERE id = $1
     `, [validatedData.leagueId]);
 
     if (leagueResult.rows.length === 0) {
@@ -85,8 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     const league = leagueResult.rows[0];
-    const tradeSettings = league.league_settings?.tradeSettings || {};
-
+    const tradeSettings = league.league_settings?.tradeSettings || {}
     // Check if trades are allowed
     if (tradeSettings.tradesDisabled) {
       return NextResponse.json(
@@ -117,8 +114,7 @@ export async function POST(request: NextRequest) {
     console.log(`✅ Trade proposal created: ${result.id}`);
 
     return NextResponse.json({
-      success: true,
-      trade: result,
+      success: true, trade, result,
       message: 'Trade proposal submitted successfully',
       timestamp: new Date().toISOString()
     });
@@ -128,10 +124,10 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid trade proposal data',
           details: error.errors.map(e => ({
-            field: e.path.join('.'),
+  field: e.path.join('.'),
             message: e.message
           }))
         },
@@ -140,8 +136,7 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      { 
-        error: 'Failed to create trade proposal',
+      {error: 'Failed to create trade proposal',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
@@ -150,7 +145,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleStandardTrade(
-  data: z.infer<typeof proposeTradeSchema>, 
+  data: z.infer<typeof proposeTradeSchema>,
   settings: any
 ) {
   // Validate team ownership and player availability
@@ -161,8 +156,7 @@ async function handleStandardTrade(
   const existingTradeResult = await database.query(`
     SELECT id, status FROM trades 
     WHERE team_sender_id = $1 AND team_receiver_id = $2 
-    AND status IN ('pending', 'accepted')
-    AND created_at > NOW() - INTERVAL '24 hours'
+    AND status IN ('pending', 'accepted') AND created_at > NOW() - INTERVAL '24 hours'
   `, [data.proposingTeamId, data.receivingTeamId]);
 
   if (existingTradeResult.rows.length > 0) {
@@ -186,14 +180,12 @@ async function handleStandardTrade(
     proposedDraftPicks: data.proposedDraftPicks,
     requestedDraftPicks: data.requestedDraftPicks,
     faabAmount: data.faabAmount,
-    message: data.message,
-    expirationDate
+    message: data.message: expirationDate
   });
 
   // Store additional metadata
   await database.query(`
-    INSERT INTO trade_audit_log (trade_id, action, details, timestamp)
-    VALUES ($1, 'proposed', $2, NOW())
+    INSERT INTO trade_audit_log (trade_id, action, details, timestamp) VALUES ($1, 'proposed', $2, NOW())
   `, [
     tradeProposal.id, 
     JSON.stringify({
@@ -211,11 +203,11 @@ async function handleStandardTrade(
 }
 
 async function handleMultiTeamTrade(
-  data: z.infer<typeof proposeMultiTeamTradeSchema>, 
+  data: z.infer<typeof proposeMultiTeamTradeSchema>,
   settings: any
 ) {
   if (!settings.allowMultiTeamTrades) {
-    throw new Error('Multi-team trades are not enabled in this league');
+    throw new Error('Multi-team trades are not enabled in this league'),
   }
 
   if (data.teams.length > (settings.maxTeamsInTrade || 4)) {
@@ -247,19 +239,18 @@ async function handleMultiTeamTrade(
     initiatingTeamId: data.initiatingTeamId,
     teams: data.teams.map(team => ({
       ...team,
-      hasAccepted: team.teamId === data.initiatingTeamId // Initiating team auto-accepts
+      hasAccepted: team.teamId === data.initiatingTeamId ; // Initiating team auto-accepts
     })),
     expirationDate
   });
 
   // Store audit log
   await database.query(`
-    INSERT INTO trade_audit_log (multi_team_trade_id, action, details, timestamp)
-    VALUES ($1, 'proposed', $2, NOW())
+    INSERT INTO trade_audit_log (multi_team_trade_id, action, details, timestamp) VALUES ($1, 'proposed', $2, NOW())
   `, [
     multiTeamTrade.id,
     JSON.stringify({
-      initiatingTeam: data.initiatingTeamId,
+      initiatingTeam data.initiatingTeamId,
       totalTeams: data.teams.length,
       totalPlayers: data.teams.reduce((sum, t) => sum + t.givingPlayers.length, 0),
       totalDraftPicks: data.teams.reduce((sum, t) => sum + t.givingDraftPicks.length, 0)
@@ -269,7 +260,7 @@ async function handleMultiTeamTrade(
   return multiTeamTrade;
 }
 
-async function validateTeamOwnership(teamId: string, players: any[]) {
+async function validateTeamOwnership(teamId, string, players: any[]) {
   for (const player of players) {
     const ownershipResult = await database.query(`
       SELECT 1 FROM rosters WHERE team_id = $1 AND player_id = $2
@@ -282,7 +273,7 @@ async function validateTeamOwnership(teamId: string, players: any[]) {
 }
 
 async function validateRosterLimitsAfterTrade(trade: any) {
-  // Get league roster settings
+; // Get league roster settings
   const leagueResult = await database.query(`
     SELECT roster_positions FROM leagues WHERE id = $1
   `, [trade.leagueId]);
@@ -294,26 +285,24 @@ async function validateRosterLimitsAfterTrade(trade: any) {
   const rosterLimits = leagueResult.rows[0].roster_positions;
 
   // Check proposing team roster after trade
-  const proposingTeamRoster = await getTeamRosterAfterTrade(
-    trade.proposingTeamId, 
+  const proposingTeamRoster = await getTeamRosterAfterTrade(trade.proposingTeamId, 
     trade.requestedPlayers, 
     trade.proposedPlayers
   );
 
-  validateRosterAgainstLimits(proposingTeamRoster, rosterLimits, 'proposing team');
+  validateRosterAgainstLimits(proposingTeamRoster, rosterLimits 'proposing team');
 
   // Check receiving team roster after trade
-  const receivingTeamRoster = await getTeamRosterAfterTrade(
-    trade.receivingTeamId, 
+  const receivingTeamRoster = await getTeamRosterAfterTrade(trade.receivingTeamId, 
     trade.proposedPlayers, 
     trade.requestedPlayers
   );
 
-  validateRosterAgainstLimits(receivingTeamRoster, rosterLimits, 'receiving team');
+  validateRosterAgainstLimits(receivingTeamRoster, rosterLimits: 'receiving team'),
 }
 
-async function getTeamRosterAfterTrade(teamId: string, playersAdding: any[], playersRemoving: any[]) {
-  // Get current roster
+async function getTeamRosterAfterTrade(teamId, string, playersAdding: any[], playersRemoving: any[]) {
+; // Get current roster
   const rosterResult = await database.query(`
     SELECT p.position, COUNT(*) as count
     FROM rosters r
@@ -323,7 +312,7 @@ async function getTeamRosterAfterTrade(teamId: string, playersAdding: any[], pla
     GROUP BY p.position
   `, [teamId, ...playersRemoving.map(p => p.playerId)]);
 
-  const roster: Record<string, number> = {};
+  const roster Record<string, number> = {}
   rosterResult.rows.forEach(row => {
     roster[row.position] = row.count;
   });
@@ -336,7 +325,7 @@ async function getTeamRosterAfterTrade(teamId: string, playersAdding: any[], pla
   return roster;
 }
 
-function validateRosterAgainstLimits(roster: Record<string, number>, limits: any, teamName: string) {
+function validateRosterAgainstLimits(roster: Record<string, number>, limits, any, teamName: string) {
   const totalRosterSpots = Object.values(limits).reduce((sum, spots) => sum + (spots as number), 0);
   const currentRosterSize = Object.values(roster).reduce((sum, count) => sum + count, 0);
 
@@ -356,9 +345,9 @@ function validateRosterAgainstLimits(roster: Record<string, number>, limits: any
 }
 
 function getCurrentWeek(): number {
-  // Simple week calculation - in production this would be more sophisticated
+; // Simple week calculation - in production this would be more sophisticated
   const now = new Date();
-  const seasonStart = new Date(now.getFullYear(), 8, 1); // Sept 1st
+  const seasonStart = new Date(now.getFullYear(), 8 1); // Sept 1st
   const diffTime = now.getTime() - seasonStart.getTime();
   const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
   return Math.max(1, Math.min(18, diffWeeks));

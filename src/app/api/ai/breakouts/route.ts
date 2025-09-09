@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const week = searchParams.get('week');
-    const positions = searchParams.get('positions')?.split(',');
+    const positions = searchParams.get('positions')? .split(',');
     const minProbability = searchParams.get('minProbability');
 
     const weekNum = week ? parseInt(week) : 1;
@@ -35,13 +35,12 @@ export async function GET(request: NextRequest) {
     const report = await breakoutIdentifier.generateBreakoutReport(weekNum, positionFilter);
 
     // Filter by minimum probability if specified
-    const filteredBreakouts = report.topBreakouts.filter(
-      breakout => breakout.breakoutProbability >= threshold
+    const filteredBreakouts = report.topBreakouts.filter(breakout => breakout.breakoutProbability >= threshold
     );
 
     return NextResponse.json({
       success: true,
-      data: {
+    data: {
         ...report,
         topBreakouts: filteredBreakouts,
         filters: {
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to generate breakout analysis',
-        details: error instanceof Error ? error.message : 'Unknown error'
+  details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -68,7 +67,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, ...data } = body;
+    const { type, ...data} = body;
 
     switch (type) {
       case 'analyze_player':
@@ -87,25 +86,23 @@ export async function POST(request: NextRequest) {
         const report = await breakoutIdentifier.generateBreakoutReport(weekNum);
         const playerBreakout = report.topBreakouts.find(b => b.playerId === playerId);
         
-        if (!playerBreakout) {
-          return NextResponse.json(
-            { error: 'Player not found in breakout analysis or below threshold' },
+        if (!playerBreakout) { return NextResponse.json(
+            { error: 'Player not found in breakout analysis or below threshold'  },
             { status: 404 }
           );
         }
 
         return NextResponse.json({
           success: true,
-          data: playerBreakout,
+    data: playerBreakout,
           timestamp: new Date().toISOString()
         });
 
       case 'custom_analysis':
-        const { playerIds, week: customWeek, positions: customPositions } = data;
+        const { playerIds, customWeek, positions } = data;
         
-        if (!Array.isArray(playerIds)) {
-          return NextResponse.json(
-            { error: 'playerIds must be an array' },
+        if (!Array.isArray(playerIds)) { return NextResponse.json(
+            { error: 'playerIds must be an array'  },
             { status: 400 }
           );
         }
@@ -115,19 +112,18 @@ export async function POST(request: NextRequest) {
         
         // Generate report and filter for specific players
         const customReport = await breakoutIdentifier.generateBreakoutReport(analysisWeek, analysisPositions);
-        const filteredPlayers = customReport.topBreakouts.filter(
-          breakout => playerIds.includes(breakout.playerId)
+        const filteredPlayers = customReport.topBreakouts.filter(breakout => playerIds.includes(breakout.playerId)
         );
 
         return NextResponse.json({
           success: true,
-          data: {
+    data: {
             players: filteredPlayers,
-            marketInefficiencies: customReport.marketInefficiencies.filter(
+  marketInefficiencies: customReport.marketInefficiencies.filter(
               inefficiency => playerIds.includes(inefficiency.playerId)
             ),
-            requestedPlayerIds: playerIds,
-            found: filteredPlayers.length
+            requestedPlayerIds, playerIds,
+  found: filteredPlayers.length
           },
           timestamp: new Date().toISOString()
         });
@@ -144,7 +140,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to process breakout analysis',
-        details: error instanceof Error ? error.message : 'Unknown error'
+  details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

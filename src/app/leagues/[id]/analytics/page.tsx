@@ -4,86 +4,88 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Activity, Trophy, TrendingUp, Target, BarChart3, PieChart,
-  Users, Clock, Star, Zap, Shield, Brain, Calculator,
-  ChevronDown, ChevronUp, Info, ArrowUp, ArrowDown, AlertTriangle
+  Users, Clock, Star, Zap, Shield, Brain, Calculator, ChevronDown, ChevronUp, Info, ArrowUp, ArrowDown, AlertTriangle
 } from "lucide-react";
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, 
-  PieChart as RechartsPieChart, Cell, Pie, RadarChart, PolarGrid,
-  PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ScatterChart, Scatter
+  PieChart as RechartsPieChart, Cell, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ScatterChart, Scatter
 } from 'recharts';
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
 interface AnalyticsPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ i,
+  d: string;
+}
+>;
 }
 
 interface TeamEfficiency {
   teamName: string;
-  efficiency: number;
+    efficiency: number;
   optimalPoints: number;
-  actualPoints: number;
+    actualPoints: number;
   wastedBenchPoints: number;
-  startSitAccuracy: number;
+    startSitAccuracy: number;
+  
 }
-
 interface TradeAnalysis {
   tradeId: string;
-  participants: string[];
-  date: Date;
-  successRate: number;
-  pointsGained: number[];
-  winProbabilityChange: number[];
+    participants: string[];
+  date, Date,
+    successRate: number;
+  pointsGained: number[],
+    winProbabilityChange: number[];
 }
 
 interface WaiverAnalysis {
   playerId: string;
-  playerName: string;
+    playerName: string;
   position: string;
-  claimedBy: string;
+    claimedBy: string;
   cost: number;
-  pointsScored: number;
+    pointsScored: number;
   roi: number;
-  hitRate: number;
+    hitRate: number;
+  
 }
-
 interface PlayoffSimulation {
   teamName: string;
-  currentRecord: string;
+    currentRecord: string;
   playoffProbability: number;
-  championshipOdds: number;
+    championshipOdds: number;
   strengthOfSchedule: number;
-  projectedWins: number;
+    projectedWins: number;
 }
 
 interface AdvancedAnalyticsData {
-  teamEfficiency: TeamEfficiency[];
-  tradeAnalysis: TradeAnalysis[];
-  waiverAnalysis: WaiverAnalysis[];
-  playoffSimulation: PlayoffSimulation[];
-  weeklyTrends: {
-    week: number;
-    avgScore: number;
+  teamEfficiency: TeamEfficiency[],
+    tradeAnalysis: TradeAnalysis[];
+  waiverAnalysis: WaiverAnalysis[],
+    playoffSimulation: PlayoffSimulation[];
+  weeklyTrends: {;
+  week: number;
+  avgScore: number;
     highScore: number;
-    lowScore: number;
+  lowScore: number;
     variance: number;
-  }[];
+  
+}
+[];
   positionAnalysis: {
-    position: string;
+  position: string;
     avgPoints: number;
     consistency: number;
     topPerformer: string;
     underperformer: string;
   }[];
   leagueMetrics: {
-    totalTrades: number;
+  totalTrades: number;
     avgTradeValue: number;
     totalWaiverSpent: number;
     competitiveness: number;
     parityIndex: number;
     activityLevel: number;
-  };
+  }
 }
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0'];
@@ -96,12 +98,36 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
   const [activeTab, setActiveTab] = useState('efficiency');
 
   const tabs = [
-    { id: "efficiency", label: "Team Efficiency", icon: BarChart3 },
-    { id: "trades", label: "Trade Analysis", icon: Users },
-    { id: "waivers", label: "Waiver Analysis", icon: Target },
-    { id: "playoffs", label: "Playoff Simulator", icon: Trophy },
-    { id: "trends", label: "League Trends", icon: TrendingUp },
-    { id: "positions", label: "Position Analysis", icon: PieChart }
+    {
+      id: "efficiency",
+      label: "Team Efficiency",
+      icon: BarChart3
+    },
+    {
+      id: "trades",
+      label: "Trade Analysis",
+      icon: Users
+    },
+    {
+      id: "waivers",
+      label: "Waiver Analysis",
+      icon: Target
+    },
+    {
+      id: "playoffs",
+      label: "Playoff Simulator",
+      icon: Trophy
+    },
+    {
+      id: "trends",
+      label: "League Trends",
+      icon: TrendingUp
+    },
+    {
+      id: "positions",
+      label: "Position Analysis",
+      icon: PieChart
+    }
   ];
 
   useEffect(() => {
@@ -116,26 +142,26 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
       setTimeout(() => {
         setAnalytics({
           teamEfficiency: [
-            { 
-              teamName: "Thunder Bolts", 
-              efficiency: 92.5, 
-              optimalPoints: 1450.2, 
+            {
+              teamName: "Thunder Bolts",
+              efficiency: 92.5,
+              optimalPoints: 1450.2,
               actualPoints: 1341.5,
               wastedBenchPoints: 285.3,
               startSitAccuracy: 78.2
             },
-            { 
-              teamName: "Gridiron Gladiators", 
-              efficiency: 88.1, 
-              optimalPoints: 1380.5, 
+            {
+              teamName: "Gridiron Gladiators",
+              efficiency: 88.1,
+              optimalPoints: 1380.5,
               actualPoints: 1216.3,
               wastedBenchPoints: 312.8,
               startSitAccuracy: 72.5
             },
-            { 
-              teamName: "Dynasty Warriors", 
-              efficiency: 85.3, 
-              optimalPoints: 1365.8, 
+            {
+              teamName: "Dynasty Warriors",
+              efficiency: 85.3,
+              optimalPoints: 1365.8,
               actualPoints: 1165.2,
               wastedBenchPoints: 298.1,
               startSitAccuracy: 69.8
@@ -165,7 +191,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               playerName: "Tank Dell",
               position: "WR",
               claimedBy: "Thunder Bolts",
-              cost: 25,
+              cost, 25,
               pointsScored: 89.4,
               roi: 3.58,
               hitRate: 85.2
@@ -175,7 +201,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               playerName: "Jordan Mason",
               position: "RB",
               claimedBy: "Dynasty Warriors",
-              cost: 35,
+              cost, 35,
               pointsScored: 124.7,
               roi: 3.56,
               hitRate: 92.1
@@ -191,7 +217,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               projectedWins: 10.2
             },
             {
-              teamName: "Gridiron Gladiators", 
+              teamName: "Gridiron Gladiators",
               currentRecord: "7-5",
               playoffProbability: 78.5,
               championshipOdds: 12.3,
@@ -200,7 +226,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             },
             {
               teamName: "Dynasty Warriors",
-              currentRecord: "6-6", 
+              currentRecord: "6-6",
               playoffProbability: 45.8,
               championshipOdds: 8.1,
               strengthOfSchedule: 0.55,
@@ -208,22 +234,75 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             }
           ],
           weeklyTrends: [
-            { week: 1, avgScore: 112.5, highScore: 145.2, lowScore: 89.3, variance: 18.7 },
-            { week: 2, avgScore: 108.3, highScore: 138.7, lowScore: 85.1, variance: 22.1 },
-            { week: 3, avgScore: 115.8, highScore: 152.4, lowScore: 92.6, variance: 19.3 },
-            { week: 4, avgScore: 102.1, highScore: 128.9, lowScore: 78.5, variance: 25.2 },
-            { week: 5, avgScore: 118.7, highScore: 156.3, lowScore: 95.2, variance: 21.8 }
+            {
+              week, 1,
+              avgScore: 112.5,
+              highScore: 145.2,
+              lowScore: 89.3,
+              variance: 18.7
+            },
+            {
+              week, 2,
+              avgScore: 108.3,
+              highScore: 138.7,
+              lowScore: 85.1,
+              variance: 22.1
+            },
+            {
+              week, 3,
+              avgScore: 115.8,
+              highScore: 152.4,
+              lowScore: 92.6,
+              variance: 19.3
+            },
+            {
+              week, 4,
+              avgScore: 102.1,
+              highScore: 128.9,
+              lowScore: 78.5,
+              variance: 25.2
+            },
+            {
+              week, 5,
+              avgScore: 118.7,
+              highScore: 156.3,
+              lowScore: 95.2,
+              variance: 21.8
+            }
           ],
           positionAnalysis: [
-            { position: "QB", avgPoints: 22.5, consistency: 85.2, topPerformer: "Josh Allen", underperformer: "Russell Wilson" },
-            { position: "RB", avgPoints: 18.3, consistency: 72.8, topPerformer: "CMC", underperformer: "Najee Harris" },
-            { position: "WR", avgPoints: 15.7, consistency: 68.9, topPerformer: "Tyreek Hill", underperformer: "DJ Moore" },
-            { position: "TE", avgPoints: 10.2, consistency: 61.4, topPerformer: "Travis Kelce", underperformer: "Kyle Pitts" }
+            {
+              position: "QB",
+              avgPoints: 22.5,
+              consistency: 85.2,
+              topPerformer: "Josh Allen",
+              underperformer: "Russell Wilson"
+            },
+            {
+              position: "RB",
+              avgPoints: 18.3,
+              consistency: 72.8,
+              topPerformer: "CMC",
+              underperformer: "Najee Harris"
+            },
+            {
+              position: "WR",
+              avgPoints: 15.7,
+              consistency: 68.9,
+              topPerformer: "Tyreek Hill",
+              underperformer: "DJ Moore"
+            },
+            {
+              position: "TE",
+              avgPoints: 10.2,
+              consistency: 61.4,
+              topPerformer: "Travis Kelce",
+              underperformer: "Kyle Pitts"
+            }
           ],
           leagueMetrics: {
-            totalTrades: 24,
-            avgTradeValue: 42.5,
-            totalWaiverSpent: 850,
+            totalTrades, 24,
+            avgTradeValue: 42.5, totalWaiverSpent, 850,
             competitiveness: 87.3,
             parityIndex: 0.74,
             activityLevel: 92.1
@@ -509,7 +588,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     <div className="space-y-6">
       {/* Playoff Race Overview */}
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark; text-white">
           <Trophy className="inline h-5 w-5 mr-2" />
           Playoff Probability Simulation
         </h3>
@@ -537,7 +616,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                 <div 
                   className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-1000 ease-out"
                   style={{ width: `${team.playoffProbability}%` }}
-                ></div>
+                 />
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -593,7 +672,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
               outerRadius={100}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, value }) => `${name}: ${value?.toFixed(1) ?? 0}%`}
+              label={({ name, value }) => `${name} ${value?.toFixed(1) ?? 0}%`}
             >
               {analytics?.playoffSimulation.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -747,14 +826,14 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
         <LeagueNavigation leagueId={leagueId} />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
-            <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/3" />
+            <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                <div key={i} className="h-32 bg-gray-300 dark:bg-gray-700 rounded" />
               ))}
             </div>
-            <div className="h-96 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            <div className="h-96 bg-gray-300 dark:bg-gray-700 rounded" />
           </div>
         </div>
       </div>
@@ -787,11 +866,13 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${
-                      activeTab === tab.id
-                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                        : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
-                    }`}
+                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${activeTab === tab.id
+                        ? 'bg-primary-100 text-primary-700 dark: bg-primary-900 dar,
+  k:text-primary-300'
+                        : 'text-gray-600 hover: text-gray-900 dark:text-gray-400 dar,
+  k, hove,
+  r:text-gray-200'
+                     }`}
                   >
                     <Icon className="w-4 h-4 mr-2" />
                     {tab.label}

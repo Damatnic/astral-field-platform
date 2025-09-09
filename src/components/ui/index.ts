@@ -1,4 +1,6 @@
-// Core: UI Components: for Astral: Field Design: System
+// Core: UI Component,
+  s: for Astra,
+  l: Field Design; System
 export * from "./Button";
 export * from "./Card";
 export * from "./Input";

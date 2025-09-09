@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: {
-            title: 'Astral Field AI-Powered Intelligence Services',
+  title: 'Astral Field AI-Powered Intelligence Services',
             version: '2.0.0',
             description: 'Advanced AI services for fantasy football analysis and predictions',
             services: [
@@ -118,18 +118,17 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString()
         });
 
-      case 'health':
-        // Perform health checks on all services
+      case 'health': // Perform health checks on all services
         const healthChecks = await Promise.all([
-          aiPredictionEngine.healthCheck().then(result => ({ service: 'AI Predictions', ...result })),
-          breakoutIdentifier.healthCheck().then(result => ({ service: 'Breakout Identifier', ...result })),
-          tradeAnalyzer.healthCheck().then(result => ({ service: 'Trade Analyzer', ...result })),
-          multiTeamTradeEngine.healthCheck().then(result => ({ service: 'Multi-Team Trades', ...result })),
-          intelligentWaiverSystem.healthCheck().then(result => ({ service: 'Waiver System', ...result })),
-          draftAssistant.healthCheck().then(result => ({ service: 'Draft Assistant', ...result })),
-          mockDraftSimulator.healthCheck().then(result => ({ service: 'Mock Draft Simulator', ...result })),
-          // injuryImpactAnalyzer.healthCheck().then(result => ({ service: 'Injury Analyzer', ...result })),
-          adaptiveLearningSystem.healthCheck().then(result => ({ service: 'Adaptive Learning', ...result }))
+          aiPredictionEngine.healthCheck().then(result => ({ service: 'AI Predictions', ...result})),
+          breakoutIdentifier.healthCheck().then(result => ({ service: 'Breakout Identifier', ...result})),
+          tradeAnalyzer.healthCheck().then(result => ({ service: 'Trade Analyzer', ...result})),
+          multiTeamTradeEngine.healthCheck().then(result => ({ service: 'Multi-Team Trades', ...result})),
+          intelligentWaiverSystem.healthCheck().then(result => ({ service: 'Waiver System', ...result})),
+          draftAssistant.healthCheck().then(result => ({ service: 'Draft Assistant', ...result})),
+          mockDraftSimulator.healthCheck().then(result => ({ service: 'Mock Draft Simulator', ...result})),
+          // injuryImpactAnalyzer.healthCheck().then(result => ({ service: 'Injury Analyzer', ...result})),
+          adaptiveLearningSystem.healthCheck().then(result => ({ service: 'Adaptive Learning', ...result}))
         ]);
 
         const overallStatus = healthChecks.every(check => check.status === 'healthy') ? 'healthy' :
@@ -138,10 +137,9 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: {
-            overallStatus,
-            services: healthChecks,
+            overallStatus, services, healthChecks,
             summary: {
-              healthy: healthChecks.filter(check => check.status === 'healthy').length,
+  healthy: healthChecks.filter(check => check.status === 'healthy').length,
               degraded: healthChecks.filter(check => check.status === 'degraded').length,
               unhealthy: healthChecks.filter(check => check.status === 'unhealthy').length,
               total: healthChecks.length
@@ -154,7 +152,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: {
-            aiModels: [
+  aiModels: [
               'OpenAI GPT-4',
               'Anthropic Claude',
               'Google Gemini',
@@ -196,8 +194,7 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString()
         });
 
-      case 'stats':
-        // Get usage statistics (mock data for now)
+      case 'stats': // Get usage statistics (mock data for now)
         return NextResponse.json({
           success: true,
           data: {
@@ -208,17 +205,22 @@ export async function GET(request: NextRequest) {
               averageResponseTime: '245ms'
             },
             performance: {
-              predictionAccuracy: '78.2%',
+  predictionAccuracy: '78.2%',
               uptime: '99.8%',
               cacheHitRate: '84.6%',
               errorRate: '0.3%'
             },
             topEndpoints: [
-              { endpoint: '/api/ai/predictions', calls: 542, avgTime: '180ms' },
-              { endpoint: '/api/ai/waivers', calls: 398, avgTime: '320ms' },
-              { endpoint: '/api/ai/trades', calls: 287, avgTime: '450ms' },
-              { endpoint: '/api/ai/breakouts', calls: 215, avgTime: '380ms' },
-              { endpoint: '/api/ai/draft', calls: 189, avgTime: '290ms' }
+              { endpoint: '/api/ai/predictions',
+                calls: 542, avgTime: '180ms' },
+              { endpoint: '/api/ai/waivers',
+                calls: 398, avgTime: '320ms' },
+              { endpoint: '/api/ai/trades',
+                calls: 287, avgTime: '450ms' },
+              { endpoint: '/api/ai/breakouts',
+                calls: 215, avgTime: '380ms' },
+              { endpoint: '/api/ai/draft',
+                calls: 189, avgTime: '290ms' }
             ]
           },
           timestamp: new Date().toISOString()
@@ -226,7 +228,7 @@ export async function GET(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid type parameter. Use: overview, health, capabilities, stats' },
+          { error: 'Invalid type parameter.Use, overview, health, capabilities, stats' },
           { status: 400 }
         );
     }
@@ -246,11 +248,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { type, ...data } = body;
+    const { type, ...data} = body;
 
     switch (type) {
-      case 'test_connection':
-        // Test connection to all services
+      case 'test_connection': // Test connection to all services
         const testResults = await Promise.all([
           testService('AI Predictions', () => aiPredictionEngine.healthCheck()),
           testService('Breakout Identifier', () => breakoutIdentifier.healthCheck()),
@@ -291,23 +292,24 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function testService(serviceName: string, healthCheckFn: () => Promise<any>): Promise<any> {
+async function testService(serviceName, string,
+  healthCheckFn: () => Promise<any>): Promise<any> {
   try {
     const startTime = Date.now();
     const result = await healthCheckFn();
     const responseTime = Date.now() - startTime;
     
     return {
-      service: serviceName,
+      service, serviceName,
       status: 'connected',
       responseTime: `${responseTime}ms`,
       details: result
-    };
+    }
   } catch (error) {
     return {
-      service: serviceName,
+      service, serviceName,
       status: 'failed',
       error: error instanceof Error ? error.message : 'Unknown error'
-    };
+    }
   }
 }

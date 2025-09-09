@@ -8,7 +8,7 @@ import { webSocketManager } from '@/lib/websocket/server';
 import { createServer } from 'http';
 
 // Store the HTTP server instance for WebSocket integration
-let httpServer: ReturnType<typeof createServer> | null = null;
+let httpServer: ReturnType<typeof, createServer> | null = null;
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,16 +17,18 @@ export async function GET(request: NextRequest) {
 
     switch (action) {
       case 'initialize':
-        return await handleInitialize();
-      case 'shutdown':
+      return await handleInitialize();
+      break;
+    case 'shutdown':
         return await handleShutdown();
       case 'stats':
-        return await handleStats();
-      case 'health':
+      return await handleStats();
+      break;
+    case 'health':
         return await handleHealth();
       default:
         return NextResponse.json(
-          { error: 'Invalid action parameter' },
+          { error: 'Invalid action parameter'  },
           { status: 400 }
         );
     }
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'broadcast_score_update':
         webSocketManager.broadcastScoreUpdate(data);
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true  });
       case 'broadcast_player_update':
         webSocketManager.broadcastPlayerUpdate(data);
         return NextResponse.json({ success: true });
@@ -75,9 +77,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleInitialize(): Promise<NextResponse> {
-  try {
-    // Create HTTP server if it doesn't exist
+async function handleInitialize(): Promise<NextResponse> { try {; // Create HTTP server if it doesn't exist
     if (!httpServer) {
       httpServer = createServer();
 
@@ -87,13 +87,13 @@ async function handleInitialize(): Promise<NextResponse> {
       // Start listening on a separate port for WebSocket connections
       const wsPort = parseInt(process.env.WEBSOCKET_PORT || '3001');
       httpServer.listen(wsPort, () => {
-        console.log(`✅ WebSocket server listening on port ${wsPort}`);
+        console.log(`✅ WebSocket server listening on port ${wsPort }`);
       });
     }
 
     return NextResponse.json({
       success: true,
-      message: 'WebSocket server initialized successfully',
+  message 'WebSocket server initialized successfully',
       port: process.env.WEBSOCKET_PORT || '3001'
     });
   } catch (error) {
@@ -105,18 +105,17 @@ async function handleInitialize(): Promise<NextResponse> {
   }
 }
 
-async function handleShutdown(): Promise<NextResponse> {
-  try {
+async function handleShutdown(): Promise<NextResponse> { try {
     if (httpServer) {
       httpServer.close();
       httpServer = null;
-    }
+     }
 
     await webSocketManager.shutdown();
 
     return NextResponse.json({
       success: true,
-      message: 'WebSocket server shutdown successfully'
+  message: 'WebSocket server shutdown successfully'
     });
   } catch (error) {
     console.error('Failed to shutdown WebSocket server:', error);
@@ -127,13 +126,12 @@ async function handleShutdown(): Promise<NextResponse> {
   }
 }
 
-async function handleStats(): Promise<NextResponse> {
-  try {
+async function handleStats(): Promise<NextResponse> { try {
     const stats = webSocketManager.getConnectionStats();
     return NextResponse.json({
       success: true,
       stats
-    });
+     });
   } catch (error) {
     console.error('Failed to get WebSocket stats:', error);
     return NextResponse.json(
@@ -143,17 +141,14 @@ async function handleStats(): Promise<NextResponse> {
   }
 }
 
-async function handleHealth(): Promise<NextResponse> {
-  try {
+async function handleHealth(): Promise<NextResponse> { try {
     const stats = webSocketManager.getConnectionStats();
     const isHealthy = stats.totalConnections >= 0; // Basic health check
 
     return NextResponse.json({
       success: true,
-      healthy: isHealthy,
-      stats,
-      timestamp: new Date().toISOString()
-    });
+    healthy; isHealthy, stats, timestamp: new Date().toISOString()
+     });
   } catch (error) {
     console.error('WebSocket health check failed:', error);
     return NextResponse.json(
@@ -164,4 +159,4 @@ async function handleHealth(): Promise<NextResponse> {
 }
 
 // Export the HTTP server for Next.js integration
-export { httpServer };
+export { httpServer }

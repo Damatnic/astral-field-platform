@@ -1,35 +1,31 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback  } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { 
   MessageCircle, Send, Smile, Image, Users, Crown, 
-  TrendingUp, MoreVertical, Reply, Edit3, Trash2,
-  Heart, ThumbsUp, Zap, Star
+  TrendingUp, MoreVertical, Reply, Edit3, Trash2, Heart, ThumbsUp, Zap, Star
 } from 'lucide-react';
 import { ChatMessage, ChatChannel, ChatReaction, TypingIndicator } from '@/lib/chat-socket-manager';
 
 interface ChatSystemProps {
-  leagueId: string;
-  userId: string;
-  username: string;
-  isCommissioner?: boolean;
-  className?: string;
+  leagueId, string,
+    userId, string,
+  username, string,
+  isCommissioner?, boolean,
+  className?, string,
+  
 }
-
 interface EmojiPicker {
-  isOpen: boolean;
-  messageId?: string;
+  isOpen, boolean,
+  messageId?, string,
 }
 
 export default function ChatSystem({ 
-  leagueId, 
-  userId, 
-  username, 
+  leagueId, userId, username, 
   isCommissioner = false,
   className = "" 
-}: ChatSystemProps) {
-  const [socket, setSocket] = useState<Socket | null>(null);
+}: ChatSystemProps) { const [socket, setSocket] = useState<Socket | null>(null);
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [activeChannel, setActiveChannel] = useState<string>('');
   const [messages, setMessages] = useState<Map<string, ChatMessage[]>>(new Map());
@@ -37,7 +33,7 @@ export default function ChatSystem({
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [typingUsers, setTypingUsers] = useState<TypingIndicator[]>([]);
-  const [emojiPicker, setEmojiPicker] = useState<EmojiPicker>({ isOpen: false });
+  const [emojiPicker, setEmojiPicker] = useState<EmojiPicker>({ isOpen: false  });
   const [editingMessage, setEditingMessage] = useState<string | null>(null);
   const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
   
@@ -48,11 +44,10 @@ export default function ChatSystem({
   const commonEmojis = ['❤️', '👍', '👎', '😂', '😮', '😢', '⚡', '🔥', '💯', '🎯'];
 
   // Initialize socket connection
-  useEffect(() => {
-    const newSocket = io({
+  useEffect(() => { const newSocket = io({
       path: '/api/chat-socket',
-      autoConnect: true,
-    });
+  autoConnect: true
+});
 
     newSocket.on('connect', () => {
       console.log('🔗 Connected to chat server');
@@ -70,42 +65,37 @@ export default function ChatSystem({
     // Chat event listeners
     newSocket.on('channels', (channelList: ChatChannel[]) => {
       setChannels(channelList);
-      if (channelList.length > 0 && !activeChannel) {
-        const defaultChannel = channelList.find(c => c.type === 'league') || channelList[0];
+      if (channelList.length > 0 && !activeChannel) { const defaultChannel = channelList.find(c => c.type === 'league') || channelList[0];
         setActiveChannel(defaultChannel.id);
-        newSocket.emit('join-channel', { channelId: defaultChannel.id });
+        newSocket.emit('join-channel', { channelId: defaultChannel.id  });
       }
     });
 
-    newSocket.on('channel-messages', ({ channelId, messages: channelMessages }: { channelId: string; messages: ChatMessage[] }) => {
+    newSocket.on('channel-messages', ({ channelId, messages: channelMessages  }: { channelId, string, messages: ChatMessage[]  }) => {
       setMessages(prev => new Map(prev).set(channelId, channelMessages));
     });
 
     newSocket.on('new-message', (message: ChatMessage) => {
-      setMessages(prev => {
-        const newMap = new Map(prev);
+      setMessages(prev => { const newMap = new Map(prev);
         const channelMessages = newMap.get(message.channelId || '') || [];
         newMap.set(message.channelId || '', [...channelMessages, message]);
         return newMap;
-      });
+       });
     });
 
     newSocket.on('message-edited', (editedMessage: ChatMessage) => {
-      setMessages(prev => {
-        const newMap = new Map(prev);
+      setMessages(prev => { const newMap = new Map(prev);
         const channelMessages = newMap.get(editedMessage.channelId || '') || [];
         const messageIndex = channelMessages.findIndex(m => m.id === editedMessage.id);
         if (messageIndex !== -1) {
           channelMessages[messageIndex] = editedMessage;
-          newMap.set(editedMessage.channelId || '', [...channelMessages]);
-        }
+          newMap.set(editedMessage.channelId || '', [...channelMessages]);}
         return newMap;
       });
     });
 
-    newSocket.on('reaction-added', ({ messageId, emoji, userId: reactorId }: { messageId: string; emoji: string; userId: string }) => {
-      setMessages(prev => {
-        const newMap = new Map(prev);
+    newSocket.on('reaction-added', ({ messageId, emoji, userId: reactorId  }: { messageId, string, emoji, string, userId: string  }) => {
+      setMessages(prev => { const newMap = new Map(prev);
         for (const [channelId, channelMessages] of newMap) {
           const message = channelMessages.find(m => m.id === messageId);
           if (message) {
@@ -116,9 +106,10 @@ export default function ChatSystem({
               if (!existingReaction.users.includes(reactorId)) {
                 existingReaction.users.push(reactorId);
                 existingReaction.count++;
-              }
+               }
             } else {
-              message.reactions.push({ emoji, users: [reactorId], count: 1 });
+              message.reactions.push({ emoji, users: [reactorId],
+  count: 1 });
             }
             
             newMap.set(channelId, [...channelMessages]);
@@ -129,9 +120,8 @@ export default function ChatSystem({
       });
     });
 
-    newSocket.on('reaction-removed', ({ messageId, emoji, userId: reactorId }: { messageId: string; emoji: string; userId: string }) => {
-      setMessages(prev => {
-        const newMap = new Map(prev);
+    newSocket.on('reaction-removed', ({ messageId, emoji, userId: reactorId  }: { messageId, string, emoji, string, userId: string  }) => {
+      setMessages(prev => { const newMap = new Map(prev);
         for (const [channelId, channelMessages] of newMap) {
           const message = channelMessages.find(m => m.id === messageId);
           if (message && message.reactions) {
@@ -146,7 +136,7 @@ export default function ChatSystem({
 
                 if (reaction.count === 0) {
                   message.reactions.splice(reactionIndex, 1);
-                }
+                 }
               }
             }
             newMap.set(channelId, [...channelMessages]);
@@ -157,26 +147,24 @@ export default function ChatSystem({
       });
     });
 
-    newSocket.on('user-online', ({ userId: onlineUserId }: { userId: string }) => {
+    newSocket.on('user-online', ({ userId: onlineUserId  }: { userId: string  }) => {
       setOnlineUsers(prev => new Set(prev).add(onlineUserId));
     });
 
-    newSocket.on('user-offline', ({ userId: offlineUserId }: { userId: string }) => {
-      setOnlineUsers(prev => {
-        const newSet = new Set(prev);
+    newSocket.on('user-offline', ({ userId: offlineUserId  }: { userId: string  }) => {
+      setOnlineUsers(prev => { const newSet = new Set(prev);
         newSet.delete(offlineUserId);
         return newSet;
-      });
+       });
     });
 
     newSocket.on('user-typing', (indicator: TypingIndicator) => {
-      setTypingUsers(prev => {
-        const filtered = prev.filter(t => !(t.userId === indicator.userId && t.channelId === indicator.channelId));
+      setTypingUsers(prev => { const filtered = prev.filter(t => !(t.userId === indicator.userId && t.channelId === indicator.channelId));
         return [...filtered, indicator];
-      });
+       });
     });
 
-    newSocket.on('user-stop-typing', ({ userId: stoppedUserId }: { userId: string }) => {
+    newSocket.on('user-stop-typing', ({ userId: stoppedUserId  }: { userId: string  }) => {
       setTypingUsers(prev => prev.filter(t => t.userId !== stoppedUserId));
     });
 
@@ -184,7 +172,7 @@ export default function ChatSystem({
 
     return () => {
       newSocket.close();
-    };
+    }
   }, [leagueId, userId, username]);
 
   // Auto-scroll to bottom when new messages arrive
@@ -192,22 +180,21 @@ export default function ChatSystem({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, activeChannel]);
 
-  const switchChannel = useCallback((channelId: string) => {
-    if (socket && channelId !== activeChannel) {
-      socket.emit('join-channel', { channelId });
+  const switchChannel = useCallback((channelId: string) => { if (socket && channelId !== activeChannel) {
+      socket.emit('join-channel', { channelId  });
       setActiveChannel(channelId);
     }
   }, [socket, activeChannel]);
 
-  const sendMessage = useCallback(() => {
-    if (socket && newMessage.trim() && activeChannel) {
+  const sendMessage = useCallback(() => { if (socket && newMessage.trim() && activeChannel) {
       if (editingMessage) {
-        socket.emit('edit-message', { messageId: editingMessage, newMessage: newMessage.trim() });
+        socket.emit('edit-message', { messageId, editingMessage,
+  newMessage: newMessage.trim()  });
         setEditingMessage(null);
       } else {
         socket.emit('send-message', { 
-          channelId: activeChannel, 
-          message: newMessage.trim(),
+          channelId, activeChannel,
+  message: newMessage.trim(),
           replyTo: replyingTo?.id
         });
       }
@@ -216,9 +203,8 @@ export default function ChatSystem({
     }
   }, [socket, newMessage, activeChannel, editingMessage, replyingTo]);
 
-  const handleTyping = useCallback(() => {
-    if (socket && activeChannel) {
-      socket.emit('typing-start', { channelId: activeChannel });
+  const handleTyping = useCallback(() => { if (socket && activeChannel) {
+      socket.emit('typing-start', { channelId: activeChannel  });
       
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -230,40 +216,39 @@ export default function ChatSystem({
     }
   }, [socket, activeChannel]);
 
-  const addReaction = useCallback((messageId: string, emoji: string) => {
-    if (socket) {
-      socket.emit('add-reaction', { messageId, emoji });
+  const addReaction = useCallback((messageId, string;
+  emoji: string) => { if (socket) {
+      socket.emit('add-reaction', { messageId, emoji  });
     }
   }, [socket]);
 
-  const removeReaction = useCallback((messageId: string, emoji: string) => {
-    if (socket) {
-      socket.emit('remove-reaction', { messageId, emoji });
+  const removeReaction = useCallback((messageId, string;
+  emoji: string) => { if (socket) {
+      socket.emit('remove-reaction', { messageId, emoji  });
     }
   }, [socket]);
 
-  const startEditing = useCallback((message: ChatMessage) => {
-    if (message.userId === userId) {
+  const startEditing = useCallback((message: ChatMessage) => { if (message.userId === userId) {
       setEditingMessage(message.id);
       setNewMessage(message.message);
-    }
+     }
   }, [userId]);
 
   const startReplying = useCallback((message: ChatMessage) => {
     setReplyingTo(message);
   }, []);
 
-  const renderMessage = (message: ChatMessage) => {
-    const isOwnMessage = message.userId === userId;
-    const isSystemMessage = message.metadata?.isSystem;
+  const renderMessage = (message: ChatMessage) => { const isOwnMessage = message.userId === userId;
+    const isSystemMessage = message.metadata? .isSystem;
     const currentChannelTyping = typingUsers.filter(t => t.channelId === activeChannel);
 
     return (
-      <div key={message.id} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-4`}>
-        <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-          isSystemMessage ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 text-center mx-auto' :
-          isOwnMessage ? 'bg-primary-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-        }`}>
+      <div key={message.id } className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-4`}>
+        <div className={`max-w-xs lg: max-w-md px-4 py-2 rounded-lg ${isSystemMessage ? 'bg-blue-100 dar,
+  k:bg-blue-900 text-blue-900 dar,
+  k:text-blue-100 text-center mx-auto' :
+          isOwnMessage ? 'bg-primary-500 text-white' : 'bg-gray-200 dark.bg-gray-700 text-gray-900 dark; text-white'
+         }`}>
           {!isSystemMessage && !isOwnMessage && (
             <div className="flex items-center mb-1">
               <span className="text-xs font-semibold">{message.username}</span>
@@ -288,14 +273,15 @@ export default function ChatSystem({
 
           <div className="flex items-center justify-between mt-2">
             <span className="text-xs opacity-75">
-              {new Date(message.timestamp).toLocaleTimeString()}
+              { new: Date(message.timestamp).toLocaleTimeString() }
               {message.isEdited && <span className="ml-1">(edited)</span>}
             </span>
             
             {!isSystemMessage && (
               <div className="flex items-center space-x-1">
                 <button
-                  onClick={() => setEmojiPicker({ isOpen: true, messageId: message.id })}
+                  onClick={() => setEmojiPicker({ isOpen, true,
+  messageId: message.id })}
                   className="text-xs hover:bg-black/10 p-1 rounded"
                 >
                   <Smile className="h-3 w-3" />
@@ -310,7 +296,7 @@ export default function ChatSystem({
 
                 {isOwnMessage && (
                   <button
-                    onClick={() => startEditing(message)}
+                    onClick={() => startEditing(message) }
                     className="text-xs hover:bg-black/10 p-1 rounded"
                   >
                     <Edit3 className="h-3 w-3" />
@@ -323,15 +309,15 @@ export default function ChatSystem({
           {/* Reactions */}
           {message.reactions && message.reactions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
-              {message.reactions.map((reaction, index) => {
-                const userReacted = reaction.users.includes(userId);
+              {message.reactions.map((reaction, index) => { const userReacted = reaction.users.includes(userId);
                 return (
                   <button
-                    key={index}
+                    key={index }
                     onClick={() => userReacted ? removeReaction(message.id, reaction.emoji) : addReaction(message.id, reaction.emoji)}
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      userReacted ? 'bg-primary-100 dark:bg-primary-900 ring-1 ring-primary-500' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs ${userReacted ? 'bg-primary-100 dark: bg-primary-900 ring-1 ring-primary-500' : 'bg-gray-100 dar,
+  k:bg-gray-800 hove,
+  r:bg-gray-200 dark.hover; bg-gray-700'
+                     }`}
                   >
                     {reaction.emoji} {reaction.count}
                   </button>
@@ -342,8 +328,7 @@ export default function ChatSystem({
         </div>
       </div>
     );
-  };
-
+  }
   const activeChannelObj = channels.find(c => c.id === activeChannel);
   const currentMessages = messages.get(activeChannel) || [];
   const currentChannelTyping = typingUsers.filter(t => t.channelId === activeChannel && t.userId !== userId);
@@ -354,8 +339,8 @@ export default function ChatSystem({
       <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
         <div className="flex items-center space-x-2">
           <MessageCircle className="h-5 w-5 text-primary-500" />
-          <h3 className="font-semibold text-gray-900 dark:text-white">
-            {activeChannelObj?.name || 'Chat'}
+          <h3 className="font-semibold text-gray-900 dark; text-white">
+            {activeChannelObj? .name || 'Chat'}
           </h3>
           {activeChannelObj?.type === 'commissioner' && (
             <Crown className="h-4 w-4 text-yellow-500" />
@@ -373,7 +358,7 @@ export default function ChatSystem({
           <select 
             value={activeChannel} 
             onChange={(e) => switchChannel(e.target.value)}
-            className="text-sm bg-transparent border-none focus:ring-0 text-gray-700 dark:text-gray-300"
+            className="text-sm bg-transparent border-none focus:ring-0 text-gray-700 dark; text-gray-300"
           >
             {channels.map(channel => (
               <option key={channel.id} value={channel.id}>
@@ -390,7 +375,7 @@ export default function ChatSystem({
           <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
             <div className="text-center">
               <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No messages yet. Start the conversation!</p>
+              <p>No messages yet.Start the conversation!</p>
             </div>
           </div>
         ) : (
@@ -410,15 +395,17 @@ export default function ChatSystem({
 
       {/* Reply indicator */}
       {replyingTo && (
-        <div className="px-4 py-2 bg-gray-100 dark:bg-gray-700 border-t dark:border-gray-600">
+        <div className="px-4 py-2 bg-gray-100 dark: bg-gray-700 border-t dar,
+  k:border-gray-600">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-gray-600 dark; text-gray-400">
               <Reply className="h-3 w-3 inline mr-1" />
-              Replying to {replyingTo.username}: {replyingTo.message.substring(0, 50)}...
+              Replying to {replyingTo.username  }: { replyingTo.message.substring(0, 50) }...
             </div>
             <button 
               onClick={() => setReplyingTo(null)}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              className="text-gray-500 hover: text-gray-700 dar,
+  k, hover, text-gray-300"
             >
               <MoreVertical className="h-4 w-4" />
             </button>
@@ -436,24 +423,26 @@ export default function ChatSystem({
               setNewMessage(e.target.value);
               handleTyping();
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+            onKeyDown={(e) => { if (e.key === 'Enter') {
                 e.preventDefault();
                 sendMessage();
-              } else if (e.key === 'Escape') {
+               } else if (e.key === 'Escape') {
                 setEditingMessage(null);
                 setReplyingTo(null);
                 setNewMessage('');
               }
             }}
             placeholder={editingMessage ? "Edit message..." : replyingTo ? "Reply..." : "Type a message..."}
-            className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg border-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
+            className="flex-1 px-3 py-2 bg-gray-100 dark: bg-gray-700 rounded-lg border-none focu,
+  s:ring-2 focu,
+  s:ring-primary-500 text-gray-900 dark; text-white"
             disabled={!isConnected}
           />
           
           <button
             onClick={() => setEmojiPicker({ isOpen: !emojiPicker.isOpen })}
-            className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+            className="p-2 text-gray-500 hover: text-gray-700 dar,
+  k, hover, text-gray-300"
           >
             <Smile className="h-5 w-5" />
           </button>
@@ -461,7 +450,8 @@ export default function ChatSystem({
           <button
             onClick={sendMessage}
             disabled={!newMessage.trim() || !isConnected}
-            className="p-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 bg-primary-500 text-white rounded-lg hover: bg-primary-600 disable,
+  d:opacity-50 disabled; cursor-not-allowed"
           >
             <Send className="h-5 w-5" />
           </button>
@@ -475,15 +465,15 @@ export default function ChatSystem({
             {commonEmojis.map(emoji => (
               <button
                 key={emoji}
-                onClick={() => {
-                  if (emojiPicker.messageId) {
+                onClick={() => { if (emojiPicker.messageId) {
                     addReaction(emojiPicker.messageId, emoji);
-                  } else {
+                   } else {
                     setNewMessage(prev => prev + emoji);
                   }
                   setEmojiPicker({ isOpen: false });
                 }}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-lg"
+                className="p-2 hover: bg-gray-100 dar,
+  k, hover, bg-gray-700 rounded text-lg"
               >
                 {emoji}
               </button>

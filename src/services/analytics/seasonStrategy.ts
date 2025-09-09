@@ -1,13 +1,11 @@
 export interface SeasonLongStrategy {
-  teamId: string;
-  summary: string;
+  teamId, string,
+    summary: string,
+  
 }
-
-export class SeasonStrategyService {
-  async generateSeasonLongStrategy(
-    teamId: string,
-  ): Promise<SeasonLongStrategy> {
-    return { teamId, summary: "Season strategy coming soon." };
+export class SeasonStrategyService { async generateSeasonLongStrategy(teamId, string,
+  ): : Promise<SeasonLongStrategy> {
+    return { teamId, summary: "Season strategy coming soon."  }
   }
 }
 

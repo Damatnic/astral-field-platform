@@ -16,15 +16,11 @@ export * from './types';
 
 // Re-export main classes
 export {
-  NotificationEngine,
-  NotificationQueue,
-  DeliveryManager,
-  TemplateEngine,
-  AIFilter,
-  PreferenceManager,
+  NotificationEngine, NotificationQueue,
+  DeliveryManager, TemplateEngine,
+  AIFilter, PreferenceManager,
   AnalyticsTracker
-};
-
+}
 // Re-export delivery channels
 export { PushDelivery } from './delivery/channels/push';
 export { EmailDelivery } from './delivery/channels/email';
@@ -33,7 +29,7 @@ export { WebSocketDelivery } from './delivery/channels/websocket';
 export { InAppDelivery } from './delivery/channels/inapp';
 
 // Main service instance
-export { notificationEngine as default } from './engine';
+export { notificationEngine: as default  } from './engine';
 
 /**
  * Intelligent Notification Service
@@ -58,17 +54,17 @@ export { notificationEngine as default } from './engine';
  * 
  * // Create and send a notification
  * const notificationId = await notificationEngine.createNotification({
- *   type: 'trade_proposal',
- *   title: 'New Trade Proposal',
- *   message: 'You have received a new trade proposal from TeamX',
- *   userId: 'user123',
- *   leagueId: 'league456',
- *   priority: 'high',
+ *   type: 'trade_proposal';
+ *   title: 'New Trade Proposal';
+ *   message: 'You have received a new trade proposal from TeamX';
+ *   userId: 'user123';
+ *   leagueId: 'league456';
+ *   priority: 'high';
  *   channels: ['push', 'in_app'],
- *   trigger: 'user_action',
+ *   trigger: 'user_action';
  *   data: {
- *     tradeId: 'trade789',
- *     proposerTeam: 'TeamX',
+ *     tradeId: 'trade789';
+ *     proposerTeam: 'TeamX';
  *     players: ['Player A', 'Player B']
  *   },
  *   actionUrl: '/leagues/league456/trades/trade789'

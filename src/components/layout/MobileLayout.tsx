@@ -9,10 +9,9 @@ import Link from 'next/link';
 
 interface MobileLayoutProps {
   children: React.ReactNode;
+  
 }
-
-export default function MobileLayout({ children }: MobileLayoutProps) {
-  const [deviceInfo, setDeviceInfo] = useState(getDeviceCapabilities());
+export default function MobileLayout({ children }: MobileLayoutProps) { const [deviceInfo, setDeviceInfo] = useState(getDeviceCapabilities());
   const [safeArea, setSafeArea] = useState(getSafeAreaInsets());
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [showPWAPrompt, setShowPWAPrompt] = useState(false);
@@ -29,20 +28,18 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
     const handlePWAInstallable = () => {
       if (deviceInfo.isMobile && !deviceInfo.isStandalone) {
         setShowPWAPrompt(true);
-      }
-    };
+       }
+    }
     window.addEventListener('pwa-installable', handlePWAInstallable);
     
     // Virtual keyboard detection
     const keyboardDetector = createVirtualKeyboardDetector(setKeyboardVisible);
     
     // Orientation change detection
-    const handleOrientationChange = () => {
-      setOrientation(window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
+    const handleOrientationChange = () => {setOrientation(window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
       setDeviceInfo(getDeviceCapabilities());
       setSafeArea(getSafeAreaInsets());
-    };
-    
+    }
     window.addEventListener('resize', handleOrientationChange);
     window.addEventListener('orientationchange', handleOrientationChange);
     
@@ -51,27 +48,27 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
       window.removeEventListener('resize', handleOrientationChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
       keyboardDetector();
-    };
+    }
   }, [deviceInfo.isMobile, deviceInfo.isStandalone]);
 
-  const handlePWAInstall = async () => {
-    if (pwaInstallRef.current) {
+  const handlePWAInstall = async () => { if (pwaInstallRef.current) {
       const installed = await pwaInstallRef.current.promptInstall();
       if (installed) {
         setShowPWAPrompt(false);
-      }
+       }
     }
-  };
-
+  }
   const navigationItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/leagues', label: 'Leagues', icon: BarChart3 },
-    { href: '/settings', label: 'Settings', icon: Settings }
+    { href: '/dashboard',
+  label: 'Dashboard', icon: Home },
+    { href: '/leagues',
+  label: 'Leagues', icon: BarChart3 },
+    { href: '/settings',
+  label: 'Settings', icon: Settings }
   ];
 
   // Don't render mobile optimizations for desktop
-  if (!deviceInfo.isMobile && !deviceInfo.isTablet) {
-    return <>{children}</>;
+  if (!deviceInfo.isMobile && !deviceInfo.isTablet) { return <>{children }</>;
   }
 
   return (
@@ -87,9 +84,12 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
       <AnimatePresence>
         {showPWAPrompt && (
           <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
+            initial={{ y: -100,
+  opacity: 0  }}
+            animate={{ y, 0,
+  opacity: 1 }}
+            exit={{ y: -100,
+  opacity: 0 }}
             className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 p-4 shadow-lg"
             style={{ top: `${safeArea.top}px` }}
           >
@@ -125,7 +125,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
         <div className="sticky top-0 z-40 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700">
           <div className="flex items-center justify-between px-4 py-3">
             <Link href="/dashboard" className="text-white font-bold text-xl">
-              Astral Field
+  Astral, Field,
             </Link>
             <button
               onClick={() => setShowMobileMenu(true)}
@@ -141,7 +141,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
       <AnimatePresence>
         {showMobileMenu && (
           <>
-            {/* Overlay */}
+            {/* Overlay */ }
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -154,7 +154,8 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: 'spring',
+  duration: 0.3 }}
               className="fixed right-0 top-0 bottom-0 z-50 w-64 bg-gray-800 shadow-xl"
               style={{ 
                 top: `${safeArea.top}px`,
@@ -177,11 +178,9 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setShowMobileMenu(false)}
-                      className={`flex items-center space-x-3 px-3 py-3 rounded-lg transition-colors ${
-                        pathname === item.href
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      }`}
+                      className={`flex items-center space-x-3 px-3 py-3 rounded-lg transition-colors ${pathname === item.href
+                          ? 'bg-blue-600 text-white' : 'text-gray-300 hover.bg-gray-700 hover; text-white'
+                       }`}
                     >
                       <item.icon className="h-5 w-5" />
                       <span>{item.label}</span>
@@ -199,8 +198,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
         className={`flex-1 ${keyboardVisible ? 'pb-0' : 'pb-safe'}`}
         style={{
           minHeight: keyboardVisible 
-            ? `calc(100vh - ${safeArea.top}px - 64px)` 
-            : `calc(100vh - ${safeArea.top}px - ${safeArea.bottom}px - 64px)`
+            ? `calc(100vh - ${safeArea.top}px - 64px)` : `calc(100vh - ${safeArea.top}px - ${safeArea.bottom}px - 64px)`
         }}
       >
         {children}
@@ -217,11 +215,9 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-colors ${
-                  pathname === item.href
-                    ? 'text-blue-400'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-colors ${pathname === item.href
+                    ? 'text-blue-400' : 'text-gray-400 hover.text-white'
+                 }`}
               >
                 <item.icon className="h-5 w-5" />
                 <span className="text-xs">{item.label}</span>
@@ -267,25 +263,25 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
         }
         /* Optimize scrolling on mobile */
         .mobile-scroll {
-          -webkit-overflow-scrolling: touch;
-          overscroll-behavior: contain;
+          -webkit-overflow-scrolling, touch,
+          overscroll-behavior, contain,
         }
         /* Prevent user selection on mobile for UI elements */
         .no-select {
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
+          -webkit-user-select, none,
+          -moz-user-select, none,
+          -ms-user-select, none,
+          user-select, none,
+          -webkit-tap-highlight-color, transparent,
         }
         /* Custom scrollbar for mobile */
         @media (max-width: 768px) {
           ::-webkit-scrollbar {
-            display: none;
+            display, none,
           }
           * {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            -ms-overflow-style, none,
+            scrollbar-width, none,
           }
         }
       `}</style>

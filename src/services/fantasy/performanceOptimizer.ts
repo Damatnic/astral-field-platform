@@ -4,100 +4,95 @@
  */
 
 import { 
-  CacheEntry,
-  AdvancedFantasyScore,
-  PlayerProjection,
-  ScoringEngineMetrics,
+  CacheEntry, AdvancedFantasyScore,
+  PlayerProjection, ScoringEngineMetrics,
   Position
 } from './types';
 
 export interface CacheConfig {
-  maxSize: number;
-  ttl: number; // Time to live in seconds
-  cleanupInterval: number; // Cleanup interval in seconds
-  compressionEnabled: boolean;
-  persistToDisk: boolean;
+  maxSize, number,
+    ttl, number, // Time to live in seconds;
+  cleanupInterval, number, // Cleanup interval in seconds,
+    compressionEnabled, boolean,
+  persistToDisk: boolean,
+  
 }
-
 export interface PerformanceMetrics {
   cacheStats: {
-    hits: number;
-    misses: number;
-    hitRate: number;
-    evictions: number;
-    memoryUsage: number;
-  };
+  hits, number,
+    misses, number,
+    hitRate, number,
+    evictions, number,
+    memoryUsage: number,
+  }
   queryStats: {
-    avgQueryTime: number;
-    slowQueries: number;
-    totalQueries: number;
-  };
+  avgQueryTime, number,
+    slowQueries, number,
+    totalQueries: number,
+  }
   memoryStats: {
-    heapUsed: number;
-    heapTotal: number;
-    external: number;
-    rss: number;
-  };
+  heapUsed, number,
+    heapTotal, number,
+    external, number,
+    rss: number,
+  }
   systemStats: {
-    uptime: number;
-    cpuUsage: number;
-    loadAverage: number[];
-  };
+  uptime, number,
+    cpuUsage, number,
+    loadAverage: number[],
+  }
 }
 
-export class FantasyPerformanceOptimizer {
-  private scoreCache = new Map<string, CacheEntry<AdvancedFantasyScore>>();
+export class FantasyPerformanceOptimizer { private scoreCache = new Map<string, CacheEntry<AdvancedFantasyScore>>();
   private projectionCache = new Map<string, CacheEntry<PlayerProjection>>();
   private queryCache = new Map<string, CacheEntry<any>>();
   private metricsCache = new Map<string, CacheEntry<any>>();
 
-  private config: CacheConfig;
-  private metrics: PerformanceMetrics;
+  private config, CacheConfig,
+  private metrics, PerformanceMetrics,
   private cleanupTimer?: NodeJS.Timer;
 
   // Memory management
-  private readonly MAX_HEAP_USAGE = 1024 * 1024 * 1024; // 1GB
-  private readonly GC_THRESHOLD = 0.85; // Trigger GC at 85% memory usage
+  private readonly: MAX_HEAP_USAGE = 1024 * 1024 * 1024; // 1GB
+  private readonly: GC_THRESHOLD = 0.85; // Trigger GC at 85% memory usage
   
   // Query optimization
   private queryQueue = new Map<string, Promise<any>>();
   private slowQueryThreshold = 1000; // 1 second
 
-  constructor(config: Partial<CacheConfig> = {}) {
+  constructor(config: Partial<CacheConfig> = { }) {
     this.config = {
-      maxSize: config.maxSize || 10000,
-      ttl: config.ttl || 3600, // 1 hour
+      maxSize: config.maxSize || 10000;
+  ttl: config.ttl || 3600, // 1 hour
       cleanupInterval: config.cleanupInterval || 300, // 5 minutes
-      compressionEnabled: config.compressionEnabled || true,
-      persistToDisk: config.persistToDisk || false
-    };
-
+      compressionEnabled: config.compressionEnabled || true;
+  persistToDisk: config.persistToDisk || false
+    }
     this.metrics = {
       cacheStats: {
-        hits: 0,
-        misses: 0,
-        hitRate: 0,
-        evictions: 0,
+  hits: 0;
+  misses: 0;
+        hitRate: 0;
+  evictions: 0;
         memoryUsage: 0
       },
       queryStats: {
-        avgQueryTime: 0,
-        slowQueries: 0,
+  avgQueryTime: 0;
+  slowQueries: 0;
         totalQueries: 0
       },
       memoryStats: {
-        heapUsed: 0,
-        heapTotal: 0,
-        external: 0,
-        rss: 0
+  heapUsed: 0;
+  heapTotal: 0;
+        external: 0;
+  rss: 0
       },
       systemStats: {
-        uptime: process.uptime(),
-        cpuUsage: 0,
+  uptime: process.uptime();
+  cpuUsage: 0;
         loadAverage: []
       }
-    };
-
+    }
     this.startCleanupTimer();
     this.startMetricsCollection();
   }
@@ -107,16 +102,15 @@ export class FantasyPerformanceOptimizer {
   /**
    * Cache a fantasy score
    */
-  cacheScore(key: string, score: AdvancedFantasyScore, customTTL?: number): void {
-    const entry: CacheEntry<AdvancedFantasyScore> = {
+  cacheScore(key, string,
+  score, AdvancedFantasyScore, customTTL?: number): void { const entry: CacheEntry<AdvancedFantasyScore> = {
       key,
-      data: score,
-      timestamp: new Date(),
-      ttl: customTTL || this.config.ttl,
-      accessCount: 1,
+      data, score,
+  timestamp: new Date();
+      ttl: customTTL || this.config.ttl;
+  accessCount: 1;
       lastAccessed: new Date()
-    };
-
+     }
     this.scoreCache.set(key, entry);
     this.enforceMemoryLimits('score');
   }
@@ -124,13 +118,12 @@ export class FantasyPerformanceOptimizer {
   /**
    * Get cached fantasy score
    */
-  getScore(key: string): AdvancedFantasyScore | null {
-    const entry = this.scoreCache.get(key);
+  getScore(key: string); AdvancedFantasyScore | null { const entry = this.scoreCache.get(key);
     
     if (!entry) {
       this.metrics.cacheStats.misses++;
       return null;
-    }
+     }
 
     // Check if expired
     if (this.isExpired(entry)) {
@@ -150,18 +143,16 @@ export class FantasyPerformanceOptimizer {
   /**
    * Invalidate score cache for specific patterns
    */
-  invalidateScores(pattern: RegExp | string): number {
-    let invalidated = 0;
+  invalidateScores(pattern: RegExp | string); number { let invalidated = 0;
     
     for (const [key, _] of this.scoreCache) {
-      const matches = typeof pattern === 'string' 
-        ? key.includes(pattern)
-        : pattern.test(key);
+      const matches = typeof pattern === 'string' ;
+        ? key.includes(pattern) : pattern.test(key);
       
       if (matches) {
         this.scoreCache.delete(key);
         invalidated++;
-      }
+       }
     }
     
     return invalidated;
@@ -172,16 +163,15 @@ export class FantasyPerformanceOptimizer {
   /**
    * Cache player projections
    */
-  cacheProjection(key: string, projection: PlayerProjection, customTTL?: number): void {
-    const entry: CacheEntry<PlayerProjection> = {
+  cacheProjection(key, string,
+  projection, PlayerProjection, customTTL?: number): void { const entry: CacheEntry<PlayerProjection> = {
       key,
-      data: projection,
-      timestamp: new Date(),
-      ttl: customTTL || this.config.ttl,
-      accessCount: 1,
+      data, projection,
+  timestamp: new Date();
+      ttl: customTTL || this.config.ttl;
+  accessCount: 1;
       lastAccessed: new Date()
-    };
-
+     }
     this.projectionCache.set(key, entry);
     this.enforceMemoryLimits('projection');
   }
@@ -189,13 +179,12 @@ export class FantasyPerformanceOptimizer {
   /**
    * Get cached projection
    */
-  getProjection(key: string): PlayerProjection | null {
-    const entry = this.projectionCache.get(key);
+  getProjection(key: string); PlayerProjection | null { const entry = this.projectionCache.get(key);
     
     if (!entry) {
       this.metrics.cacheStats.misses++;
       return null;
-    }
+     }
 
     if (this.isExpired(entry)) {
       this.projectionCache.delete(key);
@@ -216,37 +205,34 @@ export class FantasyPerformanceOptimizer {
    * Optimized database query with caching and deduplication
    */
   async optimizedQuery<T>(
-    queryKey: string,
-    queryFn: () => Promise<T>,
-    cacheTTL: number = 300 // 5 minutes for queries
-  ): Promise<T> {
-    const startTime = performance.now();
+    queryKey, string,
+  queryFn: () => Promise<T>;
+    cacheTTL: number = 300 ; // 5 minutes for queries
+  ) : Promise<T> { const startTime = performance.now();
     
     try {
       // Check cache first
       const cached = this.getCachedQuery<T>(queryKey);
       if (cached !== null) {
         return cached;
-      }
+       }
 
       // Check if query is already in progress (deduplication)
       const existingPromise = this.queryQueue.get(queryKey);
-      if (existingPromise) {
-        return await existingPromise as T;
-      }
+      if (existingPromise) { return await existingPromise as T;
+       }
 
       // Execute query
       const queryPromise = queryFn();
       this.queryQueue.set(queryKey, queryPromise);
 
-      try {
-        const result = await queryPromise;
+      try { const result = await queryPromise;
         
         // Cache the result
         this.cacheQuery(queryKey, result, cacheTTL);
         
         return result;
-      } finally {
+       } finally {
         this.queryQueue.delete(queryKey);
         
         // Update query metrics
@@ -263,9 +249,9 @@ export class FantasyPerformanceOptimizer {
    * Batch optimize multiple queries
    */
   async batchOptimizedQueries<T>(
-    queries: Array<{ key: string; fn: () => Promise<T>; ttl?: number }>
-  ): Promise<Map<string, T>> {
-    const results = new Map<string, T>();
+    queries: Array<{ ke,
+  y, string, fn: (), => Promise<T>; ttl?: number }>
+  ): Promise<Map<string, T>> { const results = new Map<string, T>();
     const uncachedQueries: typeof queries = [];
 
     // Check cache for all queries first
@@ -273,22 +259,20 @@ export class FantasyPerformanceOptimizer {
       const cached = this.getCachedQuery<T>(query.key);
       if (cached !== null) {
         results.set(query.key, cached);
-      } else {
+       } else {
         uncachedQueries.push(query);
       }
     }
 
     // Execute uncached queries in parallel
-    if (uncachedQueries.length > 0) {
-      const promises = uncachedQueries.map(async (query) => {
+    if (uncachedQueries.length > 0) { const promises = uncachedQueries.map(async (query) => {
         const result = await this.optimizedQuery(query.key, query.fn, query.ttl);
-        return { key: query.key, result };
+        return { key: query.key, result  }
       });
 
       const batchResults = await Promise.allSettled(promises);
       
-      for (const promiseResult of batchResults) {
-        if (promiseResult.status === 'fulfilled') {
+      for (const promiseResult of batchResults) { if (promiseResult.status === 'fulfilled') {
           const { key, result } = promiseResult.value;
           results.set(key, result);
         }
@@ -303,11 +287,10 @@ export class FantasyPerformanceOptimizer {
   /**
    * Monitor and optimize memory usage
    */
-  private enforceMemoryLimits(cacheType: 'score' | 'projection' | 'query'): void {
-    const memoryUsage = process.memoryUsage();
+  private enforceMemoryLimits(cacheType: 'score' | 'projection' | 'query'); void { const memoryUsage = process.memoryUsage();
     
     if (memoryUsage.heapUsed > this.MAX_HEAP_USAGE * this.GC_THRESHOLD) {
-      console.warn(`High memory usage detected: ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(1)}MB`);
+      console.warn(`High memory usage detected, ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(1) }MB`);
       this.performEmergencyCleanup(cacheType);
       
       // Force garbage collection if available
@@ -320,7 +303,7 @@ export class FantasyPerformanceOptimizer {
   /**
    * Emergency cleanup when memory is high
    */
-  private performEmergencyCleanup(priorityCacheType: 'score' | 'projection' | 'query'): void {
+  private performEmergencyCleanup(priorityCacheType: 'score' | 'projection' | 'query'); void {
     console.log('🧹 Performing emergency cache cleanup...');
     
     let itemsRemoved = 0;
@@ -329,39 +312,38 @@ export class FantasyPerformanceOptimizer {
     itemsRemoved += this.cleanExpiredItems();
 
     // If still high memory, remove LRU items
-    if (process.memoryUsage().heapUsed > this.MAX_HEAP_USAGE * 0.8) {
-      itemsRemoved += this.removeLRUItems(priorityCacheType);
-    }
+    if (process.memoryUsage().heapUsed > this.MAX_HEAP_USAGE * 0.8) { itemsRemoved: += this.removeLRUItems(priorityCacheType),
+     }
 
-    console.log(`🧹 Emergency cleanup completed: removed ${itemsRemoved} items`);
+    console.log(`🧹 Emergency cleanup completed, removed ${itemsRemoved} items`);
     this.metrics.cacheStats.evictions += itemsRemoved;
   }
 
   /**
    * Remove least recently used items
    */
-  private removeLRUItems(priorityCacheType: string): number {
-    let removed = 0;
+  private removeLRUItems(priorityCacheType: string); number { let removed = 0;
     const targetReduction = Math.floor(this.config.maxSize * 0.2); // Remove 20%
 
     // Collect all cache entries with access times
-    const allEntries: Array<{ 
-      cache: Map<string, CacheEntry<any>>; 
-      key: string; 
-      lastAccessed: Date; 
-      type: string 
-    }> = [];
+    const allEntries: Array<{
+  cache: Map<string, CacheEntry<any>>; 
+      key, string,
+    lastAccessed, Date, type string 
+     }> = [];
 
     // Collect from all caches
-    const caches = [
-      { cache: this.scoreCache, type: 'score' },
-      { cache: this.projectionCache, type: 'projection' },
-      { cache: this.queryCache, type: 'query' }
+    const caches = [;
+      { cache: this.scoreCache;
+type: 'score' },
+      { cache: this.projectionCache;
+type: 'projection' },
+      { cache: this.queryCache;
+type: 'query' }
     ];
 
-    for (const { cache, type } of caches) {
-      for (const [key, entry] of cache) {
-        allEntries.push({ cache, key, lastAccessed: entry.lastAccessed, type });
+    for (const { cache, type } of caches) { for (const [key, entry] of cache) {
+        allEntries.push({ cache, key, lastAccessed: entry.lastAccessed, type  });
       }
     }
 
@@ -369,24 +351,22 @@ export class FantasyPerformanceOptimizer {
     allEntries.sort((a, b) => a.lastAccessed.getTime() - b.lastAccessed.getTime());
 
     // Remove oldest items, prioritizing non-priority cache types
-    for (const entry of allEntries) {
-      if (removed >= targetReduction) break;
+    for (const entry of allEntries) { if (removed >= targetReduction) break;
       
       // Prioritize removal from non-priority caches
       if (entry.type !== priorityCacheType) {
         entry.cache.delete(entry.key);
         removed++;
-      }
+       }
     }
 
     // If we haven't removed enough, remove from priority cache too
-    if (removed < targetReduction) {
-      for (const entry of allEntries) {
+    if (removed < targetReduction) { for (const entry of allEntries) {
         if (removed >= targetReduction) break;
         if (entry.type === priorityCacheType) {
           entry.cache.delete(entry.key);
           removed++;
-        }
+         }
       }
     }
 
@@ -398,28 +378,25 @@ export class FantasyPerformanceOptimizer {
   /**
    * Cache a database query result
    */
-  private cacheQuery<T>(key: string, data: T, ttl: number): void {
-    const entry: CacheEntry<T> = {
-      key,
-      data,
-      timestamp: new Date(),
+  private cacheQuery<T>(key, string,
+  data: T, ttl: number); void { const entry: CacheEntry<T> = {
+      key, data,
+      timestamp: new Date();
       ttl,
-      accessCount: 1,
-      lastAccessed: new Date()
-    };
-
+      accessCount: 1;
+  lastAccessed: new Date()
+     }
     this.queryCache.set(key, entry);
   }
 
   /**
    * Get cached query result
    */
-  private getCachedQuery<T>(key: string): T | null {
-    const entry = this.queryCache.get(key);
+  private getCachedQuery<T>(key: string); T | null { const entry = this.queryCache.get(key);
     
     if (!entry) {
       return null;
-    }
+     }
 
     if (this.isExpired(entry)) {
       this.queryCache.delete(key);
@@ -435,19 +412,17 @@ export class FantasyPerformanceOptimizer {
   /**
    * Check if cache entry is expired
    */
-  private isExpired(entry: CacheEntry<any>): boolean {
-    const now = Date.now();
+  private isExpired(entry: CacheEntry<any>); boolean { const now = Date.now();
     const entryTime = entry.timestamp.getTime();
     const ttlMs = entry.ttl * 1000;
     
     return (now - entryTime) > ttlMs;
-  }
+   }
 
   /**
    * Clean expired items from all caches
    */
-  private cleanExpiredItems(): number {
-    let removed = 0;
+  private cleanExpiredItems(): number { let removed = 0;
     const caches = [this.scoreCache, this.projectionCache, this.queryCache];
     
     for (const cache of caches) {
@@ -455,7 +430,7 @@ export class FantasyPerformanceOptimizer {
         if (this.isExpired(entry)) {
           cache.delete(key);
           removed++;
-        }
+         }
       }
     }
     
@@ -467,7 +442,7 @@ export class FantasyPerformanceOptimizer {
   /**
    * Update query performance metrics
    */
-  private updateQueryMetrics(duration: number): void {
+  private updateQueryMetrics(duration: number); void {
     this.metrics.queryStats.totalQueries++;
     
     // Update average query time (exponential moving average)
@@ -483,8 +458,7 @@ export class FantasyPerformanceOptimizer {
     // Update cache hit rate
     const totalCacheRequests = this.metrics.cacheStats.hits + this.metrics.cacheStats.misses;
     this.metrics.cacheStats.hitRate = totalCacheRequests > 0 
-      ? this.metrics.cacheStats.hits / totalCacheRequests 
-      : 0;
+      ? this.metrics.cacheStats.hits / totalCacheRequests : 0;
   }
 
   /**
@@ -499,23 +473,20 @@ export class FantasyPerformanceOptimizer {
   /**
    * Update system performance metrics
    */
-  private updateSystemMetrics(): void {
-    const memoryUsage = process.memoryUsage();
+  private updateSystemMetrics(): void { const memoryUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage();
     
     this.metrics.memoryStats = {
-      heapUsed: memoryUsage.heapUsed,
-      heapTotal: memoryUsage.heapTotal,
-      external: memoryUsage.external,
-      rss: memoryUsage.rss
-    };
-
+      heapUsed: memoryUsage.heapUsed;
+  heapTotal: memoryUsage.heapTotal;
+      external: memoryUsage.external;
+  rss: memoryUsage.rss
+     }
     this.metrics.systemStats = {
-      uptime: process.uptime(),
-      cpuUsage: (cpuUsage.user + cpuUsage.system) / 1000000, // Convert to seconds
+      uptime: process.uptime();
+  cpuUsage: (cpuUsage.user + cpuUsage.system) / 1000000, // Convert to seconds
       loadAverage: require('os').loadavg()
-    };
-
+    }
     // Update cache memory usage
     this.metrics.cacheStats.memoryUsage = this.estimateCacheMemoryUsage();
   }
@@ -523,15 +494,14 @@ export class FantasyPerformanceOptimizer {
   /**
    * Estimate memory usage of all caches
    */
-  private estimateCacheMemoryUsage(): number {
-    let totalSize = 0;
+  private estimateCacheMemoryUsage(): number { let totalSize = 0;
     
     // Rough estimation - in production, you'd want more accurate memory profiling
     const caches = [this.scoreCache, this.projectionCache, this.queryCache];
     
     for (const cache of caches) {
       totalSize += cache.size * 1000; // Rough estimate of 1KB per entry
-    }
+     }
     
     return totalSize;
   }
@@ -550,8 +520,7 @@ export class FantasyPerformanceOptimizer {
   /**
    * Perform routine cache cleanup
    */
-  private performRoutineCleanup(): void {
-    const startTime = performance.now();
+  private performRoutineCleanup(): void { const startTime = performance.now();
     
     const expiredItemsRemoved = this.cleanExpiredItems();
     const memoryUsage = process.memoryUsage();
@@ -560,13 +529,13 @@ export class FantasyPerformanceOptimizer {
     let lruItemsRemoved = 0;
     if (memoryUsage.heapUsed > this.MAX_HEAP_USAGE * 0.7) {
       lruItemsRemoved = this.removeLRUItems('query'); // Query cache is least critical
-    }
+     }
     
     const duration = performance.now() - startTime;
     const totalRemoved = expiredItemsRemoved + lruItemsRemoved;
     
     if (totalRemoved > 0) {
-      console.log(`🧹 Routine cleanup: removed ${totalRemoved} items in ${duration.toFixed(1)}ms`);
+      console.log(`🧹 Routine cleanup, removed ${totalRemoved} items in ${duration.toFixed(1)}ms`);
       this.metrics.cacheStats.evictions += totalRemoved;
     }
   }
@@ -578,14 +547,13 @@ export class FantasyPerformanceOptimizer {
    */
   getMetrics(): PerformanceMetrics {
     this.updateSystemMetrics();
-    return { ...this.metrics };
+    return { ...this.metrics}
   }
 
   /**
    * Clear all caches
    */
-  clearAllCaches(): { cleared: number } {
-    const totalSize = this.scoreCache.size + this.projectionCache.size + this.queryCache.size;
+  clearAllCaches(): { cleared: number } { const totalSize = this.scoreCache.size + this.projectionCache.size + this.queryCache.size;
     
     this.scoreCache.clear();
     this.projectionCache.clear();
@@ -597,71 +565,69 @@ export class FantasyPerformanceOptimizer {
     this.metrics.cacheStats.misses = 0;
     this.metrics.cacheStats.hitRate = 0;
     
-    return { cleared: totalSize };
+    return { cleared: totalSize  }
   }
 
   /**
    * Get cache statistics
    */
   getCacheStats(): {
-    scoreCache: { size: number; maxSize: number };
-    projectionCache: { size: number; maxSize: number };
-    queryCache: { size: number; maxSize: number };
-    totalMemoryUsage: number;
-    hitRate: number;
-  } {
-    return {
-      scoreCache: { 
-        size: this.scoreCache.size, 
-        maxSize: this.config.maxSize 
+    scoreCache: { siz,
+  e, number, maxSize: number }
+    projectionCache: { siz,
+  e, number, maxSize: number }
+    queryCache: { siz,
+  e, number, maxSize: number }
+    totalMemoryUsage, number,
+    hitRate: number,
+  } { return {
+      scoreCache: {
+  size: this.scoreCache.size;
+  maxSize: this.config.maxSize 
+       },
+      projectionCache: {
+  size: this.projectionCache.size;
+  maxSize: this.config.maxSize 
       },
-      projectionCache: { 
-        size: this.projectionCache.size, 
-        maxSize: this.config.maxSize 
+      queryCache: {
+  size: this.queryCache.size;
+  maxSize: this.config.maxSize 
       },
-      queryCache: { 
-        size: this.queryCache.size, 
-        maxSize: this.config.maxSize 
-      },
-      totalMemoryUsage: this.metrics.cacheStats.memoryUsage,
-      hitRate: this.metrics.cacheStats.hitRate
-    };
+      totalMemoryUsage: this.metrics.cacheStats.memoryUsage;
+  hitRate: this.metrics.cacheStats.hitRate
+    }
   }
 
   /**
    * Optimize for specific usage patterns
    */
-  optimizeFor(pattern: 'live_scoring' | 'projections' | 'historical_analysis'): void {
-    switch (pattern) {
-      case 'live_scoring':
-        // Prioritize score caching with shorter TTL
+  optimizeFor(pattern: 'live_scoring' | 'projections' | 'historical_analysis'); void { switch (pattern) {
+      case 'live_scoring':  ; // Prioritize score caching with shorter TTL
         this.config.ttl = 300; // 5 minutes
         this.slowQueryThreshold = 500; // 500ms threshold for live scoring
         break;
-      
-      case 'projections':
+      break;
+    case 'projections'
         // Longer TTL for projections, they don't change as frequently
         this.config.ttl = 3600; // 1 hour
         this.slowQueryThreshold = 2000; // 2 second threshold for projections
         break;
       
-      case 'historical_analysis':
-        // Very long TTL for historical data
+      case 'historical_analysis':  ; // Very long TTL for historical data
         this.config.ttl = 86400; // 24 hours
         this.slowQueryThreshold = 5000; // 5 second threshold for historical queries
         break;
-    }
+     }
     
-    console.log(`🔧 Optimized performance settings for: ${pattern}`);
+    console.log(`🔧 Optimized performance settings for, ${pattern}`);
   }
 
   /**
    * Cleanup and shutdown
    */
-  destroy(): void {
-    if (this.cleanupTimer) {
+  destroy() void { if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
-    }
+     }
     
     this.clearAllCaches();
     
@@ -671,10 +637,10 @@ export class FantasyPerformanceOptimizer {
 
 // Singleton instance
 export const fantasyPerformanceOptimizer = new FantasyPerformanceOptimizer({
-  maxSize: 10000,
-  ttl: 1800, // 30 minutes
-  cleanupInterval: 300, // 5 minutes
-  compressionEnabled: true,
+  maxSize: 10000;
+  ttl: 1800; // 30 minutes
+  cleanupInterval: 300; // 5 minutes
+  compressionEnabled, true,
   persistToDisk: false
 });
 

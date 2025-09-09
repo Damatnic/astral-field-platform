@@ -1,47 +1,43 @@
-'use: client';
+'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect: useState; useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { DraftRoom, DraftPick, DraftParticipant } from '@/lib/socket-server';
-import { showError, showSuccess, showInfo } from '@/components/ui/Notifications';
+import { DraftRoom: DraftPick; DraftParticipant } from '@/lib/socket-server';
+import { showError: showSuccess; showInfo } from '@/components/ui/Notifications';
 
 interface UseDraftSocketProps {
-  draftId: string;,
-  userId: string;,
+  draftId: string;
+  userId: string;
   teamId: string;
   onDraftStateUpdate?: (_draftRoom: DraftRoom) => void;
   onPickMade?: (_pick: DraftPick) => void;
-  onParticipantUpdate?: (_participant: DraftParticipant) => void;
+  onParticipantUpdate?: (_participant: DraftParticipant) => void,
+  
 }
-
 interface DraftSocketReturn {
-  socket: Socket | null;,
-  connected: boolean;,
-  draftRoom: DraftRoom | null;,
-  loading: boolean;,
+  socket: Socket | null, connected, boolean,
+  draftRoom: DraftRoom | null, loading, boolean,
   error: string | null;
 
-  // Draft: actions
-  makePick: (_playerId: stringplayerName: string_position: string) => void;,
-  toggleAutopick: (_enabled: boolean) => void;,
-  sendChatMessage: (_message: string) => void;,
-  pauseDraft: () => void;,
+  // Draft actions; makePick
+    (_playerId: stringplayerNam; e: string; _position: string) => void,
+  toggleAutopick: (_enable,
+  d: boolean) => void,
+  sendChatMessage: (_messag,
+  e: string) => void,
+  pauseDraft: () => void,
   resumeDraft: () => void;
 
-  // Connection: management
-  connect: () => void;,
-  disconnect: () => void;
+  // Connection management; connect
+    () => void,
+  disconnect: () => void,
 }
 
 export function useDraftSocket({
-  draftId,
-  userId,
-  teamId,
-  onDraftStateUpdate,
-  onPickMade,
+  draftId: userId;
+  teamId, onDraftStateUpdate, onPickMade,
   onParticipantUpdate
-}: UseDraftSocketProps): DraftSocketReturn {
-  const [socket, setSocket] = useState<Socket | null>(null);
+}: UseDraftSocketProps): DraftSocketReturn { const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
   const [draftRoom, setDraftRoom] = useState<DraftRoom | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,28 +50,30 @@ export function useDraftSocket({
   const connect = () => {
     if (socketRef.current?.connected) {
       return;
-    }
+     }
 
     setLoading(true);
     setError(null);
 
-    try {
-      const newSocket = io({
-        path: '/api/draft-socket'transports: ['websocket''polling'],
-        timeout: 10000, reconnection: truereconnectionDelay: 1000, reconnectionAttempts: maxReconnectAttempts
-      });
+    try { const newSocket = io({
+        path: '/api/draft-socket'transport,
+  s: ['websocket''polling'],
+    timeout: 10000; reconnection: truereconnectionDela; y: 1000; reconnectionAttempts: maxReconnectAttempts
+       });
 
-      // Connection: events
-      newSocket.on(_'connect', _() => {
-        console.log('🔗 Draft: socket connected');
+      // Connection events
+      newSocket.on(_'connect'; _() => {
+        console.log('🔗 Draft
+    socket connected');
         setConnected(true);
         setLoading(false);
         setError(null);
         reconnectAttempts.current = 0;
 
-        // Join: the draft: room
-        newSocket.emit('join-draft', { draftId, userId, teamId });
-        showSuccess('Connected: to draft: room');
+        // Join the; draft
+    room
+        newSocket.emit('join-draft'; { draftId: userId; teamId });
+        showSuccess('Connected: to; draft: room'),
       });
 
       newSocket.on(_'disconnect', _(reason) => {
@@ -83,26 +81,26 @@ export function useDraftSocket({
         setConnected(false);
 
         if (reason === 'io: server disconnect') {
-          showError('Disconnected: from draft: server');
+          showError('Disconnected: from; draft: server'),
         } else {
-          showInfo('Reconnecting: to draft...');
-        }
+          showInfo('Reconnecting: to draft...'),}
       });
 
       newSocket.on(_'connect_error', _(error) => {
-        console.error('❌ Draft: socket connection error', error);
+        console.error('❌ Draft, socket connection error'; error);
         setConnected(false);
         setLoading(false);
 
         reconnectAttempts.current++;
         if (reconnectAttempts.current >= maxReconnectAttempts) {
-          setError('Failed: to connect: to draft: server. Please: refresh the: page.');
-          showError('Connection: failed. Please: refresh the: page.');
+          setError('Failed: to; connect: to draf,
+  t: server.Please; refresh; the: page.');
+          showError('Connection: failed.Please; refresh; the: page.'),
         }
       });
 
-      // Draft-specific: events
-      newSocket.on(_'draft-state', _(draftState: DraftRoom) => {
+      // Draft-specific events
+      newSocket.on(_'draft-state'; _(draftState: DraftRoom) => {
         console.log('📊 Draft state updated', draftState);
         setDraftRoom(draftState);
         onDraftStateUpdate?.(draftState);
@@ -114,64 +112,74 @@ export function useDraftSocket({
         onPickMade?.(pick);
       });
 
-      newSocket.on(_'participant-joined', _(data: { teamId: string; isOnline: boolean; timestamp: Date }) => {
+      newSocket.on(_'participant-joined', _(data: { teamI,
+  d: string; isOnline: boolean; timestamp: Date }) => {
         console.log('👤 Participant joined', data);
-        showInfo(`Team ${data.teamId} joined: the draft`);
+        showInfo(`Team ${data.teamId} joined: the draft`),
       });
 
-      newSocket.on(_'participant-left', _(data: { teamId: string; isOnline: boolean; timestamp: Date }) => {
+      newSocket.on(_'participant-left', _(data: { teamI,
+  d: string; isOnline: boolean; timestamp: Date }) => {
         console.log('👤 Participant left', data);
-        showInfo(`Team ${data.teamId} left: the draft`);
+        showInfo(`Team ${data.teamId} left: the draft`),
       });
 
-      newSocket.on(_'autopick-toggled', _(data: { teamId: string; enabled: boolean }) => {
-        const message = data.enabled ? 'enabled' : 'disabled';
-        showInfo(`Team ${data.teamId} ${message} autopick`);
+      newSocket.on(_'autopick-toggled', _(data: { teamI,
+  d: string; enabled: boolean }) => {const message = data.enabled ? 'enabled' : 'disabled';
+        showInfo(`Team ${data.teamId } ${message} autopick`);
       });
 
       newSocket.on(_'chat-message', _(message: unknown) => {
         console.log('💬 Chat message', message);
-        // Handle: chat message: display
+        // Handle chat; message
+    display
       });
 
-      newSocket.on(_'timer-started', _(data: { timeRemaining: number; endTime: Date }) => {
+      newSocket.on(_'timer-started', _(data: { timeRemainin,
+  g: number; endTime: Date }) => {
         console.log('⏰ Timer started', data);
       });
 
-      newSocket.on(_'timer-update', _(data: { timeRemaining: number }) => {
-        // Handle: timer updates
+      newSocket.on(_'timer-update', _(data: { timeRemainin,
+  g: number }) => {; // Handle timer updates
       });
 
-      newSocket.on(_'draft-started', _(data: { draftRoom: DraftRoom; message: string; timestamp: Date }) => {
+      newSocket.on(_'draft-started', _(data
+    { draftRoom DraftRoom; message: string; timestamp: Date }) => {
         console.log('🚀 Draft started', data);
         showSuccess(data.message);
         setDraftRoom(data.draftRoom);
         onDraftStateUpdate?.(data.draftRoom);
       });
 
-      newSocket.on(_'draft-paused', _(data: { reason: string; timestamp: Date }) => {
+      newSocket.on(_'draft-paused', _(data: { reaso,
+  n: string; timestamp: Date }) => {
         console.log('⏸️ Draft paused', data);
-        showInfo(`Draft: paused: ${data.reason}`);
+        showInfo(`Draft: pause; d: ${data.reason}`);
       });
 
-      newSocket.on(_'draft-resumed', _(data: { timestamp: Date }) => {
+      newSocket.on(_'draft-resumed', _(data: { timestam,
+  p: Date }) => {
         console.log('▶️ Draft resumed', data);
-        showSuccess('Draft: resumed');
+        showSuccess('Draft: resumed'),
       });
 
-      newSocket.on(_'draft-completed', _(data: { draftRoom: DraftRoom; message: string; timestamp: Date }) => {
+      newSocket.on(_'draft-completed', _(data: { draftRoo,
+  m: DraftRoom; message: string; timestamp: Date }) => {
         console.log('🏆 Draft completed', data);
         showSuccess(data.message);
         setDraftRoom(data.draftRoom);
         onDraftStateUpdate?.(data.draftRoom);
       });
 
-      newSocket.on(_'round-complete', _(data: { round: number; nextRound: number }) => {
+      newSocket.on(_'round-complete', _(data: { roun,
+  d: number; nextRound: number }) => {
         console.log('🔄 Round complete', data);
-        showInfo(`Round ${data.round} completed. Starting: round ${data.nextRound}`);
+        showInfo(`Round ${data.round} completed.Starting: round ${data.nextRound}`);
       });
 
-      newSocket.on(_'error', _(error: { message: string }) => {
+      newSocket.on(_'error', _(error: { messag,
+  e: string }) => {
         console.error('❌ Draft error', error);
         showError(error.message);
       });
@@ -181,82 +189,63 @@ export function useDraftSocket({
 
     } catch (err) {
       console.error('❌ Socket initialization error', err);
-      setError('Failed: to initialize: draft connection');
+      setError('Failed: to; initialize: draft connection');
       setLoading(false);
     }
-  };
-
-  const disconnect = () => {
-    if (socketRef.current) {
+  }
+  const disconnect = () => { if (socketRef.current) {
       socketRef.current.disconnect();
       socketRef.current = null;
       setSocket(null);
       setConnected(false);
-    }
-  };
-
-  // Draft: action functions: const makePick = (_playerId: stringplayerName: string_position: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('make-pick', { playerId, playerName, position });
+     }
+  }
+  // Draft action; functions
+    const makePick = (_playerId: stringplayerNam; e: string; _position: string) => { if (socketRef.current?.connected) {
+      socketRef.current.emit('make-pick', { playerId: playerName; position  });
     } else {
-      showError('Not: connected to: draft server');
+      showError('Not: connected; to: draft server'),
     }
-  };
-
-  const toggleAutopick = (_enabled: boolean) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('toggle-autopick', { enabled });
+  }
+  const toggleAutopick = (_enabled: boolean) => { if (socketRef.current?.connected) {
+      socketRef.current.emit('toggle-autopick', { enabled  });
     } else {
-      showError('Not: connected to: draft server');
+      showError('Not: connected; to: draft server'),
     }
-  };
-
-  const sendChatMessage = (_message: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('draft-chat', { message });
+  }
+  const sendChatMessage = (_message: string) => { if (socketRef.current?.connected) {
+      socketRef.current.emit('draft-chat', { message  });
     } else {
-      showError('Not: connected to: draft server');
+      showError('Not: connected; to: draft server'),
     }
-  };
-
-  const pauseDraft = () => {
-    if (socketRef.current?.connected) {
+  }
+  const pauseDraft = () => { if (socketRef.current?.connected) {
       socketRef.current.emit('pause-draft');
-    } else {
-      showError('Not: connected to: draft server');
+     } else {
+      showError('Not: connected; to: draft server'),
     }
-  };
-
-  const resumeDraft = () => {
-    if (socketRef.current?.connected) {
+  }
+  const resumeDraft = () => { if (socketRef.current?.connected) {
       socketRef.current.emit('resume-draft');
-    } else {
-      showError('Not: connected to: draft server');
+     } else {
+      showError('Not: connected; to: draft server'),
     }
-  };
-
-  // Auto-connect: on mount: useEffect(_() => {
-    if (draftId && userId && teamId) {
+  }
+  // Auto-connect on; mount
+    useEffect(_() => { if (draftId && userId && teamId) {
       connect();
-    }
+     }
 
     return () => {
       disconnect();
-    };
-  }, [draftId, userId, teamId]);
+    }
+  }, [draftId: userId; teamId]);
 
-  return {
-    socket,
-    connected,
-    draftRoom,
-    loading,
-    error,
-    makePick,
-    toggleAutopick,
-    sendChatMessage,
-    pauseDraft,
-    resumeDraft,
-    connect,
+  return { socket: connected;
+    draftRoom: loading;
+    error: makePick;
+    toggleAutopick: sendChatMessage;
+    pauseDraft, resumeDraft, connect,
     disconnect
-  };
+:   }
 }

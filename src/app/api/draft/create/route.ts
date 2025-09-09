@@ -1,6 +1,6 @@
 /**
  * Draft Creation API Endpoint
- * Creates new drafts with snake, auction, or linear formats
+ * Creates new drafts with snake, auction: or linear formats
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 const createDraftSchema = z.object({
   leagueId: z.string().uuid(),
-  type: z.enum(['snake', 'auction', 'linear']),
+type z.enum(['snake', 'auction', 'linear']),
   rounds: z.number().int().min(10).max(20),
   timePerPick: z.number().int().min(30).max(300),
   startDate: z.string().datetime(),
@@ -19,8 +19,8 @@ const createDraftSchema = z.object({
   autopickDelay: z.number().int().min(5).max(60).default(10),
   draftOrder: z.array(z.string().uuid()).optional(),
   keeperSettings: z.object({
-    enabled: z.boolean().default(false),
-    maxKeepers: z.number().int().min(0).max(8).default(2),
+  enabled: z.boolean().default(false),
+  maxKeepers: z.number().int().min(0).max(8).default(2),
     keeperCostType: z.enum(['round', 'auction', 'none']).default('round'),
     keeperRoundPenalty: z.number().int().min(0).max(5).default(1)
   }).optional()
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Verify league exists and user has commissioner permissions
     const leagueResult = await database.query(`
-      SELECT commissioner_id, max_teams, name FROM leagues WHERE id = $1
+      SELECT commissioner_id, max_teams: name FROM leagues WHERE id = $1
     `, [validatedData.leagueId]);
 
     if (leagueResult.rows.length === 0) {
@@ -87,26 +87,24 @@ export async function POST(request: NextRequest) {
     // Create the draft
     const draft = await draftManager.createDraft({
       leagueId: validatedData.leagueId,
-      type: validatedData.type,
+type validatedData.type,
       rounds: validatedData.rounds,
       timePerPick: validatedData.timePerPick,
       startDate: new Date(validatedData.startDate),
-      auctionBudget: validatedData.auctionBudget,
-      draftOrder,
-      autoPickEnabled: validatedData.autoPickEnabled,
+      auctionBudget: validatedData.auctionBudget, draftOrder, autoPickEnable,
+  d: validatedData.autoPickEnabled,
       autopickDelay: validatedData.autopickDelay
     });
 
     // Initialize auction budgets if auction draft
     if (validatedData.type === 'auction' && validatedData.auctionBudget) {
-      await initializeAuctionBudgets(draft.id, draftOrder, validatedData.auctionBudget);
+      await initializeAuctionBudgets(draft.id, draftOrder: validatedData.auctionBudget),
     }
 
     // Store advanced settings if provided
     if (validatedData.keeperSettings) {
       await database.query(`
-        INSERT INTO draft_advanced_settings (draft_id, keeper_settings, created_at)
-        VALUES ($1, $2, NOW())
+        INSERT INTO draft_advanced_settings (draft_id, keeper_settings: created_at) VALUES ($1, $2, NOW())
       `, [draft.id, JSON.stringify(validatedData.keeperSettings)]);
     }
 
@@ -115,9 +113,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       draft: {
-        id: draft.id,
+  id: draft.id,
         leagueId: draft.leagueId,
-        type: draft.type,
+type draft.type,
         rounds: draft.rounds,
         timePerPick: draft.timePerPick,
         startDate: draft.startDate,
@@ -144,8 +142,7 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      { 
-        error: 'Failed to create draft',
+      {error: 'Failed to create draft',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
@@ -185,7 +182,7 @@ export async function GET(request: NextRequest) {
     const draft = draftResult.rows[0];
 
     // Get additional draft info
-    const [advancedSettings, pickCount, auctionBudgets] = await Promise.all([
+    const [advancedSettings, pickCount: auctionBudgets] = await Promise.all([
       getDraftAdvancedSettings(draft.id),
       getDraftPickCount(draft.id),
       draft.draft_type === 'auction' ? getAuctionBudgets(draft.id) : null
@@ -194,10 +191,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       draft: {
-        id: draft.id,
+  id: draft.id,
         leagueId: draft.league_id,
         leagueName: draft.league_name,
-        type: draft.draft_type,
+type draft.draft_type,
         rounds: draft.rounds,
         timePerPick: draft.seconds_per_pick,
         startDate: draft.draft_date,
@@ -208,10 +205,7 @@ export async function GET(request: NextRequest) {
         draftOrder: JSON.parse(draft.draft_order || '[]'),
         autoPickEnabled: draft.auto_pick_enabled,
         auctionBudget: draft.auction_budget,
-        totalPicks: draft.max_teams * draft.rounds,
-        completedPicks: pickCount,
-        advancedSettings,
-        auctionBudgets,
+        totalPicks: draft.max_teams * draft.rounds, completedPicks, pickCount, advancedSettings, auctionBudgets,
         createdAt: draft.created_at,
         startedAt: draft.started_at,
         completedAt: draft.completed_at
@@ -232,23 +226,23 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper functions
-async function initializeAuctionBudgets(draftId: string, teamIds: string[], budget: number): Promise<void> {
+async function initializeAuctionBudgets(draftId, string,
+  teamIds: string[], budget: number): Promise<void> {
   const rosterSpotsResult = await database.query(`
     SELECT roster_positions FROM leagues l
     JOIN drafts d ON l.id = d.league_id
     WHERE d.id = $1
   `, [draftId]);
 
-  const rosterPositions = rosterSpotsResult.rows[0]?.roster_positions || {};
+  const rosterPositions = rosterSpotsResult.rows[0]?.roster_positions || {}
   const totalRosterSpots = Object.values(rosterPositions).reduce((sum, spots) => sum + (spots as number), 0);
 
   for (const teamId of teamIds) {
     await database.query(`
       INSERT INTO auction_budgets (
-        draft_id, team_id, starting_budget, current_budget, 
-        remaining_roster_spots, created_at
+        draft_id, team_id, starting_budget, current_budget, remaining_roster_spots, created_at
       ) VALUES ($1, $2, $3, $4, $5, NOW())
-    `, [draftId, teamId, budget, budget, totalRosterSpots]);
+    `, [draftId, teamId, budget, budget: totalRosterSpots]),
   }
 }
 
@@ -259,7 +253,7 @@ async function getDraftAdvancedSettings(draftId: string): Promise<any> {
     WHERE draft_id = $1
   `, [draftId]);
 
-  return result.rows[0] || {};
+  return result.rows[0] || {}
 }
 
 async function getDraftPickCount(draftId: string): Promise<number> {

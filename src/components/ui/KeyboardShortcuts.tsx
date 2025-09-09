@@ -1,39 +1,35 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Command, ArrowUp, ArrowDown, CornerDownLeft } from 'lucide-react'
+import { X, Command, ArrowUp, ArrowDown, CornerDownLeft  } from 'lucide-react';
 import { KEYBOARD_SHORTCUTS, useKeyboardShortcuts } from '@/lib/keyboard-shortcuts'
 import { Modal } from './Modal'
 
 interface KeyboardShortcutsHelpProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen, boolean,
+  onClose: () => void;
+  
 }
-
-export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelpProps) {
-  // Group shortcuts by category
-  const categorizedShortcuts = Object.entries(KEYBOARD_SHORTCUTS).reduce(
-    (acc, [command, shortcut]) => {
-      if (!acc[shortcut.category]) {
+export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelpProps) {; // Group shortcuts by category
+  const categorizedShortcuts = Object.entries(KEYBOARD_SHORTCUTS).reduce((acc, [command, shortcut]) => { if (!acc[shortcut.category]) {
         acc[shortcut.category] = []
-      }
-      acc[shortcut.category].push({ command, ...shortcut })
+       }
+      acc[shortcut.category].push({ command, ...shortcut})
       return acc
     },
-    {} as Record<string, Array<{ command: string } & typeof KEYBOARD_SHORTCUTS[keyof typeof KEYBOARD_SHORTCUTS]>>
+    {} as Record<string, Array<{ command string } & typeof KEYBOARD_SHORTCUTS[keyof typeof, KEYBOARD_SHORTCUTS]>>
   )
 
-  const formatShortcut = (shortcut: typeof KEYBOARD_SHORTCUTS[keyof typeof KEYBOARD_SHORTCUTS]) => {
-    if (shortcut.sequence) {
+  const formatShortcut = (shortcut: typeof KEYBOARD_SHORTCUTS[keyof typeof KEYBOARD_SHORTCUTS]) => { if (shortcut.sequence) {
       return (
         <div className="flex items-center space-x-1">
           {shortcut.sequence.map((key, index) => (
-            <span key={index}>
+            <span key={index }>
               <KeyboardKey key={key}>{key.toUpperCase()}</KeyboardKey>
-              {index < shortcut.sequence!.length - 1 && (
+              { index: < shortcut.sequence!.length - 1 && (
                 <span className="mx-1 text-gray-400">then</span>
-              )}
+              ) }
             </span>
           ))}
           <KeyboardKey>{shortcut.key.toUpperCase()}</KeyboardKey>
@@ -86,11 +82,8 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShortcutsHelp
   )
 }
 
-function KeyboardKey({ children, small = false }: { children: React.ReactNode; small?: boolean }) {
-  return (
-    <kbd className={`
-      inline-flex items-center justify-center
-      ${small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-sm'}
+function KeyboardKey({ children, small = false  }: { children: React.ReactNode; small?: boolean  }) { return (
+    <kbd className={`inline-flex items-center justify-center ${small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-sm'}
       font-mono font-medium
       bg-gray-700 text-gray-200
       border border-gray-600
@@ -103,35 +96,28 @@ function KeyboardKey({ children, small = false }: { children: React.ReactNode; s
 }
 
 // Global keyboard shortcuts provider component
-export function KeyboardShortcutsProvider({ 
-  children, 
-  leagueId,
-  onNewTrade,
+export function KeyboardShortcutsProvider({ children, leagueId, onNewTrade,
   onOptimizeLineup 
-}: { 
-  children: React.ReactNode
-  leagueId?: string
+ }: { children: React.ReactNode
+  leagueId?; string
   onNewTrade?: () => void
   onOptimizeLineup?: () => void
-}) {
-  const [showHelp, setShowHelp] = useState(false)
-  const [showSequenceIndicator, setShowSequenceIndicator] = useState(false)
+ }) { const [showHelp, setShowHelp] = useState(false);
+  const [showSequenceIndicator, setShowSequenceIndicator] = useState(false);
 
   const { sequenceBuffer } = useKeyboardShortcuts({
     onShowHelp: () => setShowHelp(true),
-    onCloseModal: () => setShowHelp(false),
-    onNewTrade,
-    onOptimizeLineup,
-    leagueId,
-  })
+  onCloseModal: () => setShowHelp(false),
+    onNewTrade, onOptimizeLineup,
+    leagueId
+})
 
   // Show sequence indicator when user starts a sequence
-  useEffect(() => {
-    if (sequenceBuffer.length > 0) {
+  useEffect(() => { if (sequenceBuffer.length > 0) {
       setShowSequenceIndicator(true)
       const timer = setTimeout(() => {
         setShowSequenceIndicator(false)
-      }, 1500)
+       }, 1500)
       return () => clearTimeout(timer)
     } else {
       setShowSequenceIndicator(false)
@@ -152,9 +138,12 @@ export function KeyboardShortcutsProvider({
       <AnimatePresence>
         {showSequenceIndicator && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity, 0,
+  y: 20  }}
+            animate={{ opacity, 1,
+  y: 0 }}
+            exit={{ opacity, 0,
+  y: -20 }}
             className="fixed bottom-4 right-4 z-50 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 shadow-lg"
           >
             <div className="flex items-center space-x-2 text-sm">
@@ -174,38 +163,31 @@ export function KeyboardShortcutsProvider({
 }
 
 // Hook for components that want to show keyboard shortcuts help
-export function useKeyboardShortcutsHelp() {
-  const [isOpen, setIsOpen] = useState(false)
-  
+export function useKeyboardShortcutsHelp() { const [isOpen, setIsOpen] = useState(false);
   const showHelp = () => setIsOpen(true)
   const hideHelp = () => setIsOpen(false)
   
   return {
-    isOpen,
-    showHelp,
-    hideHelp,
-    KeyboardShortcutsHelp: ({ isOpen: propIsOpen, onClose: propOnClose }: { isOpen?: boolean; onClose?: () => void }) => (
+    isOpen, showHelp, hideHelp,
+    KeyboardShortcutsHelp: ({ isOpen, propIsOpen,
+  onClose: propOnClose   }: { isOpen?, boolean, onClose?: () => void  }) => (
       <KeyboardShortcutsHelp 
-        isOpen={propIsOpen ?? isOpen} 
-        onClose={propOnClose ?? hideHelp} 
+        isOpen={propIsOpen ?? isOpen } 
+        onClose={propOnClose ?? hideHelp } 
       />
-    ),
-  }
+    )
+}
 }
 
 // Component for showing keyboard shortcut hints inline
-export function KeyboardShortcutHint({ 
-  shortcut, 
-  description,
+export function KeyboardShortcutHint({ shortcut, description,
   className = '' 
-}: { 
-  shortcut: string
+ }: { shortcut: string
   description?: string
-  className?: string 
-}) {
-  return (
-    <div className={`inline-flex items-center space-x-2 text-xs text-gray-400 ${className}`}>
-      {description && <span>{description}</span>}
+  className?; string 
+ }) { return (
+    <div className={`inline-flex items-center space-x-2 text-xs text-gray-400 ${className }`}>
+      {description && <span>{description }</span>}
       <KeyboardKey small>{shortcut}</KeyboardKey>
     </div>
   )

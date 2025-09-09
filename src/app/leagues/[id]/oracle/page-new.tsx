@@ -5,27 +5,28 @@ import { useRouter } from 'next/navigation';
 import { Brain, TrendingUp, Target } from 'lucide-react';
 
 interface OraclePageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
 interface Prediction {
   id: string;
-  type: string;
+  type string;
   prediction: string;
-  confidence: number;
+    confidence: number;
   factors: string[];
+  
 }
-
 interface Insight {
   id: string;
-  title: string;
+    title: string;
   description: string;
-  action: string;
+    action: string;
   priority: string;
 }
 
-export default function OraclePage({ params }: OraclePageProps) {
-  const router = useRouter();
+export default function OraclePage({ params }: OraclePageProps) { const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -33,7 +34,7 @@ export default function OraclePage({ params }: OraclePageProps) {
   useEffect(() => {
     params.then(resolved => {
       setLeagueId(resolved.id);
-    });
+     });
   }, [params]);
 
   useEffect(() => {
@@ -44,22 +45,22 @@ export default function OraclePage({ params }: OraclePageProps) {
     }
   }, [router]);
 
-  useEffect(() => {
-    if (leagueId) {
+  useEffect(() => { if (leagueId) {
       // Mock oracle data
       setPredictions([
         {
           id: '1',
-          type: 'weekly_winner',
+type: 'weekly_winner',
           prediction: 'Your team has 78% chance to win this week',
-          confidence: 78,
+  confidence, 78,
           factors: ['Strong QB matchup', 'Favorable weather']
-        },
+         },
         {
           id: '2',
-          type: 'playoff_odds',
-          prediction: 'Current playoff probability: 85%',
-          confidence: 85,
+type: 'playoff_odds',
+          prediction: 'Current playoff probabilit,
+  y: 85%',
+  confidence, 85,
           factors: ['Strong record', 'Easy remaining schedule']
         }
       ]);
@@ -67,38 +68,38 @@ export default function OraclePage({ params }: OraclePageProps) {
       setInsights([
         {
           id: '1',
-          title: 'Waiver Wire Opportunity',
+  title: 'Waiver Wire Opportunity',
           description: 'Tank Dell has high upside potential this week',
-          action: 'Consider adding to your roster',
+  action: 'Consider adding to your roster',
           priority: 'high'
         },
         {
           id: '2',
-          title: 'Trade Suggestion',
+  title: 'Trade Suggestion',
           description: 'Your RB depth could use improvement',
-          action: 'Look for RB trade opportunities',
+  action: 'Look for RB trade opportunities',
           priority: 'medium'
         }
       ]);
     }
   }, [leagueId]);
 
-  if (!leagueId) {
-    return (
+  if (!leagueId) { return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
-  }
+   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+  g:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex items-center mb-6">
             <Brain className="w-8 h-8 text-purple-600 mr-3" />
             <h1 className="text-3xl font-bold text-gray-900">
-              Fantasy Oracle
+  Fantasy: Oracle;
             </h1>
           </div>
           
@@ -107,7 +108,7 @@ export default function OraclePage({ params }: OraclePageProps) {
               <div className="flex items-center mb-4">
                 <TrendingUp className="w-6 h-6 text-blue-500 mr-2" />
                 <h2 className="text-lg font-semibold text-gray-900">
-                  AI Predictions
+  AI: Predictions;
                 </h2>
               </div>
               <div className="space-y-4">
@@ -150,7 +151,7 @@ export default function OraclePage({ params }: OraclePageProps) {
               <div className="flex items-center mb-4">
                 <Target className="w-6 h-6 text-green-500 mr-2" />
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Strategic Insights
+  Strategic: Insights;
                 </h2>
               </div>
               <div className="space-y-4">
@@ -169,10 +170,8 @@ export default function OraclePage({ params }: OraclePageProps) {
                         </p>
                       </div>
                       <span
-                        className={`text-xs px-2 py-1 rounded ${
-                          insight.priority === 'high'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                        className={`text-xs px-2 py-1 rounded ${insight.priority === 'high'
+                            ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
                         }`}
                       >
                         {insight.priority}

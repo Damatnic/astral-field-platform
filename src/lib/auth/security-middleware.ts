@@ -10,50 +10,49 @@ import { rbacManager } from './rbac';
 import crypto from 'crypto';
 
 export interface SecurityConfig {
-  rateLimiting: {
-    windowMs: number;
-    maxRequests: number;
-    skipSuccessfulRequests: boolean;
-  };
-  accountLockout: {
-    maxAttempts: number;
-    lockoutDuration: number;
-    progressiveDelay: boolean;
-  };
-  ipBlocking: {
-    enabled: boolean;
-    suspiciousThreshold: number;
-    autoBlockDuration: number;
-  };
-  requestValidation: {
-    maxRequestSize: number;
-    allowedMethods: string[];
-    requiredHeaders: string[];
-  };
+  rateLimiting: {,
+  windowMs, number,
+    maxRequests, number,
+    skipSuccessfulRequests: boolean,
+  }
+  accountLockout: {,
+  maxAttempts, number,
+    lockoutDuration, number,
+    progressiveDelay: boolean,
+  }
+  ipBlocking: {,
+  enabled, boolean,
+    suspiciousThreshold, number,
+    autoBlockDuration: number,
+  }
+  requestValidation: {,
+  maxRequestSize, number,
+    allowedMethods: string[],
+    requiredHeaders: string[],
+  }
 }
 
 export interface SecurityEvent {
-  type: 'rate_limit' | 'account_lockout' | 'ip_block' | 'suspicious_activity' | 'brute_force';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  identifier: string; // IP, user ID, or other identifier
+  type: 'rate_limit' | 'account_lockout' | 'ip_block' | 'suspicious_activity' | 'brute_force',
+    severity: 'low' | 'medium' | 'high' | 'critical';
+  identifier, string, // IP, user ID, or other identifier;
   metadata: Record<string, any>;
+  
 }
-
 export interface RateLimitRule {
-  endpoint: string;
-  windowMs: number;
-  maxRequests: number;
-  skipSuccessful?: boolean;
-  requireAuth?: boolean;
-  byUser?: boolean; // Rate limit per user vs per IP
+  endpoint, string,
+    windowMs, number,
+  maxRequests, number,
+  skipSuccessful?, boolean,
+  requireAuth?, boolean,
+  byUser?, boolean, // Rate limit per user vs per IP;
+  
 }
-
-class SecurityMiddleware {
-  private static instance: SecurityMiddleware;
-  private rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-  private ipBlocklist = new Map<string, { blockedUntil: number; reason: string }>();
-  private suspiciousActivity = new Map<string, { events: number; lastEvent: number }>();
-  private config: SecurityConfig;
+class SecurityMiddleware { private static instance, SecurityMiddleware,
+  private rateLimitStore = new Map<string, { count, number, resetTime, number  }>();
+  private ipBlocklist = new Map<string, { blockedUntil, number, reason, string }>();
+  private suspiciousActivity = new Map<string, { events, number, lastEvent, number }>();
+  private config, SecurityConfig,
   private rateLimitRules: RateLimitRule[];
 
   private constructor() {
@@ -62,72 +61,65 @@ class SecurityMiddleware {
     this.startCleanupTasks();
   }
 
-  public static getInstance(): SecurityMiddleware {
-    if (!SecurityMiddleware.instance) {
+  public static getInstance(): SecurityMiddleware { if (!SecurityMiddleware.instance) {
       SecurityMiddleware.instance = new SecurityMiddleware();
-    }
+     }
     return SecurityMiddleware.instance;
   }
 
   /**
    * Main security middleware function
    */
-  public async validateRequest(
-    request: NextRequest,
-    endpoint: string
-  ): Promise<NextResponse | null> {
-    try {
+  public async validateRequest(params): PromiseNextResponse | null>  { try {
       const ip = this.getClientIP(request);
       const userAgent = request.headers.get('user-agent') || '';
       const method = request.method;
 
       // Check IP blocklist first
       if (this.isIPBlocked(ip)) {
-        await this.logSecurityEvent({
-          type: 'ip_block',
-          severity: 'high',
-          identifier: ip,
-          metadata: { endpoint, userAgent, reason: 'Blocked IP attempted access' }
+        await this.logSecurityEvent({type: 'ip_block',
+  severity: 'high',
+          identifier, ip,
+  metadata: { endpoint, userAgent, reason: 'Blocked IP attempted access'  }
         });
 
         return new NextResponse(
           JSON.stringify({ error: 'Access denied' }),
-          { status: 403, headers: { 'Content-Type': 'application/json' } }
+          { status: 403;
+  headers: { 'Content-Type': 'application/json' } }
         );
       }
 
       // Validate request method
       const rule = this.getRateLimitRule(endpoint);
-      if (rule && !this.config.requestValidation.allowedMethods.includes(method)) {
-        return new NextResponse(
-          JSON.stringify({ error: 'Method not allowed' }),
-          { status: 405, headers: { 'Content-Type': 'application/json' } }
+      if (rule && !this.config.requestValidation.allowedMethods.includes(method)) { return new NextResponse(
+          JSON.stringify({ error: 'Method not allowed'  }),
+          { status: 405;
+  headers: { 'Content-Type': 'application/json' } }
         );
       }
 
       // Check rate limiting
       const rateLimitResult = await this.checkRateLimit(request, endpoint, ip);
-      if (!rateLimitResult.allowed) {
-        await this.logSecurityEvent({
-          type: 'rate_limit',
-          severity: 'medium',
+      if (!rateLimitResult.allowed) { await this.logSecurityEvent({type: 'rate_limit',
+  severity: 'medium',
           identifier: rateLimitResult.identifier,
-          metadata: {
+  metadata: {
             endpoint,
             limit: rateLimitResult.limit,
-            current: rateLimitResult.current,
+  current: rateLimitResult.current,
             resetTime: rateLimitResult.resetTime
-          }
+           }
         });
 
         return new NextResponse(
           JSON.stringify({
             error: 'Rate limit exceeded',
-            retryAfter: rateLimitResult.retryAfter
+  retryAfter: rateLimitResult.retryAfter
           }),
           {
-            status: 429,
-            headers: {
+            status: 429;
+  headers: {
               'Content-Type': 'application/json',
               'X-RateLimit-Limit': rateLimitResult.limit.toString(),
               'X-RateLimit-Remaining': Math.max(0, rateLimitResult.limit - rateLimitResult.current).toString(),
@@ -143,10 +135,10 @@ class SecurityMiddleware {
 
       // Validate request size
       const contentLength = request.headers.get('content-length');
-      if (contentLength && parseInt(contentLength) > this.config.requestValidation.maxRequestSize) {
-        return new NextResponse(
-          JSON.stringify({ error: 'Request too large' }),
-          { status: 413, headers: { 'Content-Type': 'application/json' } }
+      if (contentLength && parseInt(contentLength) > this.config.requestValidation.maxRequestSize) { return new NextResponse(
+          JSON.stringify({ error: 'Request too large'  }),
+          { status: 413;
+  headers: { 'Content-Type': 'application/json' } }
         );
       }
 
@@ -156,7 +148,8 @@ class SecurityMiddleware {
       console.error('Security middleware error:', error);
       return new NextResponse(
         JSON.stringify({ error: 'Security check failed' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500;
+  headers: { 'Content-Type': 'application/json' } }
       );
     }
   }
@@ -164,20 +157,18 @@ class SecurityMiddleware {
   /**
    * Authentication middleware
    */
-  public async validateAuthentication(
-    request: NextRequest
-  ): Promise<{ valid: boolean; user?: any; error?: string }> {
-    try {
+  public async validateAuthentication(params): Promise { valid, boolean, user?, any, error?: string }> { try {
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return { valid: false, error: 'Missing or invalid authorization header' };
+        return { valid, false,
+  error: 'Missing or invalid authorization header'  }
       }
 
       const token = authHeader.substring(7);
       const decoded = await verifyJWT(token);
 
-      if (!decoded || !decoded.userId) {
-        return { valid: false, error: 'Invalid token' };
+      if (!decoded || !decoded.userId) { return { valid, false,
+  error: 'Invalid token'  }
       }
 
       // Get user from database
@@ -186,32 +177,33 @@ class SecurityMiddleware {
         FROM users WHERE id = $1
       `, [decoded.userId]);
 
-      if (result.rows.length === 0) {
-        return { valid: false, error: 'User not found' };
+      if (result.rows.length === 0) { return { valid, false,
+  error: 'User not found'  }
       }
 
       const user = result.rows[0];
 
       // Check if user is suspended
-      if (user.role === 'suspended') {
-        await this.logSecurityEvent({
-          type: 'suspicious_activity',
-          severity: 'medium',
+      if (user.role === 'suspended') { await this.logSecurityEvent({type: 'suspicious_activity',
+  severity: 'medium',
           identifier: user.id,
-          metadata: { reason: 'Suspended user attempted access' }
+  metadata: { reaso,
+  n: 'Suspended user attempted access'  }
         });
-        return { valid: false, error: 'Account is suspended' };
+        return { valid, false,
+  error: 'Account is suspended' }
       }
 
       // Check if account is locked
-      if (user.locked_until && new Date(user.locked_until) > new Date()) {
-        return { valid: false, error: 'Account is temporarily locked' };
+      if (user.locked_until && new Date(user.locked_until) > new Date()) { return { valid, false,
+  error: 'Account is temporarily locked'  }
       }
 
-      return { valid: true, user };
+      return { valid, true, user }
     } catch (error) {
       console.error('Authentication validation error:', error);
-      return { valid: false, error: 'Authentication failed' };
+      return { valid, false,
+  error: 'Authentication failed' }
     }
   }
 
@@ -219,42 +211,36 @@ class SecurityMiddleware {
    * Authorization middleware
    */
   public async validateAuthorization(
-    userId: string,
-    resource: string,
-    action: string,
-    context: Record<string, any> = {}
-  ): Promise<{ authorized: boolean; error?: string; suggestions?: string[] }> {
-    try {
+    userId, string,
+  resource, string,
+    action, string,
+  context: Record<string, any> = {}
+  ): Promise< { authorized, boolean, error?, string, suggestions?: string[] }> { try {
       const accessResult = await rbacManager.checkAccess({
-        userId,
-        resource,
-        action,
-        ...context
-      });
+        userId, resource, action,
+        ...context});
 
-      return {
-        authorized: accessResult.granted,
-        error: accessResult.granted ? undefined : accessResult.reason,
+      return {authorized: accessResult.granted,
+  error: accessResult.granted ? undefine,
+  d: accessResult.reason,
         suggestions: accessResult.suggestions
-      };
+      }
     } catch (error) {
       console.error('Authorization validation error:', error);
       return {
-        authorized: false,
-        error: 'Authorization check failed'
-      };
+        authorized, false,
+  error: 'Authorization check failed'
+      }
     }
   }
 
   /**
    * Account lockout management
    */
-  public async handleFailedLogin(identifier: string, type: 'email' | 'ip' = 'email'): Promise<{
-    locked: boolean;
-    lockDuration?: number;
-    attemptsRemaining?: number;
-  }> {
-    try {
+  public async handleFailedLogin(params): Promise {
+    locked, boolean,
+    lockDuration?, number,
+    attemptsRemaining?: number }> { try {
       if (type === 'email') {
         // Handle user account lockout
         const result = await database.query(`
@@ -262,7 +248,7 @@ class SecurityMiddleware {
         `, [identifier]);
 
         if (result.rows.length === 0) {
-          return { locked: false };
+          return { locked: false  }
         }
 
         const user = result.rows[0];
@@ -272,19 +258,16 @@ class SecurityMiddleware {
         let lockDuration = 0;
         let lockedUntil: Date | null = null;
 
-        if (newAttempts >= maxAttempts) {
-          lockDuration = this.calculateLockoutDuration(newAttempts);
+        if (newAttempts >= maxAttempts) { lockDuration = this.calculateLockoutDuration(newAttempts);
           lockedUntil = new Date(Date.now() + lockDuration);
 
-          await this.logSecurityEvent({
-            type: 'account_lockout',
-            severity: 'high',
+          await this.logSecurityEvent({type: 'account_lockout',
+  severity: 'high',
             identifier: user.id,
-            metadata: {
-              attempts: newAttempts,
-              lockDuration,
+  metadata: {
+              attempts, newAttempts, lockDuration,
               lockedUntil
-            }
+             }
           });
         }
 
@@ -295,47 +278,46 @@ class SecurityMiddleware {
         `, [newAttempts, lockedUntil, user.id]);
 
         return {
-          locked: lockedUntil !== null,
-          lockDuration,
+          locked: lockedUntil !== null, lockDuration,
           attemptsRemaining: Math.max(0, maxAttempts - newAttempts)
-        };
+        }
       } else {
         // Handle IP-based lockout
-        const key = `ip_attempts_${identifier}`;
-        const attempts = this.rateLimitStore.get(key) || { count: 0, resetTime: Date.now() + 3600000 };
+        const key = `ip_attempts_${identifier}`
+        const attempts = this.rateLimitStore.get(key) || { count: 0;
+  resetTime: Date.now() + 3600000 }
         attempts.count++;
 
         this.rateLimitStore.set(key, attempts);
 
         if (attempts.count >= this.config.ipBlocking.suspiciousThreshold) {
           this.blockIP(identifier, 'Excessive failed login attempts');
-          return { locked: true, lockDuration: this.config.ipBlocking.autoBlockDuration };
+          return { locked, true,
+  lockDuration: this.config.ipBlocking.autoBlockDuration }
         }
 
         return {
-          locked: false,
-          attemptsRemaining: Math.max(0, this.config.ipBlocking.suspiciousThreshold - attempts.count)
-        };
+          locked, false,
+  attemptsRemaining: Math.max(0, this.config.ipBlocking.suspiciousThreshold - attempts.count)
+        }
       }
     } catch (error) {
       console.error('Failed login handling error:', error);
-      return { locked: false };
+      return { locked: false }
     }
   }
 
   /**
    * Clear failed login attempts on successful login
    */
-  public async clearFailedAttempts(identifier: string, type: 'email' | 'ip' = 'email'): Promise<void> {
-    try {
+  public async clearFailedAttempts(params): Promisevoid>  { try {
       if (type === 'email') {
         await database.query(`
           UPDATE users 
           SET login_attempts = 0, locked_until = NULL
           WHERE email = $1
         `, [identifier]);
-      } else {
-        const key = `ip_attempts_${identifier}`;
+       } else { const key = `ip_attempts_${identifier }`
         this.rateLimitStore.delete(key);
       }
     } catch (error) {
@@ -346,42 +328,39 @@ class SecurityMiddleware {
   /**
    * Manually block IP address
    */
-  public blockIP(ip: string, reason: string, duration?: number): void {
-    const blockDuration = duration || this.config.ipBlocking.autoBlockDuration;
+  public blockIP(ip, string,
+  reason, string, duration?: number): void { const blockDuration = duration || this.config.ipBlocking.autoBlockDuration;
     this.ipBlocklist.set(ip, {
       blockedUntil: Date.now() + blockDuration,
       reason
+     });
+
+    this.logSecurityEvent({type: 'ip_block',
+  severity: 'high',
+      identifier, ip,
+  metadata: { reason, duration: blockDuration }
     });
 
-    this.logSecurityEvent({
-      type: 'ip_block',
-      severity: 'high',
-      identifier: ip,
-      metadata: { reason, duration: blockDuration }
-    });
-
-    console.log(`🚫 IP blocked: ${ip} - ${reason}`);
+    console.log(`🚫 IP blocked, ${ip} - ${reason}`);
   }
 
   /**
    * Unblock IP address
    */
-  public unblockIP(ip: string): void {
+  public unblockIP(ip: string); void {
     this.ipBlocklist.delete(ip);
-    console.log(`✅ IP unblocked: ${ip}`);
+    console.log(`✅ IP unblocked, ${ip}`);
   }
 
   /**
    * Get security statistics
    */
-  public async getSecurityStats(timeRange: number = 24 * 60 * 60 * 1000): Promise<{
-    rateLimitHits: number;
-    blockedIPs: number;
-    accountLockouts: number;
-    suspiciousActivity: number;
-    totalRequests: number;
-  }> {
-    try {
+  public async getSecurityStats(params): Promise {
+    rateLimitHits, number,
+    blockedIPs, number,
+    accountLockouts, number,
+    suspiciousActivity, number,
+    totalRequests: number }> { try {
       const since = new Date(Date.now() - timeRange);
 
       const result = await database.query(`
@@ -394,25 +373,22 @@ class SecurityMiddleware {
       `, [since]);
 
       const stats = {
-        rateLimitHits: 0,
-        blockedIPs: this.ipBlocklist.size,
-        accountLockouts: 0,
-        suspiciousActivity: 0,
+        rateLimitHits: 0;
+  blockedIPs: this.ipBlocklist.size, accountLockouts, 0, suspiciousActivity, 0,
         totalRequests: 0
-      };
-
-      for (const row of result.rows) {
-        switch (row.event_type) {
-          case 'rate_limit':
-            stats.rateLimitHits = parseInt(row.count);
+       }
+      for (const row of result.rows) { switch (row.event_type) {
+      case 'rate_limit':
+      stats.rateLimitHits = parseInt(row.count);
             break;
-          case 'account_lockout':
+      break;
+    case 'account_lockout':
             stats.accountLockouts = parseInt(row.count);
             break;
           case 'suspicious_activity':
             stats.suspiciousActivity = parseInt(row.count);
             break;
-        }
+         }
         stats.totalRequests += parseInt(row.count);
       }
 
@@ -420,148 +396,133 @@ class SecurityMiddleware {
     } catch (error) {
       console.error('Get security stats error:', error);
       return {
-        rateLimitHits: 0,
-        blockedIPs: 0,
-        accountLockouts: 0,
-        suspiciousActivity: 0,
+        rateLimitHits: 0;
+  blockedIPs: 0;
+        accountLockouts: 0;
+  suspiciousActivity: 0;
         totalRequests: 0
-      };
+      }
     }
   }
 
   // Private helper methods
 
-  private getDefaultConfig(): SecurityConfig {
-    return {
-      rateLimiting: {
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 100,
-        skipSuccessfulRequests: false
-      },
+  private getDefaultConfig(): SecurityConfig { return {
+      rateLimiting: {,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+        maxRequests: 100;
+  skipSuccessfulRequests: false
+       },
       accountLockout: {
-        maxAttempts: 5,
-        lockoutDuration: 30 * 60 * 1000, // 30 minutes
+        maxAttempts: 5;
+  lockoutDuration: 30 * 60 * 1000, // 30 minutes
         progressiveDelay: true
       },
       ipBlocking: {
-        enabled: true,
-        suspiciousThreshold: 20,
-        autoBlockDuration: 60 * 60 * 1000 // 1 hour
+        enabled, true, suspiciousThreshold: 20;
+        autoBlockDuration: 60 * 60 * 1000 ; // 1 hour
       },
-      requestValidation: {
+      requestValidation {
         maxRequestSize: 10 * 1024 * 1024, // 10MB
         allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         requiredHeaders: ['user-agent']
       }
-    };
+    }
   }
 
-  private getDefaultRateLimitRules(): RateLimitRule[] {
-    return [
+  private getDefaultRateLimitRules(): RateLimitRule[] { return [
       {
         endpoint: '/api/auth/login',
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 5, // Very restrictive for login
+  windowMs: 15 * 60 * 1000, // 15 minutes
+        maxRequests: 5; // Very restrictive for login
         byUser: false
-      },
+       },
       {
         endpoint: '/api/auth/register',
-        windowMs: 60 * 60 * 1000, // 1 hour
-        maxRequests: 3, // Very restrictive for registration
+  windowMs: 60 * 60 * 1000, // 1 hour
+        maxRequests: 3; // Very restrictive for registration
         byUser: false
       },
       {
         endpoint: '/api/auth/forgot-password',
-        windowMs: 60 * 60 * 1000, // 1 hour
-        maxRequests: 3,
-        byUser: false
+  windowMs: 60 * 60 * 1000, // 1 hour
+        maxRequests: 3;
+  byUser: false
       },
       {
         endpoint: '/api/auth/mfa',
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 10,
-        byUser: true
+  windowMs: 15 * 60 * 1000, // 15 minutes
+        maxRequests: 10;
+  byUser: true
       },
       {
         endpoint: '/api/trades',
-        windowMs: 60 * 1000, // 1 minute
-        maxRequests: 10,
-        requireAuth: true,
+  windowMs: 60 * 1000, // 1 minute
+        maxRequests: 10;
+  requireAuth, true,
         byUser: true
       },
       {
         endpoint: '/api/waivers',
-        windowMs: 60 * 1000, // 1 minute
-        maxRequests: 20,
-        requireAuth: true,
+  windowMs: 60 * 1000, // 1 minute
+        maxRequests: 20;
+  requireAuth, true,
         byUser: true
       },
       {
         endpoint: '/api',
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 1000, // General API rate limit
+  windowMs: 15 * 60 * 1000, // 15 minutes
+        maxRequests: 1000; // General API rate limit
         byUser: false
       }
     ];
   }
 
-  private getRateLimitRule(endpoint: string): RateLimitRule | null {
+  private getRateLimitRule(endpoint: string); RateLimitRule | null {
     // Find most specific matching rule
-    const matchingRules = this.rateLimitRules
+    const matchingRules = this.rateLimitRules;
       .filter(rule => endpoint.startsWith(rule.endpoint))
       .sort((a, b) => b.endpoint.length - a.endpoint.length);
 
     return matchingRules[0] || null;
   }
 
-  private async checkRateLimit(
-    request: NextRequest,
-    endpoint: string,
-    ip: string
-  ): Promise<{
-    allowed: boolean;
-    identifier: string;
-    limit: number;
-    current: number;
-    resetTime: number;
-    retryAfter: number;
-  }> {
-    const rule = this.getRateLimitRule(endpoint);
+  private async checkRateLimit(params): Promise {
+    allowed, boolean,
+    identifier, string,
+    limit, number,
+    current, number,
+    resetTime, number,
+    retryAfter: number }> { const rule = this.getRateLimitRule(endpoint);
     if (!rule) {
       return {
-        allowed: true,
-        identifier: ip,
-        limit: 0,
-        current: 0,
-        resetTime: 0,
-        retryAfter: 0
-      };
+        allowed: true, identifier, ip, limit, 0, current, 0, resetTime, 0,
+  retryAfter: 0
+       }
     }
 
     // Determine identifier (IP or user)
     let identifier = ip;
-    if (rule.byUser) {
-      try {
+    if (rule.byUser) { try {
         const auth = await this.validateAuthentication(request);
         if (auth.valid && auth.user) {
-          identifier = `user_${auth.user.id}`;
+          identifier = `user_${auth.user.id }`
         }
       } catch {
         // Use IP if can't determine user
       }
     }
 
-    const key = `${endpoint}_${identifier}`;
+    const key = `${endpoint}_${identifier}`
     const now = Date.now();
     const windowStart = now - rule.windowMs;
 
     // Get or create rate limit entry
     let entry = this.rateLimitStore.get(key);
-    if (!entry || entry.resetTime < now) {
-      entry = {
-        count: 0,
-        resetTime: now + rule.windowMs
-      };
+    if (!entry || entry.resetTime < now) { entry = {
+        count: 0;
+  resetTime: now + rule.windowMs
+       }
     }
 
     entry.count++;
@@ -571,32 +532,29 @@ class SecurityMiddleware {
     const retryAfter = allowed ? 0 : Math.ceil((entry.resetTime - now) / 1000);
 
     return {
-      allowed,
-      identifier,
+      allowed, identifier,
       limit: rule.maxRequests,
-      current: entry.count,
+  current: entry.count,
       resetTime: entry.resetTime,
       retryAfter
-    };
+    }
   }
 
-  private isIPBlocked(ip: string): boolean {
-    const blockInfo = this.ipBlocklist.get(ip);
+  private isIPBlocked(ip: string); boolean { const blockInfo = this.ipBlocklist.get(ip);
     if (!blockInfo) return false;
 
     if (blockInfo.blockedUntil < Date.now()) {
       this.ipBlocklist.delete(ip);
       return false;
-    }
+     }
 
     return true;
   }
 
-  private async detectSuspiciousActivity(ip: string, endpoint: string, userAgent: string): Promise<void> {
-    const key = `suspicious_${ip}`;
+  private async detectSuspiciousActivity(params): Promisevoid>  { const key = `suspicious_${ip }`
     const now = Date.now();
-    const activity = this.suspiciousActivity.get(key) || { events: 0, lastEvent: now };
-
+    const activity = this.suspiciousActivity.get(key) || { events: 0;
+  lastEvent: now }
     // Reset if more than 1 hour passed
     if (now - activity.lastEvent > 60 * 60 * 1000) {
       activity.events = 0;
@@ -607,7 +565,7 @@ class SecurityMiddleware {
     this.suspiciousActivity.set(key, activity);
 
     // Check for suspicious patterns
-    const suspiciousPatterns = [
+    const suspiciousPatterns = [;
       // Rapid requests from same IP
       activity.events > 50 && (now - activity.lastEvent) < 60 * 1000,
       // Suspicious user agent
@@ -616,17 +574,14 @@ class SecurityMiddleware {
       endpoint.includes('auth') && activity.events > 10
     ];
 
-    if (suspiciousPatterns.some(Boolean)) {
-      await this.logSecurityEvent({
-        type: 'suspicious_activity',
-        severity: 'medium',
-        identifier: ip,
-        metadata: {
-          endpoint,
-          userAgent,
+    if (suspiciousPatterns.some(Boolean)) { await this.logSecurityEvent({type: 'suspicious_activity',
+  severity: 'medium',
+        identifier, ip,
+  metadata: {
+          endpoint, userAgent,
           eventCount: activity.events,
-          patterns: suspiciousPatterns.map((match, index) => match ? index : null).filter(x => x !== null)
-        }
+  patterns: suspiciousPatterns.map((match, index) => match ? index : null).filter(x => x !== null)
+         }
       });
 
       // Auto-block if very suspicious
@@ -636,18 +591,17 @@ class SecurityMiddleware {
     }
   }
 
-  private calculateLockoutDuration(attempts: number): number {
-    if (!this.config.accountLockout.progressiveDelay) {
+  private calculateLockoutDuration(attempts: number); number { if (!this.config.accountLockout.progressiveDelay) {
       return this.config.accountLockout.lockoutDuration;
-    }
+     }
 
-    // Progressive lockout: 30min, 1hr, 2hr, 4hr, 8hr, 24hr
+    // Progressive lockout: 30min; 1hr: 2hr; 4hr: 8hr; 24hr
     const baseMs = 30 * 60 * 1000; // 30 minutes
     const multiplier = Math.min(Math.pow(2, attempts - this.config.accountLockout.maxAttempts), 48);
     return baseMs * multiplier;
   }
 
-  private getClientIP(request: NextRequest): string {
+  private getClientIP(request: NextRequest); string {
     // Try various headers to get real client IP
     const forwarded = request.headers.get('x-forwarded-for');
     const realIP = request.headers.get('x-real-ip');
@@ -660,17 +614,16 @@ class SecurityMiddleware {
     return '127.0.0.1'; // Fallback
   }
 
-  private async logSecurityEvent(event: SecurityEvent): Promise<void> {
-    try {
-      await database.query(`
+  private async logSecurityEvent(params): Promisevoid>  { try {
+    await database.query(`
         INSERT INTO security_events (
           event_type, event_category, severity, description, metadata, timestamp
-        ) VALUES ($1, $2, $3, $4, $5, NOW())
+        ): VALUES ($1, $2, $3, $4, $5, NOW())
       `, [
         event.type,
         'security',
         event.severity,
-        `Security ${event.type}: ${event.identifier}`,
+        `Security ${event.type } ${event.identifier}`,
         JSON.stringify(event.metadata)
       ]);
     } catch (error) {
@@ -680,34 +633,31 @@ class SecurityMiddleware {
 
   private startCleanupTasks(): void {
     // Clean up expired rate limits every 5 minutes
-    setInterval(() => {
-      const now = Date.now();
+    setInterval(() => { const now = Date.now();
       for (const [key, entry] of this.rateLimitStore.entries()) {
         if (entry.resetTime < now) {
           this.rateLimitStore.delete(key);
-        }
+         }
       }
     }, 5 * 60 * 1000);
 
     // Clean up expired IP blocks every minute
-    setInterval(() => {
-      const now = Date.now();
+    setInterval(() => { const now = Date.now();
       for (const [ip, blockInfo] of this.ipBlocklist.entries()) {
         if (blockInfo.blockedUntil < now) {
           this.ipBlocklist.delete(ip);
-        }
+         }
       }
     }, 60 * 1000);
 
     // Clean up old suspicious activity every hour
-    setInterval(() => {
-      const now = Date.now();
+    setInterval(() => { const now = Date.now();
       const cutoff = now - (24 * 60 * 60 * 1000); // 24 hours
 
       for (const [key, activity] of this.suspiciousActivity.entries()) {
         if (activity.lastEvent < cutoff) {
           this.suspiciousActivity.delete(key);
-        }
+         }
       }
     }, 60 * 60 * 1000);
   }

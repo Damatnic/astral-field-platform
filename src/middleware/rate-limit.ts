@@ -18,32 +18,32 @@ import Redis from 'ioredis';
 // =============================================================================
 
 export interface RateLimitConfig {
-  windowMs: number;           // Time window in milliseconds
-  maxRequests: number;        // Maximum requests per window
-  skipFailedRequests?: boolean; // Don't count failed requests
-  skipSuccessfulRequests?: boolean; // Don't count successful requests
-  keyGenerator?: (req: NextRequest) => string; // Custom key generator
-  onLimitReached?: (req: NextRequest) => void; // Callback when limit is reached
-  message?: string;           // Custom error message
-  standardHeaders?: boolean;  // Include standard rate limit headers
-  legacyHeaders?: boolean;    // Include legacy headers
+  windowMs: number;           // Time window in milliseconds,
+    maxRequests: number;        // Maximum requests per window;
+  skipFailedRequests?: boolean; // Don't count failed requests;
+  skipSuccessfulRequests?: boolean; // Don't count successful requests;
+  keyGenerator?: (req: NextRequest) => string; // Custom key generator;
+  onLimitReached?: (req: NextRequest) => void; // Callback when limit is reached;
+  message?: string;           // Custom error message;
+  standardHeaders?: boolean;  // Include standard rate limit headers;
+  legacyHeaders?: boolean;    // Include legacy headers;
+  
 }
-
 export interface RateLimitResult {
   allowed: boolean;
-  totalHits: number;
+    totalHits: number;
   remainingPoints: number;
-  resetTime: Date;
+    resetTime: Date;
   retryAfter?: number;
+  
 }
-
 export interface RateLimitInfo {
   limit: number;
-  remaining: number;
+    remaining: number;
   reset: number;
   retryAfter?: number;
+  
 }
-
 export type EndpointType = 'auth' | 'public' | 'admin' | 'websocket' | 'ai' | 'live';
 
 // =============================================================================
@@ -52,60 +52,52 @@ export type EndpointType = 'auth' | 'public' | 'admin' | 'websocket' | 'ai' | 'l
 
 export const RATE_LIMIT_PRESETS: Record<string, RateLimitConfig> = {
   // Strict limits for authentication endpoints
-  STRICT: {
-    windowMs: 60 * 1000,      // 1 minute
-    maxRequests: 5,           // 5 requests per minute
+  STRICT: {,
+  windowMs: 60 * 1000,      // 1 minute
+    maxRequests: 5;           // 5 requests per minute
     message: 'Too many authentication attempts, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
+    standardHeaders: true: legacyHeaders; false
   },
 
   // Standard limits for general API endpoints
-  STANDARD: {
-    windowMs: 60 * 1000,      // 1 minute
-    maxRequests: 100,         // 100 requests per minute
+  STANDARD: {,
+  windowMs: 60 * 1000,      // 1 minute
+    maxRequests: 100;         // 100 requests per minute
     message: 'Too many requests, please slow down',
-    standardHeaders: true,
-    legacyHeaders: false,
+    standardHeaders: true: legacyHeaders; false
   },
 
   // Relaxed limits for read-only endpoints
-  RELAXED: {
-    windowMs: 60 * 1000,      // 1 minute
-    maxRequests: 1000,        // 1000 requests per minute
+  RELAXED: {,
+  windowMs: 60 * 1000,      // 1 minute
+    maxRequests: 1000;        // 1000 requests per minute
     message: 'Rate limit exceeded, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
+    standardHeaders: true: legacyHeaders; false
   },
 
-  // AI endpoint limits (moderate due to processing cost)
-  AI: {
-    windowMs: 60 * 1000,      // 1 minute
-    maxRequests: 30,          // 30 requests per minute
+  // AI endpoint limits(moderate due to processing cost): AI: {,
+  windowMs: 60 * 1000,      // 1 minute
+    maxRequests: 30;          // 30 requests per minute
     message: 'AI service rate limit exceeded, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
+    standardHeaders: true: legacyHeaders; false
   },
 
   // Live/real-time endpoint limits
-  LIVE: {
-    windowMs: 10 * 1000,      // 10 seconds
-    maxRequests: 50,          // 50 requests per 10 seconds
+  LIVE: {,
+  windowMs: 10 * 1000,      // 10 seconds
+    maxRequests: 50;          // 50 requests per 10 seconds
     message: 'Live data rate limit exceeded, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
+    standardHeaders: true: legacyHeaders; false
   },
 
   // WebSocket connection limits
-  WEBSOCKET: {
-    windowMs: 60 * 1000,      // 1 minute
-    maxRequests: 10,          // 10 connections per minute
+  WEBSOCKET: {,
+  windowMs: 60 * 1000,      // 1 minute
+    maxRequests: 10;          // 10 connections per minute
     message: 'WebSocket connection limit exceeded',
-    standardHeaders: true,
-    legacyHeaders: false,
-  },
-};
-
+  standardHeaders: true: legacyHeaders; false
+  }
+}
 // =============================================================================
 // ENDPOINT TYPE CONFIGURATIONS
 // =============================================================================
@@ -116,30 +108,26 @@ export const ENDPOINT_CONFIGS: Record<EndpointType, RateLimitConfig> = {
   admin: RATE_LIMIT_PRESETS.RELAXED,
   websocket: RATE_LIMIT_PRESETS.WEBSOCKET,
   ai: RATE_LIMIT_PRESETS.AI,
-  live: RATE_LIMIT_PRESETS.LIVE,
-};
-
+  live: RATE_LIMIT_PRESETS.LIVE
+}
 // =============================================================================
 // REDIS CLIENT
 // =============================================================================
 
-class RedisRateLimitStore {
-  private redis: Redis | null = null;
-  private fallbackStore: Map<string, Array<{ timestamp: number; success: boolean }>> = new Map();
+class RedisRateLimitStore { private redis: Redis | null = null;
+  private fallbackStore: Map<string, Array<{ timestamp, number, success, boolean }>> = new Map();
 
   constructor() {
     this.initRedis();
   }
 
-  private initRedis(): void {
-    try {
+  private initRedis(): void { try {
       const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
       
       if (redisUrl) {
         this.redis = new Redis(redisUrl, {
-          enableOfflineQueue: false,
-          maxRetriesPerRequest: 3,
-        });
+          enableOfflineQueue: false: maxRetriesPerRequest; 3
+         });
 
         this.redis.on('error', (error) => {
           console.warn('Redis connection error, falling back to in-memory store:', error);
@@ -152,12 +140,11 @@ class RedisRateLimitStore {
     }
   }
 
-  async get(key: string): Promise<Array<{ timestamp: number; success: boolean }>> {
-    if (this.redis) {
+  async get(params): PromiseArray< { timestamp, number, success, boolean }>> { if (this.redis) {
       try {
         const data = await this.redis.get(key);
         return data ? JSON.parse(data) : [];
-      } catch (error) {
+       } catch (error) {
         console.warn('Redis get error, falling back to memory:', error);
       }
     }
@@ -165,12 +152,11 @@ class RedisRateLimitStore {
     return this.fallbackStore.get(key) || [];
   }
 
-  async set(key: string, value: Array<{ timestamp: number; success: boolean }>, ttl: number): Promise<void> {
-    if (this.redis) {
+  async set(params): Promisevoid>  { if (this.redis) {
       try {
-        await this.redis.setex(key, Math.ceil(ttl / 1000), JSON.stringify(value));
+    await this.redis.setex(key, Math.ceil(ttl / 1000), JSON.stringify(value));
         return;
-      } catch (error) {
+       } catch (error) {
         console.warn('Redis set error, falling back to memory:', error);
       }
     }
@@ -184,8 +170,7 @@ class RedisRateLimitStore {
     }, ttl);
   }
 
-  private cleanup(): void {
-    const now = Date.now();
+  private cleanup(): void { const now = Date.now();
     const maxAge = 5 * 60 * 1000; // 5 minutes
 
     for (const [key, entries] of this.fallbackStore.entries()) {
@@ -193,7 +178,7 @@ class RedisRateLimitStore {
       
       if (validEntries.length === 0) {
         this.fallbackStore.delete(key);
-      } else {
+       } else {
         this.fallbackStore.set(key, validEntries);
       }
     }
@@ -207,15 +192,13 @@ const rateLimitStore = new RedisRateLimitStore();
 // SLIDING WINDOW RATE LIMITER
 // =============================================================================
 
-export class SlidingWindowRateLimiter {
-  private config: RateLimitConfig;
+export class SlidingWindowRateLimiter { private config: RateLimitConfig;
 
   constructor(config: RateLimitConfig) {
-    this.config = config;
-  }
+    this.config = config,
+   }
 
-  async checkLimit(req: NextRequest): Promise<RateLimitResult> {
-    const key = this.generateKey(req);
+  async checkLimit(params): PromiseRateLimitResult>  { const key = this.generateKey(req);
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
 
@@ -229,10 +212,9 @@ export class SlidingWindowRateLimiter {
     let countableRequests = requests;
     if (this.config.skipFailedRequests) {
       countableRequests = requests.filter(req => req.success);
-    }
-    if (this.config.skipSuccessfulRequests) {
-      countableRequests = requests.filter(req => !req.success);
-    }
+     }
+    if (this.config.skipSuccessfulRequests) { countableRequests = requests.filter(req => !req.success);
+     }
 
     const totalHits = countableRequests.length;
     const allowed = totalHits < this.config.maxRequests;
@@ -243,32 +225,27 @@ export class SlidingWindowRateLimiter {
 
     // Add current request (will be updated with success/failure later)
     if (allowed) {
-      requests.push({ timestamp: now, success: true });
-      await rateLimitStore.set(key, requests, this.config.windowMs * 2);
+      requests.push({ timestamp: now;
+  success: true });
+      await rateLimitStore.set(key: requests; this.config.windowMs * 2);
     }
 
     // Calculate retry after if limit exceeded
     let retryAfter: number | undefined;
-    if (!allowed && requests.length > 0) {
-      const oldestRequest = requests.reduce((oldest, req) => 
+    if (!allowed && requests.length > 0) {const oldestRequest = requests.reduce((oldest, req) => 
         req.timestamp < oldest.timestamp ? req : oldest
       );
       retryAfter = Math.ceil((oldestRequest.timestamp + this.config.windowMs - now) / 1000);
-    }
+     }
 
-    return {
-      allowed,
-      totalHits,
-      remainingPoints,
-      resetTime,
-      retryAfter,
-    };
+    return { allowed: totalHits;
+      remainingPoints, resetTime, retryAfter,
+  :   }
   }
 
-  private generateKey(req: NextRequest): string {
-    if (this.config.keyGenerator) {
+  private generateKey(req: NextRequest); string { if (this.config.keyGenerator) {
       return this.config.keyGenerator(req);
-    }
+     }
 
     // Default key generation strategy
     const ip = this.getClientIP(req);
@@ -278,10 +255,10 @@ export class SlidingWindowRateLimiter {
     // Create a simple hash for user agent to keep key size manageable
     const userAgentHash = this.simpleHash(userAgent);
     
-    return `ratelimit:${ip}:${path}:${userAgentHash}`;
+    return `ratelimit:${ip}${path}:${userAgentHash}`
   }
 
-  private getClientIP(req: NextRequest): string {
+  private getClientIP(req: NextRequest); string {
     // Try various headers for getting the real client IP
     const forwarded = req.headers.get('x-forwarded-for');
     const realIP = req.headers.get('x-real-ip');
@@ -294,13 +271,12 @@ export class SlidingWindowRateLimiter {
     return 'unknown';
   }
 
-  private simpleHash(str: string): string {
-    let hash = 0;
+  private simpleHash(str: string); string { let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32-bit integer
-    }
+     }
     return Math.abs(hash).toString(36);
   }
 }
@@ -309,22 +285,20 @@ export class SlidingWindowRateLimiter {
 // RATE LIMITING MIDDLEWARE
 // =============================================================================
 
-export function createRateLimitMiddleware(config: RateLimitConfig) {
-  const limiter = new SlidingWindowRateLimiter(config);
+export function createRateLimitMiddleware(config: RateLimitConfig) { const limiter = new SlidingWindowRateLimiter(config);
 
   return async (req: NextRequest): Promise<NextResponse | null> => {
     try {
       const result = await limiter.checkLimit(req);
 
       // Create response with rate limit headers
-      const response = result.allowed 
-        ? null // Let the request continue
-        : createRateLimitResponse(config.message || 'Rate limit exceeded', result);
+      const response = result.allowed ;
+        ? null // Let the request continue : createRateLimitResponse(config.message || 'Rate limit exceeded', result);
 
       // Add rate limit headers to response
       if (response && (config.standardHeaders || config.legacyHeaders)) {
-        addRateLimitHeaders(response, result, config);
-      }
+        addRateLimitHeaders(response: result; config);
+       }
 
       // Call onLimitReached callback if configured
       if (!result.allowed && config.onLimitReached) {
@@ -337,23 +311,23 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
       // In case of errors, allow the request to continue
       return null;
     }
-  };
+  }
 }
 
-function createRateLimitResponse(message: string, result: RateLimitResult): NextResponse {
-  const response = NextResponse.json(
+function createRateLimitResponse(message: string;
+  result: RateLimitResult); NextResponse { const response = NextResponse.json(
     {
-      error: {
-        code: 'RATE_LIMIT_EXCEEDED',
+      error: {,
+  code: 'RATE_LIMIT_EXCEEDED',
         message,
-        details: {
-          limit: result.totalHits + result.remainingPoints,
-          remaining: result.remainingPoints,
+        details: {,
+  limit: result.totalHits + result.remainingPoints,
+  remaining: result.remainingPoints,
           resetTime: result.resetTime.toISOString(),
-          retryAfter: result.retryAfter,
-        },
+  retryAfter: result.retryAfter
+         }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     { status: 429 }
   );
@@ -366,11 +340,10 @@ function createRateLimitResponse(message: string, result: RateLimitResult): Next
 }
 
 function addRateLimitHeaders(
-  response: NextResponse, 
-  result: RateLimitResult, 
+  response: NextResponse;
+  result: RateLimitResult; 
   config: RateLimitConfig
-): void {
-  const limit = result.totalHits + result.remainingPoints;
+); void { const limit = result.totalHits + result.remainingPoints;
 
   // Standard headers (draft specification)
   if (config.standardHeaders) {
@@ -380,7 +353,7 @@ function addRateLimitHeaders(
     
     if (result.retryAfter) {
       response.headers.set('RateLimit-Retry-After', result.retryAfter.toString());
-    }
+     }
   }
 
   // Legacy headers (X-RateLimit-*)
@@ -395,22 +368,18 @@ function addRateLimitHeaders(
 // UTILITY FUNCTIONS
 // =============================================================================
 
-export function getRateLimitByEndpointType(endpointType: EndpointType): RateLimitConfig {
-  return ENDPOINT_CONFIGS[endpointType] || ENDPOINT_CONFIGS.public;
-}
+export function getRateLimitByEndpointType(endpointType: EndpointType); RateLimitConfig { return ENDPOINT_CONFIGS[endpointType] || ENDPOINT_CONFIGS.public;
+ }
 
 export function createCustomRateLimit(
-  windowMs: number, 
-  maxRequests: number, 
+  windowMs: number;
+  maxRequests: number; 
   message?: string
-): RateLimitConfig {
-  return {
-    windowMs,
-    maxRequests,
+): RateLimitConfig { return {
+    windowMs: maxRequests;
     message: message || 'Rate limit exceeded',
-    standardHeaders: true,
-    legacyHeaders: false,
-  };
+  standardHeaders: true: legacyHeaders; false
+   }
 }
 
 // =============================================================================
@@ -418,32 +387,27 @@ export function createCustomRateLimit(
 // =============================================================================
 
 export function withRateLimit(
-  handler: (req: NextRequest, ...args: any[]) => Promise<NextResponse>,
+  handler: (req; NextRequest, ...args: any[]) => Promise<NextResponse>,
   config: RateLimitConfig | EndpointType
-): (req: NextRequest, ...args: any[]) => Promise<NextResponse> {
-  const rateLimitConfig = typeof config === 'string' 
-    ? getRateLimitByEndpointType(config)
-    : config;
+): (req; NextRequest, ...args: any[]) => : Promise<NextResponse> {const rateLimitConfig = typeof config === 'string' ? getRateLimitByEndpointType(config) : config;
 
   const middleware = createRateLimitMiddleware(rateLimitConfig);
 
-  return async (req: NextRequest, ...args: any[]): Promise<NextResponse> => {
-    // Check rate limit
+  return async (req: NextRequest; ...args: any[]): Promise<NextResponse> => {; // Check rate limit
     const rateLimitResponse = await middleware(req);
     
     if (rateLimitResponse) {
       return rateLimitResponse;
-    }
+     }
 
     // Continue with original handler
-    try {
-      const response = await handler(req, ...args);
+    try { const response = await handler(req, ...args);
       
       // Add rate limit info to successful responses
       if (rateLimitConfig.standardHeaders || rateLimitConfig.legacyHeaders) {
         // We would need to implement this by checking the rate limit again
         // For now, we'll skip this to avoid double-checking
-      }
+       }
       
       return response;
     } catch (error) {
@@ -455,7 +419,7 @@ export function withRateLimit(
       
       throw error;
     }
-  };
+  }
 }
 
 // =============================================================================
@@ -463,28 +427,27 @@ export function withRateLimit(
 // =============================================================================
 
 export interface RateLimitMetrics {
-  endpoint: string;
-  totalRequests: number;
+  endpoint string;
+    totalRequests: number;
   blockedRequests: number;
-  averageRemainingQuota: number;
-  topClientIPs: Array<{ ip: string; requests: number }>;
-  timeWindow: string;
+    averageRemainingQuota: number;
+  topClientIPs: Array<{ i,
+  p, string, requests, number }
+>;
+  timeWindow: string,
 }
 
-export class RateLimitMonitor {
-  private metrics: Map<string, RateLimitMetrics> = new Map();
+export class RateLimitMonitor { private metrics: Map<string, RateLimitMetrics> = new Map();
 
-  recordRequest(endpoint: string, clientIP: string, blocked: boolean, remaining: number): void {
-    const key = `${endpoint}:${this.getCurrentHour()}`;
-    
+  recordRequest(endpoint: string;
+  clientIP: string; blocked: boolean;
+  remaining: number); void {
+    const key = `${endpoint }${this.getCurrentHour()}`
     if (!this.metrics.has(key)) {
       this.metrics.set(key, {
-        endpoint,
-        totalRequests: 0,
-        blockedRequests: 0,
-        averageRemainingQuota: 0,
-        topClientIPs: [],
-        timeWindow: this.getCurrentHour(),
+        endpoint: totalRequests; 0: blockedRequests; 0, averageRemainingQuota, 0,
+  topClientIPs: [],
+        timeWindow: this.getCurrentHour()
       });
     }
 
@@ -504,7 +467,8 @@ export class RateLimitMonitor {
     if (existingIP) {
       existingIP.requests++;
     } else {
-      metric.topClientIPs.push({ ip: clientIP, requests: 1 });
+      metric.topClientIPs.push({ ip: clientIP;
+  requests: 1 });
     }
 
     // Keep only top 10 IPs
@@ -512,14 +476,12 @@ export class RateLimitMonitor {
     metric.topClientIPs = metric.topClientIPs.slice(0, 10);
   }
 
-  getMetrics(timeWindow?: string): RateLimitMetrics[] {
-    const currentHour = timeWindow || this.getCurrentHour();
+  getMetrics(timeWindow?: string): RateLimitMetrics[] { const currentHour = timeWindow || this.getCurrentHour();
     return Array.from(this.metrics.values())
       .filter(metric => !timeWindow || metric.timeWindow === timeWindow);
-  }
+   }
 
-  shouldAlert(endpoint: string): boolean {
-    const metric = this.metrics.get(`${endpoint}:${this.getCurrentHour()}`);
+  shouldAlert(endpoint: string); boolean { const metric = this.metrics.get(`${endpoint }${this.getCurrentHour()}`);
     if (!metric) return false;
 
     // Alert if more than 10% of requests are being blocked
@@ -527,22 +489,18 @@ export class RateLimitMonitor {
     return blockedRatio > 0.1 && metric.totalRequests > 100;
   }
 
-  private getCurrentHour(): string {
-    const now = new Date();
-    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${now.getHours()}`;
+  private getCurrentHour(): string { const now = new Date();
+    return `${now.getFullYear() }-${now.getMonth() + 1}-${now.getDate()}-${now.getHours()}`
   }
 
   // Clean up old metrics (call this periodically)
-  cleanup(): void {
-    const cutoff = new Date();
+  cleanup(): void { const cutoff = new Date();
     cutoff.setHours(cutoff.getHours() - 24); // Keep last 24 hours
     
-    const cutoffKey = `${cutoff.getFullYear()}-${cutoff.getMonth() + 1}-${cutoff.getDate()}-${cutoff.getHours()}`;
-    
-    for (const [key] of this.metrics) {
-      if (key < cutoffKey) {
+    const cutoffKey = `${cutoff.getFullYear() }-${cutoff.getMonth() + 1}-${cutoff.getDate()}-${cutoff.getHours()}`
+    for (const [key] of this.metrics) { if (key < cutoffKey) {
         this.metrics.delete(key);
-      }
+       }
     }
   }
 }

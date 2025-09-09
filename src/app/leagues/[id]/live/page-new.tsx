@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Activity, Users, TrendingUp, Zap } from 'lucide-react';
 
 interface LivePageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
 interface LiveData {
@@ -14,12 +16,11 @@ interface LiveData {
   myTeamScore?: number;
   projectedScore?: number;
   rank?: number;
+  
 }
-
-export default function LivePage({ params }: LivePageProps) {
-  const router = useRouter();
+export default function LivePage({ params }: LivePageProps) { const router = useRouter();
   const [leagueId, setLeagueId] = useState<string>('');
-  const [liveData, setLiveData] = useState<LiveData>({});
+  const [liveData, setLiveData] = useState<LiveData>({ });
   const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
@@ -36,45 +37,45 @@ export default function LivePage({ params }: LivePageProps) {
     }
   }, [router]);
 
-  useEffect(() => {
-    if (leagueId) {
+  useEffect(() => { if (leagueId) {
       // Mock live data
       setLiveData({
-        currentWeek: 14,
-        activeGames: 3,
+        currentWeek, 14,
+  activeGames, 3,
         myTeamScore: 87.5,
-        projectedScore: 112.3,
+  projectedScore: 112.3,
         rank: 2
-      });
+       });
       setIsLive(true);
     }
   }, [leagueId]);
 
-  if (!leagueId) {
-    return (
+  if (!leagueId) { return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
-  }
+   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <div className="max-w-7xl mx-auto py-6 sm: px-6 l,
+  g:px-8">
+        <div className="px-4 py-6 sm; px-0">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold text-gray-900">
-              Live Scoring
+  Live: Scoring;
             </h1>
             {isLive && (
               <div className="flex items-center text-green-600">
                 <Zap className="w-5 h-5 mr-2 animate-pulse" />
                 <span className="text-sm font-medium">LIVE</span>
               </div>
-            )}
+            ) }
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-4 gap-6 mb-8">
             <div className="bg-white shadow rounded-lg p-6">
               <div className="flex items-center">
                 <Activity className="h-8 w-8 text-blue-500" />

@@ -13,16 +13,16 @@ import { generateJWT } from '@/lib/auth/jwt-config';
 import crypto from 'crypto';
 
 interface LoginRequest {
-  email: string;
-  password: string;
+  email: string,
+  password: string,
   mfaToken?: string;
   challengeId?: string;
   rememberMe?: boolean;
   deviceInfo?: {
-    device: string;
-    os: string;
-    browser: string;
-    fingerprint: string;
+    device: string,
+    os: string,
+    browser: string,
+    fingerprint: string,
   };
 }
 
@@ -35,41 +35,32 @@ export async function POST(request: NextRequest) {
     const securityCheck = await securityMiddleware.validateRequest(request, '/api/auth/enterprise/login');
     if (securityCheck) {
       return securityCheck;
-    }
+     }
 
     const requestBody: LoginRequest = await request.json();
-    const { 
-      email, 
-      password, 
-      mfaToken, 
-      challengeId, 
-      rememberMe = false,
-      deviceInfo 
-    } = requestBody;
+    const { email, password, mfaToken, challengeId, rememberMe = false, deviceInfo } = requestBody;
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const userAgent = request.headers.get('user-agent') || '';
 
     // Input validation
-    if (!email || !password) {
+    if (!email || !password) { 
       await auditLogger.logAuthentication(null, 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'Missing credentials'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Email and password are required'
-      }, { status: 400 });
+      return NextResponse.json(
+        { success: false,
+          error: 'Email and password are required'
+        }, { status: 400 });
     }
 
     // Find user
     const userResult = await database.query(`
       SELECT 
-        id, email, username, password_hash, first_name, last_name,
-        role, mfa_enabled, email_verified, phone_number, phone_verified,
-        login_attempts, locked_until, last_login, preferences
+        id, email, username, password_hash, first_name, last_name, role, mfa_enabled, email_verified, phone_number, phone_verified, login_attempts, locked_until, last_login, preferences
       FROM users 
       WHERE email = $1
     `, [email.toLowerCase()]);
@@ -79,55 +70,54 @@ export async function POST(request: NextRequest) {
       await securityMiddleware.handleFailedLogin(ip, 'ip');
       
       await auditLogger.logAuthentication(null, 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'User not found'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid email or password'
-      }, { status: 401 });
+      return NextResponse.json(
+        { success: false,
+          error: 'Invalid email or password'
+        }, { status: 401 });
     }
 
     const user = userResult.rows[0];
     userId = user.id;
 
     // Check if account is locked
-    if (user.locked_until && new Date(user.locked_until) > new Date()) {
+    if (user.locked_until && new Date(user.locked_until) > new Date()) { 
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'Account locked'
       });
 
       const lockTimeRemaining = Math.ceil((new Date(user.locked_until).getTime() - Date.now()) / 60000);
-      return NextResponse.json({
-        success: false,
-        error: `Account is temporarily locked. Try again in ${lockTimeRemaining} minutes.`,
-        accountLocked: true,
-        lockTimeRemaining
-      }, { status: 423 });
+      return NextResponse.json(
+        { success: false,
+          error: `Account is temporarily locked. Try again in ${lockTimeRemaining} minutes.`,
+          accountLocked: true,
+          lockTimeRemaining
+        }, { status: 423 });
     }
 
     // Check if user is suspended
-    if (user.role === 'suspended') {
+    if (user.role === 'suspended') { 
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'Account suspended'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Account is suspended. Please contact support.',
-        accountSuspended: true
-      }, { status: 403 });
+      return NextResponse.json(
+        { success: false,
+          error: 'Account is suspended. Please contact support.',
+          accountSuspended: true
+        }, { status: 403 });
     }
 
     // Verify password
-    const isValidPassword = await enhancedPasswordSecurity.verifyPassword(
-      password, 
+    const isValidPassword = await enhancedPasswordSecurity.verifyPassword(password, 
       user.password_hash
     );
 
@@ -137,45 +127,44 @@ export async function POST(request: NextRequest) {
       await securityMiddleware.handleFailedLogin(ip, 'ip');
 
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'Invalid password'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid email or password',
-        attemptsRemaining: lockoutResult.attemptsRemaining
-      }, { status: 401 });
+      return NextResponse.json(
+        { success: false,
+          error: 'Invalid email or password',
+          attemptsRemaining: lockoutResult.attemptsRemaining
+        }, { status: 401 });
     }
 
     // Check email verification
-    if (!user.email_verified) {
+    if (!user.email_verified) { 
       await auditLogger.logAuthentication(userId || '', 'login_failure', {
-        ipAddress: ip,
+        ipAddress: ip, 
         userAgent,
         failureReason: 'Email not verified'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Please verify your email address before logging in',
-        emailVerificationRequired: true
-      }, { status: 403 });
+      return NextResponse.json(
+        { success: false,
+          error: 'Please verify your email address before logging in',
+          emailVerificationRequired: true
+        }, { status: 403 });
     }
 
     // Handle MFA if enabled
     if (user.mfa_enabled) {
       if (!challengeId && !mfaToken) {
         // Create MFA challenge
-        const mfaChallengeId = await enhancedMFA.createMFAChallenge(
-          userId || '',
+        const mfaChallengeId = await enhancedMFA.createMFAChallenge(userId || '',
           'totp', // Default method, could be user preference
-          { ip, userAgent }
+          { ip, userAgent  }
         );
 
         await auditLogger.logAuthentication(userId || '', 'login_failure', {
-          ipAddress: ip,
+          ipAddress: ip, 
           userAgent,
           failureReason: 'MFA required'
         });
@@ -193,23 +182,23 @@ export async function POST(request: NextRequest) {
         const mfaResult = await enhancedMFA.verifyMFAChallenge({
           challengeId,
           method: 'totp', // Could be determined from challenge
-          token: mfaToken,
+          token: mfaToken, 
           userAgent,
           ipAddress: ip
         });
 
-        if (!mfaResult.success) {
+        if (!mfaResult.success) { 
           await auditLogger.logAuthentication(userId || '', 'login_failure', {
-            ipAddress: ip,
+            ipAddress: ip, 
             userAgent,
             failureReason: 'Invalid MFA token'
           });
 
-          return NextResponse.json({
-            success: false,
-            error: 'Invalid MFA token',
-            remainingAttempts: mfaResult.remainingAttempts
-          }, { status: 401 });
+          return NextResponse.json(
+            { success: false,
+              error: 'Invalid MFA token',
+              remainingAttempts: mfaResult.remainingAttempts
+            }, { status: 401 });
         }
       }
     }
@@ -221,8 +210,7 @@ export async function POST(request: NextRequest) {
     // Update user login info
     await database.query(`
       UPDATE users 
-      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW()
-      WHERE id = $1
+      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW() WHERE id = $1
     `, [userId]);
 
     // Create session
@@ -235,22 +223,15 @@ export async function POST(request: NextRequest) {
     // Store session in database
     await database.query(`
       INSERT INTO user_sessions (
-        id, user_id, token_hash, refresh_token_hash, expires_at,
-        device_info, ip_address, user_agent, last_activity, is_active, created_at
+        id, user_id, token_hash, refresh_token_hash, expires_at, device_info, ip_address, user_agent, last_activity, is_active, created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
-      sessionId,
-      userId,
-      crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'),
-      expiresAt,
-      JSON.stringify(deviceInfo || {
-        device: 'Unknown',
-        os: 'Unknown',
+      sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
+      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify(deviceInfo || {
+  device: 'Unknown',
+  os: 'Unknown',
         browser: 'Unknown'
-      }),
-      ip,
-      userAgent
+      }), ip, userAgent
     ]);
 
     // Log successful login
@@ -280,12 +261,12 @@ export async function POST(request: NextRequest) {
         metadata: {
           uniqueIPCount: uniqueIPs.size,
           recentIPs: Array.from(uniqueIPs)
-        }
+         }
       });
     }
 
     const responseTime = Date.now() - startTime;
-    console.log(`✅ User logged in: ${email} (${responseTime}ms)`);
+    console.log(`✅ User logged in, ${email} (${responseTime}ms)`);
 
     return NextResponse.json({
       success: true,
@@ -327,10 +308,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({
-      success: false,
-      error: 'Authentication failed. Please try again.'
-    }, { status: 500 });
+    return NextResponse.json(
+      { success: false,
+        error: 'Authentication failed. Please try again.'
+      }, { status: 500 });
   }
 }
 
@@ -346,7 +327,6 @@ export async function GET(request: NextRequest) {
       socialLogins: ['google', 'facebook', 'apple', 'twitter'],
       mfaRequired: false
     };
-
     // If email provided, check user-specific requirements
     if (email) {
       const userResult = await database.query(`
@@ -366,9 +346,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
   } catch (error) {
     console.error('Get login options error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to fetch login options'
-    }, { status: 500 });
+    return NextResponse.json(
+      { success: false,
+        error: 'Failed to fetch login options'
+      }, { status: 500 });
   }
 }

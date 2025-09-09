@@ -1,42 +1,40 @@
 "use client";
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import React, { Component, ErrorInfo, ReactNode  } from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 
 interface Props {
-  children: ReactNode;
-  fallback?: ReactNode;
+  children, ReactNode,
+  fallback?, ReactNode,
+  
 }
-
 interface State {
-  hasError: boolean;
-  error: Error | null;
+  hasError, boolean,
+    error: Error | null;
   errorInfo: ErrorInfo | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-    error: null,
-    errorInfo: null,
-  };
-
-  public static getDerivedStateFromError(error: Error): State {
+export class ErrorBoundary extends Component<Props, State> { public, stat,
+  e: State = {
+    hasError, false, error, null,
+    errorInfo: null
+}
+  public static getDerivedStateFromError(error: Error); State {
     // Update state so the next render will show the fallback UI
-    return { hasError: true, error, errorInfo: null };
+    return { hasError: true, error, errorInfo: null }
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log error to console in development
+  public componentDidCatch(error, Error,
+  errorInfo: ErrorInfo) {; // Log error to console in development
     if (process.env.NODE_ENV === "development") {
-      console.error("ErrorBoundary caught an error:", error, errorInfo);
+      console.error("ErrorBoundary caught an error", error, errorInfo);
     }
 
     // Update state with error details
     this.setState({
       error,
-      errorInfo,
-    });
+      errorInfo
+});
 
     // You could also log to an error reporting service here
     // logErrorToService(error, errorInfo);
@@ -44,25 +42,20 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private handleReset = () => {
     this.setState({
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    });
-  };
-
+      hasError, false, error, null,
+      errorInfo: null
+});
+  }
   private handleReload = () => {
     window.location.reload();
-  };
-
+  }
   private handleHome = () => {
     window.location.href = "/";
-  };
-
-  public render() {
-    if (this.state.hasError) {
+  }
+  public render() { if (this.state.hasError) {
       // Custom fallback UI provided
       if (this.props.fallback) {
-        return <>{this.props.fallback}</>;
+        return <>{this.props.fallback }</>;
       }
 
       // Default error UI
@@ -80,7 +73,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </h1>
 
             <p className="text-gray-400 text-center mb-6">
-              We encountered an unexpected error. Don't worry, your fantasy
+              We encountered an unexpected error.Don't worry, your fantasy
               team is safe!
             </p>
 
@@ -92,8 +85,8 @@ export class ErrorBoundary extends Component<Props, State> {
                 </p>
                 {this.state.errorInfo && (
                   <details className="text-gray-500 text-xs">
-                    <summary className="cursor-pointer hover:text-gray-400">
-                      Component Stack
+                    <summary className="cursor-pointer hover: text-gray-400">,
+    Component, Stack,
                     </summary>
                     <pre className="mt-2 overflow-auto">
                       {this.state.errorInfo.componentStack}
@@ -110,7 +103,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                Try Again
+  Try, Again,
               </button>
 
               <button
@@ -118,7 +111,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                Reload Page
+  Reload, Page,
               </button>
 
               <button
@@ -126,7 +119,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <Home className="w-4 h-4" />
-                Go Home
+  Go, Home,
               </button>
             </div>
 
@@ -145,24 +138,22 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 // Hook for using error boundary in functional components
-export function useErrorHandler(): (error: Error) => void {
-  return (error: Error) => {
+export function useErrorHandler(): (error: Error) => void { return (erro,
+  r: Error) => {
     throw error;
-  };
+   }
 }
 
 // Wrapper component for easier use
-export function withErrorBoundary<P extends object>(
+export function withErrorBoundary<P extends, object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode,
-): React.ComponentType<P> {
-  const WrappedComponent = (props: P) => (
-    <ErrorBoundary fallback={fallback}>
+): React.ComponentType<P> { const WrappedComponent = (props: P) => (
+    <ErrorBoundary fallback={fallback }>
       <Component {...props} />
     </ErrorBoundary>
   );
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-
   return WrappedComponent;
 }

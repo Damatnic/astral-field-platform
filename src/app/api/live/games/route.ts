@@ -27,34 +27,29 @@ export async function GET(request: NextRequest) {
     const games = await nflDataProvider.getLiveGames(currentWeek);
     
     // Enrich game data with fantasy-relevant information
-    const enrichedGames = await Promise.all(
-      games.map(async (game) => {
+    const enrichedGames = await Promise.all(games.map(async (game) => {
         const topPerformers = await getTopFantasyPerformers(game.id);
         const injuryUpdates = await getGameInjuryUpdates(game.id);
         const weather = await nflDataProvider.getWeatherData(game.id);
         
         return {
-          ...game,
-          topPerformers,
-          injuryUpdates,
-          weather,
-          fantasyRelevance: calculateFantasyRelevance(game)
-        };
+          ...game, topPerformers, injuryUpdates, weather, fantasyRelevanc,
+  e: calculateFantasyRelevance(game)
+        }
       })
     );
     
     // Sort by status (in_progress first, then scheduled, then final)
     enrichedGames.sort((a, b) => {
-      const statusOrder = { 'in_progress': 0, 'scheduled': 1, 'final': 2, 'postponed': 3 };
+      const statusOrder = { 'in_progress': 0, 'scheduled': 1, 'final': 2, 'postponed': 3 }
       return statusOrder[a.status] - statusOrder[b.status];
     });
     
     return NextResponse.json({
       success: true,
-      week: currentWeek,
-      games: enrichedGames,
+    week; currentWeek, games, enrichedGames,
       summary: {
-        total: enrichedGames.length,
+  total: enrichedGames.length,
         inProgress: enrichedGames.filter(g => g.status === 'in_progress').length,
         scheduled: enrichedGames.filter(g => g.status === 'scheduled').length,
         completed: enrichedGames.filter(g => g.status === 'final').length
@@ -77,8 +72,7 @@ export async function GET(request: NextRequest) {
 async function getGameDetails(gameId: string) {
   try {
     // Get game info from database or API
-    const gameResult = await database.query(
-      'SELECT * FROM nfl_games WHERE id = $1',
+    const gameResult = await database.query('SELECT * FROM nfl_games WHERE id = $1',
       [gameId]
     );
     
@@ -95,7 +89,7 @@ async function getGameDetails(gameId: string) {
   }
 }
 
-async function getTopFantasyPerformers(gameId: string, limit = 5) {
+async function getTopFantasyPerformers(gameId, string, limit = 5) {
   try {
     // Get top fantasy performers for this game
     const result = await database.query(`
@@ -167,8 +161,7 @@ async function getGameInjuryUpdates(gameId: string) {
         SELECT home_team FROM nfl_games WHERE id = $1
         UNION
         SELECT away_team FROM nfl_games WHERE id = $1
-      )
-      AND p.injury_status IS NOT NULL
+      ) AND p.injury_status IS NOT NULL
       AND p.injury_status != 'healthy'
     `, [gameId]);
     
@@ -180,7 +173,7 @@ async function getGameInjuryUpdates(gameId: string) {
 }
 
 function calculateFantasyRelevance(game: any): number {
-  // Calculate how relevant this game is for fantasy purposes
+; // Calculate how relevant this game is for fantasy purposes
   let relevance = 50; // Base relevance
   
   // In-progress games are most relevant
@@ -198,7 +191,7 @@ function calculateFantasyRelevance(game: any): number {
   return Math.min(relevance, 100);
 }
 
-function formatKeyStats(stats: any): string {
+function formatKeyStats(stats any): string {
   const parts = [];
   
   if (stats.position === 'QB') {
@@ -220,22 +213,20 @@ function formatKeyStats(stats: any): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { action, gameId, data } = await request.json();
+    const { action, gameId: data } = await request.json();
     
     switch (action) {
-      case 'update_score':
-        // Update game score (admin only)
+      case 'update_score':  ; // Update game score (admin only)
         if (!gameId || !data) {
           return NextResponse.json(
-            { success: false, error: 'gameId and data are required' },
+            { success: false, error 'gameId and data are required' },
             { status: 400 }
           );
         }
         
         await database.query(`
           UPDATE nfl_games 
-          SET home_score = $1, away_score = $2, updated_at = NOW()
-          WHERE id = $3
+          SET home_score = $1, away_score = $2, updated_at = NOW() WHERE id = $3
         `, [data.homeScore, data.awayScore, gameId]);
         
         return NextResponse.json({
@@ -243,19 +234,17 @@ export async function POST(request: NextRequest) {
           message: 'Game score updated'
         });
         
-      case 'update_status':
-        // Update game status
+      case 'update_status':  ; // Update game status
         if (!gameId || !data?.status) {
           return NextResponse.json(
-            { success: false, error: 'gameId and status are required' },
+            { success: false, error 'gameId and status are required' },
             { status: 400 }
           );
         }
         
         await database.query(`
           UPDATE nfl_games 
-          SET status = $1, quarter = $2, time_remaining = $3, updated_at = NOW()
-          WHERE id = $4
+          SET status = $1, quarter = $2, time_remaining = $3, updated_at = NOW() WHERE id = $4
         `, [data.status, data.quarter, data.timeRemaining, gameId]);
         
         return NextResponse.json({

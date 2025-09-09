@@ -10,191 +10,206 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 export interface User {
-  id: string;
-  email: string;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  role: UserRole;
-  permissions: Permission[];
-  mfaEnabled: boolean;
-  mfaSecret?: string;
-  lastLogin?: Date;
-  loginAttempts: number;
-  lockedUntil?: Date;
-  emailVerified: boolean;
-  phoneNumber?: string;
-  phoneVerified: boolean;
-  socialLogins: SocialLogin[];
-  preferences: UserPreferences;
-  createdAt: Date;
-  updatedAt: Date;
+  id, string,
+    email, string,
+  username, string,
+  firstName?, string,
+  lastName?, string,
+  avatar?, string,
+  role, UserRole,
+    permissions: Permission[];
+  mfaEnabled, boolean,
+  mfaSecret?, string,
+  lastLogin?, Date,
+  loginAttempts, number,
+  lockedUntil?, Date,
+  emailVerified, boolean,
+  phoneNumber?, string,
+  phoneVerified, boolean,
+    socialLogins: SocialLogin[];
+  preferences, UserPreferences,
+    createdAt, Date,
+  updatedAt: Date,
+  
 }
-
 export type UserRole = 'admin' | 'commissioner' | 'player' | 'analyst' | 'viewer' | 'suspended';
 
 export interface Permission {
-  resource: string;
-  actions: string[];
+  resource, string,
+    actions: string[];
   conditions?: Record<string, any>;
+  
 }
-
 export interface SocialLogin {
-  provider: 'google' | 'facebook' | 'apple' | 'twitter' | 'discord';
-  providerId: string;
-  email: string;
-  verified: boolean;
-  connectedAt: Date;
+  provider: 'google' | 'facebook' | 'apple' | 'twitter' | 'discord',
+    providerId, string,
+  email, string,
+    verified, boolean,
+  connectedAt: Date,
+  
 }
-
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  timezone: string;
+  theme: 'light' | 'dark' | 'auto',
+    timezone, string,
   notifications: {
-    email: boolean;
-    push: boolean;
-    sms: boolean;
-    trades: boolean;
-    waivers: boolean;
-    lineups: boolean;
-    injuries: boolean;
-    news: boolean;
-  };
+  email, boolean,
+    push, boolean,
+    sms, boolean,
+    trades, boolean,
+    waivers, boolean,
+    lineups, boolean,
+    injuries, boolean,
+    news: boolean,
+  }
   privacy: {
-    profileVisible: boolean;
-    statsVisible: boolean;
-    tradesVisible: boolean;
-    allowDirectMessages: boolean;
-  };
+  profileVisible, boolean,
+    statsVisible, boolean,
+    tradesVisible, boolean,
+    allowDirectMessages: boolean,
+  }
 }
 
 export interface AuthSession {
-  id: string;
-  userId: string;
-  token: string;
-  refreshToken: string;
-  expiresAt: Date;
-  deviceInfo: {
-    userAgent: string;
-    ip: string;
-    device: string;
-    os: string;
-    browser: string;
-  };
-  lastActivity: Date;
-  isActive: boolean;
+  id, string,
+    userId, string,
+  token, string,
+    refreshToken, string,
+  expiresAt, Date,
+    deviceInfo: {
+  userAgent, string,
+    ip, string,
+    device, string,
+    os, string,
+    browser: string,
+  }
+  lastActivity, Date,
+    isActive: boolean,
 }
 
 export interface MFAChallenge {
-  id: string;
-  userId: string;
-  method: 'totp' | 'sms' | 'email' | 'backup_codes';
-  token: string;
-  attempts: number;
-  expiresAt: Date;
-  verified: boolean;
+  id, string,
+    userId, string,
+  method: 'totp' | 'sms' | 'email' | 'backup_codes',
+    token, string,
+  attempts, number,
+    expiresAt, Date,
+  verified: boolean,
+  
 }
-
 export interface LoginAttempt {
-  id: string;
-  email: string;
-  ip: string;
-  userAgent: string;
-  success: boolean;
-  failureReason?: string;
-  timestamp: Date;
-  mfaRequired: boolean;
-  mfaVerified: boolean;
+  id, string,
+    email, string,
+  ip, string,
+    userAgent, string,
+  success, boolean,
+  failureReason?, string,
+  timestamp, Date,
+    mfaRequired, boolean,
+  mfaVerified: boolean,
+  
 }
-
-class EnterpriseAuthenticationSystem {
-  private rateLimitMap = new Map<string, { attempts: number; resetTime: number }>();
+class EnterpriseAuthenticationSystem { private rateLimitMap = new Map<string, { attempts, number, resetTime, number  }>();
   private mfaChallenges = new Map<string, MFAChallenge>();
   private activeSessions = new Map<string, AuthSession>();
   
   // OAuth configurations
   private oauthConfigs = {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientId: process.env.GOOGLE_CLIENT_ID;
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET;
       redirectUri: process.env.GOOGLE_REDIRECT_URI
     },
     facebook: {
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+  clientId: process.env.FACEBOOK_CLIENT_ID;
+  clientSecret: process.env.FACEBOOK_CLIENT_SECRET;
       redirectUri: process.env.FACEBOOK_REDIRECT_URI
     },
     apple: {
-      clientId: process.env.APPLE_CLIENT_ID,
-      teamId: process.env.APPLE_TEAM_ID,
-      keyId: process.env.APPLE_KEY_ID,
-      privateKey: process.env.APPLE_PRIVATE_KEY
+  clientId: process.env.APPLE_CLIENT_ID;
+  teamId: process.env.APPLE_TEAM_ID;
+      keyId: process.env.APPLE_KEY_ID;
+  privateKey: process.env.APPLE_PRIVATE_KEY
     }
-  };
-
+  }
   constructor() {
     this.initializePermissions();
   }
 
   // Initialize role-based permissions
-  private async initializePermissions(): Promise<void> {
-    const rolePermissions = {
+  private async initializePermissions(): : Promise<void> { const rolePermissions = {
       admin: [
-        { resource: '*', actions: ['*'] },
-      ],
+        { resource: '*';
+  actions: ['*']  }
+  ],
       commissioner: [
-        { resource: 'leagues', actions: ['read', 'update', 'manage'] },
-        { resource: 'teams', actions: ['read', 'update', 'manage'] },
-        { resource: 'trades', actions: ['read', 'approve', 'veto'] },
-        { resource: 'waivers', actions: ['read', 'manage', 'process'] },
-        { resource: 'settings', actions: ['read', 'update'] },
-        { resource: 'reports', actions: ['read', 'generate'] },
-      ],
+        { resource: 'leagues';
+  actions: ['read', 'update', 'manage'] },
+        { resource: 'teams';
+  actions: ['read', 'update', 'manage'] },
+        { resource: 'trades';
+  actions: ['read', 'approve', 'veto'] },
+        { resource: 'waivers';
+  actions: ['read', 'manage', 'process'] },
+        { resource: 'settings';
+  actions: ['read', 'update'] },
+        { resource: 'reports';
+  actions: ['read', 'generate'] }
+  ],
       player: [
-        { resource: 'teams', actions: ['read', 'update'], conditions: { ownTeam: true } },
-        { resource: 'trades', actions: ['read', 'create', 'accept', 'reject'] },
-        { resource: 'waivers', actions: ['read', 'create'] },
-        { resource: 'lineups', actions: ['read', 'update'], conditions: { ownTeam: true } },
-        { resource: 'messages', actions: ['read', 'create'] },
-      ],
+        { resource: 'teams';
+  actions: ['read', 'update'], conditions: { ownTea,
+  m: true } },
+        { resource: 'trades';
+  actions: ['read', 'create', 'accept', 'reject'] },
+        { resource: 'waivers';
+  actions: ['read', 'create'] },
+        { resource: 'lineups';
+  actions: ['read', 'update'], conditions: { ownTea,
+  m: true } },
+        { resource: 'messages';
+  actions: ['read', 'create'] }
+  ],
       analyst: [
-        { resource: 'players', actions: ['read'] },
-        { resource: 'stats', actions: ['read'] },
-        { resource: 'analytics', actions: ['read', 'generate'] },
-        { resource: 'reports', actions: ['read'] },
-      ],
+        { resource: 'players';
+  actions: ['read'] },
+        { resource: 'stats';
+  actions: ['read'] },
+        { resource: 'analytics';
+  actions: ['read', 'generate'] },
+        { resource: 'reports';
+  actions: ['read'] }
+  ],
       viewer: [
-        { resource: 'leagues', actions: ['read'] },
-        { resource: 'players', actions: ['read'] },
-        { resource: 'stats', actions: ['read'] },
-      ],
+        { resource: 'leagues';
+  actions: ['read'] },
+        { resource: 'players';
+  actions: ['read'] },
+        { resource: 'stats';
+  actions: ['read'] }
+  ],
       suspended: []
-    };
-
-    console.log('✅ Enterprise Auth: Role-based permissions initialized');
+    }
+    console.log('✅ Enterprise Auth, Role-based permissions initialized');
   }
 
   // Enhanced user registration with email verification
   async registerUser(userData: {
-    email: string;
-    username: string;
-    password: string;
-    firstName?: string;
-    lastName?: string;
-  }): Promise<{ user: User; verificationToken: string }> {
-    try {
+  email, string,
+    username, string,
+    password, string,
+    firstName?, string,
+    lastName?, string,
+  }): : Promise<  { user, User, verificationToken, string }> { try {
       // Check if user already exists
       const existingUser = await this.findUserByEmail(userData.email);
       if (existingUser) {
         throw new Error('User already exists with this email');
-      }
+       }
 
       // Check username availability
       const existingUsername = await this.findUserByUsername(userData.username);
-      if (existingUsername) {
-        throw new Error('Username already taken');
-      }
+      if (existingUsername) { throw new Error('Username already taken');
+       }
 
       // Hash password
       const hashedPassword = await bcrypt.hash(userData.password, 12);
@@ -205,30 +220,29 @@ class EnterpriseAuthenticationSystem {
       // Create user
       const userId = crypto.randomUUID();
       const user: User = {
-        id: userId,
-        email: userData.email.toLowerCase(),
-        username: userData.username,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        role: 'player',
+  id, userId,
+  email: userData.email.toLowerCase();
+        username: userData.username;
+  firstName: userData.firstName;
+        lastName: userData.lastName;
+  role: 'player';
         permissions: [], // Will be populated based on role
-        mfaEnabled: false,
-        lastLogin: undefined,
-        loginAttempts: 0,
-        emailVerified: false,
-        socialLogins: [],
-        preferences: this.getDefaultPreferences(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
+        mfaEnabled, false,
+  lastLogin, undefined,
+        loginAttempts: 0;
+  emailVerified, false,
+        socialLogins: [];
+  preferences: this.getDefaultPreferences();
+        createdAt: new Date();
+  updatedAt: new Date()
+      }
       // Store in database
       await database.query(`
         INSERT INTO users (
           id, email, username, password_hash, first_name, last_name,
           role, mfa_enabled, login_attempts, email_verified,
           preferences, verification_token, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       `, [
         user.id, user.email, user.username, hashedPassword,
         user.firstName, user.lastName, user.role, user.mfaEnabled,
@@ -236,9 +250,8 @@ class EnterpriseAuthenticationSystem {
         verificationToken, user.createdAt, user.updatedAt
       ]);
 
-      console.log(`✅ User registered: ${user.email}`);
-      return { user, verificationToken };
-
+      console.log(`✅ User registered, ${user.email}`);
+      return { user,: verificationToken  }
     } catch (error) {
       console.error('User registration error:', error);
       throw error;
@@ -247,82 +260,78 @@ class EnterpriseAuthenticationSystem {
 
   // Enhanced login with rate limiting and MFA
   async authenticateUser(
-    email: string,
-    password: string,
-    deviceInfo: any,
+    email, string,
+  password, string,
+    deviceInfo, any,
     mfaToken?: string
-  ): Promise<{
-    success: boolean;
-    user?: User;
-    session?: AuthSession;
-    mfaRequired?: boolean;
-    challengeId?: string;
-    error?: string;
-  }> {
-    const ip = deviceInfo.ip;
+  ): : Promise<  {
+    success, boolean,
+    user?, User,
+    session?, AuthSession,
+    mfaRequired?, boolean,
+    challengeId?, string,
+    error?: string }> { const ip = deviceInfo.ip;
     
     try {
       // Check rate limiting
       if (!this.checkRateLimit(ip)) {
         await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'rate_limited');
-        return { success: false, error: 'Too many login attempts. Please try again later.' };
+        return { success, false,
+  error: 'Too many login attempts.Please try again later.'  }
       }
 
       // Find user
       const user = await this.findUserByEmail(email);
-      if (!user) {
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'user_not_found');
-        return { success: false, error: 'Invalid credentials' };
+      if (!user) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'user_not_found');
+        return { success, false,
+  error: 'Invalid credentials'  }
       }
 
       // Check if account is locked
-      if (user.lockedUntil && user.lockedUntil > new Date()) {
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_locked');
-        return { success: false, error: 'Account is temporarily locked. Please try again later.' };
+      if (user.lockedUntil && user.lockedUntil > new Date()) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_locked');
+        return { success, false,
+  error: 'Account is temporarily locked.Please try again later.'  }
       }
 
       // Get password hash from database
-      const passwordResult = await database.query(
-        'SELECT password_hash FROM users WHERE id = $1',
+      const passwordResult = await database.query('SELECT password_hash FROM users WHERE id = $1',
         [user.id]
       );
 
       const isValidPassword = await bcrypt.compare(password, passwordResult.rows[0].password_hash);
-      if (!isValidPassword) {
-        await this.handleFailedLogin(user);
+      if (!isValidPassword) { await this.handleFailedLogin(user);
         await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'invalid_password');
-        return { success: false, error: 'Invalid credentials' };
+        return { success, false,
+  error: 'Invalid credentials'  }
       }
 
       // Check if email is verified
-      if (!user.emailVerified) {
-        return { success: false, error: 'Please verify your email address before logging in' };
+      if (!user.emailVerified) { return { success, false,
+  error: 'Please verify your email address before logging in'  }
       }
 
       // Check if user is suspended
-      if (user.role === 'suspended') {
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_suspended');
-        return { success: false, error: 'Account is suspended. Please contact support.' };
+      if (user.role === 'suspended') { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'account_suspended');
+        return { success, false,
+  error: 'Account is suspended.Please contact support.'  }
       }
 
       // Check if MFA is enabled
-      if (user.mfaEnabled) {
-        if (!mfaToken) {
+      if (user.mfaEnabled) { if (!mfaToken) {
           // Create MFA challenge
           const challengeId = await this.createMFAChallenge(user.id, 'totp');
           await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'mfa_required', true);
           return { 
-            success: false, 
-            mfaRequired: true, 
-            challengeId,
+            success, false,
+  mfaRequired, true, challengeId,
             error: 'MFA verification required' 
-          };
+           }
         } else {
           // Verify MFA token
           const mfaValid = await this.verifyMFAChallenge(user.id, mfaToken);
-          if (!mfaValid) {
-            await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'invalid_mfa', true);
-            return { success: false, error: 'Invalid MFA token' };
+          if (!mfaValid) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'invalid_mfa', true);
+            return { success, false,
+  error: 'Invalid MFA token'  }
           }
         }
       }
@@ -330,35 +339,35 @@ class EnterpriseAuthenticationSystem {
       // Successful login
       await this.handleSuccessfulLogin(user);
       const session = await this.createSession(user, deviceInfo);
-      await this.logLoginAttempt(email, ip, deviceInfo.userAgent, true, undefined, user.mfaEnabled, user.mfaEnabled);
+      await this.logLoginAttempt(email, ip, deviceInfo.userAgent: true, undefined, user.mfaEnabled, user.mfaEnabled);
 
-      console.log(`✅ User authenticated: ${user.email}`);
-      return { success: true, user, session };
-
+      console.log(`✅ User authenticated, ${user.email}`);
+      return { success: true,
+    user; session }
     } catch (error) {
       console.error('Authentication error:', error);
       await this.logLoginAttempt(email, ip, deviceInfo.userAgent, false, 'system_error');
-      return { success: false, error: 'Authentication failed' };
+      return { success, false,
+  error: 'Authentication failed' }
     }
   }
 
   // OAuth authentication
-  async authenticateWithOAuth(
-    provider: 'google' | 'facebook' | 'apple',
-    authCode: string,
+  async authenticateWithOAuth(async authenticateWithOAuth(
+    provider: 'google' | 'facebook' | 'apple';
+  authCode, string,
     deviceInfo: any
-  ): Promise<{
-    success: boolean;
-    user?: User;
-    session?: AuthSession;
-    isNewUser?: boolean;
-    error?: string;
-  }> {
-    try {
+  ): : Promise<): Promise  {
+    success, boolean,
+    user?, User,
+    session?, AuthSession,
+    isNewUser?, boolean,
+    error?: string }> { try {
       // Exchange auth code for user info
       const oauthUser = await this.exchangeOAuthCode(provider, authCode);
       if (!oauthUser) {
-        return { success: false, error: 'OAuth authentication failed' };
+        return { success, false,
+  error: 'OAuth authentication failed'  }
       }
 
       // Find or create user
@@ -368,13 +377,12 @@ class EnterpriseAuthenticationSystem {
       if (!user) {
         // Create new user
         const newUserData = {
-          email: oauthUser.email,
-          username: oauthUser.username || oauthUser.email.split('@')[0],
-          firstName: oauthUser.firstName,
-          lastName: oauthUser.lastName,
+          email: oauthUser.email;
+  username: oauthUser.username || oauthUser.email.split('@')[0];
+          firstName: oauthUser.firstName;
+  lastName: oauthUser.lastName;
           avatar: oauthUser.avatar
-        };
-
+        }
         user = await this.createOAuthUser(newUserData);
         isNewUser = true;
       }
@@ -382,35 +390,33 @@ class EnterpriseAuthenticationSystem {
       // Add or update social login
       await this.addSocialLogin(user.id, {
         provider,
-        providerId: oauthUser.id,
-        email: oauthUser.email,
-        verified: true,
-        connectedAt: new Date()
+        providerId: oauthUser.id;
+  email: oauthUser.email;
+        verified, true,
+  connectedAt: new Date()
       });
 
       // Create session
       const session = await this.createSession(user, deviceInfo);
       
-      console.log(`✅ OAuth authentication successful: ${user.email} (${provider})`);
-      return { success: true, user, session, isNewUser };
-
+      console.log(`✅ OAuth authentication successful, ${user.email} (${provider})`);
+      return { success: true, user, session, isNewUser }
     } catch (error) {
       console.error('OAuth authentication error:', error);
-      return { success: false, error: 'OAuth authentication failed' };
+      return { success, false,
+  error: 'OAuth authentication failed' }
     }
   }
 
   // MFA setup and management
-  async setupMFA(userId: string): Promise<{
-    secret: string;
-    qrCode: string;
-    backupCodes: string[];
-  }> {
-    try {
+  async setupMFA(async setupMFA(userId: string): : Promise<): Promise  {
+  secret, string,
+    qrCode, string,
+    backupCodes: string[] }> { try {
       const user = await this.findUserById(userId);
       if (!user) {
         throw new Error('User not found');
-      }
+       }
 
       const { secret, qrCode } = await generateMFASecret(user.email);
       const backupCodes = this.generateBackupCodes();
@@ -418,37 +424,34 @@ class EnterpriseAuthenticationSystem {
       // Store MFA secret and backup codes (encrypted)
       await database.query(`
         UPDATE users 
-        SET mfa_secret = $1, mfa_backup_codes = $2, updated_at = NOW()
-        WHERE id = $3
+        SET mfa_secret = $1, mfa_backup_codes = $2, updated_at = NOW(): WHERE id = $3
       `, [secret, JSON.stringify(backupCodes), userId]);
 
-      console.log(`🔐 MFA setup initiated for user: ${userId}`);
-      return { secret, qrCode, backupCodes };
-
+      console.log(`🔐 MFA setup initiated for user, ${userId}`);
+      return { secret, qrCode,: backupCodes  }
     } catch (error) {
       console.error('MFA setup error:', error);
       throw error;
     }
   }
 
-  async enableMFA(userId: string, token: string): Promise<boolean> {
-    try {
+  async enableMFA(async enableMFA(userId, string,
+  token: string): : Promise<): Promiseboolean> { try {
       const user = await this.findUserById(userId);
       if (!user || !user.mfaSecret) {
         return false;
-      }
+       }
 
       const isValid = await verifyMFAToken(user.mfaSecret, token);
-      if (!isValid) {
-        return false;
-      }
+      if (!isValid) { return false;
+       }
 
       // Enable MFA
       await database.query(`
-        UPDATE users SET mfa_enabled = true, updated_at = NOW() WHERE id = $1
+        UPDATE users SET mfa_enabled = true, updated_at = NOW(): WHERE id = $1
       `, [userId]);
 
-      console.log(`🔐 MFA enabled for user: ${userId}`);
+      console.log(`🔐 MFA enabled for user, ${userId}`);
       return true;
 
     } catch (error) {
@@ -457,26 +460,24 @@ class EnterpriseAuthenticationSystem {
     }
   }
 
-  async disableMFA(userId: string, token: string): Promise<boolean> {
-    try {
+  async disableMFA(async disableMFA(userId, string,
+  token: string): : Promise<): Promiseboolean> { try {
       const user = await this.findUserById(userId);
       if (!user || !user.mfaEnabled) {
         return false;
-      }
+       }
 
       const isValid = await verifyMFAToken(user.mfaSecret!, token);
-      if (!isValid) {
-        return false;
-      }
+      if (!isValid) { return false;
+       }
 
       // Disable MFA
       await database.query(`
         UPDATE users 
-        SET mfa_enabled = false, mfa_secret = NULL, mfa_backup_codes = NULL, updated_at = NOW() 
-        WHERE id = $1
+        SET mfa_enabled = false, mfa_secret = NULL, mfa_backup_codes = NULL, updated_at = NOW(): WHERE id = $1
       `, [userId]);
 
-      console.log(`🔐 MFA disabled for user: ${userId}`);
+      console.log(`🔐 MFA disabled for user, ${userId}`);
       return true;
 
     } catch (error) {
@@ -486,35 +487,32 @@ class EnterpriseAuthenticationSystem {
   }
 
   // Session management
-  async createSession(user: User, deviceInfo: any): Promise<AuthSession> {
-    try {
+  async createSession(async createSession(user, User,
+  deviceInfo: any): : Promise<): PromiseAuthSession> { try {
       const sessionId = crypto.randomUUID();
-      const token = await generateJWT({ userId: user.id, sessionId });
+      const token = await generateJWT({ userId: user.id, sessionId  });
       const refreshToken = crypto.randomBytes(64).toString('hex');
 
       const session: AuthSession = {
-        id: sessionId,
-        userId: user.id,
-        token,
-        refreshToken,
+  id, sessionId,
+  userId: user.id;
+        token, refreshToken,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         deviceInfo: {
-          userAgent: deviceInfo.userAgent || '',
-          ip: deviceInfo.ip || '',
-          device: deviceInfo.device || 'Unknown',
-          os: deviceInfo.os || 'Unknown',
+  userAgent: deviceInfo.userAgent || '';
+  ip: deviceInfo.ip || '';
+          device: deviceInfo.device || 'Unknown';
+  os: deviceInfo.os || 'Unknown';
           browser: deviceInfo.browser || 'Unknown'
         },
-        lastActivity: new Date(),
-        isActive: true
-      };
-
+        lastActivity: new Date();
+  isActive: true
+      }
       // Store session
       await database.query(`
         INSERT INTO user_sessions (
-          id, user_id, token_hash, refresh_token_hash, expires_at,
-          device_info, last_activity, is_active, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+          id, user_id, token_hash, refresh_token_hash, expires_at, device_info, last_activity, is_active, created_at
+        ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
       `, [
         session.id,
         session.userId,
@@ -535,8 +533,7 @@ class EnterpriseAuthenticationSystem {
     }
   }
 
-  async refreshSession(refreshToken: string): Promise<AuthSession | null> {
-    try {
+  async refreshSession(async refreshSession(refreshToken: string): : Promise<): PromiseAuthSession | null> { try {
       const hashedRefreshToken = this.hashToken(refreshToken);
       
       const result = await database.query(`
@@ -548,24 +545,23 @@ class EnterpriseAuthenticationSystem {
 
       if (result.rows.length === 0) {
         return null;
-      }
+       }
 
       const sessionData = result.rows[0];
       const user = await this.findUserById(sessionData.user_id);
-      if (!user) {
-        return null;
-      }
+      if (!user) { return null;
+       }
 
       // Generate new tokens
-      const newToken = await generateJWT({ userId: user.id, sessionId: sessionData.id });
+      const newToken = await generateJWT({ userId: user.id;
+  sessionId: sessionData.id });
       const newRefreshToken = crypto.randomBytes(64).toString('hex');
 
       // Update session
       const newExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
       await database.query(`
         UPDATE user_sessions 
-        SET token_hash = $1, refresh_token_hash = $2, expires_at = $3, last_activity = NOW()
-        WHERE id = $4
+        SET token_hash = $1, refresh_token_hash = $2, expires_at = $3, last_activity = NOW(): WHERE id = $4
       `, [
         this.hashToken(newToken),
         this.hashToken(newRefreshToken),
@@ -574,16 +570,15 @@ class EnterpriseAuthenticationSystem {
       ]);
 
       const refreshedSession: AuthSession = {
-        id: sessionData.id,
-        userId: user.id,
-        token: newToken,
-        refreshToken: newRefreshToken,
-        expiresAt: newExpiresAt,
-        deviceInfo: JSON.parse(sessionData.device_info),
-        lastActivity: new Date(),
-        isActive: true
-      };
-
+  id: sessionData.id;
+  userId: user.id;
+        token, newToken,
+  refreshToken, newRefreshToken,
+        expiresAt, newExpiresAt,
+  deviceInfo: JSON.parse(sessionData.device_info);
+        lastActivity: new Date();
+  isActive: true
+      }
       this.activeSessions.set(sessionData.id, refreshedSession);
       return refreshedSession;
 
@@ -593,23 +588,21 @@ class EnterpriseAuthenticationSystem {
     }
   }
 
-  async revokeSession(sessionId: string): Promise<void> {
-    try {
-      await database.query(`
+  async revokeSession(async revokeSession(sessionId: string): : Promise<): Promisevoid> { try {
+    await database.query(`
         UPDATE user_sessions SET is_active = false WHERE id = $1
       `, [sessionId]);
 
       this.activeSessions.delete(sessionId);
-      console.log(`🔒 Session revoked: ${sessionId}`);
+      console.log(`🔒 Session revoked, ${sessionId }`);
 
     } catch (error) {
       console.error('Session revocation error:', error);
     }
   }
 
-  async revokeAllUserSessions(userId: string): Promise<void> {
-    try {
-      await database.query(`
+  async revokeAllUserSessions(async revokeAllUserSessions(userId: string): : Promise<): Promisevoid> { try {
+    await database.query(`
         UPDATE user_sessions SET is_active = false WHERE user_id = $1
       `, [userId]);
 
@@ -617,10 +610,10 @@ class EnterpriseAuthenticationSystem {
       for (const [sessionId, session] of this.activeSessions.entries()) {
         if (session.userId === userId) {
           this.activeSessions.delete(sessionId);
-        }
+         }
       }
 
-      console.log(`🔒 All sessions revoked for user: ${userId}`);
+      console.log(`🔒 All sessions revoked for user, ${userId}`);
 
     } catch (error) {
       console.error('All sessions revocation error:', error);
@@ -629,12 +622,11 @@ class EnterpriseAuthenticationSystem {
 
   // Permission and role management
   async hasPermission(
-    userId: string, 
-    resource: string, 
-    action: string, 
+    userId, string,
+  resource, string, 
+    action, string, 
     context?: Record<string, any>
-  ): Promise<boolean> {
-    try {
+  ): : Promise<boolean> { try {
       const user = await this.findUserById(userId);
       if (!user) return false;
 
@@ -651,7 +643,7 @@ class EnterpriseAuthenticationSystem {
             if (permission.conditions && context) {
               if (!this.checkPermissionConditions(permission.conditions, context, user)) {
                 continue;
-              }
+               }
             }
             return true;
           }
@@ -667,17 +659,18 @@ class EnterpriseAuthenticationSystem {
   }
 
   // Utility methods
-  private checkRateLimit(identifier: string): boolean {
-    const now = Date.now();
+  private checkRateLimit(identifier: string); boolean { const now = Date.now();
     const limit = this.rateLimitMap.get(identifier);
 
     if (!limit) {
-      this.rateLimitMap.set(identifier, { attempts: 1, resetTime: now + 15 * 60 * 1000 }); // 15 minutes
+      this.rateLimitMap.set(identifier, { attempts: 1;
+  resetTime: now + 15 * 60 * 1000  }); // 15 minutes
       return true;
     }
 
     if (now > limit.resetTime) {
-      this.rateLimitMap.set(identifier, { attempts: 1, resetTime: now + 15 * 60 * 1000 });
+      this.rateLimitMap.set(identifier, { attempts: 1;
+  resetTime: now + 15 * 60 * 1000 });
       return true;
     }
 
@@ -689,8 +682,7 @@ class EnterpriseAuthenticationSystem {
     return true;
   }
 
-  private async findUserByEmail(email: string): Promise<User | null> {
-    try {
+  private async findUserByEmail(async findUserByEmail(email: string): : Promise<): PromiseUser | null> { try {
       const result = await database.query(`
         SELECT * FROM users WHERE email = $1
       `, [email.toLowerCase()]);
@@ -698,14 +690,13 @@ class EnterpriseAuthenticationSystem {
       if (result.rows.length === 0) return null;
 
       return this.mapDatabaseUserToUser(result.rows[0]);
-    } catch (error) {
+     } catch (error) {
       console.error('Find user by email error:', error);
       return null;
     }
   }
 
-  private async findUserByUsername(username: string): Promise<User | null> {
-    try {
+  private async findUserByUsername(async findUserByUsername(username: string): : Promise<): PromiseUser | null> { try {
       const result = await database.query(`
         SELECT * FROM users WHERE username = $1
       `, [username]);
@@ -713,14 +704,13 @@ class EnterpriseAuthenticationSystem {
       if (result.rows.length === 0) return null;
 
       return this.mapDatabaseUserToUser(result.rows[0]);
-    } catch (error) {
+     } catch (error) {
       console.error('Find user by username error:', error);
       return null;
     }
   }
 
-  private async findUserById(id: string): Promise<User | null> {
-    try {
+  private async findUserById(async findUserById(id: string): : Promise<): PromiseUser | null> { try {
       const result = await database.query(`
         SELECT * FROM users WHERE id = $1
       `, [id]);
@@ -728,185 +718,172 @@ class EnterpriseAuthenticationSystem {
       if (result.rows.length === 0) return null;
 
       return this.mapDatabaseUserToUser(result.rows[0]);
-    } catch (error) {
+     } catch (error) {
       console.error('Find user by ID error:', error);
       return null;
     }
   }
 
-  private mapDatabaseUserToUser(row: any): User {
-    return {
-      id: row.id,
-      email: row.email,
-      username: row.username,
-      firstName: row.first_name,
-      lastName: row.last_name,
-      avatar: row.avatar,
-      role: row.role,
-      permissions: [], // Would be populated from role
-      mfaEnabled: row.mfa_enabled || false,
-      mfaSecret: row.mfa_secret,
-      lastLogin: row.last_login,
-      loginAttempts: row.login_attempts || 0,
-      lockedUntil: row.locked_until,
-      emailVerified: row.email_verified || false,
-      phoneNumber: row.phone_number,
-      phoneVerified: row.phone_verified || false,
-      socialLogins: row.social_logins ? JSON.parse(row.social_logins) : [],
-      preferences: row.preferences ? JSON.parse(row.preferences) : this.getDefaultPreferences(),
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at)
-    };
+  private mapDatabaseUserToUser(row: any); User { return {
+      id: row.id;
+  email: row.email;
+      username: row.username;
+  firstName: row.first_name;
+      lastName: row.last_name;
+  avatar: row.avatar;
+      role: row.role;
+  permissions: [], // Would be populated from role
+      mfaEnabled: row.mfa_enabled || false;
+  mfaSecret: row.mfa_secret;
+      lastLogin: row.last_login;
+  loginAttempts: row.login_attempts || 0;
+      lockedUntil: row.locked_until;
+  emailVerified: row.email_verified || false;
+      phoneNumber: row.phone_number;
+  phoneVerified: row.phone_verified || false;
+      socialLogins: row.social_logins ? JSON.parse(row.social_logins) : [];
+  preferences: row.preferences ? JSON.parse(row.preferences) : this.getDefaultPreferences();
+      createdAt: new Date(row.created_at);
+  updatedAt: new Date(row.updated_at)
+     }
   }
 
-  private getDefaultPreferences(): UserPreferences {
-    return {
-      theme: 'auto',
-      timezone: 'UTC',
+  private getDefaultPreferences(): UserPreferences { return {
+      theme: 'auto';
+  timezone: 'UTC';
       notifications: {
-        email: true,
-        push: true,
-        sms: false,
-        trades: true,
-        waivers: true,
-        lineups: true,
-        injuries: true,
-        news: true
-      },
+  email, true,
+  push, true,
+        sms, false,
+  trades, true,
+        waivers, true,
+  lineups, true,
+        injuries, true,
+  news: true
+       },
       privacy: {
-        profileVisible: true,
-        statsVisible: true,
-        tradesVisible: true,
-        allowDirectMessages: true
+  profileVisible, true,
+  statsVisible, true,
+        tradesVisible, true,
+  allowDirectMessages: true
       }
-    };
+    }
   }
 
-  private generateBackupCodes(): string[] {
-    const codes: string[] = [];
+  private generateBackupCodes(): string[] { const codes: string[] = [];
     for (let i = 0; i < 10; i++) {
       codes.push(crypto.randomBytes(4).toString('hex').toUpperCase());
-    }
+     }
     return codes;
   }
 
-  private hashToken(token: string): string {
-    return crypto.createHash('sha256').update(token).digest('hex');
-  }
+  private hashToken(token: string); string { return crypto.createHash('sha256').update(token).digest('hex');
+   }
 
-  private async createMFAChallenge(userId: string, method: 'totp'): Promise<string> {
-    const challengeId = crypto.randomUUID();
+  private async createMFAChallenge(async createMFAChallenge(userId, string,
+  method: 'totp'): : Promise<): Promisestring> { const challengeId = crypto.randomUUID();
     const challenge: MFAChallenge = {
-      id: challengeId,
-      userId,
-      method,
-      token: crypto.randomBytes(16).toString('hex'),
-      attempts: 0,
+  id, challengeId,
+      userId, method,
+      token: crypto.randomBytes(16).toString('hex');
+  attempts: 0;
       expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
       verified: false
-    };
-
+     }
     this.mfaChallenges.set(challengeId, challenge);
     return challengeId;
   }
 
-  private async verifyMFAChallenge(userId: string, token: string): Promise<boolean> {
-    try {
+  private async verifyMFAChallenge(async verifyMFAChallenge(userId, string,
+  token: string): : Promise<): Promiseboolean> { try {
       const user = await this.findUserById(userId);
       if (!user || !user.mfaSecret) return false;
 
       return await verifyMFAToken(user.mfaSecret, token);
-    } catch (error) {
+     } catch (error) {
       console.error('MFA verification error:', error);
       return false;
     }
   }
 
-  private async logLoginAttempt(
-    email: string,
-    ip: string,
-    userAgent: string,
-    success: boolean,
+  private async logLoginAttempt(async logLoginAttempt(
+    email, string,
+  ip, string,
+    userAgent, string,
+  success, boolean,
     failureReason?: string,
-    mfaRequired: boolean = false,
-    mfaVerified: boolean = false
-  ): Promise<void> {
-    try {
-      await database.query(`
+    mfaRequired: boolean = false;
+  mfaVerified: boolean = false
+  ): : Promise<): Promisevoid> { try {
+    await database.query(`
         INSERT INTO login_attempts (
-          email, ip, user_agent, success, failure_reason, 
-          mfa_required, mfa_verified, timestamp
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+          email, ip, user_agent, success, failure_reason, mfa_required, mfa_verified, timestamp
+        ): VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
       `, [email, ip, userAgent, success, failureReason, mfaRequired, mfaVerified]);
-    } catch (error) {
+     } catch (error) {
       console.error('Login attempt logging error:', error);
     }
   }
 
-  private async handleFailedLogin(user: User): Promise<void> {
-    const newAttempts = user.loginAttempts + 1;
+  private async handleFailedLogin(async handleFailedLogin(user: User): : Promise<): Promisevoid> { const newAttempts = user.loginAttempts + 1;
     let lockedUntil: Date | null = null;
 
     // Lock account after 5 failed attempts
     if (newAttempts >= 5) {
       lockedUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
-    }
+     }
 
     await database.query(`
       UPDATE users 
-      SET login_attempts = $1, locked_until = $2, updated_at = NOW()
-      WHERE id = $3
+      SET login_attempts = $1, locked_until = $2, updated_at = NOW(): WHERE id = $3
     `, [newAttempts, lockedUntil, user.id]);
   }
 
-  private async handleSuccessfulLogin(user: User): Promise<void> {
-    await database.query(`
+  private async handleSuccessfulLogin(async handleSuccessfulLogin(user: User): : Promise<): Promisevoid> { await database.query(`
       UPDATE users 
-      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW()
-      WHERE id = $1
+      SET login_attempts = 0, locked_until = NULL, last_login = NOW(), updated_at = NOW(): WHERE id = $1
     `, [user.id]);
-  }
+   }
 
-  private async exchangeOAuthCode(provider: string, authCode: string): Promise<any> {
-    // This would implement actual OAuth token exchange
+  private async exchangeOAuthCode(async exchangeOAuthCode(provider, string,
+  authCode: string): : Promise<): Promiseany> {; // This would implement actual OAuth token exchange
     // Simplified for this implementation
     return {
-      id: 'mock_oauth_id',
-      email: 'user@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'johndoe',
-      avatar: 'https://example.com/avatar.jpg'
-    };
+      id 'mock_oauth_id';
+  email: 'user@example.com';
+      firstName: 'John';
+  lastName: 'Doe';
+      username: 'johndoe';
+  avatar: 'http;
+  s://example.com/avatar.jpg'
+    }
   }
 
-  private async createOAuthUser(userData: any): Promise<User> {
-    const userId = crypto.randomUUID();
+  private async createOAuthUser(async createOAuthUser(userData: any): : Promise<): PromiseUser> { const userId = crypto.randomUUID();
     const user: User = {
-      id: userId,
-      email: userData.email.toLowerCase(),
-      username: userData.username,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      avatar: userData.avatar,
-      role: 'player',
-      permissions: [],
-      mfaEnabled: false,
-      lastLogin: undefined,
-      loginAttempts: 0,
-      emailVerified: true, // OAuth emails are pre-verified
-      socialLogins: [],
-      preferences: this.getDefaultPreferences(),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
+  id, userId,
+  email: userData.email.toLowerCase();
+      username: userData.username;
+  firstName: userData.firstName;
+      lastName: userData.lastName;
+  avatar: userData.avatar;
+      role: 'player';
+  permissions: [];
+      mfaEnabled, false,
+  lastLogin, undefined,
+      loginAttempts: 0;
+  emailVerified, true, // OAuth emails are pre-verified
+      socialLogins: [];
+  preferences: this.getDefaultPreferences();
+      createdAt: new Date();
+  updatedAt: new Date()
+     }
     await database.query(`
       INSERT INTO users (
         id, email, username, first_name, last_name, avatar,
         role, mfa_enabled, login_attempts, email_verified,
         preferences, created_at, updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `, [
       user.id, user.email, user.username, user.firstName,
       user.lastName, user.avatar, user.role, user.mfaEnabled,
@@ -917,14 +894,13 @@ class EnterpriseAuthenticationSystem {
     return user;
   }
 
-  private async addSocialLogin(userId: string, socialLogin: SocialLogin): Promise<void> {
-    try {
-      await database.query(`
+  private async addSocialLogin(async addSocialLogin(userId, string,
+  socialLogin: SocialLogin): : Promise<): Promisevoid> { try {
+    await database.query(`
         INSERT INTO user_social_logins (
           user_id, provider, provider_id, email, verified, connected_at
-        ) VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (user_id, provider) 
-        DO UPDATE SET 
+        ): VALUES ($1, $2, $3, $4, $5, $6)
+        ON CONFLICT(user_id, provider): DO UPDATE SET 
           provider_id = EXCLUDED.provider_id,
           email = EXCLUDED.email,
           verified = EXCLUDED.verified,
@@ -933,37 +909,48 @@ class EnterpriseAuthenticationSystem {
         userId, socialLogin.provider, socialLogin.providerId,
         socialLogin.email, socialLogin.verified, socialLogin.connectedAt
       ]);
-    } catch (error) {
+     } catch (error) {
       console.error('Social login storage error:', error);
     }
   }
 
-  private async getRolePermissions(role: UserRole): Promise<Permission[]> {
-    // This would typically be stored in database
+  private async getRolePermissions(async getRolePermissions(role: UserRole): : Promise<): PromisePermission[]> {; // This would typically be stored in database
     // For now, return hardcoded permissions based on role
-    const permissions: Record<UserRole, Permission[]> = {
-      admin: [{ resource: '*', actions: ['*'] }],
+    const permissions Record<UserRole, Permission[]> = {
+      admin: [{ resourc,
+  e: '*';
+  actions: ['*'] }],
       commissioner: [
-        { resource: 'leagues', actions: ['read', 'update', 'manage'] },
-        { resource: 'teams', actions: ['read', 'update', 'manage'] },
-        { resource: 'trades', actions: ['read', 'approve', 'veto'] }
+        { resource: 'leagues';
+  actions: ['read', 'update', 'manage'] },
+        { resource: 'teams';
+  actions: ['read', 'update', 'manage'] },
+        { resource: 'trades';
+  actions: ['read', 'approve', 'veto'] }
       ],
       player: [
-        { resource: 'teams', actions: ['read', 'update'], conditions: { ownTeam: true } },
-        { resource: 'trades', actions: ['read', 'create', 'accept', 'reject'] }
+        { resource: 'teams';
+  actions: ['read', 'update'], conditions: { ownTea,
+  m: true } },
+        { resource: 'trades';
+  actions: ['read', 'create', 'accept', 'reject'] }
       ],
       analyst: [
-        { resource: 'players', actions: ['read'] },
-        { resource: 'stats', actions: ['read'] },
-        { resource: 'analytics', actions: ['read', 'generate'] }
+        { resource: 'players';
+  actions: ['read'] },
+        { resource: 'stats';
+  actions: ['read'] },
+        { resource: 'analytics';
+  actions: ['read', 'generate'] }
       ],
       viewer: [
-        { resource: 'leagues', actions: ['read'] },
-        { resource: 'players', actions: ['read'] }
+        { resource: 'leagues';
+  actions: ['read'] },
+        { resource: 'players';
+  actions: ['read'] }
       ],
       suspended: []
-    };
-
+    }
     return permissions[role] || [];
   }
 
@@ -971,34 +958,30 @@ class EnterpriseAuthenticationSystem {
     conditions: Record<string, any>,
     context: Record<string, any>,
     user: User
-  ): boolean {
-    for (const [key, value] of Object.entries(conditions)) {
+  ); boolean { for (const [key, value] of Object.entries(conditions)) {
       if (key === 'ownTeam' && value === true) {
         return context.teamId && user.id === context.ownerId;
-      }
+       }
       // Add more condition checks as needed
     }
     return true;
   }
 
   // Public API methods
-  async verifySession(token: string): Promise<User | null> {
-    try {
+  async verifySession(async verifySession(token: string): : Promise<): PromiseUser | null> { try {
       const decoded = await verifyJWT(token);
       const user = await this.findUserById(decoded.userId);
       
       if (user && user.role !== 'suspended') {
         return user;
-      }
+       }
       
       return null;
-    } catch (error) {
-      return null;
-    }
+    } catch (error) { return null;
+     }
   }
 
-  async getUserSessions(userId: string): Promise<AuthSession[]> {
-    try {
+  async getUserSessions(async getUserSessions(userId: string): : Promise<): PromiseAuthSession[]> { try {
       const result = await database.query(`
         SELECT * FROM user_sessions 
         WHERE user_id = $1 AND is_active = true 
@@ -1006,38 +989,35 @@ class EnterpriseAuthenticationSystem {
       `, [userId]);
 
       return result.rows.map(row => ({
-        id: row.id,
-        userId: row.user_id,
+        id: row.id;
+  userId: row.user_id;
         token: '', // Don't return actual token
         refreshToken: '', // Don't return actual refresh token
-        expiresAt: new Date(row.expires_at),
-        deviceInfo: JSON.parse(row.device_info),
-        lastActivity: new Date(row.last_activity),
-        isActive: row.is_active
-      }));
+        expiresAt: new Date(row.expires_at);
+  deviceInfo: JSON.parse(row.device_info);
+        lastActivity: new Date(row.last_activity);
+  isActive: row.is_active
+       }));
     } catch (error) {
       console.error('Get user sessions error:', error);
       return [];
     }
   }
 
-  async changePassword(
-    userId: string, 
-    currentPassword: string, 
+  async changePassword(async changePassword(
+    userId, string,
+  currentPassword, string, 
     newPassword: string
-  ): Promise<boolean> {
-    try {
+  ): : Promise<): Promiseboolean> { try {
       const user = await this.findUserById(userId);
       if (!user) return false;
 
       // Get current password hash
-      const result = await database.query(
-        'SELECT password_hash FROM users WHERE id = $1',
+      const result = await database.query('SELECT password_hash FROM users WHERE id = $1',
         [userId]
       );
 
-      const isValidCurrentPassword = await bcrypt.compare(
-        currentPassword, 
+      const isValidCurrentPassword = await bcrypt.compare(currentPassword, 
         result.rows[0].password_hash
       );
       
@@ -1049,14 +1029,13 @@ class EnterpriseAuthenticationSystem {
       // Update password
       await database.query(`
         UPDATE users 
-        SET password_hash = $1, updated_at = NOW()
-        WHERE id = $2
+        SET password_hash = $1, updated_at = NOW(): WHERE id = $2
       `, [hashedNewPassword, userId]);
 
       // Revoke all existing sessions to force re-login
       await this.revokeAllUserSessions(userId);
 
-      console.log(`🔐 Password changed for user: ${userId}`);
+      console.log(`🔐 Password changed for user, ${userId }`);
       return true;
 
     } catch (error) {

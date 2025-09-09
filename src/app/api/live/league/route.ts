@@ -1,50 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const leagueId = searchParams.get("leagueId");
 
     if (!leagueId) {
       return NextResponse.json(
-        { error: "League ID is required" },
+        { error: "League ID is required"  },
         { status: 400 },
       );
     }
 
     // Mock live league data
     const liveData = {
-      leagueId,
-      isLive: true,
-      currentWeek: 14,
+      leagueId, isLive, true, currentWeek, 14,
       lastUpdated: new Date().toISOString(),
-      activeMatches: [
+  activeMatches: [
         {
           gameId: "game_1",
-          homeTeam: "KC",
+  homeTeam: "KC",
           awayTeam: "LV",
-          quarter: 2,
-          timeRemaining: "8:45",
-          homeScore: 14,
-          awayScore: 7,
-        },
-      ],
+  quarter: 2,
+          timeRemaining: ",
+  8:45",
+  homeScore: 14,
+          awayScore: 7
+}
+  ],
       playerUpdates: [
         {
           playerId: "player_123",
-          name: "Patrick Mahomes",
+  name: "Patrick Mahomes",
           team: "KC",
-          position: "QB",
+  position: "QB",
           points: 18.5,
-          projectedPoints: 22.0,
-        },
-      ],
-    };
-
+  projectedPoints: 22.0
+}
+  ]
+}
     return NextResponse.json(liveData);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch live league data" },
+  } catch { return NextResponse.json(
+      { error: "Failed to fetch live league data"  },
       { status: 500 },
     );
   }

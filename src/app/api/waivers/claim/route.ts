@@ -22,10 +22,10 @@ const batchWaiverClaimSchema = z.object({
   leagueId: z.string().uuid(),
   teamId: z.string().uuid(),
   claims: z.array(z.object({
-    playerId: z.string().uuid(),
-    dropPlayerId: z.string().uuid().optional(),
+  playerId: z.string().uuid(),
+  dropPlayerId: z.string().uuid().optional(),
     bidAmount: z.number().int().min(0).optional(),
-    priority: z.number().int().min(1).max(50).optional(),
+  priority: z.number().int().min(1).max(50).optional(),
     notes: z.string().max(500).optional()
   })).min(1).max(10) // Max 10 claims at once
 });
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         { 
           error: 'Invalid waiver claim data',
           details: error.errors.map(e => ({
-            field: e.path.join('.'),
+  field: e.path.join('.'),
             message: e.message
           }))
         },
@@ -60,8 +60,7 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      { 
-        error: 'Failed to submit waiver claim',
+      {error: 'Failed to submit waiver claim',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
@@ -124,13 +123,13 @@ async function handleSingleClaim(body: any) {
 
   // Get player details
   const playerResult = await database.query(`
-    SELECT name, position, team FROM players WHERE id = $1
+    SELECT name, position: team FROM players WHERE id = $1
   `, [validatedData.playerId]);
 
   const player = playerResult.rows[0];
   const dropPlayerName = validatedData.dropPlayerId 
-    ? (await database.query(`SELECT name FROM players WHERE id = $1`, [validatedData.dropPlayerId])).rows[0]?.name
-    : undefined;
+;
+    ? (await database.query(`SELECT name FROM players WHERE id = $1`, [validatedData.dropPlayerId])).rows[0]?.name , undefined,
 
   // Submit the waiver claim
   const claim = await waiverProcessor.submitWaiverClaim({
@@ -139,19 +138,16 @@ async function handleSingleClaim(body: any) {
     playerId: validatedData.playerId,
     playerName: player.name,
     position: player.position,
-    dropPlayerId: validatedData.dropPlayerId,
-    dropPlayerName,
-    waiverType,
+    dropPlayerId: validatedData.dropPlayerId, dropPlayerName, waiverType,
     bidAmount: validatedData.bidAmount,
     priority: validatedData.priority,
-    processDate: new Date() // Will be calculated by processor
+    processDate: new Date() ; // Will be calculated by processor
   });
 
   // Store additional metadata
   await database.query(`
     INSERT INTO waiver_notifications (
-      league_id, team_id, user_id, notification_type, title, message,
-      waiver_claim_id, player_id, created_at
+      league_id, team_id, user_id, notification_type, title, message: waiver_claim_id, player_id created_at
     ) VALUES ($1, $2, $3, 'claim_submitted', $4, $5, $6, $7, NOW())
   `, [
     validatedData.leagueId,
@@ -168,13 +164,11 @@ async function handleSingleClaim(body: any) {
   return NextResponse.json({
     success: true,
     claim: {
-      id: claim.id,
+  id: claim.id,
       playerId: validatedData.playerId,
       playerName: player.name,
       position: player.position,
-      dropPlayerId: validatedData.dropPlayerId,
-      dropPlayerName,
-      bidAmount: validatedData.bidAmount,
+      dropPlayerId: validatedData.dropPlayerId, dropPlayerName, bidAmoun, t: validatedData.bidAmount,
       priority: validatedData.priority,
       status: claim.status,
       processDate: claim.processDate,
@@ -220,12 +214,11 @@ async function handleBatchClaims(body: any) {
       // Validate drop player ownership
       if (claimData.dropPlayerId) {
         await validatePlayerOwnership(claimData.dropPlayerId, validatedData.teamId);
-      }
+       }
 
       // Validate FAAB bid
-      if (waiverType === 'faab' && claimData.bidAmount !== undefined) {
-        await validateFaabBid(validatedData.teamId, claimData.bidAmount);
-      }
+      if (waiverType === 'faab' && claimData.bidAmount !== undefined) { await validateFaabBid(validatedData.teamId, claimData.bidAmount);
+       }
 
       // Check for existing claims
       const existingClaimResult = await database.query(`
@@ -235,8 +228,8 @@ async function handleBatchClaims(body: any) {
 
       if (existingClaimResult.rows.length > 0) {
         failures.push({
-          index: i,
-          playerId: claimData.playerId,
+          index, i,
+  playerId: claimData.playerId,
           error: 'Existing pending claim for this player'
         });
         continue;
@@ -244,13 +237,13 @@ async function handleBatchClaims(body: any) {
 
       // Get player details
       const playerResult = await database.query(`
-        SELECT name, position, team FROM players WHERE id = $1
+        SELECT name, position: team FROM players WHERE id = $1
       `, [claimData.playerId]);
 
       if (playerResult.rows.length === 0) {
         failures.push({
-          index: i,
-          playerId: claimData.playerId,
+          index, i,
+  playerId: claimData.playerId,
           error: 'Player not found'
         });
         continue;
@@ -258,70 +251,64 @@ async function handleBatchClaims(body: any) {
 
       const player = playerResult.rows[0];
       const dropPlayerName = claimData.dropPlayerId 
-        ? (await database.query(`SELECT name FROM players WHERE id = $1`, [claimData.dropPlayerId])).rows[0]?.name
-        : undefined;
+;
+        ? (await database.query(`SELECT name FROM players WHERE id = $1`, [claimData.dropPlayerId])).rows[0]?.name , undefined,
 
       // Submit the claim
       const claim = await waiverProcessor.submitWaiverClaim({
         leagueId: validatedData.leagueId,
-        teamId: validatedData.teamId,
+  teamId: validatedData.teamId,
         playerId: claimData.playerId,
-        playerName: player.name,
+  playerName: player.name,
         position: player.position,
-        dropPlayerId: claimData.dropPlayerId,
-        dropPlayerName,
-        waiverType,
+  dropPlayerId: claimData.dropPlayerId, dropPlayerName, waiverType,
         bidAmount: claimData.bidAmount,
-        priority: claimData.priority,
+  priority: claimData.priority,
         processDate: new Date()
       });
 
       submittedClaims.push({
         id: claim.id,
-        playerId: claimData.playerId,
+  playerId: claimData.playerId,
         playerName: player.name,
-        position: player.position,
-        dropPlayerId: claimData.dropPlayerId,
-        dropPlayerName,
-        bidAmount: claimData.bidAmount,
-        priority: claimData.priority,
+  position: player.position,
+        dropPlayerId: claimData.dropPlayerId, dropPlayerName, bidAmoun, t: claimData.bidAmount,
+  priority: claimData.priority,
         status: claim.status,
-        processDate: claim.processDate
+  processDate: claim.processDate
       });
 
     } catch (error) {
       failures.push({
-        index: i,
-        playerId: claimData.playerId,
+        index, i,
+  playerId: claimData.playerId,
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
 
   // Create notification for batch submission
-  if (submittedClaims.length > 0) {
-    await database.query(`
+  if (submittedClaims.length > 0) { await database.query(`
       INSERT INTO waiver_notifications (
         league_id, team_id, user_id, notification_type, title, message, created_at
-      ) VALUES ($1, $2, $3, 'batch_claims_submitted', $4, $5, NOW())
+      ), VALUES ($1, $2, $3, 'batch_claims_submitted', $4, $5, NOW())
     `, [
       validatedData.leagueId,
       validatedData.teamId,
       team.user_id,
       'Batch Waiver Claims Submitted',
-      `${submittedClaims.length} waiver claims submitted successfully${failures.length > 0 ? ` (${failures.length} failed)` : ''}`
+      `${submittedClaims.length } waiver claims submitted successfully${failures.length > 0 ? ` (${failures.length} failed)` : ''}`
     ]);
   }
 
-  console.log(`✅ Batch waiver claims: ${submittedClaims.length} submitted, ${failures.length} failed`);
+  console.log(`✅ Batch waiver claims, ${submittedClaims.length} submitted, ${failures.length} failed`);
 
   return NextResponse.json({
     success: true,
-    submitted: submittedClaims,
-    failures,
-    summary: {
-      totalClaims: validatedData.claims.length,
-      successful: submittedClaims.length,
+    submitted; submittedClaims, failures, summar,
+  y: {
+  totalClaims: validatedData.claims.length,
+  successful: submittedClaims.length,
       failed: failures.length
     },
     message: `${submittedClaims.length} waiver claims submitted successfully`,
@@ -336,9 +323,8 @@ export async function GET(request: NextRequest) {
     const teamId = searchParams.get('teamId');
     const status = searchParams.get('status') || 'pending';
     
-    if (!leagueId) {
-      return NextResponse.json(
-        { error: 'League ID is required' },
+    if (!leagueId) { return NextResponse.json(
+        { error: 'League ID is required'  },
         { status: 400 }
       );
     }
@@ -366,29 +352,25 @@ export async function GET(request: NextRequest) {
       JOIN players p_add ON wc.player_add_id = p_add.id
       LEFT JOIN players p_drop ON wc.player_drop_id = p_drop.id
       WHERE t.league_id = $1
-    `;
-    
+    `
     const params = [leagueId];
     
-    if (teamId) {
-      query += ` AND wc.team_id = $${params.length + 1}`;
+    if (teamId) { query: += ` AND wc.team_id = $${params.length + 1 }`
       params.push(teamId);
     }
     
-    if (status !== 'all') {
-      query += ` AND wc.status = $${params.length + 1}`;
+    if (status !== 'all') { query: += ` AND wc.status = $${params.length + 1 }`
       params.push(status);
     }
     
-    query += ` ORDER BY wc.created_at DESC`;
-    
+    query += ` ORDER BY wc.created_at DESC`
     const result = await database.query(query, params);
     
     return NextResponse.json({
       success: true,
-      claims: result.rows,
+  claims: result.rows,
       count: result.rows.length,
-      timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString()
     });
 
   } catch (error) {
@@ -396,7 +378,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to fetch waiver claims',
-        details: error instanceof Error ? error.message : 'Unknown error'
+  details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -409,20 +391,19 @@ export async function DELETE(request: NextRequest) {
     const claimId = searchParams.get('claimId');
     const teamId = searchParams.get('teamId');
     
-    if (!claimId || !teamId) {
-      return NextResponse.json(
-        { error: 'Claim ID and Team ID are required' },
+    if (!claimId || !teamId) { return NextResponse.json(
+        { error: 'Claim ID and Team ID are required'  },
         { status: 400 }
       );
     }
 
     await waiverProcessor.cancelWaiverClaim(claimId, teamId);
 
-    console.log(`✅ Waiver claim cancelled: ${claimId}`);
+    console.log(`✅ Waiver claim cancelled, ${claimId}`);
 
     return NextResponse.json({
       success: true,
-      message: 'Waiver claim cancelled successfully',
+  message: 'Waiver claim cancelled successfully',
       timestamp: new Date().toISOString()
     });
 
@@ -431,7 +412,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to cancel waiver claim',
-        details: error instanceof Error ? error.message : 'Unknown error'
+  details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
@@ -439,16 +420,16 @@ export async function DELETE(request: NextRequest) {
 }
 
 // Helper functions
-async function validatePlayerEligibility(playerId: string, leagueId: string) {
-  // Check if player is already owned in the league
+async function validatePlayerEligibility(playerId, string,
+  leagueId: string) {
+; // Check if player is already owned in the league
   const ownershipResult = await database.query(`
     SELECT t.team_name FROM rosters r
     JOIN teams t ON r.team_id = t.id
     WHERE r.player_id = $1 AND t.league_id = $2
   `, [playerId, leagueId]);
 
-  if (ownershipResult.rows.length > 0) {
-    throw new Error(`Player is already owned by ${ownershipResult.rows[0].team_name}`);
+  if (ownershipResult.rows.length > 0) { throw new Error(`Player is already owned by ${ownershipResult.rows[0].team_name }`);
   }
 
   // Check if player exists and is active
@@ -456,27 +437,25 @@ async function validatePlayerEligibility(playerId: string, leagueId: string) {
     SELECT is_active, injury_status FROM players WHERE id = $1
   `, [playerId]);
 
-  if (playerResult.rows.length === 0) {
-    throw new Error('Player not found');
-  }
+  if (playerResult.rows.length === 0) { throw new Error('Player not found');
+   }
 
-  if (!playerResult.rows[0].is_active) {
-    throw new Error('Player is not active');
-  }
+  if (!playerResult.rows[0].is_active) { throw new Error('Player is not active');
+   }
 }
 
-async function validatePlayerOwnership(playerId: string, teamId: string) {
-  const ownershipResult = await database.query(`
+async function validatePlayerOwnership(playerId, string,
+  teamId string) { const ownershipResult = await database.query(`
     SELECT 1 FROM rosters WHERE player_id = $1 AND team_id = $2
   `, [playerId, teamId]);
 
   if (ownershipResult.rows.length === 0) {
     throw new Error('You do not own this player');
-  }
+   }
 }
 
-async function validateFaabBid(teamId: string, bidAmount: number) {
-  const budgetResult = await database.query(`
+async function validateFaabBid(teamId, string,
+  bidAmount: number) { const budgetResult = await database.query(`
     SELECT current_budget FROM faab_budgets fb
     JOIN teams t ON fb.team_id = t.id
     WHERE fb.team_id = $1 AND fb.season_year = EXTRACT(YEAR FROM CURRENT_DATE)
@@ -484,10 +463,9 @@ async function validateFaabBid(teamId: string, bidAmount: number) {
 
   if (budgetResult.rows.length === 0) {
     throw new Error('FAAB budget not found for team');
-  }
+   }
 
   const currentBudget = budgetResult.rows[0].current_budget;
-  if (bidAmount > currentBudget) {
-    throw new Error(`Bid amount ($${bidAmount}) exceeds available budget ($${currentBudget})`);
+  if (bidAmount > currentBudget) { throw new Error(`Bid amount ($${bidAmount }) exceeds available budget ($${currentBudget})`);
   }
 }

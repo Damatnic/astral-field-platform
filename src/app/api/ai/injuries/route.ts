@@ -19,16 +19,12 @@ export async function GET(request: NextRequest) {
         
         if (!leagueId || !teamId || !injuredPlayerId) {
           return NextResponse.json(
-            { error: 'Missing required parameters: leagueId, teamId, and injuredPlayerId' },
+            { error: 'Missing required parameters: leagueId, teamId and injuredPlayerId' },
             { status: 400 }
           );
         }
 
-        const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(
-          leagueId,
-          teamId,
-          injuredPlayerId
-        );
+        const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(leagueId, teamId, injuredPlayerId);
 
         return NextResponse.json({
           success: true,
@@ -81,16 +77,11 @@ export async function POST(request: NextRequest) {
 
     switch (type) {
       case 'report_injury':
-        const {
-          playerId,
-          injuryType,
-          initialSeverity,
-          source
-        } = data;
+        const { playerId, injuryType, initialSeverity, source } = data;
 
         if (!playerId || !injuryType || !initialSeverity) {
           return NextResponse.json(
-            { error: 'Missing required parameters: playerId, injuryType, and initialSeverity' },
+            { error: 'Missing required parameters: playerId, injuryType and initialSeverity' },
             { status: 400 }
           );
         }
@@ -103,10 +94,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const injuryAlert = await injuryImpactAnalyzer.processInjuryReport(
-          playerId,
-          injuryType,
-          initialSeverity,
+        const injuryAlert = await injuryImpactAnalyzer.processInjuryReport(playerId, injuryType, initialSeverity,
           source || 'official'
         );
 
@@ -117,11 +105,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'update_status':
-        const {
-          alertId,
-          newStatus,
-          additionalInfo
-        } = data;
+        const { alertId, newStatus, additionalInfo } = data;
 
         if (!alertId || !newStatus) {
           return NextResponse.json(
@@ -156,11 +140,9 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const batchResults = await Promise.all(
-          injuries.map(async (injury: any) => {
+        const batchResults = await Promise.all(injuries.map(async (injury: any) => {
             try {
-              const alert = await injuryImpactAnalyzer.processInjuryReport(
-                injury.playerId,
+              const alert = await injuryImpactAnalyzer.processInjuryReport(injury.playerId,
                 injury.injuryType,
                 injury.initialSeverity,
                 injury.source || 'official'
@@ -169,13 +151,13 @@ export async function POST(request: NextRequest) {
                 playerId: injury.playerId,
                 success: true, 
                 alert 
-              };
+              }
             } catch (error) {
               return { 
                 playerId: injury.playerId,
                 success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );
@@ -189,10 +171,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'multiple_strategies':
-        const { 
-          leagueId: multiLeagueId,
-          requests 
-        } = data;
+        const { leagueId: multiLeagueId, requests } = data;
         
         if (!multiLeagueId || !Array.isArray(requests)) {
           return NextResponse.json(
@@ -201,11 +180,9 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const strategyResults = await Promise.all(
-          requests.map(async (request: any) => {
+        const strategyResults = await Promise.all(requests.map(async (request: any) => {
             try {
-              const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(
-                multiLeagueId,
+              const strategy = await injuryImpactAnalyzer.generateReplacementStrategy(multiLeagueId,
                 request.teamId,
                 request.injuredPlayerId
               );
@@ -214,14 +191,14 @@ export async function POST(request: NextRequest) {
                 injuredPlayerId: request.injuredPlayerId,
                 success: true, 
                 strategy 
-              };
+              }
             } catch (error) {
               return { 
                 teamId: request.teamId,
                 injuredPlayerId: request.injuredPlayerId,
-                success: false, 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-              };
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
           })
         );

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const schemaInfo = healthResult.rows[0];
     
-    console.log("Migration completed successfully:", {
+    console.log("Migration completed successfully", {
       version: schemaInfo.schema_version,
       totalTables: schemaInfo.total_tables,
       status: schemaInfo.status
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         status: schemaInfo.status,
         migratedAt: schemaInfo.last_updated
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error("Database migration error:", error);
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: "Failed to migrate database",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message : 'Unknown error',
         schema: "complete-schema.sql"
       },
       { status: 500 }
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
       const schemaHealthResult = await database.query('SELECT * FROM schema_health LIMIT 1');
       if (schemaHealthResult.rows.length > 0) {
         schemaVersion = schemaHealthResult.rows[0].schema_version;
-      }
+       }
     } catch (error) {
       console.log('Schema health view not found, using legacy schema');
     }
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
       health: healthCheck,
       schema: {
         version: schemaVersion,
-        isConsolidated: schemaVersion.includes('complete-schema'),
+        isConsolidated: schemaVersion.includes('complete-schema')
       },
       tables: {
         existing: tables,
@@ -114,17 +114,17 @@ export async function GET(request: NextRequest) {
         categories: {
           core: expectedCoreTables.filter(t => tables.includes(t)).length + '/' + expectedCoreTables.length,
           chat: expectedChatTables.filter(t => tables.includes(t)).length + '/' + expectedChatTables.length,
-          features: expectedFeatureTables.filter(t => tables.includes(t)).length + '/' + expectedFeatureTables.length,
+          features: expectedFeatureTables.filter(t => tables.includes(t)).length + '/' + expectedFeatureTables.length
         }
       },
-      needsMigration: missingTables.length > 0,
+      needsMigration: missingTables.length > 0
     });
   } catch (error) {
     console.error("Database status check error:", error);
     return NextResponse.json(
       {
         error: "Failed to check database status",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

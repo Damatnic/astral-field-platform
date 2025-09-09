@@ -1,6 +1,6 @@
 /**
  * Enterprise Multi-Factor Authentication API
- * Complete MFA management with setup, verification, and backup codes
+ * Complete MFA management with setup: verification, and backup codes
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,7 +16,6 @@ interface MFASetupRequest {
   challengeId?: string;
   method?: 'totp' | 'sms' | 'email' | 'backup_codes';
 }
-
 export async function POST(request: NextRequest) {
   try {
     // Security validation
@@ -28,9 +27,9 @@ export async function POST(request: NextRequest) {
     // Authentication check
     const authResult = await securityMiddleware.validateAuthentication(request);
     if (!authResult.valid) {
-      return NextResponse.json({
-        success: false,
-        error: authResult.error
+      return NextResponse.json(
+      { success: false,
+      error: authResult.error
       }, { status: 401 });
     }
 
@@ -43,34 +42,34 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'setup':
-        return await handleMFASetup(user, ip, userAgent);
-        
-      case 'enable':
+      return await handleMFASetup(user, ip, userAgent);
+      break;
+    case 'enable':
         return await handleMFAEnable(user, verificationToken, ip, userAgent);
         
       case 'disable':
-        return await handleMFADisable(user, verificationToken, ip, userAgent);
-        
-      case 'verify':
+      return await handleMFADisable(user, verificationToken, ip, userAgent);
+      break;
+    case 'verify':
         return await handleMFAVerification(user, challengeId, verificationToken, method, ip, userAgent);
         
       case 'regenerate_backup_codes':
-        return await handleRegenerateBackupCodes(user, verificationToken, ip, userAgent);
-        
-      case 'status':
+      return await handleRegenerateBackupCodes(user, verificationToken, ip, userAgent);
+      break;
+    case 'status':
         return await handleMFAStatus(user.id);
         
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action'
+        return NextResponse.json(
+      { success: false,
+      error: 'Invalid action'
         }, { status: 400 });
     }
 
   } catch (error) {
     console.error('MFA API error:', error);
-    return NextResponse.json({
-      success: false,
+    return NextResponse.json(
+      { success: false,
       error: 'MFA operation failed'
     }, { status: 500 });
   }
@@ -81,9 +80,9 @@ export async function GET(request: NextRequest) {
     // Authentication check
     const authResult = await securityMiddleware.validateAuthentication(request);
     if (!authResult.valid) {
-      return NextResponse.json({
-        success: false,
-        error: authResult.error
+      return NextResponse.json(
+      { success: false,
+      error: authResult.error
       }, { status: 401 });
     }
 
@@ -92,8 +91,8 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('MFA status error:', error);
-    return NextResponse.json({
-      success: false,
+    return NextResponse.json(
+      { success: false,
       error: 'Failed to get MFA status'
     }, { status: 500 });
   }
@@ -103,9 +102,9 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
   try {
     // Check if MFA is already enabled
     if (user.mfa_enabled) {
-      return NextResponse.json({
-        success: false,
-        error: 'MFA is already enabled for this account'
+      return NextResponse.json(
+      { success: false,
+      error: 'MFA is already enabled for this account'
       }, { status: 400 });
     }
 
@@ -119,14 +118,13 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
     // Log MFA setup initiation
     await auditLogger.logEvent({
       userId: user.id,
-      eventType: 'authentication',
+        eventType: 'authentication',
       eventCategory: 'mfa_setup',
       severity: 'medium',
       action: 'mfa_setup_initiated',
       description: 'MFA setup process started',
       metadata: {
-        availableMethods: mfaSetup.methods,
-        ip,
+  availableMethods: mfaSetup.methods, ip,
         userAgent
       },
       ipAddress: ip,
@@ -147,8 +145,8 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
         availableMethods: mfaSetup.methods
       },
       instructions: {
-        totp: 'Scan the QR code with your authenticator app or enter the manual key',
-        backupCodes: 'Save these backup codes in a secure location. Each can only be used once.',
+  totp: 'Scan the QR code with your authenticator app or enter the manual key',
+        backupCodes: 'Save these backup codes in a secure location.Each can only be used once.',
         nextStep: 'Verify your setup by providing a code from your authenticator app'
       }
     });
@@ -162,23 +160,22 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
 async function handleMFAEnable(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
   try {
     if (!verificationToken) {
-      return NextResponse.json({
-        success: false,
-        error: 'Verification token is required'
+      return NextResponse.json(
+      { success: false,
+      error: 'Verification token is required'
       }, { status: 400 });
     }
 
     if (user.mfa_enabled) {
-      return NextResponse.json({
-        success: false,
-        error: 'MFA is already enabled'
+      return NextResponse.json(
+      { success: false,
+      error: 'MFA is already enabled'
       }, { status: 400 });
     }
 
     // This would typically come from a setup session
     // For now, we'll simulate enabling MFA
-    const success = await enhancedMFA.enableMFA(
-      user.id,
+    const success = await enhancedMFA.enableMFA(user.id,
       'temp_secret', // This should come from setup session
       verificationToken,
       [], // Backup codes from setup
@@ -200,16 +197,16 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
         complianceRelevant: true
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid verification token'
+      return NextResponse.json(
+      { success: false,
+      error: 'Invalid verification token'
       }, { status: 400 });
     }
 
     // Log successful MFA enablement
     await auditLogger.logEvent({
       userId: user.id,
-      eventType: 'authentication',
+        eventType: 'authentication',
       eventCategory: 'mfa_setup',
       severity: 'high',
       action: 'mfa_enabled',
@@ -236,16 +233,16 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
 async function handleMFADisable(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
   try {
     if (!verificationToken) {
-      return NextResponse.json({
-        success: false,
-        error: 'Verification token is required to disable MFA'
+      return NextResponse.json(
+      { success: false,
+      error: 'Verification token is required to disable MFA'
       }, { status: 400 });
     }
 
     if (!user.mfa_enabled) {
-      return NextResponse.json({
-        success: false,
-        error: 'MFA is not currently enabled'
+      return NextResponse.json(
+      { success: false,
+      error: 'MFA is not currently enabled'
       }, { status: 400 });
     }
 
@@ -266,16 +263,16 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
         complianceRelevant: true
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid verification token'
+      return NextResponse.json(
+      { success: false,
+      error: 'Invalid verification token'
       }, { status: 400 });
     }
 
     // Log MFA disablement
     await auditLogger.logEvent({
       userId: user.id,
-      eventType: 'authentication',
+        eventType: 'authentication',
       eventCategory: 'mfa_setup',
       severity: 'critical',
       action: 'mfa_disabled',
@@ -290,7 +287,7 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
       success: true,
       message: 'MFA has been disabled',
       mfaEnabled: false,
-      warning: 'Your account security has been reduced. Consider re-enabling MFA.'
+      warning: 'Your account security has been reduced.Consider re-enabling MFA.'
     });
 
   } catch (error) {
@@ -309,9 +306,9 @@ async function handleMFAVerification(
 ) {
   try {
     if (!challengeId || !verificationToken || !method) {
-      return NextResponse.json({
-        success: false,
-        error: 'Challenge ID, verification token, and method are required'
+      return NextResponse.json(
+      { success: false,
+      error: 'Challenge ID, verification token, and method are required'
       }, { status: 400 });
     }
 
@@ -337,14 +334,14 @@ async function handleMFAVerification(
           backupCodeUsed: result.backupCodeUsed
         },
         ipAddress: ip,
-        userAgent,
-        success: true,
-      complianceRelevant: true
+      userAgent,
+      success: true,
+        complianceRelevant: true
       });
 
       return NextResponse.json({
         success: true,
-        message: 'MFA verification successful',
+      message: 'MFA verification successful',
         method: result.method,
         backupCodeUsed: !!result.backupCodeUsed
       });
@@ -368,9 +365,9 @@ async function handleMFAVerification(
         complianceRelevant: true
       });
 
-      return NextResponse.json({
-        success: false,
-        error: result.error,
+      return NextResponse.json(
+      { success: false,
+      error: result.error,
         remainingAttempts: result.remainingAttempts
       }, { status: 400 });
     }
@@ -384,38 +381,38 @@ async function handleMFAVerification(
 async function handleRegenerateBackupCodes(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
   try {
     if (!verificationToken) {
-      return NextResponse.json({
-        success: false,
-        error: 'Verification token is required'
+      return NextResponse.json(
+      { success: false,
+      error: 'Verification token is required'
       }, { status: 400 });
     }
 
     if (!user.mfa_enabled) {
-      return NextResponse.json({
-        success: false,
-        error: 'MFA must be enabled to regenerate backup codes'
+      return NextResponse.json(
+      { success: false,
+      error: 'MFA must be enabled to regenerate backup codes'
       }, { status: 400 });
     }
 
     const newBackupCodes = await enhancedMFA.regenerateBackupCodes(user.id, verificationToken);
 
     if (!newBackupCodes) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid verification token'
+      return NextResponse.json(
+      { success: false,
+      error: 'Invalid verification token'
       }, { status: 400 });
     }
 
     // Log backup codes regeneration
     await auditLogger.logEvent({
       userId: user.id,
-      eventType: 'authentication',
+        eventType: 'authentication',
       eventCategory: 'mfa_setup',
       severity: 'medium',
       action: 'backup_codes_regenerated',
       description: 'MFA backup codes regenerated',
       metadata: {
-        codesCount: newBackupCodes.length
+  codesCount: newBackupCodes.length
       },
       ipAddress: ip,
       userAgent,
@@ -427,7 +424,7 @@ async function handleRegenerateBackupCodes(user: any, verificationToken: string 
       success: true,
       message: 'New backup codes generated',
       backupCodes: newBackupCodes,
-      warning: 'Save these codes securely. Your old backup codes are no longer valid.'
+      warning: 'Save these codes securely.Your old backup codes are no longer valid.'
     });
 
   } catch (error) {
@@ -443,11 +440,10 @@ async function handleMFAStatus(userId: string) {
     return NextResponse.json({
       success: true,
       mfa: {
-        enabled: status.enabled,
+  enabled: status.enabled,
         availableMethods: status.methods,
         backupCodesRemaining: status.backupCodesRemaining,
-        recommendedActions: status.backupCodesRemaining < 3 ? 
-          ['Consider regenerating backup codes'] : []
+        recommendedActions: status.backupCodesRemaining < 3 ? ['Consider regenerating backup codes'] : []
       }
     });
 

@@ -1,233 +1,233 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect  } from 'react';
 import { motion } from 'framer-motion'
-import {
-  Users,
-  Star,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Clock,
-  Award,
-  BarChart3,
-  Eye,
-  Download,
-  Share2,
-  Filter,
-  Search,
-  ArrowUpDown,
-  CheckCircle,
-  AlertTriangle,
-  Trophy,
-  Calendar,
+import { Users, Star,
+  TrendingUp, TrendingDown,
+  Target, Clock,
+  Award, BarChart3,
+  Eye, Download,
+  Share2, Filter,
+  Search, ArrowUpDown,
+  CheckCircle, AlertTriangle,
+  Trophy, Calendar,
   Zap
-} from 'lucide-react'
+ } from 'lucide-react';
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/Button/Button'
+import { Button  } from '@/components/ui/Button/Button';
 import { Progress } from '@/components/ui/progress'
-import { Card } from '@/components/ui/Card/Card'
+import { Card  } from '@/components/ui/Card/Card';
 import type { Database } from '@/types/database'
 
 interface SimplifiedPlayer {
-  id: string;
-  name: string;
-  position: string;
-  team: string | null;
+  id, string,
+    name, string,
+  position, string,
+    team: string | null;
   bye_week: number | null;
+  
 }
-
 type Player = SimplifiedPlayer
 
 interface DraftPick {
-  id: string
-  pickNumber: number
-  round: number
-  pickInRound: number
-  teamId: string
-  teamName: string
-  playerId: string
-  player: Player
-  timestamp: string
-  adp: number
-  adpDifference: number
-  pickValue: number
-  isReach: boolean
-  isSteal: boolean
+  id, string,
+  pickNumber, number,
+    round, number,
+  pickInRound, number,
+    teamId, string,
+  teamName, string,
+    playerId, string,
+  player, Player, timestamp: string,
+  adp, number,
+    adpDifference, number,
+  pickValue, number,
+    isReach, boolean,
+  isSteal, boolean,
+  
 }
-
 interface DraftTeam {
-  id: string
-  name: string
-  user: string
-  picks: DraftPick[]
-  totalValue: number
-  grade: string
-  strengths: string[]
-  weaknesses: string[]
-  needs: string[]
+  id, string,
+    name, string,
+    user, string,
+    picks: DraftPick[],
+    totalValue, number,
+    grade, string,
+    strengths: string[],
+  weaknesses: string[],
+    needs: string[]
 }
 
 interface DraftAnalysis {
-  teams: DraftTeam[]
-  bestPick: DraftPick
-  worstPick: DraftPick
-  biggestSteal: DraftPick
-  biggestReach: DraftPick
-  positionBreakdown: { [position: string]: number }
-  adpAccuracy: number
+  teams: DraftTeam[],
+    bestPick, DraftPick,
+  worstPick, DraftPick, biggestSteal, DraftPick,
+  biggestReach, DraftPick,
+    positionBreakdown: { [positio,
+  n: string], number,
+}
+adpAccuracy: number
 }
 
 interface DraftBoardVisualizationProps {
-  leagueId: string
-  draftId: string
-  showLiveDraft?: boolean
-  onPickTradeProposal?: (fromTeam: string, toTeam: string, picks: number[]) => void
+  leagueId, string,
+  draftId, string,
+  showLiveDraft?, boolean,
+  onPickTradeProposal?: (fromTeam, string, toTeam, string, picks: number[]) => void;
+  
 }
-
 export default function DraftBoardVisualization({
-  leagueId,
-  draftId,
+  leagueId, draftId,
   showLiveDraft = false,
   onPickTradeProposal
 }: DraftBoardVisualizationProps) {
-  const [activeView, setActiveView] = useState<'board' | 'analysis' | 'trades' | 'grades'>('board')
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<'pick' | 'adp' | 'value'>('pick')
-  const [positionFilter, setPositionFilter] = useState<string>('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [activeView, setActiveView] = useState<'board' | 'analysis' | 'trades' | 'grades'>('board');
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'pick' | 'adp' | 'value'>('pick');
+  const [positionFilter, setPositionFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock draft data - in real implementation, this would come from APIs
   const mockDraftPicks: DraftPick[] = [
     {
       id: '1',
-      pickNumber: 1,
-      round: 1,
-      pickInRound: 1,
+  pickNumber, 1,
+      round, 1,
+  pickInRound, 1,
       teamId: 'team1',
-      teamName: 'Team Alpha',
+  teamName: 'Team Alpha',
       playerId: 'player1',
-      player: {
-        id: 'player1',
-        name: 'Christian McCaffrey',
+  player: {
+  id: 'player1',
+  name: 'Christian McCaffrey',
         position: 'RB',
-        team: 'SF',
+  team: 'SF',
         bye_week: 9
-      } as Player,
-      timestamp: '2024-08-25T10:00:00Z',
-      adp: 1.2,
-      adpDifference: -0.2,
-      pickValue: 100,
-      isReach: false,
-      isSteal: false
+       } as Player,
+      timestamp: '2024-08-25,
+  T10, 0,
+  0:00Z',
+  adp: 1.2,
+      adpDifference: -0.2, pickValue, 100,
+      isReach, false,
+  isSteal: false
     },
     {
       id: '2',
-      pickNumber: 2,
-      round: 1,
-      pickInRound: 2,
+  pickNumber, 2,
+      round, 1,
+  pickInRound, 2,
       teamId: 'team2',
-      teamName: 'Team Beta',
+  teamName: 'Team Beta',
       playerId: 'player2',
-      player: {
-        id: 'player2',
-        name: 'Tyreek Hill',
+  player: {
+  id: 'player2',
+  name: 'Tyreek Hill',
         position: 'WR',
-        team: 'MIA',
+  team: 'MIA',
         bye_week: 6
       } as Player,
-      timestamp: '2024-08-25T10:02:00Z',
-      adp: 3.8,
-      adpDifference: 1.8,
-      pickValue: 92,
-      isReach: true,
-      isSteal: false
+      timestamp: '2024-08-25,
+  T10, 0,
+  2:00Z',
+  adp: 3.8,
+      adpDifference: 1.8, pickValue, 92,
+      isReach, true,
+  isSteal: false
     },
     {
       id: '3',
-      pickNumber: 8,
-      round: 1,
-      pickInRound: 8,
+  pickNumber, 8,
+      round, 1,
+  pickInRound, 8,
       teamId: 'team8',
-      teamName: 'Team Zulu',
+  teamName: 'Team Zulu',
       playerId: 'player3',
-      player: {
-        id: 'player3',
-        name: 'Ja\'Marr Chase',
+  player: {
+  id: 'player3',
+  name: 'Ja\'Marr Chase',
         position: 'WR',
-        team: 'CIN',
+  team: 'CIN',
         bye_week: 12
       } as Player,
-      timestamp: '2024-08-25T10:16:00Z',
-      adp: 4.2,
-      adpDifference: -3.8,
-      pickValue: 108,
-      isReach: false,
-      isSteal: true
+      timestamp: '2024-08-25,
+  T10, 1,
+  6:00Z',
+  adp: 4.2,
+      adpDifference: -3.8, pickValue, 108,
+      isReach, false,
+  isSteal: true
     }
   ]
 
-  const mockDraftAnalysis: DraftAnalysis = {
-    teams: [
+  const mockDraftAnalysis: DraftAnalysis = {,
+  teams: [
       {
         id: 'team1',
-        name: 'Team Alpha',
+  name: 'Team Alpha',
         user: 'John Doe',
-        picks: mockDraftPicks.filter(p => p.teamId === 'team1'),
-        totalValue: 856,
-        grade: 'A-',
+  picks: mockDraftPicks.filter(p => p.teamId === 'team1'),
+        totalValue, 856,
+  grade: 'A-',
         strengths: ['RB depth', 'WR1 quality'],
         weaknesses: ['TE thin', 'QB late'],
         needs: ['TE', 'DEF']
       }
     ],
     bestPick: mockDraftPicks[2],
-    worstPick: mockDraftPicks[1],
+  worstPick: mockDraftPicks[1],
     biggestSteal: mockDraftPicks[2],
-    biggestReach: mockDraftPicks[1],
-    positionBreakdown: { QB: 12, RB: 24, WR: 36, TE: 12, K: 10, DST: 10 },
+  biggestReach: mockDraftPicks[1],
+    positionBreakdown: { QB, 12,
+  RB, 24, WR, 36,
+  TE, 12, K, 10,
+  DST: 10 },
     adpAccuracy: 78.5
   }
 
-  const getPickTypeColor = (pick: DraftPick) => {
-    if (pick.isSteal) return 'border-green-500 bg-green-900/20'
+  const getPickTypeColor = (pick: DraftPick) => { if (pick.isSteal) return 'border-green-500 bg-green-900/20'
     if (pick.isReach) return 'border-red-500 bg-red-900/20'
     return 'border-gray-600 bg-gray-800'
-  }
+   }
 
-  const getPickTypeIcon = (pick: DraftPick) => {
-    if (pick.isSteal) return <TrendingUp className="h-4 w-4 text-green-500" />
+  const getPickTypeIcon = (pick: DraftPick) => { if (pick.isSteal) return <TrendingUp className="h-4 w-4 text-green-500" />
     if (pick.isReach) return <TrendingDown className="h-4 w-4 text-red-500" />
     return null
-  }
+   }
 
-  const getPositionColor = (position: string) => {
-    switch (position) {
-      case 'QB': return 'text-purple-400 bg-purple-900/30'
-      case 'RB': return 'text-green-400 bg-green-900/30'
-      case 'WR': return 'text-blue-400 bg-blue-900/30'
-      case 'TE': return 'text-yellow-400 bg-yellow-900/30'
-      case 'K': return 'text-orange-400 bg-orange-900/30'
-      case 'DST': return 'text-red-400 bg-red-900/30'
+  const getPositionColor = (position: string) => { switch (position) {
+      case 'QB':
+      return 'text-purple-400 bg-purple-900/30'
+      break;
+    case 'RB': return 'text-green-400 bg-green-900/30'
+      case 'WR':
+      return 'text-blue-400 bg-blue-900/30'
+      break;
+    case 'TE': return 'text-yellow-400 bg-yellow-900/30'
+      case 'K':
+      return 'text-orange-400 bg-orange-900/30'
+      break;
+    case 'DST': return 'text-red-400 bg-red-900/30'
       default: return 'text-gray-400 bg-gray-900/30'
-    }
+     }
   }
 
-  const getGradeColor = (grade: string) => {
-    const letter = grade.charAt(0)
+  const getGradeColor = (grade: string) => { const letter = grade.charAt(0)
     switch (letter) {
-      case 'A': return 'text-green-400 bg-green-900/30'
-      case 'B': return 'text-blue-400 bg-blue-900/30'
-      case 'C': return 'text-yellow-400 bg-yellow-900/30'
-      case 'D': return 'text-orange-400 bg-orange-900/30'
+      case 'A':
+      return 'text-green-400 bg-green-900/30'
+      break;
+    case 'B': return 'text-blue-400 bg-blue-900/30'
+      case 'C':
+      return 'text-yellow-400 bg-yellow-900/30'
+      break;
+    case 'D': return 'text-orange-400 bg-orange-900/30'
       case 'F': return 'text-red-400 bg-red-900/30'
       default: return 'text-gray-400 bg-gray-900/30'
-    }
+     }
   }
 
-  const filteredPicks = mockDraftPicks.filter(pick => {
-    const matchesSearch = pick.player.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesPosition = positionFilter === 'all' || pick.player.position === positionFilter
+  const filteredPicks = mockDraftPicks.filter(pick => { const matchesSearch = pick.player.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesPosition = positionFilter === 'all' || pick.player.position === positionFilter;
     return matchesSearch && matchesPosition
-  })
+   })
 
   return (
     <div className="space-y-6">
@@ -263,18 +263,22 @@ export default function DraftBoardVisualization({
       {/* View Navigation */}
       <div className="flex space-x-1 bg-gray-800 rounded-lg p-1">
         {[
-          { key: 'board', label: 'Draft Board', icon: Users },
-          { key: 'analysis', label: 'Draft Analysis', icon: BarChart3 },
-          { key: 'trades', label: 'Pick Trading', icon: ArrowUpDown },
-          { key: 'grades', label: 'Team Grades', icon: Award }
+          { key: 'board',
+  label: 'Draft Board', icon: Users },
+          { key: 'analysis',
+  label: 'Draft Analysis', icon: BarChart3 },
+          { key: 'trades',
+  label: 'Pick Trading', icon: ArrowUpDown },
+          { key: 'grades',
+  label: 'Team Grades', icon: Award }
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setActiveView(key as typeof activeView)}
             className={`flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
               activeView === key
-                ? 'bg-green-600 text-white'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                ? 'bg-green-600 text-white' : 'text-gray-400 hover: text-white hove,
+  r:bg-gray-700'
             }`}
           >
             <Icon className="h-4 w-4 mr-2" />
@@ -286,7 +290,7 @@ export default function DraftBoardVisualization({
       {/* Draft Board View */}
       {activeView === 'board' && (
         <div className="space-y-4">
-          {/* Filters */}
+          {/* Filters */ }
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -295,13 +299,16 @@ export default function DraftBoardVisualization({
                 placeholder="Search players..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus: outline-none focu,
+  s:ring-2 focu,
+  s:ring-green-500"
               />
             </div>
             <select
               value={positionFilter}
               onChange={(e) => setPositionFilter(e.target.value)}
-              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus: outline-none focu,
+  s:ring-2 focus; ring-green-500"
             >
               <option value="all">All Positions</option>
               <option value="QB">QB</option>
@@ -314,7 +321,8 @@ export default function DraftBoardVisualization({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus: outline-none focu,
+  s:ring-2 focus; ring-green-500"
             >
               <option value="pick">Draft Order</option>
               <option value="adp">ADP Difference</option>
@@ -323,7 +331,8 @@ export default function DraftBoardVisualization({
           </div>
 
           {/* Draft Board Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-4">
             {filteredPicks.map((pick) => (
               <DraftPickCard
                 key={pick.id}
@@ -334,7 +343,8 @@ export default function DraftBoardVisualization({
           </div>
 
           {/* Notable Picks Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-4 gap-4">
             <Card className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-green-400">Biggest Steal</span>
@@ -380,13 +390,14 @@ export default function DraftBoardVisualization({
       {/* Draft Analysis View */}
       {activeView === 'analysis' && (
         <div className="space-y-6">
-          {/* Position Breakdown */}
+          {/* Position Breakdown */ }
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <BarChart3 className="h-5 w-5 text-blue-500 mr-2" />
               Position Breakdown
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md: grid-cols-3 l,
+  g:grid-cols-6 gap-4">
               {Object.entries(mockDraftAnalysis.positionBreakdown).map(([position, count]) => (
                 <div key={position} className="text-center">
                   <div className="relative w-16 h-16 mx-auto mb-2">
@@ -472,7 +483,7 @@ export default function DraftBoardVisualization({
             </div>
           </Card>
         </div>
-      )}
+      ) }
 
       {/* Team Grades View */}
       {activeView === 'grades' && (
@@ -501,10 +512,10 @@ export default function DraftBoardVisualization({
 
 // Draft Pick Card Component
 interface DraftPickCardProps {
-  pick: DraftPick
-  onTeamSelect?: (teamId: string) => void
+  pick, DraftPick,
+  onTeamSelect?: (teamId: string) => void;
+  
 }
-
 function DraftPickCard({ pick, onTeamSelect }: DraftPickCardProps) {
   const getPickTypeColor = (pick: DraftPick) => {
     if (pick.isSteal) return 'border-green-500 bg-green-900/20'
@@ -512,28 +523,34 @@ function DraftPickCard({ pick, onTeamSelect }: DraftPickCardProps) {
     return 'border-gray-600 bg-gray-800'
   }
 
-  const getPickTypeIcon = (pick: DraftPick) => {
-    if (pick.isSteal) return <TrendingUp className="h-4 w-4 text-green-500" />
+  const getPickTypeIcon = (pick: DraftPick) => { if (pick.isSteal) return <TrendingUp className="h-4 w-4 text-green-500" />
     if (pick.isReach) return <TrendingDown className="h-4 w-4 text-red-500" />
     return null
-  }
+   }
 
-  const getPositionColor = (position: string) => {
-    switch (position) {
-      case 'QB': return 'text-purple-400 bg-purple-900/30'
-      case 'RB': return 'text-green-400 bg-green-900/30'
-      case 'WR': return 'text-blue-400 bg-blue-900/30'
-      case 'TE': return 'text-yellow-400 bg-yellow-900/30'
-      case 'K': return 'text-orange-400 bg-orange-900/30'
-      case 'DST': return 'text-red-400 bg-red-900/30'
+  const getPositionColor = (position: string) => { switch (position) {
+      case 'QB':
+      return 'text-purple-400 bg-purple-900/30'
+      break;
+    case 'RB': return 'text-green-400 bg-green-900/30'
+      case 'WR':
+      return 'text-blue-400 bg-blue-900/30'
+      break;
+    case 'TE': return 'text-yellow-400 bg-yellow-900/30'
+      case 'K':
+      return 'text-orange-400 bg-orange-900/30'
+      break;
+    case 'DST': return 'text-red-400 bg-red-900/30'
       default: return 'text-gray-400 bg-gray-900/30'
-    }
+     }
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity, 0,
+  y: 10 }}
+      animate={{ opacity, 1,
+  y: 0 }}
       className={`p-4 rounded-lg border ${getPickTypeColor(pick)} hover:border-blue-500/50 transition-colors cursor-pointer`}
       onClick={() => onTeamSelect?.(pick.teamId)}
     >
@@ -567,8 +584,7 @@ function DraftPickCard({ pick, onTeamSelect }: DraftPickCardProps) {
             <div className="text-xs text-gray-400">ADP</div>
           </div>
           <div className="text-center">
-            <div className={`text-sm font-bold ${
-              pick.adpDifference > 0 ? 'text-red-400' :
+            <div className={`text-sm font-bold ${pick.adpDifference > 0 ? 'text-red-400' :
               pick.adpDifference < 0 ? 'text-green-400' : 'text-gray-400'
             }`}>
               {pick.adpDifference > 0 ? '+' : ''}{pick.adpDifference.toFixed(1)}
@@ -587,32 +603,38 @@ function DraftPickCard({ pick, onTeamSelect }: DraftPickCardProps) {
 
 // Team Grade Card Component
 interface TeamGradeCardProps {
-  team: DraftTeam
-  onSelect?: () => void
-  isSelected?: boolean
+  team, DraftTeam,
+  onSelect?: () => void;
+  isSelected?, boolean,
+  
 }
-
 function TeamGradeCard({ team, onSelect, isSelected }: TeamGradeCardProps) {
   const getGradeColor = (grade: string) => {
-    const letter = grade.charAt(0)
+    const letter = grade.charAt(0);
     switch (letter) {
-      case 'A': return 'text-green-400 bg-green-900/30'
-      case 'B': return 'text-blue-400 bg-blue-900/30'
-      case 'C': return 'text-yellow-400 bg-yellow-900/30'
-      case 'D': return 'text-orange-400 bg-orange-900/30'
+      case 'A':
+      return 'text-green-400 bg-green-900/30'
+      break;
+    case 'B': return 'text-blue-400 bg-blue-900/30'
+      case 'C':
+      return 'text-yellow-400 bg-yellow-900/30'
+      break;
+    case 'D': return 'text-orange-400 bg-orange-900/30'
       case 'F': return 'text-red-400 bg-red-900/30'
       default: return 'text-gray-400 bg-gray-900/30'
     }
   }
+  }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity, 0,
+  y: 10 }}
+      animate={{ opacity, 1,
+  y: 0 }}
       className={`p-4 rounded-lg border cursor-pointer transition-colors ${
         isSelected
-          ? 'border-blue-500 bg-blue-900/20'
-          : 'border-gray-600 bg-gray-800 hover:border-blue-500/50'
+          ? 'border-blue-500 bg-blue-900/20' : 'border-gray-600 bg-gray-800 hover:border-blue-500/50'
       }`}
       onClick={onSelect}
     >

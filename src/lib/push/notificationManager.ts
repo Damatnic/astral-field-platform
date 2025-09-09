@@ -1,59 +1,57 @@
 'use client';
 
 export interface NotificationPayload {
-  title: string;
-  body: string;
-  icon?: string;
-  badge?: string;
-  image?: string;
-  tag?: string;
-  data?: any;
+  title, string,
+    body, string,
+  icon?, string,
+  badge?, string,
+  image?, string,
+  tag?, string,
+  data?, any,
   actions?: NotificationAction[];
-  requireInteraction?: boolean;
-  silent?: boolean;
-  timestamp?: number;
-  url?: string;
+  requireInteraction?, boolean,
+  silent?, boolean,
+  timestamp?, number,
+  url?, string,
   type?: 'score-update' | 'matchup-reminder' | 'waiver-alert' | 'trade-notification' | 'draft-reminder' | 'generic';
+  
 }
-
 export interface PushSubscriptionData {
-  endpoint: string;
-  keys: {
-    p256dh: string;
-    auth: string;
-  };
-  userId?: string;
+  endpoint, string,
+    keys: {,
+  p256dh, string,
+    auth: string,
+  }
+  userId?, string,
   leagueIds?: string[];
-  preferences?: NotificationPreferences;
+  preferences?, NotificationPreferences,
 }
 
 export interface NotificationPreferences {
-  scoreUpdates: boolean;
-  matchupReminders: boolean;
-  waiverAlerts: boolean;
-  tradeNotifications: boolean;
-  draftReminders: boolean;
-  chatMessages: boolean;
-  general: boolean;
+  scoreUpdates, boolean,
+    matchupReminders, boolean,
+  waiverAlerts, boolean,
+    tradeNotifications, boolean,
+  draftReminders, boolean,
+    chatMessages, boolean,
+  general: boolean,
+  
 }
-
-class NotificationManager {
-  private swRegistration: ServiceWorkerRegistration | null = null;
+class NotificationManager { private swRegistration: ServiceWorkerRegistration | null = null;
   private subscription: PushSubscription | null = null;
-  private vapidPublicKey: string;
-  private preferences: NotificationPreferences;
+  private vapidPublicKey, string,
+  private preferences, NotificationPreferences,
 
   constructor() {
     this.vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_KEY || '';
     this.preferences = this.getStoredPreferences();
     this.initialize();
-  }
+   }
 
-  private async initialize() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+  private async initialize()  { if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       console.warn('Push notifications not supported');
       return;
-    }
+     }
 
     try {
       // Wait for service worker to be ready
@@ -74,33 +72,29 @@ class NotificationManager {
     }
   }
 
-  private getStoredPreferences(): NotificationPreferences {
-    if (typeof window === 'undefined') {
+  private getStoredPreferences(): NotificationPreferences { if (typeof window === 'undefined') {
       return this.getDefaultPreferences();
-    }
+     }
 
     const stored = localStorage.getItem('notification-preferences');
-    if (stored) {
-      try {
-        return { ...this.getDefaultPreferences(), ...JSON.parse(stored) };
-      } catch {
-        return this.getDefaultPreferences();
-      }
+    if (stored) { try {
+        return { ...this.getDefaultPreferences(),: ...JSON.parse(stored) }
+      } catch { return this.getDefaultPreferences();
+       }
     }
 
     return this.getDefaultPreferences();
   }
 
-  private getDefaultPreferences(): NotificationPreferences {
-    return {
-      scoreUpdates: true,
-      matchupReminders: true,
-      waiverAlerts: true,
-      tradeNotifications: true,
-      draftReminders: true,
-      chatMessages: false,
+  private getDefaultPreferences(): NotificationPreferences { return {
+      scoreUpdates, true,
+  matchupReminders, true,
+      waiverAlerts, true,
+  tradeNotifications, true,
+      draftReminders, true,
+  chatMessages, false,
       general: true
-    };
+     }
   }
 
   private storePreferences(preferences: NotificationPreferences) {
@@ -110,49 +104,43 @@ class NotificationManager {
     }
   }
 
-  private monitorPermissionChanges() {
-    if (!('permissions' in navigator)) return;
+  private monitorPermissionChanges() { if (!('permissions' in navigator)) return;
 
-    navigator.permissions.query({ name: 'notifications' }).then(permission => {
-      permission.addEventListener('change', () => {
-        if (permission.state === 'denied' && this.subscription) {
+    navigator.permissions.query({ name: 'notifications'  }).then(permission => {
+      permission.addEventListener('change', () => { if (permission.state === 'denied' && this.subscription) {
           this.unsubscribe();
-        }
+         }
       });
     });
   }
 
-  public async requestPermission(): Promise<NotificationPermission> {
-    if (!('Notification' in window)) {
+  public async requestPermission(): Promise<NotificationPermission> { if (!('Notification' in window)) {
       throw new Error('Notifications not supported');
-    }
+     }
 
     let permission = Notification.permission;
 
-    if (permission === 'default') {
-      permission = await Notification.requestPermission();
-    }
+    if (permission === 'default') { permission = await Notification.requestPermission();
+     }
 
     return permission;
   }
 
-  public async subscribe(): Promise<PushSubscription | null> {
-    try {
+  public async subscribe(): Promise<PushSubscription | null> { try {
       const permission = await this.requestPermission();
       
       if (permission !== 'granted') {
         throw new Error('Notification permission denied');
-      }
+       }
 
-      if (!this.swRegistration) {
-        throw new Error('Service worker not available');
-      }
+      if (!this.swRegistration) { throw new Error('Service worker not available');
+       }
 
       // Convert VAPID key to Uint8Array
       const applicationServerKey = this.urlBase64ToUint8Array(this.vapidPublicKey);
 
       this.subscription = await this.swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
+        userVisibleOnly, true,
         applicationServerKey
       });
 
@@ -167,11 +155,10 @@ class NotificationManager {
     }
   }
 
-  public async unsubscribe(): Promise<boolean> {
-    try {
+  public async unsubscribe(): Promise<boolean> { try {
       if (!this.subscription) {
         return false;
-      }
+       }
 
       // Remove subscription from server
       await this.removeSubscriptionFromServer();
@@ -191,39 +178,35 @@ class NotificationManager {
     }
   }
 
-  private async sendSubscriptionToServer(subscription: PushSubscription): Promise<void> {
-    const subscriptionData: PushSubscriptionData = {
-      endpoint: subscription.endpoint,
-      keys: {
-        p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))),
-        auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!)))
-      },
+  private async sendSubscriptionToServer(params): Promisevoid>  { const subscriptionData: PushSubscriptionData = {,
+  endpoint: subscription.endpoint,
+  keys: {,
+  p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))),
+  auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!)))
+       },
       preferences: this.preferences
-    };
-
+    }
     const response = await fetch('/api/push/subscribe', {
       method: 'POST',
-      headers: {
+  headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(subscriptionData)
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to save subscription to server');
-    }
+    if (!response.ok) { throw new Error('Failed to save subscription to server');
+     }
   }
 
-  private async removeSubscriptionFromServer(): Promise<void> {
-    if (!this.subscription) return;
+  private async removeSubscriptionFromServer(): Promise<void> { if (!this.subscription) return;
 
     const response = await fetch('/api/push/unsubscribe', {
       method: 'POST',
-      headers: {
+  headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        endpoint: this.subscription.endpoint
+       },
+      body: JSON.stringify({,
+  endpoint: this.subscription.endpoint
       })
     });
 
@@ -232,19 +215,17 @@ class NotificationManager {
     }
   }
 
-  private async syncSubscriptionWithServer(): Promise<void> {
-    if (!this.subscription) return;
+  private async syncSubscriptionWithServer(): Promise<void> { if (!this.subscription) return;
 
     try {
-      await this.sendSubscriptionToServer(this.subscription);
-    } catch (error) {
+    await this.sendSubscriptionToServer(this.subscription);
+     } catch (error) {
       console.warn('Failed to sync subscription with server:', error);
     }
   }
 
-  private urlBase64ToUint8Array(base64String: string): Uint8Array {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
+  private urlBase64ToUint8Array(base64String: string); Uint8Array { const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding);
       .replace(/-/g, '+')
       .replace(/_/g, '/');
 
@@ -253,23 +234,20 @@ class NotificationManager {
 
     for (let i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i);
-    }
+     }
     return outputArray;
   }
 
-  public async sendNotification(payload: NotificationPayload): Promise<void> {
-    // For testing - show local notification
-    if (Notification.permission === 'granted' && payload.type !== 'score-update') {
-      const notification = new Notification(payload.title, {
-        body: payload.body,
-        icon: payload.icon || '/icons/icon-192x192.png',
+  public async sendNotification(params): Promisevoid>  {; // For testing - show local notification
+    if (Notification.permission === 'granted' && payload.type !== 'score-update') { const notification = new Notification(payload.title, {
+        body payload.body,
+  icon: payload.icon || '/icons/icon-192x192.png',
         badge: payload.badge || '/icons/badge-72x72.png',
-        tag: payload.tag,
-        data: payload.data,
-        requireInteraction: payload.requireInteraction,
+  tag: payload.tag,
+        data: payload.data: requireInteraction: payload.requireInteraction,
         silent: payload.silent,
-        timestamp: payload.timestamp || Date.now()
-      });
+  timestamp: payload.timestamp || Date.now()
+       });
 
       notification.onclick = () => {
         window.focus();
@@ -277,70 +255,60 @@ class NotificationManager {
           window.location.href = payload.url;
         }
         notification.close();
-      };
+      }
     }
   }
 
-  public getPreferences(): NotificationPreferences {
-    return { ...this.preferences };
+  public getPreferences(): NotificationPreferences { return { ...this.preferences}
   }
 
-  public async updatePreferences(newPreferences: Partial<NotificationPreferences>): Promise<void> {
-    const updatedPreferences = { ...this.preferences, ...newPreferences };
+  public async updatePreferences(params): Promisevoid>  { const updatedPreferences = { ...this.preferences, ...newPreferences}
     this.storePreferences(updatedPreferences);
 
     // Update server with new preferences
-    if (this.subscription) {
-      try {
-        await this.sendSubscriptionToServer(this.subscription);
-      } catch (error) {
+    if (this.subscription) { try {
+    await this.sendSubscriptionToServer(this.subscription);
+       } catch (error) {
         console.warn('Failed to update preferences on server:', error);
       }
     }
   }
 
-  public isSubscribed(): boolean {
-    return this.subscription !== null;
-  }
+  public isSubscribed(): boolean { return this.subscription !== null;
+   }
 
-  public getSubscription(): PushSubscription | null {
-    return this.subscription;
-  }
+  public getSubscription(): PushSubscription | null { return this.subscription;
+   }
 
-  public async getNotificationPermission(): Promise<NotificationPermission> {
-    if (!('Notification' in window)) {
+  public async getNotificationPermission(): Promise<NotificationPermission> { if (!('Notification' in window)) {
       return 'denied';
-    }
+     }
     return Notification.permission;
   }
 
-  public canShowNotifications(): boolean {
-    return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
-  }
+  public canShowNotifications(): boolean { return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+   }
 
   // Test notification
-  public async testNotification(): Promise<void> {
-    await this.sendNotification({
+  public async testNotification(): Promise<void> { await this.sendNotification({
       title: 'Test Notification',
-      body: 'This is a test notification from Astral Field!',
+  body: 'This is a test notification from Astral Field!',
       icon: '/icons/icon-192x192.png',
-      tag: 'test',
-      type: 'generic',
-      url: '/dashboard'
-    });
+  tag: 'test',type: 'generic',
+  url: '/dashboard'
+     });
   }
 
   // Schedule local notifications for important events
-  public scheduleMatchupReminder(matchupData: any, reminderTime: Date): void {
-    const timeUntilReminder = reminderTime.getTime() - Date.now();
+  public scheduleMatchupReminder(matchupData, any,
+  reminderTime: Date); void { const timeUntilReminder = reminderTime.getTime() - Date.now();
     
     if (timeUntilReminder > 0) {
       setTimeout(() => {
         this.sendNotification({
           title: 'Matchup Reminder',
-          body: `Your matchup against ${matchupData.opponent} starts soon!`,
-          type: 'matchup-reminder',
-          tag: `matchup-${matchupData.id}`,
+  body: `Your matchup against ${matchupData.opponent } starts soon!`,type 'matchup-reminder',
+  tag: `matchup-${matchupData.id}`,
           url: `/leagues/${matchupData.leagueId}/matchup`,
           requireInteraction: true
         });
@@ -348,8 +316,7 @@ class NotificationManager {
     }
   }
 
-  public scheduleWaiverReminder(waiverData: any): void {
-    const waiverTime = new Date(waiverData.processTime);
+  public scheduleWaiverReminder(waiverData: any); void { const waiverTime = new Date(waiverData.processTime);
     const reminderTime = new Date(waiverTime.getTime() - (2 * 60 * 60 * 1000)); // 2 hours before
     const timeUntilReminder = reminderTime.getTime() - Date.now();
     
@@ -357,12 +324,11 @@ class NotificationManager {
       setTimeout(() => {
         this.sendNotification({
           title: 'Waiver Reminder',
-          body: 'Waivers process in 2 hours. Review your claims!',
-          type: 'waiver-alert',
-          tag: 'waiver-reminder',
+  body: 'Waivers process in 2 hours.Review your claims!',type 'waiver-alert',
+  tag: 'waiver-reminder',
           url: '/waivers',
-          requireInteraction: false
-        });
+  requireInteraction: false
+         });
       }, timeUntilReminder);
     }
   }
@@ -371,10 +337,9 @@ class NotificationManager {
 // Singleton instance
 let notificationManager: NotificationManager | null = null;
 
-export function getNotificationManager(): NotificationManager {
-  if (!notificationManager) {
+export function getNotificationManager(): NotificationManager { if (!notificationManager) {
     notificationManager = new NotificationManager();
-  }
+   }
   return notificationManager;
 }
 

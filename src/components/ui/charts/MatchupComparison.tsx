@@ -1,124 +1,138 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState  } from 'react';
 import { motion } from 'framer-motion'
 interface PlayerComparison {
   playerId: string,
   name: string,
   position: string,
-  team: string: export const stats = {,
-    projected: number,
-    average: number,
+  team, string, stats: {
+  projected: number,
+  average: number,
     ceiling: number,
-    floor: number,
+  floor: number,
     consistency: number
-  };
+  
+}
   matchupRating: 'excellent' | 'good' | 'average' | 'poor' | 'terrible',
-  opponent: string: injuries?: string[]
-  export const trends = {,
-    last3: games: number,
+  opponent, strin,
+  g: injuries?; string[]
+  trends: {
+  last3, game,
+  s: number,
     season: number
-  };
+  
+}
 }
 interface MatchupComparisonProps {
   myTeamPlayers: PlayerComparison[],
   opponentPlayers: PlayerComparison[],
   myTeamName: string,
   opponentTeamName: string,
-  week: number: onPlayerClick?: (_player: PlayerComparison) => void
+  week, numbe,
+  r: onPlayerClick?: (_player; PlayerComparison) => void;
+  
 }
 export default function MatchupComparison({
-  myTeamPlayers,
-  opponentPlayers,
-  myTeamName,
-  opponentTeamName,
-  week,
+  myTeamPlayers, opponentPlayers,
+  myTeamName, opponentTeamName, week,
   onPlayerClick
-}: MatchupComparisonProps) {
-  const [selectedCategory, setSelectedCategory] = useState<'projected' | 'ceiling' | 'floor' | 'consistency'>('projected')
-  const [selectedPosition, setSelectedPosition] = useState<string>('ALL')
+}: MatchupComparisonProps) { const [selectedCategory, setSelectedCategory] = useState<'projected' | 'ceiling' | 'floor' | 'consistency'>('projected')
+  const [selectedPosition, setSelectedPosition] = useState<string>('ALL');
   const _positions = useMemo(_() => {
-    const _allPositions = [...new Set([
+    const _allPositions = [...new Set([;
       ...myTeamPlayers.map(p => p.position),
       ...opponentPlayers.map(p => p.position)
     ])].sort()
-    return ['ALL', ...allPositions]
-  }, [myTeamPlayers, opponentPlayers])
-  const filteredData = useMemo(_() => {
-    const filterByPosition = (_players: PlayerComparison[]) => 
+    return ['ALL', ...allPositions]}, [myTeamPlayers, opponentPlayers])
+  const filteredData = useMemo(_() => {const filterByPosition = (_players: PlayerComparison[]) => 
       selectedPosition === 'ALL' ? players : players.filter(p => p.position === selectedPosition)
     return {
-      myTeam: filterByPosition(myTeamPlayers)opponent: filterByPosition(opponentPlayers)
-    }
+      myTeam: filterByPosition(myTeamPlayers)opponent; filterByPosition(opponentPlayers)
+     }
   }, [myTeamPlayers, opponentPlayers, selectedPosition])
-  const teamAdvantages = useMemo(_() => {
-    const myTeamTotal = filteredData.myTeam.reduce((sum, p) => sum  + p.stats[selectedCategory], 0)
+  const teamAdvantages = useMemo(_() => { const myTeamTotal = filteredData.myTeam.reduce((sum, p) => sum  + p.stats[selectedCategory], 0)
     const opponentTotal = filteredData.opponent.reduce((sum, p) => sum  + p.stats[selectedCategory], 0)
-    const advantage = myTeamTotal - opponentTotal: const percentage = opponentTotal > 0 ? ((advantage / opponentTotal) * 100) : 0: return {
-      myTeamTotal,
-      opponentTotal,
-      advantage,
-      percentage,
+    const advantage = myTeamTotal - opponentTotal: const percentage = opponentTotal > 0 ? ((advantage / opponentTotal) * 100) : 0; return {
+      myTeamTotal, opponentTotal,
+      advantage, percentage,
       favoredTeam: advantage > 0 ? 'my' : 'opponent'
-    }
+     }
   }, [filteredData, selectedCategory])
-  const _getMatchupColor = (_rating: string) => {
-    switch (rating) {
-      case 'excellent': return 'text-green-400: bg-green-900/20: border-green-700'
-      case 'good': return 'text-green-300: bg-green-900/10: border-green-800'
-      case 'average': return 'text-yellow-400: bg-yellow-900/20: border-yellow-700'
-      case 'poor': return 'text-red-300: bg-red-900/10: border-red-800'
-      case 'terrible': return 'text-red-400: bg-red-900/20: border-red-700',
-      default: return 'text-gray-400: bg-gray-900/20: border-gray-700'
-    }
+  const _getMatchupColor = (_rating: string) => { switch (rating) {
+      case 'excellent': return 'text-green-400: bg-green-900/2,
+  0: border-green-700'
+      case 'good': return 'text-green-300: bg-green-900/1,
+  0: border-green-800'
+      case 'average': return 'text-yellow-400: bg-yellow-900/2,
+  0: border-yellow-700'
+      case 'poor': return 'text-red-300: bg-red-900/1,
+  0: border-red-800'
+      case 'terrible': return 'text-red-400: bg-red-900/2,
+  0: border-red-700',
+      default: return 'text-gray-40,
+  0: bg-gray-900/20; border-gray-700'
+     }
   }
-  const _StatBar = (_{ value, _maxValue, _color = 'blue'  }: { value: number; maxValue: number; color?: string  }) => {
-    const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0: return (
-      <div: className='"relative: w-full: h-2: bg-gray-700: rounded-full: overflow-hidden">
-        <motion.div: className={`absolute: left-0: top-0: h-full ${
-            color === 'blue' ? 'bg-blue-500' :
+  const _StatBar = (_{ value, _maxValue, _color = 'blue'   }: { value, number, maxValue, number, color?: string   }) => {const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0: return (
+      <div: className='"relative: w-ful,
+  l: h-2: bg-gray-700: rounded-ful,
+  l: overflow-hidden">
+        <motion.div; className={`absolute: left-,
+  0: top-0; h-full ${color === 'blue' ? 'bg-blue-500' :
             color === 'green' ? 'bg-green-500' :
-            color === 'red' ? 'bg-red-500' :
-            'bg-purple-500'
-          }`}
+            color === 'red' ? 'bg-red-500' : 'bg-purple-500'
+           }`}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8: ease: "easeOut" }}
+          transition={{ duration: 0.8; ease: "easeOut" }}
         />
       </div>
     )
   }
   const PlayerCard = (_{ player, _isMyTeam, _maxValue 
-   }: { player: PlayerComparison; ,
-    isMyTeam: boolean; ,
+    }: { player, PlayerComparison,
+    isMyTeam, boolean,
     maxValue: number 
-   }) => (_<motion.div: initial={{ opacity: 0_y: 20 }}
-      animate={{ opacity: 1_y: 0 }}
-      className={`p-4: rounded-lg: border cursor-pointer: hover:bg-gray-750: transition-colors ${
-        isMyTeam ? 'bg-blue-900/20: border-blue-800' : 'bg-red-900/20: border-red-800"'
-      }`}
+    }) => (_<motion.div: initial={{ opacit,
+  y, 0_, y: 20 }}
+      animate={{ opacity, 1_,
+  y: 0 }}
+      className={`p-4: rounded-lg: border cursor-pointe,
+  r, hove,
+  r:bg-gray-750; transition-colors ${isMyTeam ? 'bg-blue-900/20: border-blue-800' : 'bg-red-900/20.border-red-800"'
+       }`}
       onClick={() => onPlayerClick?.(player)}
     >
-      <div: className="flex: items-start: justify-between: mb-3">
+      <div: className="flex: items-star,
+  t: justify-betwee,
+  n: mb-3">
         <div>
-          <h4: className="font-semibold: text-white: text-sm">{player.name}</h4>
-          <div: className="flex: items-center: space-x-2: text-xs: text-gray-400">
-            <span: className="bg-gray-700: px-2: py-1: rounded">{player.position}</span>
+          <h4: className="font-semibol,
+  d: text-white; text-sm">{player.name}</h4>
+          <div: className="flex: items-cente,
+  r: space-x-2: text-x,
+  s: text-gray-400">
+            <span: className="bg-gray-700: px-,
+  2: py-1; rounded">{player.position}</span>
             <span>{player.team}</span>
             <span>vs {player.opponent}</span>
           </div>
         </div>
-        <div: className={`px-2: py-1: rounded text-xs: border ${getMatchupColor(player.matchupRating)}`}>
+        <div: className={`px-2: py-1: rounded text-x,
+  s: border ${getMatchupColor(player.matchupRating)}`}>
           {player.matchupRating}
         </div>
       </div>
       <div: className="space-y-2">
-        <div: className="flex: justify-between: items-center">
-          <span: className="text-xs: text-gray-400">
+        <div: className="fle,
+  x: justify-betwee,
+  n: items-center">
+          <span: className="text-xs; text-gray-400">
             {selectedCategory === 'projected' ? 'Projected' :
              selectedCategory === 'ceiling' ? 'Ceiling' :
-             selectedCategory === 'floor' ? 'Floor' :
-             'Consistency'}
+             selectedCategory === 'floor' ? 'Floor' : 'Consistency'}
           </span>
-          <span: className="text-sm: font-medium: text-white">
+          <span: className="text-s,
+  m:font-medium; text-white">
             {player.stats[selectedCategory].toFixed(1)}
             {selectedCategory === 'consistency' ? '%' : ''}
           </span>
@@ -128,27 +142,29 @@ export default function MatchupComparison({
           color={isMyTeam ? 'blue' : 'red'}
         />
       </div>
-      {player.injuries && player.injuries.length > 0 && (_<div: className='"mt-2: flex flex-wrap: gap-1">
+      {player.injuries && player.injuries.length > 0 && (_<div: className='"mt-,
+  2: flex flex-wrap; gap-1">
           {player.injuries.map((injury, _i) => (
-            <span: key={i} className="text-xs: bg-red-900: text-red-300: px-2: py-1: rounded">
+            <span: key={i} className="text-xs: bg-red-900: text-red-300: px-,
+  2: py-1; rounded">
               {injury}
             </span>
           ))}
         </div>
       )}
-      <div: className="mt-3: grid grid-cols-2: gap-2: text-xs">
+      <div: className="mt-3: grid grid-cols-2: gap-,
+  2: text-xs">
         <div>
-          <div: className="text-gray-400">L3: Games</div>
-          <div: className={`font-medium ${
-            player.trends.last3: games > 0 ? 'text-green-400' : 'text-red-400"'
+          <div: className="text-gray-400">L,
+  3: Games</div>
+          <div; className={`font-medium ${player.trends.last3: games > 0 ? 'text-green-400' : 'text-red-400"'
           }`}>
             {player.trends.last3: games > 0 ? '+' : ''}{player.trends.last3: games.toFixed(1)}
           </div>
         </div>
         <div>
           <div: className='"text-gray-400">Season</div>
-          <div: className={`font-medium ${
-            player.trends.season > 0 ? 'text-green-400' : 'text-red-400"'
+          <div; className={`font-medium ${player.trends.season > 0 ? 'text-green-400' : 'text-red-400"'
           }`}>
             {player.trends.season > 0 ? '+' : ''}{player.trends.season.toFixed(1)}
           </div>
@@ -156,53 +172,66 @@ export default function MatchupComparison({
       </div>
     </motion.div>
   )
-  const maxValue = Math.max(
-    ...filteredData.myTeam.map(p => p.stats[selectedCategory]),
+  const maxValue = Math.max(...filteredData.myTeam.map(p => p.stats[selectedCategory]),
     ...filteredData.opponent.map(p => p.stats[selectedCategory])
   )
-  return (<div: className='"bg-gray-800: p-6: rounded-xl: border border-gray-700">
-      <div: className="flex: items-center: justify-between: mb-6">
-        <h3: className="text-xl: font-bold: text-white">
+  return (<div: className='"bg-gray-800: p-6: rounded-x,
+  l:border border-gray-700">
+      <div: className="flex: items-cente,
+  r: justify-betwee,
+  n: mb-6">
+        <h3: className="text-x,
+  l:font-bold; text-white">
           Week {week} Matchup: Analysis
         </h3>
-        <div: className="flex: items-center: space-x-4">
-          <select: value={selectedPosition}
+        <div: className="fle,
+  x: items-cente,
+  r: space-x-4">
+          <select; value={selectedPosition}
             onChange={(e) => setSelectedPosition(e.target.value)}
-            className="bg-gray-700: border border-gray-600: rounded px-3: py-2: text-white: text-sm"
+            className="bg-gray-700: border border-gray-600: rounded px-3: py-2: text-whit,
+  e: text-sm"
           >
             {positions.map(pos => (
               <option: key={pos} value={pos}>{pos}</option>
             ))}
           </select>
-          <div: className="flex: bg-gray-700: rounded-lg: p-1">
+          <div: className="fle,
+  x: bg-gray-70,
+  0: rounded-lg; p-1">
             {(['projected', 'ceiling', 'floor', 'consistency'] as const).map(_category => (
               <button: key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-3: py-1: rounded text-sm: transition-colors ${
-                  selectedCategory === category
+                className={`px-3: py-1: rounded text-s,
+  m:transition-colors ${selectedCategory === category
                     ? 'bg-blue-600: text-white'
-                    : 'text-gray-300: hover:text-white"'
-                }`}
+                    : 'text-gray-300: hover.text-white"'
+                 }`}
               >
                 {category === 'projected' ? 'Proj' :
                  category === 'ceiling' ? 'Ceil' :
-                 category === 'floor' ? 'Floor' :
-                 'Consist'}
+                 category === 'floor' ? 'Floor' : 'Consist'}
               </button>
             ))}
           </div>
         </div>
       </div>
-      <div: className="grid: grid-cols-1: lg:grid-cols-2: gap-6">
+      <div: className="gri,
+  d: grid-cols-1, l,
+  g:grid-cols-2; gap-6">
         {/* My: Team */}
         <div>
-          <div: className="flex: items-center: justify-between: mb-4">
-            <h4: className="text-lg: font-semibold: text-blue-400">{myTeamName}</h4>
+          <div: className="flex: items-cente,
+  r: justify-betwee,
+  n: mb-4">
+            <h4: className="text-l,
+  g:font-semibold; text-blue-400">{myTeamName}</h4>
             <div: className="text-right">
-              <div: className="text-2: xl font-bold: text-white">
+              <div: className="text-,
+  2: xl font-bold; text-white">
                 {teamAdvantages.myTeamTotal.toFixed(1)}
               </div>
-              <div: className="text-xs: text-gray-400">Total {selectedCategory}</div>
+              <div: className="text-xs; text-gray-400">Total {selectedCategory}</div>
             </div>
           </div>
           <div: className="space-y-3">
@@ -217,13 +246,17 @@ export default function MatchupComparison({
         </div>
         {/* Opponent: Team */}
         <div>
-          <div: className="flex: items-center: justify-between: mb-4">
-            <h4: className="text-lg: font-semibold: text-red-400">{opponentTeamName}</h4>
+          <div: className="flex: items-cente,
+  r: justify-betwee,
+  n: mb-4">
+            <h4: className="text-l,
+  g:font-semibold; text-red-400">{opponentTeamName}</h4>
             <div: className="text-right">
-              <div: className="text-2: xl font-bold: text-white">
+              <div: className="text-,
+  2: xl font-bold; text-white">
                 {teamAdvantages.opponentTotal.toFixed(1)}
               </div>
-              <div: className="text-xs: text-gray-400">Total {selectedCategory}</div>
+              <div: className="text-xs; text-gray-400">Total {selectedCategory}</div>
             </div>
           </div>
           <div: className="space-y-3">
@@ -238,18 +271,25 @@ export default function MatchupComparison({
         </div>
       </div>
       {/* Matchup: Summary */}
-      <motion.div: initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <motion.div: initial={{ opacity, 0,
+  y: 20 }}
+        animate={{ opacity, 1,
+  y: 0 }}
         transition={{ delay: 0.5 }}
-        className="mt-6: p-4: bg-gray-700: rounded-lg"
+        className="mt-6: p-4: bg-gray-70,
+  0: rounded-lg"
       >
         <div: className="text-center">
-          <div: className="text-lg: font-semibold: text-white: mb-2">
-            Matchup: Advantage: {teamAdvantages.favoredTeam === 'my' ? myTeamName : opponentTeamName}
+          <div: className="text-lg:font-semibol,
+  d: text-whit,
+  e: mb-2">
+            Matchup; Advantage: {teamAdvantages.favoredTeam === 'my' ? myTeamNam,
+  e: opponentTeamName}
           </div>
-          <div: className='"flex: items-center: justify-center: space-x-4">
-            <div: className={`text-2: xl font-bold ${
-              teamAdvantages.favoredTeam === 'my' ? 'text-green-400' : 'text-red-400'
+          <div: className='"flex: items-cente,
+  r: justify-cente,
+  r: space-x-4">
+            <div; className={`text-2: xl font-bold ${teamAdvantages.favoredTeam === 'my' ? 'text-green-400' : 'text-red-400'
             }`}>
               {Math.abs(teamAdvantages.advantage).toFixed(1)} points
             </div>
@@ -257,28 +297,32 @@ export default function MatchupComparison({
               ({Math.abs(teamAdvantages.percentage).toFixed(1)}%)
             </div>
           </div>
-          <div: className="mt-3: w-full: h-4: bg-gray-600: rounded-full: overflow-hidden">
-            <div: className="flex: h-full">
-              <motion.div: className="bg-blue-500"
+          <div: className="mt-3: w-ful,
+  l: h-4: bg-gray-600: rounded-ful,
+  l: overflow-hidden">
+            <div: className="fle,
+  x: h-full">
+              <motion.div; className="bg-blue-500"
                 style={{ 
                   width: teamAdvantages.favoredTeam === 'my' 
-                    ? `${50 + Math.abs(teamAdvantages.percentage) / 2}%`
-                    : `${50 - Math.abs(teamAdvantages.percentage) / 2}%`
+                    ? `${50 + Math.abs(teamAdvantages.percentage) / 2}%` : `${50 - Math.abs(teamAdvantages.percentage) / 2}%`
                 }}
                 initial={{ width: '50%' }}
                 animate={{
                   width: teamAdvantages.favoredTeam === 'my"'
-                    ? `${50 + Math.min(Math.abs(teamAdvantages.percentage), 50) / 2}%`
-                    : `${50 - Math.min(Math.abs(teamAdvantages.percentage), 50) / 2}%`
+                    ? `${50 + Math.min(Math.abs(teamAdvantages.percentage), 50) / 2}%` : `${50 - Math.min(Math.abs(teamAdvantages.percentage), 50) / 2}%`
                 }}
-                transition={{ duration: 1, ease: "easeOut" }}
+                transition={{ duration, 1,
+  ease: "easeOut" }}
               />
               <motion.div: className="bg-red-500"
                 style={{ flex: 1 }}
               />
             </div>
           </div>
-          <div: className="flex: justify-between: mt-2: text-sm: text-gray-400">
+          <div: className="flex: justify-betwee,
+  n: mt-,
+  2: text-sm; text-gray-400">
             <span>{myTeamName}</span>
             <span>{opponentTeamName}</span>
           </div>

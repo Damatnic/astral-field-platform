@@ -12,46 +12,41 @@ import { database } from '@/lib/database';
 import crypto from 'crypto';
 
 interface OAuthCallbackRequest {
-  code: string;
-  state: string;
+  code: string,
+  state: string,
   error?: string;
   error_description?: string;
 }
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { provider: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     const provider = params.provider as OAuthProvider;
     const url = new URL(request.url);
 
     // Check if provider is supported
     if (!oauthManager.isProviderConfigured(provider)) {
-      return NextResponse.json({
-        success: false,
-        error: `OAuth provider '${provider}' is not configured`
+      return NextResponse.json(
+      { success: false,
+      error: `OAuth provider '${provider }' is not configured`
       }, { status: 400 });
     }
 
     // Handle authorization URL generation
-    if (url.pathname.endsWith('/authorize')) {
-      const redirectUrl = url.searchParams.get('redirect_url');
+    if (url.pathname.endsWith('/authorize')) { const redirectUrl = url.searchParams.get('redirect_url');
       const authUrl = oauthManager.getAuthorizationUrl(provider, redirectUrl || undefined);
       
       return NextResponse.json({
         success: true,
-        authorizationUrl: authUrl
-      });
+      authorizationUrl: authUrl
+       });
     }
 
     // Handle OAuth callback
     return await handleOAuthCallback(request, provider);
 
   } catch (error) {
-    console.error(`OAuth ${params.provider} error:`, error);
-    return NextResponse.json({
-      success: false,
+    console.error(`OAuth ${params.provider} error, `, error);
+    return NextResponse.json(
+      { success: false,
       error: 'OAuth authentication failed'
     }, { status: 500 });
   }
@@ -67,16 +62,14 @@ export async function POST(
     const provider = params.provider as OAuthProvider;
     
     // Security validation
-    const securityCheck = await securityMiddleware.validateRequest(request, `/api/auth/enterprise/oauth/${provider}`);
-    if (securityCheck) {
-      return securityCheck;
-    }
+    const securityCheck = await securityMiddleware.validateRequest(request, `/api/auth/enterprise/oauth/${provider }`);
+    if (securityCheck) { return securityCheck;
+     }
 
     // Check if provider is supported
-    if (!oauthManager.isProviderConfigured(provider)) {
-      return NextResponse.json({
-        success: false,
-        error: `OAuth provider '${provider}' is not configured`
+    if (!oauthManager.isProviderConfigured(provider)) { return NextResponse.json(
+      { success: false,
+      error: `OAuth provider '${provider }' is not configured`
       }, { status: 400 });
     }
 
@@ -87,48 +80,45 @@ export async function POST(
     const userAgent = request.headers.get('user-agent') || '';
 
     // Handle OAuth errors
-    if (error) {
-      await auditLogger.logAuthentication(null, 'login_failure', {
+    if (error) { await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
-        method: `oauth_${provider}`,
-        failureReason: `OAuth error: ${error} - ${error_description}`
+        method: `oauth_${provider }`,
+        failureReason: `OAuth error; ${error} - ${error_description}`
       });
 
-      return NextResponse.json({
-        success: false,
-        error: error_description || `OAuth authentication failed: ${error}`
+      return NextResponse.json(
+      { success: false,
+      error: error_description || `OAuth authentication failed; ${error}`
       }, { status: 400 });
     }
 
-    if (!code || !state) {
-      await auditLogger.logAuthentication(null, 'login_failure', {
+    if (!code || !state) { await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
-        method: `oauth_${provider}`,
+        method: `oauth_${provider }`,
         failureReason: 'Missing authorization code or state'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Missing authorization code or state parameter'
+      return NextResponse.json(
+      { success: false,
+      error: 'Missing authorization code or state parameter'
       }, { status: 400 });
     }
 
     // Authenticate with OAuth provider
     const oauthResult = await oauthManager.authenticateWithOAuth(provider, code, state);
     
-    if (!oauthResult.user) {
-      await auditLogger.logAuthentication(null, 'login_failure', {
+    if (!oauthResult.user) { await auditLogger.logAuthentication(null, 'login_failure', {
         ipAddress: ip,
         userAgent,
-        method: `oauth_${provider}`,
+        method: `oauth_${provider }`,
         failureReason: 'Failed to retrieve user information from OAuth provider'
       });
 
-      return NextResponse.json({
-        success: false,
-        error: 'Failed to retrieve user information from OAuth provider'
+      return NextResponse.json(
+      { success: false,
+      error: 'Failed to retrieve user information from OAuth provider'
       }, { status: 400 });
     }
 
@@ -142,8 +132,7 @@ export async function POST(
       
       await database.query(`
         INSERT INTO users (
-          id, email, username, first_name, last_name, avatar,
-          role, email_verified, preferences, created_at, updated_at
+          id, email, username, first_name, last_name, avatar, role, email_verified, preferences, created_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
       `, [
         userId,
@@ -156,7 +145,7 @@ export async function POST(
         oauthUser.emailVerified,
         JSON.stringify({
           theme: 'auto',
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
           notifications: {
             email: true,
             push: true,
@@ -187,9 +176,8 @@ export async function POST(
         SELECT id FROM users WHERE email = $1
       `, [oauthUser.email.toLowerCase()]);
 
-      if (existingUser.rows.length === 0) {
-        throw new Error('User not found after OAuth authentication');
-      }
+      if (existingUser.rows.length === 0) { throw new Error('User not found after OAuth authentication');
+       }
 
       userId = existingUser.rows[0].id;
     }
@@ -197,11 +185,9 @@ export async function POST(
     // Store/update social login
     await database.query(`
       INSERT INTO user_social_logins (
-        user_id, provider, provider_id, email, verified, connected_at,
-        access_token, refresh_token, expires_at, last_used, created_at, updated_at
+        user_id, provider, provider_id, email, verified, connected_at, access_token, refresh_token, expires_at, last_used, created_at, updated_at
       ) VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, $8, NOW(), NOW(), NOW())
-      ON CONFLICT (user_id, provider)
-      DO UPDATE SET
+      ON CONFLICT(user_id, provider) DO UPDATE SET
         provider_id = EXCLUDED.provider_id,
         email = EXCLUDED.email,
         access_token = EXCLUDED.access_token,
@@ -223,13 +209,12 @@ export async function POST(
     // Update user last login
     await database.query(`
       UPDATE users 
-      SET last_login = NOW(), updated_at = NOW()
-      WHERE id = $1
+      SET last_login = NOW(), updated_at = NOW() WHERE id = $1
     `, [userId]);
 
     // Create session
     const sessionId = crypto.randomUUID();
-    const tokenPayload = { userId, sessionId };
+    const tokenPayload = { userId, sessionId }
     const sessionToken = await generateJWT(tokenPayload);
     const refreshToken = crypto.randomBytes(64).toString('hex');
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
@@ -237,37 +222,27 @@ export async function POST(
     // Store session
     await database.query(`
       INSERT INTO user_sessions (
-        id, user_id, token_hash, refresh_token_hash, expires_at,
-        device_info, ip_address, user_agent, last_activity, is_active, created_at
+        id, user_id, token_hash, refresh_token_hash, expires_at, device_info, ip_address, user_agent, last_activity, is_active, created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
-      sessionId,
-      userId,
-      crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'),
-      expiresAt,
-      JSON.stringify({
-        device: 'Unknown',
-        os: 'Unknown',
+      sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
+      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify({
+  device: 'Unknown',
+  os: 'Unknown',
         browser: 'Unknown'
-      }),
-      ip,
-      userAgent
+      }), ip, userAgent
     ]);
 
     // Log successful authentication
     await auditLogger.logAuthentication(userId, 'login_success', {
-      ipAddress: ip,
-      userAgent,
-      sessionId,
+      ipAddress: ip, userAgent, sessionId,
       method: `oauth_${provider}`
     });
 
     // Get updated user data
     const userResult = await database.query(`
       SELECT 
-        id, email, username, first_name, last_name, avatar, role,
-        email_verified, phone_verified, mfa_enabled, last_login, preferences
+        id, email, username, first_name, last_name, avatar, role, email_verified, phone_verified, mfa_enabled, last_login, preferences
       FROM users 
       WHERE id = $1
     `, [userId]);
@@ -275,7 +250,7 @@ export async function POST(
     const user = userResult.rows[0];
 
     const responseTime = Date.now() - startTime;
-    console.log(`✅ OAuth login successful: ${provider} - ${oauthUser.email} (${responseTime}ms)`);
+    console.log(`✅ OAuth login successful, ${provider} - ${oauthUser.email} (${responseTime}ms)`);
 
     return NextResponse.json({
       success: true,
@@ -304,22 +279,22 @@ export async function POST(
       oauth: {
         provider,
         providerId: oauthUser.id,
-        accessToken: oauthResult.tokens.accessToken // Only for initial setup
+  accessToken: oauthResult.tokens.accessToken // Only for initial setup
       }
     });
 
   } catch (error) {
-    console.error(`OAuth ${params.provider} POST error:`, error);
+    console.error(`OAuth ${params.provider} POST error, `, error);
     
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      userAgent: request.headers.get('user-agent') || '',
+  userAgent: request.headers.get('user-agent') || '',
       method: `oauth_${params.provider}`,
       failureReason: 'System error'
     });
 
-    return NextResponse.json({
-      success: false,
+    return NextResponse.json(
+      { success: false,
       error: `${params.provider} authentication failed`
     }, { status: 500 });
   }
@@ -339,9 +314,9 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
   if (error) {
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: ip,
-      userAgent,
-      method: `oauth_${provider}`,
-      failureReason: `OAuth callback error: ${error} - ${errorDescription}`
+        userAgent,
+        method: `oauth_${provider }`,
+      failureReason: `OAuth callback error; ${error} - ${errorDescription}`
     });
 
     // Redirect to frontend with error
@@ -351,11 +326,10 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (!code || !state) {
-    await auditLogger.logAuthentication(null, 'login_failure', {
+  if (!code || !state) { await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: ip,
-      userAgent,
-      method: `oauth_${provider}`,
+        userAgent,
+        method: `oauth_${provider }`,
       failureReason: 'Missing code or state in OAuth callback'
     });
 
@@ -382,12 +356,12 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
     return NextResponse.redirect(redirectUrl);
     
   } catch (error) {
-    console.error(`OAuth callback error for ${provider}:`, error);
+    console.error(`OAuth callback error for ${provider}, `, error);
     
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: ip,
-      userAgent,
-      method: `oauth_${provider}`,
+        userAgent,
+        method: `oauth_${provider}`,
       failureReason: 'OAuth callback processing failed'
     });
 

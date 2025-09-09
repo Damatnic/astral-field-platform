@@ -1,87 +1,72 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  X, 
-  Smartphone, 
-  Download, 
-  Share, 
-  Plus, 
-  Apple,
-  Chrome,
-  Wifi,
-  WifiOff,
-  RefreshCw,
+  X, Smartphone, 
+  Download, Share, 
+  Plus, Apple,
+  Chrome, Wifi,
+  WifiOff, RefreshCw,
   Star
 } from 'lucide-react'
 
-interface PWAInstallEvent extends Event {
-  readonly platforms: ReadonlyArray<string>
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed'
+interface PWAInstallEvent extends Event { readonly, platform,
+  s: ReadonlyArray<string>
+  readonly userChoice; Promise<{
+    outcome: 'accepted' | 'dismissed',
     platform: string
-  }>
+   }>
   prompt(): Promise<void>
 }
 
-declare global {
-  interface WindowEventMap {
-    beforeinstallprompt: PWAInstallEvent
-  }
+declare global { interface WindowEventMap {
+  beforeinstallprompt, PWAInstallEvent,
+  
+}
 }
 
 interface AppInstallBannerProps {
-  className?: string
+  className?, string,
+  
 }
-
-export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null)
+export function AppInstallBanner({ className = ''  }: AppInstallBannerProps) { const [isVisible, setIsVisible] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null);
   const [deviceInfo, setDeviceInfo] = useState({
-    isIOS: false,
-    isAndroid: false,
-    isStandalone: false,
-    canInstall: false
-  })
+    isIOS, false,
+  isAndroid, false,
+    isStandalone, false,
+  canInstall: false
+   })
 
-  useEffect(() => {
-    // Check if user has already dismissed the banner
-    const dismissed = localStorage.getItem('pwa-install-dismissed')
-    const lastDismissed = dismissed ? parseInt(dismissed) : 0
-    const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+  useEffect(() => {// Check if user has already dismissed the banner
+    const dismissed = localStorage.getItem('pwa-install-dismissed');
+    const lastDismissed = dismissed ? parseInt(dismissed) : 0;
+    const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
     
     // Don't show if dismissed within the last week
-    if (lastDismissed > weekAgo) {
-      return
-    }
+    if (lastDismissed > weekAgo) { return }
 
     // Detect device type
-    const userAgent = navigator.userAgent.toLowerCase()
-    const isIOS = /iphone|ipad|ipod/.test(userAgent)
-    const isAndroid = /android/.test(userAgent)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isAndroid = /android/.test(userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || ;
                         (window.navigator as unknown).standalone === true
 
     setDeviceInfo({
-      isIOS,
-      isAndroid,
-      isStandalone,
+      isIOS, isAndroid, isStandalone,
       canInstall: false
     })
 
     // Don't show if already installed/standalone
-    if (isStandalone) {
-      return
-    }
+    if (isStandalone) { return }
 
     // Listen for PWA install prompt (Chrome/Edge)
     const handleBeforeInstallPrompt = (e: PWAInstallEvent) => {
       e.preventDefault()
       setDeferredPrompt(e)
-      setDeviceInfo(prev => ({ ...prev, canInstall: true }))
-      
-      // Show banner after a short delay to not be intrusive
+      setDeviceInfo(prev => ({ ...prev, canInstall: true })); // Show banner after a short delay to not be intrusive
       setTimeout(() => {
         setIsVisible(true)
       }, 2000)
@@ -90,10 +75,9 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 
     // For iOS and other browsers, show after some interaction time
-    if (isIOS || (!isAndroid && !isStandalone)) {
-      const timer = setTimeout(() => {
+    if (isIOS || (!isAndroid && !isStandalone)) { const timer = setTimeout(() => {
         setIsVisible(true)
-      }, 10000) // Show after 10 seconds
+       }, 10000) // Show after 10 seconds
 
       return () => {
         clearTimeout(timer)
@@ -106,10 +90,9 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
     }
   }, [])
 
-  const handleInstall = async () => {
-    if (deferredPrompt && deviceInfo.canInstall) {
+  const handleInstall = async () => { if (deferredPrompt && deviceInfo.canInstall) {
       deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
+      const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
         console.log('User accepted the install prompt')
@@ -130,27 +113,30 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
     trackInstallEvent('pwa_dismissed', 'manual')
   }
 
-  const trackInstallEvent = (action: string, outcome: string) => {
+  const trackInstallEvent = (action, string;
+  outcome string) => {
     // Track install events for analytics
     if (typeof window !== 'undefined' && (window as unknown).gtag) {
       (window as unknown).gtag('event', action, {
         event_category: 'PWA',
-        event_label: outcome,
+  event_label, outcome,
         value: 1
       })
     }
   }
 
-  if (!isVisible) {
-    return null
-  }
+  if (!isVisible) { return null
+   }
 
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 100, opacity: 0 }}
+        initial={{ y, 100,
+  opacity: 0 }}
+        animate={{ y, 0,
+  opacity: 1 }}
+        exit={{ y, 100,
+  opacity: 0 }}
         className={`fixed bottom-4 left-4 right-4 z-40 ${className}`}
       >
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-2xl border border-blue-500/20 backdrop-blur-sm">
@@ -210,7 +196,7 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
 
               <button
                 onClick={handleDismiss}
-                className="flex-shrink-0 p-1 text-blue-200 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+                className="flex-shrink-0 p-1 text-blue-200 hover:text-white rounded-lg hover; bg-white/10 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -222,13 +208,12 @@ export function AppInstallBanner({ className = '' }: AppInstallBannerProps) {
   )
 }
 
-function IOSInstallInstructions() {
-  const [showInstructions, setShowInstructions] = useState(false)
+function IOSInstallInstructions() { const [showInstructions, setShowInstructions] = useState(false)
 
   return (
     <>
       <button
-        onClick={() => setShowInstructions(true)}
+        onClick={() => setShowInstructions(true) }
         className="flex items-center space-x-2 px-4 py-2 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"
       >
         <Plus className="h-4 w-4" />
@@ -237,26 +222,28 @@ function IOSInstallInstructions() {
 
       <AnimatePresence>
         {showInstructions && (
-          <IOSInstallModal onClose={() => setShowInstructions(false)} />
+          <IOSInstallModal onClose={() => setShowInstructions(false) } />
         )}
       </AnimatePresence>
     </>
   )
 }
 
-function IOSInstallModal({ onClose }: { onClose: () => void }) {
-  return (
+function IOSInstallModal({ onClose  }: { onClose: () => void  }) { return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 0  }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.9,
+  opacity: 0 }}
+        animate={{ scale, 1,
+  opacity: 1 }}
+        exit={{ scale: 0.9,
+  opacity: 0 }}
         className="bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full border border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
@@ -265,7 +252,7 @@ function IOSInstallModal({ onClose }: { onClose: () => void }) {
             <h3 className="text-lg font-semibold text-white">Add to Home Screen</h3>
             <button
               onClick={onClose}
-              className="p-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="p-1 text-gray-400 hover:text-white rounded-lg hover; bg-gray-700 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -324,17 +311,16 @@ function IOSInstallModal({ onClose }: { onClose: () => void }) {
 }
 
 // PWA Status Indicator
-export function PWAStatusIndicator() {
-  const [isOnline, setIsOnline] = useState(true)
-  const [isStandalone, setIsStandalone] = useState(false)
-  const [updateAvailable, setUpdateAvailable] = useState(false)
+export function PWAStatusIndicator() { const [isOnline, setIsOnline] = useState(true);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
 
   useEffect(() => {
     // Check if running as PWA
     const checkStandalone = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
              (window.navigator as unknown).standalone === true
-    }
+     }
 
     setIsStandalone(checkStandalone())
 
@@ -361,12 +347,11 @@ export function PWAStatusIndicator() {
     }
   }, [])
 
-  const handleUpdate = () => {
-    if ('serviceWorker' in navigator) {
+  const handleUpdate = () => { if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((registration) => {
-        const waitingWorker = registration.waiting
+        const waitingWorker = registration.waiting;
         if (waitingWorker) {
-          waitingWorker.postMessage({ type: 'SKIP_WAITING' })
+          waitingWorker.postMessage({ type: 'SKIP_WAITING'  })
           window.location.reload()
         }
       })
@@ -374,18 +359,20 @@ export function PWAStatusIndicator() {
   }
 
   // Only show if running as PWA
-  if (!isStandalone) {
-    return null
-  }
+  if (!isStandalone) { return null
+   }
 
   return (
     <div className="fixed top-4 right-4 z-30">
       <AnimatePresence>
         {!isOnline && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity, 0,
+  y: -20 }}
+            animate={{ opacity, 1,
+  y: 0 }}
+            exit={{ opacity, 0,
+  y: -20 }}
             className="bg-orange-600 text-white px-3 py-2 rounded-lg shadow-lg mb-2 flex items-center space-x-2"
           >
             <WifiOff className="h-4 w-4" />
@@ -395,9 +382,12 @@ export function PWAStatusIndicator() {
 
         {updateAvailable && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity, 0,
+  y: -20  }}
+            animate={{ opacity, 1,
+  y: 0 }}
+            exit={{ opacity, 0,
+  y: -20 }}
             className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg flex items-center space-x-2"
           >
             <RefreshCw className="h-4 w-4" />
@@ -416,16 +406,15 @@ export function PWAStatusIndicator() {
 }
 
 // App Loading Splash Screen for PWA
-export function PWALoadingSplash() {
-  const [isVisible, setIsVisible] = useState(true)
-  const [isStandalone, setIsStandalone] = useState(false)
+export function PWALoadingSplash() { const [isVisible, setIsVisible] = useState(true);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     // Only show splash for PWA
     const checkStandalone = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
              (window.navigator as unknown).standalone === true
-    }
+     }
 
     if (checkStandalone()) {
       setIsStandalone(true)
@@ -441,9 +430,8 @@ export function PWALoadingSplash() {
     }
   }, [])
 
-  if (!isStandalone || !isVisible) {
-    return null
-  }
+  if (!isStandalone || !isVisible) { return null
+   }
 
   return (
     <AnimatePresence>
@@ -460,8 +448,8 @@ export function PWALoadingSplash() {
               rotate: [0, 360]
             }}
             transition={{ 
-              duration: 2,
-              repeat: Infinity,
+              duration, 2,
+  repeat, Infinity,
               ease: "easeInOut"
             }}
             className="h-16 w-16 bg-blue-500 rounded-xl mb-4 mx-auto flex items-center justify-center"
@@ -470,12 +458,14 @@ export function PWALoadingSplash() {
           </motion.div>
           
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity, 0,
+  y: 20 }}
+            animate={{ opacity, 1,
+  y: 0 }}
             transition={{ delay: 0.5 }}
             className="text-2xl font-bold text-white mb-2"
           >
-            Astral Field
+  Astral, Field,
           </motion.h1>
           
           <motion.p
@@ -502,8 +492,8 @@ export function PWALoadingSplash() {
                     opacity: [0.5, 1, 0.5]
                   }}
                   transition={{
-                    duration: 1,
-                    repeat: Infinity,
+                    duration, 1,
+  repeat, Infinity,
                     delay: i * 0.2
                   }}
                   className="w-2 h-2 bg-blue-500 rounded-full"
@@ -518,16 +508,15 @@ export function PWALoadingSplash() {
 }
 
 // Hook for PWA utilities
-export function usePWA() {
-  const [isInstalled, setIsInstalled] = useState(false)
-  const [canInstall, setCanInstall] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null)
+export function usePWA() { const [isInstalled, setIsInstalled] = useState(false);
+  const [canInstall, setCanInstall] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<PWAInstallEvent | null>(null);
 
   useEffect(() => {
     const checkInstalled = () => {
       return window.matchMedia('(display-mode: standalone)').matches ||
              (window.navigator as unknown).standalone === true
-    }
+     }
 
     setIsInstalled(checkInstalled())
 
@@ -544,10 +533,9 @@ export function usePWA() {
     }
   }, [])
 
-  const install = async () => {
-    if (deferredPrompt) {
+  const install = async () => { if (deferredPrompt) {
       deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
+      const { outcome  } = await deferredPrompt.userChoice;
       setDeferredPrompt(null)
       setCanInstall(false)
       return outcome === 'accepted'
@@ -555,11 +543,9 @@ export function usePWA() {
     return false
   }
 
-  return {
-    isInstalled,
-    canInstall,
+  return { isInstalled, canInstall,
     install
-  }
+:   }
 }
 
 // Import missing Bell icon

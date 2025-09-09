@@ -1,65 +1,58 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback  } from 'react';
 import { VirtualList, useVirtualList } from '@/components/ui/virtual-list';
 import { Card, CardContent } from '@/components/ui/Card/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button/Button';
 import { debounce } from '@/utils/performance';
 import { 
-  Trophy, 
-  TrendingUp, 
-  TrendingDown, 
-  Activity,
-  AlertCircle,
-  Star,
-  Plus,
+  Trophy, TrendingUp, 
+  TrendingDown, Activity,
+  AlertCircle, Star, Plus,
   Minus
 } from 'lucide-react';
 
 interface Player {
-  id: string;
-  name: string;
-  position: string;
-  team: string;
-  byeWeek: number;
-  projectedPoints: number;
-  avgPoints: number;
-  rank: number;
-  positionRank: number;
+  id, string,
+    name, string,
+  position, string,
+    team, string,
+  byeWeek, number,
+    projectedPoints, number,
+  avgPoints, number,
+    rank, number,
+  positionRank, number,
   status?: 'healthy' | 'questionable' | 'doubtful' | 'out' | 'ir';
   trend?: 'up' | 'down' | 'stable';
-  ownership?: number;
-  isRostered?: boolean;
-  price?: number;
+  ownership?, number,
+  isRostered?, boolean,
+  price?, number,
+  
 }
-
 interface VirtualPlayerListProps {
   players: Player[];
   onPlayerClick?: (player: Player) => void;
   onAddPlayer?: (player: Player) => void;
   onDropPlayer?: (player: Player) => void;
-  showActions?: boolean;
+  showActions?, boolean,
   height?: number | string;
-  searchTerm?: string;
-  selectedPosition?: string;
+  searchTerm?, string,
+  selectedPosition?, string,
   sortBy?: 'rank' | 'projected' | 'average' | 'name';
-  className?: string;
+  className?, string,
 }
 
 export function VirtualPlayerList({
-  players,
-  onPlayerClick,
-  onAddPlayer,
-  onDropPlayer,
+  players, onPlayerClick,
+  onAddPlayer, onDropPlayer,
   showActions = false,
   height = 600,
   searchTerm = '',
   selectedPosition = 'ALL',
   sortBy = 'rank',
   className = ''
-}: VirtualPlayerListProps) {
-  const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
+}: VirtualPlayerListProps) { const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
 
   // Filter and sort players
   const filteredPlayers = useMemo(() => {
@@ -72,27 +65,27 @@ export function VirtualPlayerList({
         player.name.toLowerCase().includes(term) ||
         player.team.toLowerCase().includes(term)
       );
-    }
+     }
 
     // Filter by position
-    if (selectedPosition !== 'ALL') {
-      filtered = filtered.filter(player => player.position === selectedPosition);
-    }
+    if (selectedPosition !== 'ALL') { filtered = filtered.filter(player => player.position === selectedPosition);
+     }
 
     // Sort players
-    filtered = [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case 'rank':
-          return a.rank - b.rank;
-        case 'projected':
+    filtered = [...filtered].sort((a, b) => { switch (sortBy) {
+      case 'rank':
+      return a.rank - b.rank;
+      break;
+    case 'projected':
           return b.projectedPoints - a.projectedPoints;
         case 'average':
-          return b.avgPoints - a.avgPoints;
-        case 'name':
+      return b.avgPoints - a.avgPoints;
+      break;
+    case 'name':
           return a.name.localeCompare(b.name);
         default:
           return 0;
-      }
+       }
     });
 
     return filtered;
@@ -100,11 +93,10 @@ export function VirtualPlayerList({
 
   // Handle player selection
   const togglePlayerSelection = useCallback((playerId: string) => {
-    setSelectedPlayers(prev => {
-      const next = new Set(prev);
+    setSelectedPlayers(prev => { const next = new Set(prev);
       if (next.has(playerId)) {
         next.delete(playerId);
-      } else {
+       } else {
         next.add(playerId);
       }
       return next;
@@ -112,43 +104,44 @@ export function VirtualPlayerList({
   }, []);
 
   // Get position color
-  const getPositionColor = (position: string) => {
-    switch (position) {
-      case 'QB': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'RB': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'WR': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'TE': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'K': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      case 'DST': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+  const getPositionColor = (position: string) => { switch (position) {
+      case 'QB':
+      return 'bg-red-500/20 text-red-400 border-red-500/30';
+      break;
+    case 'RB': return 'bg-green-500/20 text-green-400 border-green-500/30';
+      case 'WR':
+      return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      break;
+    case 'TE': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      case 'K':
+      return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      break;
+    case 'DST': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
       default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
-  };
-
+     }
+  }
   // Get status icon
-  const getStatusIcon = (status?: string) => {
-    switch (status) {
+  const getStatusIcon = (status?: string) => { switch (status) {
       case 'questionable':
-        return <AlertCircle className="w-4 h-4 text-yellow-400" />;
-      case 'doubtful':
+      return <AlertCircle className="w-4 h-4 text-yellow-400" />;
+      break;
+    case 'doubtful':
         return <AlertCircle className="w-4 h-4 text-orange-400" />;
-      case 'out':
-      case 'ir':
+      case 'out', break,
+    case 'ir':
         return <AlertCircle className="w-4 h-4 text-red-400" />;
       default:
         return null;
-    }
-  };
-
+     }
+  }
   // Render player item
-  const renderPlayer = useCallback((player: Player, index: number) => {
-    const isSelected = selectedPlayers.has(player.id);
+  const renderPlayer = useCallback((player, Player;
+  index: number) => { const isSelected = selectedPlayers.has(player.id);
     
     return (
       <div 
-        className={`
-          group px-4 py-3 border-b border-gray-800 hover:bg-gray-800/50 
-          transition-colors cursor-pointer
-          ${isSelected ? 'bg-blue-500/10 border-blue-500/30' : ''}
+        className={`group px-4 py-3 border-b border-gray-800 hover:bg-gray-800/50 
+          transition-colors cursor-pointer ${isSelected ? 'bg-blue-500/10 border-blue-500/30' : ''}
         `}
         onClick={() => onPlayerClick?.(player)}
       >
@@ -226,7 +219,7 @@ export function VirtualPlayerList({
                   onClick={(e) => {
                     e.stopPropagation();
                     onDropPlayer?.(player);
-                  }}
+                   }}
                 >
                   <Minus className="w-4 h-4 mr-1" />
                   Drop
@@ -252,9 +245,8 @@ export function VirtualPlayerList({
                 }}
               >
                 <Star 
-                  className={`w-4 h-4 ${
-                    isSelected ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
-                  }`}
+                  className={`w-4 h-4 ${isSelected ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
+                   }`}
                 />
               </button>
             </div>
@@ -281,20 +273,19 @@ export function VirtualPlayerList({
         </div>
         {showActions && (
           <div className="w-32 text-center">Actions</div>
-        )}
+        ) }
       </div>
     </div>
   ), [players, showActions]);
 
   // Footer component
-  const renderFooter = useCallback(() => {
-    if (selectedPlayers.size === 0) return null;
+  const renderFooter = useCallback(() => { if (selectedPlayers.size === 0) return null;
     
     return (
       <div className="sticky bottom-0 bg-gray-900 border-t border-gray-700 px-4 py-3">
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-300">
-            {selectedPlayers.size} player{selectedPlayers.size !== 1 ? 's' : ''} selected
+            {selectedPlayers.size } player{selectedPlayers.size !== 1 ? 's' : ''} selected
           </span>
           <div className="flex gap-2">
             <Button
@@ -302,7 +293,7 @@ export function VirtualPlayerList({
               size="sm"
               onClick={() => setSelectedPlayers(new Set())}
             >
-              Clear Selection
+  Clear, Selection,
             </Button>
             <Button
               variant="primary"
@@ -324,12 +315,12 @@ export function VirtualPlayerList({
   // Loading component
   const renderLoader = useCallback(() => (
     <div className="flex items-center justify-center py-4">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
     </div>
   ), []);
 
   // Empty state
-  const emptyMessage = (
+  const emptyMessage = (;
     <div className="text-center py-8">
       <Activity className="w-12 h-12 text-gray-500 mx-auto mb-3" />
       <p className="text-gray-400">No players found</p>

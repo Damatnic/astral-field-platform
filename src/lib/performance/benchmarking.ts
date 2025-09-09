@@ -13,147 +13,145 @@ import { rateLimiter } from './rate-limiter';
 // =============================================================================
 
 export interface BenchmarkConfig {
-  name: string;
-  description: string;
-  duration: number; // in milliseconds
-  concurrency: number;
-  rampUpTime?: number;
-  rampDownTime?: number;
-  warmupRequests?: number;
-  targetRPS?: number;
-  maxErrors?: number;
-  timeout?: number;
+  name, string,
+    description, string,
+  duration, number, // in milliseconds,
+    concurrency, number,
+  rampUpTime?, number,
+  rampDownTime?, number,
+  warmupRequests?, number,
+  targetRPS?, number,
+  maxErrors?, number,
+  timeout?, number,
+  
 }
-
 export interface BenchmarkResult {
-  name: string;
-  config: BenchmarkConfig;
-  startTime: Date;
-  endTime: Date;
-  duration: number;
-  totalRequests: number;
-  successfulRequests: number;
-  failedRequests: number;
-  requestsPerSecond: number;
-  averageResponseTime: number;
-  medianResponseTime: number;
-  p95ResponseTime: number;
-  p99ResponseTime: number;
-  minResponseTime: number;
-  maxResponseTime: number;
-  throughput: number;
-  errorRate: number;
-  errors: { [key: string]: number };
-  latencyHistogram: number[];
-  cpuUsage: number[];
-  memoryUsage: number[];
+  name, string,
+    config, BenchmarkConfig,
+  startTime, Date,
+    endTime, Date,
+  duration, number,
+    totalRequests, number,
+  successfulRequests, number,
+    failedRequests, number,
+  requestsPerSecond, number,
+    averageResponseTime, number,
+  medianResponseTime, number,
+    p95ResponseTime, number,
+  p99ResponseTime, number,
+    minResponseTime, number,
+  maxResponseTime, number,
+    throughput, number,
+  errorRate, number,
+    errors: { [ke,
+  y: string]: number }
+  latencyHistogram: number[],
+    cpuUsage: number[];
+  memoryUsage: number[],
 }
 
 export interface LoadTestScenario {
-  id: string;
-  name: string;
-  steps: LoadTestStep[];
-  users: number;
-  rampUpPeriod: number;
-  testDuration: number;
-  thinkTime?: number;
+  id, string,
+    name, string,
+  steps: LoadTestStep[],
+    users, number,
+  rampUpPeriod, number,
+    testDuration, number,
+  thinkTime?, number,
+  
 }
-
 export interface LoadTestStep {
-  name: string;
-  url: string;
+  name, string,
+    url, string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
-  body?: any;
-  weight: number;
-  expectedStatus?: number;
-  timeout?: number;
+  body?, any,
+  weight, number,
+  expectedStatus?, number,
+  timeout?, number,
+  
 }
-
 export interface PerformanceProfile {
-  id: string;
-  name: string;
-  timestamp: Date;
-  metrics: {
-    responseTime: {
-      avg: number;
-      p50: number;
-      p95: number;
-      p99: number;
-    };
-    throughput: {
-      rps: number;
-      peak: number;
-    };
-    resources: {
-      cpu: number;
-      memory: number;
-      disk: number;
-    };
-    errors: {
-      rate: number;
+  id, string,
+    name, string,
+  timestamp, Date,
+    metrics: {,
+  responseTime: {
+      avg, number,
+      p50, number,
+    p95, number,
+      p99: number,
+    }
+    throughput: {,
+  rps, number,
+      peak: number,
+    }
+    resources: {,
+  cpu, number,
+      memory, number,
+    disk: number,
+    }
+    errors: {,
+  rate, number,
       types: Record<string, number>;
-    };
-  };
+    }
+  }
 }
 
 export interface StressTestConfig {
-  name: string;
-  initialLoad: number;
-  maxLoad: number;
-  incrementStep: number;
-  stepDuration: number;
-  breakingPointThreshold: {
-    responseTime: number;
-    errorRate: number;
-    cpuUsage: number;
-    memoryUsage: number;
-  };
+  name, string,
+    initialLoad, number,
+  maxLoad, number,
+    incrementStep, number,
+  stepDuration, number,
+    breakingPointThreshold: {,
+  responseTime, number,
+    errorRate, number,
+    cpuUsage, number,
+    memoryUsage: number,
+  }
 }
 
 // =============================================================================
 // BENCHMARK RUNNER
 // =============================================================================
 
-export class BenchmarkRunner {
-  private activeTests = new Map<string, boolean>();
+export class BenchmarkRunner { private activeTests = new Map<string, boolean>();
   private results: BenchmarkResult[] = [];
 
   async runBenchmark(
-    testFunction: () => Promise<{ success: boolean; duration: number; error?: string }>,
+    testFunction: () => Promise< { succes,
+  s, boolean, duration, number, error?: string  }>,
     config: BenchmarkConfig
-  ): Promise<BenchmarkResult> {
-    if (this.activeTests.has(config.name)) {
-      throw new Error(`Benchmark '${config.name}' is already running`);
+  ): Promise<BenchmarkResult> { if (this.activeTests.has(config.name)) {
+      throw new Error(`Benchmark '${config.name }' is already running`);
     }
 
     this.activeTests.set(config.name, true);
     logger.info(`Starting benchmark: ${config.name}`, config);
 
-    const result: BenchmarkResult = {
-      name: config.name,
-      config,
+    const result: BenchmarkResult = {,
+  name: config.name, config,
       startTime: new Date(),
-      endTime: new Date(),
-      duration: 0,
-      totalRequests: 0,
-      successfulRequests: 0,
-      failedRequests: 0,
-      requestsPerSecond: 0,
-      averageResponseTime: 0,
-      medianResponseTime: 0,
-      p95ResponseTime: 0,
-      p99ResponseTime: 0,
-      minResponseTime: Infinity,
-      maxResponseTime: 0,
-      throughput: 0,
-      errorRate: 0,
-      errors: {},
+  endTime: new Date(),
+      duration: 0;
+  totalRequests: 0;
+      successfulRequests: 0;
+  failedRequests: 0;
+      requestsPerSecond: 0;
+  averageResponseTime: 0;
+      medianResponseTime: 0;
+  p95ResponseTime: 0;
+      p99ResponseTime: 0;
+  minResponseTime, Infinity,
+      maxResponseTime: 0;
+  throughput: 0;
+      errorRate: 0;
+  errors: {},
       latencyHistogram: [],
-      cpuUsage: [],
+  cpuUsage: [],
       memoryUsage: []
-    };
-
+    }
     try {
       // Warmup phase
       if (config.warmupRequests && config.warmupRequests > 0) {
@@ -172,9 +170,9 @@ export class BenchmarkRunner {
       
       logger.info(`Benchmark completed: ${config.name}`, {
         duration: result.duration,
-        totalRequests: result.totalRequests,
+  totalRequests: result.totalRequests,
         rps: result.requestsPerSecond,
-        avgResponseTime: result.averageResponseTime,
+  avgResponseTime: result.averageResponseTime,
         errorRate: result.errorRate
       });
 
@@ -185,14 +183,14 @@ export class BenchmarkRunner {
   }
 
   private async runWarmup(
-    testFunction: () => Promise<{ success: boolean; duration: number; error?: string }>,
+    testFunction: () => Promise< { succes,
+  s, boolean, duration, number, error?: string }>,
     warmupRequests: number
-  ): Promise<void> {
-    const warmupPromises: Promise<void>[] = [];
+  ): Promise<void> { const warmupPromises: Promise<void>[] = [];
     
     for (let i = 0; i < warmupRequests; i++) {
       warmupPromises.push(
-        testFunction().then(() => {}).catch(() => {})
+        testFunction().then(() => { }).catch(() => {})
       );
     }
 
@@ -203,11 +201,11 @@ export class BenchmarkRunner {
   }
 
   private async executeBenchmark(
-    testFunction: () => Promise<{ success: boolean; duration: number; error?: string }>,
-    config: BenchmarkConfig,
-    result: BenchmarkResult
-  ): Promise<void> {
-    const startTime = Date.now();
+    testFunction: () => Promise< { succes,
+  s, boolean, duration, number, error?: string }>,
+    config, BenchmarkConfig,
+  result: BenchmarkResult
+  ): Promise<void> { const startTime = Date.now();
     const endTime = startTime + config.duration;
     const responseTimes: number[] = [];
     const resourceMonitor = this.startResourceMonitoring(result);
@@ -217,7 +215,7 @@ export class BenchmarkRunner {
     // Create concurrent workers
     for (let i = 0; i < config.concurrency; i++) {
       workers.push(this.createWorker(testFunction, endTime, config, result, responseTimes));
-    }
+     }
 
     await Promise.all(workers);
     
@@ -228,17 +226,17 @@ export class BenchmarkRunner {
   }
 
   private async createWorker(
-    testFunction: () => Promise<{ success: boolean; duration: number; error?: string }>,
-    endTime: number,
-    config: BenchmarkConfig,
-    result: BenchmarkResult,
-    responseTimes: number[]
-  ): Promise<void> {
-    while (Date.now() < endTime && result.failedRequests < (config.maxErrors || 1000)) {
+    testFunction: () => Promise< { succes,
+  s, boolean, duration, number, error?: string }>,
+    endTime, number,
+  config, BenchmarkConfig,
+    result, BenchmarkResult,
+  responseTimes: number[]
+  ): Promise<void> { while (Date.now() < endTime && result.failedRequests < (config.maxErrors || 1000)) {
       try {
-        const testResult = await Promise.race([
+        const testResult = await Promise.race([;
           testFunction(),
-          new Promise<{ success: boolean; duration: number; error?: string }>((_, reject) =>
+          new Promise<{ success, boolean, duration, number, error?: string  }>((_, reject) =>
             setTimeout(() => reject(new Error('Timeout')), config.timeout || 30000)
           )
         ]);
@@ -258,11 +256,10 @@ export class BenchmarkRunner {
         }
 
         // Respect target RPS if specified
-        if (config.targetRPS) {
-          const delay = (1000 / config.targetRPS) - testResult.duration;
+        if (config.targetRPS) { const delay = (1000 / config.targetRPS) - testResult.duration;
           if (delay > 0) {
             await new Promise(resolve => setTimeout(resolve, delay));
-          }
+           }
         }
 
       } catch (error) {
@@ -274,18 +271,16 @@ export class BenchmarkRunner {
     }
   }
 
-  private startResourceMonitoring(result: BenchmarkResult): NodeJS.Timeout {
-    return setInterval(() => {
+  private startResourceMonitoring(result: BenchmarkResult); NodeJS.Timeout { return setInterval(() => {
       const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
       
       result.cpuUsage.push((cpuUsage.user + cpuUsage.system) / 1000000);
       result.memoryUsage.push(memUsage.heapUsed);
-    }, 1000);
+     }, 1000);
   }
 
-  private calculateStatistics(result: BenchmarkResult): void {
-    if (result.totalRequests === 0) return;
+  private calculateStatistics(result: BenchmarkResult); void { if (result.totalRequests === 0) return;
 
     const sortedLatencies = result.latencyHistogram.slice().sort((a, b) => a - b);
     
@@ -297,50 +292,45 @@ export class BenchmarkRunner {
     result.medianResponseTime = this.percentile(sortedLatencies, 50);
     result.p95ResponseTime = this.percentile(sortedLatencies, 95);
     result.p99ResponseTime = this.percentile(sortedLatencies, 99);
-  }
+   }
 
-  private percentile(sortedArray: number[], percentile: number): number {
-    if (sortedArray.length === 0) return 0;
+  private percentile(sortedArray: number[],
+  percentile: number); number { if (sortedArray.length === 0) return 0;
     const index = Math.ceil((percentile / 100) * sortedArray.length) - 1;
     return sortedArray[Math.max(0, index)];
-  }
+   }
 
-  private buildLatencyHistogram(responseTimes: number[]): number[] {
+  private buildLatencyHistogram(responseTimes: number[]); number[] {
     // Build histogram with 50 buckets
     const buckets = new Array(50).fill(0);
     const maxTime = Math.max(...responseTimes);
     const bucketSize = maxTime / 50;
 
-    for (const time of responseTimes) {
-      const bucketIndex = Math.min(Math.floor(time / bucketSize), 49);
+    for (const time of responseTimes) { const bucketIndex = Math.min(Math.floor(time / bucketSize), 49);
       buckets[bucketIndex]++;
-    }
+     }
 
     return buckets;
   }
 
-  getBenchmarkResults(testName?: string): BenchmarkResult[] {
-    if (testName) {
+  getBenchmarkResults(testName?: string): BenchmarkResult[] { if (testName) {
       return this.results.filter(r => r.name === testName);
-    }
-    return [...this.results];
-  }
+     }
+    return [...this.results];}
 
   clearResults(): void {
     this.results = [];
   }
 
-  exportResults(format: 'json' | 'csv' = 'json'): string {
-    if (format === 'csv') {
+  exportResults(format: 'json' | 'csv' = 'json'); string { if (format === 'csv') {
       return this.exportToCSV();
-    }
+     }
     return JSON.stringify(this.results, null, 2);
   }
 
-  private exportToCSV(): string {
-    if (this.results.length === 0) return '';
+  private exportToCSV(): string { if (this.results.length === 0) return '';
 
-    const headers = [
+    const headers = [;
       'name', 'duration', 'totalRequests', 'successfulRequests', 'failedRequests',
       'requestsPerSecond', 'averageResponseTime', 'medianResponseTime',
       'p95ResponseTime', 'p99ResponseTime', 'errorRate'
@@ -351,8 +341,8 @@ export class BenchmarkRunner {
     for (const result of this.results) {
       const row = headers.map(header => {
         const value = (result as any)[header];
-        return typeof value === 'number' ? value.toFixed(2) : value;
-      });
+        return typeof value === 'number' ? value.toFixed(2) , value,
+       });
       csvLines.push(row.join(','));
     }
 
@@ -364,39 +354,34 @@ export class BenchmarkRunner {
 // LOAD TEST RUNNER
 // =============================================================================
 
-export class LoadTestRunner {
-  private scenarios: Map<string, LoadTestScenario> = new Map();
+export class LoadTestRunner { private scenarios: Map<string, LoadTestScenario> = new Map();
   private activeTests = new Set<string>();
 
-  addScenario(scenario: LoadTestScenario): void {
+  addScenario(scenario: LoadTestScenario); void {
     this.scenarios.set(scenario.id, scenario);
-    logger.info(`Load test scenario added: ${scenario.name}`);
+    logger.info(`Load test scenario added: ${scenario.name }`);
   }
 
-  async runLoadTest(scenarioId: string): Promise<BenchmarkResult> {
-    const scenario = this.scenarios.get(scenarioId);
+  async runLoadTest(params): PromiseBenchmarkResult>  { const scenario = this.scenarios.get(scenarioId);
     if (!scenario) {
-      throw new Error(`Load test scenario not found: ${scenarioId}`);
+      throw new Error(`Load test scenario not found: ${scenarioId }`);
     }
 
-    if (this.activeTests.has(scenarioId)) {
-      throw new Error(`Load test already running: ${scenarioId}`);
+    if (this.activeTests.has(scenarioId)) { throw new Error(`Load test already running: ${scenarioId }`);
     }
 
     this.activeTests.add(scenarioId);
     logger.info(`Starting load test: ${scenario.name}`, scenario);
 
-    try {
-      const testFunction = this.createTestFunction(scenario);
-      const config: BenchmarkConfig = {
-        name: `loadtest_${scenario.name}`,
+    try { const testFunction = this.createTestFunction(scenario);
+      const config: BenchmarkConfig = {,
+  name: `loadtest_${scenario.name }`,
         description: `Load test for ${scenario.name}`,
         duration: scenario.testDuration,
-        concurrency: scenario.users,
+  concurrency: scenario.users,
         rampUpTime: scenario.rampUpPeriod,
-        warmupRequests: Math.min(50, scenario.users)
-      };
-
+  warmupRequests: Math.min(50, scenario.users)
+      }
       const runner = new BenchmarkRunner();
       return await runner.runBenchmark(testFunction, config);
     } finally {
@@ -404,48 +389,42 @@ export class LoadTestRunner {
     }
   }
 
-  private createTestFunction(scenario: LoadTestScenario) {
-    return async (): Promise<{ success: boolean; duration: number; error?: string }> => {
-      const step = this.selectRandomStep(scenario.steps);
+  private createTestFunction(scenario: LoadTestScenario) { return async (): Promise<{ succes,
+  s, boolean, duration, number, error?: string  }> => { const step = this.selectRandomStep(scenario.steps);
       const startTime = Date.now();
 
       try {
         const response = await fetch(step.url, {
           method: step.method,
-          headers: step.headers,
+  headers: step.headers,
           body: step.body ? JSON.stringify(step.body) : undefined,
           signal: AbortSignal.timeout(step.timeout || 10000)
-        });
+         });
 
         const duration = Date.now() - startTime;
         const success = step.expectedStatus ? response.status === step.expectedStatus : response.ok;
 
-        if (!success) {
-          return {
-            success: false,
-            duration,
-            error: `HTTP ${response.status}: ${response.statusText}`
-          };
+        if (!success) { return {
+            success: false, duration,
+            error: `HTTP ${response.status } ${response.statusText}`
+          }
         }
 
         // Simulate think time
-        if (scenario.thinkTime) {
-          await new Promise(resolve => setTimeout(resolve, scenario.thinkTime));
-        }
+        if (scenario.thinkTime) { await new Promise(resolve => setTimeout(resolve, scenario.thinkTime));
+         }
 
-        return { success: true, duration };
-      } catch (error) {
-        return {
-          success: false,
-          duration: Date.now() - startTime,
+        return { success, true, duration }
+      } catch (error) { return {
+          success, false,
+  duration: Date.now() - startTime,
           error: (error as Error).message
-        };
+         }
       }
-    };
+    }
   }
 
-  private selectRandomStep(steps: LoadTestStep[]): LoadTestStep {
-    const totalWeight = steps.reduce((sum, step) => sum + step.weight, 0);
+  private selectRandomStep(steps: LoadTestStep[]); LoadTestStep { const totalWeight = steps.reduce((sum, step) => sum + step.weight, 0);
     const random = Math.random() * totalWeight;
     
     let currentWeight = 0;
@@ -453,7 +432,7 @@ export class LoadTestRunner {
       currentWeight += step.weight;
       if (random <= currentWeight) {
         return step;
-      }
+       }
     }
     
     return steps[0];
@@ -464,16 +443,15 @@ export class LoadTestRunner {
 // STRESS TESTER
 // =============================================================================
 
-export class StressTester {
-  async findBreakingPoint(
-    testFunction: () => Promise<{ success: boolean; duration: number; error?: string }>,
+export class StressTester { async findBreakingPoint(,
+    testFunction: () => Promise< { succes,
+  s, boolean, duration, number, error?: string  }>,
     config: StressTestConfig
   ): Promise<{
-    breakingPoint: number;
-    maxStableLoad: number;
-    results: BenchmarkResult[];
-    breakingFactors: string[];
-  }> {
+    breakingPoint, number,
+    maxStableLoad, number,
+    results: BenchmarkResult[],
+    breakingFactors: string[] }> {
     logger.info(`Starting stress test: ${config.name}`, config);
 
     const results: BenchmarkResult[] = [];
@@ -487,26 +465,23 @@ export class StressTester {
     while (currentLoad <= config.maxLoad) {
       logger.info(`Testing load: ${currentLoad} concurrent users`);
 
-      const benchmarkConfig: BenchmarkConfig = {
-        name: `stress_${config.name}_${currentLoad}`,
+      const benchmarkConfig: BenchmarkConfig = {,
+  name: `stress_${config.name}_${currentLoad}`,
         description: `Stress test at ${currentLoad} concurrent users`,
-        duration: config.stepDuration,
-        concurrency: currentLoad,
+        duration: config.stepDuration, concurrency, currentLoad,
         warmupRequests: Math.min(20, currentLoad)
-      };
-
+      }
       const result = await runner.runBenchmark(testFunction, benchmarkConfig);
       results.push(result);
 
       // Check if breaking point conditions are met
       const broken = this.checkBreakingConditions(result, config.breakingPointThreshold);
       
-      if (broken.length > 0) {
-        breakingPoint = currentLoad;
+      if (broken.length > 0) { breakingPoint = currentLoad;
         breakingFactors.push(...broken);
-        logger.warn(`Breaking point reached at ${currentLoad} users`, {
-          factors: broken,
-          errorRate: result.errorRate,
+        logger.warn(`Breaking point reached at ${currentLoad } users`, {
+          factors, broken,
+  errorRate: result.errorRate,
           avgResponseTime: result.averageResponseTime
         });
         break;
@@ -519,22 +494,18 @@ export class StressTester {
       await new Promise(resolve => setTimeout(resolve, 5000));
     }
 
-    return {
-      breakingPoint,
-      maxStableLoad,
-      results,
+    return { breakingPoint, maxStableLoad, results,
       breakingFactors
-    };
+  :   }
   }
 
   private checkBreakingConditions(
-    result: BenchmarkResult,
-    threshold: StressTestConfig['breakingPointThreshold']
-  ): string[] {
-    const factors: string[] = [];
+    result, BenchmarkResult,
+  threshold: StressTestConfig['breakingPointThreshold']
+  ); string[] { const factors: string[] = [];
 
     if (result.errorRate > threshold.errorRate / 100) {
-      factors.push(`Error rate exceeded: ${(result.errorRate * 100).toFixed(2)}% > ${threshold.errorRate}%`);
+      factors.push(`Error rate exceeded: ${(result.errorRate * 100).toFixed(2) }% > ${threshold.errorRate}%`);
     }
 
     if (result.averageResponseTime > threshold.responseTime) {
@@ -563,43 +534,46 @@ export class StressTester {
 // PERFORMANCE PROFILER
 // =============================================================================
 
-export class PerformanceProfiler {
-  private profiles: PerformanceProfile[] = [];
+export class PerformanceProfiler { private profiles: PerformanceProfile[] = [];
 
   async createProfile(
-    name: string,
-    testFunction: () => Promise<void>,
+    name, string,
+  testFunction: () => Promise<void>,
     duration: number = 60000
   ): Promise<PerformanceProfile> {
-    logger.info(`Creating performance profile: ${name}`);
+    logger.info(`Creating performance profile: ${name }`);
 
-    const profile: PerformanceProfile = {
-      id: `profile_${Date.now()}`,
+    const profile: PerformanceProfile = {,
+  id: `profile_${Date.now()}`,
       name,
       timestamp: new Date(),
-      metrics: {
-        responseTime: { avg: 0, p50: 0, p95: 0, p99: 0 },
-        throughput: { rps: 0, peak: 0 },
-        resources: { cpu: 0, memory: 0, disk: 0 },
-        errors: { rate: 0, types: {} }
+  metrics: {,
+  responseTime: { avg: 0;
+  p50: 0; p95: 0;
+  p99: 0 },
+        throughput: { rps: 0;
+  peak: 0 },
+        resources: { cpu: 0;
+  memory: 0; disk: 0 },
+        errors: { rate: 0;
+  types: {} }
       }
-    };
-
+    }
     const startTime = Date.now();
     const endTime = startTime + duration;
     const responseTimes: number[] = [];
     const throughputSamples: number[] = [];
-    const resourceSamples: { cpu: number; memory: number }[] = [];
+    const resourceSamples: { cp,
+  u, number, memory: number }[] = [];
 
     // Resource monitoring
-    const resourceMonitor = setInterval(() => {
-      const memUsage = process.memoryUsage();
+    const resourceMonitor = setInterval(() => { const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
       
       resourceSamples.push({
         cpu: (cpuUsage.user + cpuUsage.system) / 1000000,
-        memory: memUsage.heapUsed
-      });
+  memory: memUsage.heapUsed
+       });
     }, 1000);
 
     // Throughput monitoring
@@ -609,19 +583,17 @@ export class PerformanceProfiler {
       requestCount = 0;
     }, 1000);
 
-    try {
-      while (Date.now() < endTime) {
+    try { while (Date.now() < endTime) {
         const requestStart = Date.now();
         
         try {
-          await testFunction();
+    await testFunction();
           const responseTime = Date.now() - requestStart;
           responseTimes.push(responseTime);
           requestCount++;
-        } catch (error) {
-          const errorType = (error as Error).name || 'Unknown';
+         } catch (error) { const errorType = (error as Error).name || 'Unknown';
           profile.metrics.errors.types[errorType] = (profile.metrics.errors.types[errorType] || 0) + 1;
-        }
+         }
 
         // Small delay to prevent overwhelming
         await new Promise(resolve => setTimeout(resolve, 10));
@@ -632,18 +604,16 @@ export class PerformanceProfiler {
     }
 
     // Calculate metrics
-    if (responseTimes.length > 0) {
-      const sortedTimes = responseTimes.slice().sort((a, b) => a - b);
+    if (responseTimes.length > 0) { const sortedTimes = responseTimes.slice().sort((a, b) => a - b);
       profile.metrics.responseTime.avg = responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length;
       profile.metrics.responseTime.p50 = this.percentile(sortedTimes, 50);
       profile.metrics.responseTime.p95 = this.percentile(sortedTimes, 95);
       profile.metrics.responseTime.p99 = this.percentile(sortedTimes, 99);
-    }
+     }
 
     if (throughputSamples.length > 0) {
       profile.metrics.throughput.rps = throughputSamples.reduce((sum, rps) => sum + rps, 0) / throughputSamples.length;
-      profile.metrics.throughput.peak = Math.max(...throughputSamples);
-    }
+      profile.metrics.throughput.peak = Math.max(...throughputSamples);}
 
     if (resourceSamples.length > 0) {
       profile.metrics.resources.cpu = resourceSamples.reduce((sum, sample) => sum + sample.cpu, 0) / resourceSamples.length;
@@ -657,51 +627,52 @@ export class PerformanceProfiler {
     return profile;
   }
 
-  private percentile(sortedArray: number[], percentile: number): number {
-    if (sortedArray.length === 0) return 0;
+  private percentile(sortedArray: number[],
+  percentile: number); number { if (sortedArray.length === 0) return 0;
     const index = Math.ceil((percentile / 100) * sortedArray.length) - 1;
     return sortedArray[Math.max(0, index)];
-  }
+   }
 
-  getProfiles(): PerformanceProfile[] {
-    return [...this.profiles];
-  }
+  getProfiles(): PerformanceProfile[] { return [...this.profiles];}
 
-  compareProfiles(profile1Id: string, profile2Id: string): {
-    profile1: PerformanceProfile;
-    profile2: PerformanceProfile;
-    comparison: {
-      responseTime: { improvement: number; regression: boolean };
-      throughput: { improvement: number; regression: boolean };
-      resources: { cpu: number; memory: number };
-      errors: { improvement: number; regression: boolean };
-    };
-  } | null {
-    const profile1 = this.profiles.find(p => p.id === profile1Id);
+  compareProfiles(profile1Id, string,
+  profile2Id: string): {,
+  profile1, PerformanceProfile,
+    profile2, PerformanceProfile,
+    comparison: {,
+  responseTime: { improvemen,
+  t, number, regression: boolean }
+      throughput: { improvemen,
+  t, number, regression: boolean }
+      resources: { cp,
+  u, number, memory: number }
+      errors: { improvemen,
+  t, number, regression: boolean }
+    }
+  } | null { const profile1 = this.profiles.find(p => p.id === profile1Id);
     const profile2 = this.profiles.find(p => p.id === profile2Id);
 
     if (!profile1 || !profile2) return null;
 
     const comparison = {
-      responseTime: {
-        improvement: ((profile1.metrics.responseTime.avg - profile2.metrics.responseTime.avg) / profile1.metrics.responseTime.avg) * 100,
-        regression: profile2.metrics.responseTime.avg > profile1.metrics.responseTime.avg
+      responseTime: {,
+  improvement: ((profile1.metrics.responseTime.avg - profile2.metrics.responseTime.avg) / profile1.metrics.responseTime.avg) * 100,
+  regression: profile2.metrics.responseTime.avg > profile1.metrics.responseTime.avg
+       },
+      throughput: {,
+  improvement: ((profile2.metrics.throughput.rps - profile1.metrics.throughput.rps) / profile1.metrics.throughput.rps) * 100,
+  regression: profile2.metrics.throughput.rps < profile1.metrics.throughput.rps
       },
-      throughput: {
-        improvement: ((profile2.metrics.throughput.rps - profile1.metrics.throughput.rps) / profile1.metrics.throughput.rps) * 100,
-        regression: profile2.metrics.throughput.rps < profile1.metrics.throughput.rps
+      resources: {,
+  cpu: ((profile2.metrics.resources.cpu - profile1.metrics.resources.cpu) / profile1.metrics.resources.cpu) * 100,
+  memory: ((profile2.metrics.resources.memory - profile1.metrics.resources.memory) / profile1.metrics.resources.memory) * 100
       },
-      resources: {
-        cpu: ((profile2.metrics.resources.cpu - profile1.metrics.resources.cpu) / profile1.metrics.resources.cpu) * 100,
-        memory: ((profile2.metrics.resources.memory - profile1.metrics.resources.memory) / profile1.metrics.resources.memory) * 100
-      },
-      errors: {
-        improvement: ((profile1.metrics.errors.rate - profile2.metrics.errors.rate) / Math.max(profile1.metrics.errors.rate, 0.001)) * 100,
+      errors: {,
+  improvement: ((profile1.metrics.errors.rate - profile2.metrics.errors.rate) / Math.max(profile1.metrics.errors.rate, 0.001)) * 100,
         regression: profile2.metrics.errors.rate > profile1.metrics.errors.rate
       }
-    };
-
-    return { profile1, profile2, comparison };
+    }
+    return { profile1, profile2,: comparison  }
   }
 }
 
@@ -709,12 +680,11 @@ export class PerformanceProfiler {
 // MAIN PERFORMANCE TESTING SUITE
 // =============================================================================
 
-export class PerformanceTestSuite {
-  private static instance: PerformanceTestSuite;
-  private benchmarkRunner: BenchmarkRunner;
-  private loadTestRunner: LoadTestRunner;
-  private stressTester: StressTester;
-  private profiler: PerformanceProfiler;
+export class PerformanceTestSuite { private static instance, PerformanceTestSuite,
+  private benchmarkRunner, BenchmarkRunner,
+  private loadTestRunner, LoadTestRunner,
+  private stressTester, StressTester,
+  private profiler, PerformanceProfiler,
 
   private constructor() {
     this.benchmarkRunner = new BenchmarkRunner();
@@ -722,45 +692,45 @@ export class PerformanceTestSuite {
     this.stressTester = new StressTester();
     this.profiler = new PerformanceProfiler();
     this.setupDefaultScenarios();
-  }
+   }
 
-  public static getInstance(): PerformanceTestSuite {
-    if (!PerformanceTestSuite.instance) {
+  public static getInstance(): PerformanceTestSuite { if (!PerformanceTestSuite.instance) {
       PerformanceTestSuite.instance = new PerformanceTestSuite();
-    }
+     }
     return PerformanceTestSuite.instance;
   }
 
-  private setupDefaultScenarios(): void {
-    // API endpoint tests
+  private setupDefaultScenarios(): void {; // API endpoint tests
     this.loadTestRunner.addScenario({
-      id: 'api-mixed-load',
-      name: 'Mixed API Load Test',
-      users: 100,
-      rampUpPeriod: 30000,
-      testDuration: 300000,
-      thinkTime: 1000,
+      id 'api-mixed-load',
+  name: 'Mixed API Load Test',
+      users: 100;
+  rampUpPeriod: 30000;
+      testDuration: 300000;
+  thinkTime: 1000;
       steps: [
         {
           name: 'Health Check',
-          url: '/api/health',
+  url: '/api/health',
           method: 'GET',
-          weight: 1,
+  weight: 1;
           expectedStatus: 200
         },
         {
           name: 'User Authentication',
-          url: '/api/auth/login',
+  url: '/api/auth/login',
           method: 'POST',
-          weight: 2,
+  weight: 2;
           headers: { 'Content-Type': 'application/json' },
-          body: { email: 'test@example.com', password: 'password' }
+          body: { emai,
+  l: 'test@example.com',
+  password: 'password' }
         },
         {
           name: 'Dashboard Data',
-          url: '/api/dashboard',
+  url: '/api/dashboard',
           method: 'GET',
-          weight: 5,
+  weight: 5;
           expectedStatus: 200
         }
       ]
@@ -769,23 +739,23 @@ export class PerformanceTestSuite {
     // Database performance test
     this.loadTestRunner.addScenario({
       id: 'database-load',
-      name: 'Database Load Test',
-      users: 50,
-      rampUpPeriod: 15000,
-      testDuration: 180000,
-      steps: [
+  name: 'Database Load Test',
+      users: 50;
+  rampUpPeriod: 15000;
+      testDuration: 180000;
+  steps: [
         {
           name: 'User Query',
-          url: '/api/users',
+  url: '/api/users',
           method: 'GET',
-          weight: 3,
+  weight: 3;
           expectedStatus: 200
         },
         {
           name: 'Data Analytics',
-          url: '/api/analytics',
+  url: '/api/analytics',
           method: 'GET',
-          weight: 2,
+  weight: 2;
           expectedStatus: 200
         }
       ]
@@ -793,47 +763,47 @@ export class PerformanceTestSuite {
   }
 
   // Database benchmarks
-  async benchmarkDatabase(): Promise<BenchmarkResult[]> {
-    const results: BenchmarkResult[] = [];
+  async benchmarkDatabase(): Promise<BenchmarkResult[]> { const results: BenchmarkResult[] = [];
 
     // Query performance test
     results.push(await this.benchmarkRunner.runBenchmark(
       async () => {
         const start = Date.now();
         try {
-          await db.query('SELECT COUNT(*) FROM users');
-          return { success: true, duration: Date.now() - start };
-        } catch (error) {
-          return { success: false, duration: Date.now() - start, error: (error as Error).message };
+    await db.query('SELECT COUNT(*): FROM users');
+          return { success, true,
+  duration: Date.now() - start  }
+        } catch (error) { return { success, false,
+  duration: Date.now() - start, error: (error as Error).message  }
         }
       },
       {
         name: 'database_query_benchmark',
-        description: 'Database query performance test',
-        duration: 60000,
-        concurrency: 10,
+  description: 'Database query performance test',
+        duration: 60000;
+  concurrency: 10;
         warmupRequests: 50
       }
     ));
 
     // Transaction performance test
     results.push(await this.benchmarkRunner.runBenchmark(
-      async () => {
-        const start = Date.now();
+      async () => { const start = Date.now();
         try {
-          await db.transaction(async (client) => {
+    await db.transaction(async (client) => {
             await client.query('SELECT 1');
-          });
-          return { success: true, duration: Date.now() - start };
-        } catch (error) {
-          return { success: false, duration: Date.now() - start, error: (error as Error).message };
+           });
+          return { success, true,
+  duration: Date.now() - start }
+        } catch (error) { return { success, false,
+  duration: Date.now() - start, error: (error as Error).message  }
         }
       },
       {
         name: 'database_transaction_benchmark',
-        description: 'Database transaction performance test',
-        duration: 60000,
-        concurrency: 5,
+  description: 'Database transaction performance test',
+        duration: 60000;
+  concurrency: 5;
         warmupRequests: 25
       }
     ));
@@ -842,28 +812,28 @@ export class PerformanceTestSuite {
   }
 
   // Cache benchmarks
-  async benchmarkCache(): Promise<BenchmarkResult[]> {
-    const results: BenchmarkResult[] = [];
+  async benchmarkCache(): Promise<BenchmarkResult[]> { const results: BenchmarkResult[] = [];
 
     // Cache write performance
     results.push(await this.benchmarkRunner.runBenchmark(
       async () => {
         const start = Date.now();
-        const key = `benchmark_${Math.random()}`;
-        const value = { data: 'test data', timestamp: Date.now() };
-        
+        const key = `benchmark_${Math.random() }`
+        const value = { data: 'test data',
+  timestamp: Date.now() }
         try {
-          await cacheManager.set(key, value, { ttl: 300 });
-          return { success: true, duration: Date.now() - start };
-        } catch (error) {
-          return { success: false, duration: Date.now() - start, error: (error as Error).message };
+    await cacheManager.set(key, value, { ttl: 300  });
+          return { success, true,
+  duration: Date.now() - start }
+        } catch (error) { return { success, false,
+  duration: Date.now() - start, error: (error as Error).message  }
         }
       },
       {
         name: 'cache_write_benchmark',
-        description: 'Cache write performance test',
-        duration: 30000,
-        concurrency: 20,
+  description: 'Cache write performance test',
+        duration: 30000;
+  concurrency: 20;
         warmupRequests: 100
       }
     ));
@@ -873,21 +843,21 @@ export class PerformanceTestSuite {
     await cacheManager.set(testKey, { data: 'test data' });
 
     results.push(await this.benchmarkRunner.runBenchmark(
-      async () => {
-        const start = Date.now();
+      async () => { const start = Date.now();
         
         try {
-          await cacheManager.get(testKey);
-          return { success: true, duration: Date.now() - start };
-        } catch (error) {
-          return { success: false, duration: Date.now() - start, error: (error as Error).message };
+    await cacheManager.get(testKey);
+          return { success, true,
+  duration: Date.now() - start  }
+        } catch (error) { return { success, false,
+  duration: Date.now() - start, error: (error as Error).message  }
         }
       },
       {
         name: 'cache_read_benchmark',
-        description: 'Cache read performance test',
-        duration: 30000,
-        concurrency: 50,
+  description: 'Cache read performance test',
+        duration: 30000;
+  concurrency: 50;
         warmupRequests: 200
       }
     ));
@@ -896,13 +866,11 @@ export class PerformanceTestSuite {
   }
 
   // Full system stress test
-  async runSystemStressTest(): Promise<{
-    breakingPoint: number;
-    maxStableLoad: number;
-    results: BenchmarkResult[];
-    breakingFactors: string[];
-  }> {
-    return await this.stressTester.findBreakingPoint(
+  async runSystemStressTest(): Promise< {
+    breakingPoint, number,
+    maxStableLoad, number,
+    results: BenchmarkResult[],
+    breakingFactors: string[] }> { return await this.stressTester.findBreakingPoint(
       async () => {
         const start = Date.now();
         
@@ -914,44 +882,45 @@ export class PerformanceTestSuite {
             new Promise(resolve => setTimeout(resolve, Math.random() * 50))
           ]);
           
-          return { success: true, duration: Date.now() - start };
-        } catch (error) {
-          return { success: false, duration: Date.now() - start, error: (error as Error).message };
+          return { success, true,
+  duration: Date.now() - start  }
+        } catch (error) { return { success, false,
+  duration: Date.now() - start, error: (error as Error).message  }
         }
       },
       {
         name: 'system_stress_test',
-        initialLoad: 10,
-        maxLoad: 1000,
-        incrementStep: 50,
-        stepDuration: 120000,
-        breakingPointThreshold: {
-          responseTime: 5000,
-          errorRate: 5,
-          cpuUsage: 90,
-          memoryUsage: 2 // GB
+  initialLoad: 10;
+        maxLoad: 1000;
+  incrementStep: 50;
+        stepDuration: 120000;
+  breakingPointThreshold: {
+          responseTime: 5000;
+  errorRate: 5;
+          cpuUsage: 90;
+  memoryUsage: 2 ; // GB
         }
       }
     );
   }
 
   // Comprehensive performance suite
-  async runFullSuite(): Promise<{
-    database: BenchmarkResult[];
+  async runFullSuite() : Promise< {
+    database: BenchmarkResult[],
     cache: BenchmarkResult[];
-    loadTests: BenchmarkResult[];
-    stressTest: any;
-    summary: {
-      totalTests: number;
-      passed: number;
-      failed: number;
-      avgPerformance: number;
-      recommendations: string[];
-    };
+    loadTests: BenchmarkResult[],
+    stressTest, any,
+    summary: {,
+  totalTests, number,
+      passed, number,
+    failed, number,
+      avgPerformance, number,
+    recommendations: string[],
+    }
   }> {
     logger.info('Starting comprehensive performance test suite');
 
-    const [database, cache, apiLoad, dbLoad, stressTest] = await Promise.all([
+    const [database, cache, apiLoad, dbLoad, stressTest] = await Promise.all([;
       this.benchmarkDatabase(),
       this.benchmarkCache(),
       this.loadTestRunner.runLoadTest('api-mixed-load'),
@@ -964,31 +933,27 @@ export class PerformanceTestSuite {
 
     const summary = {
       totalTests: allResults.length,
-      passed: allResults.filter(r => r.errorRate < 0.01).length,
+  passed: allResults.filter(r => r.errorRate < 0.01).length,
       failed: allResults.filter(r => r.errorRate >= 0.01).length,
-      avgPerformance: allResults.reduce((sum, r) => sum + r.averageResponseTime, 0) / allResults.length,
+  avgPerformance: allResults.reduce((sum, r) => sum + r.averageResponseTime, 0) / allResults.length,
       recommendations: this.generateRecommendations(allResults, stressTest)
-    };
-
+    }
     logger.info('Performance test suite completed', summary);
 
-    return {
-      database,
-      cache,
-      loadTests,
-      stressTest,
+    return { database, cache,
+      loadTests, stressTest,
       summary
-    };
+  :   }
   }
 
-  private generateRecommendations(results: BenchmarkResult[], stressTest: any): string[] {
-    const recommendations: string[] = [];
+  private generateRecommendations(results: BenchmarkResult[],
+  stressTest: any); string[] { const recommendations: string[] = [];
 
     // Analyze response times
     const avgResponseTime = results.reduce((sum, r) => sum + r.averageResponseTime, 0) / results.length;
     if (avgResponseTime > 1000) {
       recommendations.push('Consider optimizing slow queries and adding more aggressive caching');
-    }
+     }
 
     // Analyze error rates
     const avgErrorRate = results.reduce((sum, r) => sum + r.errorRate, 0) / results.length;
@@ -1018,17 +983,14 @@ export class PerformanceTestSuite {
     return recommendations;
   }
 
-  getBenchmarkRunner(): BenchmarkRunner {
-    return this.benchmarkRunner;
-  }
+  getBenchmarkRunner(): BenchmarkRunner { return this.benchmarkRunner;
+   }
 
-  getLoadTestRunner(): LoadTestRunner {
-    return this.loadTestRunner;
-  }
+  getLoadTestRunner(): LoadTestRunner { return this.loadTestRunner;
+   }
 
-  getProfiler(): PerformanceProfiler {
-    return this.profiler;
-  }
+  getProfiler(): PerformanceProfiler { return this.profiler;
+   }
 }
 
 // =============================================================================
@@ -1038,10 +1000,7 @@ export class PerformanceTestSuite {
 export const performanceTestSuite = PerformanceTestSuite.getInstance();
 
 export default {
-  PerformanceTestSuite,
-  BenchmarkRunner,
-  LoadTestRunner,
-  StressTester,
-  PerformanceProfiler,
+  PerformanceTestSuite, BenchmarkRunner,
+  LoadTestRunner, StressTester, PerformanceProfiler,
   performanceTestSuite
-};
+}

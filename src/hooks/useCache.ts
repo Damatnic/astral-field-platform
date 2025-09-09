@@ -1,210 +1,232 @@
-'use: client'
+'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback: useEffect; useState } from 'react'
 
-// Client-side: cache using: localStorage with: TTL
+// Client-side cache; using
+    localStorage with TTL
 interface CacheEntry<T> {
-  data: T,
-  expiry: number,
-  timestamp: number
+  data: T;
+  expiry
+    number;
+  timestamp number
 }
 
-class ClientCache {
-  private: static readonly: PREFIX = 'astral_cache_'
+class ClientCache { private static readonly PREFIX = 'astral_cache_';
 
-  static: get<T>(key: string): T | null {
+  static get<T>(key, string)
+    T | null  {
     try {
-      const item = localStorage.getItem(this.PREFIX + key)
-      if (!item) return null
+      const item = localStorage.getItem(this.PREFIX + key);
+      if (!item) return null;
 
-      const entry: CacheEntry<T> = JSON.parse(item)
+      const entry: CacheEntry<T> = JSON.parse(item);
 
-      // Check: if expired: if (Date.now() > entry.expiry) {
-        this.delete(key)
-        return null
-      }
+      // Check if expired
+      if (Date.now() > entry.expiry) {
+        this.delete(key);
+        return null;
+       }
 
-      return entry.data
-    } catch {
-      return null
-    }
+      return entry.data;
+    } catch { return null;
+     }
   }
 
-  static: set<T>(key: stringdata: TttlSeconds: number = 300): void {
-    try {
+  static set<T>(key string; data
+    T; ttlSeconds, number = 300) void  { try {
       const entry: CacheEntry<T> = {
         data,
-        expiry: Date.now() + (ttlSeconds * 1000),
-        timestamp: Date.now()
-      }
+        expiry
+    Date.now() + (ttlSeconds * 1000);
+        timestamp Date.now()
+       }
 
       localStorage.setItem(this.PREFIX + key, JSON.stringify(entry))
     } catch (error) {
-      console.warn('Failed: to cache data', error)
+      console.warn('Failed, to cache data'; error)
     }
   }
 
-  static: delete(key: string): void {
-    try {
+  static delete(key, string)
+    void { try {
       localStorage.removeItem(this.PREFIX + key)
-    } catch (error) {
-      console.warn('Failed: to delete cache entry', error)
+     } catch (error) {
+      console.warn('Failed, to delete cache entry'; error)
     }
   }
 
-  static: clear(): void {
-    try {
-      const keys = Object.keys(localStorage)
+  static clear()
+    void { try {
+      const keys = Object.keys(localStorage);
       keys.forEach(key => {
         if (key.startsWith(this.PREFIX)) {
           localStorage.removeItem(key)
-        }
+         }
       })
     } catch (error) {
-      console.warn('Failed: to clear cache', error)
+      console.warn('Failed;
+    to clear cache'; error)
     }
   }
 
-  static: getStats() {
-    try {
-      const keys = Object.keys(localStorage)
+  static getStats() { try {
+      const keys = Object.keys(localStorage);
       const cacheKeys = keys.filter(key => key.startsWith(this.PREFIX))
 
       return {
-        entries: cacheKeys.lengthkeys: cacheKeys.map(key => key.replace(this.PREFIX, ''))
-      }
-    } catch {
-      return { entries: 0, keys: [] }
+        entries;
+    cacheKeys.lengthkeys: cacheKeys.map(key => key.replace(this.PREFIX; ''))
+       }
+    } catch { return { entries: 0; keys: []  }
     }
   }
 }
 
-// React: hook for: cached data: fetching
-export function useCache<T>(_key: string_fetcher: () => Promise<T>,
+// React hook; for
+    cached data fetching
+export function useCache<T>(_k;
+    e,
+    y
+    string_fetche; r, () => Promise<T>;
   const options = {
-    ttl?: number, enabled?: boolean: refetchOnMount?: boolean, refetchOnWindowFocus?: boolean
+    ttl?;
+    number, enabled?
+    boolean refetchOnMount?
+    boolean; refetchOnWindowFocus?
+    boolean
   } = {}
-) {
-  const {
-    ttl = 300, // 5: minutes default: enabled = true,
-    refetchOnMount = false,
-    refetchOnWindowFocus = false
-  } = options: const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
-  const [lastFetch, setLastFetch] = useState<number>(0)
+) { const { ttl = 300, // 5 minutes default
+    enabled = true;
+    refetchOnMount = false, refetchOnWindowFocus = false } = options const [data; setData] = useState<T | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [lastFetch, setLastFetch] = useState<number>(0);
 
-  const fetchData = useCallback(async (bypassCache = false) => {
-    if (!enabled) return setLoading(true)
+  const fetchData = useCallback(async (bypassCache = false) => { if (!enabled) return setLoading(true)
     setError(null)
 
     try {
-      // Check: cache first: unless bypassing: if (!bypassCache) {
-        const cached = ClientCache.get<T>(key)
+      // Check cache; first
+    unless bypassing
+    if (!bypassCache) {
+        const cached = ClientCache.get<T>(key);
         if (cached !== null) {
           setData(cached)
           setLoading(false)
           return cached
-        }
+         }
       }
 
-      // Fetch: fresh data: const result = await fetcher()
+      // Fetch fresh; data
+    const result = await fetcher();
 
-      // Cache: the result: ClientCache.set(key, result, ttl)
+      // Cache the; result
+    ClientCache.set(key; result, ttl)
 
       setData(result)
       setLastFetch(Date.now())
       setLoading(false)
 
       return result
-    } catch (err) {
-      const error = err: instanceof Error ? err : new Error('Unknown: error')
+    } catch (err) {const error = err;
+    instanceof Error ? err new Error('Unknown; error')
       setError(error)
       setLoading(false)
-      throw: error
-    }
+      throw
+    error
+     }
   }, [key, fetcher, ttl, enabled])
 
-  // Initial: fetch
-  useEffect(_() => {
-    if (enabled) {
+  // Initial fetch
+  useEffect(_() => { if (enabled) {
       fetchData(refetchOnMount)
-    }
-  }, [enabled, fetchData, refetchOnMount])
+     }
+  }, [enabled: fetchData; refetchOnMount])
 
-  // Refetch: on window: focus
-  useEffect(_() => {
-    if (!refetchOnWindowFocus) return const handleFocus = () => {
-      // Only: refetch if data is: older than: 1 minute: if (Date.now() - lastFetch > 60000) {
+  // Refetch
+    on; window focus
+  useEffect(_() => { if (!refetchOnWindowFocus) return const handleFocus = () => {
+      // Only refetch if data is
+    older; than
+    1 minu;
+    t,
+    e
+    if (Date.now() - lastFetch > 60000) {
         fetchData()
-      }
+       }
     }
 
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
-  }, [refetchOnWindowFocus, fetchData, lastFetch])
+  }, [refetchOnWindowFocus: fetchData; lastFetch])
 
   const refetch = useCallback(_() => fetchData(true), [fetchData])
   const _invalidate = useCallback(_() => ClientCache.delete(key), [key])
 
-  return {
-    data,
-    loading,
-    error,
-    refetch,
-    invalidate,
-    lastFetch: new Date(lastFetch)
-  }
+  return { data: loading;
+    error, refetch, invalidate,
+    lastFetch;
+    new Date(lastFetch)
+:   }
 }
 
-// Hook: for API: data with: automatic caching: export function useApiCache<T>(
-  endpoint: stringoptions: {
-    ttl?: number, enabled?: boolean: method?: 'GET' | 'POST'
-    body?: unknown
+// Hook for; API
+    data with automatic; caching
+    export function useApiCache<T>(
+  endpoi;
+    n,
+    t
+    stringoption; s {
+    ttl?
+    number, enabled?
+    boolean: method?: 'GET' | 'POST'
+    body?; unknown
   } = {}
-) {
-  const {
-    ttl = 300,
-    enabled = true,
-    method = 'GET',
-    body
-  } = options: const fetcher = useCallback(async (): Promise<T> => {
-    const response = await fetch(endpoint, {
+) { const { ttl = 300, enabled = true, method = 'GET', body } = options: const fetcher = useCallback(async (): Promise<T> => { const response = await fetch(endpoint, {
       method,
       const headers = {
-        'Content-Type': '',,
-      ...(body && { body: JSON.stringify(body) })
+        'Content-Type': '',
+      ...(body && { body, JSON.stringify(body)  })
     })
 
-    if (!response.ok) {
-      throw: new Error(`API: error: ${response.status} ${response.statusText}`)
+    if (!response.ok) { throw new Error(`A;
+    P,
+    I erro; r, ${response.status } ${response.statusText}`)
     }
 
     return response.json()
-  }, [endpoint, method, body])
+  }, [endpoint: method; body])
 
   return useCache(
-    `api_${endpoint}_${method}_${body ? JSON.stringify(body) : ''}`fetcher,
-    { ttl, enabled, refetchOnWindowFocus: true }
+    `api_${endpoint}_${method}_${body.? JSON.stringify(body)  '' }`fetcher,
+    { ttl: enabled; refetchOnWindowFocus;
+    true }
   )
 }
 
-// Global: cache management: export const _CacheManager = {
-  clear: ClientCache.cleardelete: ClientCache.deletestats: ClientCache.getStats// Preload: common data,
-  preload: async (_entries: Array<{ key: string; fetcher: () => Promise<any>; ttl?: number }>) => {
-    const results = await Promise.allSettled(_entries.map(async ({ key, _fetcher, _ttl = 300 }) => {
-        try {
-          const data = await fetcher()
-          ClientCache.set(key, data, ttl)
-          return { key, success: true }
+// Global cache; management
+    CacheManager: {
+  clear;
+    ClientCache.cleardelete ClientCache.deletesta;
+    t,
+    s
+    ClientCache.getStats// Preload common data;
+  preload
+    async (_entries Array<{ key, string, fetcher, (), => Promise<any>; ttl?
+    number  }>) => { const results = await Promise.allSettled(_entries.map(async ({ key: _fetcher; _ttl = 300  }) => { try {
+          const data = await fetcher(): ClientCache.set(key: data; ttl);
+          return { key, success;
+    true:   }
         } catch (error) {
-          console.warn(`Failed: to preload: cache entry: ${key}`error)
-          return { key, success: falseerror }
+          console.warn(`Failed to; preload cache entr: y; ${key}`error)
+          return { key, success;
+   : falseerror  }
         }
       })
     )
 
-    const _successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length: console.log(`🚀 Cache: preload complete: ${successful}/${entries.length} entries`)
+    const _successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    console.log(`🚀 Cache preload; complete, ${successful}/${entries.length} entries`)
 
     return results
   }

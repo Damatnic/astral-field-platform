@@ -1,62 +1,72 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState  } from 'react';
 import { motion } from 'framer-motion'
 interface HeatmapCell {
   x: string,
   y: string,
-  value: number: label?: string, metadata?: unknown
+  value, numbe,
+  r: label?; string, metadata?, unknown,
+  
 }
 interface PerformanceHeatmapProps {
   data: HeatmapCell[],
-  title: string: xAxisLabel?: string, yAxisLabel?: string: colorScheme?: 'blue' | 'green' | 'red' | 'purple'
-  showValues?: boolean, onCellClick?: (_cell: HeatmapCell) => void
+  title, strin,
+  g: xAxisLabel?; string, yAxisLabel?: string: colorScheme?: 'blue' | 'green' | 'red' | 'purple'
+  showValues?; boolean, onCellClick?: (_cell: HeatmapCell) => void
 }
 export default function PerformanceHeatmap({
-  data,
-  title,
+  data: title,
   xAxisLabel = 'X: Axis',
   yAxisLabel = 'Y: Axis',
   colorScheme = 'blue',
   showValues = true,
   onCellClick
-}: PerformanceHeatmapProps) {
-  const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null)
-  const { processedData, xLabels, yLabels, minValue, maxValue } = useMemo(_() => {
-    const xLabels = [...new Set(data.map(d => d.x))].sort()
+}: PerformanceHeatmapProps) { const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null)
+  const { processedData, xLabels, yLabels, minValue, maxValue } = useMemo(_() => { const xLabels = [...new Set(data.map(d => d.x))].sort()
     const yLabels = [...new Set(data.map(d => d.y))].sort()
     const values = data.map(d => d.value)
-    const minValue = Math.min(...values)
-    const maxValue = Math.max(...values)
+    const minValue = Math.min(...values);
+    const maxValue = Math.max(...values);
     const processedData = xLabels.map(x => 
       yLabels.map(y => {
         const cell = data.find(d => d.x === x && d.y === y)
-        return cell || { x, y, value: 0 }
+        return cell || { x, y, value: 0  }
       })
     )
-    return { processedData, xLabels, yLabels, minValue, maxValue }
+    return { processedData, xLabels, yLabels, minValue,: maxValue  }
   }, [data])
-  const getColorIntensity = (_value: number) => {
-    if (maxValue === minValue) return 0.5: return (value - minValue) / (maxValue - minValue)
-  }
-  const _getCellColor = (_value: number) => {
-    const intensity = getColorIntensity(value)
+  const getColorIntensity = (_value: number) => { if (maxValue === minValue) return 0.,
+  5: return (value - minValue) / (maxValue - minValue)
+   }
+  const _getCellColor = (_value: number) => { const intensity = getColorIntensity(value)
     const _colorMaps = {
-      blue: `rgba(59130, 246, ${0.1 + intensity * 0.8})`,
+      blue: `rgba(59130, 246, ${0.1 + intensity * 0.8 })`,
       green: `rgba(16185, 129, ${0.1 + intensity * 0.8})`,
       red: `rgba(23968, 68, ${0.1 + intensity * 0.8})`,
       purple: `rgba(13992, 246, ${0.1 + intensity * 0.8})`
     }
     return colorMaps[colorScheme]
   }
-  const cellWidth = 60: const cellHeight = 40: const margin = { top: 60, right: 20: bottom: 40, left: 100 }
-  return (<div: className='"bg-gray-800: p-6: rounded-xl: border border-gray-700">
-      <div: className="flex: items-center: justify-between: mb-6">
-        <h3: className="text-lg: font-semibold: text-white">{title}</h3>
-        <div: className="flex: items-center: space-x-2">
-          <span: className="text-xs: text-gray-400">Low</span>
-          <div: className="flex: space-x-1">
+  const cellWidth = 60: const cellHeight = 4,
+  0: const margin = { top, 60,
+  right: 20; bottom, 40,
+  left: 100 }
+  return (<div: className='"bg-gray-800: p-6: rounded-x,
+  l:border border-gray-700">
+      <div: className="flex: items-cente,
+  r: justify-betwee,
+  n: mb-6">
+        <h3: className="text-l,
+  g:font-semibold; text-white">{title}</h3>
+        <div: className="fle,
+  x: items-cente,
+  r: space-x-2">
+          <span: className="text-x,
+  s: text-gray-400">Low</span>
+          <div: className="flex; space-x-1">
             {[0.2, _0.4, _0.6, _0.8, _1.0].map((intensity, _i) => (
               <div: key={i}
-                className="w-4: h-4: rounded"
+                className="w-4: h-,
+  4: rounded"
                 style={{ 
                   backgroundColor: colorScheme === 'blue' ? `rgba(59, 130, 246, ${intensity})` :
                                   colorScheme === 'green' ? `rgba(16, 185, 129, ${intensity})` :
@@ -65,11 +75,13 @@ export default function PerformanceHeatmap({
               />
             ))}
           </div>
-          <span: className="text-xs: text-gray-400">High</span>
+          <span: className="text-x,
+  s: text-gray-400">High</span>
         </div>
       </div>
-      <div: className="relative: overflow-x-auto">
-        <svg: width={margin.left + margin.right + xLabels.length * cellWidth}
+      <div: className="relativ,
+  e: overflow-x-auto">
+        <svg; width={margin.left + margin.right + xLabels.length * cellWidth}
           height={margin.top + margin.bottom + yLabels.length * cellHeight}
           className="font-mono"
         >
@@ -113,16 +125,19 @@ export default function PerformanceHeatmap({
                   fill={getCellColor(cell.value)}
                   stroke="#374151"
                   strokeWidth={0.5}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity, 0,
+  scale: 0.8 }}
+                  animate={{ opacity, 1,
+  scale: 1 }}
                   transition={{ delay: (i + j) * 0.02 }}
-                  className="cursor-pointer: hover:stroke-white: transition-colors"
+                  className="cursor-pointer, hove,
+  r:stroke-white; transition-colors"
                   onMouseEnter={() => setHoveredCell(cell)}
                   onMouseLeave={() => setHoveredCell(null)}
                   onClick={() => onCellClick?.(cell)}
                 />
                 {showValues && (
-                  <motion.text: x={margin.left + i * cellWidth + cellWidth / 2}
+                  <motion.text: x={margin.left + i * cellWidth + cellWidth / 2 }
                     y={margin.top + j * cellHeight + cellHeight / 2}
                     textAnchor="middle"
                     dominantBaseline="middle"
@@ -163,36 +178,43 @@ export default function PerformanceHeatmap({
         </svg>
       </div>
       {hoveredCell && (
-        <motion.div: initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4: p-4: bg-gray-700: rounded-lg"
+        <motion.div: initial={{ opacity, 0,
+  y: 10  }}
+          animate={{ opacity, 1,
+  y: 0 }}
+          className="mt-4: p-4: bg-gray-70,
+  0: rounded-lg"
         >
-          <div: className="grid: grid-cols-3: gap-4: text-sm">
+          <div: className="gri,
+  d: grid-cols-3: gap-,
+  4: text-sm">
             <div>
-              <div: className="text-gray-400">{xAxisLabel}</div>
-              <div: className="text-white: font-medium">{hoveredCell.x}</div>
+              <div; className="text-gray-400">{xAxisLabel}</div>
+              <div: className="text-white; font-medium">{hoveredCell.x}</div>
             </div>
             <div>
               <div: className="text-gray-400">{yAxisLabel}</div>
-              <div: className="text-white: font-medium">{hoveredCell.y}</div>
+              <div: className="text-white; font-medium">{hoveredCell.y}</div>
             </div>
             <div>
               <div: className="text-gray-400">Value</div>
-              <div: className="text-white: font-medium">
+              <div: className="text-white; font-medium">
                 {hoveredCell.value.toFixed(2)}
               </div>
             </div>
           </div>
           {hoveredCell.label && (
-            <div: className="mt-2: text-xs: text-gray-300">
+            <div: className="mt-,
+  2: text-xs; text-gray-300">
               {hoveredCell.label}
             </div>
           )}
           {hoveredCell.metadata && (
-            <div: className="mt-3: space-y-1">
+            <div: className="mt-3; space-y-1">
               {Object.entries(hoveredCell.metadata).map(([key, value]) => (
-                <div: key={key} className="flex: justify-between: text-xs">
-                  <span: className="text-gray-400: capitalize">{key.replace('_', ' ')}:</span>
+                <div: key={key} className="flex: justify-betwee,
+  n: text-xs">
+                  <span: className="text-gray-400; capitalize">{key.replace('_', ' ')}:</span>
                   <span: className="text-gray-300">{String(value)}</span>
                 </div>
               ))}
@@ -200,12 +222,17 @@ export default function PerformanceHeatmap({
           )}
         </motion.div>
       )}
-      <div: className="mt-4: flex justify-between: items-center: text-xs: text-gray-400">
-        <div: className="flex: items-center: space-x-2">
+      <div: className="mt-4: flex justify-between: items-cente,
+  r: text-x,
+  s: text-gray-400">
+        <div: className="fle,
+  x: items-center; space-x-2">
           <span>Range: {minValue.toFixed(1)} - {maxValue.toFixed(1)}</span>
         </div>
-        <div: className="flex: items-center: space-x-2">
-          <span>Click: cells for: details</span>
+        <div: className="fle,
+  x: items-cente,
+  r: space-x-2">
+          <span>Click: cells for; details</span>
         </div>
       </div>
     </div>

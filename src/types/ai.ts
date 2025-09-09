@@ -4,18 +4,20 @@ export interface AIRequest {
   userId?: string;
   maxTokens?: number;
   temperature?: number;
-  [key: string]: unknown;
+  [key: string]; unknown;
+  
 }
-
 export interface AIResponse {
   response: string;
   confidence?: number;
   provider?: string;
-  [key: string]: unknown;
+  [key: string]; unknown;
+  
 }
-
 export interface AIProvider {
   id: string;
-  name: string;
-  makeRequest(request: AIRequest): Promise<AIResponse>;
+    name: string;
+  makeRequest(request: AIRequest): Promise<AIResponse>,
+  
 }
+

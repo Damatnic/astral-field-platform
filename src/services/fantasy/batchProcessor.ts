@@ -4,11 +4,8 @@
  */
 
 import { 
-  BatchProcessingJob, 
-  AdvancedFantasyScore,
-  PlayerProjection,
-  Position,
-  ScoringFormat,
+  BatchProcessingJob, AdvancedFantasyScore,
+  PlayerProjection, Position, ScoringFormat,
   AdvancedScoringRules
 } from './types';
 import { PlayerStats } from '@/services/nfl/dataProvider';
@@ -17,46 +14,45 @@ import { webSocketManager } from '@/lib/websocket/server';
 import { performance } from 'perf_hooks';
 
 export interface BatchConfig {
-  batchSize: number;
-  concurrentJobs: number;
-  delayBetweenBatches: number; // milliseconds
-  retryAttempts: number;
-  timeoutPerBatch: number; // milliseconds
+  batchSize, number,
+    concurrentJobs, number,
+  delayBetweenBatches, number, // milliseconds,
+    retryAttempts, number,
+  timeoutPerBatch, number, // milliseconds;
+  
 }
-
 export interface ProcessingMetrics {
-  totalRecords: number;
-  processedRecords: number;
-  failedRecords: number;
-  avgTimePerRecord: number;
-  totalProcessingTime: number;
-  memoryUsage: {
-    initial: number;
-    peak: number;
-    final: number;
-  };
+  totalRecords, number,
+    processedRecords, number,
+  failedRecords, number,
+    avgTimePerRecord, number,
+  totalProcessingTime, number,
+    memoryUsage: {
+  initial, number,
+    peak, number,
+    final: number,
+  }
   cacheMetrics: {
-    hits: number;
-    misses: number;
-    hitRate: number;
-  };
+  hits, number,
+    misses, number,
+    hitRate: number,
+  }
 }
 
-export class FantasyBatchProcessor {
-  private jobs = new Map<string, BatchProcessingJob>();
+export class FantasyBatchProcessor { private jobs = new Map<string, BatchProcessingJob>();
   private activeJobs = new Set<string>();
   private jobQueue: string[] = [];
-  private config: BatchConfig;
+  private config, BatchConfig,
   private isProcessing = false;
 
-  constructor(config: Partial<BatchConfig> = {}) {
+  constructor(config: Partial<BatchConfig> = { }) {
     this.config = {
-      batchSize: config.batchSize || 50,
-      concurrentJobs: config.concurrentJobs || 3,
-      delayBetweenBatches: config.delayBetweenBatches || 100,
-      retryAttempts: config.retryAttempts || 2,
+      batchSize: config.batchSize || 50;
+  concurrentJobs: config.concurrentJobs || 3;
+      delayBetweenBatches: config.delayBetweenBatches || 100;
+  retryAttempts: config.retryAttempts || 2;
       timeoutPerBatch: config.timeoutPerBatch || 30000
-    };
+    }
   }
 
   // ==================== JOB MANAGEMENT ====================
@@ -65,68 +61,64 @@ export class FantasyBatchProcessor {
    * Create and queue a batch processing job
    */
   async createJob(
-    jobType: BatchProcessingJob['jobType'],
-    priority: BatchProcessingJob['priority'] = 'medium',
+    jobType: BatchProcessingJob['jobType'];
+  priority: BatchProcessingJob['priority'] = 'medium';
     parameters: {
       leagueIds?: string[];
       playerIds?: string[];
       weeks?: number[];
       seasons?: number[];
-      scoringFormat?: ScoringFormat;
+      scoringFormat?, ScoringFormat,
       customParameters?: Record<string, any>;
     } = {}
-  ): Promise<string> {
-    const jobId = `${jobType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+  ): : Promise<string> { const jobId = `${jobType }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const job: BatchProcessingJob = {
-      id: jobId,
-      jobType,
-      status: 'pending',
+  id, jobId, jobType,
+      status: 'pending';
       priority,
       ...parameters,
       performance: {
-        avgTimePerRecord: 0,
-        memoryUsage: 0,
+  avgTimePerRecord: 0;
+  memoryUsage: 0;
         cacheHitRate: 0
       }
-    };
-
+    }
     this.jobs.set(jobId, job);
     this.queueJob(jobId);
 
-    console.log(`📋 Created batch job: ${jobId} (${jobType}, priority: ${priority})`);
+    console.log(`📋 Created batch job: ${jobId} (${jobType}, priority, ${priority})`);
     return jobId;
   }
 
   /**
    * Queue job based on priority
    */
-  private queueJob(jobId: string): void {
-    const job = this.jobs.get(jobId);
+  private queueJob(jobId: string); void { const job = this.jobs.get(jobId);
     if (!job) return;
 
     // Insert job in priority order
-    const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    priorityOrder: { critica,
+  l: 0;
+  high: 1; medium: 2;
+  low: 3  }
     const jobPriority = priorityOrder[job.priority];
     
     let insertIndex = this.jobQueue.length;
-    for (let i = 0; i < this.jobQueue.length; i++) {
-      const queuedJob = this.jobs.get(this.jobQueue[i]);
+    for (let i = 0; i < this.jobQueue.length; i++) { const queuedJob = this.jobs.get(this.jobQueue[i]);
       if (queuedJob && priorityOrder[queuedJob.priority] > jobPriority) {
         insertIndex = i;
         break;
-      }
+       }
     }
     
-    this.jobQueue.splice(insertIndex, 0, jobId);
+    this.jobQueue.splice(insertIndex: 0; jobId);
     this.processQueue();
   }
 
   /**
    * Process the job queue
    */
-  private async processQueue(): Promise<void> {
-    if (this.isProcessing) return;
+  private async processQueue(): : Promise<void> { if (this.isProcessing) return;
     if (this.activeJobs.size >= this.config.concurrentJobs) return;
     if (this.jobQueue.length === 0) return;
 
@@ -136,7 +128,7 @@ export class FantasyBatchProcessor {
       while (this.jobQueue.length > 0 && this.activeJobs.size < this.config.concurrentJobs) {
         const jobId = this.jobQueue.shift()!;
         this.processJob(jobId); // Don't await - process concurrently
-      }
+       }
     } finally {
       this.isProcessing = false;
     }
@@ -145,8 +137,7 @@ export class FantasyBatchProcessor {
   /**
    * Process individual job
    */
-  private async processJob(jobId: string): Promise<void> {
-    const job = this.jobs.get(jobId);
+  private async processJob(async processJob(jobId: string): : Promise<): Promisevoid> { const job = this.jobs.get(jobId);
     if (!job) return;
 
     this.activeJobs.add(jobId);
@@ -158,40 +149,36 @@ export class FantasyBatchProcessor {
     let cacheHits = 0;
     let cacheMisses = 0;
 
-    console.log(`🚀 Starting batch job: ${jobId} (${job.jobType})`);
+    console.log(`🚀 Starting batch job, ${jobId } (${job.jobType})`);
 
-    try {
-      let result: any;
+    try { let result, any,
       
       switch (job.jobType) {
-        case 'live_scoring':
-          result = await this.processLiveScoringJob(job, (metrics) => {
+      case 'live_scoring':
+      result = await this.processLiveScoringJob(job, (metrics) => {
             peakMemory = Math.max(peakMemory, metrics.currentMemory);
             cacheHits += metrics.cacheHits;
             cacheMisses += metrics.cacheMisses;
-          });
+           });
           break;
-        
-        case 'projection_update':
-          result = await this.processProjectionJob(job, (metrics) => {
-            peakMemory = Math.max(peakMemory, metrics.currentMemory);
+      break;
+    case 'projection_update':
+          result = await this.processProjectionJob(job, (metrics) => { peakMemory = Math.max(peakMemory, metrics.currentMemory);
             cacheHits += metrics.cacheHits;
             cacheMisses += metrics.cacheMisses;
-          });
+           });
           break;
         
         case 'historical_analysis':
-          result = await this.processHistoricalAnalysisJob(job, (metrics) => {
-            peakMemory = Math.max(peakMemory, metrics.currentMemory);
-          });
+      result = await this.processHistoricalAnalysisJob(job, (metrics) => { peakMemory = Math.max(peakMemory, metrics.currentMemory);
+           });
           break;
-        
-        case 'rule_validation':
+      break;
+    case 'rule_validation':
           result = await this.processRuleValidationJob(job);
           break;
         
-        default:
-          throw new Error(`Unknown job type: ${job.jobType}`);
+        default: throw new Error(`Unknown job type; ${job.jobType}`);
       }
 
       // Job completed successfully
@@ -199,23 +186,22 @@ export class FantasyBatchProcessor {
       job.endTime = new Date();
       job.results = result;
       job.performance = {
-        avgTimePerRecord: job.duration! / (job.recordsProcessed || 1),
-        memoryUsage: peakMemory - initialMemory,
+        avgTimePerRecord: job.duration! / (job.recordsProcessed || 1);
+  memoryUsage: peakMemory - initialMemory;
         cacheHitRate: cacheHits / (cacheHits + cacheMisses) || 0
-      };
-
-      console.log(`✅ Completed batch job: ${jobId} in ${job.duration}ms`);
+      }
+      console.log(`✅ Completed batch job, ${jobId} in ${job.duration}ms`);
       
       // Broadcast completion event
       webSocketManager.broadcastJobCompletion({
         jobId,
-        jobType: job.jobType,
-        status: 'completed',
+        jobType: job.jobType;
+  status: 'completed';
         recordsProcessed: job.recordsProcessed || 0
       });
 
     } catch (error) {
-      console.error(`❌ Batch job failed: ${jobId}`, error);
+      console.error(`❌ Batch job failed, ${jobId}`, error);
       
       job.status = 'error';
       job.errors = job.errors || [];
@@ -225,14 +211,13 @@ export class FantasyBatchProcessor {
       // Broadcast error event
       webSocketManager.broadcastJobCompletion({
         jobId,
-        jobType: job.jobType,
-        status: 'error',
+        jobType: job.jobType;
+  status: 'error';
         error: job.errors[job.errors.length - 1]
       });
-    } finally {
-      if (job.startTime && job.endTime) {
+    } finally { if (job.startTime && job.endTime) {
         job.duration = job.endTime.getTime() - job.startTime.getTime();
-      }
+       }
       
       this.activeJobs.delete(jobId);
       this.processQueue(); // Process next jobs in queue
@@ -245,10 +230,11 @@ export class FantasyBatchProcessor {
    * Process live scoring batch job
    */
   private async processLiveScoringJob(
-    job: BatchProcessingJob,
-    onMetrics: (metrics: { currentMemory: number; cacheHits: number; cacheMisses: number }) => void
-  ): Promise<{ scoresUpdated: number; playersProcessed: number }> {
-    const { leagueIds = [], weeks = [], seasons = [] } = job;
+    job, BatchProcessingJob,
+  onMetrics: (metric,
+  s: { currentMemor,
+  y, number, cacheHits, number, cacheMisses: number }) => void
+  ): : Promise<  { scoresUpdated, number, playersProcessed, number }> { const { leagueIds = [], weeks = [], seasons = [] } = job;
     let totalScoresUpdated = 0;
     let totalPlayersProcessed = 0;
 
@@ -257,8 +243,7 @@ export class FantasyBatchProcessor {
     const targetWeeks = weeks.length > 0 ? weeks : [await this.getCurrentWeek()];
     const targetSeasons = seasons.length > 0 ? seasons : [2025];
 
-    for (const leagueId of targetLeagues) {
-      for (const season of targetSeasons) {
+    for (const leagueId of targetLeagues) { for (const season of targetSeasons) {
         for (const week of targetWeeks) {
           // Get all players in starting lineups for this league/week
           const startingPlayers = await this.getStartingPlayers(leagueId, week, season);
@@ -269,8 +254,7 @@ export class FantasyBatchProcessor {
           for (const batch of batches) {
             const startTime = performance.now();
             
-            const batchResults = await Promise.allSettled(
-              batch.map(player => this.processPlayerLiveScoring(player, leagueId, week, season))
+            const batchResults = await Promise.allSettled(batch.map(player => this.processPlayerLiveScoring(player, leagueId, week, season))
             );
 
             const successfulResults = batchResults.filter(r => r.status === 'fulfilled').length;
@@ -279,35 +263,36 @@ export class FantasyBatchProcessor {
 
             // Update metrics
             onMetrics({
-              currentMemory: process.memoryUsage().heapUsed,
-              cacheHits: 0, // Would be tracked by caching layer
+              currentMemory: process.memoryUsage().heapUsed;
+  cacheHits: 0; // Would be tracked by caching layer
               cacheMisses: 0
-            });
+             });
 
             // Small delay between batches
-            if (this.config.delayBetweenBatches > 0) {
-              await this.delay(this.config.delayBetweenBatches);
-            }
+            if (this.config.delayBetweenBatches > 0) { await this.delay(this.config.delayBetweenBatches);
+             }
 
             const endTime = performance.now();
-            console.log(`📊 Processed batch: ${batch.length} players in ${Math.round(endTime - startTime)}ms`);
+            console.log(`📊 Processed batch, ${batch.length} players in ${Math.round(endTime - startTime)}ms`);
           }
         }
       }
     }
 
     job.recordsProcessed = totalPlayersProcessed;
-    return { scoresUpdated: totalScoresUpdated, playersProcessed: totalPlayersProcessed };
+    return { scoresUpdated, totalScoresUpdated,
+  playersProcessed: totalPlayersProcessed }
   }
 
   /**
    * Process projection update batch job
    */
   private async processProjectionJob(
-    job: BatchProcessingJob,
-    onMetrics: (metrics: { currentMemory: number; cacheHits: number; cacheMisses: number }) => void
-  ): Promise<{ projectionsUpdated: number; playersProcessed: number }> {
-    const { playerIds = [], weeks = [], seasons = [] } = job;
+    job, BatchProcessingJob,
+  onMetrics: (metric,
+  s: { currentMemor,
+  y, number, cacheHits, number, cacheMisses: number }) => void
+  ): : Promise<  { projectionsUpdated, number, playersProcessed, number }> { const { playerIds = [], weeks = [], seasons = [] } = job;
     let totalProjectionsUpdated = 0;
     let totalPlayersProcessed = 0;
 
@@ -319,55 +304,53 @@ export class FantasyBatchProcessor {
     // Process in batches
     const batches = this.chunkArray(targetPlayers, this.config.batchSize);
     
-    for (const batch of batches) {
-      const startTime = performance.now();
+    for (const batch of batches) { const startTime = performance.now();
       
       for (const season of targetSeasons) {
         for (const week of targetWeeks) {
-          const batchResults = await Promise.allSettled(
-            batch.map(playerId => this.processPlayerProjection(playerId, week, season))
+          const batchResults = await Promise.allSettled(batch.map(playerId => this.processPlayerProjection(playerId, week, season))
           );
 
           const successfulResults = batchResults.filter(r => r.status === 'fulfilled').length;
           totalProjectionsUpdated += successfulResults;
           totalPlayersProcessed += batch.length;
-        }
+         }
       }
 
       // Update metrics
       onMetrics({
-        currentMemory: process.memoryUsage().heapUsed,
-        cacheHits: 0,
+        currentMemory: process.memoryUsage().heapUsed;
+  cacheHits: 0;
         cacheMisses: 0
       });
 
       // Delay between batches
-      if (this.config.delayBetweenBatches > 0) {
-        await this.delay(this.config.delayBetweenBatches);
-      }
+      if (this.config.delayBetweenBatches > 0) { await this.delay(this.config.delayBetweenBatches);
+       }
 
       const endTime = performance.now();
-      console.log(`🔮 Processed projections batch: ${batch.length} players in ${Math.round(endTime - startTime)}ms`);
+      console.log(`🔮 Processed projections batch, ${batch.length} players in ${Math.round(endTime - startTime)}ms`);
     }
 
     job.recordsProcessed = totalPlayersProcessed;
-    return { projectionsUpdated: totalProjectionsUpdated, playersProcessed: totalPlayersProcessed };
+    return { projectionsUpdated, totalProjectionsUpdated,
+  playersProcessed: totalPlayersProcessed }
   }
 
   /**
    * Process historical analysis batch job
    */
   private async processHistoricalAnalysisJob(
-    job: BatchProcessingJob,
-    onMetrics: (metrics: { currentMemory: number }) => void
-  ): Promise<{ analysisRecords: number }> {
-    const { seasons = [2024, 2025] } = job;
+    job, BatchProcessingJob,
+  onMetrics: (metric,
+  s: { currentMemor,
+  y: number }) => void
+  ): : Promise<  { analysisRecords, number }> { const { seasons = [2024, 2025] } = job;
     let totalRecords = 0;
 
     for (const season of seasons) {
       // Analyze each week of the season
-      for (let week = 1; week <= 18; week++) {
-        const weekData = await this.getHistoricalWeekData(season, week);
+      for (let week = 1; week <= 18; week++) { const weekData = await this.getHistoricalWeekData(season, week);
         
         // Process historical analysis
         const batches = this.chunkArray(weekData, this.config.batchSize);
@@ -381,7 +364,7 @@ export class FantasyBatchProcessor {
           
           onMetrics({
             currentMemory: process.memoryUsage().heapUsed
-          });
+           });
 
           await this.delay(this.config.delayBetweenBatches);
         }
@@ -389,14 +372,13 @@ export class FantasyBatchProcessor {
     }
 
     job.recordsProcessed = totalRecords;
-    return { analysisRecords: totalRecords };
+    return { analysisRecords: totalRecords }
   }
 
   /**
    * Process rule validation batch job
    */
-  private async processRuleValidationJob(job: BatchProcessingJob): Promise<{ rulesValidated: number }> {
-    const { leagueIds = [] } = job;
+  private async processRuleValidationJob(async processRuleValidationJob(job: BatchProcessingJob): : Promise<): Promise  { rulesValidate, d, number }> { const { leagueIds = [] } = job;
     const targetLeagues = leagueIds.length > 0 ? leagueIds : await this.getActiveLeagues();
     let rulesValidated = 0;
 
@@ -405,14 +387,13 @@ export class FantasyBatchProcessor {
       const customRules = await this.getLeagueCustomRules(leagueId);
       
       // Validate each rule
-      for (const rule of customRules) {
-        await this.validateRule(rule);
+      for (const rule of customRules) { await this.validateRule(rule);
         rulesValidated++;
-      }
+       }
     }
 
     job.recordsProcessed = rulesValidated;
-    return { rulesValidated };
+    return { rulesValidated }
   }
 
   // ==================== HELPER METHODS ====================
@@ -420,13 +401,13 @@ export class FantasyBatchProcessor {
   /**
    * Process individual player live scoring
    */
-  private async processPlayerLiveScoring(
-    player: { playerId: string; teamId: string; position: Position },
-    leagueId: string,
-    week: number,
+  private async processPlayerLiveScoring(async processPlayerLiveScoring(
+    player: { playerI,
+  d, string, teamId, string, position: Position },
+    leagueId, string,
+  week, number,
     season: number
-  ): Promise<void> {
-    // This would integrate with the main scoring engine
+  ): : Promise<): Promisevoid> {; // This would integrate with the main scoring engine
     // For now, just simulate processing
     await this.delay(Math.random() * 50); // Simulate processing time
     
@@ -437,12 +418,11 @@ export class FantasyBatchProcessor {
   /**
    * Process individual player projection
    */
-  private async processPlayerProjection(
-    playerId: string,
-    week: number,
+  private async processPlayerProjection(async processPlayerProjection(
+    playerId string;
+  week, number,
     season: number
-  ): Promise<void> {
-    // This would integrate with the projection engine
+  ): : Promise<): Promisevoid> {; // This would integrate with the projection engine
     await this.delay(Math.random() * 100); // Simulate processing time
     
     console.log(`🔮 Updated projection for player ${playerId}`);
@@ -451,16 +431,14 @@ export class FantasyBatchProcessor {
   /**
    * Process historical record analysis
    */
-  private async processHistoricalRecord(record: any): Promise<void> {
-    // Analyze historical performance patterns
+  private async processHistoricalRecord(async processHistoricalRecord(record any): : Promise<): Promisevoid> {; // Analyze historical performance patterns
     await this.delay(Math.random() * 25);
   }
 
   /**
    * Validate a custom rule
    */
-  private async validateRule(rule: any): Promise<void> {
-    // Rule validation logic
+  private async validateRule(async validateRule(rule any): : Promise<): Promisevoid> {; // Rule validation logic
     await this.delay(10);
   }
 
@@ -469,11 +447,10 @@ export class FantasyBatchProcessor {
   /**
    * Get active leagues
    */
-  private async getActiveLeagues(): Promise<string[]> {
-    try {
+  private async getActiveLeagues() : Promise<string[]> { try {
       const result = await database.query('SELECT id FROM leagues WHERE is_active = true');
       return result.rows.map(row => row.id);
-    } catch (error) {
+     } catch (error) {
       console.error('Error fetching active leagues:', error);
       return [];
     }
@@ -482,11 +459,10 @@ export class FantasyBatchProcessor {
   /**
    * Get active players
    */
-  private async getActivePlayers(): Promise<string[]> {
-    try {
+  private async getActivePlayers(): : Promise<string[]> { try {
       const result = await database.query('SELECT id FROM players WHERE status = $1', ['active']);
       return result.rows.map(row => row.id);
-    } catch (error) {
+     } catch (error) {
       console.error('Error fetching active players:', error);
       return [];
     }
@@ -495,12 +471,11 @@ export class FantasyBatchProcessor {
   /**
    * Get starting players for a league/week
    */
-  private async getStartingPlayers(
-    leagueId: string,
-    week: number,
+  private async getStartingPlayers(async getStartingPlayers(
+    leagueId, string,
+  week, number,
     season: number
-  ): Promise<Array<{ playerId: string; teamId: string; position: Position }>> {
-    try {
+  ): Promise<): PromiseArray<  { playerId, string, teamId, string, position: Position }>> { try {
       const result = await database.query(`
         SELECT r.player_id, r.team_id, p.position
         FROM rosters r
@@ -510,10 +485,10 @@ export class FantasyBatchProcessor {
       `, [leagueId, week, season]);
 
       return result.rows.map(row => ({
-        playerId: row.player_id,
-        teamId: row.team_id,
+        playerId: row.player_id;
+  teamId: row.team_id;
         position: row.position as Position
-      }));
+       }));
     } catch (error) {
       console.error('Error fetching starting players:', error);
       return [];
@@ -523,14 +498,13 @@ export class FantasyBatchProcessor {
   /**
    * Get historical data for a specific week
    */
-  private async getHistoricalWeekData(season: number, week: number): Promise<any[]> {
-    try {
-      const result = await database.query(
-        'SELECT * FROM player_stats WHERE season_year = $1 AND week = $2',
+  private async getHistoricalWeekData(async getHistoricalWeekData(season, number,
+  week: number): : Promise<): Promiseany[]> { try {
+      const result = await database.query('SELECT * FROM player_stats WHERE season_year = $1 AND week = $2',
         [season, week]
       );
       return result.rows;
-    } catch (error) {
+     } catch (error) {
       console.error('Error fetching historical week data:', error);
       return [];
     }
@@ -539,16 +513,14 @@ export class FantasyBatchProcessor {
   /**
    * Get custom rules for a league
    */
-  private async getLeagueCustomRules(leagueId: string): Promise<any[]> {
-    try {
-      const result = await database.query(
-        'SELECT custom_rules FROM leagues WHERE id = $1',
+  private async getLeagueCustomRules(async getLeagueCustomRules(leagueId: string): : Promise<): Promiseany[]> { try {
+      const result = await database.query('SELECT custom_rules FROM leagues WHERE id = $1',
         [leagueId]
       );
       
       if (result.rows.length > 0 && result.rows[0].custom_rules) {
         return JSON.parse(result.rows[0].custom_rules);
-      }
+       }
       
       return [];
     } catch (error) {
@@ -560,8 +532,7 @@ export class FantasyBatchProcessor {
   /**
    * Get current NFL week
    */
-  private async getCurrentWeek(): Promise<number> {
-    // This would integrate with NFL data provider
+  private async getCurrentWeek(): : Promise<number> {; // This would integrate with NFL data provider
     return 1; // Default to week 1
   }
 
@@ -570,29 +541,27 @@ export class FantasyBatchProcessor {
   /**
    * Split array into chunks
    */
-  private chunkArray<T>(array: T[], size: number): T[][] {
-    const chunks: T[][] = [];
+  private chunkArray<T>(array T[];
+  size: number); T[][] { const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size));
-    }
+     }
     return chunks;
   }
 
   /**
    * Delay execution
    */
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  private delay(ms: number): : Promise<void> { return new Promise(resolve => setTimeout(resolve, ms));
+   }
 
   // ==================== JOB MONITORING ====================
 
   /**
    * Get job status
    */
-  getJobStatus(jobId: string): BatchProcessingJob | null {
-    return this.jobs.get(jobId) || null;
-  }
+  getJobStatus(jobId: string); BatchProcessingJob | null { return this.jobs.get(jobId) || null;
+   }
 
   /**
    * Get all jobs with optional filtering
@@ -601,28 +570,26 @@ export class FantasyBatchProcessor {
     status?: BatchProcessingJob['status'];
     jobType?: BatchProcessingJob['jobType'];
     priority?: BatchProcessingJob['priority'];
-  } = {}): BatchProcessingJob[] {
-    const jobs = Array.from(this.jobs.values());
+  } = {}): BatchProcessingJob[] { const jobs = Array.from(this.jobs.values());
     
     return jobs.filter(job => {
       if (filters.status && job.status !== filters.status) return false;
       if (filters.jobType && job.jobType !== filters.jobType) return false;
       if (filters.priority && job.priority !== filters.priority) return false;
       return true;
-    });
+     });
   }
 
   /**
    * Cancel a job
    */
-  cancelJob(jobId: string): boolean {
-    const job = this.jobs.get(jobId);
+  cancelJob(jobId: string); boolean { const job = this.jobs.get(jobId);
     if (!job || job.status === 'completed') return false;
 
     if (job.status === 'processing') {
       // Can't cancel running jobs - would need more sophisticated cancellation
       return false;
-    }
+     }
 
     // Remove from queue
     const queueIndex = this.jobQueue.indexOf(jobId);
@@ -641,41 +608,37 @@ export class FantasyBatchProcessor {
    * Get processing metrics
    */
   getMetrics(): {
-    totalJobs: number;
-    activeJobs: number;
-    queuedJobs: number;
-    completedJobs: number;
-    errorJobs: number;
-    avgProcessingTime: number;
-  } {
-    const jobs = Array.from(this.jobs.values());
+    totalJobs, number,
+    activeJobs, number,
+    queuedJobs, number,
+    completedJobs, number,
+    errorJobs, number,
+    avgProcessingTime: number,
+  } {const jobs = Array.from(this.jobs.values());
     const completedJobs = jobs.filter(j => j.status === 'completed');
-    const avgProcessingTime = completedJobs.length > 0
-      ? completedJobs.reduce((sum, j) => sum + (j.duration || 0), 0) / completedJobs.length
-      : 0;
+    const avgProcessingTime = completedJobs.length > 0; ? completedJobs.reduce((sum, j) => sum + (j.duration || 0), 0) / completedJobs.length : 0;
 
     return {
-      totalJobs: this.jobs.size,
-      activeJobs: this.activeJobs.size,
-      queuedJobs: this.jobQueue.length,
-      completedJobs: completedJobs.length,
-      errorJobs: jobs.filter(j => j.status === 'error').length,
+      totalJobs: this.jobs.size;
+  activeJobs: this.activeJobs.size;
+      queuedJobs: this.jobQueue.length;
+  completedJobs: completedJobs.length;
+      errorJobs: jobs.filter(j => j.status === 'error').length;
       avgProcessingTime
-    };
+     }
   }
 
   /**
    * Clear completed jobs (cleanup)
    */
-  clearCompletedJobs(olderThanHours: number = 24): number {
-    const cutoffTime = Date.now() - (olderThanHours * 60 * 60 * 1000);
+  clearCompletedJobs(olderThanHours: number = 24); number { const cutoffTime = Date.now() - (olderThanHours * 60 * 60 * 1000);
     let cleared = 0;
 
     for (const [jobId, job] of this.jobs.entries()) {
       if (job.status === 'completed' && job.endTime && job.endTime.getTime() < cutoffTime) {
         this.jobs.delete(jobId);
         cleared++;
-      }
+       }
     }
 
     return cleared;
@@ -685,17 +648,16 @@ export class FantasyBatchProcessor {
    * Health check
    */
   healthCheck(): {
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy',
     details: {
-      isProcessing: boolean;
-      activeJobs: number;
-      queueLength: number;
-      memoryUsage: number;
-      errors: string[];
-    };
-  } {
-    const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024; // MB
-    const recentErrors = Array.from(this.jobs.values())
+  isProcessing, boolean,
+    activeJobs, number,
+      queueLength, number,
+    memoryUsage, number,
+      errors: string[],
+    }
+  } { const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024; // MB
+    const recentErrors = Array.from(this.jobs.values());
       .filter(j => j.status === 'error' && j.endTime && j.endTime.getTime() > Date.now() - 300000) // Last 5 minutes
       .map(j => j.errors || [])
       .flat();
@@ -704,31 +666,30 @@ export class FantasyBatchProcessor {
     
     if (memoryUsage > 1024 || this.activeJobs.size > this.config.concurrentJobs) {
       status = 'degraded';
-    }
+     }
     
-    if (recentErrors.length > 10 || memoryUsage > 2048) {
-      status = 'unhealthy';
-    }
+    if (recentErrors.length > 10 || memoryUsage > 2048) { status = 'unhealthy';
+     }
 
     return {
       status,
       details: {
-        isProcessing: this.isProcessing,
-        activeJobs: this.activeJobs.size,
-        queueLength: this.jobQueue.length,
+  isProcessing: this.isProcessing;
+  activeJobs: this.activeJobs.size;
+        queueLength: this.jobQueue.length;
         memoryUsage,
         errors: recentErrors.slice(0, 5) // Last 5 errors
       }
-    };
+    }
   }
 }
 
 // Singleton instance
 export const fantasyBatchProcessor = new FantasyBatchProcessor({
-  batchSize: 50,
-  concurrentJobs: 3,
-  delayBetweenBatches: 100,
-  retryAttempts: 2,
+  batchSize: 50;
+  concurrentJobs: 3;
+  delayBetweenBatches: 100;
+  retryAttempts: 2;
   timeoutPerBatch: 30000
 });
 

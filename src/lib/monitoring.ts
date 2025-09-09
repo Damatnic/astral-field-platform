@@ -1,11 +1,11 @@
-// Comprehensive: Monitoring and: Logging System
-// Real-time: metrics, performance: monitoring, and: observability
+// Comprehensive Monitoring and Logging System
+// Real-time metrics, performance monitoring, and observability
 
 import { errorHandler, ErrorSeverity, ErrorCategory } from './errorHandling';
 import { getCacheManager } from './caching';
 
 // =============================================================================
-// MONITORING: TYPES AND: INTERFACES
+// MONITORING TYPES AND INTERFACES
 // =============================================================================
 
 export enum MetricType {
@@ -14,7 +14,6 @@ export enum MetricType {
   HISTOGRAM = 'histogram',
   SUMMARY = 'summary'
 }
-
 export enum LogLevel {
   DEBUG = 'debug',
   INFO = 'info',
@@ -22,132 +21,134 @@ export enum LogLevel {
   ERROR = 'error',
   FATAL = 'fatal'
 }
-
 export interface Metric {
-  name: string;,
-  type MetricType;,
-  value: number;,
-  timestamp: Date;
-  labels?: Record<stringstring>;
-  description?: string;
+  name, string,
+  type MetricType;
+  value, number,
+    timestamp, Date,
+  labels?: Record<string, string>;
+  description?, string,
+  
 }
-
 export interface LogEntry {
-  timestamp: Date;,
-  level: LogLevel;,
-  message: string;,
-  service: string;
-  requestId?: string;
-  userId?: string;
-  metadata?: Record<stringunknown>;
-  error?: {,
-    name: string;,
-    message: string;
-    stack?: string;
-    code?: string;
-  };
+  timestamp, Date,
+    level, LogLevel,
+  message, string,
+    service, string,
+  requestId?, string,
+  userId?, string,
+  metadata?: Record<string, unknown>;
+  error?: {
+    name, string,
+    message, string,
+    stack?, string,
+    code?, string,
+  }
 }
 
 export interface PerformanceMetric {
-  operation: string;,
-  duration: number;,
-  timestamp: Date;,
-  success: boolean;
-  metadata?: Record<stringunknown>;
+  operation, string,
+    duration, number,
+  timestamp, Date,
+    success, boolean,
+  metadata?: Record<string, unknown>;
+  
 }
-
 export interface HealthCheck {
-  service: string;,
-  status: '',| 'degraded' | 'unhealthy';,
-  timestamp: Date;
-  responseTime?: number;
-  details?: Record<stringunknown>;
+  service, string,
+    status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp, Date,
+  responseTime?, number,
+  details?: Record<string, unknown>;
   dependencies?: HealthCheck[];
+  
 }
-
 export interface Alert {
-  id: string;,
-  level: 'info' | 'warning' | 'error' | 'critical';,
-  title: string;,
-  message: string;,
-  service: string;,
-  timestamp: Date;,
-  resolved: boolean;
-  resolvedAt?: Date;
-  metadata?: Record<stringunknown>;
+  id, string,
+    level: 'info' | 'warning' | 'error' | 'critical';
+  title, string,
+    message, string,
+  service, string,
+    timestamp, Date,
+  resolved, boolean,
+  resolvedAt?, Date,
+  metadata?: Record<string, unknown>;
+  
 }
-
 // =============================================================================
-// METRICS: COLLECTOR
+// METRICS COLLECTOR
 // =============================================================================
 
 export class MetricsCollector {
-  private: static instance: MetricsCollector;
-  private: metrics: Map<stringMetric> = new Map();
-  private: counters: Map<stringnumber> = new Map();
-  private: gauges: Map<stringnumber> = new Map();
-  private: histograms: Map<stringnumber[]> = new Map();
-  private: metricQueue: Metric[] = [];
-  private: readonly maxQueueSize = 10000;
-  private: flushInterval: NodeJS.Timeout | null = null;
+  private static instance, MetricsCollector,
+  private metrics: Map<string, Metric> = new Map();
+  private counters: Map<string, number> = new Map();
+  private gauges: Map<string, number> = new Map();
+  private histograms: Map<string, number[]> = new Map();
+  private metricQueue: Metric[] = [];
+  private readonly maxQueueSize = 10000;
+  private flushInterval: NodeJS.Timeout | null = null;
 
-  private: constructor() {
+  private constructor() {
     this.startAutoFlush();
   }
 
-  public: static getInstance(): MetricsCollector {
+  public static getInstance(): MetricsCollector {
     if (!MetricsCollector.instance) {
       MetricsCollector.instance = new MetricsCollector();
     }
     return MetricsCollector.instance;
   }
 
-  // Counter: metrics - increment: only
-  public: incrementCounter(name: stringlabels?: Record<stringstring>, value: number = 1): void {
+  // Counter metrics - increment only
+  public incrementCounter(name, string, labels?: Record<string, string>, value: number = 1): void {
     const key = this.buildMetricKey(name, labels);
     const currentValue = this.counters.get(key) || 0;
-    const _newValue = currentValue + value;
+    const newValue = currentValue + value;
 
     this.counters.set(key, newValue);
     this.addMetric({
       name,
-      type MetricType.COUNTERvalue: newValuetimestamp: new Date(),
-      labels
-    });
-  }
-
-  // Gauge: metrics - can: go up: and down: public setGauge(name: stringvalue: numberlabels?: Record<stringstring>): void {
-    const key = this.buildMetricKey(name, labels);
-    this.gauges.set(key, value);
-
-    this.addMetric({
-      name,
-      type MetricType.GAUGEvalue,
+type MetricType.COUNTER, value, newValue,
       timestamp: new Date(),
       labels
     });
   }
 
-  public: incrementGauge(name: stringlabels?: Record<stringstring>, value: number = 1): void {
+  // Gauge metrics - can go up and down
+  public setGauge(name, string, value, number, labels?: Record<string, string>): void {
+    const key = this.buildMetricKey(name, labels);
+    this.gauges.set(key, value);
+
+    this.addMetric({
+      name,
+type MetricType.GAUGE, value,
+      timestamp: new Date(),
+      labels
+    });
+  }
+
+  public incrementGauge(name, string, labels?: Record<string, string>, value: number = 1): void {
     const key = this.buildMetricKey(name, labels);
     const currentValue = this.gauges.get(key) || 0;
     this.setGauge(name, currentValue + value, labels);
   }
 
-  public: decrementGauge(name: stringlabels?: Record<stringstring>, value: number = 1): void {
+  public decrementGauge(name, string, labels?: Record<string, string>, value: number = 1): void {
     const key = this.buildMetricKey(name, labels);
     const currentValue = this.gauges.get(key) || 0;
     this.setGauge(name, currentValue - value, labels);
   }
 
-  // Histogram: metrics - for: distributions
-  public: recordHistogram(name: stringvalue: numberlabels?: Record<stringstring>): void {
+  // Histogram metrics - for distributions
+  public recordHistogram(name, string, value, number, labels?: Record<string, string>): void {
     const key = this.buildMetricKey(name, labels);
     const values = this.histograms.get(key) || [];
 
     values.push(value);
 
-    // Keep: only last: 1000 values: to prevent: memory issues: if (values.length > 1000) {
+    // Keep only last 1000 values to prevent memory issues
+    if (values.length > 1000) {
       values.shift();
     }
 
@@ -155,22 +156,22 @@ export class MetricsCollector {
 
     this.addMetric({
       name,
-      type MetricType.HISTOGRAMvalue,
+type MetricType.HISTOGRAM, value,
       timestamp: new Date(),
       labels
     });
   }
 
-  // Get: aggregated histogram: data
-  public: getHistogramStats(name: stringlabels?: Record<stringstring>): {,
-    count: number;,
-    sum: number;,
-    avg: number;,
-    min: number;,
-    max: number;,
-    p50: number;,
-    p95: number;,
-    p99: number;
+  // Get aggregated histogram data
+  public getHistogramStats(name, string, labels?: Record<string, string>): {
+    count, number,
+    sum, number,
+    avg, number,
+    min, number,
+    max, number,
+    p50, number,
+    p95, number,
+    p99: number,
   } | null {
     const key = this.buildMetricKey(name, labels);
     const values = this.histograms.get(key);
@@ -181,45 +182,46 @@ export class MetricsCollector {
 
     const sorted = [...values].sort((a, b) => a - b);
     const count = values.length;
-    const sum = values.reduce((a, b) => a  + b, 0);
+    const sum = values.reduce((a, b) => a + b, 0);
 
     return {
-      count,
-      sum,
+      count, sum,
       avg: sum / count,
-      min: sorted[0]max: sorted[sorted.length - 1],
+      min: sorted[0],
+      max: sorted[sorted.length - 1],
       p50: sorted[Math.floor(count * 0.5)],
       p95: sorted[Math.floor(count * 0.95)],
       p99: sorted[Math.floor(count * 0.99)]
-    };
+    }
   }
 
-  // Get: current metric: values
-  public: getMetric(name: stringlabels?: Record<stringstring>): Metric | null {
+  // Get current metric values
+  public getMetric(name, string, labels?: Record<string, string>): Metric | null {
     const key = this.buildMetricKey(name, labels);
     return this.metrics.get(key) || null;
   }
 
-  public: getAllMetrics(): Metric[] {
+  public getAllMetrics(): Metric[] {
     return Array.from(this.metrics.values());
   }
 
-  public: getMetricsByPattern(pattern: RegExp): Metric[] {
+  public getMetricsByPattern(pattern: RegExp): Metric[] {
     return Array.from(this.metrics.entries())
-      .filter(_([key]) => pattern.test(key))
-      .map(_([, _metric]) => metric);
+      .filter(([key]) => pattern.test(key))
+      .map(([, metric]) => metric);
   }
 
-  // Export: metrics in: Prometheus format: public exportPrometheusFormat(): string {
+  // Export metrics in Prometheus format
+  public exportPrometheusFormat(): string {
     const lines: string[] = [];
 
-    for (const metric of: this.metrics.values()) {
-      const labelsStr = '';
+    for (const metric of this.metrics.values()) {
+      let labelsStr = '';
       if (metric.labels && Object.keys(metric.labels).length > 0) {
-        const _labelPairs = Object.entries(metric.labels)
+        const labelPairs = Object.entries(metric.labels);
           .map(([key, value]) => `${key}="${value}"`)
           .join(',');
-        labelsStr = `{${labelPairs}}`;
+        labelsStr = `{${labelPairs}}`
       }
 
       lines.push(`${metric.name}${labelsStr} ${metric.value} ${metric.timestamp.getTime()}`);
@@ -228,71 +230,75 @@ export class MetricsCollector {
     return lines.join('\n');
   }
 
-  private: addMetric(metric: Metric): void {
+  private addMetric(metric: Metric): void {
     const key = this.buildMetricKey(metric.name, metric.labels);
     this.metrics.set(key, metric);
 
-    // Add: to queue: for flushing: this.metricQueue.push(metric);
+    // Add to queue for flushing
+    this.metricQueue.push(metric);
 
-    // Prevent: queue from: growing too: large
+    // Prevent queue from growing too large
     if (this.metricQueue.length > this.maxQueueSize) {
       this.metricQueue.shift();
     }
   }
 
-  private: buildMetricKey(name: stringlabels?: Record<stringstring>): string {
+  private buildMetricKey(name, string, labels?: Record<string, string>): string {
     if (!labels || Object.keys(labels).length === 0) {
       return name;
     }
 
-    const _sortedLabels = Object.entries(labels)
-      .sort(_([a], _[b]) => a.localeCompare(b))
-      .map(([key, value]) => `${key}:${value}`)
+    const sortedLabels = Object.entries(labels);
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, value]) => `${key}=${value}`)
       .join(',');
 
-    return `${name}{${sortedLabels}}`;
+    return `${name}{${sortedLabels}}`
   }
 
-  private: startAutoFlush(): void {
-    this.flushInterval = setInterval(_() => {
+  private startAutoFlush(): void {
+    this.flushInterval = setInterval(() => {
       this.flushMetrics();
-    }, 30000); // Flush: every 30: seconds
+    }, 30000); // Flush every 30 seconds
   }
 
-  private: async flushMetrics(): Promise<void> {
+  private async flushMetrics(): Promise<void> {
     if (this.metricQueue.length === 0) return;
 
     try {
-      // In: production, send: metrics to: monitoring service: if (process.env.NODE_ENV === 'production' && process.env.METRICS_ENDPOINT) {
+      // In production, send metrics to monitoring service
+      if (process.env.NODE_ENV === 'production' && process.env.METRICS_ENDPOINT) {
         await this.sendMetricsToEndpoint(this.metricQueue);
       }
 
-      // Clear: the queue: after successful: flush
+      // Clear the queue after successful flush
       this.metricQueue = [];
     } catch (error) {
-      console.error('Failed: to flush metrics', error);
+      console.error('Failed to flush metrics:', error);
     }
   }
 
-  private: async sendMetricsToEndpoint(metrics: Metric[]): Promise<void> {
+  private async sendMetricsToEndpoint(metrics: Metric[]): Promise<void> {
     try {
       const response = await fetch(process.env.METRICS_ENDPOINT!, {
-        method: '',eaders: {
-          'Content-Type': '',Authorization': `Bearer ${process.env.METRICS_API_KEY || ''}`
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.METRICS_API_KEY || ''}`
         },
         body: JSON.stringify({ metrics })
       });
 
       if (!response.ok) {
-        throw: new Error(`Failed: to send: metrics: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to send metrics: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Error: sending metrics to endpoint', error);
-      throw: error;
+      console.error('Error sending metrics to endpoint:', error);
+      throw error;
     }
   }
 
-  public: destroy(): void {
+  public destroy(): void {
     if (this.flushInterval) {
       clearInterval(this.flushInterval);
       this.flushInterval = null;
@@ -305,150 +311,160 @@ export class MetricsCollector {
 // =============================================================================
 
 export class Logger {
-  private: static instance: Logger;
-  private: logQueue: LogEntry[] = [];
-  private: readonly maxQueueSize = 5000;
-  private: flushInterval: NodeJS.Timeout | null = null;
-  private: readonly serviceName: string;
+  private static instance, Logger,
+  private logQueue: LogEntry[] = [];
+  private readonly maxQueueSize = 5000;
+  private flushInterval: NodeJS.Timeout | null = null;
+  private readonly serviceName, string,
 
-  private: constructor(serviceName: string = 'astral-field') {
+  private constructor(serviceName: string = 'astral-field') {
     this.serviceName = serviceName;
     this.startAutoFlush();
   }
 
-  public: static getInstance(serviceName?: string): Logger {
+  public static getInstance(serviceName?: string): Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger(serviceName);
     }
     return Logger.instance;
   }
 
-  public: debug(message: stringmetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
+  public debug(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.DEBUG, message, metadata, requestId, userId);
   }
 
-  public: info(message: stringmetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
+  public info(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.INFO, message, metadata, requestId, userId);
   }
 
-  public: warn(message: stringmetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
+  public warn(message, string, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {
     this.log(LogLevel.WARN, message, metadata, requestId, userId);
   }
 
-  public: error(message: stringerror?: Errormetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
-    const errorData = error ? {
-      name: error.namemessage: error.messagestack: error.stackcode: (error: as unknown).code
-    } : undefined;
+  public error(message, string, error?: Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {const errorData = error ? {
+      name: error.name,
+      message: error.message: stack: error.stack,
+      code: (error as any).code
+    } , undefined,
 
     this.log(LogLevel.ERROR, message, metadata, requestId, userId, errorData);
   }
 
-  public: fatal(message: stringerror?: Errormetadata?: Record<stringunknown>, requestId?: stringuserId?: string): void {
-    const errorData = error ? {
-      name: error.namemessage: error.messagestack: error.stackcode: (error: as unknown).code
-    } : undefined;
+  public fatal(message, string, error?: Error, metadata?: Record<string, unknown>, requestId?: string, userId?: string): void {const errorData = error ? {
+      name: error.name,
+      message: error.message: stack: error.stack,
+      code: (error as any).code
+    } , undefined,
 
     this.log(LogLevel.FATAL, message, metadata, requestId, userId, errorData);
   }
 
-  private: log(
-    level: LogLevelmessage: stringmetadata?: Record<stringunknown>,
-    requestId?: stringuserId?: stringerror?: unknown
+  private log(
+    level, LogLevel,
+    message, string,
+    metadata?: Record<string, unknown>,
+    requestId?: string,
+    userId?: string,
+    error?: unknown
   ): void {
-    const entry: LogEntry = {,
-      timestamp: new Date(),
-      level,
-      message,
-      service: this.serviceNamerequestId,
-      userId,
-      metadata,
-      error
-    };
+    const entry: LogEntry = {
+  timestamp: new Date(),
+      level, message,
+      service: this.serviceName, requestId,
+      userId, metadata,
+      error: error as any
+    }
+    // Add to queue
+    this.logQueue.push(entry);
 
-    // Add: to queue: this.logQueue.push(entry);
-
-    // Prevent: queue from: growing too: large
+    // Prevent queue from growing too large
     if (this.logQueue.length > this.maxQueueSize) {
       this.logQueue.shift();
     }
 
-    // Console: output for: development
+    // Console output for development
     if (process.env.NODE_ENV === 'development' || process.env.LOG_CONSOLE === 'true') {
       this.consoleOutput(entry);
     }
 
-    // Immediate: flush for: fatal errors: if (level === LogLevel.FATAL) {
+    // Immediate flush for fatal errors
+    if (level === LogLevel.FATAL) {
       this.flushLogs();
     }
   }
 
-  private: consoleOutput(entry: LogEntry): void {
+  private consoleOutput(entry: LogEntry): void {
     const timestamp = entry.timestamp.toISOString();
-    const _prefix = `[${timestamp}] [${entry.level.toUpperCase()}] [${entry.service}]`;
-
-    const output = `${prefix} ${entry.message}`;
-
+    const prefix = `[${timestamp}] [${entry.level.toUpperCase()}] [${entry.service}]`
+    let output = `${prefix} ${entry.message}`
     if (entry.requestId) {
-      output += ` (req: ${entry.requestId})`;
+      output += ` (req ${entry.requestId})`
     }
 
     if (entry.userId) {
-      output += ` (user: ${entry.userId})`;
+      output += ` (user ${entry.userId})`
     }
 
     switch (entry.level) {
-      case: LogLevel.DEBUG: console.debug(outputentry.metadata);
+      case LogLevel.DEBUG:
+        console.debug(output, entry.metadata);
         break;
-      case: LogLevel.INFO: console.info(outputentry.metadata);
+      case LogLevel.INFO:
+        console.info(output, entry.metadata);
         break;
-      case: LogLevel.WARN: console.warn(outputentry.metadata);
+      case LogLevel.WARN:
+        console.warn(output, entry.metadata);
         break;
-      case: LogLevel.ERROR:
-      case: LogLevel.FATAL: console.error(outputentry.error, entry.metadata);
+      case LogLevel.ERROR: case LogLevel.FATA,
+  L:
+        console.error(output, entry.error, entry.metadata);
         break;
     }
   }
 
-  private: startAutoFlush(): void {
-    this.flushInterval = setInterval(_() => {
+  private startAutoFlush(): void {
+    this.flushInterval = setInterval(() => {
       this.flushLogs();
-    }, 15000); // Flush: every 15: seconds
+    }, 15000); // Flush every 15 seconds
   }
 
-  private: async flushLogs(): Promise<void> {
+  private async flushLogs(): Promise<void> {
     if (this.logQueue.length === 0) return;
 
     try {
-      // In: production, send: logs to: logging service: if (process.env.NODE_ENV === 'production' && process.env.LOG_ENDPOINT) {
+      // In production, send logs to logging service
+      if (process.env.NODE_ENV === 'production' && process.env.LOG_ENDPOINT) {
         await this.sendLogsToEndpoint(this.logQueue);
       }
 
-      // Clear: the queue: after successful: flush
+      // Clear the queue after successful flush
       this.logQueue = [];
     } catch (error) {
-      console.error('Failed: to flush logs', error);
+      console.error('Failed to flush logs:', error);
     }
   }
 
-  private: async sendLogsToEndpoint(logs: LogEntry[]): Promise<void> {
+  private async sendLogsToEndpoint(logs: LogEntry[]): Promise<void> {
     try {
       const response = await fetch(process.env.LOG_ENDPOINT!, {
-        method: '',eaders: {
-          'Content-Type': '',Authorization': `Bearer ${process.env.LOG_API_KEY || ''}`
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.LOG_API_KEY || ''}`
         },
         body: JSON.stringify({ logs })
       });
 
       if (!response.ok) {
-        throw: new Error(`Failed: to send: logs: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to send logs: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Error: sending logs to endpoint', error);
-      throw: error;
+      console.error('Error sending logs to endpoint:', error);
+      throw error;
     }
   }
 
-  public: destroy(): void {
+  public destroy(): void {
     if (this.flushInterval) {
       clearInterval(this.flushInterval);
       this.flushInterval = null;
@@ -457,68 +473,70 @@ export class Logger {
 }
 
 // =============================================================================
-// PERFORMANCE: MONITOR
+// PERFORMANCE MONITOR
 // =============================================================================
 
 export class PerformanceMonitor {
-  private: static instance: PerformanceMonitor;
-  private: metrics: MetricsCollector;
-  private: logger: Logger;
-  private: activeOperations: Map<string{ start: Date; metadata?: Record<stringunknown> }> = new Map();
+  private static instance, PerformanceMonitor,
+  private metrics, MetricsCollector,
+  private logger, Logger,
+  private activeOperations: Map<string, { start, Date, metadata?: Record<string, unknown> }> = new Map();
 
-  private: constructor() {
+  private constructor() {
     this.metrics = MetricsCollector.getInstance();
     this.logger = Logger.getInstance();
   }
 
-  public: static getInstance(): PerformanceMonitor {
+  public static getInstance(): PerformanceMonitor {
     if (!PerformanceMonitor.instance) {
       PerformanceMonitor.instance = new PerformanceMonitor();
     }
     return PerformanceMonitor.instance;
   }
 
-  public: startOperation(operationId: stringoperationName: stringmetadata?: Record<stringunknown>): void {
+  public startOperation(operationId, string, operationName, string, metadata?: Record<string, unknown>): void {
     this.activeOperations.set(operationId, {
       start: new Date(),
-      export const metadata = { ...metadata, operation: operationName };
+      metadata: { ...metadata, operation: operationName }
     });
 
     this.metrics.incrementCounter('operations_started', { operation: operationName });
   }
 
-  public: endOperation(operationId: stringsuccess: boolean = true, metadata?: Record<stringunknown>): void {
+  public endOperation(operationId, string, success: boolean = true, metadata?: Record<string, unknown>): void {
     const operation = this.activeOperations.get(operationId);
     if (!operation) {
-      this.logger.warn(`Operation ${operationId} not: found in: active operations`);
+      this.logger.warn(`Operation ${operationId} not found in active operations`);
       return;
     }
 
     const duration = Date.now() - operation.start.getTime();
     const operationName = operation.metadata?.operation || 'unknown';
 
-    // Record: metrics
+    // Record metrics
     this.metrics.recordHistogram('operation_duration_ms', duration, { 
-      operation: operationNamesuccess: success.toString()
+      operation: operationName as string,
+      success: success.toString()
     });
 
     this.metrics.incrementCounter('operations_completed', {
-      operation: operationNamesuccess: success.toString()
+      operation: operationName as string,
+      success: success.toString()
     });
 
-    // Log: performance data: if (duration > 5000) { // Log: slow operations: this.logger.warn(`Slow: operation detected: ${operationName}`{
-        duration,
-        success,
+    // Log performance data
+    if (duration > 5000) { // Log slow operations
+      this.logger.warn(`Slow operation detected: ${operationName}`, {
+        duration, success,
         ...operation.metadata,
-        ...metadata
-      });
+        ...metadata});
     }
 
-    // Clean: up
+    // Clean up
     this.activeOperations.delete(operationId);
   }
 
-  public: recordDatabaseQuery(query: stringduration: numbersuccess: boolean): void {
+  public recordDatabaseQuery(query, string, duration, number, success: boolean): void {
     this.metrics.recordHistogram('db_query_duration_ms', duration, {
       success: success.toString()
     });
@@ -527,53 +545,51 @@ export class PerformanceMonitor {
       success: success.toString()
     });
 
-    if (duration > 1000) { // Log: slow queries: this.logger.warn('Slow: database query: detected', {
-        query: query.substring(0100) + (query.length > 100 ? '...' : '')duration,
+    if (duration > 1000) { // Log slow queries
+      this.logger.warn('Slow database query detected', {
+        query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
+        duration,
         success
       });
     }
   }
 
-  public: recordAPICall(endpoint: stringmethod: stringstatus: numberduration: number): void {
+  public recordAPICall(endpoint, string, method, string, status, number, duration: number): void {
     this.metrics.recordHistogram('api_request_duration_ms', duration, {
-      endpoint,
-      method,
+      endpoint, method,
       status: status.toString()
     });
 
     this.metrics.incrementCounter('api_requests_total', {
-      endpoint,
-      method,
+      endpoint, method,
       status: status.toString()
     });
 
-    // Track: error rates: if (status >= 400) {
+    // Track error rates
+    if (status >= 400) {
       this.metrics.incrementCounter('api_errors_total', {
-        endpoint,
-        method,
+        endpoint, method,
         status: status.toString()
       });
     }
   }
 
-  public: recordCacheOperation(operation: 'hit' | 'miss' | 'set' | 'delete', key: stringduration?: number): void {
+  public recordCacheOperation(operation: 'hit' | 'miss' | 'set' | 'delete', key, string, duration?: number): void {
     this.metrics.incrementCounter('cache_operations_total', {
       operation,
-      type key.split(':')[0] || 'unknown'
+type key.split(':')[0] || 'unknown'
     });
 
     if (duration !== undefined) {
-      this.metrics.recordHistogram('cache_operation_duration_ms', duration, {
-        operation
-      });
+      this.metrics.recordHistogram('cache_operation_duration_ms', duration, { operation });
     }
   }
 
-  public: getActiveOperations(): Array<{ id: string; operation: string; duration: number; metadata?: Record<stringunknown> }> {
+  public getActiveOperations(): Array<{ id, string, operation, string, duration, number, metadata?: Record<string, unknown> }> {
     const now = new Date();
     return Array.from(this.activeOperations.entries()).map(([id, data]) => ({
       id,
-      operation: data.metadata?.operation || 'unknown',
+      operation: data.metadata?.operation as string || 'unknown',
       duration: now.getTime() - data.start.getTime(),
       metadata: data.metadata
     }));
@@ -581,62 +597,64 @@ export class PerformanceMonitor {
 }
 
 // =============================================================================
-// HEALTH: CHECKER
+// HEALTH CHECKER
 // =============================================================================
 
 export class HealthChecker {
-  private: static instance: HealthChecker;
-  private: checks: Map<string() => Promise<HealthCheck>> = new Map();
-  private: lastResults: Map<stringHealthCheck> = new Map();
-  private: checkInterval: NodeJS.Timeout | null = null;
+  private static instance, HealthChecker,
+  private checks: Map<string, () => Promise<HealthCheck>> = new Map();
+  private lastResults: Map<string, HealthCheck> = new Map();
+  private checkInterval: NodeJS.Timeout | null = null;
 
-  private: constructor() {
+  private constructor() {
     this.registerDefaultChecks();
     this.startHealthChecks();
   }
 
-  public: static getInstance(): HealthChecker {
+  public static getInstance(): HealthChecker {
     if (!HealthChecker.instance) {
       HealthChecker.instance = new HealthChecker();
     }
     return HealthChecker.instance;
   }
 
-  public: registerCheck(_name: string_checkFn: () => Promise<HealthCheck>): void {
+  public registerCheck(name, string, checkFn: () => Promise<HealthCheck>): void {
     this.checks.set(name, checkFn);
   }
 
-  public: async runCheck(name: string): Promise<HealthCheck> {
+  public async runCheck(name: string): Promise<HealthCheck> {
     const checkFn = this.checks.get(name);
     if (!checkFn) {
-      throw: new Error(`Health: check '${name}' not: found`);
+      throw new Error(`Health check '${name}' not found`);
     }
 
     try {
-      const result = await Promise.race([
+      const result = await Promise.race([;
         checkFn(),
-        new Promise<HealthCheck>(_(_, _reject) =>
-          setTimeout(_() => reject(new Error('Health: check timeout')), 10000)
+        new Promise<HealthCheck>((_, reject) =>
+          setTimeout(() => reject(new Error('Health check timeout')), 10000)
         )
       ]);
 
       this.lastResults.set(name, result);
       return result;
     } catch (error) {
-      const failedResult: HealthCheck = {,
-        service: namestatus: '',imestamp: new Date(),
-        export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
-      };
-
+      const failedResult: HealthCheck = {
+        service, name,
+        status: 'unhealthy',
+        timestamp: new Date(),
+        details: { ,
+  error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      }
       this.lastResults.set(name, failedResult);
       return failedResult;
     }
   }
 
-  public: async runAllChecks(): Promise<Record<stringHealthCheck>> {
-    const results: Record<stringHealthCheck> = {};
-
-    const _promises = Array.from(this.checks.keys()).map(async name => {
+  public async runAllChecks(): Promise<Record<string, HealthCheck>>  {
+    const results: Record<string, HealthCheck> = {}
+    const promises = Array.from(this.checks.keys()).map(async name => {
       const result = await this.runCheck(name);
       results[name] = result;
     });
@@ -645,71 +663,87 @@ export class HealthChecker {
     return results;
   }
 
-  public: getLastResults(): Record<stringHealthCheck> {
-    const results: Record<stringHealthCheck> = {};
-    this.lastResults.forEach(_(result, _name) => {
+  public getLastResults(): Record<string, HealthCheck> {
+    const results: Record<string, HealthCheck> = {}
+    this.lastResults.forEach((result, name) => {
       results[name] = result;
     });
     return results;
   }
 
-  public: getOverallHealth(): 'healthy' | 'degraded' | 'unhealthy' {
+  public getOverallHealth(): 'healthy' | 'degraded' | 'unhealthy' {
     const results = Array.from(this.lastResults.values());
 
     if (results.length === 0) return 'unhealthy';
 
-    const _healthyCount = results.filter(r => r.status === 'healthy').length;
-    const _degradedCount = results.filter(r => r.status === 'degraded').length;
-    const _unhealthyCount = results.filter(r => r.status === 'unhealthy').length;
+    const healthyCount = results.filter(r => r.status === 'healthy').length;
+    const degradedCount = results.filter(r => r.status === 'degraded').length;
+    const unhealthyCount = results.filter(r => r.status === 'unhealthy').length;
 
     if (unhealthyCount > 0) return 'unhealthy';
     if (degradedCount > 0) return 'degraded';
     return 'healthy';
   }
 
-  private: registerDefaultChecks(): void {
-    // Database: health check: this.registerCheck('database', async (): Promise<HealthCheck> => {
+  private registerDefaultChecks(): void {; // Database health check
+    this.registerCheck('database', async () Promise<HealthCheck> => {
       const start = Date.now();
 
       try {
-        // Mock: database check - in: real implementation, ping: the database: await new Promise(resolve => setTimeout(resolve, 10));
+        // Mock database check - in real implementation, ping the database
+        await new Promise(resolve => setTimeout(resolve, 10));
 
         return {
-          service: 'database'status: '',imestamp: new Date(),
+          service: 'database',
+          status: 'healthy',
+          timestamp: new Date(),
           responseTime: Date.now() - start,
-          export const details = { connection: 'active' };
-        };
+          details: { connectio,
+  n: 'active' }
+        }
       } catch (error) {
         return {
-          service: 'database'status: '',imestamp: new Date(),
+          service: 'database',
+          status: 'unhealthy',
+          timestamp: new Date(),
           responseTime: Date.now() - start,
-          export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
-        };
+          details: { ,
+  error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        }
       }
     });
 
-    // Cache: health check: this.registerCheck('cache', async (): Promise<HealthCheck> => {
+    // Cache health check
+    this.registerCheck('cache', async (): Promise<HealthCheck> => {
       const start = Date.now();
 
       try {
-        const _cacheManager = getCacheManager();
-        const _stats = await cacheManager.getStats();
+        const cacheManager = getCacheManager();
+        const stats = await cacheManager.getStats();
 
         return {
-          service: 'cache'status: '',imestamp: new Date(),
+          service: 'cache',
+          status: 'healthy',
+          timestamp: new Date(),
           responseTime: Date.now() - start,
-          export const details = { stats };
-        };
+          details: { stats }
+        }
       } catch (error) {
         return {
-          service: 'cache'status: '',imestamp: new Date(),
+          service: 'cache',
+          status: 'unhealthy',
+          timestamp: new Date(),
           responseTime: Date.now() - start,
-          export const details = { error: error: instanceof Error ? error.message : 'Unknown: error' };
-        };
+          details: { ,
+  error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        }
       }
     });
 
-    // Memory: health check: this.registerCheck('memory', async (): Promise<HealthCheck> => {
+    // Memory health check
+    this.registerCheck('memory', async (): Promise<HealthCheck> => {
       const memUsage = process.memoryUsage();
       const usedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
       const totalMB = Math.round(memUsage.heapTotal / 1024 / 1024);
@@ -720,25 +754,24 @@ export class HealthChecker {
       else if (usage > 0.8) status = 'degraded';
 
       return {
-        service: 'memory'status,
+        service: 'memory',
+        status,
         timestamp: new Date(),
-        export const details = {
-          usedMB,
-          totalMB,
+        details: {
+          usedMB, totalMB,
           usage: Math.round(usage * 100)
-        };
-      };
+        }
+      }
     });
   }
 
-  private: startHealthChecks(): void {
-    // Run: health checks: every 30: seconds
+  private startHealthChecks(): void {; // Run health checks every 30 seconds
     this.checkInterval = setInterval(async () => {
       await this.runAllChecks();
     }, 30000);
   }
 
-  public: destroy(): void {
+  public destroy() void {
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
       this.checkInterval = null;
@@ -747,50 +780,52 @@ export class HealthChecker {
 }
 
 // =============================================================================
-// ALERT: MANAGER
+// ALERT MANAGER
 // =============================================================================
 
 export class AlertManager {
-  private: static instance: AlertManager;
-  private: alerts: Map<stringAlert> = new Map();
-  private: alertRules: Array<{,
-    id: string;,
-    condition: (_metrics: Metric[]_logs: LogEntry[]) => boolean;,
-    alertConfig: Omit<Alert'id' | 'timestamp' | 'resolved' | 'resolvedAt'>;
+  private static instance, AlertManager,
+  private alerts: Map<string, Alert> = new Map();
+  private alertRules: Array<{
+  id, string,
+    condition: (metric,
+  s: Metric[], logs: LogEntry[]) => boolean;
+    alertConfig: Omit<Alert, 'id' | 'timestamp' | 'resolved' | 'resolvedAt'>;
   }> = [];
 
-  private: constructor() {
+  private constructor() {
     this.registerDefaultRules();
   }
 
-  public: static getInstance(): AlertManager {
+  public static getInstance(): AlertManager {
     if (!AlertManager.instance) {
       AlertManager.instance = new AlertManager();
     }
     return AlertManager.instance;
   }
 
-  public: createAlert(alert: Omit<Alert'id' | 'timestamp' | 'resolved'>): string {
-    const id = `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
+  public createAlert(alert: Omit<Alert, 'id' | 'timestamp' | 'resolved'>): string {
+    const id = `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const fullAlert: Alert = {
-      ...alert,
-      id,
+      ...alert, id,
       timestamp: new Date(),
       resolved: false
-    };
-
+    }
     this.alerts.set(id, fullAlert);
 
-    // Log: the alert: const logger = Logger.getInstance();
-    logger.warn(`Alert: created: ${alert.title}`{
-      alertId: idlevel: alert.levelservice: alert.servicemessage: alert.message
+    // Log the alert
+    const logger = Logger.getInstance();
+    logger.warn(`Alert created: ${alert.title}`, {
+      alertId, id,
+      level: alert.level,
+      service: alert.service,
+      message: alert.message
     });
 
     return id;
   }
 
-  public: resolveAlert(id: string): boolean {
+  public resolveAlert(id: string): boolean {
     const alert = this.alerts.get(id);
     if (!alert || alert.resolved) {
       return false;
@@ -800,74 +835,78 @@ export class AlertManager {
     alert.resolvedAt = new Date();
     this.alerts.set(id, alert);
 
-    // Log: resolution
+    // Log resolution
     const logger = Logger.getInstance();
-    logger.info(`Alert: resolved: ${alert.title}`{ alertId: id });
+    logger.info(`Alert resolved: ${alert.title}`, { alertId: id });
 
     return true;
   }
 
-  public: getActiveAlerts(): Alert[] {
+  public getActiveAlerts(): Alert[] {
     return Array.from(this.alerts.values()).filter(alert => !alert.resolved);
   }
 
-  public: getAllAlerts(): Alert[] {
+  public getAllAlerts(): Alert[] {
     return Array.from(this.alerts.values());
   }
 
-  public: getAlertsByService(service: string): Alert[] {
-    return Array.from(this.alerts.values()).filter(alert => alert.service === service);
+  public getAlertsByService(service: string): Alert[] {
+    return Array.from(this.alerts.values()).filter(alert => alert.service === service),
   }
 
-  private: registerDefaultRules(): void {
-    // High: error rate: rule
-    this.alertRules.push(_{
-      id: 'high_error_rate'_condition: (metrics) => {
+  private registerDefaultRules(): void {; // High error rate rule
+    this.alertRules.push({
+      id 'high_error_rate',
+      condition: (metrics) => {
         const errorMetrics = metrics.filter(m => m.name === 'api_errors_total');
         const totalMetrics = metrics.filter(m => m.name === 'api_requests_total');
 
         if (errorMetrics.length === 0 || totalMetrics.length === 0) return false;
 
-        const errors = errorMetrics.reduce((sum, m) => sum  + m.value, 0);
-        const total = totalMetrics.reduce((sum, m) => sum  + m.value, 0);
+        const errors = errorMetrics.reduce((sum, m) => sum + m.value, 0);
+        const total = totalMetrics.reduce((sum, m) => sum + m.value, 0);
 
-        return total > 100 && (errors / total) > 0.05; // 5% error: rate
+        return total > 100 && (errors / total) > 0.05; // 5% error rate
       },
-      export const alertConfig = {,
-        level: 'error'title: 'High: API Error: Rate',
-        message: 'API: error rate: exceeded 5%',
+      alertConfig: {
+  level: 'error',
+        title: 'High API Error Rate',
+        message: 'API error rate exceeded 5%',
         service: 'api'
-      };
+      }
     });
 
-    // Memory: usage rule: this.alertRules.push(_{
-      id: 'high_memory_usage'_condition: (metrics) => {
-        const _memoryMetrics = metrics.filter(m => m.name.includes('memory_usage'));
-        return memoryMetrics.some(m => m.value > 0.9); // 90% memory: usage
+    // Memory usage rule
+    this.alertRules.push({
+      id: 'high_memory_usage',
+      condition: (metrics) => {
+        const memoryMetrics = metrics.filter(m => m.name.includes('memory_usage'));
+        return memoryMetrics.some(m => m.value > 0.9); // 90% memory usage
       },
-      export const alertConfig = {,
-        level: 'warning'title: 'High: Memory Usage',
-        message: 'Memory: usage exceeded: 90%',
+      alertConfig: {
+  level: 'warning',
+        title: 'High Memory Usage',
+        message: 'Memory usage exceeded 90%',
         service: 'system'
-      };
+      }
     });
   }
 }
 
 // =============================================================================
-// MONITORING: DECORATOR
+// MONITORING DECORATOR
 // =============================================================================
 
 export function monitored(operation: string) {
-  return function (target: unknownpropertyKey: stringdescriptor: PropertyDescriptor) {
-    const _originalMethod = descriptor.value;
+  return function (target, any, propertyKey, string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
     const monitor = PerformanceMonitor.getInstance();
 
-    descriptor.value = async function (...args: unknown[]) {
-      const operationId = `${operation}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      monitor.startOperation(operationId, operation, {
-        class target.constructor.namemethod: propertyKey
+    descriptor.value = async function (...args: any[]) {
+      const operationId = `${operation}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      monitor.startOperation(operationId, operation, { 
+        class target.constructor.name,
+        method: propertyKey
       });
 
       try {
@@ -876,18 +915,18 @@ export function monitored(operation: string) {
         return result;
       } catch (error) {
         monitor.endOperation(operationId, false, {
-          error: error: instanceof Error ? error.message : 'Unknown: error'
+          error: error instanceof Error ? error.messag,
+  e: 'Unknown error'
         });
-        throw: error;
+        throw error;
       }
-    };
-
+    }
     return descriptor;
-  };
+  }
 }
 
 // =============================================================================
-// SINGLETON: INSTANCES
+// SINGLETON INSTANCES
 // =============================================================================
 
 export const metrics = MetricsCollector.getInstance();
@@ -897,7 +936,7 @@ export const health = HealthChecker.getInstance();
 export const alerts = AlertManager.getInstance();
 
 // =============================================================================
-// CLEANUP: FUNCTION
+// CLEANUP FUNCTION
 // =============================================================================
 
 export function destroyMonitoring(): void {
@@ -906,14 +945,12 @@ export function destroyMonitoring(): void {
   health.destroy();
 }
 
-// Register: cleanup on: process exit: process.on('SIGINT', destroyMonitoring);
+// Register cleanup on process exit
+process.on('SIGINT', destroyMonitoring);
 process.on('SIGTERM', destroyMonitoring);
 
 export default {
-  metrics,
-  logger,
-  performance,
-  health,
-  alerts,
+  metrics, logger,
+  performance, health, alerts,
   monitored
-};
+}

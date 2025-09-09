@@ -4,68 +4,67 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { 
   Target, TrendingUp, Activity, Shield, 
-  BarChart3, Eye, Award, Zap, Clock,
-  Filter, Download, Search, SortAsc,
-  ChevronDown, ChevronUp, Info, Star,
-  Flame, AlertTriangle, ArrowUp, ArrowDown
+  BarChart3, Eye, Award, Zap, Clock, Filter, Download, Search, SortAsc, ChevronDown, ChevronUp, Info, Star, Flame, AlertTriangle, ArrowUp, ArrowDown
 } from "lucide-react";
 import LeagueNavigation from "@/components/league/LeagueNavigation";
 
 interface ResearchPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id, string
+}
+>;
 }
 
 // Mock data structures for research tools
 interface PlayerResearchData {
   id: string;
-  name: string;
+    name: string;
   team: string;
-  position: string;
-  // Targets & Touches
+    position: string;
+  // Targets & Touches;
   targets: number;
-  targetShare: number;
+    targetShare: number;
   carries: number;
-  rushShare: number;
+    rushShare: number;
   touches: number;
-  // Red Zone
+  // Red Zone;
   redZoneTargets: number;
-  redZoneCarries: number;
+    redZoneCarries: number;
   goalLineCarries: number;
-  redZoneShare: number;
-  // Snap Counts
+    redZoneShare: number;
+  // Snap Counts;
   snapCount: number;
-  snapShare: number;
+    snapShare: number;
   snapTrend: 'up' | 'down' | 'stable';
-  // Points Allowed
+  // Points Allowed;
   pointsAllowedRank: number;
-  pointsAllowedAvg: number;
-  // Projections
+    pointsAllowedAvg: number;
+  // Projections;
   projection: number;
-  actualPoints: number;
+    actualPoints: number;
   projectionAccuracy: number;
-  // Consistency
+  // Consistency;
   floorPoints: number;
-  ceilingPoints: number;
+    ceilingPoints: number;
   consistencyRating: number;
-  boomRate: number;
+    boomRate: number;
   bustRate: number;
-  // ROS Rankings
+  // ROS Rankings;
   rosRank: number;
-  rosProjection: number;
+    rosProjection: number;
   rosTier: number;
+  
 }
-
 interface DefenseResearchData {
   team: string;
-  pointsAllowedQB: number;
+    pointsAllowedQB: number;
   pointsAllowedRB: number;
-  pointsAllowedWR: number;
+    pointsAllowedWR: number;
   pointsAllowedTE: number;
-  rankQB: number;
+    rankQB: number;
   rankRB: number;
-  rankWR: number;
+    rankWR: number;
   rankTE: number;
-  trend: 'improving' | 'declining' | 'stable';
+    trend: 'improving' | 'declining' | 'stable';
 }
 
 export default function ResearchPage({ params }: ResearchPageProps) {
@@ -81,71 +80,57 @@ export default function ResearchPage({ params }: ResearchPageProps) {
     params.then((resolved) => {
       setLeagueId(resolved.id);
       setLoading(false);
-    });
+     });
   }, [params]);
 
   // Mock research data
   const mockPlayerData: PlayerResearchData[] = [
     {
       id: "1",
-      name: "Cooper Kupp",
+  name: "Cooper Kupp",
       team: "LAR",
-      position: "WR",
-      targets: 145,
-      targetShare: 28.5,
-      carries: 2,
-      rushShare: 0.8,
-      touches: 147,
-      redZoneTargets: 18,
-      redZoneCarries: 1,
-      goalLineCarries: 0,
-      redZoneShare: 22.4,
-      snapCount: 892,
+  position: "WR",
+      targets, 145,
+  targetShare: 28.5, carries, 2,
+  rushShare: 0.8, touches, 147, redZoneTargets, 18, redZoneCarries, 1, goalLineCarries, 0,
+      redZoneShare: 22.4, snapCount, 892,
       snapShare: 85.2,
-      snapTrend: 'up',
-      pointsAllowedRank: 15,
-      pointsAllowedAvg: 18.2,
+  snapTrend: 'up',
+      pointsAllowedRank, 15,
+  pointsAllowedAvg: 18.2,
       projection: 16.8,
-      actualPoints: 18.4,
+  actualPoints: 18.4,
       projectionAccuracy: 89.5,
-      floorPoints: 8.2,
+  floorPoints: 8.2,
       ceilingPoints: 28.6,
-      consistencyRating: 85.4,
+  consistencyRating: 85.4,
       boomRate: 35.2,
-      bustRate: 12.8,
-      rosRank: 3,
-      rosProjection: 17.2,
+  bustRate: 12.8, rosRank, 3,
+  rosProjection: 17.2,
       rosTier: 1
     },
     {
-      id: "2", 
-      name: "Derrick Henry",
+      id: "2",
+  name: "Derrick Henry",
       team: "TEN",
-      position: "RB",
-      targets: 18,
-      targetShare: 4.2,
-      carries: 219,
-      rushShare: 68.5,
-      touches: 237,
-      redZoneTargets: 2,
-      redZoneCarries: 28,
-      goalLineCarries: 12,
-      redZoneShare: 35.8,
-      snapCount: 698,
+  position: "RB",
+      targets, 18,
+  targetShare: 4.2, carries, 219,
+  rushShare: 68.5, touches, 237, redZoneTargets, 2, redZoneCarries, 28, goalLineCarries, 12,
+      redZoneShare: 35.8, snapCount, 698,
       snapShare: 72.3,
-      snapTrend: 'stable',
-      pointsAllowedRank: 8,
-      pointsAllowedAvg: 22.1,
+  snapTrend: 'stable',
+      pointsAllowedRank, 8,
+  pointsAllowedAvg: 22.1,
       projection: 14.2,
-      actualPoints: 15.8,
+  actualPoints: 15.8,
       projectionAccuracy: 91.2,
-      floorPoints: 6.8,
+  floorPoints: 6.8,
       ceilingPoints: 32.4,
-      consistencyRating: 78.9,
+  consistencyRating: 78.9,
       boomRate: 28.6,
-      bustRate: 18.4,
-      rosRank: 7,
-      rosProjection: 15.1,
+  bustRate: 18.4, rosRank, 7,
+  rosProjection: 15.1,
       rosTier: 2
     },
     // Add more mock players...
@@ -154,63 +139,69 @@ export default function ResearchPage({ params }: ResearchPageProps) {
   const mockDefenseData: DefenseResearchData[] = [
     {
       team: "JAX",
-      pointsAllowedQB: 24.8,
+  pointsAllowedQB: 24.8,
       pointsAllowedRB: 18.9,
-      pointsAllowedWR: 22.4,
-      pointsAllowedTE: 14.2,
-      rankQB: 32,
-      rankRB: 28,
-      rankWR: 30,
-      rankTE: 25,
-      trend: 'declining'
+  pointsAllowedWR: 22.4,
+      pointsAllowedTE: 14.2, rankQB, 32, rankRB, 28, rankWR, 30, rankTE, 25,
+  trend: 'declining'
     },
     {
-      team: "BUF", 
-      pointsAllowedQB: 12.4,
+      team: "BUF",
+  pointsAllowedQB: 12.4,
       pointsAllowedRB: 16.2,
-      pointsAllowedWR: 18.6,
-      pointsAllowedTE: 9.8,
-      rankQB: 3,
-      rankRB: 12,
-      rankWR: 8,
-      rankTE: 2,
-      trend: 'stable'
+  pointsAllowedWR: 18.6,
+      pointsAllowedTE: 9.8, rankQB, 3, rankRB, 12, rankWR, 8, rankTE, 2,
+  trend: 'stable'
     }
   ];
 
   const researchTabs = [
-    { id: "targets", label: "Targets & Touches", icon: Target },
-    { id: "redzone", label: "Red Zone Stats", icon: Flame },
-    { id: "snaps", label: "Snap Counts", icon: Activity },
-    { id: "defense", label: "Points Allowed", icon: Shield },
-    { id: "projections", label: "Projections vs Actual", icon: TrendingUp },
-    { id: "consistency", label: "Consistency Ratings", icon: BarChart3 },
-    { id: "boom", label: "Boom/Bust Rates", icon: Zap },
-    { id: "ros", label: "Rest of Season", icon: Award }
+    { id: "targets",
+  label: "Targets & Touches", icon: Target },
+    { id: "redzone",
+  label: "Red Zone Stats", icon: Flame },
+    { id: "snaps",
+  label: "Snap Counts", icon: Activity },
+    { id: "defense",
+  label: "Points Allowed", icon: Shield },
+    { id: "projections",
+  label: "Projections vs Actual", icon: TrendingUp },
+    { id: "consistency",
+  label: "Consistency Ratings", icon: BarChart3 },
+    { id: "boom",
+  label: "Boom/Bust Rates", icon: Zap },
+    { id: "ros",
+  label: "Rest of Season", icon: Award }
   ];
 
   const positions = [
-    { value: "all", label: "All Positions" },
-    { value: "QB", label: "Quarterbacks" },
-    { value: "RB", label: "Running Backs" },
-    { value: "WR", label: "Wide Receivers" },
-    { value: "TE", label: "Tight Ends" },
-    { value: "K", label: "Kickers" },
-    { value: "DST", label: "Defense/ST" }
+    { value: "all",
+  label: "All Positions" },
+    { value: "QB",
+  label: "Quarterbacks" },
+    { value: "RB",
+  label: "Running Backs" },
+    { value: "WR",
+  label: "Wide Receivers" },
+    { value: "TE",
+  label: "Tight Ends" },
+    { value: "K",
+  label: "Kickers" },
+    { value: "DST",
+  label: "Defense/ST" }
   ];
 
   const filteredPlayers = mockPlayerData.filter(player => {
     const matchesPosition = selectedPosition === "all" || player.position === selectedPosition;
-    const matchesSearch = player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||;
                          player.team.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesPosition && matchesSearch;
-  });
+   });
 
-  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
-    const aVal = a[sortBy as keyof PlayerResearchData] as number;
+  const sortedPlayers = [...filteredPlayers].sort((a, b) => {const aVal = a[sortBy as keyof PlayerResearchData] as number;
     const bVal = b[sortBy as keyof PlayerResearchData] as number;
     return sortDesc ? bVal - aVal : aVal - bVal;
-  });
+   });
 
   const renderTargetsTable = () => (
     <div className="overflow-x-auto">
@@ -219,23 +210,33 @@ export default function ResearchPage({ params }: ResearchPageProps) {
           <tr className="border-b dark:border-gray-700">
             <th className="text-left py-3 px-4 font-medium text-gray-900 dark:text-white">Player</th>
             <th className="text-center py-3 px-4 font-medium text-gray-900 dark:text-white">Pos</th>
-            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => setSortBy('targets')}>
+            <th className="text-right py-3 px-4 font-medium text-gray-900 dark: text-white cursor-pointer hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700" onClick={() => setSortBy('targets')}>
               Targets {sortBy === 'targets' && (sortDesc ? <ArrowDown className="inline w-4 h-4" /> : <ArrowUp className="inline w-4 h-4" />)}
             </th>
-            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => setSortBy('targetShare')}>
+            <th className="text-right py-3 px-4 font-medium text-gray-900 dark: text-white cursor-pointer hover:bg-gray-50 dar,
+  k, hove,
+  r:bg-gray-700" onClick={() => setSortBy('targetShare')}>
               Target % {sortBy === 'targetShare' && (sortDesc ? <ArrowDown className="inline w-4 h-4" /> : <ArrowUp className="inline w-4 h-4" />)}
             </th>
-            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => setSortBy('carries')}>
+            <th className="text-right py-3 px-4 font-medium text-gray-900 dark: text-white cursor-pointer hover:bg-gray-50 dar,
+  k, hove,
+  r:bg-gray-700" onClick={() => setSortBy('carries')}>
               Carries {sortBy === 'carries' && (sortDesc ? <ArrowDown className="inline w-4 h-4" /> : <ArrowUp className="inline w-4 h-4" />)}
             </th>
-            <th className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => setSortBy('touches')}>
+            <th className="text-right py-3 px-4 font-medium text-gray-900 dark: text-white cursor-pointer hover:bg-gray-50 dar,
+  k, hove,
+  r:bg-gray-700" onClick={() => setSortBy('touches')}>
               Touches {sortBy === 'touches' && (sortDesc ? <ArrowDown className="inline w-4 h-4" /> : <ArrowUp className="inline w-4 h-4" />)}
             </th>
           </tr>
         </thead>
         <tbody>
           {sortedPlayers.map((player) => (
-            <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={player.id} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4">
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -243,11 +244,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 </div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                  'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                 }`}>
                   {player.position}
                 </span>
@@ -278,7 +282,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {sortedPlayers.map((player) => (
-            <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={player.id} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4">
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -286,11 +292,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 </div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                  'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                 }`}>
                   {player.position}
                 </span>
@@ -299,7 +308,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.redZoneCarries}</td>
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.goalLineCarries}</td>
               <td className="text-right py-3 px-4 font-medium">
-                <span className={`${player.redZoneShare >= 20 ? 'text-green-600 dark:text-green-400' : player.redZoneShare >= 10 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                <span className={`${player.redZoneShare >= 20 ? 'text-green-600 dark: text-green-400' : player.redZoneShare >= 10 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                   {player.redZoneShare}%
                 </span>
               </td>
@@ -324,7 +335,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {sortedPlayers.map((player) => (
-            <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={player.id} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4">
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -332,25 +345,30 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 </div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                  'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                 }`}>
                   {player.position}
                 </span>
               </td>
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.snapCount}</td>
               <td className="text-right py-3 px-4 font-medium">
-                <span className={`${player.snapShare >= 80 ? 'text-green-600 dark:text-green-400' : player.snapShare >= 60 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                <span className={`${player.snapShare >= 80 ? 'text-green-600 dark: text-green-400' : player.snapShare >= 60 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                   {player.snapShare}%
                 </span>
               </td>
               <td className="text-center py-3 px-4">
                 {player.snapTrend === 'up' && <ArrowUp className="w-4 h-4 text-green-500 mx-auto" />}
                 {player.snapTrend === 'down' && <ArrowDown className="w-4 h-4 text-red-500 mx-auto" />}
-                {player.snapTrend === 'stable' && <div className="w-4 h-0.5 bg-yellow-500 mx-auto"></div>}
+                {player.snapTrend === 'stable' && <div className="w-4 h-0.5 bg-yellow-500 mx-auto" />}
               </td>
             </tr>
           ))}
@@ -374,7 +392,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {mockDefenseData.map((defense) => (
-            <tr key={defense.team} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={defense.team} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{defense.team}</td>
               <td className="text-right py-3 px-4">
                 <div className="text-gray-900 dark:text-white">{defense.pointsAllowedQB}</div>
@@ -393,10 +413,12 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 <div className="text-xs text-gray-500">({defense.rankTE})</div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  defense.trend === 'improving' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  defense.trend === 'declining' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${defense.trend === 'improving' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  defense.trend === 'declining' ? 'bg-red-100 text-red-800 dark: bg-red-900 dar,
+  k:text-red-300' :
+                  'bg-yellow-100 text-yellow-800 dark: bg-yellow-900 dar,
+  k:text-yellow-300'
                 }`}>
                   {defense.trend}
                 </span>
@@ -425,7 +447,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
           {sortedPlayers.map((player) => {
             const diff = player.actualPoints - player.projection;
             return (
-              <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <tr key={player.id } className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
                 <td className="py-3 px-4">
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -433,11 +457,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                   </div>
                 </td>
                 <td className="text-center py-3 px-4">
-                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                    player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                    player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                    player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                    player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                    player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                    'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                   }`}>
                     {player.position}
                   </span>
@@ -445,12 +472,15 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.projection}</td>
                 <td className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">{player.actualPoints}</td>
                 <td className="text-right py-3 px-4">
-                  <span className={`font-medium ${diff >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  <span className={`font-medium ${diff >= 0 ? 'text-green-600 dark: text-green-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                     {diff >= 0 ? '+' : ''}{diff.toFixed(1)}
                   </span>
                 </td>
                 <td className="text-right py-3 px-4">
-                  <span className={`font-medium ${player.projectionAccuracy >= 85 ? 'text-green-600 dark:text-green-400' : player.projectionAccuracy >= 75 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                  <span className={`font-medium ${player.projectionAccuracy >= 85 ? 'text-green-600 dark: text-green-400' : player.projectionAccuracy >= 75 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                     {player.projectionAccuracy}%
                   </span>
                 </td>
@@ -476,7 +506,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {sortedPlayers.map((player) => (
-            <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={player.id} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4">
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -484,11 +516,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 </div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                  'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                 }`}>
                   {player.position}
                 </span>
@@ -496,7 +531,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.floorPoints}</td>
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.ceilingPoints}</td>
               <td className="text-right py-3 px-4">
-                <span className={`font-medium ${player.consistencyRating >= 80 ? 'text-green-600 dark:text-green-400' : player.consistencyRating >= 70 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                <span className={`font-medium ${player.consistencyRating >= 80 ? 'text-green-600 dark: text-green-400' : player.consistencyRating >= 70 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                   {player.consistencyRating}
                 </span>
               </td>
@@ -521,12 +558,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {sortedPlayers.map((player) => {
-            const profile = player.boomRate >= 30 && player.bustRate <= 20 ? 'Consistent' :
+            const profile = player.boomRate >= 30 && player.bustRate <= 20 ? 'Consistent' :;
                            player.boomRate >= 25 && player.bustRate >= 25 ? 'Volatile' :
                            player.boomRate <= 20 && player.bustRate <= 20 ? 'Steady' : 'Unpredictable';
             
             return (
-              <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <tr key={player.id } className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
                 <td className="py-3 px-4">
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -534,32 +573,42 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                   </div>
                 </td>
                 <td className="text-center py-3 px-4">
-                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                    player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                    player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                    player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                    player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                    player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                    'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                   }`}>
                     {player.position}
                   </span>
                 </td>
                 <td className="text-right py-3 px-4">
-                  <span className={`font-medium ${player.boomRate >= 30 ? 'text-green-600 dark:text-green-400' : player.boomRate >= 20 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                  <span className={`font-medium ${player.boomRate >= 30 ? 'text-green-600 dark: text-green-400' : player.boomRate >= 20 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                     {player.boomRate}%
                   </span>
                 </td>
                 <td className="text-right py-3 px-4">
-                  <span className={`font-medium ${player.bustRate <= 15 ? 'text-green-600 dark:text-green-400' : player.bustRate <= 25 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
+                  <span className={`font-medium ${player.bustRate <= 15 ? 'text-green-600 dark: text-green-400' : player.bustRate <= 25 ? 'text-yellow-600 dar,
+  k:text-yellow-400' : 'text-red-600 dar,
+  k:text-red-400'}`}>
                     {player.bustRate}%
                   </span>
                 </td>
                 <td className="text-center py-3 px-4">
-                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                    profile === 'Consistent' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                    profile === 'Volatile' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
-                    profile === 'Steady' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                  }`}>
+                  <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${profile === 'Consistent' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                    profile === 'Volatile' ? 'bg-red-100 text-red-800 dark: bg-red-900 dar,
+  k:text-red-300' :
+                    profile === 'Steady' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                    'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
+                   }`}>
                     {profile}
                   </span>
                 </td>
@@ -585,7 +634,9 @@ export default function ResearchPage({ params }: ResearchPageProps) {
         </thead>
         <tbody>
           {sortedPlayers.map((player) => (
-            <tr key={player.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <tr key={player.id} className="border-b dark: border-gray-700 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700/50 transition-colors">
               <td className="py-3 px-4">
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{player.name}</div>
@@ -593,11 +644,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 </div>
               </td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
-                  player.position === 'RB' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
-                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${player.position === 'RB' ? 'bg-green-100 text-green-800 dark: bg-green-900 dar,
+  k:text-green-300' :
+                  player.position === 'WR' ? 'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300' :
+                  player.position === 'TE' ? 'bg-purple-100 text-purple-800 dark: bg-purple-900 dar,
+  k:text-purple-300' :
+                  'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300'
                 }`}>
                   {player.position}
                 </span>
@@ -605,11 +659,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
               <td className="text-right py-3 px-4 font-medium text-gray-900 dark:text-white">{player.rosRank}</td>
               <td className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{player.rosProjection}</td>
               <td className="text-center py-3 px-4">
-                <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${
-                  player.rosTier === 1 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
-                  player.rosTier === 2 ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' :
-                  player.rosTier === 3 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300' :
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${player.rosTier === 1 ? 'bg-yellow-100 text-yellow-800 dark: bg-yellow-900 dar,
+  k:text-yellow-300' :
+                  player.rosTier === 2 ? 'bg-gray-100 text-gray-800 dark: bg-gray-700 dar,
+  k:text-gray-300' :
+                  player.rosTier === 3 ? 'bg-orange-100 text-orange-800 dark: bg-orange-900 dar,
+  k:text-orange-300' :
+                  'bg-blue-100 text-blue-800 dark: bg-blue-900 dar,
+  k:text-blue-300'
                 }`}>
                   T{player.rosTier}
                 </span>
@@ -625,10 +682,10 @@ export default function ResearchPage({ params }: ResearchPageProps) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse">
-          <div className="h-16 bg-white dark:bg-gray-800 mb-4"></div>
+          <div className="h-16 bg-white dark:bg-gray-800 mb-4" />
           <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-8 w-1/2"></div>
+            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded mb-4 w-1/3" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-8 w-1/2" />
           </div>
         </div>
       </div>
@@ -652,11 +709,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
               </p>
             </div>
             <div className="flex items-center space-x-3">
-              <button className="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <button className="inline-flex items-center px-4 py-2 bg-white dark: bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hove,
+  r:bg-gray-50 dar,
+  k, hove, r: bg-gray-700 transition-colors">
                 <Download className="w-4 h-4 mr-2" />
                 Export Data
               </button>
-              <div className="inline-flex px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 text-xs rounded-full font-medium">
+              <div className="inline-flex px-3 py-1 bg-primary-100 dark: bg-primary-900/30 text-primary-800 dar,
+  k:text-primary-200 text-xs rounded-full font-medium">
                 <Star className="w-3 h-3 mr-1" />
                 Premium Feature
               </div>
@@ -672,13 +732,14 @@ export default function ResearchPage({ params }: ResearchPageProps) {
                 const Icon = tab.icon;
                 return (
                   <button
-                    key={tab.id}
+                    key={tab.id }
                     onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === tab.id
+                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
                         ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}
+                        : 'border-transparent text-gray-500 dark: text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dar,
+  k, hove,
+  r:border-gray-600'
+                     }`}
                   >
                     <div className="flex items-center space-x-2">
                       <Icon className="w-4 h-4" />
@@ -699,16 +760,20 @@ export default function ResearchPage({ params }: ResearchPageProps) {
               <input
                 type="text"
                 placeholder="Search players..."
-                value={searchTerm}
+                value={searchTerm }
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focu,
+  s:ring-primary-500 focu,
+  s:border-transparent w-64"
               />
             </div>
             
             <select
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(e.target.value)}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 dark: border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focu,
+  s:ring-primary-500 focu,
+  s:border-transparent"
             >
               {positions.map((pos) => (
                 <option key={pos.value} value={pos.value}>
@@ -742,7 +807,8 @@ export default function ResearchPage({ params }: ResearchPageProps) {
 
         {/* Research Insights */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20 dar,
+  k:to-blue-800/20 rounded-lg p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-blue-500 rounded-full p-2">
                 <Target className="w-5 h-5 text-white" />
@@ -754,7 +820,8 @@ export default function ResearchPage({ params }: ResearchPageProps) {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20 dar,
+  k:to-green-800/20 rounded-lg p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-green-500 rounded-full p-2">
                 <TrendingUp className="w-5 h-5 text-white" />
@@ -766,7 +833,8 @@ export default function ResearchPage({ params }: ResearchPageProps) {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20 dar,
+  k:to-yellow-800/20 rounded-lg p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-yellow-500 rounded-full p-2">
                 <AlertTriangle className="w-5 h-5 text-white" />

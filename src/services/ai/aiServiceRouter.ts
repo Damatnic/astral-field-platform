@@ -1,4 +1,5 @@
-// Minimal: base class stub for: EnhancedAIRouter compatibility: export class AIServiceRouter {
+// Minimal: base class stub fo;
+  r: EnhancedAIRouter compatibility; export class AIServiceRouter {
   // Placeholder: methods
 }
 

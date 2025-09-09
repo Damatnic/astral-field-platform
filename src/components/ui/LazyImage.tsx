@@ -1,47 +1,46 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageOff, Loader2 } from 'lucide-react';
 
 interface LazyImageProps {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  className?: string;
-  placeholderClassName?: string;
-  sizes?: string;
-  priority?: boolean;
-  quality?: number;
-  blur?: boolean;
-  fallbackSrc?: string;
+  src, string,
+    alt, string,
+  width?, number,
+  height?, number,
+  className?, string,
+  placeholderClassName?, string,
+  sizes?, string,
+  priority?, boolean,
+  quality?, number,
+  blur?, boolean,
+  fallbackSrc?, string,
   onLoad?: () => void;
   onError?: (error: string) => void;
   style?: React.CSSProperties;
   loading?: 'lazy' | 'eager';
   decoding?: 'sync' | 'async' | 'auto';
+  
 }
-
 // Generate responsive image URLs for different screen sizes
-const generateResponsiveUrls = (src: string, quality: number = 75) => {
-  // For production, you'd integrate with your CDN/image optimization service
+const generateResponsiveUrls = (src, string;
+  quality: number = 75) => {; // For production, you'd integrate with your CDN/image optimization service
   // This is a mock implementation
   const baseUrl = src.split('?')[0];
   const params = new URLSearchParams();
   params.set('q', quality.toString());
   
   return {
-    mobile: `${baseUrl}?${params.toString()}&w=400&h=400`,
+    mobile `${baseUrl}?${params.toString()}&w=400&h=400`,
     tablet: `${baseUrl}?${params.toString()}&w=800&h=600`,
     desktop: `${baseUrl}?${params.toString()}&w=1200&h=800`,
     retina: `${baseUrl}?${params.toString()}&w=2400&h=1600&dpr=2`
-  };
-};
-
+  }
+}
 // Generate blur placeholder
-const generateBlurDataURL = (width: number = 8, height: number = 6): string => {
-  const canvas = document.createElement('canvas');
+const generateBlurDataURL = (width: number = 8;
+  height: number = 6); string => { const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
@@ -55,30 +54,23 @@ const generateBlurDataURL = (width: number = 8, height: number = 6): string => {
     
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
-  }
+   }
   
   return canvas.toDataURL('image/jpeg', 0.1);
-};
-
+}
 export default function LazyImage({
-  src,
-  alt,
-  width,
-  height,
+  src, alt,
+  width, height,
   className = '',
   placeholderClassName = '',
   sizes = '(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px',
   priority = false,
   quality = 75,
-  blur = true,
-  fallbackSrc,
-  onLoad,
-  onError,
-  style,
+  blur = true, fallbackSrc,
+  onLoad, onError, style,
   loading = 'lazy',
   decoding = 'async'
-}: LazyImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+}: LazyImageProps) { const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentSrc, setCurrentSrc] = useState<string>('');
@@ -97,7 +89,7 @@ export default function LazyImage({
         if (entry.isIntersecting) {
           setIsIntersecting(true);
           observerRef.current?.disconnect();
-        }
+         }
       },
       {
         rootMargin: '50px 0px', // Start loading 50px before entering viewport
@@ -111,12 +103,11 @@ export default function LazyImage({
 
     return () => {
       observerRef.current?.disconnect();
-    };
+    }
   }, [priority, isIntersecting]);
 
   // Load image when it enters viewport
-  useEffect(() => {
-    if (!isIntersecting || isLoaded || isLoading) return;
+  useEffect(() => { if (!isIntersecting || isLoaded || isLoading) return;
 
     const loadImage = async () => {
       setIsLoading(true);
@@ -134,13 +125,10 @@ export default function LazyImage({
         
         if (devicePixelRatio >= 2) {
           bestUrl = responsiveUrls.retina;
-        } else if (screenWidth <= 480) {
-          bestUrl = responsiveUrls.mobile;
-        } else if (screenWidth <= 768) {
-          bestUrl = responsiveUrls.tablet;
-        } else {
-          bestUrl = responsiveUrls.desktop;
-        }
+         } else if (screenWidth <= 480) { bestUrl = responsiveUrls.mobile;
+         } else if (screenWidth <= 768) { bestUrl = responsiveUrls.tablet;
+         } else { bestUrl = responsiveUrls.desktop;
+         }
 
         // Preload the image
         const img = new Image();
@@ -162,46 +150,40 @@ export default function LazyImage({
         console.error('Failed to load image:', error);
         
         // Try fallback image
-        if (fallbackSrc && fallbackSrc !== src) {
-          try {
+        if (fallbackSrc && fallbackSrc !== src) { try {
             const fallbackImg = new Image();
             await new Promise((resolve, reject) => {
               fallbackImg.onload = resolve;
               fallbackImg.onerror = reject;
               fallbackImg.src = fallbackSrc;
-            });
+             });
             
             setCurrentSrc(fallbackSrc);
             setIsLoaded(true);
             setIsLoading(false);
-          } catch (fallbackError) {
-            const errorMsg = 'Failed to load image and fallback';
+          } catch (fallbackError) { const errorMsg = 'Failed to load image and fallback';
             setError(errorMsg);
             setIsLoading(false);
-            onError?.(errorMsg);
-          }
-        } else {
-          const errorMsg = 'Failed to load image';
+            onError? .(errorMsg);
+           }
+        } else { const errorMsg = 'Failed to load image';
           setError(errorMsg);
           setIsLoading(false);
           onError?.(errorMsg);
-        }
+         }
       }
-    };
-
+    }
     loadImage();
   }, [isIntersecting, src, fallbackSrc, quality, onLoad, onError, decoding]);
 
-  const blurDataURL = blur ? generateBlurDataURL() : undefined;
+  const blurDataURL = blur ? generateBlurDataURL() , undefined,
 
-  const containerStyle: React.CSSProperties = {
-    position: 'relative',
-    overflow: 'hidden',
+  const containerStyle: React.CSSProperties = {positio,
+  n: 'relative',
+  overflow: 'hidden',
     backgroundColor: '#1f2937',
     ...(width && height ? { width, height } : {}),
-    ...style
-  };
-
+    ...style}
   return (
     <div
       ref={containerRef}
@@ -213,7 +195,7 @@ export default function LazyImage({
           // Error state
           <motion.div
             key="error"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0  }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={`absolute inset-0 flex items-center justify-center bg-gray-800 ${placeholderClassName}`}
@@ -223,11 +205,10 @@ export default function LazyImage({
               <span className="text-xs text-center">Image failed to load</span>
             </div>
           </motion.div>
-        ) : !isLoaded ? (
-          // Loading/Placeholder state
+        ) : !isLoaded ? (; // Loading/Placeholder state
           <motion.div
             key="placeholder"
-            initial={{ opacity: 0 }}
+            initial={{ opacity 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={`absolute inset-0 ${placeholderClassName}`}
@@ -236,7 +217,7 @@ export default function LazyImage({
             {blur && blurDataURL && (
               <div
                 className="absolute inset-0 bg-cover bg-center filter blur-sm scale-105"
-                style={{ backgroundImage: `url(${blurDataURL})` }}
+                style={{ backgroundImage: `url(${blurDataURL })` }}
               />
             )}
             
@@ -245,15 +226,14 @@ export default function LazyImage({
               <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50">
                 <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
               </div>
-            )}
+            ) }
             
             {/* Skeleton loader */}
             {!isIntersecting && (
               <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-700 animate-pulse" />
             )}
           </motion.div>
-        ) : (
-          // Loaded image
+        ) : (; // Loaded image
           <motion.img
             key="image"
             ref={imgRef}
@@ -262,31 +242,32 @@ export default function LazyImage({
             width={width}
             height={height}
             sizes={sizes}
-            loading={priority ? 'eager' : 'lazy'}
+            loading={priority ? 'eager'  'lazy'}
             decoding={decoding}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity, 0,
+  scale: 1.05 }}
+            animate={{ opacity, 1,
+  scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ 
-              duration: 0.3, 
-              ease: [0.25, 0.46, 0.45, 0.94] // Custom easing for smooth animation
+              duration: 0.3,
+  ease: [0.25, 0.46, 0.45, 0.94] // Custom easing for smooth animation
             }}
             className="absolute inset-0 w-full h-full object-cover"
             style={{ 
               filter: isLoaded ? 'none' : 'blur(4px)',
-              transition: 'filter 0.3s ease-out'
+  transition: 'filter 0.3s ease-out'
             }}
             onLoad={() => {
               setIsLoaded(true);
               setIsLoading(false);
               onLoad?.();
             }}
-            onError={(e) => {
-              const errorMsg = 'Image failed to load';
+            onError={(e) => { const errorMsg = 'Image failed to load';
               setError(errorMsg);
               setIsLoading(false);
               onError?.(errorMsg);
-            }}
+             }}
           />
         )}
       </AnimatePresence>
@@ -295,7 +276,7 @@ export default function LazyImage({
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0  }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-gray-900/20 backdrop-blur-sm flex items-center justify-center"
@@ -311,9 +292,9 @@ export default function LazyImage({
 }
 
 // Hook for preloading critical images
-export const usePreloadImages = (images: string[], quality: number = 85) => {
-  useEffect(() => {
-    if (!images.length) return;
+export const usePreloadImages = (images: string[],
+  quality: number = 85) => {
+  useEffect(() => { if (!images.length) return;
 
     const preloadPromises = images.map(src => {
       return new Promise((resolve, reject) => {
@@ -325,18 +306,16 @@ export const usePreloadImages = (images: string[], quality: number = 85) => {
         const responsiveUrls = generateResponsiveUrls(src, quality);
         const isMobile = window.innerWidth <= 480;
         img.src = isMobile ? responsiveUrls.mobile : responsiveUrls.desktop;
-      });
+       });
     });
 
-    Promise.allSettled(preloadPromises).then(results => {
-      const failed = results.filter(result => result.status === 'rejected').length;
+    Promise.allSettled(preloadPromises).then(results => { const failed = results.filter(result => result.status === 'rejected').length;
       if (failed > 0) {
-        console.warn(`Failed to preload ${failed} out of ${images.length} images`);
+        console.warn(`Failed to preload ${failed } out of ${images.length} images`);
       }
     });
   }, [images, quality]);
-};
-
+}
 // Component for hero images with priority loading
 export const HeroImage: React.FC<LazyImageProps> = (props) => (
   <LazyImage

@@ -22,12 +22,9 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
     }
 
     // Calculate aggregate statistics
-    const aggregateStats = {
-      totalRequests: metrics.reduce((sum, m) => sum + m.totalRequests, 0),
+    const aggregateStats = {totalRequests: metrics.reduce((sum, m) => sum + m.totalRequests, 0),
       totalBlocked: metrics.reduce((sum, m) => sum + m.blockedRequests, 0),
-      averageBlockingRate: metrics.length > 0 
-        ? metrics.reduce((sum, m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length 
-        : 0,
+      averageBlockingRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length : 0,
       topEndpoints: metrics
         .sort((a, b) => b.totalRequests - a.totalRequests)
         .slice(0, 10)
@@ -45,14 +42,11 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
           blocked: m.blockedRequests,
           blockingRate: m.blockedRequests / m.totalRequests
         }))
-    };
-
+    }
     return NextResponse.json({
       success: true,
       data: {
-        metrics,
-        aggregateStats,
-        timeWindow: timeWindow || 'current',
+        metrics, aggregateStats: timeWindow || 'current',
         generatedAt: new Date().toISOString()
       }
     });
@@ -75,16 +69,14 @@ export const POST = relaxedRateLimited(async (request: NextRequest) => {
     const { action } = body;
 
     switch (action) {
-      case 'cleanup':
-        // Trigger cleanup of old metrics
+      case 'cleanup': // Trigger cleanup of old metrics
         rateLimitMonitor.cleanup();
         return NextResponse.json({
           success: true,
           message: 'Rate limit metrics cleanup completed'
         });
 
-      case 'reset':
-        // This would require adding a reset method to the monitor
+      case 'reset': // This would require adding a reset method to the monitor
         // For now, just return success
         return NextResponse.json({
           success: true,
@@ -93,7 +85,7 @@ export const POST = relaxedRateLimited(async (request: NextRequest) => {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action. Supported actions: cleanup, reset' },
+          { error: 'Invalid action.Supported actions, cleanup, reset' },
           { status: 400 }
         );
     }

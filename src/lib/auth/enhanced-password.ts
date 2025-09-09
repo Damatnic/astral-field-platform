@@ -8,54 +8,53 @@ import crypto from 'crypto';
 import { database } from '@/lib/database';
 
 export interface PasswordPolicy {
-  minLength: number;
-  maxLength: number;
-  requireLowercase: boolean;
-  requireUppercase: boolean;
-  requireNumbers: boolean;
-  requireSpecialChars: boolean;
-  minSpecialChars: number;
-  preventReuse: number; // Number of previous passwords to check
-  maxAge: number; // Maximum age in days before requiring change
-  preventCommonPasswords: boolean;
-  preventKeyboardPatterns: boolean;
-  preventReversedUsername: boolean;
-  preventPersonalInfo: boolean;
+  minLength, number,
+    maxLength, number,
+  requireLowercase, boolean,
+    requireUppercase, boolean,
+  requireNumbers, boolean,
+    requireSpecialChars, boolean,
+  minSpecialChars, number,
+    preventReuse, number, // Number of previous passwords to check;
+  maxAge, number, // Maximum age in days before requiring change,
+    preventCommonPasswords, boolean,
+  preventKeyboardPatterns, boolean,
+    preventReversedUsername, boolean,
+  preventPersonalInfo: boolean,
+  
 }
-
 export interface PasswordValidationResult {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-  strength: PasswordStrengthResult;
+  isValid, boolean,
+    errors: string[];
+  warnings: string[],
+    strength: PasswordStrengthResult,
+  
 }
-
 export interface PasswordStrengthResult {
-  score: number; // 0-100
-  level: 'very-weak' | 'weak' | 'fair' | 'good' | 'strong' | 'very-strong';
-  entropy: number; // Bits of entropy
-  crackTimeEstimate: string;
-  feedback: string[];
-  breachStatus: 'unknown' | 'safe' | 'breached';
+  score, number, // 0-100,
+    level: 'very-weak' | 'weak' | 'fair' | 'good' | 'strong' | 'very-strong';
+  entropy, number, // Bits of entropy,
+    crackTimeEstimate, string,
+  feedback: string[],
+    breachStatus: 'unknown' | 'safe' | 'breached',
+  
 }
-
 export interface PasswordBreachInfo {
-  isBreached: boolean;
-  breachCount?: number;
-  lastBreachDate?: Date;
-  source?: string;
+  isBreached, boolean,
+  breachCount?, number,
+  lastBreachDate?, Date,
+  source?, string,
+  
 }
-
 export interface PasswordHistoryEntry {
-  hash: string;
-  createdAt: Date;
-  algorithm: string;
-  strength: number;
+  hash, string,
+    createdAt, Date,
+  algorithm, string,
+    strength: number,
+  
 }
-
-class EnhancedPasswordSecurity {
-  private static instance: EnhancedPasswordSecurity;
-  private defaultPolicy: PasswordPolicy;
+class EnhancedPasswordSecurity { private static instance, EnhancedPasswordSecurity,
+  private defaultPolicy, PasswordPolicy,
   private commonPasswords = new Set<string>();
   private keyboardPatterns: string[] = [];
   private breachedPasswordHashes = new Map<string, PasswordBreachInfo>();
@@ -64,69 +63,54 @@ class EnhancedPasswordSecurity {
     this.defaultPolicy = this.getDefaultPolicy();
     this.initializeCommonPasswords();
     this.initializeKeyboardPatterns();
-  }
+   }
 
-  public static getInstance(): EnhancedPasswordSecurity {
-    if (!EnhancedPasswordSecurity.instance) {
+  public static getInstance(): EnhancedPasswordSecurity { if (!EnhancedPasswordSecurity.instance) {
       EnhancedPasswordSecurity.instance = new EnhancedPasswordSecurity();
-    }
+     }
     return EnhancedPasswordSecurity.instance;
   }
 
   /**
    * Hash password with advanced security features
    */
-  public async hashPassword(
-    password: string, 
-    algorithm: 'bcrypt' | 'scrypt' | 'argon2' = 'bcrypt'
-  ): Promise<{ hash: string; salt?: string; algorithm: string; rounds?: number }> {
-    if (!password || password.length === 0) {
+  public async hashPassword(params): Promise { hash, string, salt?, string, algorithm, string, rounds?: number }> { if (!password || password.length === 0) {
       throw new Error('Password cannot be empty');
-    }
+     }
 
     switch (algorithm) {
       case 'bcrypt':
         const rounds = 14; // Increased from default 12 for better security
         const hash = await bcrypt.hash(password, rounds);
-        return { hash, algorithm: 'bcrypt', rounds };
-
+        return { hash, algorithm: 'bcrypt', rounds  }
       case 'scrypt':
         const salt = crypto.randomBytes(32);
         const scryptHash = crypto.scryptSync(password, salt, 64);
         return {
-          hash: `${salt.toString('hex')}:${scryptHash.toString('hex')}`,
+          hash: `${salt.toString('hex')}${scryptHash.toString('hex')}`,
           salt: salt.toString('hex'),
-          algorithm: 'scrypt'
-        };
-
-      case 'argon2':
-        // Note: In production, use @node-rs/argon2 or similar
+  algorithm: 'scrypt'
+        }
+      case 'argon2':  ; // Note In production, use @node-rs/argon2 or similar
         // For now, falling back to scrypt
         return this.hashPassword(password, 'scrypt');
 
-      default:
-        throw new Error(`Unsupported hashing algorithm: ${algorithm}`);
+      default: throw new Error(`Unsupported hashing algorithm; ${algorithm}`);
     }
   }
 
   /**
    * Verify password with support for multiple algorithms
    */
-  public async verifyPassword(
-    password: string,
-    storedHash: string,
-    algorithm: string = 'bcrypt'
-  ): Promise<boolean> {
-    if (!password || !storedHash) {
+  public async verifyPassword(params): Promiseboolean>  { if (!password || !storedHash) {
       return false;
-    }
+     }
 
-    try {
-      switch (algorithm) {
-        case 'bcrypt':
-          return await bcrypt.compare(password, storedHash);
-
-        case 'scrypt':
+    try { switch (algorithm) {
+      case 'bcrypt':
+      return await bcrypt.compare(password, storedHash);
+      break;
+    case 'scrypt':
           const [saltHex, hashHex] = storedHash.split(':');
           const salt = Buffer.from(saltHex, 'hex');
           const hash = Buffer.from(hashHex, 'hex');
@@ -134,7 +118,7 @@ class EnhancedPasswordSecurity {
           return crypto.timingSafeEqual(hash, derivedHash);
 
         default:
-          console.warn(`Unknown algorithm ${algorithm}, attempting bcrypt`);
+          console.warn(`Unknown algorithm ${algorithm }, attempting bcrypt`);
           return await bcrypt.compare(password, storedHash);
       }
     } catch (error) {
@@ -147,31 +131,28 @@ class EnhancedPasswordSecurity {
    * Comprehensive password validation
    */
   public async validatePassword(
-    password: string,
+    password, string,
     userId?: string,
     username?: string,
     personalInfo?: Record<string, string>,
     policy?: Partial<PasswordPolicy>
-  ): Promise<PasswordValidationResult> {
-    const activePolicy = { ...this.defaultPolicy, ...policy };
+  ): Promise<PasswordValidationResult> { const activePolicy = { ...this.defaultPolicy, ...policy}
     const errors: string[] = [];
     const warnings: string[] = [];
 
     if (!password) {
       errors.push('Password is required');
       return {
-        isValid: false,
-        errors,
-        warnings,
+        isValid, false, errors, warnings,
         strength: {
-          score: 0,
-          level: 'very-weak',
-          entropy: 0,
-          crackTimeEstimate: 'Instant',
+          score: 0;
+  level: 'very-weak',
+          entropy: 0;
+  crackTimeEstimate: 'Instant',
           feedback: ['Password is required'],
-          breachStatus: 'unknown'
+  breachStatus: 'unknown'
         }
-      };
+      }
     }
 
     // Length validation
@@ -192,8 +173,7 @@ class EnhancedPasswordSecurity {
     if (activePolicy.requireNumbers && !/[0-9]/.test(password)) {
       errors.push('Password must contain at least one number');
     }
-    if (activePolicy.requireSpecialChars) {
-      const specialCount = (password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/g) || []).length;
+    if (activePolicy.requireSpecialChars) { const specialCount = (password.match(/[!@#$%^&*()_+\-=\[\]{ };':"\\| .<>\/?`~]/g) || []).length;
       if (specialCount < activePolicy.minSpecialChars) {
         errors.push(`Password must contain at least ${activePolicy.minSpecialChars} special character(s)`);
       }
@@ -210,28 +190,25 @@ class EnhancedPasswordSecurity {
     }
 
     // Username-based checks
-    if (username) {
-      if (activePolicy.preventReversedUsername && 
+    if (username) { if (activePolicy.preventReversedUsername && 
           (password.toLowerCase().includes(username.toLowerCase()) ||
            password.toLowerCase().includes(username.toLowerCase().split('').reverse().join('')))) {
         errors.push('Password cannot contain your username or its reverse');
-      }
+       }
     }
 
     // Personal information check
-    if (activePolicy.preventPersonalInfo && personalInfo) {
-      for (const [key, value] of Object.entries(personalInfo)) {
+    if (activePolicy.preventPersonalInfo && personalInfo) { for (const [key, value] of Object.entries(personalInfo)) {
         if (value && value.length > 2 && password.toLowerCase().includes(value.toLowerCase())) {
-          warnings.push(`Password should not contain personal information (${key})`);
+          warnings.push(`Password should not contain personal information (${key })`);
         }
       }
     }
 
     // Password reuse check
-    if (userId && activePolicy.preventReuse > 0) {
-      const isReused = await this.checkPasswordReuse(userId, password, activePolicy.preventReuse);
+    if (userId && activePolicy.preventReuse > 0) { const isReused = await this.checkPasswordReuse(userId, password, activePolicy.preventReuse);
       if (isReused) {
-        errors.push(`Password cannot be one of your last ${activePolicy.preventReuse} passwords`);
+        errors.push(`Password cannot be one of your last ${activePolicy.preventReuse } passwords`);
       }
     }
 
@@ -244,26 +221,23 @@ class EnhancedPasswordSecurity {
     }
 
     return {
-      isValid: errors.length === 0,
-      errors,
-      warnings,
+      isValid: errors.length === 0, errors, warnings,
       strength
-    };
+    }
   }
 
   /**
    * Calculate comprehensive password strength
    */
-  public async calculatePasswordStrength(password: string): Promise<PasswordStrengthResult> {
-    if (!password) {
+  public async calculatePasswordStrength(params): PromisePasswordStrengthResult>  { if (!password) {
       return {
-        score: 0,
-        level: 'very-weak',
-        entropy: 0,
-        crackTimeEstimate: 'Instant',
+        score: 0;
+  level: 'very-weak',
+        entropy: 0;
+  crackTimeEstimate: 'Instant',
         feedback: ['Password is required'],
-        breachStatus: 'unknown'
-      };
+  breachStatus: 'unknown'
+       }
     }
 
     let score = 0;
@@ -282,7 +256,7 @@ class EnhancedPasswordSecurity {
     const hasLower = /[a-z]/.test(password);
     const hasUpper = /[A-Z]/.test(password);
     const hasNumbers = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?`~]/.test(password);
     const hasUnicode = /[^\x00-\x7F]/.test(password);
 
     if (hasLower) score += 5;
@@ -302,7 +276,7 @@ class EnhancedPasswordSecurity {
     if (charsetSize > 60) score += 10;
 
     // Pattern penalties
-    if (/(.)\1{2,}/.test(password)) score -= 10; // Repeated characters
+    if (/(.)\1{2}/.test(password)) score -= 10; // Repeated characters
     if (/012|123|234|345|456|567|678|789|890|abc|bcd|cde/.test(password.toLowerCase())) score -= 15; // Sequential
     if (this.hasKeyboardPattern(password)) score -= 20; // Keyboard patterns
     if (this.isCommonPassword(password)) score -= 30; // Common passwords
@@ -341,22 +315,16 @@ class EnhancedPasswordSecurity {
     // Check breach status
     const breachStatus = await this.checkPasswordBreach(password);
 
-    return {
-      score,
-      level,
-      entropy,
-      crackTimeEstimate,
-      feedback,
+    return {score, level,
+      entropy, crackTimeEstimate, feedback,
       breachStatus: breachStatus.isBreached ? 'breached' : 'safe'
-    };
+    }
   }
 
   /**
    * Check if password has been breached
    */
-  public async checkPasswordBreach(password: string): Promise<PasswordBreachInfo> {
-    try {
-      // Use SHA-1 hash for HaveIBeenPwned API (k-anonymity)
+  public async checkPasswordBreach(params): PromisePasswordBreachInfo>  { try {; // Use SHA-1 hash for HaveIBeenPwned API (k-anonymity)
       const hash = crypto.createHash('sha1').update(password).digest('hex').toUpperCase();
       const prefix = hash.substring(0, 5);
       const suffix = hash.substring(5);
@@ -365,44 +333,35 @@ class EnhancedPasswordSecurity {
       const cached = this.breachedPasswordHashes.get(hash);
       if (cached) {
         return cached;
-      }
+       }
 
       // In production, make API call to HaveIBeenPwned
       // For demo, simulate some known breached passwords
-      const simulatedBreachedHashes = new Set([
+      const simulatedBreachedHashes = new Set([;
         'PASSWORD123', 'QWERTY123', '123456789', 'LETMEIN123'
       ]);
 
       const isBreached = simulatedBreachedHashes.has(password.toUpperCase());
-      const breachInfo: PasswordBreachInfo = {
-        isBreached,
+      const breachInfo PasswordBreachInfo = {isBreached,
         breachCount: isBreached ? Math.floor(Math.random() * 1000000) : 0,
-        source: isBreached ? 'Data breach simulation' : undefined
-      };
-
+  source: isBreached ? 'Data breach simulation' : undefined
+      }
       // Cache result
       this.breachedPasswordHashes.set(hash, breachInfo);
 
       return breachInfo;
     } catch (error) {
       console.error('Breach check error:', error);
-      return { isBreached: false };
+      return { isBreached: false }
     }
   }
 
   /**
    * Store password in user's password history
    */
-  public async storePasswordHistory(
-    userId: string, 
-    passwordHash: string, 
-    algorithm: string,
-    strength: number
-  ): Promise<void> {
-    try {
-      await database.query(`
-        INSERT INTO password_history (user_id, password_hash, algorithm, strength, created_at)
-        VALUES ($1, $2, $3, $4, NOW())
+  public async storePasswordHistory(params): Promisevoid>  { try {
+    await database.query(`
+        INSERT INTO password_history (user_id, password_hash, algorithm, strength, created_at): VALUES ($1, $2, $3, $4, NOW())
       `, [userId, passwordHash, algorithm, strength]);
 
       // Clean up old password history beyond policy limit
@@ -416,7 +375,7 @@ class EnhancedPasswordSecurity {
           LIMIT $2
         )
       `, [userId, this.defaultPolicy.preventReuse]);
-    } catch (error) {
+     } catch (error) {
       // Table might not exist, that's okay for now
       console.warn('Could not store password history:', error);
     }
@@ -425,12 +384,7 @@ class EnhancedPasswordSecurity {
   /**
    * Check if password was recently used
    */
-  private async checkPasswordReuse(
-    userId: string, 
-    password: string, 
-    historyLimit: number
-  ): Promise<boolean> {
-    try {
+  private async checkPasswordReuse(params): Promiseboolean>  { try {
       const result = await database.query(`
         SELECT password_hash, algorithm FROM password_history 
         WHERE user_id = $1 
@@ -442,7 +396,7 @@ class EnhancedPasswordSecurity {
         const isMatch = await this.verifyPassword(password, row.password_hash, row.algorithm);
         if (isMatch) {
           return true;
-        }
+         }
       }
 
       return false;
@@ -459,51 +413,45 @@ class EnhancedPasswordSecurity {
   public generateSecurePassword(
     length: number = 16, 
     policy?: Partial<PasswordPolicy>
-  ): string {
-    const activePolicy = { ...this.defaultPolicy, ...policy };
+  ): string { const activePolicy = { ...this.defaultPolicy, ...policy}
     length = Math.max(length, activePolicy.minLength);
     length = Math.min(length, activePolicy.maxLength);
 
     const lowercase = 'abcdefghijklmnopqrstuvwxyz';
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
-    const special = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const special = '!@#$%^&*()_+-=[]{}| :,.<>?';
 
     let chars = '';
     let password = '';
     let requiredChars = 0;
 
     // Add required character types
-    if (activePolicy.requireLowercase) {
-      chars += lowercase;
+    if (activePolicy.requireLowercase) { chars: += lowercase;
       password += lowercase[crypto.randomInt(lowercase.length)];
       requiredChars++;
-    }
-    if (activePolicy.requireUppercase) {
-      chars += uppercase;
+     }
+    if (activePolicy.requireUppercase) { chars: += uppercase;
       password += uppercase[crypto.randomInt(uppercase.length)];
       requiredChars++;
-    }
-    if (activePolicy.requireNumbers) {
-      chars += numbers;
+     }
+    if (activePolicy.requireNumbers) { chars: += numbers;
       password += numbers[crypto.randomInt(numbers.length)];
       requiredChars++;
-    }
-    if (activePolicy.requireSpecialChars) {
-      chars += special;
+     }
+    if (activePolicy.requireSpecialChars) { chars: += special;
       for (let i = 0; i < activePolicy.minSpecialChars; i++) {
         password += special[crypto.randomInt(special.length)];
         requiredChars++;
-      }
+       }
     }
 
     // Fill remaining length
-    for (let i = requiredChars; i < length; i++) {
-      password += chars[crypto.randomInt(chars.length)];
-    }
+    for (let i = requiredChars; i < length; i++) { password: += chars[crypto.randomInt(chars.length)],
+     }
 
     // Shuffle password to avoid predictable patterns
-    const shuffled = password
+    const shuffled = password;
       .split('')
       .sort(() => crypto.randomInt(3) - 1)
       .join('');
@@ -514,41 +462,32 @@ class EnhancedPasswordSecurity {
   /**
    * Get password policy for user/organization
    */
-  public getPasswordPolicy(organizationId?: string): PasswordPolicy {
-    // In production, this would fetch from database based on organization
+  public getPasswordPolicy(organizationId?: string): PasswordPolicy {; // In production, this would fetch from database based on organization
     return this.defaultPolicy;
   }
 
   /**
    * Update password policy
    */
-  public updatePasswordPolicy(policy: Partial<PasswordPolicy>): void {
-    this.defaultPolicy = { ...this.defaultPolicy, ...policy };
+  public updatePasswordPolicy(policy Partial<PasswordPolicy>); void {
+    this.defaultPolicy = { ...this.defaultPolicy, ...policy}
   }
 
   // Private helper methods
 
-  private getDefaultPolicy(): PasswordPolicy {
-    return {
-      minLength: 12,
-      maxLength: 128,
-      requireLowercase: true,
-      requireUppercase: true,
-      requireNumbers: true,
-      requireSpecialChars: true,
-      minSpecialChars: 1,
-      preventReuse: 5,
-      maxAge: 90,
-      preventCommonPasswords: true,
-      preventKeyboardPatterns: true,
-      preventReversedUsername: true,
+  private getDefaultPolicy(): PasswordPolicy { return {
+      minLength: 12;
+  maxLength: 128;
+      requireLowercase, true,
+  requireUppercase, true,
+      requireNumbers, true,
+  requireSpecialChars: true, minSpecialChars, 1, preventReuse, 5, maxAge, 90, preventCommonPasswords, true, preventKeyboardPatterns, true, preventReversedUsername, true,
       preventPersonalInfo: true
-    };
+     }
   }
 
-  private initializeCommonPasswords(): void {
-    // Top 1000 most common passwords (sample)
-    const common = [
+  private initializeCommonPasswords(): void {; // Top 1000 most common passwords (sample)
+    const common = [;
       'password', '123456', 'password123', 'admin', 'qwerty', 'letmein',
       'welcome', 'monkey', 'dragon', 'password1', 'astral2025', 'football',
       'iloveyou', '123456789', 'welcome123', 'password', 'login', 'guest',
@@ -559,7 +498,7 @@ class EnhancedPasswordSecurity {
     this.commonPasswords = new Set(common.map(p => p.toLowerCase()));
   }
 
-  private initializeKeyboardPatterns(): void {
+  private initializeKeyboardPatterns() void {
     this.keyboardPatterns = [
       'qwerty', 'qwertyuiop', 'asdf', 'asdfgh', 'asdfghjkl', 'zxcv', 'zxcvbn', 'zxcvbnm',
       '1234', '12345', '123456', '1234567', '12345678', '123456789', '1234567890',
@@ -567,49 +506,46 @@ class EnhancedPasswordSecurity {
     ];
   }
 
-  private isCommonPassword(password: string): boolean {
-    return this.commonPasswords.has(password.toLowerCase());
-  }
+  private isCommonPassword(password: string); boolean { return this.commonPasswords.has(password.toLowerCase());
+   }
 
-  private hasKeyboardPattern(password: string): boolean {
-    const lower = password.toLowerCase();
+  private hasKeyboardPattern(password: string); boolean { const lower = password.toLowerCase();
     return this.keyboardPatterns.some(pattern => 
       lower.includes(pattern) || lower.includes(pattern.split('').reverse().join(''))
     );
-  }
+   }
 
-  private containsDictionaryWords(password: string): boolean {
+  private containsDictionaryWords(password: string); boolean {
     // Simple check for common English words
     const commonWords = ['love', 'hate', 'good', 'best', 'home', 'work', 'life', 'time'];
     const lower = password.toLowerCase();
     return commonWords.some(word => lower.includes(word));
   }
 
-  private calculateEntropy(password: string): number {
-    let charsetSize = 0;
+  private calculateEntropy(password: string); number { let charsetSize = 0;
     
     if (/[a-z]/.test(password)) charsetSize += 26;
     if (/[A-Z]/.test(password)) charsetSize += 26;
     if (/[0-9]/.test(password)) charsetSize += 10;
-    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password)) charsetSize += 32;
+    if (/[!@#$%^&*()_+\-=\[\]{ };':"\\| .<>\/?`~]/.test(password)) charsetSize += 32;
     if (/[^\x00-\x7F]/.test(password)) charsetSize += 1000; // Unicode estimate
 
     return Math.log2(Math.pow(charsetSize, password.length));
   }
 
-  private estimateCrackTime(entropy: number): string {
-    // Assume 1 trillion guesses per second (modern GPU)
+  private estimateCrackTime(entropy: number); string {
+    // Assume 1 trillion guesses per second (modern: GPU)
     const guessesPerSecond = 1e12;
     const totalGuesses = Math.pow(2, entropy) / 2; // Average case
     const seconds = totalGuesses / guessesPerSecond;
 
     if (seconds < 1) return 'Instant';
-    if (seconds < 60) return `${Math.round(seconds)} seconds`;
-    if (seconds < 3600) return `${Math.round(seconds / 60)} minutes`;
-    if (seconds < 86400) return `${Math.round(seconds / 3600)} hours`;
-    if (seconds < 31536000) return `${Math.round(seconds / 86400)} days`;
-    if (seconds < 31536000000) return `${Math.round(seconds / 31536000)} years`;
-    return `${Math.round(seconds / 31536000000)} millennia`;
+    if (seconds < 60) return `${Math.round(seconds)} seconds`
+    if (seconds < 3600) return `${Math.round(seconds / 60)} minutes`
+    if (seconds < 86400) return `${Math.round(seconds / 3600)} hours`
+    if (seconds < 31536000) return `${Math.round(seconds / 86400)} days`
+    if (seconds < 31536000000) return `${Math.round(seconds / 31536000)} years`
+    return `${Math.round(seconds / 31536000000)} millennia`
   }
 }
 

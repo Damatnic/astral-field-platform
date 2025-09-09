@@ -7,89 +7,85 @@ import { webSocketManager } from '@/lib/websocket/server';
 import { database } from '@/lib/database';
 
 export interface PWAConfig {
-  name: string;
-  shortName: string;
-  description: string;
-  theme: {
-    primary: string;
-    secondary: string;
-    background: string;
-    surface: string;
-  };
-  icons: PWAIcon[];
-  offline: {
-    strategy: 'cache-first' | 'network-first' | 'stale-while-revalidate';
+  name, string,
+    shortName, string,
+  description, string,
+    theme: {
+  primary, string,
+    secondary, string,
+    background, string,
+    surface: string,
+  }
+  icons: PWAIcon[],
+    offline: {
+  strategy: 'cache-first' | 'network-first' | 'stale-while-revalidate',
     resources: string[];
     fallbacks: Record<string, string>;
-  };
+  }
   notifications: {
-    enabled: boolean;
-    badge: string;
-    icon: string;
-    vibrate: number[];
-  };
+  enabled, boolean,
+    badge, string,
+    icon, string,
+    vibrate: number[],
+  }
 }
 
 export interface PWAIcon {
-  src: string;
-  sizes: string;
-  type: string;
+  src, string,
+    sizes, string,type string;
   purpose?: 'any' | 'maskable' | 'badge';
+  
 }
-
 export interface TouchGesture {
-  type: 'tap' | 'swipe' | 'pinch' | 'long-press' | 'double-tap';
-  element: string;
-  handler: string;
-  threshold?: number;
+  type: 'tap' | 'swipe' | 'pinch' | 'long-press' | 'double-tap',
+    element, string,
+  handler, string,
+  threshold?, number,
   direction?: 'up' | 'down' | 'left' | 'right';
+  
 }
-
 export interface OfflineCapability {
-  feature: string;
-  essential: boolean;
-  cacheStrategy: 'cache-first' | 'network-first' | 'stale-while-revalidate';
-  syncable: boolean;
-  priority: 'critical' | 'high' | 'medium' | 'low';
+  feature, string,
+    essential, boolean,
+  cacheStrategy: 'cache-first' | 'network-first' | 'stale-while-revalidate',
+    syncable, boolean,
+  priority: 'critical' | 'high' | 'medium' | 'low',
+  
 }
-
 export interface PushSubscription {
-  userId: string;
-  endpoint: string;
+  userId, string,
+    endpoint, string,
   keys: {
-    p256dh: string;
-    auth: string;
-  };
-  userAgent: string;
-  subscribed: Date;
-  active: boolean;
+  p256dh, string,
+    auth: string,
+  }
+  userAgent, string,
+    subscribed, Date,
+  active: boolean,
 }
 
 export interface AppUpdate {
-  version: string;
-  releaseNotes: string;
-  critical: boolean;
-  rolloutPercentage: number;
-  availableAt: Date;
+  version, string,
+    releaseNotes, string,
+  critical, boolean,
+    rolloutPercentage, number,
+  availableAt: Date,
+  
 }
-
-class MobileFirstPWASystem {
-  private swRegistration?: ServiceWorkerRegistration;
-  private installPromptEvent?: any;
+class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
+  private installPromptEvent?, any,
   private isOffline = false;
   private offlineQueue: any[] = [];
   private touchListeners = new Map<string, any>();
-  private cacheManager?: CacheManager;
-  private backgroundSync?: BackgroundSync;
-  private pushNotificationManager?: PushNotificationManager;
+  private cacheManager?, CacheManager,
+  private backgroundSync?, BackgroundSync,
+  private pushNotificationManager?, PushNotificationManager,
   
   constructor() {
     this.initializePWA();
-  }
+   }
 
-  private async initializePWA(): Promise<void> {
-    try {
-      // Initialize service worker
+  private async initializePWA(): : Promise<void> { try {; // Initialize service worker
       await this.initializeServiceWorker();
       
       // Initialize cache management
@@ -113,28 +109,26 @@ class MobileFirstPWASystem {
       // Set up install prompt handling
       this.setupInstallPrompt();
       
-      console.log('✅ PWA System: Mobile-first enhancements initialized');
-    } catch (error) {
-      console.error('PWA initialization error:', error);
+      console.log('✅ PWA System, Mobile-first enhancements initialized');
+     } catch (error) {
+      console.error('PWA initialization error', error);
     }
   }
 
   // Service Worker Management
-  private async initializeServiceWorker(): Promise<void> {
-    if ('serviceWorker' in navigator) {
+  private async initializeServiceWorker(): : Promise<void> { if ('serviceWorker' in navigator) {
       try {
         this.swRegistration = await navigator.serviceWorker.register('/sw.js', {
           scope: '/'
-        });
+         });
 
         // Handle service worker updates
-        this.swRegistration.addEventListener('updatefound', () => {
-          const newWorker = this.swRegistration!.installing;
+        this.swRegistration.addEventListener('updatefound', () => { const newWorker = this.swRegistration!.installing;
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 this.showUpdateAvailable();
-              }
+               }
             });
           }
         });
@@ -147,8 +141,7 @@ class MobileFirstPWASystem {
   }
 
   // Mobile Optimizations
-  private setupMobileOptimizations(): void {
-    // Viewport management
+  private setupMobileOptimizations(): void {; // Viewport management
     this.setupViewport();
     
     // Touch optimizations
@@ -164,13 +157,11 @@ class MobileFirstPWASystem {
     this.setupNetworkAwareLoading();
   }
 
-  private setupViewport(): void {
+  private setupViewport() void {
     // Dynamic viewport height handling for mobile browsers
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-
+    const setVH = () => { const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh }px`);
+    }
     setVH();
     window.addEventListener('resize', setVH);
     window.addEventListener('orientationchange', () => {
@@ -183,19 +174,17 @@ class MobileFirstPWASystem {
     }
   }
 
-  private setupTouchOptimizations(): void {
-    // Enhanced touch targets
-    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+  private setupTouchOptimizations(): void {; // Enhanced touch targets
+    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive true });
     document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
     document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
 
     // Prevent zoom on double tap for better UX
     let lastTouchEnd = 0;
-    document.addEventListener('touchend', (event) => {
-      const now = new Date().getTime();
+    document.addEventListener('touchend', (event) => { const now = new Date().getTime();
       if (now - lastTouchEnd <= 300) {
         event.preventDefault();
-      }
+       }
       lastTouchEnd = now;
     }, false);
 
@@ -203,10 +192,8 @@ class MobileFirstPWASystem {
     this.setupHapticFeedback();
   }
 
-  private setupPerformanceOptimizations(): void {
-    // Image lazy loading
-    if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries) => {
+  private setupPerformanceOptimizations(): void {; // Image lazy loading
+    if ('IntersectionObserver' in window) { const imageObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target as HTMLImageElement;
@@ -214,7 +201,7 @@ class MobileFirstPWASystem {
               img.src = img.dataset.src;
               img.classList.remove('lazy');
               imageObserver.unobserve(img);
-            }
+             }
           }
         });
       });
@@ -233,20 +220,18 @@ class MobileFirstPWASystem {
     this.setupMemoryManagement();
   }
 
-  private setupBatteryOptimizations(): void {
-    if ('getBattery' in navigator) {
+  private setupBatteryOptimizations() void { if ('getBattery' in navigator) {
       (navigator as any).getBattery().then((battery: any) => {
         const updateBatteryOptimizations = () => {
           if (battery.level < 0.2 || !battery.charging) {
             // Enable power-saving mode
             document.documentElement.classList.add('power-save');
             this.enablePowerSaveMode();
-          } else {
+           } else {
             document.documentElement.classList.remove('power-save');
             this.disablePowerSaveMode();
           }
-        };
-
+        }
         battery.addEventListener('levelchange', updateBatteryOptimizations);
         battery.addEventListener('chargingchange', updateBatteryOptimizations);
         updateBatteryOptimizations();
@@ -254,8 +239,7 @@ class MobileFirstPWASystem {
     }
   }
 
-  private setupNetworkAwareLoading(): void {
-    if ('connection' in navigator) {
+  private setupNetworkAwareLoading(): void { if ('connection' in navigator) {
       const connection = (navigator as any).connection;
       
       const updateNetworkStrategy = () => {
@@ -264,14 +248,13 @@ class MobileFirstPWASystem {
         if (effectiveType === 'slow-2g' || effectiveType === '2g') {
           document.documentElement.classList.add('slow-network');
           this.enableDataSaverMode();
-        } else if (effectiveType === '3g') {
+         } else if (effectiveType === '3g') {
           document.documentElement.classList.add('medium-network');
         } else {
           document.documentElement.classList.remove('slow-network', 'medium-network');
           this.disableDataSaverMode();
         }
-      };
-
+      }
       connection.addEventListener('change', updateNetworkStrategy);
       updateNetworkStrategy();
     }
@@ -293,8 +276,7 @@ class MobileFirstPWASystem {
     this.isOffline = !navigator.onLine;
   }
 
-  private handleOffline(): void {
-    // Show offline indicator
+  private handleOffline(): void {; // Show offline indicator
     this.showOfflineIndicator();
     
     // Enable offline mode in UI
@@ -306,7 +288,7 @@ class MobileFirstPWASystem {
     console.log('📱 App is now offline');
   }
 
-  private handleOnline(): void {
+  private handleOnline() void {
     // Hide offline indicator
     this.hideOfflineIndicator();
     
@@ -319,20 +301,17 @@ class MobileFirstPWASystem {
     console.log('📱 App is now online');
   }
 
-  private startOfflineQueue(): void {
-    // Intercept failed requests and queue them
+  private startOfflineQueue(): void {; // Intercept failed requests and queue them
     // This would be implemented in conjunction with service worker
   }
 
-  private async processOfflineQueue(): Promise<void> {
-    if (this.offlineQueue.length === 0) return;
+  private async processOfflineQueue() : Promise<void> { if (this.offlineQueue.length === 0) return;
 
-    console.log(`📱 Processing ${this.offlineQueue.length} queued requests`);
+    console.log(`📱 Processing ${this.offlineQueue.length } queued requests`);
     
-    for (const queuedRequest of this.offlineQueue) {
-      try {
-        await this.retryRequest(queuedRequest);
-      } catch (error) {
+    for (const queuedRequest of this.offlineQueue) { try {
+    await this.retryRequest(queuedRequest);
+       } catch (error) {
         console.error('Failed to process queued request:', error);
       }
     }
@@ -340,9 +319,8 @@ class MobileFirstPWASystem {
     this.offlineQueue = [];
   }
 
-  private async retryRequest(request: any): Promise<void> {
-    // Retry logic for queued requests
-    console.log('Retrying request:', request);
+  private async retryRequest(async retryRequest(request: any): : Promise<): Promisevoid> {; // Retry logic for queued requests
+    console.log('Retrying request', request);
   }
 
   // Install Prompt Management
@@ -359,10 +337,9 @@ class MobileFirstPWASystem {
     });
   }
 
-  async promptInstall(): Promise<boolean> {
-    if (!this.installPromptEvent) {
+  async promptInstall(): : Promise<boolean> { if (!this.installPromptEvent) {
       return false;
-    }
+     }
 
     const result = await this.installPromptEvent.prompt();
     const userChoice = await result.userChoice;
@@ -377,8 +354,7 @@ class MobileFirstPWASystem {
   }
 
   // Touch Event Handlers
-  private handleTouchStart(event: TouchEvent): void {
-    const touch = event.touches[0];
+  private handleTouchStart(event: TouchEvent); void { const touch = event.touches[0];
     const element = event.target as HTMLElement;
     
     // Store touch start data
@@ -388,10 +364,9 @@ class MobileFirstPWASystem {
     
     // Add touch feedback
     element.classList.add('touch-active');
-  }
+   }
 
-  private handleTouchMove(event: TouchEvent): void {
-    const element = event.target as HTMLElement;
+  private handleTouchMove(event: TouchEvent); void { const element = event.target as HTMLElement;
     
     // Calculate swipe distance
     const touch = event.touches[0];
@@ -404,11 +379,10 @@ class MobileFirstPWASystem {
     // Handle swipe gestures
     if (Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) {
       this.handleSwipe(element, deltaX, deltaY);
-    }
+     }
   }
 
-  private handleTouchEnd(event: TouchEvent): void {
-    const element = event.target as HTMLElement;
+  private handleTouchEnd(event: TouchEvent); void { const element = event.target as HTMLElement;
     
     // Remove touch feedback
     element.classList.remove('touch-active');
@@ -420,7 +394,7 @@ class MobileFirstPWASystem {
     // Handle long press
     if (duration > 500) {
       this.handleLongPress(element);
-    }
+     }
     
     // Clean up attributes
     element.removeAttribute('data-touch-start-x');
@@ -428,16 +402,15 @@ class MobileFirstPWASystem {
     element.removeAttribute('data-touch-start-time');
   }
 
-  private handleSwipe(element: HTMLElement, deltaX: number, deltaY: number): void {
-    const absX = Math.abs(deltaX);
+  private handleSwipe(element, HTMLElement,
+  deltaX, number, deltaY: number); void { const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
     
-    let direction: string;
+    let direction, string,
     if (absX > absY) {
       direction = deltaX > 0 ? 'right' : 'left';
-    } else {
-      direction = deltaY > 0 ? 'down' : 'up';
-    }
+     } else {direction = deltaY > 0 ? 'down' : 'up';
+     }
     
     // Trigger swipe event
     element.dispatchEvent(new CustomEvent('swipe', {
@@ -445,7 +418,7 @@ class MobileFirstPWASystem {
     }));
   }
 
-  private handleLongPress(element: HTMLElement): void {
+  private handleLongPress(element: HTMLElement); void {
     // Trigger long press event
     element.dispatchEvent(new CustomEvent('longpress'));
     
@@ -454,28 +427,24 @@ class MobileFirstPWASystem {
   }
 
   // Haptic Feedback
-  private setupHapticFeedback(): void {
-    // Check for haptic feedback support
+  private setupHapticFeedback(): void {; // Check for haptic feedback support
     if ('vibrate' in navigator) {
       console.log('✅ Haptic feedback supported');
     }
   }
 
-  triggerHapticFeedback(intensity: 'light' | 'medium' | 'heavy' = 'light'): void {
-    if (!('vibrate' in navigator)) return;
+  triggerHapticFeedback(intensity 'light' | 'medium' | 'heavy' = 'light'); void { if (!('vibrate' in navigator)) return;
 
     const patterns = {
-      light: [10],
-      medium: [20],
+      light: [10];
+  medium: [20];
       heavy: [30]
-    };
-
+     }
     navigator.vibrate(patterns[intensity]);
   }
 
   // Power Management
-  private enablePowerSaveMode(): void {
-    // Reduce update frequency
+  private enablePowerSaveMode(): void {; // Reduce update frequency
     if (this.backgroundSync) {
       this.backgroundSync.setUpdateInterval(60000); // 1 minute instead of 30 seconds
     }
@@ -489,7 +458,7 @@ class MobileFirstPWASystem {
     console.log('🔋 Power save mode enabled');
   }
 
-  private disablePowerSaveMode(): void {
+  private disablePowerSaveMode() void {
     // Restore normal update frequency
     if (this.backgroundSync) {
       this.backgroundSync.setUpdateInterval(30000);
@@ -502,8 +471,7 @@ class MobileFirstPWASystem {
   }
 
   // Data Saver Mode
-  private enableDataSaverMode(): void {
-    // Disable auto-loading of images
+  private enableDataSaverMode(): void {; // Disable auto-loading of images
     document.documentElement.classList.add('data-saver');
     
     // Reduce data sync frequency
@@ -514,7 +482,7 @@ class MobileFirstPWASystem {
     console.log('📊 Data saver mode enabled');
   }
 
-  private disableDataSaverMode(): void {
+  private disableDataSaverMode() void {
     document.documentElement.classList.remove('data-saver');
     
     if (this.backgroundSync) {
@@ -525,21 +493,19 @@ class MobileFirstPWASystem {
   }
 
   // Memory Management
-  private setupMemoryManagement(): void {
-    // Monitor memory usage if available
+  private setupMemoryManagement(): void {; // Monitor memory usage if available
     if ('memory' in performance) {
-      setInterval(() => {
-        const memory = (performance as any).memory;
+      setInterval(() => { const memory = (performance as any).memory;
         const usedPercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
         
         if (usedPercent > 80) {
           this.handleHighMemoryUsage();
-        }
+         }
       }, 30000);
     }
   }
 
-  private handleHighMemoryUsage(): void {
+  private handleHighMemoryUsage() void {
     // Clear non-essential caches
     if (this.cacheManager) {
       this.cacheManager.clearNonEssentialCaches();
@@ -554,23 +520,20 @@ class MobileFirstPWASystem {
   }
 
   // UI Helper Methods
-  private showOfflineIndicator(): void {
-    const indicator = document.createElement('div');
+  private showOfflineIndicator(): void { const indicator = document.createElement('div');
     indicator.id = 'offline-indicator';
     indicator.className = 'fixed top-0 left-0 right-0 bg-red-500 text-white text-center py-2 z-50';
-    indicator.textContent = 'You are offline. Some features may be limited.';
+    indicator.textContent = 'You are offline.Some features may be limited.';
     document.body.appendChild(indicator);
-  }
+   }
 
-  private hideOfflineIndicator(): void {
-    const indicator = document.getElementById('offline-indicator');
+  private hideOfflineIndicator(): void { const indicator = document.getElementById('offline-indicator');
     if (indicator) {
       indicator.remove();
-    }
+     }
   }
 
-  private showInstallBanner(): void {
-    const banner = document.createElement('div');
+  private showInstallBanner(): void { const banner = document.createElement('div');
     banner.id = 'install-banner';
     banner.className = 'fixed bottom-0 left-0 right-0 bg-blue-600 text-white p-4 flex justify-between items-center z-50';
     banner.innerHTML = `
@@ -586,29 +549,26 @@ class MobileFirstPWASystem {
           Install
         </button>
       </div>
-    `;
-    
+    `
     document.body.appendChild(banner);
     
     // Add event listeners
     document.getElementById('install-dismiss')?.addEventListener('click', () => {
       this.hideInstallBanner();
-    });
+     });
     
     document.getElementById('install-accept')?.addEventListener('click', () => {
       this.promptInstall();
     });
   }
 
-  private hideInstallBanner(): void {
-    const banner = document.getElementById('install-banner');
+  private hideInstallBanner(): void { const banner = document.getElementById('install-banner');
     if (banner) {
       banner.remove();
-    }
+     }
   }
 
-  private showUpdateAvailable(): void {
-    const notification = document.createElement('div');
+  private showUpdateAvailable(): void { const notification = document.createElement('div');
     notification.id = 'update-notification';
     notification.className = 'fixed top-4 right-4 bg-green-600 text-white p-4 rounded shadow-lg z-50';
     notification.innerHTML = `
@@ -621,113 +581,104 @@ class MobileFirstPWASystem {
           Update
         </button>
       </div>
-    `;
-    
+    `
     document.body.appendChild(notification);
     
     document.getElementById('update-accept')?.addEventListener('click', () => {
       this.applyUpdate();
-    });
+     });
   }
 
-  private applyUpdate(): void {
-    if (this.swRegistration?.waiting) {
-      this.swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  private applyUpdate(): void { if (this.swRegistration?.waiting) {
+      this.swRegistration.waiting.postMessage({ type: 'SKIP_WAITING'  });
       window.location.reload();
     }
   }
 
   // Public API Methods
   getInstallationStatus(): {
-    isInstalled: boolean;
-    canInstall: boolean;
-    isStandalone: boolean;
-  } {
-    return {
-      isInstalled: window.matchMedia('(display-mode: standalone)').matches,
-      canInstall: !!this.installPromptEvent,
-      isStandalone: window.navigator.standalone === true || 
-        window.matchMedia('(display-mode: standalone)').matches
-    };
+    isInstalled, boolean,
+    canInstall, boolean,
+    isStandalone: boolean,
+  } { return {
+      isInstalled: window.matchMedia('(display-mode; standalone)').matches,
+      canInstall: !!this.installPromptEvent;
+  isStandalone: window.navigator.standalone === true || 
+        window.matchMedia('(display-mode; standalone)').matches
+     }
   }
 
   getNetworkStatus(): {
-    online: boolean;
-    effectiveType?: string;
-    downlink?: number;
-    rtt?: number;
-  } {
-    const connection = (navigator as any).connection;
+    online, boolean,
+    effectiveType?, string,
+    downlink?, number,
+    rtt?, number,
+  } { const connection = (navigator as any).connection;
     
     return {
-      online: navigator.onLine,
-      effectiveType: connection?.effectiveType,
-      downlink: connection?.downlink,
-      rtt: connection?.rtt
-    };
+      online: navigator.onLine;
+  effectiveType: connection?.effectiveType;
+      downlink: connection?.downlink;
+  rtt: connection?.rtt
+     }
   }
 
-  getBatteryStatus(): Promise<{
-    level: number;
-    charging: boolean;
-    chargingTime: number;
-    dischargingTime: number;
-  } | null> {
-    if ('getBattery' in navigator) {
+  getBatteryStatus(): : Promise<{
+    level, number,
+    charging, boolean,
+    chargingTime, number,
+    dischargingTime: number,
+  } | null> { if ('getBattery' in navigator) {
       return (navigator as any).getBattery().then((battery: any) => ({
-        level: battery.level,
-        charging: battery.charging,
-        chargingTime: battery.chargingTime,
-        dischargingTime: battery.dischargingTime
-      }));
+  level: battery.level;
+  charging: battery.charging;
+        chargingTime: battery.chargingTime;
+  dischargingTime: battery.dischargingTime
+       }));
     }
     
     return Promise.resolve(null);
   }
 
   getDeviceInfo(): {
-    userAgent: string;
-    platform: string;
-    language: string;
-    hardwareConcurrency: number;
-    deviceMemory?: number;
-    touchSupport: boolean;
-    orientation: string;
-  } {
-    return {
-      userAgent: navigator.userAgent,
-      platform: navigator.platform,
-      language: navigator.language,
-      hardwareConcurrency: navigator.hardwareConcurrency,
-      deviceMemory: (navigator as any).deviceMemory,
-      touchSupport: 'ontouchstart' in window,
+    userAgent, string,
+    platform, string,
+    language, string,
+    hardwareConcurrency, number,
+    deviceMemory?, number,
+    touchSupport, boolean,
+    orientation: string,
+  } { return {
+      userAgent: navigator.userAgent;
+  platform: navigator.platform;
+      language: navigator.language;
+  hardwareConcurrency: navigator.hardwareConcurrency;
+      deviceMemory: (navigator as any).deviceMemory;
+  touchSupport: 'ontouchstart' in window;
       orientation: screen.orientation?.type || 'unknown'
-    };
+     }
   }
 
-  async addToHomeScreen(): Promise<boolean> {
-    return await this.promptInstall();
-  }
+  async addToHomeScreen(): : Promise<boolean> { return await this.promptInstall();
+   }
 
   async shareContent(data: {
-    title: string;
-    text: string;
-    url: string;
-  }): Promise<boolean> {
-    if ('share' in navigator) {
+  title, string,
+    text, string,
+    url: string,
+  }): : Promise<boolean> { if ('share' in navigator) {
       try {
-        await navigator.share(data);
+    await navigator.share(data);
         return true;
-      } catch (error) {
+       } catch (error) {
         console.error('Share failed:', error);
         return false;
       }
     }
     
     // Fallback to clipboard
-    if ('clipboard' in navigator) {
-      try {
-        await navigator.clipboard.writeText(`${data.title}\n${data.text}\n${data.url}`);
+    if ('clipboard' in navigator) { try {
+    await navigator.clipboard.writeText(`${data.title }\n${data.text}\n${data.url}`);
         return true;
       } catch (error) {
         console.error('Clipboard write failed:', error);
@@ -738,22 +689,19 @@ class MobileFirstPWASystem {
     return false;
   }
 
-  setAppBadge(count: number): void {
-    if ('setAppBadge' in navigator) {
+  setAppBadge(count: number); void { if ('setAppBadge' in navigator) {
       (navigator as any).setAppBadge(count);
-    }
+     }
   }
 
-  clearAppBadge(): void {
-    if ('clearAppBadge' in navigator) {
+  clearAppBadge(): void { if ('clearAppBadge' in navigator) {
       (navigator as any).clearAppBadge();
-    }
+     }
   }
 }
 
 // Helper Classes
-class CacheManager {
-  private cacheName = 'astral-field-v1';
+class CacheManager { private cacheName = 'astral-field-v1';
   private essentialResources = [
     '/',
     '/offline',
@@ -762,27 +710,23 @@ class CacheManager {
     '/icons/icon-512x512.png'
   ];
 
-  async initialize(): Promise<void> {
-    // Implementation would go here
+  async initialize(): : Promise<void> {; // Implementation would go here
     console.log('✅ Cache Manager initialized');
-  }
+   }
 
-  async clearNonEssentialCaches(): Promise<void> {
-    // Implementation would go here
+  async clearNonEssentialCaches() : Promise<void> {; // Implementation would go here
     console.log('🧹 Non-essential caches cleared');
   }
 }
 
-class BackgroundSync {
-  private updateInterval = 30000;
+class BackgroundSync { private updateInterval = 30000;
   private dataSaverMode = false;
 
-  async initialize(): Promise<void> {
-    // Implementation would go here
+  async initialize() : Promise<void> {; // Implementation would go here
     console.log('✅ Background Sync initialized');
-  }
+   }
 
-  setUpdateInterval(interval: number): void {
+  setUpdateInterval(interval number); void {
     this.updateInterval = interval;
   }
 
@@ -795,23 +739,20 @@ class BackgroundSync {
   }
 }
 
-class PushNotificationManager {
-  async initialize(): Promise<void> {
-    // Implementation would go here
+class PushNotificationManager { async initialize(): : Promise<void> {; // Implementation would go here
     console.log('✅ Push Notification Manager initialized');
-  }
+   }
 
-  async requestPermission(): Promise<boolean> {
-    if ('Notification' in window) {
+  async requestPermission() : Promise<boolean> { if ('Notification' in window) {
       const permission = await Notification.requestPermission();
       return permission === 'granted';
-    }
+     }
     return false;
   }
 
-  async subscribe(userId: string): Promise<PushSubscription | null> {
+  async subscribe(async subscribe(userId: string): : Promise<): PromisePushSubscription | null> {
     // Implementation would go here
-    return null;
+    return null,
   }
 }
 

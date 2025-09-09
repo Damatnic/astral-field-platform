@@ -1,73 +1,66 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect  } from 'react';
 import {
   Award, Trophy, Star, Target, TrendingUp, Crown, 
   Medal, Zap, Fire, Shield, Gem, ChevronRight,
-  Clock, Users, BarChart3, Calendar, Gift,
-  Info, CheckCircle, Circle, Lock, Sparkles
+  Clock, Users, BarChart3, Calendar, Gift, Info, CheckCircle, Circle, Lock, Sparkles
 } from 'lucide-react';
-import AchievementSystem, { Achievement } from '@/services/gamification/achievementSystem';
+import AchievementSystem, { Achievement  } from '@/services/gamification/achievementSystem';
 
 interface AchievementStats {
-  userId: string;
-  overview: {
-    totalUnlocked: number;
-    totalPossible: number;
-    completionRate: number;
-    totalXP: number;
-    totalCoins: number;
-    currentLevel: number;
-    xpToNextLevel: number;
-  };
+  userId, string,
+    overview: {,
+  totalUnlocked, number,
+    totalPossible, number,
+    completionRate, number,
+    totalXP, number,
+    totalCoins, number,
+    currentLevel, number,
+    xpToNextLevel, number,
+  }
   byCategory: Record<string, {
-    unlocked: number;
-    total: number;
-    rate: number;
-  }>;
+    unlocked, number,
+    total, number,
+    rate: number }>;
   byDifficulty: Record<string, {
-    unlocked: number;
-    total: number;
-    rate: number;
-  }>;
-  rareAchievements: Achievement[];
-  recentUnlocks: any[];
-  streaks: {
-    current: number;
-    longest: number;
-    type: string;
+    unlocked, number,
+    total, number,
+    rate: number }>;
+  rareAchievements: Achievement[],
+    recentUnlocks: any[];
+  streaks: {,
+  current, number,
+    longest, number,type string;
   }[];
-  rankings: {
-    global: number;
-    league: number;
-    percentile: number;
-  };
+  rankings: {,
+  global, number,
+    league, number,
+    percentile, number,
+  }
 }
 
 interface AchievementInsight {
-  userId: string;
-  type: 'streak_at_risk' | 'recommended_action' | 'seasonal_opportunity' | 'rare_chance' | 'close_to_unlock';
-  achievement: Achievement;
-  message: string;
-  progress: number;
-  estimatedTimeToCompletion?: string;
-  actionItems: string[];
-  urgency: 'low' | 'medium' | 'high' | 'critical';
+  userId, string,type: 'streak_at_risk' | 'recommended_action' | 'seasonal_opportunity' | 'rare_chance' | 'close_to_unlock',
+    achievement, Achievement,
+  message, string,
+    progress, number,
+  estimatedTimeToCompletion?, string,
+  actionItems: string[],
+    urgency: 'low' | 'medium' | 'high' | 'critical';
   potentialRewards: Achievement['rewards'];
+  
 }
-
 interface AchievementDashboardProps {
-  userId: string;
-  leagueId?: string;
-  className?: string;
+  userId, string,
+  leagueId?, string,
+  className?, string,
 }
 
 export default function AchievementDashboard({ 
-  userId, 
-  leagueId, 
+  userId, leagueId, 
   className 
-}: AchievementDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'achievements' | 'insights' | 'leaderboard'>('overview');
+}: AchievementDashboardProps) { const [activeTab, setActiveTab] = useState<'overview' | 'achievements' | 'insights' | 'leaderboard'>('overview');
   const [stats, setStats] = useState<AchievementStats | null>(null);
   const [insights, setInsights] = useState<AchievementInsight[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -83,18 +76,17 @@ export default function AchievementDashboard({
 
   useEffect(() => {
     loadAchievementData();
-  }, [userId, leagueId]);
+   }, [userId, leagueId]);
 
   useEffect(() => {
     filterAchievements();
   }, [achievements, categoryFilter, difficultyFilter, statusFilter]);
 
-  const loadAchievementData = async () => {
-    try {
+  const loadAchievementData = async () => { try {
       setLoading(true);
       
       // In a real app, these would be API calls
-      const [statsData, insightsData] = await Promise.all([
+      const [statsData, insightsData] = await Promise.all([;
         achievementSystem.getUserAchievementStats(userId),
         achievementSystem.getAchievementInsights(userId)
       ]);
@@ -105,25 +97,22 @@ export default function AchievementDashboard({
       // Get all achievements (would come from API)
       const allAchievements = Array.from((achievementSystem as any).achievements.values());
       setAchievements(allAchievements);
-    } catch (error) {
+     } catch (error) {
       console.error('Error loading achievement data:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterAchievements = () => {
-    if (!achievements) return;
+  }
+  const filterAchievements = () => { if (!achievements) return;
     
     let filtered = [...achievements];
     
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(a => a.category === categoryFilter);
-    }
+     }
     
-    if (difficultyFilter !== 'all') {
-      filtered = filtered.filter(a => a.difficulty === difficultyFilter);
-    }
+    if (difficultyFilter !== 'all') { filtered = filtered.filter(a => a.difficulty === difficultyFilter);
+     }
     
     if (statusFilter !== 'all') {
       // This would be based on user's actual achievement data
@@ -131,52 +120,44 @@ export default function AchievementDashboard({
     }
     
     setFilteredAchievements(filtered);
-  };
-
-  const getDifficultyColor = (difficulty: Achievement['difficulty']) => {
-    const colors = {
-      common: 'bg-gray-100 text-gray-700 border-gray-200',
-      uncommon: 'bg-green-100 text-green-700 border-green-200',
+  }
+  const getDifficultyColor = (difficulty: Achievement['difficulty']) => { const colors = {,
+  common: 'bg-gray-100 text-gray-700 border-gray-200',
+  uncommon: 'bg-green-100 text-green-700 border-green-200',
       rare: 'bg-blue-100 text-blue-700 border-blue-200',
-      epic: 'bg-purple-100 text-purple-700 border-purple-200',
+  epic: 'bg-purple-100 text-purple-700 border-purple-200',
       legendary: 'bg-orange-100 text-orange-700 border-orange-200',
-      mythic: 'bg-red-100 text-red-700 border-red-200'
-    };
+  mythic: 'bg-red-100 text-red-700 border-red-200'
+     }
     return colors[difficulty];
-  };
-
-  const getCategoryIcon = (category: Achievement['category']) => {
-    const icons = {
-      draft: Trophy,
-      season_management: Target,
-      performance: TrendingUp,
-      community: Users,
-      milestone: Star,
-      special: Crown,
-      skill: Zap,
-      streak: Fire,
+  }
+  const getCategoryIcon = (category: Achievement['category']) => { const icons = {
+      draft, Trophy,
+  season_management, Target,
+      performance, TrendingUp,
+  community, Users,
+      milestone, Star,
+  special, Crown,
+      skill, Zap,
+  streak, Fire,
       rare: Gem
-    };
+     }
     return icons[category] || Award;
-  };
-
-  const getUrgencyColor = (urgency: AchievementInsight['urgency']) => {
-    const colors = {
-      low: 'bg-gray-100 text-gray-700',
-      medium: 'bg-blue-100 text-blue-700',
+  }
+  const getUrgencyColor = (urgency: AchievementInsight['urgency']) => { const colors = {,
+  low: 'bg-gray-100 text-gray-700',
+  medium: 'bg-blue-100 text-blue-700',
       high: 'bg-orange-100 text-orange-700',
-      critical: 'bg-red-100 text-red-700'
-    };
+  critical: 'bg-red-100 text-red-700'
+     }
     return colors[urgency];
-  };
-
-  if (loading) {
-    return (
+  }
+  if (loading) { return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     );
-  }
+   }
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg ${className}`}>
@@ -185,10 +166,9 @@ export default function AchievementDashboard({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-              <Trophy className="h-6 w-6 mr-2 text-yellow-500" />
-              Achievement Center
+              <Trophy className="h-6 w-6 mr-2 text-yellow-500" />  Achievement, Center,
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-gray-600 dark; text-gray-400 mt-1">
               Track your fantasy football accomplishments and unlock rewards
             </p>
           </div>
@@ -196,7 +176,7 @@ export default function AchievementDashboard({
           {stats && (
             <div className="text-right">
               <div className="text-2xl font-bold text-yellow-500">
-                Level {stats.overview.currentLevel}
+                Level {stats.overview.currentLevel }
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 {stats.overview.totalXP.toLocaleString()} XP
@@ -209,19 +189,22 @@ export default function AchievementDashboard({
         <div className="mt-6 border-b border-gray-200 dark:border-gray-700">
           <nav className="-mb-px flex space-x-8">
             {[
-              { id: 'overview', label: 'Overview', icon: BarChart3 },
-              { id: 'achievements', label: 'Achievements', icon: Award },
-              { id: 'insights', label: 'Insights', icon: Target },
-              { id: 'leaderboard', label: 'Leaderboard', icon: Trophy }
+              { id: 'overview',
+  label: 'Overview', icon: BarChart3 },
+              { id: 'achievements',
+  label: 'Achievements', icon: Award },
+              { id: 'insights',
+  label: 'Insights', icon: Target },
+              { id: 'leaderboard',
+  label: 'Leaderboard', icon: Trophy }
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id as any)}
-                className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === id
+                className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${activeTab === id
                     ? 'border-yellow-500 text-yellow-600 dark:text-yellow-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400'
-                }`}
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover.border-gray-300 dark; text-gray-400'
+                 }`}
               >
                 <Icon className="w-5 h-5 mr-2" />
                 {label}
@@ -234,12 +217,12 @@ export default function AchievementDashboard({
       {/* Content */}
       <div className="p-6">
         {activeTab === 'overview' && stats && (
-          <OverviewTab stats={stats} />
+          <OverviewTab stats={stats } />
         )}
 
         {activeTab === 'achievements' && (
           <AchievementsTab
-            achievements={filteredAchievements}
+            achievements={filteredAchievements }
             categoryFilter={categoryFilter}
             setCategoryFilter={setCategoryFilter}
             difficultyFilter={difficultyFilter}
@@ -253,7 +236,7 @@ export default function AchievementDashboard({
 
         {activeTab === 'insights' && (
           <InsightsTab
-            insights={insights}
+            insights={insights }
             getUrgencyColor={getUrgencyColor}
             getCategoryIcon={getCategoryIcon}
           />
@@ -261,25 +244,26 @@ export default function AchievementDashboard({
 
         {activeTab === 'leaderboard' && (
           <LeaderboardTab />
-        )}
+        ) }
       </div>
     </div>
   );
 }
 
 // Overview Tab Component
-function OverviewTab({ stats }: { stats: AchievementStats }) {
-  return (
+function OverviewTab({ stats  }: { stats: AchievementStats  }) { return (
     <div className="space-y-8">
-      {/* Progress Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 p-6 rounded-lg">
+      {/* Progress Overview */ }
+      <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-4 gap-6">
+        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark: from-yellow-900/20 dar,
+  k:to-yellow-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
                 Level
               </p>
-              <p className="text-3xl font-bold text-yellow-700 dark:text-yellow-300">
+              <p className="text-3xl font-bold text-yellow-700 dark; text-yellow-300">
                 {stats.overview.currentLevel}
               </p>
             </div>
@@ -288,7 +272,7 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
           <div className="mt-4">
             <div className="flex items-center justify-between text-sm">
               <span className="text-yellow-600 dark:text-yellow-400">Progress</span>
-              <span className="text-yellow-700 dark:text-yellow-300">
+              <span className="text-yellow-700 dark; text-yellow-300">
                 {stats.overview.xpToNextLevel} XP to next level
               </span>
             </div>
@@ -303,13 +287,14 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-lg">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark: from-blue-900/20 dar,
+  k:to-blue-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                 Achievements
               </p>
-              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
+              <p className="text-3xl font-bold text-blue-700 dark; text-blue-300">
                 {stats.overview.totalUnlocked}
               </p>
             </div>
@@ -318,7 +303,7 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
           <div className="mt-4">
             <div className="flex items-center justify-between text-sm">
               <span className="text-blue-600 dark:text-blue-400">Completion</span>
-              <span className="text-blue-700 dark:text-blue-300">
+              <span className="text-blue-700 dark; text-blue-300">
                 {stats.overview.completionRate.toFixed(1)}%
               </span>
             </div>
@@ -331,13 +316,14 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-lg">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark: from-green-900/20 dar,
+  k:to-green-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                Total XP
+              <p className="text-sm font-medium text-green-600 dark: text-green-400">  Tota,
+  l, XP,
               </p>
-              <p className="text-3xl font-bold text-green-700 dark:text-green-300">
+              <p className="text-3xl font-bold text-green-700 dark; text-green-300">
                 {stats.overview.totalXP.toLocaleString()}
               </p>
             </div>
@@ -345,13 +331,14 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 rounded-lg">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark: from-purple-900/20 dar,
+  k:to-purple-800/20 p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
                 Coins
               </p>
-              <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+              <p className="text-3xl font-bold text-purple-700 dark; text-purple-300">
                 {stats.overview.totalCoins.toLocaleString()}
               </p>
             </div>
@@ -365,11 +352,12 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Progress by Category
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-4">
           {Object.entries(stats.byCategory).map(([category, data]) => (
             <div key={category} className="bg-white dark:bg-gray-800 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                <span className="text-sm font-medium text-gray-700 dark; text-gray-300 capitalize">
                   {category.replace('_', ' ')}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -392,8 +380,7 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
 
       {/* Recent Achievements */}
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Recent Achievements
+        <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">  Recent, Achievements,
         </h3>
         {stats.recentUnlocks.length > 0 ? (
           <div className="space-y-3">
@@ -405,10 +392,10 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    Achievement Unlocked
+                  <p className="text-sm font-medium text-gray-900 dark: text-white">  Achievemen,
+  t, Unlocked,
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-500 dark; text-gray-400">
                     Recently earned - keep up the great work!
                   </p>
                 </div>
@@ -428,40 +415,38 @@ function OverviewTab({ stats }: { stats: AchievementStats }) {
 }
 
 // Achievements Tab Component
-function AchievementsTab({
-  achievements,
-  categoryFilter,
-  setCategoryFilter,
-  difficultyFilter,
-  setDifficultyFilter,
-  statusFilter,
-  setStatusFilter,
-  getDifficultyColor,
+function AchievementsTab({ achievements, categoryFilter,
+  setCategoryFilter, difficultyFilter,
+  setDifficultyFilter, statusFilter,
+  setStatusFilter, getDifficultyColor,
   getCategoryIcon
-}: {
-  achievements: Achievement[];
-  categoryFilter: string;
-  setCategoryFilter: (filter: string) => void;
-  difficultyFilter: string;
-  setDifficultyFilter: (filter: string) => void;
-  statusFilter: string;
-  setStatusFilter: (filter: string) => void;
-  getDifficultyColor: (difficulty: Achievement['difficulty']) => string;
-  getCategoryIcon: (category: Achievement['category']) => any;
-}) {
-  return (
+ }: { achievements: Achievement[],
+    categoryFilter, string,
+  setCategoryFilter: (filte,
+  r: string) => void;
+  difficultyFilter, string,
+  setDifficultyFilter: (filte,
+  r: string) => void;
+  statusFilter, string,
+  setStatusFilter: (filte,
+  r: string) => void;
+  getDifficultyColor: (difficulty; Achievement['difficulty']) => string;
+  getCategoryIcon: (category; Achievement['category']) => any;
+ }) { return (
     <div className="space-y-6">
-      {/* Filters */}
+      {/* Filters */ }
       <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
               Category
             </label>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dar,
+  k:bg-gray-800 dar,
+  k:text-white"
             >
               <option value="all">All Categories</option>
               <option value="draft">Draft</option>
@@ -475,13 +460,15 @@ function AchievementsTab({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
               Difficulty
             </label>
             <select
               value={difficultyFilter}
               onChange={(e) => setDifficultyFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dar,
+  k:bg-gray-800 dar,
+  k:text-white"
             >
               <option value="all">All Difficulties</option>
               <option value="common">Common</option>
@@ -494,13 +481,15 @@ function AchievementsTab({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark; text-gray-300 mb-2">
               Status
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              className="w-full px-3 py-2 border border-gray-300 dark: border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focu,
+  s:border-blue-500 dar,
+  k:bg-gray-800 dark; text-white"
             >
               <option value="all">All</option>
               <option value="unlocked">Unlocked</option>
@@ -512,33 +501,32 @@ function AchievementsTab({
       </div>
 
       {/* Achievement Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {achievements.map((achievement) => {
-          const IconComponent = getCategoryIcon(achievement.category);
+      <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-6">
+        {achievements.map((achievement) => { const IconComponent = getCategoryIcon(achievement.category);
           const isUnlocked = Math.random() > 0.7; // Demo: random unlock status
           
           return (
             <div
-              key={achievement.id}
-              className={`p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-lg ${
-                isUnlocked
-                  ? 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700'
-                  : 'border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 opacity-75'
-              }`}
+              key={achievement.id }
+              className={`p-6 rounded-lg border-2 transition-all duration-200 hover: shadow-lg ${isUnlocked ? 'border-yellow-200 bg-yellow-50 dar,
+  k:bg-yellow-900/20 dar,
+  k:border-yellow-700'
+                  : 'border-gray-200 bg-white dark.bg-gray-800 dark; border-gray-700 opacity-75'
+               }`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div 
-                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg ${
-                      isUnlocked ? 'bg-yellow-500' : 'bg-gray-400'
-                    }`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg ${isUnlocked ? 'bg-yellow-500' : 'bg-gray-400'
+                     }`}
                   >
                     {achievement.icon || <IconComponent className="h-6 w-6" />}
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white flex items-center">
                       {achievement.name}
-                      {isUnlocked && <CheckCircle className="h-4 w-4 ml-2 text-green-500" />}
+                      {isUnlocked && <CheckCircle className="h-4 w-4 ml-2 text-green-500" /> }
                       {!isUnlocked && <Lock className="h-4 w-4 ml-2 text-gray-400" />}
                     </h3>
                     <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(achievement.difficulty)}`}>
@@ -560,7 +548,7 @@ function AchievementsTab({
                 <div className="flex items-center space-x-4 text-sm">
                   <div className="flex items-center space-x-1">
                     <Zap className="h-4 w-4 text-green-500" />
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-gray-600 dark; text-gray-400">
                       {achievement.rewards.xp} XP
                     </span>
                   </div>
@@ -577,7 +565,7 @@ function AchievementsTab({
                     {achievement.rewards.titles.map((title) => (
                       <span
                         key={title}
-                        className="px-2 py-1 text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded"
+                        className="px-2 py-1 text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark; text-purple-300 rounded"
                       >
                         {title}
                       </span>
@@ -593,7 +581,7 @@ function AchievementsTab({
                     <span className="text-gray-600 dark:text-gray-400">Progress</span>
                     <span className="text-gray-700 dark:text-gray-300">67%</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                  <div className="w-full bg-gray-200 dark; bg-gray-600 rounded-full h-2">
                     <div
                       className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: '67%' }}
@@ -610,16 +598,12 @@ function AchievementsTab({
 }
 
 // Insights Tab Component
-function InsightsTab({
-  insights,
-  getUrgencyColor,
+function InsightsTab({ insights, getUrgencyColor,
   getCategoryIcon
-}: {
-  insights: AchievementInsight[];
-  getUrgencyColor: (urgency: AchievementInsight['urgency']) => string;
-  getCategoryIcon: (category: Achievement['category']) => any;
-}) {
-  return (
+ }: { insights: AchievementInsight[],
+    getUrgencyColor: (urgency; AchievementInsight['urgency']) => string;
+  getCategoryIcon: (category; Achievement['category']) => any;
+ }) { return (
     <div className="space-y-6">
       {insights.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -628,8 +612,9 @@ function InsightsTab({
             
             return (
               <div
-                key={index}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6"
+                key={index }
+                className="bg-white dark: bg-gray-800 border border-gray-200 dar,
+  k:border-gray-700 rounded-lg p-6"
               >
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
@@ -640,7 +625,7 @@ function InsightsTab({
                   
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-gray-900 dark:text-white">
+                      <h3 className="font-medium text-gray-900 dark; text-white">
                         {insight.achievement.name}
                       </h3>
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getUrgencyColor(insight.urgency)}`}>
@@ -656,7 +641,7 @@ function InsightsTab({
                       <div className="mb-3">
                         <div className="flex items-center justify-between text-sm mb-1">
                           <span className="text-gray-600 dark:text-gray-400">Progress</span>
-                          <span className="text-gray-700 dark:text-gray-300">{insight.progress.toFixed(1)}%</span>
+                          <span className="text-gray-700 dark; text-gray-300">{insight.progress.toFixed(1)}%</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                           <div
@@ -694,7 +679,7 @@ function InsightsTab({
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             No insights available
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark; text-gray-400">
             Keep playing to generate personalized achievement insights!
           </p>
         </div>
@@ -704,19 +689,29 @@ function InsightsTab({
 }
 
 // Leaderboard Tab Component
-function LeaderboardTab() {
-  const leaderboardData = [
-    { rank: 1, username: 'FantasyKing', level: 47, xp: 47250, achievements: 89 },
-    { rank: 2, username: 'GridironGuru', level: 42, xp: 42180, achievements: 76 },
-    { rank: 3, username: 'ChampionChaser', level: 39, xp: 39450, achievements: 71 },
-    { rank: 4, username: 'TrophyHunter', level: 36, xp: 36890, achievements: 64 },
-    { rank: 5, username: 'AchievementAce', level: 34, xp: 34560, achievements: 58 },
+function LeaderboardTab() { const leaderboardData = [
+    { rank, 1,
+  username: 'FantasyKing', level, 47,
+  xp, 47250, achievements: 89  },
+    { rank, 2,
+  username: 'GridironGuru', level, 42,
+  xp, 42180, achievements: 76 },
+    { rank, 3,
+  username: 'ChampionChaser', level, 39,
+  xp, 39450, achievements: 71 },
+    { rank, 4,
+  username: 'TrophyHunter', level, 36,
+  xp, 36890, achievements: 64 },
+    { rank, 5,
+  username: 'AchievementAce', level, 34,
+  xp, 34560, achievements: 58 }
   ];
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-6 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark: from-yellow-900/20 dar,
+  k:to-orange-900/20 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 dark; text-white mb-4">
           Top Achievement Hunters
         </h3>
         
@@ -727,8 +722,7 @@ function LeaderboardTab() {
               className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg"
             >
               <div className="flex items-center space-x-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                  player.rank === 1 ? 'bg-yellow-500' :
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${player.rank === 1 ? 'bg-yellow-500' :
                   player.rank === 2 ? 'bg-gray-400' :
                   player.rank === 3 ? 'bg-orange-500' : 'bg-blue-500'
                 }`}>

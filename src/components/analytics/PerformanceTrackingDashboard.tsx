@@ -1,176 +1,152 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo  } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp,
-  TrendingDown,
-  BarChart3,
-  Target,
-  Calendar,
-  Users,
-  Trophy,
-  AlertTriangle,
-  CheckCircle,
-  Activity,
-  Clock,
-  Zap,
-  Star,
-  Award,
-  LineChart as LineChartIcon,
-  PieChart,
-  Filter,
-  Download,
-  RefreshCw,
-  Settings,
-  Eye,
-  ArrowUp,
-  ArrowDown,
+  TrendingUp, TrendingDown,
+  BarChart3, Target,
+  Calendar, Users,
+  Trophy, AlertTriangle,
+  CheckCircle, Activity,
+  Clock, Zap,
+  Star, Award,
+  LineChart as LineChartIcon, PieChart,
+  Filter, Download,
+  RefreshCw, Settings,
+  Eye, ArrowUp, ArrowDown,
   Minus
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button/Button';
 import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ComposedChart,
-  Cell,
-  ScatterChart,
+  LineChart, Line,
+  AreaChart, Area,
+  BarChart, Bar,
+  RadarChart, Radar,
+  PolarGrid, PolarAngleAxis,
+  PolarRadiusAxis, XAxis,
+  YAxis, CartesianGrid,
+  Tooltip, Legend,
+  ResponsiveContainer, ComposedChart,
+  Cell, ScatterChart,
   Scatter
 } from 'recharts';
 
 // Types
 interface PerformanceMetrics {
-  playerId: string;
-  name: string;
-  position: string;
-  team: string;
-  weeklyPerformance: WeeklyPerformance[];
-  seasonStats: SeasonStats;
-  trendAnalysis: TrendAnalysis;
-  efficiency: EfficiencyMetrics;
-  consistency: ConsistencyMetrics;
-  projectionAccuracy: ProjectionAccuracy;
+  playerId, string,
+    name, string,
+  position, string,
+    team, string,
+  weeklyPerformance: WeeklyPerformance[],
+    seasonStats, SeasonStats,
+  trendAnalysis, TrendAnalysis,
+    efficiency, EfficiencyMetrics,
+  consistency, ConsistencyMetrics,
+    projectionAccuracy, ProjectionAccuracy,
+  
 }
-
 interface WeeklyPerformance {
-  week: number;
-  projectedPoints: number;
-  actualPoints: number;
-  accuracy: number;
-  matchupDifficulty: 'easy' | 'moderate' | 'difficult';
-  gameScript: number;
-  usage: UsageMetrics;
-  contextualFactors: string[];
+  week, number,
+    projectedPoints, number,
+  actualPoints, number,
+    accuracy, number,
+  matchupDifficulty: 'easy' | 'moderate' | 'difficult',
+    gameScript, number,
+  usage, UsageMetrics,
+    contextualFactors: string[];
 }
 
 interface SeasonStats {
-  totalPoints: number;
-  averagePoints: number;
-  highScore: number;
-  lowScore: number;
-  gamesPlayed: number;
-  consistencyScore: number;
-  trendScore: number;
-  projectionBeat: number; // % of weeks beating projection
+  totalPoints, number,
+    averagePoints, number,
+  highScore, number,
+    lowScore, number,
+  gamesPlayed, number,
+    consistencyScore, number,
+  trendScore, number,
+    projectionBeat, number, // % of weeks beating projection;
+  
 }
-
 interface TrendAnalysis {
-  lastFourWeeks: number;
-  lastTwoWeeks: number;
-  homeVsAway: { home: number; away: number };
+  lastFourWeeks, number,
+    lastTwoWeeks, number,
+  homeVsAway: { hom,
+  e, number, away: number }
   byOpponent: Record<string, number>;
   byWeather: Record<string, number>;
-  momentum: 'hot' | 'cold' | 'neutral';
-  trendDirection: 'up' | 'down' | 'stable';
-  trendStrength: number;
+  momentum: 'hot' | 'cold' | 'neutral',
+    trendDirection: 'up' | 'down' | 'stable';
+  trendStrength, number,
 }
 
 interface EfficiencyMetrics {
-  pointsPerTarget: number;
-  pointsPerCarry: number;
-  pointsPerSnap: number;
-  redZoneEfficiency: number;
-  goalLineEfficiency: number;
-  thirdDownUsage: number;
+  pointsPerTarget, number,
+    pointsPerCarry, number,
+  pointsPerSnap, number,
+    redZoneEfficiency, number,
+  goalLineEfficiency, number,
+    thirdDownUsage, number,
   situationalUsage: Record<string, number>;
+  
 }
-
 interface ConsistencyMetrics {
-  coefficient: number; // Lower = more consistent
-  floorScore: number; // 25th percentile
-  ceilingScore: number; // 75th percentile
-  boomRate: number; // % of games > ceiling
-  bustRate: number; // % of games < floor
-  gameLogVariance: number;
-  weekToWeekStability: number;
+  coefficient, number, // Lower = more consistent,
+    floorScore, number, // 25th percentile
+  ceilingScore, number, // 75th percentile,
+    boomRate, number, // % of games > ceiling
+  bustRate, number, // % of games < floor,
+    gameLogVariance, number,
+  weekToWeekStability, number,
 }
 
 interface ProjectionAccuracy {
-  overallAccuracy: number;
-  weeklyAccuracies: number[];
-  avgError: number;
-  rmse: number;
-  bias: number; // Tendency to over/under project
-  accuracyTrend: 'improving' | 'declining' | 'stable';
+  overallAccuracy, number,
+    weeklyAccuracies: number[];
+  avgError, number,
+    rmse, number,
+  bias, number, // Tendency to over/under project,
+    accuracyTrend: 'improving' | 'declining' | 'stable';
+  
 }
-
 interface UsageMetrics {
-  snapShare: number;
-  targetShare: number;
-  redZoneTargets: number;
-  goalLineCarries: number;
-  thirdDownSnaps: number;
-  twoMinuteSnaps: number;
+  snapShare, number,
+    targetShare, number,
+  redZoneTargets, number,
+    goalLineCarries, number,
+  thirdDownSnaps, number,
+    twoMinuteSnaps, number,
 }
 
 interface TeamPerformance {
-  teamId: string;
-  teamName: string;
-  weeklyScores: number[];
-  projectedScores: number[];
-  accuracy: number;
-  consistency: number;
-  trends: {
-    recent: number;
-    season: number;
-    home: number;
-    away: number;
-  };
-  topPerformers: PerformanceMetrics[];
-  underperformers: PerformanceMetrics[];
+  teamId, string,
+    teamName, string,
+  weeklyScores: number[],
+    projectedScores: number[];
+  accuracy, number,
+    consistency, number,
+  trends: {,
+  recent, number,
+    season, number,
+    home, number,
+    away, number,
+  }
+  topPerformers: PerformanceMetrics[],
+    underperformers: PerformanceMetrics[];
   positionStrengths: Record<string, number>;
 }
 
 interface PerformanceTrackingProps {
-  leagueId: string;
-  teamId?: string;
-  playerId?: string;
+  leagueId, string,
+  teamId?, string,
+  playerId?, string,
   timeframe: 'season' | 'recent' | 'playoffs';
+  
 }
-
-const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
-  leagueId,
-  teamId,
-  playerId,
+const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({ leagueId, teamId, playerId,
   timeframe = 'season'
-}) => {
+ }) => {
   // State management
   const [selectedView, setSelectedView] = useState<'overview' | 'player' | 'team' | 'comparison' | 'trends'>('overview');
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(playerId || null);
@@ -186,110 +162,104 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
       name: 'Josh Allen',
       position: 'QB',
       team: 'BUF',
-      weeklyPerformance: Array.from({ length: 8 }, (_, i) => ({
+      weeklyPerformance: Array.from({ lengt,
+  h: 8 }, (_, i) => ({
         week: i + 1,
         projectedPoints: 22 + Math.random() * 6,
         actualPoints: 20 + Math.random() * 10,
         accuracy: 75 + Math.random() * 20,
         matchupDifficulty: ['easy', 'moderate', 'difficult'][Math.floor(Math.random() * 3)] as 'easy' | 'moderate' | 'difficult',
         gameScript: -5 + Math.random() * 10,
-        usage: {
-          snapShare: 0.95 + Math.random() * 0.05,
-          targetShare: 0.0,
-          redZoneTargets: 0,
+        usage: {,
+  snapShare: 0.95 + Math.random() * 0.05,
+          targetShare: 0.0, redZoneTargets, 0,
           goalLineCarries: 1 + Math.random() * 2,
           thirdDownSnaps: 8 + Math.random() * 4,
           twoMinuteSnaps: 4 + Math.random() * 3
         },
         contextualFactors: ['Home game', 'Good weather']
       })),
-      seasonStats: {
-        totalPoints: 185.4,
+      seasonStats: {,
+  totalPoints: 185.4,
         averagePoints: 23.2,
         highScore: 34.6,
-        lowScore: 12.8,
-        gamesPlayed: 8,
-        consistencyScore: 87,
-        trendScore: 92,
+        lowScore: 12.8, gamesPlayed, 8, consistencyScore, 87, trendScore, 92,
         projectionBeat: 62.5
       },
-      trendAnalysis: {
-        lastFourWeeks: 25.1,
+      trendAnalysis: {,
+  lastFourWeeks: 25.1,
         lastTwoWeeks: 27.8,
-        homeVsAway: { home: 25.6, away: 20.8 },
+        homeVsAway: {,
+  home: 25.6,
+          away: 20.8
+        },
         byOpponent: { 'vs_MIA': 28.4, 'vs_NYJ': 31.2 },
         byWeather: { 'clear': 24.8, 'rain': 19.6 },
         momentum: 'hot',
         trendDirection: 'up',
         trendStrength: 8.5
       },
-      efficiency: {
-        pointsPerTarget: 0.0,
-        pointsPerCarry: 0.45,
-        pointsPerSnap: 0.24,
-        redZoneEfficiency: 87,
-        goalLineEfficiency: 92,
-        thirdDownUsage: 95,
+      efficiency: {,
+  pointsPerTarget: 0.0,
+  pointsPerCarry: 0.45,
+        pointsPerSnap: 0.24, redZoneEfficiency, 87, goalLineEfficiency, 92, thirdDownUsage, 95,
         situationalUsage: { 'redZone': 0.95, 'goalLine': 0.88, 'thirdDown': 0.95 }
       },
-      consistency: {
-        coefficient: 0.32,
-        floorScore: 18.5,
-        ceilingScore: 28.7,
-        boomRate: 25,
+      consistency: {,
+  coefficient: 0.32,
+  floorScore: 18.5,
+        ceilingScore: 28.7, boomRate, 25,
         bustRate: 12.5,
-        gameLogVariance: 45.8,
+  gameLogVariance: 45.8,
         weekToWeekStability: 78
       },
-      projectionAccuracy: {
-        overallAccuracy: 87.5,
-        weeklyAccuracies: [85, 90, 82, 88, 91, 85, 89, 86],
+      projectionAccuracy: {,
+  overallAccuracy: 87.5,
+  weeklyAccuracies: [85, 90, 82, 88, 91, 85, 89, 86],
         avgError: 2.8,
-        rmse: 4.1,
+  rmse: 4.1,
         bias: 1.2,
-        accuracyTrend: 'improving'
+  accuracyTrend: 'improving'
       }
     }
-    // Add more mock players...
-  ], []);
+    // Add more mock players...], []);
 
-  const teamPerformance: TeamPerformance = useMemo(() => ({
-    teamId: selectedTeam || 'team_1',
-    teamName: 'Team Alpha',
+  const teamPerformance: TeamPerformance = useMemo(() => ({,
+  teamId: selectedTeam || 'team_1',
+  teamName: 'Team Alpha',
     weeklyScores: [124.5, 118.9, 132.1, 109.8, 145.2, 128.7, 119.4, 136.8],
     projectedScores: [122.8, 121.5, 128.9, 115.2, 140.1, 125.3, 123.7, 131.9],
     accuracy: 89.2,
-    consistency: 82.5,
-    trends: {
-      recent: 128.4,
-      season: 126.9,
+  consistency: 82.5,
+    trends: {,
+  recent: 128.4,
+  season: 126.9,
       home: 132.1,
-      away: 121.7
+  away: 121.7
     },
     topPerformers: performanceData.slice(0, 3),
     underperformers: [],
-    positionStrengths: {
-      QB: 92,
-      RB: 78,
-      WR: 85,
-      TE: 71,
-      K: 88,
-      DST: 82
+  positionStrengths: {
+      QB, 92,
+  RB, 78,
+      WR, 85,
+  TE, 71,
+      K, 88,
+  DST: 82
     }
   }), [performanceData, selectedTeam]);
 
   // Chart data transformations
-  const weeklyPerformanceChart = useMemo(() => {
-    if (selectedPlayer && performanceData.length > 0) {
+  const weeklyPerformanceChart = useMemo(() => { if (selectedPlayer && performanceData.length > 0) {
       const player = performanceData.find(p => p.playerId === selectedPlayer);
       if (player) {
         return player.weeklyPerformance.map(week => ({
           week: week.week,
-          projected: Math.round(week.projectedPoints * 10) / 10,
+  projected: Math.round(week.projectedPoints * 10) / 10,
           actual: Math.round(week.actualPoints * 10) / 10,
-          accuracy: week.accuracy,
+  accuracy: week.accuracy,
           difficulty: week.matchupDifficulty
-        }));
+         }));
       }
     }
     return [];
@@ -298,24 +268,29 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
   const consistencyChart = useMemo(() => 
     performanceData.slice(0, 6).map(player => ({
       name: player.name,
-      consistency: player.consistency.coefficient,
+  consistency: player.consistency.coefficient,
       floor: player.consistency.floorScore,
-      ceiling: player.consistency.ceilingScore,
+  ceiling: player.consistency.ceilingScore,
       average: player.seasonStats.averagePoints
     })), [performanceData]
   );
 
-  const efficiencyRadarData = useMemo(() => {
-    if (selectedPlayer) {
+  const efficiencyRadarData = useMemo(() => { if (selectedPlayer) {
       const player = performanceData.find(p => p.playerId === selectedPlayer);
       if (player) {
         return [
-          { metric: 'Points/Snap', value: player.efficiency.pointsPerSnap * 100, fullMark: 50 },
-          { metric: 'Red Zone Eff', value: player.efficiency.redZoneEfficiency, fullMark: 100 },
-          { metric: 'Goal Line Eff', value: player.efficiency.goalLineEfficiency, fullMark: 100 },
-          { metric: 'Consistency', value: player.consistency.weekToWeekStability, fullMark: 100 },
-          { metric: 'Accuracy', value: player.projectionAccuracy.overallAccuracy, fullMark: 100 },
-          { metric: 'Trend', value: player.trendAnalysis.trendStrength * 10, fullMark: 100 }
+          { metric: 'Points/Snap',
+  value: player.efficiency.pointsPerSnap * 100, fullMark: 50  },
+          { metric: 'Red Zone Eff',
+  value: player.efficiency.redZoneEfficiency, fullMark: 100 },
+          { metric: 'Goal Line Eff',
+  value: player.efficiency.goalLineEfficiency, fullMark: 100 },
+          { metric: 'Consistency',
+  value: player.consistency.weekToWeekStability, fullMark: 100 },
+          { metric: 'Accuracy',
+  value: player.projectionAccuracy.overallAccuracy, fullMark: 100 },
+          { metric: 'Trend',
+  value: player.trendAnalysis.trendStrength * 10, fullMark: 100 }
         ];
       }
     }
@@ -323,15 +298,15 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
   }, [selectedPlayer, performanceData]);
 
   // Custom tooltip component
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip = ({ active, payload, label }: any) => { if (active && payload && payload.length) {
       return (
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
-          <p className="text-white font-semibold">{label}</p>
-          {payload.map((pld: any, index: number) => (
+          <p className="text-white font-semibold">{label }</p>
+          {payload.map((pld, any,
+  index: number) => (
             <p key={index} className="text-gray-300 text-sm">
               <span style={{ color: pld.color }}>
-                {pld.dataKey}: {typeof pld.value === 'number' ? pld.value.toFixed(1) : pld.value}
+                { pld.dataKey }: {typeof: pld.value === 'number' ? pld.value.toFixed(1) : pld.value}
               </span>
             </p>
           ))}
@@ -339,8 +314,7 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
       );
     }
     return null;
-  };
-
+  }
   // Render methods
   const renderOverviewDashboard = () => (
     <div className="space-y-6">
@@ -407,7 +381,7 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
             <h3 className="text-lg font-semibold text-white">Weekly Performance Tracking</h3>
             <div className="flex space-x-2">
               <select 
-                value={selectedPlayer || ''}
+                value={ selectedPlayer: || '' }
                 onChange={(e) => setSelectedPlayer(e.target.value)}
                 className="bg-gray-800 border border-gray-700 rounded text-white text-sm px-3 py-1"
               >
@@ -496,11 +470,9 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
               <button
                 key={metric}
                 onClick={() => setSelectedMetric(metric as typeof selectedMetric)}
-                className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                  selectedMetric === metric
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                }`}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${selectedMetric === metric
+                    ? 'bg-blue-600 text-white' : 'text-gray-400 hover.text-white hover; bg-gray-700'
+                 }`}
               >
                 {metric.charAt(0).toUpperCase() + metric.slice(1)}
               </button>
@@ -508,12 +480,15 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md: grid-cols-2 l,
+  g:grid-cols-3 gap-4">
           {performanceData.slice(0, 6).map((player, index) => (
             <motion.div
               key={player.playerId}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity, 0,
+  y: 20 }}
+              animate={{ opacity, 1,
+  y: 0 }}
               transition={{ delay: index * 0.1 }}
               className="p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 transition-colors cursor-pointer"
               onClick={() => setSelectedPlayer(player.playerId)}
@@ -524,11 +499,9 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
                   <p className="text-sm text-gray-400">{player.position} • {player.team}</p>
                 </div>
                 <div className="text-right">
-                  {index < 3 && <Award className="h-5 w-5 text-yellow-400 mb-1" />}
-                  <Badge className={`text-xs ${
-                    player.trendAnalysis.momentum === 'hot' ? 'text-green-400 bg-green-900/30' :
-                    player.trendAnalysis.momentum === 'cold' ? 'text-red-400 bg-red-900/30' :
-                    'text-gray-400 bg-gray-900/30'
+                  { index: < 3 && <Award className="h-5 w-5 text-yellow-400 mb-1" /> }
+                  <Badge className={`text-xs ${player.trendAnalysis.momentum === 'hot' ? 'text-green-400 bg-green-900/30' :
+                    player.trendAnalysis.momentum === 'cold' ? 'text-red-400 bg-red-900/30' : 'text-gray-400 bg-gray-900/30'
                   }`}>
                     {player.trendAnalysis.momentum.toUpperCase()}
                   </Badge>
@@ -550,10 +523,8 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
                 </div>
                 <div>
                   <p className="text-gray-400">Trend</p>
-                  <p className={`font-semibold flex items-center ${
-                    player.trendAnalysis.trendDirection === 'up' ? 'text-green-400' :
-                    player.trendAnalysis.trendDirection === 'down' ? 'text-red-400' :
-                    'text-gray-400'
+                  <p className={`font-semibold flex items-center ${player.trendAnalysis.trendDirection === 'up' ? 'text-green-400' :
+                    player.trendAnalysis.trendDirection === 'down' ? 'text-red-400' : 'text-gray-400'
                   }`}>
                     {player.trendAnalysis.trendDirection === 'up' ? <TrendingUp className="h-3 w-3 mr-1" /> :
                      player.trendAnalysis.trendDirection === 'down' ? <TrendingDown className="h-3 w-3 mr-1" /> :
@@ -569,15 +540,14 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
     </div>
   );
 
-  const renderPlayerDetailView = () => {
-    if (!selectedPlayer) {
+  const renderPlayerDetailView = () => { if (!selectedPlayer) {
       return (
         <Card className="p-6 text-center">
           <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-400">Select a player to view detailed performance analysis</p>
         </Card>
       );
-    }
+     }
 
     const player = performanceData.find(p => p.playerId === selectedPlayer);
     if (!player) return null;
@@ -595,10 +565,8 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
                 <h2 className="text-2xl font-bold text-white">{player.name}</h2>
                 <p className="text-indigo-300">{player.position} • {player.team}</p>
                 <div className="flex items-center space-x-4 mt-2">
-                  <Badge className={`${
-                    player.trendAnalysis.momentum === 'hot' ? 'text-green-400 bg-green-900/30' :
-                    player.trendAnalysis.momentum === 'cold' ? 'text-red-400 bg-red-900/30' :
-                    'text-gray-400 bg-gray-900/30'
+                  <Badge className={`${player.trendAnalysis.momentum === 'hot' ? 'text-green-400 bg-green-900/30' :
+                    player.trendAnalysis.momentum === 'cold' ? 'text-red-400 bg-red-900/30' : 'text-gray-400 bg-gray-900/30'
                   }`}>
                     {player.trendAnalysis.momentum.toUpperCase()}
                   </Badge>
@@ -679,8 +647,7 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-4">
             <h4 className="font-semibold text-white mb-3 flex items-center">
-              <Activity className="h-4 w-4 mr-2" />
-              Season Stats
+              <Activity className="h-4 w-4 mr-2" />  Season, Stats,
             </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -729,8 +696,7 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
 
           <Card className="p-4">
             <h4 className="font-semibold text-white mb-3 flex items-center">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Recent Trends
+              <TrendingUp className="h-4 w-4 mr-2" />  Recent, Trends,
             </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -754,8 +720,7 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
         </div>
       </div>
     );
-  };
-
+  }
   return (
     <div className="space-y-6">
       {/* Dashboard Header */}
@@ -784,20 +749,23 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
       {/* Navigation Tabs */}
       <div className="flex space-x-1 bg-gray-800 rounded-lg p-1">
         {[
-          { key: 'overview', label: 'Overview', icon: BarChart3 },
-          { key: 'player', label: 'Player Analysis', icon: Users },
-          { key: 'team', label: 'Team Performance', icon: Trophy },
-          { key: 'comparison', label: 'Comparisons', icon: LineChartIcon },
-          { key: 'trends', label: 'Trends', icon: TrendingUp }
+          { key: 'overview',
+  label: 'Overview', icon: BarChart3 },
+          { key: 'player',
+  label: 'Player Analysis', icon: Users },
+          { key: 'team',
+  label: 'Team Performance', icon: Trophy },
+          { key: 'comparison',
+  label: 'Comparisons', icon: LineChartIcon },
+          { key: 'trends',
+  label: 'Trends', icon: TrendingUp }
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setSelectedView(key as typeof selectedView)}
-            className={`flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-              selectedView === key
-                ? 'bg-indigo-600 text-white'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700'
-            }`}
+            className={`flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedView === key
+                ? 'bg-indigo-600 text-white' : 'text-gray-400 hover.text-white hover; bg-gray-700'
+             }`}
           >
             <Icon className="h-4 w-4 mr-2" />
             {label}
@@ -809,18 +777,20 @@ const PerformanceTrackingDashboard: React.FC<PerformanceTrackingProps> = ({
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedView}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          initial={{ opacity, 0,
+  y: 20 }}
+          animate={{ opacity, 1,
+  y: 0 }}
+          exit={{ opacity, 0,
+  y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          {selectedView === 'overview' && renderOverviewDashboard()}
-          {selectedView === 'player' && renderPlayerDetailView()}
+          {selectedView === 'overview' && renderOverviewDashboard() }
+          {selectedView === 'player' && renderPlayerDetailView() }
           {/* Add other views as needed */}
         </motion.div>
       </AnimatePresence>
     </div>
   );
-};
-
+}
 export default PerformanceTrackingDashboard;

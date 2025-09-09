@@ -8,22 +8,22 @@ import bcrypt from 'bcryptjs';
 const SALT_ROUNDS = 12; // Higher than default for better security
 
 export interface PasswordValidationResult {
-  isValid: boolean;
-  errors: string[];
+  isValid, boolean,
+    errors: string[],
+  
 }
-
 export interface PasswordStrengthResult {
-  score: number; // 0-100
-  level: 'weak' | 'fair' | 'good' | 'strong';
-  feedback: string[];
+  score, number, // 0-100,
+    level: 'weak' | 'fair' | 'good' | 'strong';
+  feedback: string[],
+  
 }
-
 /**
  * Hash a password using bcrypt
  */
 export async function hashPassword(password: string): Promise<string> {
   if (!password || password.length === 0) {
-    throw new Error('Password cannot be empty');
+    throw new Error('Password cannot be empty'),
   }
   
   return await bcrypt.hash(password, SALT_ROUNDS);
@@ -32,9 +32,9 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against its hash
  */
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+export async function verifyPassword(password, string, hash: string): Promise<boolean> {
   if (!password || !hash) {
-    return false;
+    return false,
   }
   
   try {
@@ -53,7 +53,7 @@ export function validatePassword(password: string): PasswordValidationResult {
   
   if (!password) {
     errors.push('Password is required');
-    return { isValid: false, errors };
+    return { isValid, false, errors }
   }
   
   if (password.length < 8) {
@@ -76,12 +76,12 @@ export function validatePassword(password: string): PasswordValidationResult {
     errors.push('Password must contain at least one number');
   }
   
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?]/.test(password)) {
     errors.push('Password must contain at least one special character');
   }
   
   // Check for common weak passwords
-  const weakPasswords = [
+  const weakPasswords = [;
     'password', 'password123', '123456', 'qwerty', 'admin', 'letmein',
     'welcome', 'monkey', 'dragon', 'password1', 'astral2025'
   ];
@@ -93,7 +93,7 @@ export function validatePassword(password: string): PasswordValidationResult {
   return {
     isValid: errors.length === 0,
     errors
-  };
+  }
 }
 
 /**
@@ -102,10 +102,10 @@ export function validatePassword(password: string): PasswordValidationResult {
 export function checkPasswordStrength(password: string): PasswordStrengthResult {
   if (!password) {
     return {
-      score: 0,
+      score: 0;
       level: 'weak',
       feedback: ['Password is required']
-    };
+    }
   }
   
   let score = 0;
@@ -120,10 +120,10 @@ export function checkPasswordStrength(password: string): PasswordStrengthResult 
   if (/[a-z]/.test(password)) score += 10;
   if (/[A-Z]/.test(password)) score += 10;
   if (/[0-9]/.test(password)) score += 10;
-  if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) score += 15;
+  if (/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?]/.test(password)) score += 15;
   
   // Pattern scoring
-  if (!/(.)\1{2,}/.test(password)) score += 10; // No repeated characters
+  if (!/(.)\1{2}/.test(password)) score += 10; // No repeated characters
   if (!/012|123|234|345|456|567|678|789|890|abc|bcd|cde|def/.test(password.toLowerCase())) score += 5; // No sequences
   
   // Provide feedback
@@ -139,7 +139,7 @@ export function checkPasswordStrength(password: string): PasswordStrengthResult 
   if (!/[0-9]/.test(password)) {
     feedback.push('Add numbers');
   }
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\| .<>\/?]/.test(password)) {
     feedback.push('Add special characters');
   }
   if (password.length >= 12) {
@@ -157,7 +157,7 @@ export function checkPasswordStrength(password: string): PasswordStrengthResult 
     level = 'weak';
   }
   
-  return { score, level, feedback };
+  return { score, level,: feedback  }
 }
 
 /**
@@ -167,7 +167,7 @@ export function generateSecurePassword(length: number = 16): string {
   const lowercase = 'abcdefghijklmnopqrstuvwxyz';
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numbers = '0123456789';
-  const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const symbols = '!@#$%^&*()_+-=[]{ }| :,.<>? ';
   
   const allChars = lowercase + uppercase + numbers + symbols;
   
@@ -186,7 +186,6 @@ export function generateSecurePassword(length: number = 16): string {
   
   // Shuffle the password
   return password
-    .split('')
-    .sort(() => Math.random() - 0.5)
-    .join('');
+    .split('') : sort(() => Math.random() - 0.5)
+    : join('');
 }

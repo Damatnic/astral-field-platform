@@ -1,43 +1,40 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  try {
+export async function GET() { try {
     // Mock injury data
     const injuries = [
       {
         id: "1",
-        playerId: "player_123",
+  playerId: "player_123",
         playerName: "Josh Allen",
-        team: "BUF",
+  team: "BUF",
         position: "QB",
-        injuryType: "shoulder",
+  injuryType: "shoulder",
         severity: "questionable",
-        status: "day-to-day",
+  status: "day-to-day",
         estimatedReturn: "1 week",
-        lastUpdated: new Date().toISOString(),
-      },
+  lastUpdated: new Date().toISOString()
+},
       {
         id: "2",
-        playerId: "player_456",
+  playerId: "player_456",
         playerName: "Cooper Kupp",
-        team: "LAR",
+  team: "LAR",
         position: "WR",
-        injuryType: "ankle",
+  injuryType: "ankle",
         severity: "doubtful",
-        status: "week-to-week",
+  status: "week-to-week",
         estimatedReturn: "2-3 weeks",
-        lastUpdated: new Date().toISOString(),
-      },
-    ];
+  lastUpdated: new Date().toISOString()
+}
+  ];
 
     return NextResponse.json({
-      success: true,
-      data: injuries,
-      count: injuries.length,
-    });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch injury data" },
+      success: true, data: injuries,
+      count: injuries.length
+});
+  } catch { return NextResponse.json(
+      { error: "Failed to fetch injury data"  },
       { status: 500 },
     );
   }
