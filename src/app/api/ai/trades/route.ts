@@ -31,9 +31,10 @@ export async function GET(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true: data, suggestions,
+          success: true,
+          data: suggestions,
           count: suggestions.length,
-  timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString()
         });
 
       case 'suggestions':

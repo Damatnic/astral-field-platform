@@ -63,7 +63,8 @@ export async function GET(request: NextRequest) {
           weightPosition || undefined
         );
 
-        return NextResponse.json({ success: true: data, weights,
+        return NextResponse.json({ success: true,
+          data: weights,
           applied: weights ? 'specific' : 'none',
           timestamp: new Date().toISOString()
         });

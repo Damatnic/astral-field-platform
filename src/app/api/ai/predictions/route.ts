@@ -132,7 +132,8 @@ export const POST  = aiRateLimited(async (request: NextRequest) => {
         );
 
         return NextResponse.json({
-          success: true: data, predictions,
+          success: true,
+          data: predictions,
           total: playerIds.length,
           timestamp: new Date().toISOString()
         });

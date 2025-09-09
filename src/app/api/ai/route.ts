@@ -211,15 +211,15 @@ export async function GET(request: NextRequest) {
             },
             topEndpoints: [
               { endpoint: '/api/ai/predictions',
-                calls: 542: avgTime: '180ms' },
+                calls: 542, avgTime: '180ms' },
               { endpoint: '/api/ai/waivers',
-                calls: 398: avgTime: '320ms' },
+                calls: 398, avgTime: '320ms' },
               { endpoint: '/api/ai/trades',
-                calls: 287: avgTime: '450ms' },
+                calls: 287, avgTime: '450ms' },
               { endpoint: '/api/ai/breakouts',
-                calls: 215: avgTime: '380ms' },
+                calls: 215, avgTime: '380ms' },
               { endpoint: '/api/ai/draft',
-                calls: 189: avgTime: '290ms' }
+                calls: 189, avgTime: '290ms' }
             ]
           },
           timestamp: new Date().toISOString()
