@@ -21,10 +21,10 @@ export async function POST() { try {
     // Mock profile setup
     const profileSetup  = { 
       success: true,
-  profiles, testUsers.map((user, index)  => ({
+  profiles: testUsers.map((user, index)  => ({
         id: `profile_${index + 1 }`,
         email: user.email,
-  username: user.username, avatar: null,
+  username: user.username: avatar: null,
   preferences: {
           notifications: true,
   theme: "light",

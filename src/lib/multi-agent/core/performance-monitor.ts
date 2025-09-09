@@ -1,6 +1,6 @@
 /**
  * Multi-Agent Performance Monitoring System
- * Comprehensive monitoring of agent: efficiency, system: performance, and optimization recommendations
+ * Comprehensive monitoring of agent: efficiency: system: performance, and optimization recommendations
  */
 
 import { AgentStatus, AgentMetrics, SystemHealth, Task } from '../types';
@@ -170,7 +170,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
   }
 
   updateAgentProfile(agentId, string,
-  tasks: Task[], metrics: any); void { const profile = this.agentProfiles.get(agentId) || this.createBaseAgentProfile(agentId);
+  tasks: Task[]: metrics: any); void { const profile = this.agentProfiles.get(agentId) || this.createBaseAgentProfile(agentId);
     
     // Update efficiency metrics
     const completedTasks = tasks.filter(t => t.status === 'completed' && t.assignedAgentId === agentId);
@@ -203,7 +203,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
         health: this.determineSystemHealth(currentMetrics),
   efficiency: this.calculateSystemEfficiency(agents),
         bottlenecks: this.identifyBottlenecks(currentMetrics, agents),
-        recommendations, this.generateSystemRecommendations(currentMetrics, agents)
+        recommendations: this.generateSystemRecommendations(currentMetrics, agents)
        },
       agents: { totalActive: agents.filter(a  => this.isAgentActive(a.agentId)).length,
   averageUtilization: this.calculateAverageUtilization(agents),
@@ -213,7 +213,7 @@ export class PerformanceMonitor { private metrics: Map<string, PerformanceMetric
       tasks: {  throughput: this.calculateSystemThroughput(),
   avgCompletionTime: this.calculateSystemAverageCompletionTime(),
         backlogSize: this.getBacklogSize(),
-  successRate, this.calculateSystemSuccessRate()
+  successRate: this.calculateSystemSuccessRate()
       },
       resources: { cpuUtilization: currentMetrics.cpu || 0,
   memoryUtilization: currentMetrics.memory || 0,
@@ -438,7 +438,7 @@ type alertData.type!,
   source: alertData.source!,
       timestamp: new Date(),
   resolved: false,
-      actions, this.generateAlertActions(alertData.type!, alertData.source!)
+      actions: this.generateAlertActions(alertData.type!: alertData.source!)
     }
     this.alerts.push(alert);
     console.warn(`🚨 Performance: Alert, ${alert.title} - ${alert.message}`);
@@ -460,7 +460,7 @@ type alertData.type!,
         actions.push('Optimize slow operations');
         break;
       
-      case 'agent_offline', actions.push(`Restart agent ${source }`);
+      case 'agent_offline': actions.push(`Restart agent ${source }`);
         actions.push('Check agent health status');
         actions.push('Review agent logs for errors');
         break;
@@ -476,7 +476,7 @@ type alertData.type!,
   }
 
   private storeMetric(name, string,
-  value, number, timestamp: Date); void { if (!this.metrics.has(name)) {
+  value, number: timestamp: Date); void { if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
      }
 
@@ -486,14 +486,14 @@ type alertData.type!,
       name, value,
       unit: this.getMetricUnit(name),
   threshold: this.getMetricThreshold(name),
-      trend, this.calculateTrend(name, value),
+      trend: this.calculateTrend(name, value),
       timestamp
     }
     metricHistory.push(metric);
 
     // Keep only last 1000 metrics per name
     if (metricHistory.length > 1000) {
-      metricHistory.splice(0, metricHistory.length - 1000);
+      metricHistory.splice(0: metricHistory.length - 1000);
     }
   }
 
@@ -747,7 +747,7 @@ type alertData.type!,
     if (!metrics || metrics.length < 2) return 'stable';
     
     const recent = metrics.slice(-10); // Last 10 data points
-    const firstHalf = recent.slice(0, Math.floor(recent.length / 2));
+    const firstHalf = recent.slice(0: Math.floor(recent.length / 2));
     const secondHalf = recent.slice(Math.floor(recent.length / 2));
     
     const firstAvg = firstHalf.reduce((sum, m) => sum + m.value, 0) / firstHalf.length;

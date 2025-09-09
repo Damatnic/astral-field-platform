@@ -318,7 +318,7 @@ export class AIFallbackManager {
     throw new Error(`All fallback strategies failed for service ${serviceId}.Original error: ${originalError.message}`);
   }
 
-  private async executeStrategy(strategy, FallbackStrategy, requestContext: unknown): : Promise<any> { 
+  private async executeStrategy(strategy, FallbackStrategy: requestContext: unknown): : Promise<any> { 
     switch (strategy.strategyType) {
       case 'cache':
       return await this.executeCacheFallback(strategy, requestContext);
@@ -340,7 +340,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeCacheFallback(strategy, FallbackStrategy, requestContext: unknown): : Promise<any> {
+  private async executeCacheFallback(strategy, FallbackStrategy: requestContext: unknown): : Promise<any> {
     const cacheKey  = this.generateCacheKey(strategy.serviceId, requestContext);
     const cachedResponse = this.cachedResponses.get(cacheKey);
 
@@ -365,7 +365,7 @@ export class AIFallbackManager {
     throw new Error('No valid cached data available');
   }
 
-  private executeStaticFallback(strategy, FallbackStrategy, requestContext: unknown): unknown {
+  private executeStaticFallback(strategy, FallbackStrategy: requestContext: unknown): unknown {
     const staticData  = strategy.fallbackData;
 
     if (!staticData) {
@@ -391,7 +391,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeSimplifiedFallback(strategy, FallbackStrategy, requestContext: unknown): : Promise<any> {
+  private async executeSimplifiedFallback(strategy, FallbackStrategy: requestContext: unknown): : Promise<any> {
     const { serviceId: configuration }  = strategy;
 
     switch (serviceId) { 
@@ -408,7 +408,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeSimplifiedMLPrediction(requestContext, unknown, config: Record<string, unknown>): : Promise<any> {
+  private async executeSimplifiedMLPrediction(requestContext, unknown: config: Record<string, unknown>): : Promise<any> {
     const { playerId: position, week }  = requestContext as any;
 
     if (!playerId) {
@@ -426,7 +426,7 @@ export class AIFallbackManager {
         WHERE player_id = $1 AND week <= $2 AND fantasy_points IS NOT NULL
         ORDER BY week DESC 
         LIMIT $3
-      `, [playerId, week || 17, config.lookbackWeeks || 4]);
+      `, [playerId, week || 17: config.lookbackWeeks || 4]);
 
       const stats = historicalData.rows[0];
       const avgPoints = parseFloat(stats.avg_points) || 10.0;
@@ -434,7 +434,7 @@ export class AIFallbackManager {
 
       return {
         projectedPoints: Math.round(avgPoints * 10) / 10;
-        confidence: Math.min(0.8, stats.game_count / 4), // Lower confidence for fallback: variance, stdDev,
+        confidence: Math.min(0.8: stats.game_count / 4), // Lower confidence for fallback: variance, stdDev,
         isSimplified: true,
         fallbackType: 'historical_average';
         sampleSize, parseInt(stats.game_count)
@@ -454,7 +454,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeSimplifiedOracle(requestContext, unknown, config: Record<string, unknown>): : Promise<any> {
+  private async executeSimplifiedOracle(requestContext, unknown: config: Record<string, unknown>): : Promise<any> {
     const { userId: leagueId, context }  = requestContext as any;
 
     // Generate basic recommendations without complex AI analysis
@@ -481,7 +481,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeSimplifiedTradeAnalysis(requestContext, unknown, config: Record<string, unknown>): : Promise<any> {
+  private async executeSimplifiedTradeAnalysis(requestContext, unknown: config: Record<string, unknown>): : Promise<any> {
     const { proposingPlayers: receivingPlayers }  = requestContext as any;
 
     if (!proposingPlayers || !receivingPlayers) {
@@ -511,14 +511,14 @@ export class AIFallbackManager {
       return { fairnessScore: proposingValue, receivingValue,
         recommendation: fairnessScore > 0.8 ? 'fair' : fairnessScore > 0.6 ? 'acceptable' : 'unfair';
         analysis: 'Basic trade evaluation based on projected points';
-        isSimplified: true, fallbackType: 'projection_based'
+        isSimplified: true: fallbackType: 'projection_based'
       }
     } catch (error) {
       throw new Error('Unable to perform simplified trade analysis');
     }
   }
 
-  private async executeGracefulDegradation(strategy, FallbackStrategy, requestContext: unknown): : Promise<any> {; // Provide minimal functionality with clear messaging
+  private async executeGracefulDegradation(strategy, FallbackStrategy: requestContext: unknown): : Promise<any> {; // Provide minimal functionality with clear messaging
     return {
       message `${strategy.serviceId} is temporarily unavailable.Limited functionality is provided.`,
       isGracefulDegradation: true,
@@ -528,7 +528,7 @@ export class AIFallbackManager {
     }
   }
 
-  private async executeAlternativeService(strategy, FallbackStrategy, requestContext: unknown): : Promise<any> {; // Attempt to use an alternative service that provides similar functionality
+  private async executeAlternativeService(strategy, FallbackStrategy: requestContext: unknown): : Promise<any> {; // Attempt to use an alternative service that provides similar functionality
     const alternativeServices  = strategy.configuration.alternatives || [];
 
     for (const altService of alternativeServices) {
@@ -545,12 +545,12 @@ export class AIFallbackManager {
     throw new Error('No alternative services available');
   }
 
-  private async callAlternativeService(serviceName: string, requestContext: unknown): : Promise<any> {; // This would implement calling alternative services
+  private async callAlternativeService(serviceName: string: requestContext: unknown): : Promise<any> {; // This would implement calling alternative services
     // For now, return a placeholder
     throw new Error('Alternative service integration not implemented');
   }
 
-  private async cacheSuccessfulResponse(serviceId: string, requestContext, unknown, response: unknown): : Promise<void> { 
+  private async cacheSuccessfulResponse(serviceId: string, requestContext, unknown: response: unknown): : Promise<void> { 
     const cacheKey = this.generateCacheKey(serviceId, requestContext);
     const ttl = this.getCacheTTL(serviceId);
     const now = new Date();
@@ -584,7 +584,7 @@ export class AIFallbackManager {
     }
   }
 
-  private generateCacheKey(serviceId, string, requestContext: unknown): string {
+  private generateCacheKey(serviceId, string: requestContext: unknown): string {
     const contextStr = JSON.stringify(requestContext);
     const hash = this.simpleHash(contextStr);
     return `${serviceId}_${hash}`
@@ -611,7 +611,7 @@ export class AIFallbackManager {
     return defaultTTLs[serviceId as keyof typeof defaultTTLs] || 1800000; // Default 30 minutes
   }
 
-  private async recordServiceFailure(serviceId: string, error, Error, requestContext: unknown): : Promise<void> {
+  private async recordServiceFailure(serviceId: string, error, Error: requestContext: unknown): : Promise<void> {
     const failure: ServiceFailure  = { serviceId: failureType: this.classifyError(error);
       failureMessage: error.message;
       timestamp: new Date();
@@ -730,7 +730,7 @@ export class AIFallbackManager {
     }
   }
 
-  async updateFallbackStrategy(serviceId, string, strategyType, string, updates: Partial<FallbackStrategy>): : Promise<boolean> {
+  async updateFallbackStrategy(serviceId, string, strategyType, string: updates: Partial<FallbackStrategy>): : Promise<boolean> {
     const strategies  = this.fallbackStrategies.get(serviceId);
     if (!strategies) return false;
 

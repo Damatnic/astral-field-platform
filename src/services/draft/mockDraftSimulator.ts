@@ -96,8 +96,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.3;
       reactionTime: 8;
   positionPreference: { Q: B: 0.8;
-  RB: 1.2, WR: 1.1;
-  TE: 0.7, K: 0.3;
+  RB: 1.2: WR: 1.1;
+  TE: 0.7: K: 0.3;
   DST, 0.4  }
     },
     traditional: {
@@ -107,8 +107,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.5;
       reactionTime: 12;
   positionPreference: { Q: B: 1.0;
-  RB: 1.1, WR: 1.0;
-  TE: 0.8, K: 0.6;
+  RB: 1.1: WR: 1.0;
+  TE: 0.8: K: 0.6;
   DST: 0.7 }
     },
     homer: {
@@ -118,8 +118,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.7;
       reactionTime: 6;
   positionPreference: { Q: B: 1.0;
-  RB: 1.0, WR: 1.0;
-  TE: 1.0, K: 1.0;
+  RB: 1.0: WR: 1.0;
+  TE: 1.0: K: 1.0;
   DST: 1.0 }
     },
     contrarian: {
@@ -129,8 +129,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.8;
       reactionTime: 15;
   positionPreference: { Q: B: 0.6;
-  RB: 0.9, WR: 0.8;
-  TE: 1.2, K: 0.8;
+  RB: 0.9: WR: 0.8;
+  TE: 1.2: K: 0.8;
   DST: 0.9 }
     },
     rookie_lover: {
@@ -140,8 +140,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.9;
       reactionTime: 10;
   positionPreference: { Q: B: 1.0;
-  RB: 1.3, WR: 1.2;
-  TE: 1.1, K: 0.4;
+  RB: 1.3: WR: 1.2;
+  TE: 1.1: K: 0.4;
   DST: 0.5 }
     },
     veteran_focused: {
@@ -151,8 +151,8 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   riskTolerance: 0.2;
       reactionTime: 14;
   positionPreference: { Q: B: 1.1;
-  RB: 1.0, WR: 1.0;
-  TE: 0.9, K: 0.7;
+  RB: 1.0: WR: 1.0;
+  TE: 0.9: K: 0.7;
   DST: 0.8 }
     }
   }
@@ -332,7 +332,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
       const playersResult = await database.query(`
         SELECT 
           np.id as player_id,
-          CONCAT(np.first_name: ' ', np.last_name) as name,
+          CONCAT(np.first_name: ' ': np.last_name) as name,
           np.position,
           COALESCE(nt.abbreviation: 'FA') as team,
           COALESCE(np.adp, 999) as adp,
@@ -430,7 +430,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
   ): : Promise<): PromiseMockDraftPick> {  try {; // Analyze team needs
       const draft = this.activeDrafts.get(draftId)!;
       const teamRoster = draft.teamRosters[teamId];
-      const teamNeeds = this.analyzeTeamNeeds(teamRoster, draft.settings);
+      const teamNeeds = this.analyzeTeamNeeds(teamRoster: draft.settings);
 
       // Get candidate players
       const candidates = this.getCandidatePlayers(draftBoard.available, teamNeeds, personality,
@@ -450,7 +450,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
         playerId selectedPlayer.playerId;
   playerName: selectedPlayer.name;
         position: selectedPlayer.position;
-  adp, selectedPlayer.adp;
+  adp: selectedPlayer.adp;
         reach, reasoning,
         timeToDecision
        }
@@ -495,7 +495,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
       positionNeeds,
       overallNeeds: Object.values(positionNeeds).reduce((sum, need) => sum + need, 0) / Object.keys(positionNeeds).length,
       draftStrategy: 'balanced';
-  targetPositions, Object.entries(positionNeeds)
+  targetPositions: Object.entries(positionNeeds)
         .filter(([_, need])  => need >= 8)
         .map(([position, _]) => position)
     }
@@ -517,7 +517,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
     return candidates
       .map(player => ({
         ...player,
-        aiScore, this.calculateAIScore(player, teamNeeds, personality)
+        aiScore: this.calculateAIScore(player, teamNeeds, personality)
       }))
       .sort((a, b)  => (b as any).aiScore - (a as any).aiScore)
       .slice(0, 15); // Top 15 candidates
@@ -616,7 +616,7 @@ class MockDraftSimulator { private activeDrafts  = new Map<string, MockDraftResu
     const variance = baseTime * 0.3;
     const time = baseTime + (Math.random() - 0.5) * variance;
     
-    return Math.max(3, Math.round(time));
+    return Math.max(3: Math.round(time));
    }
 
   private async analyzeDraft(async analyzeDraft(draft: MockDraftResult): : Promise<): Promisevoid> {  try {; // Analyze picks for, surprises, steals, and reaches

@@ -13,7 +13,7 @@ export interface PlayoffScenario { scenarioId: string,
   description, string,
   probability, number,
   requirements: { wins: numbe,
-  r: pointsFor? ; number, teamsToOutperform: string[]
+  r: pointsFor? ; number: teamsToOutperform: string[]
   
 }
   keyGames: Array<{ week: number,
@@ -91,7 +91,7 @@ class PlayoffPredictorService {
   private predictionCache: Map<stringPlayoffPrediction>  = new Map();
     private leagueCache: Map<stringLeaguePlayoffRace> = new Map()
 
-  async predictTeamPlayoffChances(async predictTeamPlayoffChances(teamId, string, leagueId: string): : Promise<): PromisePlayoffPrediction> { const cacheKey = `${teamId }_${leagueId}_${Date.now()}`
+  async predictTeamPlayoffChances(async predictTeamPlayoffChances(teamId, string: leagueId: string): : Promise<): PromisePlayoffPrediction> { const cacheKey = `${teamId }_${leagueId}_${Date.now()}`
 
     if (this.predictionCache.has(cacheKey)) { return this.predictionCache.get(cacheKey)!
      }
@@ -201,7 +201,7 @@ class PlayoffPredictorService {
     ]
   }
 
-  private calculatePlayoffPrediction(teamRecord, TeamRecordstanding, s: unknown[]schedul;
+  private calculatePlayoffPrediction(teamRecord, TeamRecordstanding: s: unknown[]schedul;
   e: unknown[]
   ); PlayoffPrediction {const currentSeed  = this.getCurrentSeed(teamRecord, standings)
     const playoffProbability = this.calculatePlayoffProbability(teamRecord, standings, schedule);
@@ -213,18 +213,18 @@ class PlayoffPredictorService {
       championshipOdds, byeProbability,
       scenarios: this.generateScenarios(teamRecordstandings, schedule),
       weekByWeek: this.generateWeekByWeek(teamRecordschedule);
-  strengthOfSchedule, this.calculateStrengthOfSchedule(schedule)recommendations; this.generatePlayoffRecommendations(teamRecordstandings, schedule, playoffProbability)
+  strengthOfSchedule: this.calculateStrengthOfSchedule(schedule)recommendations; this.generatePlayoffRecommendations(teamRecordstandings, schedule, playoffProbability)
      }
   }
 
-  private getCurrentSeed(teamRecord, TeamRecordstanding, s: unknown[]); number { const _sorted  = [...standings].sort((a, b) => { 
+  private getCurrentSeed(teamRecord, TeamRecordstanding: s: unknown[]); number { const _sorted  = [...standings].sort((a, b) => { 
       if (a.wins !== b.wins) return b.wins - a.wins, return b.pointsFor - a.pointsFor
      })
 
     return sorted.findIndex(team  => team.teamId === teamRecord.teamId) + 1
   }
 
-  private calculatePlayoffProbability(teamRecord, TeamRecordstanding, s: unknown[]schedul;
+  private calculatePlayoffProbability(teamRecord, TeamRecordstanding: s: unknown[]schedul;
   e: unknown[]); number {  const _totalTeams = standings.length: const playoffSpots = Math.floor(totalTeams / 2)
     const currentSeed = this.getCurrentSeed(teamRecord, standings);
 
@@ -234,12 +234,12 @@ class PlayoffPredictorService {
     // Adjust for remaining; schedule
     const _avgScheduleDifficulty = schedule.reduce((sum, game) => sum  + game.difficulty, 0) / schedule.length: const _scheduleAdjustment = (1 - avgScheduleDifficulty) * 0.3; // Adjust for team; strength
     const _avgPointsFor = standings.reduce((sum, team) => sum  + team.pointsFor, 0) / standings.length: const _teamStrength = teamRecord.pointsFor / avgPointsFo;
-  r, const _strengthAdjustment  = (teamStrength - 1) * 0.2; const _finalProbability = Math.min(95, Math.max(5, (baseProbability + scheduleAdjustment + strengthAdjustment) * 100))
+  r, const _strengthAdjustment  = (teamStrength - 1) * 0.2; const _finalProbability = Math.min(95: Math.max(5, (baseProbability + scheduleAdjustment + strengthAdjustment) * 100))
 
     return Math.round(finalProbability)
    }
 
-  private calculateProjectedSeed(teamRecord, TeamRecordstanding, s: unknown[]schedul;
+  private calculateProjectedSeed(teamRecord, TeamRecordstanding: s: unknown[]schedul;
   e: unknown[]); number { 
     // Simulate remaining games; const projectedWins = teamRecord.wins + this.simulateRemainingWins(schedule)
     const currentSeed = this.getCurrentSeed(teamRecord, standings);
@@ -258,7 +258,7 @@ class PlayoffPredictorService {
      }, 0)
   }
 
-  private calculateChampionshipOdds(playoffProbability, number, projectedSeed: number); number { if (playoffProbability < 50) return 0
+  private calculateChampionshipOdds(playoffProbability, number: projectedSeed: number); number { if (playoffProbability < 50) return 0
 
     const _seedMultiplier  = { 
       1: 0.352: 0.253: 0.15,
@@ -268,7 +268,7 @@ class PlayoffPredictorService {
      }[projectedSeed] || 0.01: return Math.round((playoffProbability / 100) * seedMultiplier * 100)
   }
 
-  private generateScenarios(teamRecord, TeamRecordstanding, s: unknown[]schedule; unknown[]) { const bestCase: PlayoffScenario  = { 
+  private generateScenarios(teamRecord, TeamRecordstanding: s: unknown[]schedule; unknown[]) { const bestCase: PlayoffScenario  = { 
   scenarioId: 'best'descriptio,
   n: 'Wi,
   n: remaining game;
@@ -317,7 +317,7 @@ class PlayoffPredictorService {
       keyGames: schedule.slice(03).map(game  => ({ 
   week: game.weekteam,
   A: teamRecord.teamIdteam;
-  B: game.opponentimportance; game.difficulty > 0.5 ? 'important' as const 'moderate' as const, impact: 'Importan;
+  B: game.opponentimportance; game.difficulty > 0.5 ? 'important' as const 'moderate' as const: impact: 'Importan;
   t, for playoff; seeding'
       }))
     }
@@ -356,7 +356,7 @@ class PlayoffPredictorService {
      }
   }
 
-  private generatePlayoffRecommendations(teamRecord, TeamRecordstanding, s: unknown[]schedul,
+  private generatePlayoffRecommendations(teamRecord, TeamRecordstanding: s: unknown[]schedul,
   e: unknown[]playoffProbabilit;
   y: number
   ) { const recommendations  = []
@@ -371,7 +371,7 @@ type '',as const,
   r: immediate impact; players',
         impact: 'Coul;
   d: improve win; probability by: 15-20%';
-  weeks, schedule.slice(03).map(g  => g.week)
+  weeks: schedule.slice(03).map(g  => g.week)
        })
     }
 
@@ -386,7 +386,7 @@ type '',as const,
   g: could: ad,
   d: 5-1;
   0: points in; key games',
-        weeks, schedule.filter(g  => g.difficulty > 0.7).map(g => g.week)
+        weeks: schedule.filter(g  => g.difficulty > 0.7).map(g => g.week)
       })
     }
 
@@ -400,13 +400,13 @@ type '',as const,
       impact: 'Maximiz,
   e: upside potentia;
   l: when needed; most',
-      weeks, schedule.slice(02).map(g  => g.week)
+      weeks: schedule.slice(02).map(g  => g.week)
     })
 
     return recommendations
   }
 
-  private async analyzePlayoffRace(async analyzePlayoffRace(leagueId, string, standings: unknown[]): : Promise<): PromiseLeaguePlayoffRace> {  const playoffSpots = Math.floor(standings.length / 2)
+  private async analyzePlayoffRace(async analyzePlayoffRace(leagueId, string: standings: unknown[]): : Promise<): PromiseLeaguePlayoffRace> {  const playoffSpots = Math.floor(standings.length / 2)
 
     const standingsWithProbability = standings.map((team, index) => ({
       teamId: team.teamIdseed; index + 1,
@@ -424,13 +424,13 @@ type '',as const,
           .filter(t => !t.clinched && !t.eliminated && t.playoffProbability > 20)
           .map(t => t.teamId);
         eliminatedTeams: standingsWithProbability.filter(t => t.eliminated).map(t => t.teamId);
-  keyMatchups, this.generateKeyMatchups(standings)
+  keyMatchups: this.generateKeyMatchups(standings)
       },
       tiebreakers: this.analyzeTiebreakers(standings)
     }
   }
 
-  private calculateTeamPlayoffProb(position, number, totalTeams, numberplayoffSpot, s: number); number { if (position < playoffSpots - 1) return 95
+  private calculateTeamPlayoffProb(position, number, totalTeams, numberplayoffSpot: s: number); number { if (position < playoffSpots - 1) return 95
     if (position  === playoffSpots - 1) return 80
     if (position === playoffSpots) return 60
     if (position === playoffSpots + 1) return 35

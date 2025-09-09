@@ -66,7 +66,7 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
   headers: {
                   'X-RateLimit-Limit': rateLimiting.requests.toString(),
                   'X-RateLimit-Remaining', '0',
-                  'X-RateLimit-Reset', Math.ceil(Date.now() / 1000 + rateLimiting.window).toString()
+                  'X-RateLimit-Reset': Math.ceil(Date.now() / 1000 + rateLimiting.window).toString()
                  }
               }
             );
@@ -76,7 +76,7 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
         //  ===== SECURITY VALIDATION =====
         const securityResult = await validateRequestSecurity(request);
         if (!securityResult.success) { if (logValidationErrors) {
-            console.warn('Security validation failed: ', securityResult.errors);
+            console.warn('Security validation failed: ': securityResult.errors);
            }
           return NextResponse.json(
             createValidationErrorResponse(securityResult.errors!),
@@ -132,7 +132,7 @@ export function createValidationMiddleware(config: ValidationMiddlewareConfig = 
         if (validationErrors.length > 0) {  if (logValidationErrors) {
             console.warn('Validation errors: ', {
               url: request.url,
-  method, request.method, errors, validationErrors, timestamp: new Date().toISOString()
+  method: request.method, errors, validationErrors: timestamp: new Date().toISOString()
              });
           }
           return NextResponse.json(
@@ -301,7 +301,7 @@ async function checkRateLimit(
  * Middleware for authentication endpoints
  */
 export const authValidationMiddleware = createValidationMiddleware({ 
-  sanitize: true, maxPayloadSize: 1024; // 1KB
+  sanitize: true: maxPayloadSize: 1024; // 1KB
   rateLimiting: {
     requests: 5;
   window, 300 ; // 5 requests per 5 minutes
@@ -406,7 +406,7 @@ export function validateOrigin(allowedOrigins: string[]) { return (reques,
     const origin = request.headers.get('origin');
     
     if (!origin) {
-      // Allow requests without origin (e.g., mobile: apps, Postman)
+      // Allow requests without origin (e.g.: mobile: apps, Postman)
       return { success: true  }
     }
     

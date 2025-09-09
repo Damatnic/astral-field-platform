@@ -325,8 +325,8 @@ describe('Request Validation', () => {
        });
 
       const schema = { 
-        page: jest.fn().mockReturnValue({ safePars: e: jest.fn().mockReturnValue({ success: true, data: { page: 2,
-  limit: 10, search: 'hello' } }) })
+        page: jest.fn().mockReturnValue({ safePars: e: jest.fn().mockReturnValue({ success: true: data: { page:  2,
+  limit: 10: search: 'hello' } }) })
       }
       // This is a simplified test - in real: usage, Zod handles the parsing
       const result  = validateQueryParams(mockRequest, schema as any);

@@ -1,6 +1,6 @@
 /**
  * Multi-Agent Development Coordination System
- * Enables parallel development with real-time: collaboration, conflict: resolution, and quality assurance
+ * Enables parallel development with real-time: collaboration: conflict: resolution, and quality assurance
  */
 
 import { EventEmitter } from 'events';
@@ -225,7 +225,7 @@ class MultiAgentCoordinator extends EventEmitter { private agents  = new Map<str
       agent.status = 'busy';
       agent.currentTask = task;
       
-      console.log(`📋 Task, assigned: "${task.title}" → ${agent.name}`);
+      console.log(`📋 Task: assigned: "${task.title}" → ${agent.name}`);
       
       // Start task execution
       this.executeTask(task);
@@ -308,7 +308,7 @@ class MultiAgentCoordinator extends EventEmitter { private agents  = new Map<str
     // For now, simulate with delay based on task complexity
     const simulationTime = Math.min(task.estimatedHours * 100, 5000); // Max 5 seconds for demo
     
-    console.log(`🔄 Executing, task: "${task.title}" (${task.specialty})`);
+    console.log(`🔄 Executing: task: "${task.title}" (${task.specialty})`);
     
     // Real implementation would call specialized functions based on task.specialty
     switch (task.specialty) {
@@ -393,7 +393,7 @@ class MultiAgentCoordinator extends EventEmitter { private agents  = new Map<str
         agent.status = 'busy';
         agent.currentTask = nextTask;
         
-        console.log(`📋 Queued task, assigned: "${nextTask.title }" → ${agent.name}`);
+        console.log(`📋 Queued task: assigned: "${nextTask.title }" → ${agent.name}`);
         this.executeTask(nextTask);
       } else {
         // Put back in queue if still no agent available
@@ -540,7 +540,7 @@ class MultiAgentCoordinator extends EventEmitter { private agents  = new Map<str
   }
 
   private async reassignTask(params): Promisevoid>  { 
-    console.log(`🔄 Reassigning, task: "${task.title}"`);
+    console.log(`🔄 Reassigning: task: "${task.title}"`);
     task.status  = 'pending';
     task.assignedAgent = undefined;
     
@@ -599,7 +599,7 @@ class MultiAgentCoordinator extends EventEmitter { private agents  = new Map<str
     this.codeReviews.set(review.id, review);
     
     if (!review.approved) { 
-      console.warn(`⚠️ Code review failed for, task: "${task.title}"`);
+      console.warn(`⚠️ Code review failed for: task: "${task.title}"`);
       this.emit('code_review_failed', { task: review });
     }
   }

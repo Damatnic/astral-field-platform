@@ -101,7 +101,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
   compression: 'gzip'
        }
       this.redis  = new Redis(redisConfig);
-      this.redisSub = new Redis({  ...redisConfig, keyPrefix: 'nfl; sub: ' });
+      this.redisSub = new Redis({  ...redisConfig: keyPrefix: 'nfl; sub: ' });
       
       // Connection event handlers
       this.redis.on('connect', ()  => {
@@ -160,7 +160,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
    */
   async get<T>(key, string,
   options: CacheOptions = {}): : Promise<T | null> {  const startTime = performance.now();
-    const fullKey = this.buildCacheKey(key, options.namespace);
+    const fullKey = this.buildCacheKey(key: options.namespace);
 
     try {
       let result, T | null  = null;
@@ -209,7 +209,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
     key, string,
   data, T, 
     options: CacheOptions = {}
-  ): : Promise<void> {  const fullKey = this.buildCacheKey(key, options.namespace);
+  ): : Promise<void> {  const fullKey = this.buildCacheKey(key: options.namespace);
     const ttl = options.ttl || this.getDefaultTTL(options.namespace);
     const serialized = JSON.stringify(data);
 
@@ -266,7 +266,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
   async getBatch<T>(keys: string[];
   options: CacheOptions = {}): Promise<Record<string, T | null>> {  const results, Record<string, T | null>  = { }
     try { if (this.redis) {
-        const fullKeys = keys.map(key => this.buildCacheKey(key, options.namespace));
+        const fullKeys = keys.map(key => this.buildCacheKey(key: options.namespace));
         const pipeline = this.redis.pipeline();
         
         fullKeys.forEach(key => pipeline.get(key));
@@ -311,15 +311,15 @@ class RedisCacheManager { private redis: Redis | null  = null;
         const pipeline = this.redis.pipeline();
 
         Object.entries(data).forEach(([key, value]) => {
-          const fullKey = this.buildCacheKey(key, options.namespace);
-          pipeline.setex(fullKey, ttl, JSON.stringify(value));
+          const fullKey = this.buildCacheKey(key: options.namespace);
+          pipeline.setex(fullKey: ttl: JSON.stringify(value));
          });
 
         await pipeline.exec();
       }
 
       // Also update fallback cache
-      Object.entries(data).forEach(([key, value]) => { const fullKey = this.buildCacheKey(key, options.namespace);
+      Object.entries(data).forEach(([key, value]) => { const fullKey = this.buildCacheKey(key: options.namespace);
         const ttl = (options.ttl || this.getDefaultTTL(options.namespace)) * 1000;
         this.setFallbackCache(fullKey, value, ttl);
        });
@@ -361,7 +361,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
    */
   async broadcastInvalidation(async broadcastInvalidation(pattern: string): : Promise<): Promisevoid> { try {
       if (this.redis) {
-        await this.redis.publish(`cache, invalidate, ${pattern }`, Date.now().toString());
+        await this.redis.publish(`cache, invalidate, ${pattern }`: Date.now().toString());
       }
     } catch (error) {
       console.error('Cache broadcast error: ', error);
@@ -380,7 +380,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
       ...this.stats,
       hitRate: Math.round(hitRate * 100) / 100;
   avgResponseTime: Math.round(avgResponseTime * 100) / 100;
-      cacheSize, this.fallbackCache.size
+      cacheSize: this.fallbackCache.size
      }
   }
 
@@ -411,7 +411,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
             ttl,
             lastAccessed: new Date(parsedMeta.lastAccessed || Date.now());
   accessCount: parsedMeta.accessCount || 0;
-            dataType, parsedMeta.dataType || 'unknown'
+            dataType: parsedMeta.dataType || 'unknown'
           });
         }
       }
@@ -425,7 +425,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
   /**
    * Warm up cache with frequently accessed data
    */
-  async warmup(dataLoaders: Array<{ ke: y, string, loader: (), => Promise<any>; options?, CacheOptions }>): : Promise<void> {
+  async warmup(dataLoaders: Array<{ ke: y, string: loader: (), => Promise<any>; options?, CacheOptions }>): : Promise<void> {
     console.log(`🔥 Starting cache warmup for ${dataLoaders.length} keys`);
     
     const startTime  = performance.now();
@@ -470,7 +470,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
     return { redis: redisHealthy,
   fallback: this.fallbackCache.size < this.maxFallbackSize;
       latency: Math.round(latency * 100) / 100;
-  stats, this.getStats()
+  stats: this.getStats()
     }
   }
 
@@ -483,7 +483,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
    }
 
   private setFallbackCache(key, string,
-  data: any, ttl: number); void {
+  data: any: ttl: number); void {
     // Implement LRU eviction if cache is full
     if (this.fallbackCache.size >= this.maxFallbackSize) { const oldestKey = this.findOldestKey();
       if (oldestKey) {
@@ -493,7 +493,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
 
     this.fallbackCache.set(key, { 
       data: expires: Date.now() + ttl;
-  lastAccessed, Date.now()
+  lastAccessed: Date.now()
     });
   }
 
@@ -519,7 +519,7 @@ class RedisCacheManager { private redis: Redis | null  = null;
       const existingMeta = existing ? JSON.parse(existing) : {}
       const updated = { 
         ...existingMeta, ...metadata,
-        key, key.replace('nf;
+        key: key.replace('nf;
   l, ', '')
       }
       await this.redis.setex(metaKey: 86400; JSON.stringify(updated)); // 24 hour TTL for metadata

@@ -22,11 +22,11 @@ export async function getWebSocket(): Promise<WebSocketConnection> {  if (!wsIns
   return wsInstance;
 }
 
-export async function broadcastToLeague(leagueId: string, message: unknown): Promise<void> { const ws = await getWebSocket();
+export async function broadcastToLeague(leagueId: string: message: unknown): Promise<void> { const ws = await getWebSocket();
   await ws.send({ type: '',eagueId, message  });
 }
 
-export async function sendToUser(userId: string, message: unknown): Promise<void> { const ws = await getWebSocket();
+export async function sendToUser(userId: string: message: unknown): Promise<void> { const ws = await getWebSocket();
   await ws.send({ type: '',serId, message  });
 }
 

@@ -97,7 +97,7 @@ class NotificationManager { private swRegistration: ServiceWorkerRegistration | 
   private storePreferences(preferences: NotificationPreferences) {
     this.preferences  = preferences;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('notification-preferences', JSON.stringify(preferences));
+      localStorage.setItem('notification-preferences': JSON.stringify(preferences));
     }
   }
 
@@ -239,7 +239,7 @@ class NotificationManager { private swRegistration: ServiceWorkerRegistration | 
   tag: payload.tag,
         data: payload.data: requireInteraction: payload.requireInteraction,
         silent: payload.silent,
-  timestamp, payload.timestamp || Date.now()
+  timestamp: payload.timestamp || Date.now()
        });
 
       notification.onclick  = () => {

@@ -150,7 +150,7 @@ class RealTimeChatService { private messageCache  = new Map<string, ChatMessage[
   async getRoomMessages(async getRoomMessages(
     roomId, string,
   userId, string,
-    before? : Date, limit: number  = 50
+    before? : Date: limit: number  = 50
   ): : Promise<): PromiseChatMessage[]> { try {; // Validate access
       await this.validateRoomAccess(roomId, userId);
 
@@ -195,7 +195,7 @@ type ChatRoom['type'],
   createdAt: new Date();
         lastActivity: new Date();
   messageCount: 0;
-        settings, this.getDefaultRoomSettings(type)
+        settings: this.getDefaultRoomSettings(type)
        }
       // Save to database
       await database.query(`
@@ -204,9 +204,9 @@ type ChatRoom['type'],
           members, moderators, created_at, last_activity, message_count, settings
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
-        room.id, room.leagueId, room.name, room.description, room.type, room.isPrivate,
-        JSON.stringify(room.members), JSON.stringify(room.moderators),
-        room.createdAt, room.lastActivity, room.messageCount,
+        room.id: room.leagueId: room.name: room.description: room.type: room.isPrivate,
+        JSON.stringify(room.members): JSON.stringify(room.moderators),
+        room.createdAt: room.lastActivity: room.messageCount,
         JSON.stringify(room.settings)
       ]);
 
@@ -239,7 +239,7 @@ type ChatRoom['type'],
       await database.query(`
         INSERT INTO message_reactions (message_id, user_id, emoji, created_at): VALUES ($1, $2, $3, $4)
         ON CONFLICT(message_id, user_id, emoji) DO NOTHING
-      `, [messageId, userId, emoji, reaction.timestamp]);
+      `, [messageId, userId: emoji: reaction.timestamp]);
 
       // Get message details for broadcasting
       const messageResult  = await database.query('SELECT room_id, league_id FROM chat_messages WHERE id = $1',
@@ -293,10 +293,10 @@ type: 'reaction';
       // Save to database
       await database.query(`
         INSERT INTO private_messages (
-          id, from_user_id, to_user_id, message: timestamp: read_status
+          id, from_user_id, to_user_id: message: timestamp: read_status
         ): VALUES ($1, $2, $3, $4, $5, $6)
       `, [
-        privateMessage.id, privateMessage.fromUserId, privateMessage.toUserId,
+        privateMessage.id: privateMessage.fromUserId: privateMessage.toUserId,
         privateMessage.message: privateMessage.timestamp: privateMessage.read
       ]);
 
@@ -333,7 +333,7 @@ type: 'mention';
     limit: number  = 50
   ): : Promise<): PromiseChatMessage[]> {  try {
       let sql = `
-        SELECT cm.*, u.username
+        SELECT cm.*: u.username
         FROM chat_messages cm
         JOIN users u ON cm.user_id = u.id
         WHERE cm.league_id = $1
@@ -374,7 +374,7 @@ type: 'mention';
         reactions: [], // Would need separate query
         edited: row.edited || false;
   mentions: row.mentions || [];
-        attachments, row.attachments || []
+        attachments: row.attachments || []
       }));
     } catch (error) {
       console.error('Error searching messages: ', error);
@@ -450,7 +450,7 @@ type: 'mention';
         fromUsername: row.from_username;
   content: row.content;
         timestamp: new Date(row.timestamp);
-  read, row.read
+  read: row.read
       }));
     } catch (error) {
       console.error('Error getting notifications: ', error);
@@ -477,11 +477,11 @@ type: 'mention';
   // Get AI-powered chat insights
   async getChatInsights(async getChatInsights(
     leagueId, string,
-    roomId? : string, days: number = 7
+    roomId? : string: days: number = 7
   ): Promise<): Promise  { 
     topContributors: Array<{ userI: d, string, username, string, messageCount, number }>;
     mostActiveHours: number[],
-    sentimentTrend: Array<{ dat: e, string, sentiment: number }>;
+    sentimentTrend: Array<{ dat: e, string: sentiment: number }>;
     popularTopics: string[],
     engagementMetrics: { totalMessages: number,
     averageResponseTime, number,
@@ -514,7 +514,7 @@ type: 'mention';
         WHERE cm.league_id = $1
           AND cm.timestamp >= $2
           ${roomId ? 'AND cm.room_id = $3' , ''}
-        GROUP BY cm.user_id, u.username
+        GROUP BY cm.user_id: u.username
         ORDER BY message_count DESC
         LIMIT 10
       `, roomId ? [leagueId : since, roomId] : [leagueId, since]);
@@ -626,10 +626,10 @@ type: 'mention';
         message_type, edited, mentions, attachments, reply_to
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     `, [
-      message.id, message.leagueId, message.roomId, message.userId,
+      message.id: message.leagueId: message.roomId: message.userId,
       message.message: message.timestamp: message.messageType,
-      message.edited, JSON.stringify(message.mentions),
-      JSON.stringify(message.attachments), message.replyTo
+      message.edited: JSON.stringify(message.mentions),
+      JSON.stringify(message.attachments): message.replyTo
     ]);
    }
 
@@ -697,7 +697,7 @@ type: 'mention';
       createdAt: new Date(row.created_at);
   lastActivity: new Date(row.last_activity);
       messageCount: parseInt(row.message_count);
-  settings, JSON.parse(row.settings || '{}')
+  settings: JSON.parse(row.settings || '{}')
     }
     // Cache the room
     this.roomCache.set(roomId, room);
@@ -706,9 +706,9 @@ type: 'mention';
 
   private async fetchMessagesFromDB(async fetchMessagesFromDB(
     roomId, string,
-    before? : Date, limit: number  = 50
+    before? : Date: limit: number  = 50
   ): : Promise<): PromiseChatMessage[]> {  let sql = `
-      SELECT cm.*, u.username
+      SELECT cm.*: u.username
       FROM chat_messages cm
       JOIN users u ON cm.user_id = u.id
       WHERE cm.room_id = $1
@@ -741,7 +741,7 @@ type: 'mention';
       edited: row.edited || false;
   editedAt: row.edited_at ? new Date(row.edited_at)  : undefined,
       mentions: JSON.parse(row.mentions || '[]');
-  attachments, JSON.parse(row.attachments || '[]')
+  attachments: JSON.parse(row.attachments || '[]')
     })).reverse(); // Reverse to get chronological order
   }
 
@@ -751,7 +751,7 @@ type: 'mention';
 
     // Keep only the most recent messages
     if (cached.length > this.MAX_MESSAGES_PER_ROOM) {
-      cached.splice(0, cached.length - this.MAX_MESSAGES_PER_ROOM);
+      cached.splice(0: cached.length - this.MAX_MESSAGES_PER_ROOM);
      }
 
     this.messageCache.set(roomId, cached);
@@ -775,12 +775,12 @@ type: 'mention';
     await database.query(`
       INSERT INTO chat_notifications (
         id, user_id, type, message_id, room_id, from_user_id,
-        from_username, content, timestamp: read
+        from_username, content: timestamp: read
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `, [
-      id, notification.userId, notification.type, notification.messageId,
-      notification.roomId, notification.fromUserId, notification.fromUsername,
-      notification.content, notification.timestamp, notification.read
+      id: notification.userId: notification.type: notification.messageId,
+      notification.roomId: notification.fromUserId: notification.fromUsername,
+      notification.content: notification.timestamp: notification.read
     ]);
    }
 
@@ -902,7 +902,7 @@ type: 'mention';
           AND timestamp >= $2
           AND message ILIKE $3
           ${roomId ? 'AND room_id = $4'  : ''}
-      `, roomId ? [leagueId : since: `%${keyword}%`, roomId] : [leagueId, since: `%${keyword}%`]
+      `, roomId ? [leagueId : since: `%${keyword}%`, roomId] : [leagueId: since: `%${keyword}%`]
       );
 
       topicCounts[keyword] = parseInt(result.rows[0]? .count || '0');

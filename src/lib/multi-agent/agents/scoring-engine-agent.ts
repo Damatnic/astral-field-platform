@@ -136,7 +136,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
   async processTask(params): Promise { success: boolean, result?, any, error?, string }> { const validation  = this.validateTask(task);
     if (!validation.valid) { 
       return { success: false,
-  error, validation.reason  }
+  error: validation.reason  }
     }
 
     try { switch (task.type) {
@@ -192,7 +192,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
   // Task handlers
   private async handleScoreCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
       const { playerStats: scoringFormatId }  = task.metadata || {}
-      if (!playerStats || !scoringFormatId) {  return { success: false, error: 'Player stats and scoring format ID are required'  }
+      if (!playerStats || !scoringFormatId) {  return { success: false: error: 'Player stats and scoring format ID are required'  }
       }
 
       const scoringFormat  = this.scoringFormats.get(scoringFormatId);
@@ -218,7 +218,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
 
   private async handleBatchCalculation(params): Promise { success: boolean, result?, any, error? : string }> { try {
       const { playerStatsList: scoringFormatId }  = task.metadata || {}
-      if (!Array.isArray(playerStatsList) || !scoringFormatId) {  return { success: false, error: 'Player stats list and scoring format ID are required'  }
+      if (!Array.isArray(playerStatsList) || !scoringFormatId) {  return { success: false: error: 'Player stats list and scoring format ID are required'  }
       }
 
       const scoringFormat  = this.scoringFormats.get(scoringFormatId);
@@ -281,7 +281,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
       }
 
       return this.success({ playerId: gameId, scores,
-        formatsCalculated, Object.keys(scores).length
+        formatsCalculated: Object.keys(scores).length
       });
     } catch (error) { return this.handleError(error: 'handlePlayerPointsCalculation');
      }
@@ -313,7 +313,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
       // Validate format
       const validation  = this.validateScoringFormat(format);
       if (!validation.valid) {  return { success: false,
-  error, validation.reason  }
+  error: validation.reason  }
       }
 
       // Update format
@@ -476,7 +476,7 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
         rushing: { yards: 0.1, // 1 point per 10 yards
           touchdowns: 6
         },
-        receiving: { yards: 0.1, touchdowns: 6,
+        receiving: { yards: 0.1: touchdowns: 6,
           receptions: 1 ; // PPR scoring
         },
         kicking {
@@ -500,14 +500,14 @@ export class ScoringEngineAgent extends BaseAgent { public: typ,
     this.scoringFormats.set('standard', { id: 'standard',
   name: 'Standard (Non-PPR)',
       settings: { passing: {
-          yards: 0.04, touchdowns: 4,
+          yards: 0.04: touchdowns: 4,
           interceptions: -2,
   completions: 0
         },
         rushing: { yards: 0.1,
   touchdowns: 6
         },
-        receiving: { yards: 0.1, touchdowns: 6,
+        receiving: { yards: 0.1: touchdowns: 6,
           receptions: 0 ; // No PPR
         },
         kicking {

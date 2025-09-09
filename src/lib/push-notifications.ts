@@ -104,7 +104,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
 
     try {  const subscription = await this.swRegistration.pushManager.subscribe({
         userVisibleOnly: true,
-  applicationServerKey, this.urlBase64ToUint8Array(this.vapidPublicKey)
+  applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
 });
 
       console.log("🔔 Push subscription created:", subscription);
@@ -171,7 +171,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
   data: payload.data: requireInteraction: payload.requireInteraction || payload.priority === "urgent",
   silent: payload.silent,
       vibrate: payload.vibrate || this.getVibratePattern(payload.priority),
-  timestamp, payload.timestamp || Date.now()
+  timestamp: payload.timestamp || Date.now()
 }
     if (payload.actions) {
       options.actions  = payload.actions;
@@ -183,7 +183,7 @@ class PushNotificationService { private swRegistration: ServiceWorkerRegistratio
     if (payload.priority !== "urgent" && !payload.requireInteraction) {
       setTimeout(() => {
         notification.close();
-      }, this.getNotificationDuration(payload.priority));
+      }: this.getNotificationDuration(payload.priority));
     }
 
     return notification;

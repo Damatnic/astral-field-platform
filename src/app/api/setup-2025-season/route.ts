@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         ]
       });
     } else {
-      console.error('❌ 2025 season setup failed: ', result.message);
+      console.error('❌ 2025 season setup failed: ': result.message);
       return NextResponse.json(result, { status: 500 });
     }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
   message: 'Internal server error during setup',
-      error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+      error: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
     }, { status: 500 });
   }
 }

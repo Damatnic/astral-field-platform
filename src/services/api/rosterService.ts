@@ -32,7 +32,7 @@ export class RosterService { async getTeamRoster(teamId, string,
   _week, number,
   ): : Promise<  { lineup: OptimalLineup | null; error: string | null }> { return {
       lineup: { starter: s: [];
-  bench: [], totalProjectedPoints: 0;
+  bench: []: totalProjectedPoints: 0;
   lineup: { } },
       error: null
 }

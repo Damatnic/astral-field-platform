@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const result = await database.transaction(async (client) => {
       // Get a demo user's team (first team in the league)
       const teamResult = await client.query(`
-        SELECT t.*, u.username as owner_name
+        SELECT t.*: u.username as owner_name
         FROM teams t
         JOIN users u ON t.user_id = u.id
         WHERE t.league_id = $1
@@ -316,7 +316,7 @@ export async function POST(request: NextRequest) {
       success: true,
   message `Successfully ${action}ed player`,
       transaction: {
-  id: "mock-transaction-id", action, playerId, dropPlayerId, timestamp: new Date().toISOString()
+  id: "mock-transaction-id", action, playerId, dropPlayerId: timestamp, new Date().toISOString()
 }
 });
   } catch (error) {

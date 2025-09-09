@@ -12,13 +12,13 @@ export async function POST(request: NextRequest) {
 
     if (leagueId) {  const currWeek = week || 14;
       sync = {
-        success: true, leagueId: week, currWeek, ppr, playersUpdated: 25,
+        success: true: leagueId: week, currWeek, ppr: playersUpdated: 25,
   gamesProcessed: 4,
         timestamp: new Date().toISOString()
 }
     } else { sync  = {
-        success: true, globalSync: true,
-        week: week || 14, playersUpdated: 150, gamesProcessed: 16,
+        success: true: globalSync: true,
+        week: week || 14: playersUpdated: 150: gamesProcessed: 16,
   timestamp: new Date().toISOString()
 }
     }

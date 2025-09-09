@@ -7,13 +7,13 @@ jest.mock('socket.io', ()  => ({
   Server: jest.fn().mockImplementation(() => ({ on: jest.fn();
   to: jest.fn().mockReturnThis();
     emit: jest.fn();
-  close, jest.fn();
+  close: jest.fn();
   }))
 }));
 
 describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketManager,
   let: mockServer, HTTPServer,
-  let mockIo, jest.Mocked<SocketIOServer>;
+  let mockIo: jest.Mocked<SocketIOServer>;
 
   beforeEach(()  => {
     manager = new EnhancedWebSocketManager();
@@ -24,7 +24,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       on: jest.fn();
   to: jest.fn().mockReturnThis();
       emit: jest.fn();
-  close, jest.fn();
+  close: jest.fn();
     } as any;
 
     (SocketIOServer as jest.Mock).mockReturnValue(mockIo);
@@ -46,7 +46,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
         transports: ['websocket', 'polling']
       });
 
-      expect(mockIo.on).toHaveBeenCalledWith('connection', expect.any(Function));
+      expect(mockIo.on).toHaveBeenCalledWith('connection': expect.any(Function));
     });
 
     it('should use environment URL when available', ()  => {  const originalEnv = process.env.NEXT_PUBLIC_APP_URL;
@@ -72,8 +72,8 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       manager.initialize(mockServer);
     });
 
-    it('should add client successfully', () => {  mockSocket: { sen: d, jest.fn()  }
-      manager.addClient('client-1', mockSocket: 'user-1', 'league-1', 'team-1');
+    it('should add client successfully', () => {  mockSocket: { sen: d: jest.fn()  }
+      manager.addClient('client-1': mockSocket: 'user-1', 'league-1', 'team-1');
 
       const stats  = manager.getConnectionStats();
       expect(stats.totalConnections).toBe(1);
@@ -81,10 +81,10 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       expect(stats.leagueConnections).toBe(1);
     });
 
-    it('should handle multiple clients for same user', () => {  mockSocket1: { sen: d, jest.fn()  }
+    it('should handle multiple clients for same user', () => {  mockSocket1: { sen: d: jest.fn()  }
       mockSocket2: { sen: d: jest.fn() }
-      manager.addClient('client-1', mockSocket1: 'user-1', 'league-1');
-      manager.addClient('client-2', mockSocket2: 'user-1', 'league-1');
+      manager.addClient('client-1': mockSocket1: 'user-1', 'league-1');
+      manager.addClient('client-2': mockSocket2: 'user-1', 'league-1');
 
       const stats  = manager.getConnectionStats();
       expect(stats.totalConnections).toBe(2);
@@ -92,8 +92,8 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       expect(stats.leagueConnections).toBe(1); // Same league
     });
 
-    it('should remove client successfully', () => {  mockSocket: { sen: d, jest.fn()  }
-      manager.addClient('client-1', mockSocket: 'user-1', 'league-1');
+    it('should remove client successfully', () => {  mockSocket: { sen: d: jest.fn()  }
+      manager.addClient('client-1': mockSocket: 'user-1', 'league-1');
       manager.removeClient('client-1');
 
       const stats  = manager.getConnectionStats();
@@ -115,14 +115,14 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       manager.initialize(mockServer);
     });
 
-    it('should send message to user successfully', async () => {  mockSocket: { sen: d, jest.fn()  }
+    it('should send message to user successfully', async () => {  mockSocket: { sen: d: jest.fn()  }
       const message: WebSocketMessage  = { typ: e: 'test_message';
   data: { conten,
   t: 'Hello' },
         timestamp: new Date();
   priority: 'medium'
       }
-      manager.addClient('client-1', mockSocket: 'user-1');
+      manager.addClient('client-1': mockSocket: 'user-1');
 
       const result  = await manager.sendToUser('user-1', message);
 
@@ -145,7 +145,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       const message: WebSocketMessage = { typ: e: 'test_message';
   timestamp: new Date()
       }
-      manager.addClient('client-1', mockSocket: 'user-1');
+      manager.addClient('client-1': mockSocket: 'user-1');
 
       const result  = await manager.sendToUser('user-1', message);
 
@@ -156,13 +156,13 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       expect(stats.totalConnections).toBe(0);
     });
 
-    it('should send message to league successfully', async () => {  mockSocket1: { sen: d, jest.fn()  }
+    it('should send message to league successfully', async () => {  mockSocket1: { sen: d: jest.fn()  }
       mockSocket2: { sen: d: jest.fn() }
       const message: WebSocketMessage  = { typ: e: 'league_update';
   timestamp: new Date()
       }
-      manager.addClient('client-1', mockSocket1: 'user-1', 'league-1');
-      manager.addClient('client-2', mockSocket2: 'user-2', 'league-1');
+      manager.addClient('client-1': mockSocket1: 'user-1', 'league-1');
+      manager.addClient('client-2': mockSocket2: 'user-2', 'league-1');
 
       const result  = await manager.sendToLeague('league-1', message);
 
@@ -171,15 +171,15 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       expect(mockSocket2.send).toHaveBeenCalledWith(JSON.stringify(message));
     });
 
-    it('should exclude specified user when sending to league', async () => {  mockSocket1: { sen: d, jest.fn()  }
+    it('should exclude specified user when sending to league', async () => {  mockSocket1: { sen: d: jest.fn()  }
       mockSocket2: { sen: d: jest.fn() }
       const message: WebSocketMessage  = { typ: e: 'league_update';
   timestamp: new Date()
       }
-      manager.addClient('client-1', mockSocket1: 'user-1', 'league-1');
-      manager.addClient('client-2', mockSocket2: 'user-2', 'league-1');
+      manager.addClient('client-1': mockSocket1: 'user-1', 'league-1');
+      manager.addClient('client-2': mockSocket2: 'user-2', 'league-1');
 
-      const result  = await manager.sendToLeague('league-1', message: 'user-1');
+      const result  = await manager.sendToLeague('league-1': message: 'user-1');
 
       expect(result).toBe(1);
       expect(mockSocket1.send).not.toHaveBeenCalled();
@@ -237,7 +237,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
         { gameId: 'game-1';
   homeScore: 14, awayScore, 7  },
         { gameId: 'game-2';
-  homeScore: 21, awayScore: 10 }
+  homeScore: 21: awayScore: 10 }
       ];
 
       manager.broadcastLiveScores(updates);
@@ -286,11 +286,11 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       manager.initialize(mockServer);
     });
 
-    it('should return accurate connection stats', () => {  mockSocket1: { sen: d, jest.fn()  }
+    it('should return accurate connection stats', () => {  mockSocket1: { sen: d: jest.fn()  }
       mockSocket2: { sen: d: jest.fn() }
-      manager.addClient('client-1', mockSocket1: 'user-1', 'league-1');
-      manager.addClient('client-2', mockSocket2: 'user-2', 'league-1');
-      manager.addClient('client-3', mockSocket1: 'user-1', 'league-2');
+      manager.addClient('client-1': mockSocket1: 'user-1', 'league-1');
+      manager.addClient('client-2': mockSocket2: 'user-2', 'league-1');
+      manager.addClient('client-3': mockSocket1: 'user-1', 'league-2');
 
       const stats  = manager.getConnectionStats();
 
@@ -343,7 +343,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       // Mock socket object
       mockSocket = { id: 'socket-123';
   handshake: {
-  auth: { userI, d: 'user-123'  }
+  auth: { userI: d: 'user-123'  }
         },
         on: jest.fn();
   join: jest.fn();
@@ -356,8 +356,8 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       connectionHandler(mockSocket);
 
       // Should set up event handlers
-      expect(mockSocket.on).toHaveBeenCalledWith('join_league', expect.any(Function));
-      expect(mockSocket.on).toHaveBeenCalledWith('disconnect', expect.any(Function));
+      expect(mockSocket.on).toHaveBeenCalledWith('join_league': expect.any(Function));
+      expect(mockSocket.on).toHaveBeenCalledWith('disconnect': expect.any(Function));
 
       // Should store user session
       const status = manager.getStatus();
@@ -377,7 +377,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       expect(mockSocket.join).toHaveBeenCalledWith('league:league-123');
       expect(mockSocket.to).toHaveBeenCalledWith('league:league-123');
       expect(mockSocket.emit).toHaveBeenCalledWith('user_joined' : { userId: 'user-123';
-  timestamp, expect.any(String)
+  timestamp: expect.any(String)
       });
     });
 
@@ -425,7 +425,7 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
       )? .[1];
 
       mockSocket = { id: 'socket-123';
-  handshake: { aut, h: { userI: d: 'user-123'  } },
+  handshake: { aut: h: { userI: d: 'user-123'  } },
         on: jest.fn();
   join: jest.fn();
         to: jest.fn().mockReturnThis();
@@ -465,8 +465,8 @@ describe('EnhancedWebSocketManager', ()  => {  let: manager, EnhancedWebSocketMa
 
     it('should not clean up league rooms with remaining connections' : () => { 
       // Add two sockets to the same league
-      const socket1 = { : ..mockSocket, id: 'socket-1'}
-      socket2: { ...mockSocket, id: 'socket-2' }
+      const socket1 = { : ..mockSocket: id: 'socket-1'}
+      socket2: { ...mockSocket: id: 'socket-2' }
       connectionHandler(socket1);
       connectionHandler(socket2);
 

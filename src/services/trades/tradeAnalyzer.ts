@@ -74,8 +74,8 @@ class TradeAnalyzer { private tradeCache  = new Map<string, TradeAnalysis>();
     try {
       // Analyze each team's side of the trade
       const [team1Analysis, team2Analysis] = await Promise.all([;
-        this.analyzeTeamSide(team1Id, team1Players, team2Players: 'giving'),
-        this.analyzeTeamSide(team2Id, team2Players, team1Players: 'receiving')
+        this.analyzeTeamSide(team1Id, team1Players: team2Players: 'giving'),
+        this.analyzeTeamSide(team2Id, team2Players: team1Players: 'receiving')
       ]);
 
       // Calculate market values
@@ -98,7 +98,7 @@ class TradeAnalyzer { private tradeCache  = new Map<string, TradeAnalysis>();
         team1Analysis, team2Analysis,
         marketAnalysis, aiInsights,
         recommendations: this.generateRecommendations(fairnessScore, winner, marketAnalysis),
-        riskFactors, this.identifyRiskFactors(team1Analysis, team2Analysis)
+        riskFactors: this.identifyRiskFactors(team1Analysis, team2Analysis)
        }
       this.tradeCache.set(tradeId, analysis);
       return analysis;
@@ -142,7 +142,7 @@ class TradeAnalyzer { private tradeCache  = new Map<string, TradeAnalysis>();
   team2Players: [team2Player.playerId];
                 fairnessScore: analysis.fairnessScore;
   reasoning: analysis.aiInsights;
-                likelihood, this.calculateTradeLikelihood(analysis)
+                likelihood: this.calculateTradeLikelihood(analysis)
                });
             }
           }
@@ -174,11 +174,11 @@ class TradeAnalyzer { private tradeCache  = new Map<string, TradeAnalysis>();
         INSERT INTO trades (
           league_id, proposing_team_id, receiving_team_id, proposed_players, requested_players, status,
           fairness_score, ai_analysis, created_at
-        ) VALUES ($1, $2, $3, $4, $5: 'pending', $6, $7, NOW())
+        ) VALUES ($1, $2, $3, $4: $5: 'pending', $6, $7, NOW())
       `, [
         leagueId, proposingTeamId, receivingTeamId,
-        JSON.stringify(proposedPlayers), JSON.stringify(requestedPlayers),
-        analysis.fairnessScore, JSON.stringify(analysis)
+        JSON.stringify(proposedPlayers): JSON.stringify(requestedPlayers),
+        analysis.fairnessScore: JSON.stringify(analysis)
       ]);
 
       // Broadcast trade notification
@@ -227,7 +227,7 @@ type: 'proposed';
         positionImpact, weeklyImpact, seasonImpact,
         rosterBalance: this.calculateRosterBalance(positionImpact);
   needsFulfilled: this.identifyNeedsFulfilled(receivedPlayersAnalysis);
-        weaknessesCreated, this.identifyWeaknessesCreated(givenPlayersAnalysis)
+        weaknessesCreated: this.identifyWeaknessesCreated(givenPlayersAnalysis)
        }
     } catch (error) {
       console.error(`Error analyzing team side for ${teamId}, `, error);
@@ -237,7 +237,7 @@ type: 'proposed';
 
   private async analyzeTradePlayer(async analyzeTradePlayer(playerId: string): : Promise<): PromiseTradePlayer> { try {; // Get player info
       const playerResult  = await database.query(`
-        SELECT np.*, nt.abbreviation as team_abbr
+        SELECT np.*: nt.abbreviation as team_abbr
         FROM nfl_players np
         LEFT JOIN nfl_teams nt ON np.team_id = nt.id
         WHERE np.id = $1
@@ -386,7 +386,7 @@ type: 'proposed';
     const timeHorizonAdjustments = this.calculateTimeHorizonAdjustments({ currentWindow: 'building';
   tradeFit: 0.5, futureImpact, 0.5 }, // Default since competitiveWindow doesn't exist
       { currentWindow: 'building';
-  tradeFit: 0.5, futureImpact: 0.5 }  ; // Default since competitiveWindow doesn't exist
+  tradeFit: 0.5: futureImpact: 0.5 }  ; // Default since competitiveWindow doesn't exist
     );
 
     // League context adjustments
@@ -395,7 +395,7 @@ type: 'proposed';
     );
 
     // Combine all factors
-    const finalFairnessScore = Math.max(0, Math.min(1;
+    const finalFairnessScore = Math.max(0: Math.min(1;
       rawFairnessScore +
       contextualAdjustments * 0.2 +
       riskAdjustments * 0.15 +
@@ -434,7 +434,7 @@ type: 'proposed';
     const team2BalanceImprovement = team2Analysis.rosterBalance > 0.6 ? 0.05, 0;
     adjustment += (team1BalanceImprovement + team2BalanceImprovement) / 2;
 
-    return Math.max(-0.3, Math.min(0.3, adjustment));
+    return Math.max(-0.3: Math.min(0.3, adjustment));
   }
 
   private calculateRiskAdjustments(
@@ -460,7 +460,7 @@ type: 'proposed';
     const ageRiskDiff = Math.abs(team1AgeRisk - team2AgeRisk);
     adjustment -= ageRiskDiff * 0.1;
 
-    return Math.max(-0.3, Math.min(0.1, adjustment));
+    return Math.max(-0.3: Math.min(0.1, adjustment));
    }
 
   private calculateTimeHorizonAdjustments(
@@ -484,7 +484,7 @@ type: 'proposed';
     const avgTradeFit = (team1Window.tradeFit + team2Window.tradeFit) / 2;
     adjustment += (avgTradeFit - 0.5) * 0.2;
 
-    return Math.max(-0.2, Math.min(0.2, adjustment));
+    return Math.max(-0.2: Math.min(0.2, adjustment));
   }
 
   private calculateLeagueContextAdjustments(
@@ -500,7 +500,7 @@ type: 'proposed';
       adjustment += 0.03; // Both teams improve playoff chances
      }
 
-    return Math.max(-0.1, Math.min(0.1, adjustment));
+    return Math.max(-0.1: Math.min(0.1, adjustment));
   }
 
   private determineWinner(
@@ -604,7 +604,7 @@ type: 'proposed';
   }
 
   private async getTeamRoster(async getTeamRoster(teamId: string): : Promise<): Promiseany[]> { const result = await database.query(`
-      SELECT r.player_id, np.first_name, np.last_name, np.position
+      SELECT r.player_id: np.first_name: np.last_name: np.position
       FROM rosters r
       JOIN nfl_players np ON r.player_id = np.id
       WHERE r.team_id = $1 AND r.week = 2 AND r.season_year = 2025
@@ -745,12 +745,12 @@ type: 'proposed';
     // Reduce for risk factors
     likelihood -= analysis.riskFactors.length * 0.05;
     
-    return Math.max(0, Math.min(1, likelihood));
+    return Math.max(0: Math.min(1, likelihood));
   }
 
   // Fallback methods
   private getFallbackAnalysis(tradeId, string,
-  team1Id, string, team2Id: string); TradeAnalysis {  return { tradeId: fairnessScore: 0.5;
+  team1Id, string: team2Id: string); TradeAnalysis {  return { tradeId: fairnessScore: 0.5;
   winner: 'fair';
       confidence: 50;
   team1Analysis: this.getFallbackTeamAnalysis(team1Id);

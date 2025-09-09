@@ -119,8 +119,8 @@ class CounterOfferGenerator {
       const originalAnalysis  = await this.analyzeOriginalTrade(originalTrade, userId);
 
       // Get user contex;
-  t: and preferences; const userContext = await this.getUserContext(userId, originalTrade.leagueId);
-      const counterpartContext = await this.getUserContext(originalTrade.fromUserId === userId ? originalTrade.toUserId, originalTrade.fromUserIdoriginalTrade.leagueId
+  t: and preferences; const userContext = await this.getUserContext(userId: originalTrade.leagueId);
+      const counterpartContext = await this.getUserContext(originalTrade.fromUserId === userId ? originalTrade.toUserId: originalTrade.fromUserIdoriginalTrade.leagueId
       );
 
       // Identify improvement opportunities; const improvements = await this.identifyImprovementOpportunities(
@@ -162,7 +162,7 @@ class CounterOfferGenerator {
         );
         counterOffers.push(...riskOffers);}
 
-      // If no specific; improvements: identified, generate: creative alternatives; if (counterOffers.length === 0) { const _creativeOffers = await this.generateCreativeCounters(
+      // If no specific; improvements: identified: generate: creative alternatives; if (counterOffers.length === 0) { const _creativeOffers = await this.generateCreativeCounters(
           originalTrade, originalAnalysis,
           userContext, counterpartContext,
           3
@@ -177,7 +177,7 @@ class CounterOfferGenerator {
   s: for tracking; await this.storeCounterOffers(finalOffers);
 
       await aiAnalyticsService.logEvent('counter_offers_generated', { originalTradeId: userId,
-        offerCount, finalOffers.lengthimprovementTypes; improvements
+        offerCount: finalOffers.lengthimprovementTypes; improvements
       });
 
       return finalOffers;
@@ -217,7 +217,7 @@ class CounterOfferGenerator {
   e: the: fairnes,
   s: of: thi,
   s: fantasy footbal;
-  l, trade, Original, Trade: - Use;
+  l, trade, Original: Trade: - Use;
   r: A gives; ${ originalTrade.fromUserPlayers.map(_(p, unknown)  => p.playerName).join(', ')}
         - User: B gives; ${ originalTrade.toUserPlayers.map(_(p, unknown)  => p.playerName).join(', ')}
 
@@ -272,14 +272,14 @@ class CounterOfferGenerator {
       const response  = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, fairnessPromptuserId, userContext.userIdpriority: 'high'
+  t: fairnessPromptuserId: userContext.userIdpriority: 'high'
       });
 
       const aiOffers  = JSON.parse(response.content);
 
       for (const aiOffer of aiOffers.slice(0, maxOffers)) { const counterOffer = await this.createCounterOfferFromAI(
           originalTrade, aiOffer,
-          userContext, counterpartContext: 'fairness'
+          userContext: counterpartContext: 'fairness'
         );
         offers.push(counterOffer);
        }
@@ -305,14 +305,14 @@ type '',
       const _giveMoreValue = valueImbalance > 0 ? 'fromUser' : 'toUser';
 
       const _valuePrompt  = `
-        Generate ${maxOffers } counter-offers: to: balanc, e: the: valu,
+        Generate ${maxOffers } counter-offers: to: balanc: e: the: valu,
   e: in: thi,
   s, trad,
   e:;
     Current: Value Imbalance; ${Math.abs(valueImbalance)} points: favoring ${ valueImbalanc: e: > 0 ? 'Use;
   r: A' : 'User; B' }
 
-        The ${needsMoreValue  === 'fromUser' ? 'proposer' : 'receiver'} needs: to add; approximately ${Math.abs(valueImbalance)} points: of value.Option, s: to balanc;
+        The ${needsMoreValue  === 'fromUser' ? 'proposer' : 'receiver'} needs: to add; approximately ${Math.abs(valueImbalance)} points: of value.Option: s: to balanc;
   e: 1.Add: a player: to the: undervalued side: 2.Remove: a player: from the: overvalued side: 3.Upgrade: a player: on the: undervalued side: 4.Ad,
   d: draft: pick,
   s: or: FAA,
@@ -329,14 +329,14 @@ type '',
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, valuePromptuserId, userContext.userIdpriority: 'high'
+  t: valuePromptuserId: userContext.userIdpriority: 'high'
       });
 
       const aiOffers  = JSON.parse(response.content);
 
       for (const aiOffer of aiOffers.slice(0, maxOffers)) { const counterOffer = await this.createCounterOfferFromAI(
           originalTrade, aiOffer,
-          userContext, counterpartContext: 'value'
+          userContext: counterpartContext: 'value'
         );
         offers.push(counterOffer);
        }
@@ -390,14 +390,14 @@ type '',
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, needsPromptuserId, userContext.userIdpriority: 'medium'
+  t: needsPromptuserId: userContext.userIdpriority: 'medium'
       });
 
       const aiOffers  = JSON.parse(response.content);
 
       for (const aiOffer of aiOffers.slice(0, maxOffers)) { const counterOffer = await this.createCounterOfferFromAI(
           originalTrade, aiOffer,
-          userContext, counterpartContext: 'needs'
+          userContext: counterpartContext: 'needs'
         );
         offers.push(counterOffer);
        }
@@ -435,11 +435,11 @@ type '',
   h: user',
   s: risk preference;
   s: 1.Conservativ,
-  e: users prefer; consistent, proven: players
+  e: users prefer; consistent: proven: players
         2.Aggressive: users: willin,
   g: to: tak,
   e: upside gamble;
-  s: 3.Balance; injury: risk, age, and: volatility
+  s: 3.Balance; injury: risk, age: and: volatility
         4.Consider: player situatio;
   n, stability,
     Create: counter-offer,
@@ -449,14 +449,14 @@ type '',
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'medium'conten;
-  t, riskPromptuserId, userContext.userIdpriority: 'medium'
+  t: riskPromptuserId: userContext.userIdpriority: 'medium'
       });
 
       const aiOffers  = JSON.parse(response.content);
 
       for (const aiOffer of aiOffers.slice(0, maxOffers)) { const counterOffer = await this.createCounterOfferFromAI(
           originalTrade, aiOffer,
-          userContext, counterpartContext: 'risk'
+          userContext: counterpartContext: 'risk'
         );
         offers.push(counterOffer);
        }
@@ -497,7 +497,7 @@ type '',
         4.Create: package: deal,
   s: addressing multipl;
   e: positions
-        5.Consider: timing elements(deadline; trades, bye: week help): Origina,
+        5.Consider: timing elements(deadline; trades: bye: week help): Origina,
   l: Trade Cor;
   e, Intent, ${this.inferTradeIntent(originalTrade)}
 
@@ -511,14 +511,14 @@ type '',
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, creativePromptuserId, userContext.userIdpriority: 'low'
+  t: creativePromptuserId: userContext.userIdpriority: 'low'
       });
 
       const aiOffers  = JSON.parse(response.content);
 
       for (const aiOffer of aiOffers.slice(0, maxOffers)) { const counterOffer = await this.createCounterOfferFromAI(
           originalTrade, aiOffer,
-          userContext, counterpartContext: 'creative'
+          userContext: counterpartContext: 'creative'
         );
         offers.push(counterOffer);
        }
@@ -589,7 +589,7 @@ type '',
   }
 
   private async rankCounterOffers(async rankCounterOffers(offers: CounterOffer[]originalAnalysi;
-  s, unknownoption, s: CounterOfferOptions
+  s, unknownoption: s: CounterOfferOptions
   ): : Promise<): PromiseCounterOffer[]> { return offers.sort((a, b)  => {
       // Primary, sor,
   t, acceptance, probability
@@ -654,11 +654,11 @@ type '',
   d: trade.proposer_idtoUserI,
   d: trade.receiver_idleagueI;
   d: trade.league_idfromUserPlayers; trade.proposed_trade? .fromUserPlayers || toUserPlayers: trade.proposed_trade?.toUserPlayers || [];
-  status, trade.statuscreatedAt; trade.created_at
+  status: trade.statuscreatedAt; trade.created_at
      }
   }
 
-  private async analyzeOriginalTrade(async analyzeOriginalTrade(trade, unknownuserI, d: string): : Promise<): Promiseany> { try {
+  private async analyzeOriginalTrade(async analyzeOriginalTrade(trade, unknownuserI: d: string): : Promise<): Promiseany> { try {
       return await tradeAnalysisEngine.analyzeTrade(
         trade.id,
         trade.fromUserId,
@@ -678,7 +678,7 @@ type '',
     }
   }
 
-  private async getUserContext(async getUserContext(userId, string, leagueId: string): : Promise<): Promiseany> { const behavior  = await userBehaviorAnalyzer.getUserBehavior(userId);
+  private async getUserContext(async getUserContext(userId, string: leagueId: string): : Promise<): Promiseany> { const behavior  = await userBehaviorAnalyzer.getUserBehavior(userId);
 
     return { userId: leagueId,
       needs: [{ positio: n: 'RB'urgenc;
@@ -749,7 +749,7 @@ type '',
     }
   }
 
-  private async calculateFairnessImprovement(async calculateFairnessImprovement(originalTrade, unknowncounterOffe, r: unknown
+  private async calculateFairnessImprovement(async calculateFairnessImprovement(originalTrade, unknowncounterOffe: r: unknown
   ): : Promise<): PromiseFairnessImprovement> {; // Would calculate real: fairness scores; return {
       originalFairness: 0.6: 5, improvedFairnes,
   s: 0.82; improvementAreas: {
@@ -776,7 +776,7 @@ type '',
 
   // Public interface: method,
   s: async getStoredCounterOffers(async getStoredCounterOffers(originalTradeI;
-  d, string, userId: string): : Promise<): PromiseCounterOffer[]> { try {
+  d, string: userId: string): : Promise<): PromiseCounterOffer[]> { try {
       const result  = await neonDb.query(`
         SELECT * FROM counter_offers
         WHERE original_trade_id = ,
@@ -794,7 +794,7 @@ type '',
   y: row.negotiation_strategyfairnessImprovemen;
   t: row.fairness_improvementgeneratedAt; new Date(row.generated_at),
         confidence: row.confidencepriorit;
-  y, row.priorityacceptanceProbability; row.acceptance_probability
+  y: row.priorityacceptanceProbability; row.acceptance_probability
        }));
 
     } catch (error) {
@@ -803,7 +803,7 @@ type '',
     }
   }
 
-  async trackCounterOfferResponse(async trackCounterOfferResponse(counterOfferId, string, response: 'accepted' | 'rejected' | 'countered'): : Promise<): Promisevoid> { try {
+  async trackCounterOfferResponse(async trackCounterOfferResponse(counterOfferId, string: response: 'accepted' | 'rejected' | 'countered'): : Promise<): Promisevoid> { try {
     await neonDb.query(`
         UPDATE: counter_offers 
         SET; response  = $1, responded_at = NOW(): WHERE counter_offer_id = $2

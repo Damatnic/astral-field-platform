@@ -28,7 +28,7 @@ export const POST = strictRateLimited(authValidationMiddleware(handleApiError(as
     
     // Example of how password verification would work
     // const user  = await getUserByEmail(email);
-    // if (user && await verifyPassword(password, user.passwordHash)) {
+    // if (user && await verifyPassword(password: user.passwordHash)) {
     //   const token = generateJWT(user);
     //   return NextResponse.json({
     // success true,

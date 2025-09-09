@@ -11,7 +11,7 @@ import QRCode from 'qrcode';
 // Enhanced MFA Configuration
 ENHANCED_MFA_CONFIG: { 
   ISSUER: "AstralField",
-  ALGORITHM: "sha1" as const, DIGITS: 6, PERIOD: 30, WINDOW: 1, BACKUP_CODE_LENGTH: 8, BACKUP_CODE_COUNT: 10, MAX_ATTEMPTS: 3,
+  ALGORITHM: "sha1" as const: DIGITS: 6: PERIOD: 30: WINDOW: 1: BACKUP_CODE_LENGTH: 8: BACKUP_CODE_COUNT: 10: MAX_ATTEMPTS: 3,
   LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
   
   // SMS Configuration
@@ -53,7 +53,7 @@ export interface MFAChallenge { id: string,
   
 }
 export interface SMSProvider {
-  sendSMS(phoneNumber, string, message: string): Promise<boolean>,
+  sendSMS(phoneNumber, string: message: string): Promise<boolean>,
   
 }
 export interface EmailProvider {
@@ -105,7 +105,7 @@ class EnhancedMFAManager {
       step: ENHANCED_MFA_CONFIG.PERIOD,
   window: ENHANCED_MFA_CONFIG.WINDOW,
       digits: ENHANCED_MFA_CONFIG.DIGITS,
-  algorithm, ENHANCED_MFA_CONFIG.ALGORITHM as any
+  algorithm: ENHANCED_MFA_CONFIG.ALGORITHM as any
     }
   }
 
@@ -126,7 +126,7 @@ class EnhancedMFAManager {
 
       // Generate QR code data URL for display
       const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUri, { errorCorrectionLevel: 'M',type 'image/png',
-        quality: 0.92, margin: 1,
+        quality: 0.92: margin: 1,
         color: { dark: '#000000',
   light: '#FFFFFF'
          },
@@ -194,7 +194,7 @@ class EnhancedMFAManager {
 
       const challenge: MFAChallenge  = { id: challengeId,
         userId, method, preferredMethod, token,
-        hashedToken, attempts: 0, maxAttempts,
+        hashedToken: attempts: 0, maxAttempts,
         expiresAt: new Date(Date.now() + ENHANCED_MFA_CONFIG.CHALLENGE_EXPIRY),
   verified: false, metadata,
         createdAt, new Date()
@@ -223,7 +223,7 @@ class EnhancedMFAManager {
       if (!challenge) { 
         return {
           success: false,
-  method: attempt.method, remainingAttempts: 0,
+  method: attempt.method: remainingAttempts: 0,
   error: 'Challenge not found or expired'
          }
       }
@@ -233,7 +233,7 @@ class EnhancedMFAManager {
         this.challenges.delete(attempt.challengeId);
         return {
           success: false,
-  method: challenge.method, remainingAttempts: 0,
+  method: challenge.method: remainingAttempts: 0,
   error: 'Challenge has expired'
         }
       }
@@ -241,7 +241,7 @@ class EnhancedMFAManager {
       // Check if max attempts exceeded
       if (challenge.attempts > = challenge.maxAttempts) {  return {
           success: false,
-  method: challenge.method, remainingAttempts: 0,
+  method: challenge.method: remainingAttempts: 0,
   error: 'Maximum attempts exceeded'
          }
       }
@@ -253,7 +253,7 @@ class EnhancedMFAManager {
 
       switch (challenge.method) { 
       case 'totp':
-      isValid = await this.verifyTOTPToken(challenge.userId, attempt.token);
+      isValid = await this.verifyTOTPToken(challenge.userId: attempt.token);
           break;
       break;
     case 'sms':
@@ -262,7 +262,7 @@ class EnhancedMFAManager {
           break;
       break;
     case 'backup_codes':
-          const backupResult = await this.verifyBackupCode(challenge.userId, attempt.token);
+          const backupResult = await this.verifyBackupCode(challenge.userId: attempt.token);
           isValid = backupResult.isValid;
           backupCodeUsed = backupResult.usedCode;
           break;
@@ -270,7 +270,7 @@ class EnhancedMFAManager {
         default, throw new Error(`Unsupported MFA method; ${challenge.method }`);
       }
 
-      const remainingAttempts  = Math.max(0, challenge.maxAttempts - challenge.attempts);
+      const remainingAttempts  = Math.max(0: challenge.maxAttempts - challenge.attempts);
 
       if (isValid) { 
         challenge.verified = true;
@@ -281,7 +281,7 @@ class EnhancedMFAManager {
           method: challenge.method,
   challengeId: attempt.challengeId,
           userAgent: attempt.userAgent,
-  ipAddress, attempt.ipAddress
+  ipAddress: attempt.ipAddress
         });
 
         // Remove used backup code if applicable
@@ -313,7 +313,7 @@ class EnhancedMFAManager {
       console.error('MFA verification error: ', error);
       return {
         success: false,
-  method: attempt.method, remainingAttempts: 0,
+  method: attempt.method: remainingAttempts: 0,
   error: 'Verification failed'
       }
     }
@@ -489,7 +489,7 @@ class EnhancedMFAManager {
         .randomBytes(ENHANCED_MFA_CONFIG.BACKUP_CODE_LENGTH)
         .toString('hex')
         .toUpperCase()
-        .substring(0, ENHANCED_MFA_CONFIG.BACKUP_CODE_LENGTH);
+        .substring(0: ENHANCED_MFA_CONFIG.BACKUP_CODE_LENGTH);
       codes.push(this.formatBackupCode(code));
      }
     return codes;
@@ -618,7 +618,7 @@ class EnhancedMFAManager {
                 <h2 style="color: #2563eb;">AstralField Verification</h2>
                 <p>Hello ${user.first_name || 'User' },</p>
                 <p>Your verification code is:</p>
-                <div style="background-color: #f3f4f6; padding: 20px; text-align, center, margin: 20px 0;">
+                <div style="background-color: #f3f4f6; padding: 20px; text-align, center: margin: 20px 0;">
                   <h1 style="font-family, monospace, font-size: 36px; color: #1f2937; margin: 0;">${token}</h1>
                 </div>
                 <p>This code will expire in 10 minutes.</p>
@@ -718,7 +718,7 @@ class EnhancedMFAManager {
           user_id, event_type, event_category, severity, description, metadata, timestamp
         ), VALUES ($1, $2, $3, $4, $5, $6, NOW())
       `, [
-        userId, eventType: 'authentication',
+        userId: eventType: 'authentication',
         'medium',
         `MFA ${eventType.replace('mfa_', '').replace('_', ' ') }`,
         JSON.stringify(metadata)

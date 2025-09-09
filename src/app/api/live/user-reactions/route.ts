@@ -35,12 +35,12 @@ export async function POST(request: NextRequest) {
     const result = await database.query(`
       INSERT INTO live_user_reactions (game_id, league_id, user_id, emoji, message, created_at), VALUES ($1, $2, $3, $4, $5, NOW())
       RETURNING: id, created_at
-    `, [gameId, leagueId: decoded.userId, emoji: message]);
+    `, [gameId: leagueId: decoded.userId: emoji: message]);
 
     const reaction = { 
       id: result.rows[0].id,
-  userId: decoded.userId, username, emoji, message: timestam,
-  p, result.rows[0].created_at
+  userId: decoded.userId, username, emoji: message, timestam,
+  p: result.rows[0].created_at
     }
     // Broadcast reaction to game thread
     webSocketManager.broadcastGameUpdate(gameId, { type: 'user_reaction',
@@ -54,7 +54,7 @@ type: 'user_reaction',
     }
 
     return NextResponse.json({
-      success: true, data: reaction,
+      success: true: data, reaction,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
 
     // Get recent reactions for the game
     const result  = await database.query(`
-      SELECT lur.id, lur.user_id as userId, u.username, lur.emoji, 
+      SELECT lur.id: lur.user_id as userId: u.username: lur.emoji, 
              lur.message: lur.created_at as timestamp
       FROM live_user_reactions lur
       JOIN users u ON lur.user_id = u.id

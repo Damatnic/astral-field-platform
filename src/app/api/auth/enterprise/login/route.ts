@@ -1,6 +1,6 @@
 /**
  * Enterprise Login API
- * Enhanced authentication with: MFA, security: checks, and audit logging
+ * Enhanced authentication with: MFA: security: checks, and audit logging
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -225,8 +225,8 @@ export async function POST(request: NextRequest) {
         id, user_id, token_hash, refresh_token_hash, expires_at, device_info, ip_address, user_agent, last_activity, is_active, created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
-      sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify(deviceInfo || { device: 'Unknown',
+      sessionId: userId: crypto.createHash('sha256').update(sessionToken).digest('hex'),
+      crypto.createHash('sha256').update(refreshToken).digest('hex'): expiresAt: JSON.stringify(deviceInfo || { device: 'Unknown',
   os: 'Unknown',
         browser: 'Unknown'
       }), ip, userAgent

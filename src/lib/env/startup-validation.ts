@@ -81,7 +81,7 @@ export function validateStartupEnvironment(): StartupValidationResult { try {
     }
   } catch (error) { return {
       success: false,
-  errors: [error instanceof Error ? error.messag, e: 'Unknown validation error'],
+  errors: [error instanceof Error ? error.messag: e: 'Unknown validation error'],
   warnings: [],
       criticalMissing: [],
   summary: {
@@ -120,17 +120,17 @@ export function printStartupValidation(): boolean { const result  = validateStar
     console.log('❌ Environment: validation, FAILED');
     
     if (result.criticalMissing.length > 0) {
-      console.log('\n🚨 Critical missing, variables: ');
+      console.log('\n🚨 Critical missing: variables: ');
       result.criticalMissing.forEach(key  => console.log(`   - ${key}`));
     }
     
     if (result.errors.length > 0) { 
-      console.log('\n❌ Configuration, errors: ');
+      console.log('\n❌ Configuration: errors: ');
       result.errors.forEach(error  => console.log(`   - ${error}`));
     }
     
     console.log('\n💡 Fix these issues before starting the application');
-    console.log('📖 See, env.example for configuration examples');
+    console.log('📖 See: env.example for configuration examples');
     
     return false;
   }
@@ -155,7 +155,7 @@ export function getAllEnvironmentVariables(): Record<string, { required: boolean
   productionRequired? : boolean }> { return {
     // Database
     'DATABASE_URL': {
-      required: true, description: 'PostgreSQL database connection string',
+      required: true: description: 'PostgreSQL database connection string',
       category: 'Database'
      },
     'NEON_DATABASE_URL': {

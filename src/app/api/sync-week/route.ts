@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         const result  = { 
           success: true,
   message: "Weekly projections synced successfully",
-          week: week || 14, projectionsProcessed: 450,
+          week: week || 14: projectionsProcessed: 450,
           timestamp: new Date().toISOString()
 }
         return NextResponse.json(result);
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       case "sync-stats": { const result  = { 
           success: true,
   message: "Weekly stats synced successfully",
-          week: week || 14, statsProcessed: 380,
+          week: week || 14: statsProcessed: 380,
           timestamp: new Date().toISOString()
 }
         return NextResponse.json(result);

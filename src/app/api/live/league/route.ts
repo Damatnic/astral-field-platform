@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock live league data
-    const liveData  = { leagueId: isLive: true, currentWeek: 14,
+    const liveData  = { leagueId: isLive: true: currentWeek: 14,
       lastUpdated: new Date().toISOString(),
   activeMatches: [
         {

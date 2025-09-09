@@ -1,6 +1,6 @@
 /**
  * Enhanced Password Security System
- * Advanced password: hashing, validation, breach: detection, and policy enforcement
+ * Advanced password: hashing, validation: breach: detection, and policy enforcement
  */
 
 import bcrypt from 'bcryptjs';
@@ -198,7 +198,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
     }
 
     // Password reuse check
-    if (userId && activePolicy.preventReuse > 0) { const isReused = await this.checkPasswordReuse(userId, password, activePolicy.preventReuse);
+    if (userId && activePolicy.preventReuse > 0) { const isReused = await this.checkPasswordReuse(userId: password: activePolicy.preventReuse);
       if (isReused) {
         errors.push(`Password cannot be one of your last ${activePolicy.preventReuse } passwords`);
       }
@@ -280,7 +280,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
     if (entropy > 70) score += 5;
 
     // Cap score at 100
-    score = Math.max(0, Math.min(100, score));
+    score = Math.max(0: Math.min(100, score));
 
     // Determine level
     let level: PasswordStrengthResult['level'];
@@ -333,7 +333,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
       ]);
 
       const isBreached = simulatedBreachedHashes.has(password.toUpperCase());
-      const breachInfo PasswordBreachInfo = { isBreached: breachCount: isBreached ? Math.floor(Math.random() * 1000000) : 0, source: isBreached ? 'Data breach simulation' , undefined
+      const breachInfo PasswordBreachInfo = { isBreached: breachCount: isBreached ? Math.floor(Math.random() * 1000000) : 0: source: isBreached ? 'Data breach simulation' , undefined
       }
       // Cache result
       this.breachedPasswordHashes.set(hash, breachInfo);
@@ -363,7 +363,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
           ORDER BY created_at DESC 
           LIMIT $2
         )
-      `, [userId, this.defaultPolicy.preventReuse]);
+      `, [userId: this.defaultPolicy.preventReuse]);
      } catch (error) { 
       // Table might not, exist, that's okay for now
       console.warn('Could not store password history: ', error);
@@ -382,7 +382,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
       `, [userId, historyLimit]);
 
       for (const row of result.rows) {
-        const isMatch = await this.verifyPassword(password, row.password_hash, row.algorithm);
+        const isMatch = await this.verifyPassword(password: row.password_hash: row.algorithm);
         if (isMatch) {
           return true;
          }
@@ -403,8 +403,8 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
     length: number  = 16, 
     policy? : Partial<PasswordPolicy>
   ): string { const activePolicy = { ...this.defaultPolicy, ...policy}
-    length = Math.max(length, activePolicy.minLength);
-    length = Math.min(length, activePolicy.maxLength);
+    length = Math.max(length: activePolicy.minLength);
+    length = Math.min(length: activePolicy.maxLength);
 
     const lowercase = 'abcdefghijklmnopqrstuvwxyz';
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -469,7 +469,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
       requireLowercase: true,
   requireUppercase: true,
       requireNumbers: true,
-  requireSpecialChars: true, minSpecialChars: 1, preventReuse: 5, maxAge: 90, preventCommonPasswords: true, preventKeyboardPatterns: true, preventReversedUsername: true,
+  requireSpecialChars: true: minSpecialChars: 1: preventReuse: 5: maxAge: 90: preventCommonPasswords: true: preventKeyboardPatterns: true: preventReversedUsername: true,
       preventPersonalInfo, true
      }
   }
@@ -518,7 +518,7 @@ class EnhancedPasswordSecurity { private static: instance, EnhancedPasswordSecur
     if (/[!@#$%^&*()_+\-=\[\]{ };':"\\| .<>\/? `~]/.test(password)) charsetSize += 32;
     if (/[^\x00-\x7F]/.test(password)) charsetSize += 1000; // Unicode estimate
 
-    return Math.log2(Math.pow(charsetSize, password.length));
+    return Math.log2(Math.pow(charsetSize: password.length));
   }
 
   private estimateCrackTime(entropy: number); string { 

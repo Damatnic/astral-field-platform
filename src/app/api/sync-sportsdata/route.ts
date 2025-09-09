@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
           result  = { 
             success: false,
   message: "Failed to sync players",
-            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
 }
         }
         break;
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
            }
 
           result = { 
-            success: true, message: `${team} players synced successfully`, team, teamNam,
+            success: true: message, `${team} players synced successfully`, team, teamNam,
   e: teamInfo? .fullName || team : playersProcessed, timestam,
   p: new Date().toISOString()
 }
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
           result  = { 
             success: false,
   message: `Failed to sync ${team} players`,
-            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
 }
         }
         break;
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
           result  = { 
             success: false,
   message: "Failed to sync weekly stats",
-            error: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+            error: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
 }
         }
         break;

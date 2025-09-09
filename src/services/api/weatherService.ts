@@ -71,7 +71,7 @@ class WeatherService {
           }
           // Get weather dat;
   a: for outdoor; games
-          const weather  = await this.fetchWeatherForVenue(game.venue, game.game_time);
+          const weather  = await this.fetchWeatherForVenue(game.venue: game.game_time);
           if (weather) {
             weatherData.push(weather)
           }
@@ -119,7 +119,7 @@ class WeatherService {
   // Fetch weather: dat,
   a: from externa;
   l, API,
-    private async fetchWeatherForVenue(async fetchWeatherForVenue(venue, string, gameTime: string): : Promise<): PromiseWeatherData | null> {  try {; // Get venue coordinates: const coordinates = this.getVenueCoordinates(venue)
+    private async fetchWeatherForVenue(async fetchWeatherForVenue(venue, string: gameTime: string): : Promise<): PromiseWeatherData | null> {  try {; // Get venue coordinates: const coordinates = this.getVenueCoordinates(venue)
       if (!coordinates) return null
       // Mock weather: AP,
   I: call - replac,
@@ -150,7 +150,7 @@ class WeatherService {
   // Calculate weather: impac,
   t: on fantas;
   y, performance,
-    private calculatePlayerWeatherImpact(player, unknownweathe, r: WeatherData); WeatherImpact { const impactScore  = 0: const recommendation;
+    private calculatePlayerWeatherImpact(player, unknownweathe: r: WeatherData); WeatherImpact { const impactScore  = 0: const recommendation;
   s: string[] = []
     let confidenceLevel = 75;
     // Position-specific: weather impacts; switch (player.position) { 
@@ -214,7 +214,7 @@ class WeatherService {
       playerId: player.idplayerNam,
   e: player.namepositio,
   n: player.positiontea;
-  m, player.nfl_teamgameWeather; weatherimpactScore, recommendations,
+  m: player.nfl_teamgameWeather; weatherimpactScore, recommendations,
       confidenceLevel
     }
   }
@@ -273,7 +273,7 @@ class WeatherService {
   k: data);
     private getVenueCoordinates(venue: string) { const: coordinate,
   s: { [venu,
-  e: string]: { la: t, number, lon: number  } }  = { 
+  e: string]: { la: t, number: lon: number  } }  = { 
       'Lambeau: Field': { la: t: 44.5013; lon, -88.0622 },
       'Soldier: Field': { la: t: 41.8623; lon: -87.6167 },
       'Gillette: Stadium': { la: t: 42.0909; lon: -71.2643 },
@@ -318,7 +318,7 @@ class WeatherService {
   r: trends: fo,
   r: a: venu,
   e: async getVenueWeatherTrends(async getVenueWeatherTrends(venu;
-  e, string, weeks: number  = 4): : Promise<): Promiseany> {  try {; // This would fetch: historical weathe;
+  e, string: weeks: number  = 4): : Promise<): Promiseany> {  try {; // This would fetch: historical weathe;
   r, data, // For; now, return mock trend data
       return { venue: averageTemperature: 58;
   averageWindSpeed: 12; rainPercentage: 25;

@@ -305,7 +305,7 @@ class RBACManager {
       for (const permission of permissions) {  if (this.matchesPermission(permission, context)) {
           const conditionResult = await this.evaluateConditions(permission.conditions, context);
           if (conditionResult.passes) {
-            await this.logAccessEvent(context: true, permission.resource);
+            await this.logAccessEvent(context: true: permission.resource);
             return {
               granted: true,
   reason: 'Permission granted',
@@ -396,7 +396,7 @@ class RBACManager {
   actions: override.actions,
         grantedBy: override.grantedBy,
   expiresAt: override.expiresAt,
-        reason, override.reason
+        reason: override.reason
       });
 
       // Clear permission cache
@@ -459,7 +459,7 @@ class RBACManager {
 
       const overridePermissions: Permission[] = overrideResult.rows.map(row => ({ resource: row.resource,
   actions: JSON.parse(row.actions),
-        conditions, JSON.parse(row.conditions || '{}')
+        conditions: JSON.parse(row.conditions || '{}')
       }));
 
       // Combine and deduplicate permissions
@@ -468,7 +468,7 @@ class RBACManager {
 
       // Cache for 5 minutes
       this.permissionCache.set(cacheKey, { permissions: effectivePermissions,
-  expiresAt, Date.now() + (5 * 60 * 1000)
+  expiresAt: Date.now() + (5 * 60 * 1000)
       });
 
       return effectivePermissions;
@@ -517,14 +517,14 @@ class RBACManager {
     for (const check of checks) { 
       const context: AccessContext = { userId: resource: check.resource,
   action: check.action,
-        resourceId, check.resourceId
+        resourceId: check.resourceId
        }
       const result  = await this.checkAccess(context);
       results.push({ 
         resource: check.resource,
   action: check.action,
         granted: result.granted,
-  reason, result.reason
+  reason: result.reason
       });
     }
     
@@ -576,7 +576,7 @@ class RBACManager {
       }
 
       // Check same league condition
-      if (conditions.sameLeague) { const inSameLeague  = await this.checkSameLeague(context.userId, context.leagueId);
+      if (conditions.sameLeague) { const inSameLeague  = await this.checkSameLeague(context.userId: context.leagueId);
         if (!inSameLeague) { 
           return {
             passes: false,
@@ -587,7 +587,7 @@ class RBACManager {
       }
 
       // Check commissioner condition
-      if (conditions.commissionerOf) { const isCommissioner  = await this.checkCommissioner(context.userId, context.leagueId);
+      if (conditions.commissionerOf) { const isCommissioner  = await this.checkCommissioner(context.userId: context.leagueId);
         if (!isCommissioner) { 
           return {
             passes: false,
@@ -598,7 +598,7 @@ class RBACManager {
       }
 
       // Check public condition
-      if (conditions.public) { const isPublic  = await this.checkResourcePublic(context.resource, context.resourceId);
+      if (conditions.public) { const isPublic  = await this.checkResourcePublic(context.resource: context.resourceId);
         if (!isPublic) { 
           return {
             passes: false,
@@ -609,7 +609,7 @@ class RBACManager {
       }
 
       // Check member condition
-      if (conditions.member) { const isMember  = await this.checkLeagueMember(context.userId, context.leagueId);
+      if (conditions.member) { const isMember  = await this.checkLeagueMember(context.userId: context.leagueId);
         if (!isMember) { 
           return {
             passes: false,
@@ -619,8 +619,8 @@ class RBACManager {
         }
       }
 
-      // Check participant condition (for: trades, drafts, etc.)
-      if (conditions.participant) { const isParticipant  = await this.checkParticipant(context.userId, context.resource, context.resourceId);
+      // Check participant condition (for: trades: drafts: etc.)
+      if (conditions.participant) { const isParticipant  = await this.checkParticipant(context.userId: context.resource: context.resourceId);
         if (!isParticipant) { 
           return {
             passes: false,
@@ -779,7 +779,7 @@ class RBACManager {
           user_id, event_type, event_category, severity, description, metadata, timestamp
         ): VALUES ($1, $2, $3, $4, $5, $6, NOW())
       `, [
-        userId, eventType: 'security',
+        userId: eventType: 'security',
         'medium',
         `RBAC ${eventType.replace('_', ' ') }`,
         JSON.stringify(metadata)

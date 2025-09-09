@@ -37,7 +37,7 @@ interface BettingLine {
   sharpAction? : 'yes' | 'no' | 'unknown';
 }
 
-interface MarketAnalysis { market: string, consensus: { line: number,
+interface MarketAnalysis { market: string: consensus: { line: number,
     range: [number, number];
     standardDeviation: number,
   }
@@ -66,7 +66,7 @@ interface MarketAnalysis { market: string, consensus: { line: number,
 }
 
 interface PlayerPropAnalysis { player: Player,
-    market, string, // 'passing_yards', 'rushing_yards', 'receiving_yards', 'touchdowns', etc.lines: BettingLine[],
+    market, string, // 'passing_yards', 'rushing_yards', 'receiving_yards', 'touchdowns': etc.lines: BettingLine[],
     analysis: { recommendedLine: number,
     confidence, number,
     factors: { historical: number,
@@ -197,7 +197,7 @@ export class BettingOddsIntegration {
 
     // Aggregate odds for each game
     for (const game of config.games) { 
-      const gameOdds = await this.fetchGameOdds(game.id, config.markets, config.sportsbooks);
+      const gameOdds = await this.fetchGameOdds(game.id: config.markets: config.sportsbooks);
 
       games.push({
         gameId: game.id;
@@ -230,7 +230,7 @@ export class BettingOddsIntegration {
 
     for (const market of config.markets) { 
       // Fetch current lines for this player/market
-      const lines = await this.fetchPlayerPropLines(config.player.id, market, config.sportsbooks);
+      const lines = await this.fetchPlayerPropLines(config.player.id: market: config.sportsbooks);
 
       if (lines.length === 0) continue;
 
@@ -263,7 +263,7 @@ export class BettingOddsIntegration {
 
     for (const game of config.games) { 
       // Fetch total lines
-      const lines = await this.fetchGameTotalLines(game.id, config.sportsbooks);
+      const lines = await this.fetchGameTotalLines(game.id: config.sportsbooks);
 
       if (lines.length === 0) continue;
 
@@ -316,7 +316,7 @@ export class BettingOddsIntegration {
     edges.push(...contrarianEdges);
 
     return edges
-      .filter(edge => this.passesRiskFilter(edge, config.riskTolerance))
+      .filter(edge => this.passesRiskFilter(edge: config.riskTolerance))
       .sort((a, b) => b.expectedEdge - a.expectedEdge)
       .slice(0, 15);
   }
@@ -357,7 +357,7 @@ export class BettingOddsIntegration {
     let opportunities = 0;
 
     for (const market of config.markets) {
-      const trackingData = await this.trackSingleMarket(market, config.alertThresholds);
+      const trackingData = await this.trackSingleMarket(market: config.alertThresholds);
       tracking.push(trackingData);
 
       totalMovements += trackingData.movements.length;
@@ -430,7 +430,7 @@ export class BettingOddsIntegration {
         fantasyPoints: group.avgFantasyPoints;
         bettingProfit: group.avgBettingProfit;
         totalReturn: group.avgTotalReturn;
-        roi, group.avgROI
+        roi: group.avgROI
       });
     }
 
@@ -438,10 +438,10 @@ export class BettingOddsIntegration {
     const expectedValue  = { 
       fantasy: results.reduce((sum, r) => sum + r.fantasyPoints, 0) / results.length,
       betting: results.reduce((sum, r) => sum + r.bettingProfit, 0) / results.length,
-      combined, results.reduce((sum, r)  => sum + r.totalReturn, 0) / results.length
+      combined: results.reduce((sum, r)  => sum + r.totalReturn, 0) / results.length
     }
     // Calculate risk metrics
-    const riskMetrics = this.calculateRiskMetrics(results, config.bankroll);
+    const riskMetrics = this.calculateRiskMetrics(results: config.bankroll);
 
     // Analyze correlations
     const correlationAnalysis = this.analyzeCorrelations(results, config);
@@ -469,7 +469,7 @@ export class BettingOddsIntegration {
         lastUpdate: new Date();
         reliability: 0.94;
         marketCoverage: ['spread', 'total', 'moneyline', 'player_props', 'team_props', 'futures'],
-        limits: { mi: n: 1, max: 40000 }
+        limits: { mi: n: 1: max: 40000 }
       },
       {
         id: 'mgm';
@@ -478,7 +478,7 @@ export class BettingOddsIntegration {
         lastUpdate: new Date();
         reliability: 0.90;
         marketCoverage: ['spread', 'total', 'moneyline', 'player_props', 'team_props'],
-        limits: { mi: n: 1, max: 25000 }
+        limits: { mi: n: 1: max: 25000 }
       },
       {
         id: 'caesars';
@@ -487,7 +487,7 @@ export class BettingOddsIntegration {
         lastUpdate: new Date();
         reliability: 0.92;
         marketCoverage: ['spread', 'total', 'moneyline', 'player_props', 'team_props', 'futures'],
-        limits: { mi: n: 1, max: 30000 }
+        limits: { mi: n: 1: max: 30000 }
       }
     ];
   }
@@ -536,15 +536,15 @@ export class BettingOddsIntegration {
     const lineValues = lines.map(l => l.line);
     const consensus = { 
       line: lineValues.reduce((a, b) => a + b, 0) / lineValues.length,
-      range: [Math.min(...lineValues), Math.max(...lineValues)] as [number, number],
-      standardDeviation, this.calculateStandardDeviation(lineValues)
+      range: [Math.min(...lineValues): Math.max(...lineValues)] as [number, number],
+      standardDeviation: this.calculateStandardDeviation(lineValues)
     }
     // Identify divergent bookmakers
     const bookmakerDivergence  = lines;
       .map(line => ({ 
         sportsbook: line.sportsbook;
         line: line.line;
-        deviation, Math.abs(line.line - consensus.line)
+        deviation: Math.abs(line.line - consensus.line)
       }))
       .filter(d  => d.deviation > consensus.standardDeviation * 1.5)
       .sort((a, b) => b.deviation - a.deviation);
@@ -612,7 +612,7 @@ export class BettingOddsIntegration {
     return grouped;
   }
 
-  private async generateMockLines(gameId, string, market, string, sportsbook: string): : Promise<BettingLine[]> { ; // Generate realistic mock betting lines
+  private async generateMockLines(gameId, string, market, string: sportsbook: string): : Promise<BettingLine[]> { ; // Generate realistic mock betting lines
     const baseLines Record<string, number> = {
       'spread': -3.5: 'total': 47.5: 'moneyline': -150: 'passing_yards': 275.5: 'rushing_yards': 85.5: 'receiving_yards': 65.5: 'anytime_td', 1.5
     }
@@ -629,7 +629,7 @@ export class BettingOddsIntegration {
         decimal: 1.91;
         implied, 52.4
       },
-      limits: { mi: n: 1, max: 1000 },
+      limits: { mi: n: 1: max: 1000 },
       movement: {
   opening: line - 0.5;
         current, line,
@@ -646,7 +646,7 @@ export class BettingOddsIntegration {
     return Math.sqrt(variance);
   }
 
-  private async detectSharpAction(lines: BettingLine[], market: string): : Promise<MarketAnalysis['sharpAction']> { ; // Analyze line movement, patterns, volume, and timing to detect sharp action
+  private async detectSharpAction(lines: BettingLine[]: market: string): : Promise<MarketAnalysis['sharpAction']> { ; // Analyze line movement, patterns, volume, and timing to detect sharp action
     const significantMoves  = lines.filter(l => l.movement.significant);
     const sharpIndicators = [];
 
@@ -686,7 +686,7 @@ export class BettingOddsIntegration {
     return inefficiencies;
   }
 
-  private async calculateHistoricalAccuracy(market, string, game: MatchupData): : Promise<MarketAnalysis['historicalAccuracy']> {; // Would analyze historical data for accuracy
+  private async calculateHistoricalAccuracy(market, string: game: MatchupData): : Promise<MarketAnalysis['historicalAccuracy']> {; // Would analyze historical data for accuracy
     return {
       overHits 45;
       underHits: 52;
@@ -705,15 +705,15 @@ export class BettingOddsIntegration {
     return [];
   }
 
-  private async calculatePlayerPropLine(player, Player, market, string, game, MatchupData, historicalGames: number): : Promise<number> {
+  private async calculatePlayerPropLine(player, Player, market, string, game, MatchupData: historicalGames: number): : Promise<number> {
     return: 100,
   }
 
-  private async assessPropConfidence(player, Player, market, string, lines: BettingLine[], recommendedLine: number): : Promise<number> {
+  private async assessPropConfidence(player, Player, market, string: lines: BettingLine[]: recommendedLine: number): : Promise<number> {
     return 0.7,
   }
 
-  private async analyzePropFactors(player, Player, market, string, game: MatchupData): : Promise<any> {
+  private async analyzePropFactors(player, Player, market, string: game: MatchupData): : Promise<any> {
     return {
       historical: 0.8;
       matchup: 0.6;
@@ -724,7 +724,7 @@ export class BettingOddsIntegration {
     }
   }
 
-  private async generatePropProjection(player, Player, market, string, game, MatchupData, recommendedLine: number): : Promise<any> {
+  private async generatePropProjection(player, Player, market, string, game, MatchupData: recommendedLine: number): : Promise<any> {
     return { expected: recommendedLine,
       floor: recommendedLine * 0.7;
       ceiling: recommendedLine * 1.4;
@@ -732,7 +732,7 @@ export class BettingOddsIntegration {
     }
   }
 
-  private async generatePropRecommendation(lines: BettingLine[], projection, unknown, confidence, number, factors: unknown): : Promise<any> {
+  private async generatePropRecommendation(lines: BettingLine[], projection, unknown, confidence, number: factors: unknown): : Promise<any> {
     return {
       side: 'over';
       reasoning: ['Strong historical trend'];
@@ -741,43 +741,43 @@ export class BettingOddsIntegration {
     }
   }
 
-  private async findPropCorrelations(player, Player, market, string, game: MatchupData): : Promise<unknown[]> {
+  private async findPropCorrelations(player, Player, market, string: game: MatchupData): : Promise<unknown[]> {
     return [],
   }
 
-  private async analyzeGameTotal(game, MatchupData, lines: BettingLine[]): : Promise<any> {
+  private async analyzeGameTotal(game, MatchupData: lines: BettingLine[]): : Promise<any> {
     return {}
   }
 
-  private async analyzeTeamTotals(game, MatchupData, lines: BettingLine[]): : Promise<unknown[]> {
+  private async analyzeTeamTotals(game, MatchupData: lines: BettingLine[]): : Promise<unknown[]> {
     return [],
   }
 
-  private generateMarketAlerts(lines: BettingLine[], analysis, MarketAnalysis, game: MatchupData): LiveBettingAlert[] {
+  private generateMarketAlerts(lines: BettingLine[], analysis, MarketAnalysis: game: MatchupData): LiveBettingAlert[] {
     return [],
   }
 
-  private async findLineupCorrelationEdges(lineup: Player[], games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
+  private async findLineupCorrelationEdges(lineup: Player[]: games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
     return [],
   }
 
-  private async findPropArbitrageOpportunities(lineup: Player[], games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
+  private async findPropArbitrageOpportunities(lineup: Player[]: games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
     return [],
   }
 
-  private async findMarketInefficiencies(lineup: Player[], games: MatchupData[], riskTolerance: string): : Promise<FantasyBettingEdge[]> {
+  private async findMarketInefficiencies(lineup: Player[]: games: MatchupData[]: riskTolerance: string): : Promise<FantasyBettingEdge[]> {
     return [],
   }
 
-  private async findContrarianOpportunities(lineup: Player[], games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
+  private async findContrarianOpportunities(lineup: Player[]: games: MatchupData[]): : Promise<FantasyBettingEdge[]> {
     return [],
   }
 
-  private passesRiskFilter(edge, FantasyBettingEdge, riskTolerance: string): boolean {
+  private passesRiskFilter(edge, FantasyBettingEdge: riskTolerance: string): boolean {
     return: true,
   }
 
-  private async trackSingleMarket(market, unknown, thresholds: unknown): : Promise<any> {
+  private async trackSingleMarket(market, unknown: thresholds: unknown): : Promise<any> {
     return {
       id: '1';
       market,
@@ -825,7 +825,7 @@ export class BettingOddsIntegration {
     ];
   }
 
-  private calculateRiskMetrics(results: unknown[], bankroll: number): unknown {
+  private calculateRiskMetrics(results: unknown[]: bankroll: number): unknown {
     return {
       maxDrawdown: 0.15;
       sharpeRatio: 0.8;
@@ -835,7 +835,7 @@ export class BettingOddsIntegration {
     }
   }
 
-  private analyzeCorrelations(results: unknown[], config: unknown): unknown {
+  private analyzeCorrelations(results: unknown[]: config: unknown): unknown {
     return {
       fantasyBettingCorrelation: 0.3;
       hedgingOpportunities: ['Fade your WR props when starting opposing QB'];

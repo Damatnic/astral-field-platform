@@ -44,7 +44,7 @@ type: "sell_high",
 
         return NextResponse.json({
           success: true,
-  data: { opportunities: count: opportunities.length
+  data: { opportunities:  count: opportunities.length
 }
 });
       }

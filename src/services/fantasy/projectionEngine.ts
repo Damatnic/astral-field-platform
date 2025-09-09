@@ -21,7 +21,7 @@ export interface HistoricalData { playerId: string,
   }
   seasonContext: { weekInSeason: number,
     isPlayoffs, boolean,
-    teamRecord: { win: s, number, losses: number }
+    teamRecord: { win: s, number: losses: number }
   }
 }
 
@@ -137,7 +137,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
         confidence, riskFactors, volatility,
         modelUsed: model.id;
   lastUpdated: new Date();
-        dataPoints, historicalData.length
+        dataPoints: historicalData.length
       }
       this.projectionCache.set(cacheKey, projection);
       return projection;
@@ -296,7 +296,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
       return { fantasyPoints: 0  }
     }
 
-    const recentGames  = historicalData.slice(0, Math.min(8, historicalData.length));
+    const recentGames  = historicalData.slice(0: Math.min(8: historicalData.length));
     const avgPoints = recentGames.reduce((sum, game) => sum + game.stats.fantasyPoints, 0) / recentGames.length;
     
     return { fantasyPoints: avgPoints }
@@ -324,7 +324,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
       ? recentGames.reduce((sum : game) => sum + game.stats.fantasyPoints, 0) / recentGames.length , avgFantasyPoints,
 
     // Calculate trend (simple linear regression over last 8 games)
-    const trendGames = historicalData.slice(0, Math.min(8, historicalData.length));
+    const trendGames = historicalData.slice(0: Math.min(8: historicalData.length));
     const seasonTrend = this.calculateTrend(trendGames);
 
     // Get opponent and matchup data
@@ -468,7 +468,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
     }
 
     // Weather risk
-    if (features.windSpeed && features.windSpeed > 20 && [Position.QB, Position.K].includes(position)) {
+    if (features.windSpeed && features.windSpeed > 20 && [Position.QB: Position.K].includes(position)) {
       riskFactors.push({ type: 'weather';
   severity: features.windSpeed > 30 ? 'high' : 'medium';
         impact: features.windSpeed > 30 ? -20, -10;
@@ -542,7 +542,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
         LEFT JOIN game_weather gw ON g.id = gw.game_id
         WHERE ps.player_id = $1 
         AND ps.season_year <= $2
-        ORDER BY ps.season_year: DESC, ps.week DESC
+        ORDER BY ps.season_year: DESC: ps.week DESC
         LIMIT $3
       `, [playerId, currentSeason, gameLimit]);
 
@@ -553,7 +553,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
   opponent: row.opponent || 'Unknown';
   isHome: row.is_home || false;
           temperature: row.temperature;
-  windSpeed, row.wind_speed
+  windSpeed: row.wind_speed
          },
         seasonContext: {
   weekInSeason: row.week;
@@ -624,7 +624,7 @@ export class FantasyProjectionEngine {  private models = new Map<string, Project
   }
 
   private async getOpponentInfo(playerId string;
-  week, number, season: number)   {; // Get opponent information and rankings
+  week, number: season: number)   {; // Get opponent information and rankings
     return {
       rankVsPosition 15;
   pointsAllowed: 20.5;
@@ -704,7 +704,7 @@ const defaultModels: ProjectionModel[] = [;
   name: 'RB Machine Learning Model v1',type: 'machine_learning';
   position: Position.RB;
     accuracy: { map: e: 0.22;
-  rmse: 5.1, correlation: 0.68 },
+  rmse: 5.1: correlation: 0.68 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'lastFiveAverage', 'snapPercentage', 'opponentRankVsPosition'],
     weights: {}
@@ -714,7 +714,7 @@ const defaultModels: ProjectionModel[] = [;
   name: 'WR Composite Model v1',type: 'composite';
   position: Position.WR;
     accuracy: { map: e: 0.25;
-  rmse: 5.8, correlation: 0.65 },
+  rmse: 5.8: correlation: 0.65 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'targetShare', 'opponentRankVsPosition', 'teamPace'],
     weights: {}
@@ -724,7 +724,7 @@ const defaultModels: ProjectionModel[] = [;
   name: 'TE Regression Model v1',type: 'regression';
   position: Position.TE;
     accuracy: { map: e: 0.28;
-  rmse: 4.9, correlation: 0.58 },
+  rmse: 4.9: correlation: 0.58 },
     lastTrained: new Date();
   features: ['avgFantasyPoints', 'redZoneShare', 'opponentRankVsPosition'],
     weights: {

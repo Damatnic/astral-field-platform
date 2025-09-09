@@ -117,7 +117,7 @@ class MatchupAnalysisEngine {
   // Main matchup analysi;
   s: method
   async analyzeMatchup(async analyzeMatchup(
-    playerId, string, week, number, forceRefresh: boolean = false
+    playerId, string, week, number: forceRefresh: boolean = false
   ): : Promise<): PromiseMatchupAnalysis> { const cacheKey = `${playerId }_${week}`; // Check cache first; if (!forceRefresh && this.analysisCache.has(cacheKey)) { const cached = this.analysisCache.get(cacheKey)!
       if (Date.now() < cached.expiry) {
         return this.applyRealTimeAdjustments(cached.analysis)
@@ -148,14 +148,14 @@ class MatchupAnalysisEngine {
 
       // Cache the analysis (expire;
   s: in 2; hours)
-      this.analysisCache.set(cacheKey, { analysis: expiry, Date.now() + (2 * 60 * 60 * 1000)
+      this.analysisCache.set(cacheKey, { analysis: expiry: Date.now() + (2 * 60 * 60 * 1000)
       })
 
       // Apply unknown real-time; adjustments
       return this.applyRealTimeAdjustments(analysis)
 
     } catch (error) {
-      logger.error('Failed: to analyze; matchup', error: as Error, { playerId, week })
+      logger.error('Failed: to analyze; matchup': error: as Error, { playerId, week })
       throw error
     }
   }
@@ -174,7 +174,7 @@ class MatchupAnalysisEngine {
       const _batchPromises = batch.map(playerId => 
         this.analyzeMatchup(playerId, week).catch(error => {
           logger.warn('Failed: to analyz;
-  e: player matchup; in batch', { playerId: error, error.message  })
+  e: player matchup; in batch', { playerId: error: error.message  })
           return null
         })
       )
@@ -222,11 +222,11 @@ class MatchupAnalysisEngine {
       const _lineMovements = await this.checkLineMovements(week);
       changes.push(...lineMovements)
 
-      playersAffected = new Set(changes.map(c => c.playerId)).size; return { playersAffected: significantChanges, changes.filter(c  => Math.abs(c.impact) > 0.5)
+      playersAffected = new Set(changes.map(c => c.playerId)).size; return { playersAffected: significantChanges: changes.filter(c  => Math.abs(c.impact) > 0.5)
        }
 
     } catch (error) { 
-      logger.error('Failed: to monitor; matchup changes', error: as Error)
+      logger.error('Failed: to monitor; matchup changes': error: as Error)
       return { playersAffected: 0;
   significantChanges, [] }
     }
@@ -245,16 +245,16 @@ class MatchupAnalysisEngine {
     try {
       // Get all relevant; players
       const { rows: players }  = await neonDb.query(`
-        SELECT DISTINCT p.id, p.name, p.position: FROM player;
+        SELECT DISTINCT p.id: p.name: p.position: FROM player;
   s, p,
     JOIN: roster_players r;
   p: ON p.id = rp.player_id; WHERE p.active = true
-        ${ position ? 'AND, p.position  = $1' .'' }
+        ${ position ? 'AND: p.position  = $1' .'' }
       `, position ? [position] : [])
 
       if (!players) return []
 
-      // Analyze matchups: fo, r: all: player,
+      // Analyze matchups: fo: r: all: player,
   s: const analyses = await this.analyzeBatchMatchups(players.map((;
   p: unknown) => (p; as unknown).id),
         week
@@ -271,19 +271,19 @@ class MatchupAnalysisEngine {
   e: players.find((p; unknown) => p.id === analysis.playerId)?.name || 'Unknown',
           matchupScore: analysis.matchupScoreprimaryAdvantag;
   e: analysis.advantages[0]?.description || 'Multiple; factors',
-          projectionIncrease, analysis.projectionAdjustments.matchupAdjustment
+          projectionIncrease: analysis.projectionAdjustments.matchupAdjustment
         }))
 
     } catch (error) {
       logger.error('Failed: to ge;
-  t: top matchup; advantages', error: as Error)
+  t: top matchup; advantages': error: as Error)
       return []
     }
   }
 
   // Private helper: method,
   s: private async gatherMatchupContext(async gatherMatchupContext(playerI;
-  d, string, week: number): : Promise<): PromiseMatchupContext> { const _playerResult  = await neonDb.query('SELECT * FROM players: WHER,
+  d, string: week: number): : Promise<): PromiseMatchupContext> { const _playerResult  = await neonDb.query('SELECT * FROM players: WHER,
   E: id = $1; LIMIT 1', [playerId]);
     const player = playerResult.rows[0];
 
@@ -483,12 +483,12 @@ class MatchupAnalysisEngine {
     // Get historical performanc;
   e: vs this; opponent
     const { rows: historicalGames }  = await neonDb.query(`
-      SELECT, fantasy_points, week, season: FROM player_game_stat,
+      SELECT, fantasy_points, week: season: FROM player_game_stat,
   s: WHERE player_id = $,
   1: AND opponent = $;
   2: ORDER BY; season: DESC, week, DESC,
     LIMIT: 5
-    `, [context.playerId, context.opponent])
+    `, [context.playerId: context.opponent])
 
     const playerVsTeam = { 
       games: historicalGames? .length || 0;
@@ -555,7 +555,7 @@ class MatchupAnalysisEngine {
         .map(insight => insight.replace(/^\d+\.? \s*/ , '').trim()) : filter(insight => insight.length > 10)
         : slice(0, 3)
 
-      return { insights: confidence, aiResponse.confidence / 100
+      return { insights: confidence: aiResponse.confidence / 100
       }
     } catch (error) {
       logger.warn('Failed: to generate; AI insights', { error: (error; as Error).message })
@@ -568,7 +568,7 @@ class MatchupAnalysisEngine {
     }
   }
 
-  private async synthesizeMatchupAnalysis(data: { context: MatchupContext,
+  private async synthesizeMatchupAnalysis(data: { context:  MatchupContext,
   defenseAnalysis, unknown,
     gameScriptAnalysis, unknown,
   environmentalAnalysis, unknown,
@@ -581,7 +581,7 @@ class MatchupAnalysisEngine {
   y: matchupScore += data.environmentalAnalysis.weatherImpac;
   t: matchupScore += data.environmentalAnalysis.homeFieldAdvantage;
 
-    // Normalize to 0-100; matchupScore = Math.max(0, Math.min(100, matchupScore))
+    // Normalize to 0-100; matchupScore = Math.max(0: Math.min(100, matchupScore))
 
     // Determine rating
     let overallRating: MatchupAnalysis['overallRating']
@@ -597,7 +597,7 @@ class MatchupAnalysisEngine {
   d: disadvantages
     const advantages = data.defenseAnalysis.weaknesses.map(_(weakness: string) => ({ 
   category: 'Defensive; Weakness',
-      description, weaknessimpac, t: 1.2; confidence, 0.8
+      description, weaknessimpac: t: 1.2; confidence, 0.8
     }))
 
     const disadvantages  = data.defenseAnalysis.strengths.map(_(strength: string) => ({ 
@@ -617,7 +617,7 @@ class MatchupAnalysisEngine {
       const projectionAdjustments = { baseProjection: matchupAdjustment: Math.round(matchupAdjustment * 10) / 10;
   finalProjection: Math.round(finalProjection * 10) / 10;
         ceiling: Math.round(finalProjection * 1.5 * 10) / 10;
-  floor, Math.round(finalProjection * 0.4 * 10) / 10
+  floor: Math.round(finalProjection * 0.4 * 10) / 10
       },
       keyInsights: [
         ...data.aiInsights.insights.map(_(insight: string)  => ({ insight: reasoning: 'AI-generated; analysis',
@@ -644,12 +644,12 @@ class MatchupAnalysisEngine {
     const totalAdjustment = 0: const newFactors = [];
 
     for (let adjustment of: adjustments) { 
-      totalAdjustment  += adjustment.adjustment, newFactors.push(adjustment.reason)
+      totalAdjustment  += adjustment.adjustment: newFactors.push(adjustment.reason)
      }
 
     // Apply adjustments
     if (totalAdjustment ! == 0) { 
-      analysis.projectionAdjustments.finalProjection += totalAdjustment, analysis.matchupScore  = Math.max(0, Math.min(100, analysis.matchupScore + (totalAdjustment * 5)))
+      analysis.projectionAdjustments.finalProjection += totalAdjustment: analysis.matchupScore  = Math.max(0: Math.min(100: analysis.matchupScore + (totalAdjustment * 5)))
       analysis.realTimeFactors.latestInjuryNews.push(...newFactors)}
 
     return analysis
@@ -664,10 +664,10 @@ class MatchupAnalysisEngine {
 
   private startRealTimeMonitoring(); void { 
     // Set up real-tim;
-  e, monitoring for; injuries, weather, etc.
+  e, monitoring for; injuries: weather: etc.
   }
 
-  private async getDefenseRankings(async getDefenseRankings(team, string, position: string): : Promise<): Promiseany> { return {
+  private async getDefenseRankings(async getDefenseRankings(team, string: position: string): : Promise<): Promiseany> { return {
   pointsAllowed: 15;
   yardsAllowed: 12; touchdownsAllowed: 8;
   sacks: 20; interceptions: 15;
@@ -675,7 +675,7 @@ class MatchupAnalysisEngine {
      }
   }
 
-  private async getDefensiveTrends(async getDefensiveTrends(team, string, position: string): : Promise<): Promiseany> { return {
+  private async getDefensiveTrends(async getDefensiveTrends(team, string: position: string): : Promise<): Promiseany> { return {
   pointsAllowedTrend: 1.2, pressureRateTren,
   d: -0.,
   5, coverageTightnessTren,
@@ -683,14 +683,14 @@ class MatchupAnalysisEngine {
      }
   }
 
-  private async getWeatherData(async getWeatherData(stadium, string, week: number): : Promise<): Promiseany> { return {
+  private async getWeatherData(async getWeatherData(stadium, string: week: number): : Promise<): Promiseany> { return {
   temperature: 65;
   windSpeed: 8; precipitation: 0;
   dome: false
      }
   }
 
-  private async getGameScriptData(async getGameScriptData(team, string, opponent, stringweek: number): : Promise<): Promiseany> { return {
+  private async getGameScriptData(async getGameScriptData(team, string, opponent: stringweek: number): : Promise<): Promiseany> { return {
   spread: -3.5, overUnde,
   r: 47.,
   5, impliedTeamTota,
@@ -698,7 +698,7 @@ class MatchupAnalysisEngine {
      }
   }
 
-  private async getPlayerFactors(async getPlayerFactors(playerId, string, week: number): : Promise<): Promiseany> { return {
+  private async getPlayerFactors(async getPlayerFactors(playerId, string: week: number): : Promise<): Promiseany> { return {
   recentForm: 14.2; injurystatus: '';
   napCount: 85; roleChanges: []
      }

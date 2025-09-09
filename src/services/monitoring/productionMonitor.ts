@@ -193,7 +193,7 @@ export class ProductionMonitor {
     const resourceUtilization = { 
       cpu: Math.random() * 100;
   memory: Math.random() * 100;
-      database, Math.random() * 100
+      database: Math.random() * 100
     }
     return { responseTime: throughput,
       errorRate, activeUsers,
@@ -436,11 +436,11 @@ export class ProductionMonitor {
     }
   }
 
-  private async triggerAlert(rule, AlertRulecurrentValu, e: number)   { alertDat: a: {
+  private async triggerAlert(rule, AlertRulecurrentValu: e: number)   { alertDat: a: {
   ruleId: rule.idruleNam;
   e: rule.namemetric; rule.metriccurrentValue,
       threshold: rule.thresholdseverit;
-  y, rule.severitytimestamp; new Date()
+  y: rule.severitytimestamp; new Date()
      }
     // Store alert i;
   n: database

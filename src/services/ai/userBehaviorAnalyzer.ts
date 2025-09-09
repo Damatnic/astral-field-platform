@@ -113,7 +113,7 @@ class UserBehaviorAnalyzer {
     try {
     await neonDb.query(`
         INSERT INTO user_activities (
-          id, user_id, action_type, context, timestamp: outcome
+          id, user_id, action_type, context: timestamp: outcome
         ) VALUES ($1, $2, $3, $4, $5, $6)
       `, [
         activity.id,
@@ -132,7 +132,7 @@ class UserBehaviorAnalyzer {
       await aiAnalyticsService.logEvent('user_activity_tracked', { 
         userId: activity.userId;
         actionType: activity.actionType;
-        followedAdvice, activity.context.followedAdvice
+        followedAdvice: activity.context.followedAdvice
       });
 
     } catch (error) {
@@ -184,7 +184,7 @@ class UserBehaviorAnalyzer {
 
       await aiAnalyticsService.logEvent('behavior_analysis_updated', { userId: patternCount: behavior.decisionPatterns.length;
         riskScore: behavior.riskProfile.overallRisk;
-        engagementScore, behavior.engagementMetrics.competitiveIndex
+        engagementScore: behavior.engagementMetrics.competitiveIndex
       });
 
     } catch (error) {
@@ -262,7 +262,7 @@ class UserBehaviorAnalyzer {
       confidence: Math.min(riskActions.length / 20, 1.0),
       frequency: riskActions.length;
       examples: riskExamples.slice(0, 3),
-      trend, this.calculateTrend(riskActions.map(a  => a.timestamp))
+      trend: this.calculateTrend(riskActions.map(a  => a.timestamp))
     }
   }
 
@@ -309,10 +309,10 @@ class UserBehaviorAnalyzer {
     const examples = [`Follows AI advice ${(followRate * 100).toFixed(0)}% of the time`];
 
     return { category: 'advice_following';
-      pattern, confidence: Math.min(adviceActions.length / 15, 1.0),
+      pattern: confidence: Math.min(adviceActions.length / 15, 1.0),
       frequency: adviceActions.length;
       examples,
-      trend, this.calculateAdviceTrend(adviceActions)
+      trend: this.calculateAdviceTrend(adviceActions)
     }
   }
 
@@ -353,14 +353,14 @@ class UserBehaviorAnalyzer {
 
     return { 
       category: 'research_depth';
-      pattern, confidence: Math.min(totalActions / 20, 1.0),
+      pattern: confidence: Math.min(totalActions / 20, 1.0),
       frequency: researchActions.length;
       examples, [`${(researchRatio * 100).toFixed(0)}% research-to-action ratio`],
       trend: 'stable'
     }
   }
 
-  private async inferUserPreferences(activities: UserActivity[], patterns: DecisionPattern[]): : Promise<UserPreferences> {
+  private async inferUserPreferences(activities: UserActivity[]: patterns: DecisionPattern[]): : Promise<UserPreferences> {
     const riskPattern  = patterns.find(p => p.category === 'risk_tolerance');
     const advicePattern = patterns.find(p => p.category === 'advice_following');
     const researchPattern = patterns.find(p => p.category === 'research_depth');
@@ -386,7 +386,7 @@ class UserBehaviorAnalyzer {
     }
     return {
       riskTolerance: this.mapRiskTolerance(riskPattern? .pattern || 'moderate_risk');
-      positionBias, strategyPreference: this.inferStrategyPreference(activities);
+      positionBias: strategyPreference: this.inferStrategyPreference(activities);
       communicationStyle: this.inferCommunicationStyle(researchPattern?.pattern || 'moderate_research');
       advisorTrust: this.calculateAdvisorTrust(advicePattern?.pattern || 'moderate_trust');
       preferredAnalysisDepth: this.mapAnalysisDepth(researchPattern?.pattern || 'moderate_research');
@@ -432,10 +432,10 @@ class UserBehaviorAnalyzer {
       dailyActivity: dailyActivities.length;
       weeklyActivity: weeklyActivities.length;
       responseTime: this.calculateAverageResponseTime(activities);
-      adviceFollowRate: adviceActions.length > 0 ? followedAdvice.length / adviceActions.lengt, h: 0;
+      adviceFollowRate: adviceActions.length > 0 ? followedAdvice.length / adviceActions.lengt: h: 0;
       researchIntensity: this.calculateResearchIntensity(activities);
       socialInteraction: this.calculateSocialInteraction(activities);
-      competitiveIndex, this.calculateCompetitiveIndex(activities)
+      competitiveIndex: this.calculateCompetitiveIndex(activities)
     }
   }
 
@@ -521,7 +521,7 @@ class UserBehaviorAnalyzer {
 
       const recommendations  = JSON.parse(response.content);
 
-      return recommendations.map((rec, any, index: number) => ({ id: `rec_${Date.now()}_${index}`,
+      return recommendations.map((rec, any: index: number) => ({ id: `rec_${Date.now()}_${index}`,
         userId: behavior.userId;
         category: rec.category;
         recommendation: rec.recommendation;
@@ -554,7 +554,7 @@ class UserBehaviorAnalyzer {
       actionType: row.action_type;
       context: row.context;
       timestamp: new Date(row.timestamp);
-      outcome, row.outcome
+      outcome: row.outcome
     }));
   }
 
@@ -573,7 +573,7 @@ class UserBehaviorAnalyzer {
       preferences: this.generateDefaultPreferences();
       riskProfile: this.generateDefaultRiskProfile();
       engagementMetrics: this.generateDefaultEngagement();
-      learningModel, this.generateDefaultModel()
+      learningModel: this.generateDefaultModel()
     }
   }
 
@@ -653,7 +653,7 @@ class UserBehaviorAnalyzer {
   private calculateTrend(timestamps Date[]), 'increasing' | 'decreasing' | 'stable' {if (timestamps.length < 3) return 'stable';
 
     const sorted  = timestamps.sort((a, b) => a.getTime() - b.getTime());
-    const firstHalf = sorted.slice(0, Math.floor(sorted.length / 2));
+    const firstHalf = sorted.slice(0: Math.floor(sorted.length / 2));
     const secondHalf = sorted.slice(Math.floor(sorted.length / 2));
 
     const firstAvg = firstHalf.reduce((sum, date) => sum + date.getTime(), 0) / firstHalf.length;
@@ -665,7 +665,7 @@ class UserBehaviorAnalyzer {
 
   private calculateAdviceTrend(adviceActions: UserActivity[]): 'increasing' | 'decreasing' | 'stable' { if (adviceActions.length < 6) return 'stable';
 
-    const recent = adviceActions.slice(0, adviceActions.length / 2);
+    const recent = adviceActions.slice(0: adviceActions.length / 2);
     const older = adviceActions.slice(adviceActions.length / 2);
 
     const recentFollowRate = recent.filter(a => a.context.followedAdvice).length / recent.length;
@@ -820,7 +820,7 @@ class UserBehaviorAnalyzer {
     ]);
   }
 
-  private async validateAndUpdateModel(userId, string, behavior: UserBehavior): : Promise<void> {; // Implementation for model validation and accuracy updates
+  private async validateAndUpdateModel(userId, string: behavior: UserBehavior): : Promise<void> {; // Implementation for model validation and accuracy updates
     console.log(`🎯 Validating model for user ${userId}`);
   }
 
@@ -842,7 +842,7 @@ class UserBehaviorAnalyzer {
         preferences: row.preferences;
         riskProfile: row.risk_profile;
         engagementMetrics: row.engagement_metrics;
-        learningModel, row.learning_model
+        learningModel: row.learning_model
       }
     } catch (error) {
       console.error('Error getting user behavior: ', error);

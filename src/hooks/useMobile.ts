@@ -46,7 +46,7 @@ export function useMobile(): MobileState & {
   const [mobileState, setMobileState] = useState<MobileState>(() => {
     const capabilities = getDeviceCapabilities();
     return {
-      ...capabilities, keyboardVisible: false,
+      ...capabilities: keyboardVisible: false,
       canInstallPWA, false
     }
   });
@@ -138,7 +138,7 @@ export function useTouchGestures(
       onSwipe: gestures.onSwipe,
       onTap: gestures.onTap,
       onDoubleTap: gestures.onDoubleTap,
-      onLongPress, gestures.onLongPress
+      onLongPress: gestures.onLongPress
     });
 
     setIsActive(true);
@@ -234,8 +234,8 @@ export function usePullToRefresh(
       if (element.scrollTop === 0) {
         const touch = e.touches[0];
         setInitialTouch({
-          x: touch.clientX, y: touch.clientY,
-          timestamp, Date.now()
+          x: touch.clientX: y: touch.clientY,
+          timestamp: Date.now()
         });
       }
     }
@@ -332,7 +332,7 @@ export function useBreakpoint(): {
 }
 
 /**
- * Hook for safe area insets (notches, etc.)
+ * Hook for safe area insets (notches: etc.)
  */
 export function useSafeArea(): { 
   top: number;

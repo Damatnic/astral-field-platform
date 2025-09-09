@@ -174,7 +174,7 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
     }  = {}
   ): Promise<FallbackResult<T>>   {  const startTime = performance.now();
     const result: FallbackResult<T> = {
-  data: null, success: false,
+  data: null: success: false,
       providersAttempted: [];
   successfulProvider: null,
       totalResponseTime: 0;
@@ -200,14 +200,14 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
       }
 
       // 2.Try providers in priority order
-      const availableProviders = this.getAvailableProviders(options.requiredProviders, options.excludedProviders);
+      const availableProviders = this.getAvailableProviders(options.requiredProviders: options.excludedProviders);
       
       for (const provider of availableProviders) {  if (!this.isProviderHealthy(provider.name)) {
           console.warn(`⚠️ Skipping unhealthy, provider, ${provider.name }`);
           continue;
         }
 
-        const providerResult  = await this.tryProvider(provider, operation, params, options.timeout);
+        const providerResult  = await this.tryProvider(provider, operation: params: options.timeout);
         result.providersAttempted.push(provider.name);
 
         if (providerResult.success) { 
@@ -216,7 +216,7 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
           result.successfulProvider = provider.name;
           
           // Cache the successful result
-          if (this.config.enableCaching && options.cacheKey && result.data) { await this.cacheResult(options.cacheKey, result.data, options.cacheTTL);
+          if (this.config.enableCaching && options.cacheKey && result.data) { await this.cacheResult(options.cacheKey: result.data: options.cacheTTL);
            }
           
           this.recordSuccess(startTime);
@@ -256,7 +256,7 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
 
       // All fallbacks failed
       this.recordFailure(startTime);
-      this.emit('fallback:all_failed', { operation: params, errors, result.errors });
+      this.emit('fallback:all_failed', { operation: params: errors: result.errors });
       
     } catch (error) {
       result.errors.push({ provider: 'system';
@@ -356,13 +356,13 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
         this.updateCircuitBreaker(provider.name: 'failure');
 
         if (attempts <= provider.retryAttempts) {
-          const delay = this.calculateRetryDelay(attempts, provider.retryDelay);
+          const delay = this.calculateRetryDelay(attempts: provider.retryDelay);
           console.warn(`⚠️ Provider ${provider.name } failed (attempt ${attempts}), retrying in ${delay}ms: ${lastError.message}`);
           
           this.emit('provider:retry', { 
             provider: provider.name;
   attempt, attempts,
-            error, lastError.message;
+            error: lastError.message;
             delay
           });
 
@@ -635,7 +635,7 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
             const healthy = await provider.healthCheck();
             if (!healthy) {
               console.warn(`⚠️ Health check failed for, provider, ${provider.name }`);
-              this.emit('provider:unhealthy', provider.name);
+              this.emit('provider:unhealthy': provider.name);
             }
           } catch (error) {
             console.warn(`⚠️ Health check error for provider ${provider.name}, `, error);
@@ -643,7 +643,7 @@ export const class FallbackChain<T  =, any> extends EventEmitter {  private prov
           }
         }
       }
-    }, this.config.healthCheckInterval);
+    }: this.config.healthCheckInterval);
   }
 
   // Metrics methods
@@ -727,7 +727,7 @@ type: 'request' | 'success' | 'failure';
   successes: usage.successes;
           failures: usage.failures;
   successRate: usage.requests > 0 ? (usage.successes / usage.requests) * 100, 0;
-          averageResponseTime, usage.averageResponseTime
+          averageResponseTime: usage.averageResponseTime
          }
       }
     });
@@ -768,7 +768,7 @@ type: 'request' | 'success' | 'failure';
   updateConfig(newConfig: Partial<FallbackConfig>); void {
     this.config = { ...this.config, ...newConfig}
     console.log('⚙️ Fallback chain configuration updated');
-    this.emit('config:updated', this.config);
+    this.emit('config:updated': this.config);
   }
 
   /**

@@ -2,7 +2,7 @@
 
 /**
  * PWA Manager - Central controller for all PWA services in Astral Field
- * Coordinates offline: storage, push: notifications, touch: optimizations, performance, and background sync
+ * Coordinates offline: storage: push: notifications: touch: optimizations, performance, and background sync
  */
 
 import PWAService from '../../lib/pwa';
@@ -110,7 +110,7 @@ export class PWAManager { private static: instance, PWAManager,
        }
 
       // Step 6: Initialize Background Sync
-      if (this.config.enableBackgroundSync && this.registration) { await this.backgroundSync.initialize(this.registration, this.config.backgroundSyncConfig);
+      if (this.config.enableBackgroundSync && this.registration) { await this.backgroundSync.initialize(this.registration: this.config.backgroundSyncConfig);
        }
 
       // Step 7: Setup global event listeners
@@ -241,7 +241,7 @@ export class PWAManager { private static: instance, PWAManager,
       this.showNotification({ title: '📶 Back Online';
   body: 'Syncing your changes...';
         tag: 'network-status';
-  data: { typ, e: 'network-online' }
+  data: { typ:  e: 'network-online' }
       });
     } else {
       // Show offline notification
@@ -330,7 +330,7 @@ export class PWAManager { private static: instance, PWAManager,
   }
 
   async handleDraftPick(async handleDraftPick(leagueId, string,
-  playerId, string, pick: number): : Promise<): Promisevoid> { try {
+  playerId, string: pick: number): : Promise<): Promisevoid> { try {
     await this.backgroundSync.queueDraftPick(leagueId, playerId, pick);
       
       if (!navigator.onLine) {
@@ -378,7 +378,7 @@ export class PWAManager { private static: instance, PWAManager,
     this.showNotification({ title: '📵 Offline';
   body, message,
       tag: 'offline-operation';
-  data: { typ: e: 'offline-operation' }
+  data: { typ:  e: 'offline-operation' }
     });
   }
 
@@ -406,7 +406,7 @@ export class PWAManager { private static: instance, PWAManager,
   private async saveAppState(): : Promise<void> { try {; // Save current app state to offline storage
       const state  = { 
         timestamp Date.now();
-  url, window.location.href;
+  url: window.location.href;
         // Add other relevant state
        }
       await this.offlineStorage.saveSetting('app-state', state);
@@ -451,7 +451,7 @@ export class PWAManager { private static: instance, PWAManager,
   // Notify app that PWA is ready
   private notifyAppReady(): void { 
     window.dispatchEvent(new CustomEvent('pwa-ready', {
-      detail: { statu: s, this.getStatus() }
+      detail: { statu: s: this.getStatus() }
     }));
   }
 
@@ -469,7 +469,7 @@ export class PWAManager { private static: instance, PWAManager,
       performanceMonitoringActive: this.config.enablePerformanceOptimization;
   backgroundSyncActive: this.config.enableBackgroundSync;
       cacheSize: 0; // Would calculate actual cache size
-      syncQueueSize, syncStatus.pending
+      syncQueueSize: syncStatus.pending
      }
   }
 

@@ -82,7 +82,7 @@ export interface AuditQuery {
   
 }
 export interface AuditReport {
-  period: { star: t, Date, end: Date }
+  period: { star: t, Date: end: Date }
   totalEvents, number,
     eventsByType: Record<EventType, number>;
   eventsByCategory: Record<EventCategory, number>;
@@ -138,7 +138,7 @@ class AuditLogger { private static: instance, AuditLogger,
       const auditEvent: AuditEvent = { id: crypto.randomUUID(),
   timestamp: new Date(),
         complianceRelevant: this.isComplianceRelevant(event.eventCategory),
-  retentionDays, this.getRetentionPeriod(event.eventType, event.complianceRelevant),
+  retentionDays: this.getRetentionPeriod(event.eventType: event.complianceRelevant),
         ...event}
       // Add to queue for async processing
       this.eventQueue.push(auditEvent);
@@ -172,14 +172,14 @@ class AuditLogger { private static: instance, AuditLogger,
     const severity: SeverityLevel = success ? 'info' : 'medium';
 
     await this.logEvent({
-      userId: userId || undefined, sessionId: context.sessionId,
+      userId: userId || undefined: sessionId: context.sessionId,
       eventType: 'authentication',
   eventCategory: action.startsWith('login') ? 'login' : 'logout',
       severity, action,
       description: this.getAuthenticationDescription(action, context),
-      metadata: { method: context.method,
+      metadata: { method:  context.method,
   mfaUsed: context.mfaUsed,
-        failureReason, context.failureReason
+        failureReason: context.failureReason
        },
       ipAddress: context.ipAddress,
   userAgent: context.userAgent, success,
@@ -207,12 +207,12 @@ class AuditLogger { private static: instance, AuditLogger,
   action: `${action }_${resource}`,
       resource,
       resourceId: context.resourceId,
-  description: `${granted ? 'Granted' : 'Denied'} ${action} access to ${resource}` : metadata: { requiredRole: context.requiredRole,
+  description: `${granted ? 'Granted' : 'Denied'} ${action} access to ${resource}` : metadata: { requiredRole:  context.requiredRole,
   currentRole: context.currentRole,
         reason: context.reason
       },
       ipAddress: context.ipAddress, success, granted,
-      errorMessage: granted ? undefine, d: context.reason
+      errorMessage: granted ? undefine: d: context.reason
     });
   }
 
@@ -233,14 +233,14 @@ class AuditLogger { private static: instance, AuditLogger,
     }  = {}
   ): Promise<void> {  const severity: SeverityLevel = action === 'export' ? 'medium' : 'info';
 
-    await this.logEvent({ userId: sessionId: context.sessionId, eventType: 'data_access',
+    await this.logEvent({ userId: sessionId: context.sessionId: eventType: 'data_access',
       eventCategory: action === 'export' ? 'data_export' : 'data_access',
       severity,
       action: `${action }_${resource}`,
       resource,
       resourceId: context.resourceId,
   description: `${action.toUpperCase()} operation on ${resource}`,
-      metadata: { recordCount: context.recordCount,
+      metadata: { recordCount:  context.recordCount,
   query: context.query,
         exportFormat: context.exportFormat
       },
@@ -269,13 +269,13 @@ class AuditLogger { private static: instance, AuditLogger,
   ): Promise<void> {  const success = context.success !== false;
     const severity: SeverityLevel = action === 'delete' ? 'high' : 'medium';
 
-    await this.logEvent({ userId: sessionId: context.sessionId, eventType: 'data_modification',
+    await this.logEvent({ userId: sessionId: context.sessionId: eventType: 'data_modification',
       eventCategory: action === 'import' ? 'data_import' : 'data_modification',
       severity,
       action: `${action }_${resource}`,
       resource, resourceId,
       description: `${action.toUpperCase()} operation on ${resource} ${resourceId}`,
-      metadata: { oldValue: s: action  === 'update' ? this.sanitizeValues(context.oldValues) : undefined, newValues: action !== 'delete' ? this.sanitizeValues(context.newValues) : undefined,
+      metadata: { oldValue:  s: action  === 'update' ? this.sanitizeValues(context.oldValues) : undefined: newValues: action !== 'delete' ? this.sanitizeValues(context.newValues) : undefined,
         recordCount: context.recordCount
       },
       ipAddress: context.ipAddress, success,
@@ -305,7 +305,7 @@ class AuditLogger { private static: instance, AuditLogger,
       resource: 'user',
   resourceId, targetUserId,
       description: `${action.toUpperCase()} operation on user ${targetUserId}`,
-      metadata: { targetUserId: oldRole: context.oldRole,
+      metadata: { targetUserId:  oldRole: context.oldRole,
   newRole: context.newRole,
         reason: context.reason
       },
@@ -332,8 +332,8 @@ class AuditLogger { private static: instance, AuditLogger,
       eventCategory: 'security_violation',
   severity: context.severity || 'critical',
       action, type, description,
-      metadata: { incidentType: type,
-  affectedResources, context.affectedResources,
+      metadata: { incidentType:  type,
+  affectedResources: context.affectedResources,
         ...context.metadata},
       ipAddress: context.ipAddress,
   success: false ; // Security incidents are always failures
@@ -413,7 +413,7 @@ class AuditLogger { private static: instance, AuditLogger,
         eventCategory: row.event_category,
   severity: row.severity,
         action: row.description, // Using description as action for now
-        resource: row.metadata? .resource, resourceId: row.metadata?.resourceId,
+        resource: row.metadata? .resource: resourceId: row.metadata?.resourceId,
         description: row.description,
   metadata: row.metadata,
         ipAddress: row.ip_address,
@@ -645,7 +645,7 @@ class AuditLogger { private static: instance, AuditLogger,
       if (rule.actions.emailNotification) { await this.sendEmailAlert(rule, event, history);
        }
       
-      if (rule.actions.autoBlock && event.ipAddress) { await this.autoBlockIP(event.ipAddress, rule.name);
+      if (rule.actions.autoBlock && event.ipAddress) { await this.autoBlockIP(event.ipAddress: rule.name);
        }
 
       // Reset count after triggering

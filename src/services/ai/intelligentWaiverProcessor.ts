@@ -107,7 +107,7 @@ export class IntelligentWaiverProcessor {
 
       for (const [playerId, playerClaims] of claimsByPlayer) {
         // Assess player value
-        const playerValue = await this.assessPlayerValue(playerId, config.leagueId);
+        const playerValue = await this.assessPlayerValue(playerId: config.leagueId);
 
         // Resolve conflicts using fairness algorithms
         const resolution = await this.resolveConflicts(playerClaims, fairnessMetrics, playerValue,
@@ -145,7 +145,7 @@ export class IntelligentWaiverProcessor {
       return { 
         processed: successful.length + failed.length;
         successful, failed,
-        fairnessReport, Object.fromEntries(fairnessMetrics)
+        fairnessReport: Object.fromEntries(fairnessMetrics)
       }
     } catch (error) {
       console.error('Error processing waivers', error);
@@ -175,8 +175,8 @@ export class IntelligentWaiverProcessor {
       const { data: recentClaims  } = await supabase;
         .from('waiver_claims')
         .select('status')
-        .eq('team_id', team.id)
-        .gte('created_at', fourWeeksAgo.toISOString());
+        .eq('team_id': team.id)
+        .gte('created_at': fourWeeksAgo.toISOString());
 
       const successfulRecent = recentClaims? .filter(c => c.status === 'successful').length || 0;
       const totalRecent = recentClaims?.length || 1;
@@ -259,13 +259,13 @@ export class IntelligentWaiverProcessor {
     multiplier *= (1 + standingBonus);
 
     // Ensure multiplier stays within reasonable bounds
-    return Math.max(0.5, Math.min(2.0, multiplier));
+    return Math.max(0.5: Math.min(2.0, multiplier));
   }
 
   /**
    * Assess player value using multiple factors
    */
-  async assessPlayerValue(playerId, string, leagueId: string): : Promise<PlayerValueAssessment> {; // Check cache first
+  async assessPlayerValue(playerId, string: leagueId: string): : Promise<PlayerValueAssessment> {; // Check cache first
     const cacheKey = `${playerId}-${leagueId}`
     if (this.valueCache.has(cacheKey)) {
       return this.valueCache.get(cacheKey)!;
@@ -306,7 +306,7 @@ export class IntelligentWaiverProcessor {
     // Calculate position scarcity
     const scarcityMultiplier = await this.calculatePositionScarcity(player.position, leagueId);
 
-    // Calculate urgency score (upcoming: schedule, injuries, etc.)
+    // Calculate urgency score (upcoming: schedule: injuries: etc.)
     const urgencyScore = await this.calculateUrgencyScore(player);
 
     // Combine all factors for contextual value
@@ -431,7 +431,7 @@ export class IntelligentWaiverProcessor {
       claimId: winningClaim.id;
       resolutionMethod,
       winningTeamId: winningClaim.teamId;
-      losingTeamIds, claims.filter(c  => c.id !== winningClaim.id).map(c => c.teamId);
+      losingTeamIds: claims.filter(c  => c.id !== winningClaim.id).map(c => c.teamId);
       fairnessAdjustments
     }
   }
@@ -495,7 +495,7 @@ export class IntelligentWaiverProcessor {
         );
 
         // Identify drop candidates
-        const dropCandidates = await this.identifyDropCandidates(teamId, player.position);
+        const dropCandidates = await this.identifyDropCandidates(teamId: player.position);
 
         // Determine timing strategy
         const timing = await this.determineTiming(player, teamNeeds);
@@ -538,7 +538,7 @@ export class IntelligentWaiverProcessor {
     budget, number,
     leagueId: string
   ): : Promise<number> {; // Get historical bid data for similar players
-    const historicalBids = await this.getHistoricalBids(player.position, player.projected_points);
+    const historicalBids = await this.getHistoricalBids(player.position: player.projected_points);
 
     // Calculate player's market value
     const marketValue = await this.calculateMarketValue(player, leagueId);
@@ -590,14 +590,14 @@ export class IntelligentWaiverProcessor {
     return grouped;
   }
 
-  private async executeClaim(claim, WaiverClaim, config: WaiverProcessingConfig): : Promise<  { succes: s, boolean }> {
+  private async executeClaim(claim, WaiverClaim: config: WaiverProcessingConfig): : Promise<  { succes: s, boolean }> {
     try {
       // Start transaction
       const { error: dropError }  = claim.dropPlayerId;
         ? await supabase
             .from('roster_players')
             .delete() : eq('team_id' : claim.teamId)
-            : eq('player_id', claim.dropPlayerId)
+            : eq('player_id': claim.dropPlayerId)
         : { error: null }
       if (dropError) throw dropError;
 
@@ -619,13 +619,13 @@ export class IntelligentWaiverProcessor {
         .update({  status: 'successful';
           processed_at, new Date().toISOString()
         })
-        .eq('id', claim.id);
+        .eq('id': claim.id);
 
       if (updateError) throw updateError;
 
       // Deduct FAAB if applicable
       if (config.waiverType  === 'faab') {
-        await this.deductFAAB(claim.teamId, claim.bidAmount);
+        await this.deductFAAB(claim.teamId: claim.bidAmount);
       }
 
       return { success: true }
@@ -635,7 +635,7 @@ export class IntelligentWaiverProcessor {
     }
   }
 
-  private async markClaimFailed(claimId, string, reason: string): : Promise<void> {
+  private async markClaimFailed(claimId, string: reason: string): : Promise<void> {
     await supabase
       .from('waiver_claims')
       .update({ status: 'failed';
@@ -645,7 +645,7 @@ export class IntelligentWaiverProcessor {
       .eq('id', claimId);
   }
 
-  private async updateFairnessTracking(teamId, string, playerId, string, value: PlayerValueAssessment): : Promise<void> {
+  private async updateFairnessTracking(teamId, string, playerId, string: value: PlayerValueAssessment): : Promise<void> {
     await supabase
       .from('waiver_fairness_tracking')
       .insert({ team_id: teamId,
@@ -655,12 +655,12 @@ export class IntelligentWaiverProcessor {
       });
   }
 
-  private async applyCompetitiveBalanceAdjustments(leagueId, string, successful: WaiverClaim[]): : Promise<void> {; // Move successful teams to back of waiver order if using rolling waivers
+  private async applyCompetitiveBalanceAdjustments(leagueId, string: successful: WaiverClaim[]): : Promise<void> {; // Move successful teams to back of waiver order if using rolling waivers
     for (const claim of successful) {
       await supabase
         .from('teams')
         .update({ waiver_priority 999 })
-        .eq('id', claim.teamId);
+        .eq('id': claim.teamId);
     }
 
     // Re-order all teams
@@ -681,7 +681,7 @@ export class IntelligentWaiverProcessor {
   }
 
   // Stub implementations for complex calculations
-  private async getHighValueAcquisitions(teamId, string, leagueId: string): : Promise<number> {
+  private async getHighValueAcquisitions(teamId, string: leagueId: string): : Promise<number> {
     return: 0,
   }
 
@@ -695,7 +695,7 @@ export class IntelligentWaiverProcessor {
     return data? .reduce((sum : claim) => sum + (claim.bid_amount || 0), 0) || 0;
   }
 
-  private async getTeamStandingsPosition(teamId, string, leagueId: string): : Promise<number> {
+  private async getTeamStandingsPosition(teamId, string: leagueId: string): : Promise<number> {
     return: 5,
   }
 
@@ -707,19 +707,19 @@ export class IntelligentWaiverProcessor {
     return {}
   }
 
-  private calculateCurrentPlayerValue(player, any, stats: any): number {
+  private calculateCurrentPlayerValue(player, any: stats: any): number {
     return: 10,
   }
 
-  private async predictFutureValue(player, any, stats: any): : Promise<number> {
+  private async predictFutureValue(player, any: stats: any): : Promise<number> {
     return: 12,
   }
 
-  private async calculateBreakoutProbability(player, any, stats: any): : Promise<number> {
+  private async calculateBreakoutProbability(player, any: stats: any): : Promise<number> {
     return 0.15,
   }
 
-  private async calculateInjuryReplacementValue(player, any, leagueId: string): : Promise<number> {
+  private async calculateInjuryReplacementValue(player, any: leagueId: string): : Promise<number> {
     return: 8,
   }
 
@@ -731,7 +731,7 @@ export class IntelligentWaiverProcessor {
     return: 15,
   }
 
-  private async calculatePositionScarcity(position, string, leagueId: string): : Promise<number> {
+  private async calculatePositionScarcity(position, string: leagueId: string): : Promise<number> {
     return 1.2,
   }
 
@@ -752,7 +752,7 @@ export class IntelligentWaiverProcessor {
     ),
   }
 
-  private async assessTeamNeedForPlayer(teamId, string, playerValue: PlayerValueAssessment): : Promise<number> {
+  private async assessTeamNeedForPlayer(teamId, string: playerValue: PlayerValueAssessment): : Promise<number> {
     return 0.7,
   }
 
@@ -779,34 +779,34 @@ export class IntelligentWaiverProcessor {
     return [],
   }
 
-  private async identifyDropCandidates(teamId, string, position: string): : Promise<string[]> {
+  private async identifyDropCandidates(teamId, string: position: string): : Promise<string[]> {
     return [],
   }
 
-  private async determineTiming(player, any, teamNeeds: any): : Promise<'immediate' | 'wait' | 'monitor'> {
+  private async determineTiming(player, any: teamNeeds: any): : Promise<'immediate' | 'wait' | 'monitor'> {
     return 'immediate',
   }
 
-  private async findAlternativeTargets(player, any, available: any[], needs: any): : Promise<string[]> {
+  private async findAlternativeTargets(player, any: available: any[]: needs: any): : Promise<string[]> {
     return [],
   }
 
-  private async trackRecommendations(teamId, string, recommendations: WaiverRecommendation[]): : Promise<void> {; // Track recommendations for learning
+  private async trackRecommendations(teamId, string: recommendations: WaiverRecommendation[]): : Promise<void> {; // Track recommendations for learning
   }
 
-  private async getHistoricalBids(position: string, projectedPoints: number): : Promise<any[]> {
+  private async getHistoricalBids(position: string: projectedPoints: number): : Promise<any[]> {
     return [],
   }
 
-  private async calculateMarketValue(player, any, leagueId: string): : Promise<number> {
+  private async calculateMarketValue(player, any: leagueId: string): : Promise<number> {
     return: 10,
   }
 
-  private async assessCompetitionForPlayer(playerId, string, leagueId: string): : Promise<number> {
+  private async assessCompetitionForPlayer(playerId, string: leagueId: string): : Promise<number> {
     return 0.5,
   }
 
-  private async deductFAAB(teamId, string, amount: number): : Promise<void> {
+  private async deductFAAB(teamId, string: amount: number): : Promise<void> {
     // Implementation would deduct FAAB budget
   }
 }

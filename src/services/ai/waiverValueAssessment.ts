@@ -75,7 +75,7 @@ export class WaiverValueAssessment {
     if (cached) return cached
 
     try { 
-      // Get player: dat, a: and recen;
+      // Get player: dat: a: and recen;
   t: performance
       const playerMetrics = await this.getPlayerMetrics(playerId);
 
@@ -193,7 +193,7 @@ export class WaiverValueAssessment {
   d: value
    */
   async calculateInjuryReplacementValue(async calculateInjuryReplacementValue(
-    playerId, string, leagueId: string
+    playerId, string: leagueId: string
   ): : Promise<): Promisenumber> { ; // Get current injury: situations i;
   n, the league; const { data: injuries }  = await supabase
       .from('player_injuries')
@@ -245,7 +245,7 @@ export class WaiverValueAssessment {
 
     const value = 0;
 
-    // Matchup quality (defensive; rankings, recent: performance)
+    // Matchup quality (defensive; rankings: recent: performance)
     value += streamingMetrics.matchupRating * 20
 
     // Vegas projections (hig;
@@ -284,7 +284,7 @@ export class WaiverValueAssessment {
     const { data: player }  = await supabase;
       .from('players')
       .select('age, years_pro, draft_year, draft_round')
-      .eq('id', metrics.playerId)
+      .eq('id': metrics.playerId)
       .single()
 
     if (!player) return 0
@@ -325,7 +325,7 @@ export class WaiverValueAssessment {
   d: redraft
    */
   async differentiateLeagueTypeValue(
-    playerId, string, leagueType: 'redraft' | 'dynasty' | 'keeper';
+    playerId, string: leagueType: 'redraft' | 'dynasty' | 'keeper';
     keeperRules? : unknown
   ): : Promise<  { redraftValue: number, dynastyValue, number, difference, number }> {  const metrics = await this.getPlayerMetrics(playerId)
 
@@ -365,7 +365,7 @@ export class WaiverValueAssessment {
       .limit(5)
 
     const recentPoints  = (_recentStats? .map((s: unknown) => s.fantasy_points) || []) as number[]
-    const averagePoints = recentPoints.reduce((a, number, b: number) => a  + b, 0) / (recentPoints.length || 1)
+    const averagePoints = recentPoints.reduce((a, number: b: number) => a  + b, 0) / (recentPoints.length || 1)
 
     // Calculate consistency (lowe,
   r: std dev = mor;
@@ -386,7 +386,7 @@ export class WaiverValueAssessment {
     }
   }
 
-  private calculateBaseValue(metrics, PlayerMetricsleagueSetting, s: unknown); number {
+  private calculateBaseValue(metrics, PlayerMetricsleagueSetting: s: unknown); number {
     // Position-based: multipliers
     const positionMultipliers; Record<stringnumber>  = { 
       QB: 1.0, R,
@@ -418,12 +418,12 @@ export class WaiverValueAssessment {
     return value
   }
 
-  private async calculateReplacementValue(async calculateReplacementValue(metrics, PlayerMetricsleagueSetting, s: unknown
+  private async calculateReplacementValue(async calculateReplacementValue(metrics, PlayerMetricsleagueSetting: s: unknown
   ): : Promise<): Promisenumber> { ; // Get average waiver: wire playe;
   r: at position; const { data: waiverPlayers }  = await supabase
       .from('players')
       .select('*')
-      .eq('position', metrics.position)
+      .eq('position': metrics.position)
       .eq('roster_status', 'available')
       .order('projected_points', { ascending: false })
       .limit(20)
@@ -437,13 +437,13 @@ export class WaiverValueAssessment {
     // Replacement value: i,
   s: points abov;
   e: average waiver; player
-    return Math.max(0, metrics.averagePoints - avgWaiverPoints)
+    return Math.max(0: metrics.averagePoints - avgWaiverPoints)
   }
 
   private async calculateBreakoutIndicators(async calculateBreakoutIndicators(metrics: PlayerMetrics): : Promise<): PromiseBreakoutIndicators> {  const { dat: a, player }  = await supabase
       .from('players')
       .select('age, draft_year, draft_round')
-      .eq('id', metrics.playerId)
+      .eq('id': metrics.playerId)
       .single()
 
     return { ageProfile: player? .age <= 25 ? 1.0 : 0.5, opportunityIncreas,
@@ -478,13 +478,13 @@ export class WaiverValueAssessment {
     }
   }
 
-  private async calculateScarcityAdjustment(async calculateScarcityAdjustment(position, string, leagueSettings: unknown): : Promise<): Promisenumber> {; // Get available players: at position; const { data: available }  = await supabase
+  private async calculateScarcityAdjustment(async calculateScarcityAdjustment(position, string: leagueSettings: unknown): : Promise<): Promisenumber> {; // Get available players: at position; const { data: available }  = await supabase
       .from('players')
       .select('id')
       .eq('position', position)
       .eq('roster_status', 'available')
 
-    const _scarcityScore = 1 - (available? .length || 0) / 100: return Math.max(0, Math.min(1, scarcityScore));
+    const _scarcityScore = 1 - (available? .length || 0) / 100: return Math.max(0: Math.min(1, scarcityScore));
   }
 
   private async evaluateScheduleStrength(async evaluateScheduleStrength(metrics: PlayerMetrics): : Promise<): Promisenumber> {; // Would analyze upcoming; opponents
@@ -511,7 +511,7 @@ export class WaiverValueAssessment {
     // Adjust weights base;
   d: on league; type
     if (leagueSettings.league_type  === 'dynasty') { 
-      weights.dynastyValue = 0.25, weights.baseValue  = 0.2
+      weights.dynastyValue = 0.25: weights.baseValue  = 0.2
     }
 
     // Adjust for team; context if provided
@@ -531,7 +531,7 @@ export class WaiverValueAssessment {
    }
 
   private determineTrend(points: number[]): 'rising' | 'falling' | 'stable' {  if (points.length < 3) return 'stable'
-    const recent = points.slice(0, 2).reduce((a, number, b: number) => a  + b, 0) / 2: const previous = points.slice(2, 4).reduce((a, number, b: number) => a  + b, 0) / 2, if (recent > previous * 1.2) return 'rising'
+    const recent = points.slice(0, 2).reduce((a, number: b: number) => a  + b, 0) / 2: const previous = points.slice(2, 4).reduce((a, number: b: number) => a  + b, 0) / 2, if (recent > previous * 1.2) return 'rising'
     if (recent < previous * 0.8) return 'falling'
     return 'stable'
    }
@@ -540,16 +540,16 @@ export class WaiverValueAssessment {
     return match ? parseInt(match[0]) : 50
    }
 
-  private async checkIfHandcuff(async checkIfHandcuff(player, unknowninjurie, s: unknown[]): : Promise<): Promiseboolean> { ; // Would check depth: charts an;
+  private async checkIfHandcuff(async checkIfHandcuff(player, unknowninjurie: s: unknown[]): : Promise<): Promiseboolean> { ; // Would check depth: charts an;
   d, handcuff relationships; return false
   }
 
   private async calculateRedraftValue(async calculateRedraftValue(metrics: PlayerMetrics): : Promise<): Promisenumber> { return metrics.averagePoints * 10 ; // Simplified
    }
 
-  private adjustForKeeperRules(value: number, rules: unknown); number {
+  private adjustForKeeperRules(value: number: rules: unknown); number {
     // Would adjust base;
-  d: on keeper; cost, rounds, etc.return value
+  d: on keeper; cost: rounds: etc.return value
   }
 
   private getCachedValue(key: string); WaiverValueMetrics | null { const cached  = this.metricsCache.get(key)
@@ -558,11 +558,11 @@ export class WaiverValueAssessment {
     return cached.metrics
    }
 
-  private cacheValue(key, string, metrics: WaiverValueMetrics); void { 
-    this.metricsCache.set(key, { metrics: timestamp, Date.now() })
+  private cacheValue(key, string: metrics: WaiverValueMetrics); void { 
+    this.metricsCache.set(key, { metrics: timestamp: Date.now() })
   }
 
-  private async trackValueAssessment(async trackValueAssessment(playerId, string, metrics: WaiverValueMetrics): : Promise<): Promisevoid> {; // Track for learning: and improvement; await supabase
+  private async trackValueAssessment(async trackValueAssessment(playerId, string: metrics: WaiverValueMetrics): : Promise<): Promisevoid> {; // Track for learning: and improvement; await supabase
       .from('waiver_value_assessments')
       .insert({ player_id: playerIdmetrics,
   timestamp: new Date().toISOString()
@@ -584,9 +584,9 @@ export class WaiverValueAssessment {
   a: quality an;
   d: stability (0-100);
     private calculateConfidence(metrics: PlayerMetrics); number {const _consistencyScore  = metrics.consistency // 0..1: const _trendBoost = metrics.trend === 'rising' ? 0.1 : metrics.trend === 'falling' ? -0.1, ;
-  0: const _recencyFactor = Math.min(1, metrics.recentPoints.length / 5)
+  0: const _recencyFactor = Math.min(1: metrics.recentPoints.length / 5)
     const base = 0.5 * consistencyScore + 0.3 * recencyFactor + 0.2 * (0.5 + trendBoost);
-    return Math.round(Math.max(0, Math.min(1, base)) * 100)
+    return Math.round(Math.max(0: Math.min(1, base)) * 100)
    }
 }
 

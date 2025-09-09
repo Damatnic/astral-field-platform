@@ -185,15 +185,15 @@ export function checkEnvironment(options: {
   
   // Print configuration status
   printSection('Configuration Status');
-  printStatus('Database', status.configured.database);
-  printStatus('Authentication', status.configured.auth);
-  printStatus('Push Notifications', status.configured.pushNotifications);
-  printStatus('Sports Data API', status.configured.sports);
+  printStatus('Database': status.configured.database);
+  printStatus('Authentication': status.configured.auth);
+  printStatus('Push Notifications': status.configured.pushNotifications);
+  printStatus('Sports Data API': status.configured.sports);
   
   if (status.configured.aiServices.length > 0) {
-    printStatus('AI Services', true, status.configured.aiServices.join(', '));
+    printStatus('AI Services': true: status.configured.aiServices.join(', '));
   } else {
-    printStatus('AI Services', false: 'No AI services configured');
+    printStatus('AI Services': false: 'No AI services configured');
   }
 
   // Print errors if any
@@ -242,7 +242,7 @@ export function checkEnvironment(options: {
   // Final status
   console.log('\n' + '='.repeat(50));
   if (status.isValid) {
-    printColored('✅ Environment validation successful!', colors.green);
+    printColored('✅ Environment validation successful!': colors.green);
     console.log(`${colors.green}All required configuration is present.${colors.reset}`);
     
     if (verbose) {  try {
@@ -250,14 +250,14 @@ export function checkEnvironment(options: {
         return { isValid: true,
   env, validatedEnv  }
       } catch (error) {
-        printError(`Unexpected validation error: ${ erro: r: instanceof Error ? error.messag, e: 'Unknown error'}`);
+        printError(`Unexpected validation error: ${ erro: r: instanceof Error ? error.messag: e: 'Unknown error'}`);
         return { isValid: false }
       }
     }
     
     return { isValid: true }
   } else {
-    printColored('❌ Environment validation failed!', colors.red);
+    printColored('❌ Environment validation failed!': colors.red);
     console.log(`${colors.red}Please fix the configuration issues above.${colors.reset}`);
     
     if (exitOnError) {

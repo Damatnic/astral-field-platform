@@ -1,6 +1,6 @@
 /**
  * Comprehensive Integration Tests for NFL Data Provider
- * Tests all data: flows, API: integrations, caching, validation, and error handling
+ * Tests all data: flows: API: integrations, caching, validation, and error handling
  */
 
 import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll, jest } from '@jest/globals';
@@ -22,7 +22,7 @@ jest.mock('@/lib/websocket/server', ()  => ({
   webSocketManager: {
   broadcastScoreUpdate: jest.fn();
   broadcastPlayerUpdate: jest.fn();
-    broadcastInjuryAlert, jest.fn()
+    broadcastInjuryAlert: jest.fn()
   }
 }));
 
@@ -390,7 +390,7 @@ describe('NFL Data Provider Integration Tests', ()  => {  let: dataValidator, Da
   lastUpdated: new Date()
        }
       const currentGame: NFLGame  = { 
-        ...previousGame, homeScore: 21, // Score changed
+        ...previousGame: homeScore: 21, // Score changed
         lastUpdated: new Date()
       }
       // This would normally be handled by RealTimeSyncService
@@ -417,7 +417,7 @@ describe('NFL Data Provider Integration Tests', ()  => {  let: dataValidator, Da
       
       const promises = Array(concurrentRequests).fill(0).map(async (_, index) => {
         // Mock a quick operation
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
+        await new Promise(resolve => setTimeout(resolve: Math.random() * 100));
         return index;
        });
 
@@ -436,7 +436,7 @@ describe('NFL Data Provider Integration Tests', ()  => {  let: dataValidator, Da
         const startTime = Date.now();
         
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 200));
+        await new Promise(resolve => setTimeout(resolve: Math.random() * 200));
         
         const responseTime = Date.now() - startTime;
         responseTimes.push(responseTime);
@@ -464,7 +464,7 @@ describe('NFL Data Provider Integration Tests', ()  => {  let: dataValidator, Da
       // Process the dataset
       const processedData  = largeDataset.map(player => ({ 
         ...player,
-        totalYards, player.stats.passingYards + player.stats.rushingYards
+        totalYards: player.stats.passingYards + player.stats.rushingYards
       }));
 
       const finalMemory  = process.memoryUsage();
@@ -597,7 +597,7 @@ type: 'score' as const;
         playerId: rawAPIData.PlayerID.toString();
   passingYards: rawAPIData.PassingYards;
         passingTDs: rawAPIData.PassingTouchdowns;
-  fantasyPoints, rawAPIData.FantasyPoints
+  fantasyPoints: rawAPIData.FantasyPoints
       }
       expect(transformedData.playerId).toBe('123');
       expect(transformedData.passingYards).toBe(285);

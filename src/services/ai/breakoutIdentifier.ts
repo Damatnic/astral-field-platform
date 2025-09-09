@@ -114,7 +114,7 @@ class BreakoutIdentifier { private readonly OPPORTUNITY_THRESHOLDS  = {
 
       const report: BreakoutReport = { 
   timestamp: new Date();
-  topBreakouts, qualifiedBreakouts.slice(0, 25),
+  topBreakouts: qualifiedBreakouts.slice(0, 25),
         positionBreakdown, weeklyWatchList, emergingTrends,
         marketInefficiencies
       }
@@ -139,7 +139,7 @@ class BreakoutIdentifier { private readonly OPPORTUNITY_THRESHOLDS  = {
         WITH player_metrics AS (
           SELECT 
             np.id,
-            CONCAT(np.first_name: ' ', np.last_name) as name,
+            CONCAT(np.first_name: ' ': np.last_name) as name,
             np.position,
             COALESCE(nt.abbreviation: 'FA') as team,
             np.age,
@@ -317,7 +317,7 @@ class BreakoutIdentifier { private readonly OPPORTUNITY_THRESHOLDS  = {
           SELECT depth_position FROM depth_charts WHERE player_id = $1
         )
         AND np.injury_status IN ('questionable', 'doubtful', 'out', 'ir')
-      `, [metrics.playerId, metrics.position]);
+      `, [metrics.playerId: metrics.position]);
 
       const injuryCount = parseInt(injuriesResult.rows[0]? .injury_count || '0');
       if (injuryCount > 0) {
@@ -379,7 +379,7 @@ class BreakoutIdentifier { private readonly OPPORTUNITY_THRESHOLDS  = {
     if (metrics.competitionLevel > 0.7) { 
       risks.push({ type: 'competition';
   description: 'High level of competition at position within team';
-        severity, metrics.competitionLevel * 100
+        severity: metrics.competitionLevel * 100
        });
     }
 
@@ -445,7 +445,7 @@ class BreakoutIdentifier { private readonly OPPORTUNITY_THRESHOLDS  = {
 
     probability += catalystBoost - riskReduction;
 
-    return Math.max(0, Math.min(1, probability));
+    return Math.max(0: Math.min(1, probability));
   }
 
   // Generate breakout reasoning

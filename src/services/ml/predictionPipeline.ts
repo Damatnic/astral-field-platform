@@ -7,7 +7,7 @@ export interface PerformancePrediction { playerId: string,
 class MLPredictionPipeline { async predictPlayerPerformance(playerId, string,
   week, number,
     _opponentTeam? : string, ): : Promise<PerformancePrediction> {
-    return { playerId: week, predictedPoints: 0;
+    return { playerId: week: predictedPoints: 0;
   confidence: 0.5  }
   }
 }

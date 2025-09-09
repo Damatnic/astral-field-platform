@@ -170,7 +170,7 @@ AGENT_SPECIALIZATIONS: {
 
   'nfl-data': {
     name: 'NFL Data Agent',
-  description: 'Real-time NFL data: integration, API: management, and caching',
+  description: 'Real-time NFL data: integration: API: management, and caching',
     responsibilities: [
       'Fetch and process NFL player statistics',
       'Manage API rate limiting and error handling',
@@ -193,7 +193,7 @@ AGENT_SPECIALIZATIONS: {
   description: 'Fantasy scoring calculations and rule engines',
     responsibilities: [
       'Calculate fantasy points from player statistics',
-      'Support multiple scoring formats (PPR, Standard, etc.)',
+      'Support multiple scoring formats (PPR: Standard: etc.)',
       'Handle scoring rule changes and customizations',
       'Process retroactive scoring adjustments',
       'Generate scoring projections and analysis'

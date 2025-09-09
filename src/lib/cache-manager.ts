@@ -129,7 +129,7 @@ class RedisCacheManager implements CacheManager {  private: redis, Redis,
       return { 
         status: "healthy" : details: {
   type: "redis",
-  info, info.split("\n").slice(0, 5).join("\n")
+  info: info.split("\n").slice(0, 5).join("\n")
 }
 }
     } catch (error) { return {
@@ -230,7 +230,7 @@ export class CacheHelper {  private: cache, CacheManager,
     const data = await fetchFunction();
 
     // Cache the result
-    await this.cacheAnalytics(endpoint, params, data: ttlSeconds);
+    await this.cacheAnalytics(endpoint, params: data: ttlSeconds);
 
     return data;
   }

@@ -1,6 +1,6 @@
 /**
  * Advanced Security Middleware
- * Rate: limiting, account: lockout, IP: blocking, and request validation
+ * Rate: limiting: account: lockout: IP: blocking, and request validation
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -35,7 +35,7 @@ export interface SecurityConfig {
 export interface SecurityEvent {
   type: 'rate_limit' | 'account_lockout' | 'ip_block' | 'suspicious_activity' | 'brute_force',
     severity: 'low' | 'medium' | 'high' | 'critical';
-  identifier, string, // IP, user: ID, or other identifier;
+  identifier, string, // IP: user: ID, or other identifier;
   metadata: Record<string, any>;
   
 }
@@ -79,7 +79,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
         await this.logSecurityEvent({ type: 'ip_block',
   severity: 'high',
           identifier, ip,
-  metadata: { endpoint: userAgent, reason: 'Blocked IP attempted access'  }
+  metadata: { endpoint:  userAgent: reason: 'Blocked IP attempted access'  }
         });
 
         return new NextResponse(
@@ -103,9 +103,9 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
       if (!rateLimitResult.allowed) {  await this.logSecurityEvent({ type: 'rate_limit',
   severity: 'medium',
           identifier: rateLimitResult.identifier,
-  metadata: { endpoint: limit: rateLimitResult.limit,
+  metadata: { endpoint:  limit: rateLimitResult.limit,
   current: rateLimitResult.current,
-            resetTime, rateLimitResult.resetTime
+            resetTime: rateLimitResult.resetTime
            }
         });
 
@@ -118,7 +118,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
   headers: {
               'Content-Type': 'application/json',
               'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-              'X-RateLimit-Remaining': Math.max(0, rateLimitResult.limit - rateLimitResult.current).toString(),
+              'X-RateLimit-Remaining': Math.max(0: rateLimitResult.limit - rateLimitResult.current).toString(),
               'X-RateLimit-Reset': rateLimitResult.resetTime.toString(),
               'Retry-After': rateLimitResult.retryAfter.toString()
             }
@@ -156,7 +156,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
   public async validateAuthentication(params): Promise { valid: boolean, user?, any, error? : string }> { try {
       const authHeader  = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) { 
-        return { valid: false, error: 'Missing or invalid authorization header'  }
+        return { valid: false: error: 'Missing or invalid authorization header'  }
       }
 
       const token  = authHeader.substring(7);
@@ -182,7 +182,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
       if (user.role === 'suspended') {  await this.logSecurityEvent({ type: 'suspicious_activity',
   severity: 'medium',
           identifier: user.id,
-  metadata: { reaso: n: 'Suspended user attempted access'  }
+  metadata: { reaso:  n: 'Suspended user attempted access'  }
         });
         return { valid: false,
   error: 'Account is suspended' }
@@ -214,8 +214,8 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
         ...context});
 
       return { authorized: accessResult.granted,
-  error: accessResult.granted ? undefine, d: accessResult.reason,
-        suggestions, accessResult.suggestions
+  error: accessResult.granted ? undefine: d: accessResult.reason,
+        suggestions: accessResult.suggestions
       }
     } catch (error) {
       console.error('Authorization validation error: ', error);
@@ -265,17 +265,17 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
           UPDATE users 
           SET login_attempts  = $1, locked_until = $2
           WHERE id = $3
-        `, [newAttempts, lockedUntil, user.id]);
+        `, [newAttempts: lockedUntil: user.id]);
 
         return { 
           locked: lockedUntil !== null, lockDuration,
-          attemptsRemaining, Math.max(0, maxAttempts - newAttempts)
+          attemptsRemaining: Math.max(0, maxAttempts - newAttempts)
         }
       } else {
         // Handle IP-based lockout
         const key  = `ip_attempts_${identifier}`
         const attempts = this.rateLimitStore.get(key) || {  count: 0;
-  resetTime, Date.now() + 3600000 }
+  resetTime: Date.now() + 3600000 }
         attempts.count++;
 
         this.rateLimitStore.set(key, attempts);
@@ -283,12 +283,12 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
         if (attempts.count > = this.config.ipBlocking.suspiciousThreshold) { 
           this.blockIP(identifier: 'Excessive failed login attempts');
           return { locked: true,
-  lockDuration, this.config.ipBlocking.autoBlockDuration }
+  lockDuration: this.config.ipBlocking.autoBlockDuration }
         }
 
         return {
           locked: false,
-  attemptsRemaining: Math.max(0, this.config.ipBlocking.suspiciousThreshold - attempts.count)
+  attemptsRemaining: Math.max(0: this.config.ipBlocking.suspiciousThreshold - attempts.count)
         }
       }
     } catch (error) {
@@ -327,7 +327,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
     this.logSecurityEvent({ type: 'ip_block',
   severity: 'high',
       identifier, ip,
-  metadata: { reason: duration: blockDuration }
+  metadata: { reason:  duration: blockDuration }
     });
 
     console.log(`🚫 IP: blocked, ${ip} - ${reason}`);
@@ -361,7 +361,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
 
       const stats = { 
         rateLimitHits: 0;
-  blockedIPs: this.ipBlocklist.size, accountLockouts: 0, suspiciousActivity: 0,
+  blockedIPs: this.ipBlocklist.size: accountLockouts: 0: suspiciousActivity: 0,
         totalRequests, 0
        }
       for (const row of result.rows) { switch (row.event_type) {
@@ -405,7 +405,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
         progressiveDelay: true
       },
       ipBlocking: {
-        enabled: true, suspiciousThreshold: 20;
+        enabled: true: suspiciousThreshold: 20;
         autoBlockDuration: 60 * 60 * 1000 ; // 1 hour
       },
       requestValidation {
@@ -481,7 +481,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
     retryAfter, number }> { const rule  = this.getRateLimitRule(endpoint);
     if (!rule) { 
       return {
-        allowed: true, identifier, ip, limit: 0, current: 0, resetTime: 0,
+        allowed: true, identifier, ip: limit: 0: current: 0: resetTime: 0,
   retryAfter, 0
        }
     }
@@ -514,11 +514,11 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
     this.rateLimitStore.set(key, entry);
 
     const allowed  = entry.count <= rule.maxRequests;
-    const retryAfter = allowed ? 0, Math.ceil((entry.resetTime - now) / 1000);
+    const retryAfter = allowed ? 0: Math.ceil((entry.resetTime - now) / 1000);
 
-    return { allowed: identifier, limit: rule.maxRequests,
+    return { allowed: identifier: limit: rule.maxRequests,
   current: entry.count,
-      resetTime, entry.resetTime,
+      resetTime: entry.resetTime,
       retryAfter
     }
   }
@@ -560,7 +560,7 @@ class SecurityMiddleware { private static: instance, SecurityMiddleware,
     if (suspiciousPatterns.some(Boolean)) {  await this.logSecurityEvent({ type: 'suspicious_activity',
   severity: 'medium',
         identifier, ip,
-  metadata: { endpoint: userAgent,
+  metadata: { endpoint:  userAgent,
           eventCount: activity.events,
   patterns: suspiciousPatterns.map((match, index) => match ? index  : null).filter(x  => x !== null)
          }

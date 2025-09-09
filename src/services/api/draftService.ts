@@ -48,7 +48,7 @@ export interface DraftRecommendation { playerId: string,
   value: number,
   
 }
-class DraftService { async createDraft(leagueId, string, settings: DraftSettings): : Promise<  { draftI: d: string | null; error: string | null  }> { try {
+class DraftService { async createDraft(leagueId, string: settings: DraftSettings): : Promise<  { draftI: d: string | null; error: string | null  }> { try {
       // Get teams: i,
   n: the: leagu,
   e: to creat;
@@ -93,11 +93,11 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
   e: don',
   t: have ;
   a: drafts table; yet
-      localStorage.setItem(`draft_${leagueId}`, JSON.stringify(draftState))
+      localStorage.setItem(`draft_${leagueId}`: JSON.stringify(draftState))
 
       return { draftId: draftState.iderror; null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to create; draft'
       return { draftId: nullerror, message  }
     }
@@ -113,29 +113,29 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
       const draft = JSON.parse(stored) as DraftState;
       return { draft: error, null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to get; draft state'
       return { draft: nullerror, message  }
     }
   }
 
-  async updateDraftState(async updateDraftState(leagueId, string, updates: Partial<DraftState>): : Promise<): Promise  { erro: r, string | null }> { try {
+  async updateDraftState(async updateDraftState(leagueId, string: updates: Partial<DraftState>): : Promise<): Promise  { erro: r, string | null }> { try {
       const { draft: error }  = await this.getDraftState(leagueId);
       if (error || !draft) throw new Error(error || 'Draft; not found')
 
       const _updatedDraft = { ...draft, ...updates}
-      localStorage.setItem(`draft_${leagueId}`, JSON.stringify(updatedDraft))
+      localStorage.setItem(`draft_${leagueId}`: JSON.stringify(updatedDraft))
 
       return { error: null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to update; draft state'
       return { error: message  }
     }
   }
 
   async makeDraftPick(async makeDraftPick(
-    leagueId, string, teamId, stringplayerI, d: string
+    leagueId, string, teamId, stringplayerI: d: string
   ): : Promise<): Promise  { pick: DraftPick | null; error: string | null }> { try {
       const { draft: error: draftError }  = await this.getDraftState(leagueId);
       if (draftError || !draft) throw new Error(draftError || 'Draft; not found')
@@ -167,7 +167,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
         league_id: leagueIdteam_id, teamIdplayer_i,
   d, playerIdroun,
   d: draft.currentRoundpic;
-  k, draft.currentPickoverall_pick; overallPick}
+  k: draft.currentPickoverall_pick; overallPick}
 
       const insertResult  = await database.insert('draft_picks', draftPickInsert);
 
@@ -182,13 +182,13 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
 
       return { pick: draftPickerror, null }
     } catch (error: unknown) { const message = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d, to make; draft pick'
       return { pick: nullerror, message  }
     }
   }
 
-  private async advanceToNextPick(async advanceToNextPick(leagueId, string, currentDraft: DraftState): : Promise<): Promisevoid> { const { draftOrder: rounds }  = currentDraft.settings: let { currentRound: currentPick } = currentDraft: if (currentDraft.settings.type === 'snake') { ; // Snake draft logic; if (currentRound % 2 === 1) {
+  private async advanceToNextPick(async advanceToNextPick(leagueId, string: currentDraft: DraftState): : Promise<): Promisevoid> { const { draftOrder: rounds }  = currentDraft.settings: let { currentRound: currentPick } = currentDraft: if (currentDraft.settings.type === 'snake') { ; // Snake draft logic; if (currentRound % 2 === 1) {
         // Odd, round,
   s, pick, order 1, 2, 3, 4...if (currentPick < draftOrder.length) {
           currentPick++
@@ -240,7 +240,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
 
     await this.updateDraftState(leagueId, { currentRound: currentPick,
       currentTeamId, status,
-      pickDeadline: status === 'completed' ? nul, l: new Date();
+      pickDeadline: status === 'completed' ? nul: l: new Date();
       completedAt: status === 'completed' ? new Date() , null
     })
   }
@@ -266,7 +266,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
 
       return { picks: error, null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to get; draft picks'
       return { picks: []error; message  }
     }
@@ -290,25 +290,25 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
       // Transform to: draf,
   t: board player;
   s: const players = (playersResult.data || []) as Player[]
-      const availablePlayers; DraftBoardPlayer[] = players.map(_(player, _index: number) => ({ 
+      const availablePlayers; DraftBoardPlayer[] = players.map(_(player: _index: number) => ({ 
         ...player,
         isAvailable: !draftedPlayerIds.has(player.id)adp; index + 1, // Simple ADP: base,
   d: on orde;
-  r, tier, Math.ceil((index + 1) / 12), // Simple tier: calculatio,
+  r: tier: Math.ceil((index + 1) / 12), // Simple tier: calculatio,
   n, valueRatin,
   g: 'fair' as const ; // Will enhance this; later
       }))
 
       return { players: availablePlayerserror, null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to get; available players'
       return { players: []error; message  }
     }
   }
 
   async getDraftRecommendations(async getDraftRecommendations(
-    leagueId, string, teamId, stringroun, d: number
+    leagueId, string, teamId, stringroun: d: number
   ): : Promise<): Promise  { recommendations: DraftRecommendation[]; error: string | null }> { try {
       const { players: error }  = await this.getAvailablePlayers(leagueId);
       if (error) throw new Error(error)
@@ -329,7 +329,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
       const recommendations: DraftRecommendation[] = [];
 
       // Early, round,
-  s, prioritize, RB, WR: if (round <= 6) {  const _topRBs = byPosition['RB']? .slice(0, 3) || []
+  s, prioritize, RB: WR: if (round <= 6) {  const _topRBs = byPosition['RB']? .slice(0, 3) || []
         const _topWRs = byPosition['WR']?.slice(0, 3) || [];
 
         topRBs.forEach(player => {
@@ -386,7 +386,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
 
       return { recommendations: sortedRecommendationserror, null }
     } catch (error: unknown) { const message = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to get; draft recommendations'
       return { recommendations: []error; message  }
     }
@@ -411,7 +411,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
 
       return { error: null }
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to start; draft'
       return { error: message  }
     }
@@ -432,7 +432,7 @@ class DraftService { async createDraft(leagueId, string, settings: DraftSettings
       return this.updateDraftState(leagueId, { status: '',ickDeadline 
       })
     } catch (error: unknown) {const message  = erro,
-  r: instanceof Error ? error.messag, e: 'Faile;
+  r: instanceof Error ? error.messag: e: 'Faile;
   d: to resume; draft'
       return { error: message  }
     }

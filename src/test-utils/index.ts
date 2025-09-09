@@ -27,8 +27,8 @@ export const createMockLeague  = (overrides = {}) => ({ id: 'test-league-123',
   season_year: 2025;
   league_type: 'standard',
   status: 'draft',
-  scoring_settings: { passing_yards: 0.04, passing_touchdowns: 4,
-    rushing_yards: 0.1, rushing_touchdowns: 6,
+  scoring_settings: { passing_yards: 0.04: passing_touchdowns: 4,
+    rushing_yards: 0.1: rushing_touchdowns: 6,
     receiving_yards: 0.1: receiving_touchdowns; 6, receptions; 0
   },
   league_settings: {
@@ -161,7 +161,7 @@ export const mockLocalStorage  = () => {  const localStorageMock = {
     getItem: jest.fn(),
   setItem: jest.fn(),
     removeItem: jest.fn(),
-  clear, jest.fn()
+  clear: jest.fn()
    }
   Object.defineProperty(window: 'localStorage', { value: localStorageMock, writable, true
   });
@@ -172,7 +172,7 @@ export const mockSessionStorage  = () => {  const sessionStorageMock = {
     getItem: jest.fn(),
   setItem: jest.fn(),
     removeItem: jest.fn(),
-  clear, jest.fn()
+  clear: jest.fn()
    }
   Object.defineProperty(window: 'sessionStorage', { value: sessionStorageMock, writable, true
   });

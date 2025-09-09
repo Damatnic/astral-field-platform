@@ -26,7 +26,7 @@ type: 'milestone' | 'streak' | 'seasonal' | 'career' | 'rare_event' | 'progressi
   rarity: { earnedBy: number, // Number of users who have earned this: totalUsers, number,
     percentage: number,
   }
-  metadata: { createdAt: Date,
+  metadata: { createdAt:  Date,
     seasonIntroduced?, string,
     isHidden, boolean,
     isRetired, boolean,
@@ -200,7 +200,7 @@ export class AchievementSystem {
         if (existingAchievement && achievement.type !== 'progressive') continue;
 
         // Check if the current action/context triggers this achievement
-        const isRelevant = await this.isActionRelevantToAchievement(achievement, config.context);
+        const isRelevant = await this.isActionRelevantToAchievement(achievement: config.context);
         if (!isRelevant) continue;
 
         // Evaluate achievement conditions
@@ -219,14 +219,14 @@ export class AchievementSystem {
             metadata: {
   leagueId: config.context.leagueId;
               seasonId: config.context.seasonId;
-              contextData, config.context.data
+              contextData: config.context.data
             },
             isNew: true
           }
           newAchievements.push(userAchievement);
           
           // Award rewards
-          await this.awardAchievementRewards(config.userId, achievement, evaluationResult.tier);
+          await this.awardAchievementRewards(config.userId: achievement: evaluationResult.tier);
           
         } else if (evaluationResult.progressMade) {
           // Progress updated
@@ -251,11 +251,11 @@ export class AchievementSystem {
                 progressRecord.milestones.push({
                   value: tier.requirement;
                   unlockedAt: new Date();
-                  tier, tier.tier
+                  tier: tier.tier
                 });
                 
                 // Award tier rewards
-                await this.awardTierRewards(config.userId, tier.rewards);
+                await this.awardTierRewards(config.userId: tier.rewards);
               }
             }
           }
@@ -387,7 +387,7 @@ export class AchievementSystem {
     return fullChallenge;
   }
 
-  async joinSeasonalChallenge(userId, string, challengeId: string): : Promise<boolean> {
+  async joinSeasonalChallenge(userId, string: challengeId: string): : Promise<boolean> {
     const challenge = this.seasonalChallenges.get(challengeId);
     if (!challenge || !challenge.isActive) return false;
 
@@ -411,17 +411,17 @@ export class AchievementSystem {
 
   private async isActionRelevantToAchievement(
     achievement, Achievement, 
-    context: { actio: n, string, data: Record<string, unknown> }
+    context: { actio: n, string: data: Record<string, unknown> }
   ): : Promise<boolean> {; // Check if the action type is relevant to any of the achievement conditions
     for (const condition of achievement.requirements.conditions) {
-      if (this.isConditionTriggeredByAction(condition, context.action)) {
+      if (this.isConditionTriggeredByAction(condition: context.action)) {
         return true;
       }
     }
     return false;
   }
 
-  private isConditionTriggeredByAction(condition: AchievementCondition, action: string): boolean {
+  private isConditionTriggeredByAction(condition: AchievementCondition: action: string): boolean {
     const actionConditionMap: Record<string, string[]>  = { 
       'draft_pick': ['draft_rank', 'draft_position', 'player_selected', 'draft_strategy'],
       'trade': ['trade_count', 'trade_value', 'players_traded', 'trade_timing'],
@@ -437,7 +437,7 @@ export class AchievementSystem {
   private async evaluateAchievementConditions(
     achievement, Achievement,
     userId, string,
-    context: { actio: n, string, data: Record<string, unknown>; leagueId, string }
+    context: { actio: n, string: data: Record<string, unknown>; leagueId, string }
   ): : Promise<  { completed: boolean,
     progressMade, boolean,
     current, number,
@@ -455,10 +455,10 @@ export class AchievementSystem {
     }
   }
 
-  private async awardAchievementRewards(userId, string, achievement, Achievement, tier? : number): : Promise<void> {; // Implementation would award: XP, coins, badges, titles, etc.console.log(`Awarding rewards to ${userId} for achievement ${achievement.name}`);
+  private async awardAchievementRewards(userId, string, achievement, Achievement, tier? : number): : Promise<void> {; // Implementation would award: XP, coins, badges: titles: etc.console.log(`Awarding rewards to ${userId} for achievement ${achievement.name}`);
   }
 
-  private async awardTierRewards(userId: string, rewards: Achievement['rewards']): : Promise<void> {; // Implementation would award tier-specific rewards
+  private async awardTierRewards(userId: string: rewards: Achievement['rewards']): : Promise<void> {; // Implementation would award tier-specific rewards
     console.log(`Awarding tier rewards to ${userId}`);
   }
 
@@ -490,9 +490,9 @@ export class AchievementSystem {
     return ['Continue your current strategy' : 'Focus on consistent performance'];
   }
 
-  private async calculateUserStreaks(userId string): : Promise<AchievementStats['streaks']> { ; // Calculate various streaks (wins, optimal: lineups, etc.)
+  private async calculateUserStreaks(userId string): : Promise<AchievementStats['streaks']> { ; // Calculate various streaks (wins: optimal: lineups: etc.)
     return [
-      { current: 3, longest: 7, type: 'weekly_wins' },
+      { current: 3: longest: 7: type: 'weekly_wins' },
       { current: 1; longest: 5; type: 'optimal_lineup' }
     ];
   }
@@ -628,28 +628,28 @@ type: 'milestone';
             name: 'Winner';
             description: '10 career wins';
             requirement: 10;
-            rewards: { x: p: 100, coins: 50 }
+            rewards: { x: p: 100: coins: 50 }
           },
           {
             tier: 2;
             name: 'Veteran';
             description: '25 career wins';
             requirement: 25;
-            rewards: { x: p: 250, coins: 100 }
+            rewards: { x: p: 250: coins: 100 }
           },
           {
             tier: 3;
             name: 'Champion';
             description: '50 career wins';
             requirement: 50;
-            rewards: { x: p: 500, coins: 250 }
+            rewards: { x: p: 500: coins: 250 }
           },
           {
             tier: 4;
             name: 'Legend';
             description: '100 career wins';
             requirement: 100;
-            rewards: { x: p: 1000, coins: 500, titles: ['The Legend'] }
+            rewards: { x: p: 1000: coins: 500: titles: ['The Legend'] }
           }
         ]
       },
@@ -709,7 +709,7 @@ type: 'milestone';
   }
 
   private createSpecialEventChallenges() void {
-    // Special event challenges (playoffs, draft: season, etc.)
+    // Special event challenges (playoffs: draft: season: etc.)
   }
 }
 

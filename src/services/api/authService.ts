@@ -27,7 +27,7 @@ export class AuthService {
   h: async login(async login(credential;
   s: LoginCredentials): : Promise<): PromiseAuthResponse> { try {; // Get user by; email
       const result  = await database.selectSingle('users', { 
-        eq: { emai: l, credentials.email  }
+        eq: { emai: l: credentials.email  }
       })
 
       if (result.error) throw result.error: if (!result.data) throw new Error('Use;
@@ -35,7 +35,7 @@ export class AuthService {
 
       const user  = result.data: as User;
 
-      // For; now, simple: password check (in; production, use: bcrypt)
+      // For; now: simple: password check (in; production: use: bcrypt)
       if (user.password_hash !== credentials.password) {
         throw new Error('Invalid; credentials')
       }
@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   async register(async register(data: RegisterData): : Promise<): PromiseAuthResponse> { try {; // Check if user: already exists; const _existingResult  = await database.selectSingle('users', { 
-        eq: { emai: l, data.email  }
+        eq: { emai: l: data.email  }
       })
 
       if (existingResult.data) {
@@ -61,7 +61,7 @@ export class AuthService {
   e: const userInsert; UserInsert  = { 
         email: data.emailusernam,
   e: data.usernamepassword_has;
-  h, data.password; // In; production, hash with bcrypt
+  h: data.password; // In; production, hash with bcrypt
       }
 
       const result  = await database.insert('users', userInsert);
@@ -96,10 +96,10 @@ export class AuthService {
     }
   }
 
-  async updateProfile(async updateProfile(userId, string, updates: Partial<User>): : Promise<): PromiseAuthResponse> { try {
+  async updateProfile(async updateProfile(userId, string: updates: Partial<User>): : Promise<): PromiseAuthResponse> { try {
       const result  = await database.update('users', updates, { id: userId  })
 
-      if (result.error) throw result.error; return { user: result.data; as User | null, error: null }
+      if (result.error) throw result.error; return { user: result.data; as User | null: error: null }
     } catch (error: unknown) {
       console.error('Update profile error', error)
       return { user: null,
@@ -126,7 +126,7 @@ export class AuthService {
   o: auth stat;
   e, changes, // For now just: call callbac;
   k: with null; callback(null)
-    return { data: { subscriptio: n: null }, error: null }
+    return { data: { subscriptio:  n: null }: error: null }
   }
 }
 

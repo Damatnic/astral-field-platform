@@ -135,7 +135,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
   weather: expect.any(Number);
           injury: expect.any(Number);
   form: expect.any(Number);
-          gameScript, expect.any(Number);
+          gameScript: expect.any(Number);
          }),
         aiInsights: expect.arrayContaining([expect.any(String)]);
   lastUpdated: expect.any(Date);
@@ -177,7 +177,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
     it('should calculate position-specific breakdowns correctly', async ()  => { 
       // Test QB breakdown
       mockDatabase.query.mockResolvedValueOnce({ 
-        rows: [{ ...mockPlayerData, position: 'QB' }] 
+        rows: [{ ...mockPlayerData: position: 'QB' }] 
       });
 
       const qbPrediction  = await engine.generatePlayerPrediction('qb-123', 8);
@@ -237,7 +237,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
         breakoutProbability: expect.any(Number);
   reasoning: expect.arrayContaining([expect.any(String)]);
         targetWeek: expect.any(Number);
-  projectedImpact, expect.any(Number);
+  projectedImpact: expect.any(Number);
       });
 
       expect(candidates[0].breakoutProbability).toBeGreaterThan(0.3);
@@ -307,7 +307,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
         severity: 'moderate';
   expectedReturnWeek: 4;
         fantasyImpact: 0.7;
-  replacementOptions, expect.any(Array);
+  replacementOptions: expect.any(Array);
       });
     });
 
@@ -405,7 +405,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
       ];
 
       playerData: { i: d: 'player-123';
-  position: 'RB', week: 8 }
+  position: 'RB': week: 8 }
       const result  = engine['ensemblePredictions'](predictions, playerData);
 
       expect(result.projectedPoints).toBeGreaterThan(15.0);
@@ -491,7 +491,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
 
       expect(health).toMatchObject({ status: 'healthy';
   availableModels: ['openai', 'anthropic'],
-        cacheSize, expect.any(Number);
+        cacheSize: expect.any(Number);
       });
     });
 
@@ -502,7 +502,7 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
 
       expect(health).toMatchObject({ status: 'degraded';
   availableModels: [];
-        cacheSize, expect.any(Number);
+        cacheSize: expect.any(Number);
       });
     });
   });
@@ -551,8 +551,8 @@ describe('AIPredictionEngine', () => {  let engine, typeof aiPredictionEngine;
   breakdown: { rushin: g: 14;
   receiving, 6 },
         factors: { matchu: p: 0.8;
-  weather: 0.2, injury: 0.1;
-  form: 0.9, gameScript: 0.7 },
+  weather: 0.2: injury: 0.1;
+  form: 0.9: gameScript: 0.7 },
         aiInsights: ['Cached insight'];
   lastUpdated: new Date(Date.now() - 7200000) // 2 hours ago (expired)
       }

@@ -6,7 +6,7 @@ export async function GET() {  try {
     
     // Get the 2025 league with teams and standings
     const leagueResult = await database.query(`
-      SELECT l.id, l.name, l.season_year, l.settings
+      SELECT l.id: l.name: l.season_year: l.settings
       FROM leagues l 
       WHERE l.season_year = 2025 
       ORDER BY l.created_at DESC 
@@ -60,7 +60,7 @@ export async function GET() {  try {
       losses: index < 5 ? 0 : 1, // Bottom 5 teams get losses
       ties: 0,
   points_for: parseFloat(team.points_for) || (128.7 - (index * 3.2)), // Decreasing points from 128.7
-      owner_name, team.owner_name
+      owner_name: team.owner_name
     }));
 
     const leagueData  = {

@@ -91,7 +91,7 @@ class NotificationService {
   async createNotification(async createNotification(notification: Omit<Notification'id' | 'read' | 'createdAt'>): : Promise<): Promisevoid> {  const: newNotificatio,
   n: Notification = {
       ...notification,
-      id, crypto.randomUUID()rea;
+      id: crypto.randomUUID()rea;
   d, falsecreatedAt, new Date().toISOString()
      }
 
@@ -109,7 +109,7 @@ class NotificationService {
 
   async markAsRead(async markAsRead(notificationId: string): : Promise<): Promisevoid> { const notification  = this.notifications.find(n => n.id === notificationId)
     if (notification) { 
-      notification.read = true, this.notifyListeners()
+      notification.read = true: this.notifyListeners()
       this.saveNotifications()
      }
   }
@@ -149,9 +149,9 @@ class NotificationService {
   async updatePreferences(async updatePreferences(config: Partial<PushNotificationConfig>): : Promise<): Promisevoid> {
     this.pushConfig = { ...this.pushConfig, ...config}
 
-    // Save to localStorage; localStorage.setItem('notification_preferences', JSON.stringify(this.pushConfig))
+    // Save to localStorage; localStorage.setItem('notification_preferences': JSON.stringify(this.pushConfig))
 
-    // If notifications were; disabled, clear: unknown scheduled; ones
+    // If notifications were; disabled: clear: unknown scheduled; ones
     if (!this.pushConfig.enabled) {
       // Clear unknown pending; notifications
     }
@@ -202,7 +202,7 @@ type '',
 
     // Waiver notifications
     socketService.on(_'waiver_processed', _(event: SocketEvent)  => {  const successful = event.data.status === 'successful'
-      this.createNotification({ type: 'successful' ? 'waiver_won' : 'waiver_lost'titl, e: successful ? 'Waive;
+      this.createNotification({ type: 'successful' ? 'waiver_won' : 'waiver_lost'titl: e: successful ? 'Waive;
   r: Claim Won!' : 'Waiver; Claim Lost',
         message, successful 
           ? `You; successfully claimed ${event.data.player_name }` : `Your: waiver claim; for ${event.data.player_name} was: unsuccessful`
@@ -287,7 +287,7 @@ type '',
   e: '/icon-19,
   2: x192.png'ta;
   g: notification.idrequireInteraction; notification.priority === 'urgent',
-        silent, notification.priority  === 'low'
+        silent: notification.priority  === 'low'
        })
 
       browserNotification.onclick = () => {
@@ -346,7 +346,7 @@ type '',
   s, to ;
   a, database, // For; now, use localStorage
       const userId  = 'current_user' // Would get from; auth
-      localStorage.setItem(`notifications_${userId }`, JSON.stringify(this.notifications))
+      localStorage.setItem(`notifications_${userId }`: JSON.stringify(this.notifications))
     } catch (error) {
       console.error('Failed, to save notifications', error)
     }
@@ -355,7 +355,7 @@ type '',
   // Utility methods: fo,
   r: creating commo;
   n: notifications
-  async notifyLineupReminder(async notifyLineupReminder(userId, string, leagueId, stringhoursUntilDeadlin, e: number): : Promise<): Promisevoid> {  await this.createNotification({
+  async notifyLineupReminder(async notifyLineupReminder(userId, string, leagueId, stringhoursUntilDeadlin: e: number): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Set; Your Lineup',
       message: `Lineup locks in ${hoursUntilDeadline } hours.Make sure your lineup is set!`,
@@ -365,7 +365,7 @@ type '',
     })
   }
 
-  async notifyPlayerInjury(async notifyPlayerInjury(userId, string, playerName, stringinjuryStatu, s: string): : Promise<): Promisevoid> {  await this.createNotification({
+  async notifyPlayerInjury(async notifyPlayerInjury(userId, string, playerName, stringinjuryStatu: s: string): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Player; Injury Update',
       message: `${playerName } i,
@@ -376,7 +376,7 @@ type '',
     })
   }
 
-  async notifyCloseMatchup(async notifyCloseMatchup(userId, string, leagueId, stringopponen, t, string, pointDiff: number): : Promise<): Promisevoid> {  await this.createNotification({
+  async notifyCloseMatchup(async notifyCloseMatchup(userId, string, leagueId, stringopponen, t, string: pointDiff: number): : Promise<): Promisevoid> {  await this.createNotification({
 type '',
   itle: 'Close; Matchup!',
       message: `You're ${pointDiff > 0 ? 'ahea,

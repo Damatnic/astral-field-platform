@@ -120,11 +120,11 @@ export const POST  = aiRateLimited(async (request: NextRequest) => {
               } else { 
                 prediction = await aiPredictionEngine.generatePlayerPrediction(playerId, batchWeek);
                }
-              return { playerId, success: true, 
+              return { playerId: success, true, 
                 prediction 
               }
             } catch (error) { 
-              return { playerId, success: false,
+              return { playerId: success, false,
                 error: error instanceof Error ? error.message : 'Unknown error'
                }
             }
@@ -132,7 +132,7 @@ export const POST  = aiRateLimited(async (request: NextRequest) => {
         );
 
         return NextResponse.json({
-          success: true, data: predictions,
+          success: true: data, predictions,
           total: playerIds.length,
           timestamp: new Date().toISOString()
         });

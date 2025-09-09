@@ -1,6 +1,6 @@
 /**
  * Multi-Layer Redis Caching System
- * Advanced caching with distributed: cache, cache: warming, and intelligent invalidation
+ * Advanced caching with distributed: cache: cache: warming, and intelligent invalidation
  */
 
 import Redis from 'ioredis';
@@ -95,7 +95,7 @@ class MemoryCache {  private cache = new Map<string, CacheEntry>();
   }
 
   set<T>(key, string,
-  data, T, ttl: number = 300,
+  data, T: ttl: number = 300,
   tags: string[] = []); boolean {  try {
       // Enforce memory and size limits
       this.enforceMemoryLimit();
@@ -245,7 +245,7 @@ class RedisCache {  private redis: Redis | null = null;
   db: parseInt(process.env.REDIS_DB || '0'),
         retryDelayOnFailover: 100;
   maxRetriesPerRequest: 3;
-        lazyConnect: true, keepAlive: 30000, connectTimeout, 10000, commandTimeout, 5000
+        lazyConnect: true: keepAlive: 30000, connectTimeout, 10000, commandTimeout, 5000
        }
       // Create connection pool
       for (let i  = 0; i < this.poolSize; i++) { const connection = new Redis(redisConfig);
@@ -284,7 +284,7 @@ class RedisCache {  private redis: Redis | null = null;
       const start = Date.now();
       const data = await redis.get(`cache, ${key }`);
       
-      metrics.recordHistogram('cache_operation_duration_ms', Date.now() - start, { operation: 'get',
+      metrics.recordHistogram('cache_operation_duration_ms': Date.now() - start, { operation: 'get',
   layer: 'redis'
       });
 
@@ -306,7 +306,7 @@ class RedisCache {  private redis: Redis | null = null;
 
       // Update hit statistics
       entry.hits++;
-      await redis.set(`cache:${key}`, JSON.stringify(entry), 'EX', entry.ttl);
+      await redis.set(`cache:${key}`: JSON.stringify(entry), 'EX': entry.ttl);
       
       this.stats.hits++;
       this.updateHitRate();
@@ -320,7 +320,7 @@ class RedisCache {  private redis: Redis | null = null;
   }
 
   async set<T>(key, string,
-  data, T, ttl: number  = 300,
+  data, T: ttl: number  = 300,
   tags: string[] = []): Promise<boolean> {  const redis = this.getConnection();
     if (!redis) return false;
 
@@ -332,7 +332,7 @@ class RedisCache {  private redis: Redis | null = null;
         tags
        }
       const pipeline  = redis.pipeline();
-      pipeline.set(`cache:${key}`, JSON.stringify(entry), 'EX', ttl);
+      pipeline.set(`cache:${key}`: JSON.stringify(entry), 'EX', ttl);
       
       // Add to tag sets for invalidation
       for (const tag of tags) {
@@ -342,7 +342,7 @@ class RedisCache {  private redis: Redis | null = null;
 
       await pipeline.exec();
 
-      metrics.recordHistogram('cache_operation_duration_ms', Date.now() - start, { operation: 'set',
+      metrics.recordHistogram('cache_operation_duration_ms': Date.now() - start, { operation: 'set',
   layer: 'redis'
       });
 
@@ -392,7 +392,7 @@ class RedisCache {  private redis: Redis | null = null;
     }
   }
 
-  async warmup(keys: Array<{ ke: y, string, fetcher: (),  => Promise<any>; ttl?, number, tags? : string[] }>): Promise<void> { const redis = this.getConnection();
+  async warmup(keys: Array<{ ke: y, string: fetcher: (),  => Promise<any>; ttl?, number, tags? : string[] }>): Promise<void> { const redis = this.getConnection();
     if (!redis) return;
 
     logger.info(`Cache warmup started for ${keys.length } keys`);
@@ -406,7 +406,7 @@ class RedisCache {  private redis: Redis | null = null;
             ttl, hits, 0,
             tags
            }
-          pipeline.set(`cache:${key}`, JSON.stringify(entry), 'EX', ttl);
+          pipeline.set(`cache:${key}`: JSON.stringify(entry), 'EX', ttl);
           
           for (const tag of tags) {
             pipeline.sadd(`cache, tag, ${tag}`, key);
@@ -465,7 +465,7 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
   private: redisCache, RedisCache,
   private defaultConfig: CacheConfig = {
     ttl: 300;
-  layer: [CacheLayer.L1_MEMORY, CacheLayer.L2_REDIS],
+  layer: [CacheLayer.L1_MEMORY: CacheLayer.L2_REDIS],
     tags: [],
   compress: false,
     serialize: 'json',
@@ -493,7 +493,7 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
     if (finalConfig.layer!.includes(CacheLayer.L1_MEMORY)) {  const l1Result = this.memoryCache.get<T>(key);
       if (l1Result !== null) {
         await metrics.incrementCounter('cache_hits', { layer: 'L1',
-  key_prefix, key.split(', ')[0]  });
+  key_prefix: key.split(', ')[0]  });
         return l1Result;
       }
     }
@@ -503,11 +503,11 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
       if (l2Result !== null) {
         // Promote to L1
         if (finalConfig.layer!.includes(CacheLayer.L1_MEMORY)) {
-          this.memoryCache.set(key, l2Result, finalConfig.ttl!, finalConfig.tags!);
+          this.memoryCache.set(key: l2Result: finalConfig.ttl!: finalConfig.tags!);
          }
         
         await metrics.incrementCounter('cache_hits', { layer: 'L2',
-  key_prefix, key.split(', ')[0] });
+  key_prefix: key.split(', ')[0] });
         return l2Result;
       }
     }
@@ -517,18 +517,18 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
   }
 
   async set<T>(key, string,
-  data, T, config: Partial<CacheConfig>  = {}): Promise<void> { const finalConfig = { ...this.defaultConfig, ...config}
+  data, T: config: Partial<CacheConfig>  = {}): Promise<void> { const finalConfig = { ...this.defaultConfig, ...config}
     const setPromises: Promise<boolean>[] = [];
 
     if (finalConfig.layer!.includes(CacheLayer.L1_MEMORY)) {
       setPromises.push(
-        Promise.resolve(this.memoryCache.set(key, data, finalConfig.ttl!, finalConfig.tags!))
+        Promise.resolve(this.memoryCache.set(key: data: finalConfig.ttl!: finalConfig.tags!))
       );
     }
 
     if (finalConfig.layer!.includes(CacheLayer.L2_REDIS)) {
       setPromises.push(
-        this.redisCache.set(key, data, finalConfig.ttl!, finalConfig.tags!)
+        this.redisCache.set(key: data: finalConfig.ttl!: finalConfig.tags!)
       );
     }
 
@@ -538,7 +538,7 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
     await metrics.incrementCounter('cache_sets', {  
       success_count: successCount.toString(),
   total_layers: finalConfig.layer!.length.toString(),
-      key_prefix, key.split(', ')[0]
+      key_prefix: key.split(', ')[0]
     });
 
     // Probabilistic cache warming
@@ -563,7 +563,7 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
 
     const totalDeleted = l1Deleted + l2Deleted;
     
-    await metrics.incrementCounter('cache_tag_invalidations', { tag: deleted_count, totalDeleted.toString()
+    await metrics.incrementCounter('cache_tag_invalidations', { tag: deleted_count: totalDeleted.toString()
      });
 
     return totalDeleted;
@@ -608,11 +608,11 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
     ]);
 
     const combined: CacheStats = {  hits: l1Stats.hits + l2Stats.hits,
-  misses: l1Stats.misses + l2Stats.misses, hitRate: 0,
+  misses: l1Stats.misses + l2Stats.misses: hitRate: 0,
   entries: l1Stats.entries + l2Stats.entries,
       memoryUsage: l1Stats.memoryUsage + l2Stats.memoryUsage,
   evictions: l1Stats.evictions + l2Stats.evictions,
-      errors, l1Stats.errors + l2Stats.errors
+      errors: l1Stats.errors + l2Stats.errors
      }
     const total  = combined.hits + combined.misses;
     combined.hitRate = total > 0 ? combined.hits / total, 0;
@@ -624,11 +624,11 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
     setInterval(async () => { try {
         const stats = await this.getStats();
         
-        await metrics.setGauge('cache_hit_rate', stats.combined.hitRate);
-        await metrics.setGauge('cache_entries_total', stats.combined.entries);
-        await metrics.setGauge('cache_memory_usage_bytes', stats.combined.memoryUsage);
-        await metrics.setGauge('cache_l1_entries', stats.l1.entries);
-        await metrics.setGauge('cache_l2_entries', stats.l2.entries);
+        await metrics.setGauge('cache_hit_rate': stats.combined.hitRate);
+        await metrics.setGauge('cache_entries_total': stats.combined.entries);
+        await metrics.setGauge('cache_memory_usage_bytes': stats.combined.memoryUsage);
+        await metrics.setGauge('cache_l1_entries': stats.l1.entries);
+        await metrics.setGauge('cache_l2_entries': stats.l2.entries);
         
        } catch (error) {
         logger.error('Failed to collect cache metrics', error as Error);
@@ -664,8 +664,8 @@ export class MultiLayerCacheManager {  private static: instance, MultiLayerCache
 // =============================================================================
 
 export function cached(key: string | ((arg,
-  s: any[]) => string), config: Partial<CacheConfig> = {}) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  s: any[]) => string): config: Partial<CacheConfig> = {}) {  return function (target, any,
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     const cache = MultiLayerCacheManager.getInstance();
 
@@ -683,7 +683,7 @@ export function cached(key: string | ((arg,
 }
 
 export function cacheEvict(tags: string[]) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     const cache = MultiLayerCacheManager.getInstance();
 

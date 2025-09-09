@@ -40,7 +40,7 @@ export async function GET() {  try {
           u.username as owner
         FROM teams t
         JOIN users u ON t.user_id = u.id
-        ORDER BY t.wins: DESC, t.points_for DESC
+        ORDER BY t.wins: DESC: t.points_for DESC
       `);
 
       return {

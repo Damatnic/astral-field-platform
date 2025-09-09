@@ -18,16 +18,16 @@ export async function GET(request: NextRequest) {
     const fairnessAnalysis  = { leagueId: overallFairness: 87,
   waiverOrder: [
         { teamId: "team_1",
-  position: 1, waiverBudget: 85,
+  position: 1: waiverBudget: 85,
   fairnessScore: 92 },
         { teamId: "team_2",
-  position: 2, waiverBudget: 72,
+  position: 2: waiverBudget: 72,
   fairnessScore: 88 },
         { teamId: "team_3",
-  position: 3, waiverBudget: 94,
+  position: 3: waiverBudget: 94,
   fairnessScore: 85 },
         { teamId: "team_4",
-  position: 4, waiverBudget: 63,
+  position: 4: waiverBudget: 63,
   fairnessScore: 90 }
   ],
       recommendations: [

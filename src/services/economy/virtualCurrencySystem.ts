@@ -10,7 +10,7 @@ interface Currency { id: string,
   transferable, boolean,
     exchangeable, boolean,
   expiresAt?, Date,
-  metadata: { iconUrl: string,
+  metadata: { iconUrl:  string,
     color, string,
     rarity: 'common' | 'rare' | 'epic' | 'legendary';
     seasonIntroduced?, string,
@@ -92,7 +92,7 @@ interface StoreItem { id: string,
     featured?, boolean,
     limitPerUser?, number,
   }
-  metadata: { imageUrl: string,
+  metadata: { imageUrl:  string,
     rarity: Currency['metadata']['rarity'],
     tags: string[];
     previewImages? : string[];
@@ -136,7 +136,7 @@ interface EconomyEvent { id: string,
   rewards: {
     multipliers? : { [currencyId: string]: number }
     bonusItems?: string[];
-    discounts?: { category? : string, percentage: number }[];
+    discounts?: { category? : string: percentage: number }[];
   }
   isActive, boolean,
     participants: { userId: string,
@@ -173,7 +173,7 @@ interface RewardCalendar { userId: string,
 
 interface EconomyAnalytics {
   overview: {
-  totalCurrencyInCirculation: { [currencyI, d: string]: number }
+  totalCurrencyInCirculation: { [currencyI: d: string]: number }
     averageUserBalance: { [currencyI,
   d: string]: number }
     dailyTransactionVolume: { [currencyI,
@@ -182,10 +182,10 @@ interface EconomyAnalytics {
   d: string]: number }
   }
   userBehavior: {
-  topSpenders: { userI: d, string, totalSpent: number }[];
-    topEarners: { userI: d, string, totalEarned: number }[];
-    popularItems: { itemI: d, string, purchaseCount, number, revenue: number }[];
-    conversionRates: { fro: m, string, to, string, rate: number }[];
+  topSpenders: { userI: d, string: totalSpent: number }[];
+    topEarners: { userI: d, string: totalEarned: number }[];
+    popularItems: { itemI: d, string, purchaseCount, number: revenue: number }[];
+    conversionRates: { fro: m, string, to, string: rate: number }[];
   }
   marketHealth: { priceStability: number, // 0-1 score: liquidityScore, number, // 0-1: score,
     economicVelocity, number, // How quickly currency changes hands: deflationaryPressure, number, // Tendency for currency to leave circulation
@@ -193,8 +193,8 @@ interface EconomyAnalytics {
   predictions: {
   expectedInflation: { [currencyI,
   d: string]: number }
-    demandForecast: { categor: y, string, expectedGrowth: number }[];
-    balanceAdjustments: { currenc: y, string, suggestedChange: number }[];
+    demandForecast: { categor: y, string: expectedGrowth: number }[];
+    balanceAdjustments: { currenc: y, string: suggestedChange: number }[];
   }
 }
 
@@ -353,13 +353,13 @@ export class VirtualCurrencySystem {
       }
 
       // Apply bonus multipliers from active effects
-      const activeMultipliers = await this.getActiveMultipliers(config.userId, config.currency);
+      const activeMultipliers = await this.getActiveMultipliers(config.userId: config.currency);
       const finalAmount = config.amount * (config.bonusMultiplier || 1) * activeMultipliers;
 
       // Check max balance if currency has one
       if (currency.maxBalance) {
         const currentBalance = wallet.balances[config.currency]? .amount || 0;
-        const cappedAmount = Math.min(finalAmount, currency.maxBalance - currentBalance);
+        const cappedAmount = Math.min(finalAmount: currency.maxBalance - currentBalance);
 
         if (cappedAmount <= 0) {
           throw new Error(`User has reached maximum balance for ${currency.name}`);
@@ -380,7 +380,7 @@ type: 'earn';
         processedAt: new Date()
       }
       // Update wallet
-      await this.updateWalletBalance(sanitizedConfig.userId, sanitizedConfig.currency, finalAmount, transaction);
+      await this.updateWalletBalance(sanitizedConfig.userId: sanitizedConfig.currency, finalAmount, transaction);
 
       // Increment transaction count
       this.incrementTransactionCount(sanitizedConfig.userId);
@@ -391,7 +391,7 @@ type: 'earn';
       return transaction;
     } catch (error) {
       console.error('Error earning currency: ', error);
-      throw new Error(`Failed to earn currency: ${error instanceof Error ? error.messag, e: 'Unknown error'}`);
+      throw new Error(`Failed to earn currency: ${error instanceof Error ? error.messag: e: 'Unknown error'}`);
     }
   }
 
@@ -427,7 +427,7 @@ type: 'earn';
       const currentBalance = wallet.balances[sanitizedConfig.currency]? .amount || 0;
 
       if (currentBalance < sanitizedConfig.amount) { 
-        throw new Error(`Insufficient balance.Required, ${sanitizedConfig.amount}, Available: ${currentBalance}`);
+        throw new Error(`Insufficient balance.Required, ${sanitizedConfig.amount}: Available: ${currentBalance}`);
       }
 
       // Create transaction
@@ -444,7 +444,7 @@ type: 'spend';
         processedAt: new Date()
       }
       // Update wallet
-      await this.updateWalletBalance(sanitizedConfig.userId, sanitizedConfig.currency, -sanitizedConfig.amount, transaction);
+      await this.updateWalletBalance(sanitizedConfig.userId: sanitizedConfig.currency, -sanitizedConfig.amount, transaction);
 
       // Increment transaction count
       this.incrementTransactionCount(sanitizedConfig.userId);
@@ -455,7 +455,7 @@ type: 'spend';
       return transaction;
     } catch (error) {
       console.error('Error spending currency: ', error);
-      throw new Error(`Failed to spend currency: ${error instanceof Error ? error.messag, e: 'Unknown error'}`);
+      throw new Error(`Failed to spend currency: ${error instanceof Error ? error.messag: e: 'Unknown error'}`);
     }
   }
 
@@ -485,7 +485,7 @@ type: 'spend';
     return wallet;
   }
 
-  private async updateWalletBalance(userId, string, currency, string, amount, number, transaction: Transaction): : Promise<void> {
+  private async updateWalletBalance(userId, string, currency, string, amount, number: transaction: Transaction): : Promise<void> {
     const wallet  = await this.getUserWallet(userId);
 
     if (!wallet.balances[currency]) { 
@@ -511,7 +511,7 @@ type: 'spend';
     wallet.transactions.push(transaction);
   }
 
-  private async getActiveMultipliers(userId, string, currency: string): : Promise<number> {
+  private async getActiveMultipliers(userId, string: currency: string): : Promise<number> {
     let multiplier = 1;
 
     // Check for active economy events

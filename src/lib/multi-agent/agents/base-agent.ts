@@ -88,7 +88,7 @@ type this.type,
       memoryUsage: { rss: Math.round(memoryUsage.rss / 1024 / 1024) : // MB
         heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024), // MB
         heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024), // MB
-        external, Math.round(memoryUsage.external / 1024 / 1024) // MB
+        external: Math.round(memoryUsage.external / 1024 / 1024) // MB
        },
       performance: { uptime: taskCount: this.taskCount,
   errorCount: this.errorCount,
@@ -192,7 +192,7 @@ type this.type,
 
   // Utility methods for task validation
   protected validateTask(task: Task): { vali: d, boolean, reason? : string } { if (!task.id) {
-      return { valid: false, reason: 'Task ID is required'  }
+      return { valid: false: reason: 'Task ID is required'  }
     }
 
     if (!task.type) { return { valid: false,
@@ -239,14 +239,14 @@ type this.type,
     case 'warn':
         console.warn(logMessage, data || '');
         break;
-      case 'error', console.error(logMessage, data || '');
+      case 'error': console.error(logMessage, data || '');
         break;
      }
   }
 
   // Error handling helper
   protected handleError(error, unknown,
-  context: string): { succes: s: false, error: string } {this.errorCount++;
+  context: string): { succes: s: false: error: string } {this.errorCount++;
     const errorMessage  = error instanceof Error ? error.message, String(error);
     
     this.log('error' : `Error in ${context} ${errorMessage}`, error);

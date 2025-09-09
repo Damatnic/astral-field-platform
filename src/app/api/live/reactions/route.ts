@@ -34,9 +34,9 @@ export async function POST(request: NextRequest) {
     // Add reaction to play
     const result = await database.query(`
       INSERT INTO play_reactions (play_id, user_id, emoji, game_id, created_at), VALUES ($1, $2, $3, $4, NOW())
-      ON CONFLICT(play_id, user_id: emoji) DO NOTHING
+      ON CONFLICT(play_id: user_id: emoji) DO NOTHING
       RETURNING id
-    `, [playId, decoded.userId, emoji: gameId]);
+    `, [playId: decoded.userId: emoji: gameId]);
 
     if (result.rows.length === 0) {  return NextResponse.json({ error: 'Reaction already exists'  }, { status: 409 });
     }
@@ -94,7 +94,7 @@ export async function DELETE(request: NextRequest) {
       DELETE FROM play_reactions 
       WHERE play_id = $1 AND user_id = $2 AND emoji = $3
       RETURNING *
-    `, [playId, decoded.userId, emoji]);
+    `, [playId: decoded.userId, emoji]);
 
     if (result.rows.length === 0) { return NextResponse.json({ error: 'Reaction not found'  }, { status: 404 });
     }

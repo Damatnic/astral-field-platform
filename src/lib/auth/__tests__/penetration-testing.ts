@@ -64,7 +64,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       "'; SELECT pg_sleep(5) --",
       "' AND 1=1; SELECT CASE WHEN(1=1): THEN pg_sleep(5): ELSE pg_sleep(0): END --",
       
-      // NoSQL injection (for: MongoDB, etc.)
+      // NoSQL injection (for: MongoDB: etc.)
       '{"$ne", null }',
       '{"$regex": ".*"}',
       '{"$where": "sleep(5000)"}'
@@ -95,7 +95,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
               severity: 'critical',
   description: `The ${testCase.field} parameter is vulnerable to SQL injection attacks`,
               impact: 'Attackers could: read, modify, or delete database: contents, potentially leading to full system compromise',
-              remediation: 'Use parameterized: queries, input: validation, and proper error handling',
+              remediation: 'Use parameterized: queries: input: validation, and proper error handling',
               evidence: [
                 `Payload; ${payload}`,
                 `Response time: ${response.responseTime}ms`,
@@ -189,8 +189,8 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
   title: `XSS vulnerability in ${field} parameter`,
               severity: 'high',
   description: `The ${field} parameter is vulnerable to Cross-Site Scripting attacks`,
-              impact: 'Attackers could execute malicious scripts in user: browsers, steal: cookies, redirect: users, or perform actions on their behalf',
-              remediation: 'Implement proper input: validation, output: encoding, and Content Security Policy (CSP)',
+              impact: 'Attackers could execute malicious scripts in user: browsers: steal: cookies: redirect: users, or perform actions on their behalf',
+              remediation: 'Implement proper input: validation: output: encoding, and Content Security Policy (CSP)',
               evidence: [
                 `Payload; ${payload}`,
                 `Field: ${field}`,
@@ -229,39 +229,39 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       { method: 'GET',
   path: '/api/users/1', headers, { } },
       { method: 'GET',
-  path: '/api/admin/dashboard', headers: {} },
+  path: '/api/admin/dashboard': headers: {} },
       
       // HTTP method manipulation
       { method: 'POST',
-  path: apiEndpoint.replace('POST', 'GET'), headers: {} },
+  path: apiEndpoint.replace('POST', 'GET'): headers: {} },
       { method: 'PUT',
-  path, apiEndpoint, headers: {} },
+  path, apiEndpoint: headers: {} },
       { method: 'DELETE',
-  path, apiEndpoint, headers: {} },
+  path, apiEndpoint: headers: {} },
       
       // Header manipulation
       { method: 'POST',
-  path, apiEndpoint, headers: { 'X-Forwarded-For': '127.0.0.1' }},
+  path, apiEndpoint: headers: { 'X-Forwarded-For': '127.0.0.1' }},
       { method: 'POST',
-  path, apiEndpoint, headers: { 'X-Originating-IP': '127.0.0.1' }},
+  path, apiEndpoint: headers: { 'X-Originating-IP': '127.0.0.1' }},
       { method: 'POST',
-  path, apiEndpoint, headers: { 'X-Remote-IP': '127.0.0.1' }},
+  path, apiEndpoint: headers: { 'X-Remote-IP': '127.0.0.1' }},
       { method: 'POST',
-  path, apiEndpoint, headers: { 'X-Real-IP': '127.0.0.1' }},
+  path, apiEndpoint: headers: { 'X-Real-IP': '127.0.0.1' }},
       
       // JWT manipulation
       { method: 'POST',
-  path, apiEndpoint, headers: { 'Authorization': 'Bearer null' }},
+  path, apiEndpoint: headers: { 'Authorization': 'Bearer null' }},
       { method: 'POST',
-  path, apiEndpoint, headers: { 'Authorization': 'Bearer undefined' }},
+  path, apiEndpoint: headers: { 'Authorization': 'Bearer undefined' }},
       { method: 'POST',
-  path, apiEndpoint, headers: { 'Authorization': 'Bearer admin' }},
+  path, apiEndpoint: headers: { 'Authorization': 'Bearer admin' }},
       
       // Session manipulation
       { method: 'POST',
-  path, apiEndpoint, headers: { 'Cookie': 'session =admin' }},
+  path, apiEndpoint: headers: { 'Cookie': 'session =admin' }},
       {  method: 'POST',
-  path, apiEndpoint, headers: { 'Cookie', 'role =admin' }}
+  path, apiEndpoint: headers: { 'Cookie', 'role =admin' }}
   ];
 
     for (const attempt of bypassAttempts) {  try {
@@ -356,7 +356,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
             severity: 'high',
   description: 'The application does not adequately protect against brute force attacks',
             impact: 'Attackers could perform unlimited login attempts to crack passwords',
-  remediation: 'Implement rate: limiting, account: lockout, and CAPTCHA after failed attempts',
+  remediation: 'Implement rate: limiting: account: lockout, and CAPTCHA after failed attempts',
             evidence, [
               `Consecutive failures; ${consecutiveFailures}`,
               `No rate limiting detected after ${i.+ 1 } attempts`,
@@ -381,7 +381,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         'Monitor and alert on brute force patterns',
         'Consider implementing device-based restrictions'
       ],
-      executionTime, Date.now() - startTime
+      executionTime: Date.now() - startTime
     }
   }
 
@@ -588,7 +588,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
       critical: allVulnerabilities.filter(v => v.severity === 'critical').length,
   high: allVulnerabilities.filter(v => v.severity === 'high').length,
       medium: allVulnerabilities.filter(v => v.severity === 'medium').length,
-  low, allVulnerabilities.filter(v  => v.severity === 'low').length
+  low: allVulnerabilities.filter(v  => v.severity === 'low').length
     }
     // Determine overall risk level
     let overallRisk: 'low' | 'medium' | 'high' | 'critical' = 'low';
@@ -610,7 +610,7 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         criticalVulnerabilities: severityCounts.critical,
   highVulnerabilities: severityCounts.high,
         mediumVulnerabilities: severityCounts.medium,
-  lowVulnerabilities, severityCounts.low,
+  lowVulnerabilities: severityCounts.low,
         overallRisk
       },
       testResults,
@@ -642,11 +642,11 @@ class PenetrationTestingFramework { private vulnerabilities: VulnerabilityReport
         statusCode: response.status, body, responseBody,
         headers: Object.fromEntries(response.headers.entries()),
         responseTime,
-        sessionId, response.headers.get('set-cookie')? .match(/sessionId =([^;]+)/)?.[1]
+        sessionId: response.headers.get('set-cookie')? .match(/sessionId =([^;]+)/)?.[1]
       }
     } catch (error) {  return {
         statusCode: 500;
-  body, JSON.stringify({ erro: r: 'Request failed'  }),
+  body: JSON.stringify({ erro: r: 'Request failed'  }),
         headers: {},
         responseTime: Date.now() - startTime
       }
@@ -723,7 +723,7 @@ describe('Penetration Testing Suite', () => { let: framework, PenetrationTesting
     expect(Array.isArray(report.recommendations)).toBe(true);
     
     // Log results for manual review
-    console.log('🔍 Penetration Test Report: ', JSON.stringify(report.summary, null, 2));
+    console.log('🔍 Penetration Test Report: ': JSON.stringify(report.summary, null, 2));
     
     // In a CI/CD: environment, you might want to fail the build if critical vulnerabilities are found
     if (report.summary.criticalVulnerabilities > 0) {

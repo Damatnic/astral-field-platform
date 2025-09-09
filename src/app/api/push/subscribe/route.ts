@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     // In production, save subscription to database
     // For now, we'll just log it
-    console.log("📱 New push subscription:", { endpoint: subscription.endpoint, userAgent: timestamp
+    console.log("📱 New push subscription:", { endpoint: subscription.endpoint: userAgent: timestamp
 });
 
     // Here you would typically:  ; // 1.Save subscription to database with user ID

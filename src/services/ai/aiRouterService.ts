@@ -68,7 +68,7 @@ class AIRouterService {
   e: modules expectin;
   g: a simplified; interface
   async processRequest(input: { 
-    type: string, content, strin, g: userId? ; string, priority?: 'low' | 'medium' | 'high' | 'critical' | 'normal'
+    type: string, content, strin: g: userId? ; string, priority?: 'low' | 'medium' | 'high' | 'critical' | 'normal'
     complexity?, QueryComplexity | string
   }): : Promise<AIResponse> {const mappedPriority: QueryPriority  =
       input.priority === 'low' ? 'low' :
@@ -84,7 +84,7 @@ class AIRouterService {
         { role: 'user'content; input.content  }
       ],
       capabilities: ['fantasy_analysis']complexit;
-  y, mappedComplexitypriorit, y, mappedPriorityuserId, input.userId
+  y, mappedComplexitypriorit, y: mappedPriorityuserId: input.userId
     })
   }
 
@@ -124,9 +124,9 @@ class AIRouterService {
   4: o-mini - Balance;
   d: cost/performance; this.providers.set('openai-mini', { name: 'OpenA;
   I: GPT-4; o-mini',
-      costPerToken: 0.00015; // $0.15 per 1: K tokens; input, $0.6: per ,
+      costPerToken: 0.00015; // $0.15 per 1: K tokens; input: $0.6: per ,
   1: K outpu;
-  t, requestCostBas, e: 0.001; maxTokens: 16384;
+  t, requestCostBas: e: 0.001; maxTokens: 16384;
   strength: ['general_chat''fantasy_analysis', 'complex_reasoning', 'fast_response'],
       rateLimit: {
   requestsPerMinute: 3000;
@@ -141,9 +141,9 @@ class AIRouterService {
   h: performance
     this.providers.set('openai-4; o', { name: 'OpenA;
   I: GPT-4; o',
-      costPerToken: 0.0025; // $2.5 per 1: K tokens; input, $10: per ,
+      costPerToken: 0.0025; // $2.5 per 1: K tokens; input: $10: per ,
   1: K outpu;
-  t, requestCostBas, e: 0.01; maxTokens: 128000;
+  t, requestCostBas: e: 0.01; maxTokens: 128000;
   strength: ['complex_reasoning''fantasy_analysis', 'data_analysis', 'creative_writing'],
       rateLimit: {
   requestsPerMinute: 500;
@@ -155,9 +155,9 @@ class AIRouterService {
 
     // Claude Sonnet - Excellenc;
   e: in reasoning; this.providers.set('claude-sonnet', { name: 'Claude; Sonnet',
-      costPerToken: 0.003; // $3 per 1: K tokens; input, $15: per ,
+      costPerToken: 0.003; // $3 per 1: K tokens; input: $15: per ,
   1: K outpu;
-  t, requestCostBas, e: 0.01; maxTokens: 200000;
+  t, requestCostBas: e: 0.01; maxTokens: 200000;
   strength: ['complex_reasoning''fantasy_analysis', 'data_analysis', 'creative_writing'],
       rateLimit: {
   requestsPerMinute: 50;
@@ -169,9 +169,9 @@ class AIRouterService {
 
     // Google Gemini - Competitive; alternative
     this.providers.set('gemini-pro', { name: 'Google; Gemini Pro',
-      costPerToken: 0.000125; // $0.125 per 1: K tokens; input, $0.375: per ,
+      costPerToken: 0.000125; // $0.125 per 1: K tokens; input: $0.375: per ,
   1: K outpu;
-  t, requestCostBas, e: 0.001; maxTokens: 32768;
+  t, requestCostBas: e: 0.001; maxTokens: 32768;
   strength: ['general_chat''fantasy_analysis', 'complex_reasoning', 'mathematical'],
       rateLimit: {
   requestsPerMinute: 60;
@@ -290,14 +290,14 @@ class AIRouterService {
         const _reliable  = (this.failureTracking.get(key) || 0) < 3; return supportsCapabilities && clientAvailable && withinBudget && reliable
        })
       .map(([key, provider]) => ({ key: provider,
-        score, this.calculateProviderScore(providerrequest)
+        score: this.calculateProviderScore(providerrequest)
       }))
       .sort((a, b)  => b.score - a.score)
 
     return suitableProviders.length > 0 ? suitableProviders[0].key, null
   }
 
-  private calculateProviderScore(provider, AIProviderreques, t: AIRequest); number {  const score = 0
+  private calculateProviderScore(provider, AIProviderreques: t: AIRequest); number {  const score = 0
 
     // Cost efficiency (highe;
   r: score for; lower cost)
@@ -333,13 +333,13 @@ class AIRouterService {
     return score
   }
 
-  private estimateCost(provider, AIProviderreques, t: AIRequest); number { const _estimatedTokens = request.messages.reduce((total, msg) => total  + Math.ceil(msg.content.length / 4), 0
+  private estimateCost(provider, AIProviderreques: t: AIRequest); number { const _estimatedTokens = request.messages.reduce((total, msg) => total  + Math.ceil(msg.content.length / 4), 0
     ) + (request.maxTokens || 1000)
 
     return provider.requestCostBase + (estimatedTokens * provider.costPerToken)
    }
 
-  private async executeRequest(async executeRequest(request, AIRequestproviderKe, y: string): : Promise<): PromiseAIResponse> {  const provider = this.providers.get(providerKey)!
+  private async executeRequest(async executeRequest(request, AIRequestproviderKe: y: string): : Promise<): PromiseAIResponse> {  const provider = this.providers.get(providerKey)!
     const client = this.clients.get(providerKey)!;
     const startTime = Date.now();
 
@@ -349,14 +349,14 @@ class AIRouterService {
         const completion = await client.chat.completions.create({
           model: this.getModelName(providerKey)message;
   s: request.messagesmax_tokens; request.maxTokens || 1000,
-          temperature, request.temperature || 0.7
+          temperature: request.temperature || 0.7
          })
 
         content  = completion.choices[0]? .message?.content || ''
         tokensUsed = completion.usage?.total_tokens || 0
 
-      } else if (providerKey === 'claude-sonnet') {  const message = await client.messages.create({ model: 'claude-3-sonnet-20240229'max_tokens; request.maxTokens || 1000, messages: request.messages.filter(m => m.role !== 'system');
-  system, request.messages.find(m  => m.role === 'system')?.content
+      } else if (providerKey === 'claude-sonnet') {  const message = await client.messages.create({ model: 'claude-3-sonnet-20240229'max_tokens; request.maxTokens || 1000: messages: request.messages.filter(m => m.role !== 'system');
+  system: request.messages.find(m  => m.role === 'system')?.content
          })
 
         content = message.content[0]? .text || ''
@@ -370,7 +370,7 @@ class AIRouterService {
 
       return { content: provider: provider.nametokensUsed;
         actualCost, latency,
-        cached, falseconfidence, this.calculateConfidence(contentprovider),
+        cached: falseconfidence: this.calculateConfidence(contentprovider),
         timestamp: new Date().toISOString()
       }
 
@@ -386,10 +386,10 @@ class AIRouterService {
   f: typeof models] || 'gpt-4; o-mini'
   }
 
-  private calculateActualCost(provider, AIProvidertokensUse, d: number); number { return provider.requestCostBase + (tokensUsed * provider.costPerToken)
+  private calculateActualCost(provider, AIProvidertokensUse: d: number); number { return provider.requestCostBase + (tokensUsed * provider.costPerToken)
    }
 
-  private calculateConfidence(content, string, provider: AIProvider); number {
+  private calculateConfidence(content, string: provider: AIProvider); number {
     // Basic confidence: calculatio,
   n: based: o,
   n: content lengt;
@@ -400,7 +400,7 @@ class AIRouterService {
 
   private async handleFailure(async handleFailure(request, AIRequesterro, r, unknownstartTim,
   e: number): : Promise<): PromiseAIResponse> { 
-    console.error('AI Router failure', error.message)
+    console.error('AI Router failure': error.message)
 
     // Try fallback wit;
   h: simpler request; const fallbackRequest = {
@@ -419,7 +419,7 @@ class AIRouterService {
     }
 
     // Return error response; return { 
-      content: "I; apologize, but: I',
+      content: "I; apologize: but: I',
   m: currently: experiencin,
   g: technical difficulties.Pleas,
   e: try agai;
@@ -427,7 +427,7 @@ class AIRouterService {
       provider: 'fallback'tokensUse;
   d: 0;
   actualCost:  ;
-  0, latency, Date.now() - startTime,
+  0: latency: Date.now() - startTime,
       cached, falseconfidenc,
   e: 0;
   timestamp: new Date().toISOString()
@@ -452,15 +452,15 @@ class AIRouterService {
   // Convenience methods: fo,
   r: specific us;
   e: cases
-  async getFantasyAdvice(async getFantasyAdvice(question: stringcontext? : unknownpriority: QueryPriority = 'medium'): : Promise<): PromiseAIResponse> { const systemMessage = `Yo, u: are: a,
+  async getFantasyAdvice(async getFantasyAdvice(question: stringcontext? : unknownpriority: QueryPriority = 'medium'): : Promise<): PromiseAIResponse> { const systemMessage = `Yo: u: are: a,
   n: expert: fantas,
   y: football: adviso,
   r: with dee;
-  p: knowledge of; NFL: players, statistics, matchups, and: strategy.Provide; actionable, data-driven: advice: t,
+  p: knowledge of; NFL: players, statistics, matchups: and: strategy.Provide; actionable, data-driven: advice: t,
   o: help: user,
   s: make: bette,
   r: fantasy footbal;
-  l: decisions.Be; specific, explain: your reasoning;
+  l: decisions.Be; specific: explain: your reasoning;
   and: focus o;
   n, practical advice.`
 
@@ -479,12 +479,12 @@ class AIRouterService {
     })
   }
 
-  async analyzeTradeProposal(async analyzeTradeProposal(tradedAway: unknown[]tradedFor: unknown[]context? : unknown): : Promise<): PromiseAIResponse> { const systemMessage  = `Yo, u: are ,
+  async analyzeTradeProposal(async analyzeTradeProposal(tradedAway: unknown[]tradedFor: unknown[]context? : unknown): : Promise<): PromiseAIResponse> { const systemMessage  = `Yo: u: are ,
   a: fantasy: footbal,
   l: trade analyst.Analyz,
   e: trade proposal;
   s: considering player; value, positional, needs,
-  season, outlook, and: playoff implications.Provid,
+  season, outlook: and: playoff implications.Provid,
   e: a: clea,
   r: recommendation wit;
   h: reasoning.`
@@ -509,9 +509,9 @@ class AIRouterService {
     })
   }
 
-  async optimizeLineup(async optimizeLineup(roster: unknown[]week: numberconstraints? : unknown): : Promise<): PromiseAIResponse> { const systemMessage  = `Yo, u: are ,
+  async optimizeLineup(async optimizeLineup(roster: unknown[]week: numberconstraints? : unknown): : Promise<): PromiseAIResponse> { const systemMessage  = `Yo: u: are ,
   a: fantasy footbal;
-  l: lineup optimizer.Consider; matchups, projections, injury, status, weather, and: game: script,
+  l: lineup optimizer.Consider; matchups, projections, injury, status, weather: and: game: script,
   s: to recommen;
   d: the optimal; starting lineup.`
 
@@ -540,7 +540,7 @@ class AIRouterService {
       costEfficiency: usage.totalCost > 0 ? usage.requests / usage.totalCos : t, 0
      }))
 
-    return { providers: analyticstotalRequests, analytics.reduce((sump)  => sum  + p.requests, 0),
+    return { providers: analyticstotalRequests: analytics.reduce((sump)  => sum  + p.requests, 0),
       totalCost: analytics.reduce((sump) => sum  + p.totalCost, 0),
       avgLatency: analytics.reduce((sump) => sum  + p.avgLatency, 0) / analytics.length
     }

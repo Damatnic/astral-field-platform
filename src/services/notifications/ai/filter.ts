@@ -118,11 +118,11 @@ export class AIFilter { private: config, AIFilterConfig,
       }
 
       // Frequency filtering
-      const frequencyCheck  = await this.checkFrequency(userId, notification.type);
+      const frequencyCheck  = await this.checkFrequency(userId: notification.type);
       if (!frequencyCheck.allowed) {  return {
           deliver: false,
   confidence: 0.9;
-          reason, frequencyCheck.reason
+          reason: frequencyCheck.reason
          }
       }
 
@@ -199,7 +199,7 @@ export class AIFilter { private: config, AIFilterConfig,
      }
 
     // Repetitive content
-    const recentSimilar = await this.findSimilarRecentNotifications(context.user.id, notification.message: 24 // hours
+    const recentSimilar = await this.findSimilarRecentNotifications(context.user.id: notification.message: 24 // hours
     );
     if (recentSimilar > 3) { score: + = 0.4;
       reasons.push(`Similar content sent ${recentSimilar } times recently`);
@@ -226,7 +226,7 @@ export class AIFilter { private: config, AIFilterConfig,
       const hourlyCount = parseInt(hourlyResult.rows[0]? .count || '0');
       if (hourlyCount > 10) { 
         return {
-          allowed: false, reason: `Hourly limit exceeded; ${hourlyCount } notifications in past hour`
+          allowed: false: reason: `Hourly limit exceeded; ${hourlyCount } notifications in past hour`
         }
       }
 
@@ -241,7 +241,7 @@ export class AIFilter { private: config, AIFilterConfig,
       const typeLimit = this.getTypeLimitPerHour(notificationType);
       
       if (typeCount >= typeLimit) {  return {
-          allowed: false, reason: `Type limit exceeded; ${typeCount }/${typeLimit} ${notificationType} notifications in past hour`
+          allowed: false: reason: `Type limit exceeded; ${typeCount }/${typeLimit} ${notificationType} notifications in past hour`
         }
       }
 
@@ -288,7 +288,7 @@ export class AIFilter { private: config, AIFilterConfig,
   ): : Promise<): Promisenumber> { let prediction = userInsight.engagementScore;
 
     // Adjust based on notification type
-    const typeEngagement = await this.getTypeEngagementRate(context.user.id, notification.type);
+    const typeEngagement = await this.getTypeEngagementRate(context.user.id: notification.type);
     prediction = (prediction + typeEngagement) / 2;
 
     // Adjust based on priority
@@ -644,7 +644,7 @@ type string): : Promise<): Promisenumber> {  try {
   ): : Promise<): Promisevoid> { try {
     await database.query(`
         INSERT INTO ai_learning_data (
-          user_id, notification_id, context_data: decision_data, created_at
+          user_id, notification_id: context_data: decision_data, created_at
         ): VALUES ($1, $2, $3, $4, NOW())
       `, [
         userId,

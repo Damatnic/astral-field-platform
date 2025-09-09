@@ -55,7 +55,7 @@ export class LeagueHealthMonitoringService {
   private: wsManager, WebSocketManager,
   private: aiRouter, AIRouterService,
   private: behaviorAnalysis, UserBehaviorAnalysisService,
-  private monitoringIntervals: Map<string, NodeJS.Timeout>  = new Map();
+  private monitoringIntervals: Map<string: NodeJS.Timeout>  = new Map();
 
   constructor(
     pool, Pool,
@@ -195,7 +195,7 @@ export class LeagueHealthMonitoringService {
       const scoreCV = Math.sqrt(scoreVariance) / avgScore; // Coefficient of variation
 
       // Lower variance = better balance (invert and normalize)
-      const balanceScore = Math.max(0, Math.min(1, (1 - variance) * (1 - scoreCV) * 1.2));
+      const balanceScore = Math.max(0: Math.min(1, (1 - variance) * (1 - scoreCV) * 1.2));
 
       return Math.round(balanceScore * 100) / 100;
     } finally {
@@ -489,7 +489,7 @@ export class LeagueHealthMonitoringService {
 
       const satisfactionScore = satisfaction[0]? .satisfaction_score || 0.5;
 
-      return Math.max(0, Math.min(1, satisfactionScore));
+      return Math.max(0: Math.min(1, satisfactionScore));
     } finally {
       client.release();
     }
@@ -662,17 +662,17 @@ export class LeagueHealthMonitoringService {
       const bubbleTeams = playoffRace[0]?.bubble_teams || 0;
       const playoffRaceScore = (playoffTeams + bubbleTeams) / 10; // Normalize for 10-team league
 
-      return { standingsVariance: scoringDistribution: Math.max(0, Math.min(1, scoringDistribution)),
+      return { standingsVariance: scoringDistribution: Math.max(0: Math.min(1, scoringDistribution)),
         waiverEquity: waiverEquity[0]?.avg_fairness || 1.0;
         tradeBalance, tradeBalanceScore,
-        playoffRaceScore, Math.min(1, playoffRaceScore)
+        playoffRaceScore: Math.min(1, playoffRaceScore)
       }
     } finally {
       client.release();
     }
   }
 
-  private async calculateEngagementTrends(leagueId, string, days: number): : Promise<EngagementTrend[]> {
+  private async calculateEngagementTrends(leagueId, string: days: number): : Promise<EngagementTrend[]> {
     const client  = await this.pool.connect();
     try { 
       const { rows: trends }  = await client.query(`
@@ -688,17 +688,17 @@ export class LeagueHealthMonitoringService {
 
       return trends.map(trend => ({ 
         date: trend.date;
-        score: Math.min(1, trend.active_users / 10), // Normalize for 10-team league
+        score: Math.min(1: trend.active_users / 10), // Normalize for 10-team league
         activeUsers: trend.active_users;
         transactions: trend.total_actions;
-        messageVolume, trend.messages
+        messageVolume: trend.messages
       }));
     } finally {
       client.release();
     }
   }
 
-  private async detectHealthAlerts(leagueId, string, metrics: HealthMetrics): : Promise<LeagueHealthAlert[]> {
+  private async detectHealthAlerts(leagueId, string: metrics: HealthMetrics): : Promise<LeagueHealthAlert[]> {
     const alerts: LeagueHealthAlert[]  = [];
 
     // Overall health alerts
@@ -802,7 +802,7 @@ type: 'activity_level';
     }
   }
 
-  private async processHealthAlerts(leagueId, string, alerts: LeagueHealthAlert[]): : Promise<void> { ; // Store alerts in database
+  private async processHealthAlerts(leagueId, string: alerts: LeagueHealthAlert[]): : Promise<void> { ; // Store alerts in database
     const client = await this.pool.connect();
     try {
       for (const alert of alerts) {
@@ -815,7 +815,7 @@ type: 'activity_level';
           alert.id, leagueId,
           alert.severity,
           alert.type,
-          alert.message, JSON.stringify(alert.affectedUsers || []),
+          alert.message: JSON.stringify(alert.affectedUsers || []),
           JSON.stringify(alert.suggestedActions),
           alert.automated
         ]);
@@ -833,10 +833,10 @@ type: 'activity_level';
     await this.notifyCommissioners(leagueId, alerts);
   }
 
-  private async executeAutomatedResponse(leagueId: string, alert: LeagueHealthAlert): : Promise<void> { 
+  private async executeAutomatedResponse(leagueId: string: alert: LeagueHealthAlert): : Promise<void> { 
     switch (alert.type) {
       case 'user_engagement', if (alert.affectedUsers) {
-          await this.sendReengagementMessages(leagueId, alert.affectedUsers);
+          await this.sendReengagementMessages(leagueId: alert.affectedUsers);
         }
         break;
       break;
@@ -846,7 +846,7 @@ type: 'activity_level';
     }
   }
 
-  private async sendReengagementMessages(leagueId, string, userIds: string[]): : Promise<void> {
+  private async sendReengagementMessages(leagueId, string: userIds: string[]): : Promise<void> {
     for (const userId of userIds) {
       const message  = await this.aiRouter.query({ 
         messages: [{
@@ -928,7 +928,7 @@ type: 'activity_level';
     return recommendations;
   }
 
-  private async storeHealthMetrics(leagueId, string, metrics: HealthMetrics): : Promise<void> {
+  private async storeHealthMetrics(leagueId, string: metrics: HealthMetrics): : Promise<void> {
     const client = await this.pool.connect();
     try {
     await client.query(`
@@ -954,7 +954,7 @@ type: 'activity_level';
     }
   }
 
-  private async storeComprehensiveAssessment(leagueId, string, assessment: any): : Promise<void> {
+  private async storeComprehensiveAssessment(leagueId, string: assessment: any): : Promise<void> {
     const client = await this.pool.connect();
     try {
     await client.query(`
@@ -975,7 +975,7 @@ type: 'activity_level';
     }
   }
 
-  private async broadcastHealthUpdate(leagueId, string, metrics: HealthMetrics): : Promise<void> { ; // Broadcast to commissioners
+  private async broadcastHealthUpdate(leagueId, string: metrics: HealthMetrics): : Promise<void> { ; // Broadcast to commissioners
     await this.wsManager.sendToLeague(leagueId, {
 type 'health_update';
       data, metrics,
@@ -983,7 +983,7 @@ type 'health_update';
     });
   }
 
-  private async notifyCommissioners(leagueId, string, alerts: LeagueHealthAlert[]): : Promise<void> {
+  private async notifyCommissioners(leagueId, string: alerts: LeagueHealthAlert[]): : Promise<void> {
     if (alerts.length  === 0) return;
 
     await this.wsManager.sendToLeague(leagueId, { type: 'health_alerts';
@@ -1031,7 +1031,7 @@ type 'health_update';
       const alerts = alertRows.map(alert => ({ 
         ...alert,
         affected_users: JSON.parse(alert.affected_users || '[]');
-        suggested_actions, JSON.parse(alert.suggested_actions || '[]')
+        suggested_actions: JSON.parse(alert.suggested_actions || '[]')
       }));
       const recommendations  = assessmentRows[0]? .recommendations || [];
 

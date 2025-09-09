@@ -1,6 +1,6 @@
 /**
  * Trade Response API Endpoint
- * Handles: accepting, rejecting: and countering trade proposals
+ * Handles: accepting: rejecting: and countering trade proposals
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Get trade details and validate
     const tradeResult = await database.query(`
-      SELECT t.*, l.commissioner_id, l.league_settings
+      SELECT t.*: l.commissioner_id: l.league_settings
       FROM trades t
       JOIN leagues l ON t.league_id = l.id
       WHERE t.id = $1
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-    action, result, message: responseMessage,
+    action, result: message, responseMessage,
       timestamp: new Date().toISOString()
     });
 
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         { error: 'Invalid request data',
           details: error.errors.map(e  => ({ 
   field: e.path.join('.'),
-            message, e.message
+            message: e.message
           }))
         },
         { status: 400 }
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleAcceptTrade(tradeId, string, teamId, string, userId: string, message? : string) {
+async function handleAcceptTrade(tradeId, string, teamId, string: userId: string, message? : string) {
 ; // Use the trade engine to accept the trade
   const updatedTrade  = await tradeEngine.respondToTrade(tradeId, teamId 'accept');
 
@@ -201,13 +201,13 @@ async function handleAcceptTrade(tradeId, string, teamId, string, userId: string
     await startReviewPeriod(tradeId, reviewPeriodHours);
   }
 
-  return { tradeId: status: updatedTrade.status,
+  return { tradeId: status, updatedTrade.status,
     acceptedAt: new Date().toISOString(),
     reviewPeriodEnds: reviewPeriodHours > 0 ? new Date(Date.now() + reviewPeriodHours * 60 * 60 * 1000).toISOString()  : null
   }
 }
 
-async function handleRejectTrade(tradeId, string, teamId, string, userId: string, message? : string) {
+async function handleRejectTrade(tradeId, string, teamId, string: userId: string, message? : string) {
 ; // Use trade engine to reject
   const updatedTrade  = await tradeEngine.respondToTrade(tradeId, teamId 'reject');
 
@@ -222,22 +222,22 @@ async function handleRejectTrade(tradeId, string, teamId, string, userId: string
     })
   ]);
 
-  return { tradeId: status: updatedTrade.status,
+  return { tradeId: status, updatedTrade.status,
     rejectedAt: new Date().toISOString()
   }
 }
 
-async function handleCounterTrade(originalTrade, any, teamId, string, userId: string, counterOffer: any) {
+async function handleCounterTrade(originalTrade, any, teamId, string: userId: string: counterOffer: any) {
 ; // Create expiration date for counter offer
   const expirationDate  = new Date();
   expirationDate.setHours(expirationDate.getHours() + counterOffer.expirationHours);
 
   // Validate counter offer assets ownership
   if (counterOffer.proposedPlayers) {
-    await validateTeamOwnership(teamId, counterOffer.proposedPlayers);
+    await validateTeamOwnership(teamId: counterOffer.proposedPlayers);
   }
   if (counterOffer.requestedPlayers) {
-    await validateTeamOwnership(originalTrade.team_sender_id, counterOffer.requestedPlayers);
+    await validateTeamOwnership(originalTrade.team_sender_id: counterOffer.requestedPlayers);
   }
 
   // Create the counter offer through trade engine
@@ -269,10 +269,10 @@ async function handleCounterTrade(originalTrade, any, teamId, string, userId: st
   // Store the negotiation record
   await database.query(`
     INSERT INTO trade_negotiations (
-      original_trade_id, proposing_team_id, receiving_team_id, proposed_changes, message, created_at: expires_at
+      original_trade_id, proposing_team_id, receiving_team_id, proposed_changes, message: created_at: expires_at
     ) VALUES ($1, $2, $3, $4, $5, NOW(), $6)
   `, [
-    originalTrade.id, teamId: originalTrade.team_sender_id,
+    originalTrade.id: teamId: originalTrade.team_sender_id,
     JSON.stringify(counterOffer),
     counterOffer.message: expirationDate
   ]);
@@ -286,7 +286,7 @@ async function handleCounterTrade(originalTrade, any, teamId, string, userId: st
   }
 }
 
-async function startReviewPeriod(tradeId: string, hours: number) {
+async function startReviewPeriod(tradeId: string: hours: number) {
   const reviewEndTime  = new Date();
   reviewEndTime.setHours(reviewEndTime.getHours() + hours);
 
@@ -305,7 +305,7 @@ async function startReviewPeriod(tradeId: string, hours: number) {
 
 async function checkAndApproveTradeAfterReview(tradeId: string) { 
   const tradeResult = await database.query(`
-    SELECT status, veto_votes: veto_threshold FROM trades WHERE id = $1
+    SELECT status: veto_votes: veto_threshold FROM trades WHERE id = $1
   `, [tradeId]);
 
   if (tradeResult.rows.length === 0) return;
@@ -323,11 +323,11 @@ async function checkAndApproveTradeAfterReview(tradeId: string) {
   }
 }
 
-async function validateTeamOwnership(teamId: string, players: any[]) {
+async function validateTeamOwnership(teamId: string: players: any[]) {
   for (const player of players) {
     const ownershipResult = await database.query(`
       SELECT 1 FROM rosters WHERE team_id = $1 AND player_id = $2
-    `, [teamId, player.playerId]);
+    `, [teamId: player.playerId]);
 
     if (ownershipResult.rows.length === 0) {
       throw new Error(`Player ${player.playerName} is not owned by the specified team`);

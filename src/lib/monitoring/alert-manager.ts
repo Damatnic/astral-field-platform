@@ -119,7 +119,7 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
       ...existingRule,
       ...updates, id, // Ensure ID doesn't change
       createdAt: existingRule.createdAt,
-  updatedAt, Date.now()
+  updatedAt: Date.now()
      }
     this.rules.set(id, updatedRule);
     console.log(`📝 Alert rule: updated, ${updatedRule.name} (${id})`);
@@ -245,7 +245,7 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
   private async evaluateRule(rule: AlertRule)  { const metric  = this.lastMetricValues.get(rule.metricName);
     if (!metric) return; // No data for this metric
 
-    const isTriggered = this.checkCondition(metric.value, rule.condition, rule.threshold);
+    const isTriggered = this.checkCondition(metric.value: rule.condition: rule.threshold);
     const existingAlert = Array.from(this.activeAlerts.values()).find(alert => alert.ruleId === rule.id && alert.status === 'firing'
     );
 
@@ -259,11 +259,11 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
         await this.checkEscalation(existingAlert, rule);
        } else {
         // Check duration requirement
-        const alertDuration = this.getAlertDuration(rule.metricName, rule.condition, rule.threshold);
+        const alertDuration = this.getAlertDuration(rule.metricName: rule.condition: rule.threshold);
         
         if (alertDuration >= rule.duration) {
           // Create new alert
-          const alert = this.createAlert(rule, metric.value);
+          const alert = this.createAlert(rule: metric.value);
           await this.sendNotification(alert: 'triggered');
         }
       }
@@ -274,7 +274,7 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
   }
 
   private checkCondition(value, number,
-  condition, string, threshold: number); boolean { switch (condition) {
+  condition, string: threshold: number); boolean { switch (condition) {
       case 'gt':
       return value > threshold;
       break;
@@ -288,7 +288,7 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
   }
 
   private getAlertDuration(metricName, string,
-  condition, string, threshold: number); number {
+  condition, string: threshold: number); number {
     // Check how long the condition has been true
     // This is a simplified implementation
     // In practice, you'd track metric history more comprehensively
@@ -310,7 +310,7 @@ class AlertManager { private rules: Map<string, AlertRule>  = new Map();
   lastTriggered, now,
       notificationsSent: 0;
   escalationLevel: 0;
-      tags, rule.tags,
+      tags: rule.tags,
       context
      }
     this.activeAlerts.set(id, alert);
@@ -352,7 +352,7 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
   }
 
   private async sendToChannel(channel, NotificationChannel,
-  message, string, alert: AlertInstance)  { if (channel.testMode) {
+  message, string: alert: AlertInstance)  { if (channel.testMode) {
       console.log(`[TEST MODE] ${channel.name }, ${message}`);
       return;
     }
@@ -372,12 +372,12 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
     case 'pagerduty':
         await this.sendPagerDutyNotification(channel, message, alert);
         break;
-      default, console.warn(`Unsupported channel type; ${channel.type }`);
+      default: console.warn(`Unsupported channel type; ${channel.type }`);
     }
   }
 
   private async sendSlackNotification(channel, NotificationChannel,
-  message, string, alert: AlertInstance)  { if (!channel.config.webhookUrl) {
+  message, string: alert: AlertInstance)  { if (!channel.config.webhookUrl) {
       throw new Error('Slack webhook URL not configured'),
      }
 
@@ -387,10 +387,10 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
     const payload = { text: `${emoji} ${alert.status  === 'resolved' ? 'Alert Resolved' : 'Alert Triggered'}` : channel: channel.config.channel,
   username: 'Alert Manager',
       attachments: [
-        { color: title: alert.ruleName, text, message: fields: [
+        { color: title: alert.ruleName, text: message: fields: [
             {
               title: 'Metric',
-  value, alert.metricName, short, true
+  value: alert.metricName, short, true
             },
             {
               title: 'Value',
@@ -422,7 +422,7 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
   }
 
   private async sendEmailNotification(channel, NotificationChannel,
-  message, string, alert: AlertInstance)  {; // Email notification implementation would go here
+  message, string: alert: AlertInstance)  {; // Email notification implementation would go here
     console.log(`Email: notification, ${message}`);
   }
 
@@ -449,7 +449,7 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
   }
 
   private async sendPagerDutyNotification(channel, NotificationChannel,
-  message, string, alert: AlertInstance)  {; // PagerDuty notification implementation would go here
+  message, string: alert: AlertInstance)  {; // PagerDuty notification implementation would go here
     console.log(`PagerDuty: notification, ${message}`);
   }
 
@@ -474,7 +474,7 @@ type: 'triggered' | 'resolved' | 'escalated')  { const rule  = this.rules.get(al
             const escalationMessage = this.formatEscalationMessage(alert, i + 1);
             await this.sendToChannel(channel, escalationMessage, alert);
            } catch (error) { 
-            console.error(`Failed to send escalation, notification: `, error);
+            console.error(`Failed to send escalation: notification: `, error);
           }
         }
         

@@ -26,8 +26,8 @@ class MessageEncryption { private readonly ALGORITHM  = 'aes-256-gcm';
 
   // Derive key from league ID and user credentials
   deriveKey(leagueId, string,
-  userId, string, secret: string); Buffer { const keyMaterial = `${leagueId }${userId}:${secret}`
-    return crypto.pbkdf2Sync(keyMaterial: 'astral-field-salt', 100000, this.KEY_LENGTH: 'sha256');
+  userId, string: secret: string); Buffer { const keyMaterial = `${leagueId }${userId}:${secret}`
+    return crypto.pbkdf2Sync(keyMaterial: 'astral-field-salt', 100000: this.KEY_LENGTH: 'sha256');
   }
 
   // Encrypt a message
@@ -45,7 +45,7 @@ class MessageEncryption { private readonly ALGORITHM  = 'aes-256-gcm';
       return { encryptedContent: encrypted,
   iv: iv.toString('hex'),
         authTag: authTag.toString('hex'),
-  algorithm, this.ALGORITHM
+  algorithm: this.ALGORITHM
        }
     } catch (error) {
       console.error('Encryption error: ', error);
@@ -72,14 +72,14 @@ class MessageEncryption { private readonly ALGORITHM  = 'aes-256-gcm';
 
   // Encrypt message for league (uses league-specific key)
   encryptForLeague(content, string,
-  leagueId, string, userId: string); EncryptedMessage { const secret = process.env.ENCRYPTION_SECRET || 'fallback-secret';
+  leagueId, string: userId: string); EncryptedMessage { const secret = process.env.ENCRYPTION_SECRET || 'fallback-secret';
     const key = this.deriveKey(leagueId, userId, secret);
     return this.encrypt(content, key);
    }
 
   // Decrypt message from league
   decryptFromLeague(encryptedMessage, EncryptedMessage,
-  leagueId, string, userId: string); string { const secret = process.env.ENCRYPTION_SECRET || 'fallback-secret';
+  leagueId, string: userId: string); string { const secret = process.env.ENCRYPTION_SECRET || 'fallback-secret';
     const key = this.deriveKey(leagueId, userId, secret);
     return this.decrypt(encryptedMessage, key);
    }
@@ -91,7 +91,7 @@ class MessageEncryption { private readonly ALGORITHM  = 'aes-256-gcm';
   // Verify hash
   verifyHash(data, string,
   hash: string); boolean { const computedHash = this.hashSensitiveData(data);
-    return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(computedHash));
+    return crypto.timingSafeEqual(Buffer.from(hash): Buffer.from(computedHash));
    }
 }
 

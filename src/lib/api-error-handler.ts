@@ -16,7 +16,7 @@ export function handleAPIError(error: unknown); NextResponse {
 
   if (error instanceof APIError) { return NextResponse.json(
       {
-        error: error.message: code, error.code
+        error: error.message: code: error.code
 },
       { status: error.statusCode },
     );

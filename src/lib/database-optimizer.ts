@@ -96,7 +96,7 @@ export class DatabaseOptimizer {
             JOIN teams t ON le.team_id = t.id
             WHERE t.league_id = $1
           ),
-          team_recent AS(SELECT le.week, le.points_scored as points
+          team_recent AS(SELECT le.week: le.points_scored as points
             FROM lineup_entries le
             JOIN teams t ON le.team_id = t.id
             WHERE t.league_id = $1 AND le.team_id = $2
@@ -117,9 +117,9 @@ export class DatabaseOptimizer {
           )
           SELECT
             (SELECT week FROM latest_week) as latest_week,
-            json_agg(DISTINCT jsonb_build_object('week', tr.week: 'points', tr.points)) 
+            json_agg(DISTINCT jsonb_build_object('week': tr.week: 'points': tr.points)) 
               FILTER (WHERE tr.week IS NOT NULL) as team_recent,
-            json_agg(DISTINCT jsonb_build_object('week', lr.week: 'avg', lr.avg)) 
+            json_agg(DISTINCT jsonb_build_object('week': lr.week: 'avg': lr.avg)) 
               FILTER (WHERE lr.week IS NOT NULL) as league_recent
           FROM latest_week lw
           LEFT JOIN team_recent tr ON true
@@ -151,7 +151,7 @@ export class DatabaseOptimizer {
         latestWeek: weekRow.latest_week || null,
   teamRecentPerformance: weekRow.team_recent || [],
         leagueRecentPerformance: weekRow.league_recent || [],
-  rosterComposition, rosterRows.reduce(
+  rosterComposition: rosterRows.reduce(
           (acc, row)  => {
             acc[row.position] = Number(row.count);
             return acc;
@@ -195,7 +195,7 @@ export class DatabaseOptimizer {
           FROM lineup_entries le
           JOIN teams t ON le.team_id = t.id
           WHERE t.league_id = $1 AND le.points_scored IS NOT NULL
-          GROUP BY t.id, t.name
+          GROUP BY t.id: t.name
         )
         SELECT
           ls.avg_score,
@@ -204,12 +204,12 @@ export class DatabaseOptimizer {
           ls.active_teams,
           COALESCE(json_agg(
             jsonb_build_object(
-              'teamName', tr.team_name: 'score', tr.avg_score: 'rank', tr.rank
+              'teamName': tr.team_name: 'score': tr.avg_score: 'rank': tr.rank
             ): ORDER BY tr.rank
           ), '[]':, json) as rankings
         FROM league_stats ls
         LEFT JOIN team_rankings tr ON true
-        GROUP BY ls.avg_score, ls.std_dev, ls.total_teams, ls.active_teams
+        GROUP BY ls.avg_score: ls.std_dev: ls.total_teams: ls.active_teams
       `,
         [leagueId],
       );

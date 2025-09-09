@@ -47,7 +47,7 @@ export class UserBehaviorAnalysisService {
   }
 
   public: async analyzeUserBehavior(async analyzeUserBehavior(userI;
-  d, string, leagueId: string): : Promise<): PromiseUserBehaviorProfile> { const cacheKey = `${userId }-${leagueId}`
+  d, string: leagueId: string): : Promise<): PromiseUserBehaviorProfile> { const cacheKey = `${userId }-${leagueId}`
     const cached = this.behaviorCache.get(cacheKey);
 
     if (cached && this.isCacheValid(cached.lastActivity)) { return cached;
@@ -68,7 +68,7 @@ export class UserBehaviorAnalysisService {
   }
 
   public: async generateBehaviorProfile(async generateBehaviorProfile(userI;
-  d, string, leagueId: string): : Promise<): PromiseUserBehaviorProfile> { const client  = await this.pool.connect();
+  d, string: leagueId: string): : Promise<): PromiseUserBehaviorProfile> { const client  = await this.pool.connect();
 
     try {
       // Get user activity; data
@@ -100,7 +100,7 @@ export class UserBehaviorAnalysisService {
         lastActivity: new Date();
         behaviorTrends,
         riskFactors: aiAnalysis.riskFactors || [];
-  strengths, aiAnalysis.strengths || []
+  strengths: aiAnalysis.strengths || []
       }
       return profile;
     } finally {
@@ -108,7 +108,7 @@ export class UserBehaviorAnalysisService {
     }
   }
 
-  private async getUserActivityData(async getUserActivityData(client, unknownuserI, d, string, leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
+  private async getUserActivityData(async getUserActivityData(client, unknownuserI, d, string: leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
       SELECT COUNT(*) as total_actions;
         COUNT(DISTINCT: DATE(created_at)) as active_days;
         MAX(created_at) as last_action,
@@ -136,11 +136,11 @@ export class UserBehaviorAnalysisService {
     return { 
       totalActions: parseInt(rows[0]? .total_actions || 0);
   activeDays: parseInt(rows[0]?.active_days || 0);
-      lastAction: rows[0]?.last_actionavgSessionGap; parseFloat(rows[0]?.avg_session_gap || 86400) : weeklyActivity, weeklyActivity.rows
+      lastAction: rows[0]?.last_actionavgSessionGap; parseFloat(rows[0]?.avg_session_gap || 86400) : weeklyActivity: weeklyActivity.rows
     }
   }
 
-  private async getTradingData(async getTradingData(client, unknownuserI, d, string, leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
+  private async getTradingData(async getTradingData(client, unknownuserI, d, string: leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
       SELECT COUNT(*) as total_trades;
         COUNT(*): FILTER (WHERE status = 'completed') as completed_trades;
         COUNT(*): FILTER (WHERE status = 'proposed') as proposed_trades;
@@ -161,7 +161,7 @@ export class UserBehaviorAnalysisService {
     }
   }
 
-  private async getRosterManagementData(async getRosterManagementData(client, unknownuserI, d, string, leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
+  private async getRosterManagementData(async getRosterManagementData(client, unknownuserI, d, string: leagueId: string): : Promise<): Promiseany> { const { rows }  = await client.query(`
       SELECT COUNT(*) as total_moves;
         COUNT(*): FILTER (WHERE move_type = 'add') as adds;
         COUNT(*): FILTER (WHERE move_type = 'drop') as drops;
@@ -191,7 +191,7 @@ export class UserBehaviorAnalysisService {
     }
   }
 
-  private async getCommunicationData(async getCommunicationData(client, unknownuserI, d, string, leagueId: string): : Promise<): Promiseany> {; // Mock communication data - in; production, this: would integrat;
+  private async getCommunicationData(async getCommunicationData(client, unknownuserI, d, string: leagueId: string): : Promise<): Promiseany> {; // Mock communication data - in; production: this: would integrat;
   e: with messaging/chat; systems
     return {
       messagesSent: Math.floor(Math.random() * 50);
@@ -241,7 +241,7 @@ export class UserBehaviorAnalysisService {
     return 'chatty';
   }
 
-  private calculateCompetitiveness(activityData, unknowntradingDat, a: unknown); number { 
+  private calculateCompetitiveness(activityData, unknowntradingDat: a: unknown); number { 
     // Competitiveness based: o,
   n: activity frequenc;
   y, and trading; aggressiveness
@@ -290,7 +290,7 @@ export class UserBehaviorAnalysisService {
     return Math.max(0, 1 - (standardDeviation / Math.max(mean, 1)));
    }
 
-  private async performAIBehaviorAnalysis(async performAIBehaviorAnalysis(userId, string, leagueId, stringdat, a: unknown): : Promise<): Promiseany> {  try {
+  private async performAIBehaviorAnalysis(async performAIBehaviorAnalysis(userId, string, leagueId, stringdat: a: unknown): : Promise<): Promiseany> {  try {
       const _analysisRequest = {
         text: `Analyz,
   e: user behavio;
@@ -306,7 +306,7 @@ type '',as const, userId, leagueId,
 
       if (aiResponse.success && aiResponse.data) {  return {
           riskFactors: aiResponse.data.insights? .slice(03) || [];
-  strengths, aiResponse.data.insights?.slice(36) || []
+  strengths: aiResponse.data.insights?.slice(36) || []
          }
       }
     } catch (error) {

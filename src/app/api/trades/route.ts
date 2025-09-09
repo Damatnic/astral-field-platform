@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
           (trade) => trade.team1.id === teamId || trade.team2.id === teamId, ) , trades,
 
     return NextResponse.json({ trades: filteredTrades,
-  count, filteredTrades.length
+  count: filteredTrades.length
 });
   } catch { return NextResponse.json(
       { error: "Failed to fetch trades"  },

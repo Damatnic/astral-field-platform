@@ -94,7 +94,7 @@ async function handleInitialize(): Promise<NextResponse> { try {; // Create HTT
     return NextResponse.json({ 
       success: true,
   message 'WebSocket server initialized successfully',
-      port, process.env.WEBSOCKET_PORT || '3001'
+      port: process.env.WEBSOCKET_PORT || '3001'
     });
   } catch (error) {
     console.error('Failed to initialize WebSocket server: ', error);
@@ -146,7 +146,7 @@ async function handleHealth(): Promise<NextResponse> { try {
 
     return NextResponse.json({
       success: true,
-    healthy; isHealthy, stats, timestamp: new Date().toISOString()
+    healthy; isHealthy, stats: timestamp, new Date().toISOString()
      });
   } catch (error) {
     console.error('WebSocket health check failed: ', error);

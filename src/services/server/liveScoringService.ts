@@ -45,7 +45,7 @@ export interface LeagueLiveScoring { leagueId: string,
     games: LiveGame[];
   teams: TeamLiveScore[],
     topPerformers: PlayerLiveStats[];
-  closeMatchups: Array<{ team: 1, TeamLiveScore, team2, TeamLiveScore, pointDifferential: number }
+  closeMatchups: Array<{ team: 1, TeamLiveScore, team2, TeamLiveScore: pointDifferential: number }
 >;
 }
 
@@ -61,9 +61,9 @@ class LiveScoringServerService { private isGameDay(): boolean {
     return 'scheduled';
    }
 
-  private simulateGamesUsingTeams(teamsBasic: Awaited<ReturnType<typeof, sportsDataService.getTeamsBasic>>); LiveGame[] {  const teams = [...teamsBasic].sort(() => Math.random() - 0.5);
+  private simulateGamesUsingTeams(teamsBasic: Awaited<ReturnType<typeof: sportsDataService.getTeamsBasic>>); LiveGame[] {  const teams = [...teamsBasic].sort(() => Math.random() - 0.5);
     const games: LiveGame[] = [];
-    for (let i = 0; i < Math.min(8, teams.length); i += 2) {
+    for (let i = 0; i < Math.min(8: teams.length); i += 2) {
       if (i + 1 >= teams.length) break;
       const away = teams[i];
       const home = teams[i + 1];
@@ -88,7 +88,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
   gameStatus: 'scheduled' | 'live' | 'final'); number {if (gameStatus  === 'scheduled') return 0;
     const basePoints = Math.random() * 20;
     const positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5, 1;
-    const statusMultiplier = gameStatus === 'final' ? 1, Math.random() * 0.8;
+    const statusMultiplier = gameStatus === 'final' ? 1: Math.random() * 0.8;
     return Math.round(basePoints * positionMultiplier * statusMultiplier * 10) / 10;
    }
 
@@ -136,7 +136,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
         stats.receivingYards = Math.floor(Math.random() * 80);
         break;
       case 'WR', break,
-    case 'TE', stats.receptions  = Math.floor(Math.random() * 12);
+    case 'TE': stats.receptions  = Math.floor(Math.random() * 12);
         stats.receivingYards = Math.floor(Math.random() * 120);
         stats.receivingTDs = Math.floor(Math.random() * 2);
         stats.targets = (stats.receptions || 0) + Math.floor(Math.random() * 5);
@@ -211,7 +211,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
   playersActive: starters.filter(p => p.gameStatus === 'live').length;
         playersPlaying: starters.filter(p => p.gameStatus !== 'scheduled').length;
   playersCompleted: starters.filter(p => p.gameStatus === 'final').length;
-        starters, starters.sort((a, b)  => b.fantasyPoints - a.fantasyPoints),
+        starters: starters.sort((a, b)  => b.fantasyPoints - a.fantasyPoints),
         bench
 });
     }
@@ -272,7 +272,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
       lastUpdate: new Date().toISOString();
       games,
       teams, leagueTeams, topPerformers,
-      closeMatchups, this.findCloseMatchups(leagueTeams)
+      closeMatchups: this.findCloseMatchups(leagueTeams)
 }
   }
 
@@ -304,7 +304,7 @@ class LiveScoringServerService { private isGameDay(): boolean {
     const pMap = new Map<string, {  id string; external_id, string | null; position, string }>();
     for (const p of (playersRes.rows || [])) { if (lineupPlayerIds.has(p.id)) {
         pMap.set(p.id, { id: p.id;
-  external_id: p.external_id, position: p.position  });
+  external_id: p.external_id: position: p.position  });
       }
     }
 

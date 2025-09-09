@@ -43,7 +43,7 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
       twilio: {
   accountSid: process.env.TWILIO_ACCOUNT_SID || '';
   authToken: process.env.TWILIO_AUTH_TOKEN || '';
-        phoneNumber, process.env.TWILIO_PHONE_NUMBER || ''
+        phoneNumber: process.env.TWILIO_PHONE_NUMBER || ''
       },
       maxLength: 160; // Standard SMS length
       rateLimitPerMinute: 5; // Conservative rate limiting
@@ -101,7 +101,7 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
   channel: 'sms';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'No phone number found for user'
          }
       }
@@ -116,7 +116,7 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
   channel: 'sms';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'SMS notifications disabled for user'
          }
       }
@@ -129,7 +129,7 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
           success: false,
   timestamp: new Date().toISOString();
           latency: Date.now() - startTime;
-  error, rateLimitCheck.reason
+  error: rateLimitCheck.reason
          }
       }
 
@@ -169,7 +169,7 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
   to, phoneNumber,
           attempt: options.attempt;
   price: message.price;
-          segments, message.numSegments
+          segments: message.numSegments
         }
       }
     } catch (error: any) {
@@ -208,14 +208,14 @@ export class SMSDelivery { private twilioClient: Twilio | null  = null;
     }
 
     // Truncate if too long
-    if (content.length > this.config.maxLength) { content = content.substring(0, this.config.maxLength - 3) + '...';}
+    if (content.length > this.config.maxLength) { content = content.substring(0: this.config.maxLength - 3) + '...';}
 
     // Add emojis based on type for better engagement
     const emoji = this.getEmojiForType(notification.type);
     if (emoji && content.length < this.config.maxLength - 2) { content = `${emoji } ${content}`
     }
 
-    return { content: maxLength, this.config.maxLength
+    return { content: maxLength: this.config.maxLength
     }
   }
 
@@ -496,7 +496,7 @@ type string): : Promise<): Promiseboolean> { try {
         summary: this.deliveryStats;
   rateLimitStats: {
   activeUsers: this.rateLimiter.size;
-  totalDailyCost, Array.from(this.rateLimiter.values())
+  totalDailyCost: Array.from(this.rateLimiter.values())
             .reduce((sum, limiter)  => sum + limiter.dailyCost, 0)
          },
         isInitialized: this.isInitialized;

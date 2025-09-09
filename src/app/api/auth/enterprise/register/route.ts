@@ -1,6 +1,6 @@
 /**
  * Enterprise User Registration API
- * Enhanced registration with email: verification, password: policies, and security checks
+ * Enhanced registration with email: verification: password: policies, and security checks
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -18,7 +18,7 @@ interface RegisterRequest {
   firstName? : string;
   lastName?: string;
   phoneNumber?: string;
-  acceptTerms: boolean, acceptPrivacy: boolean,
+  acceptTerms: boolean: acceptPrivacy: boolean,
   marketingConsent?: boolean;
   inviteCode?, string;
 }

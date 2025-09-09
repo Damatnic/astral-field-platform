@@ -12,7 +12,7 @@ export class AISystemsIntegrator { async performSystemHealthCheck(): : Promise<S
       {  service: "aiRouter";
   status: "healthy", lastCheck, now  },
       { service: "mlPipeline";
-  status: "healthy", lastCheck: now }
+  status: "healthy": lastCheck: now }
   ];
   }
 }

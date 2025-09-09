@@ -24,7 +24,7 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
     // Calculate aggregate statistics
     const aggregateStats = { totalRequests: metrics.reduce((sum, m) => sum + m.totalRequests, 0),
       totalBlocked: metrics.reduce((sum, m) => sum + m.blockedRequests, 0),
-      averageBlockingRate: metrics.length > 0 ? metrics.reduce((sum : m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length : 0,
+      averageBlockingRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + (m.blockedRequests / m.totalRequests), 0) / metrics.length : 0,
       topEndpoints: metrics
         .sort((a, b) => b.totalRequests - a.totalRequests)
         .slice(0, 10)
@@ -35,7 +35,7 @@ export const GET = relaxedRateLimited(async (request: NextRequest) => {
           blockingRate: m.blockedRequests / m.totalRequests
         })),
       alertingEndpoints: metrics
-        .filter(m  => m.blockedRequests / m.totalRequests > 0.1 && m.totalRequests > 100)
+        .filter(m => m.blockedRequests / m.totalRequests > 0.1 && m.totalRequests > 100)
         .map(m => ({ 
           endpoint: m.endpoint,
           requests: m.totalRequests,

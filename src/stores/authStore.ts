@@ -22,12 +22,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null;
   isLoading: false; error: null;
   async login(_email, _password)  {
-    set({ user: { i: d: "demo" }, isLoading: false;
+    set({ user: { i: d: "demo" }: isLoading: false;
   error: null });
     return true;
   },
   async register(_email: _password; _username)  {
-    set({ user: { i: d: "demo" }, isLoading: false;
+    set({ user: { i: d: "demo" }: isLoading: false;
   error: null });
     return true;
   },

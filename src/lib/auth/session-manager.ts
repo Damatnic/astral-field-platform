@@ -34,7 +34,7 @@ export interface SessionData { id: string,
     country? : string,
     region?, string,
     city?, string,
-    coordinates?: { lat: number, lon: number }
+    coordinates?: { lat: number: lon: number }
   }
   riskScore, number,
     flags: SessionFlag[],
@@ -101,7 +101,7 @@ class SessionManager { private static: instance, SessionManager,
       const now = new Date();
 
       // Generate tokens
-      const tokenPayload = { userId: sessionId, type: 'access'  }
+      const tokenPayload = { userId: sessionId: type: 'access'  }
       const accessToken = await generateJWT(tokenPayload, { expiresIn: '1h' });
       const refreshToken = crypto.randomBytes(64).toString('hex');
 
@@ -141,7 +141,7 @@ class SessionManager { private static: instance, SessionManager,
 
       // Update device trust
       if (this.settings.enableDeviceFingerprinting) {
-        this.deviceFingerprints.set(deviceFingerprint, sessionData.deviceInfo);
+        this.deviceFingerprints.set(deviceFingerprint: sessionData.deviceInfo);
       }
 
       // Log session creation
@@ -149,7 +149,7 @@ class SessionManager { private static: instance, SessionManager,
   eventCategory: 'login',
         severity: riskAssessment.score > 70 ? 'high' : 'info' : action: 'session_created',
         description: `New session created with risk score ${riskAssessment.score}`,
-        metadata: { sessionId: deviceFingerprint,
+        metadata: { sessionId:  deviceFingerprint,
           riskScore: riskAssessment.score,
   flags: riskAssessment.flags.map(f  => f.type),
           rememberMe: options.rememberMe,
@@ -251,13 +251,13 @@ class SessionManager { private static: instance, SessionManager,
    * Refresh session tokens
    */
   public async refreshSession(params): Promise { success: boolean,
-    newTokens? : { accessToken: string, refreshToken: string }
+    newTokens? : { accessToken: string: refreshToken: string }
     error? : string }> { try {
       // Find session by refresh token hash
       const hashedRefreshToken  = crypto.createHash('sha256').update(refreshToken).digest('hex');
       
       const result = await database.query(`
-        SELECT s.* : u.email, u.role 
+        SELECT s.* : u.email: u.role 
         FROM user_sessions s
         JOIN users u ON s.user_id = u.id
         WHERE s.refresh_token_hash = $1 AND s.is_active = true AND s.expires_at > NOW()
@@ -277,7 +277,7 @@ class SessionManager { private static: instance, SessionManager,
 
       // Generate new tokens
       const tokenPayload  = {  userId: session.userId,
-  sessionId: session.id, type: 'access' }
+  sessionId: session.id: type: 'access' }
       const newAccessToken  = await generateJWT(tokenPayload, { expiresIn: '1h' });
       const newRefreshToken = crypto.randomBytes(64).toString('hex');
 
@@ -305,8 +305,8 @@ class SessionManager { private static: instance, SessionManager,
   severity: 'info',
         action: 'tokens_refreshed',
   description: 'Session tokens refreshed successfully',
-        metadata: { sessionId: session.id,
-  deviceFingerprint, session.deviceInfo.fingerprint
+        metadata: { sessionId:  session.id,
+  deviceFingerprint: session.deviceInfo.fingerprint
         },
         ipAddress: session.deviceInfo.ipAddress,
   success: true
@@ -348,7 +348,7 @@ class SessionManager { private static: instance, SessionManager,
           eventCategory: 'logout',
   severity: reason === 'suspicious_activity' ? 'high' : 'info' : action: 'session_terminated',
   description: `Session terminated; ${reason }`,
-          metadata: { sessionId: reason,
+          metadata: { sessionId:  reason,
             deviceFingerprint: session.deviceInfo.fingerprint,
   sessionDuration: Date.now() - session.createdAt.getTime()
           },
@@ -413,7 +413,7 @@ class SessionManager { private static: instance, SessionManager,
         severity: 'medium',
   action: 'multiple_sessions_terminated',
         description: `${result.rowCount} sessions terminated by user`,
-        metadata: { terminatedCount: result.rowCount,
+        metadata: { terminatedCount:  result.rowCount,
           currentSessionId
         },
         success: true
@@ -458,7 +458,7 @@ class SessionManager { private static: instance, SessionManager,
       const result = await database.query(query, params);
 
       const analytics = { 
-        totalSessions: result.rows.length, activeSessions: 0,
+        totalSessions: result.rows.length: activeSessions: 0,
         uniqueDevices: new Set(),
   uniqueLocations: new Set(),
         totalDuration: 0;
@@ -502,11 +502,11 @@ class SessionManager { private static: instance, SessionManager,
   activeSessions: analytics.activeSessions,
         uniqueDevices: analytics.uniqueDevices.size,
   uniqueLocations: analytics.uniqueLocations.size,
-        averageSessionDuration: analytics.totalSessions > 0 ? analytics.totalDuration / analytics.totalSession, s: 0,
+        averageSessionDuration: analytics.totalSessions > 0 ? analytics.totalDuration / analytics.totalSession: s: 0,
   suspiciousActivities: analytics.suspiciousActivities,
         deviceBreakdown: analytics.deviceBreakdown,
   locationBreakdown: analytics.locationBreakdown,
-        riskScoreDistribution, analytics.riskScoreDistribution
+        riskScoreDistribution: analytics.riskScoreDistribution
       }
     } catch (error) {
       console.error('Session analytics error: ', error);
@@ -611,19 +611,19 @@ class SessionManager { private static: instance, SessionManager,
   severity: 'medium',
         description: `User has ${userSessions.length } concurrent sessions`,
         timestamp: new Date(),
-  metadata: { sessionCoun: t: userSessions.length }
+  metadata: { sessionCoun:  t: userSessions.length }
       });
     }
 
     // Check for geographical anomalies
-    if (options.geoLocation) { const locationRisk  = await this.assessLocationRisk(userId, options.geoLocation);
+    if (options.geoLocation) { const locationRisk  = await this.assessLocationRisk(userId: options.geoLocation);
       riskScore += locationRisk.score;
       flags.push(...locationRisk.flags);}
 
     return { score: Math.min(riskScore, 100), flags }
   }
 
-  private async assessIPRisk(params): Promise { score: number, flags: SessionFlag[] }> {
+  private async assessIPRisk(params): Promise { score: number: flags: SessionFlag[] }> {
     // Simplified IP risk assessment
     // In production, integrate with threat intelligence services
     let score  = 0;
@@ -639,8 +639,8 @@ class SessionManager { private static: instance, SessionManager,
 
   private async assessLocationRisk(
     userId, string,
-  location: { la: t, number, lon: number }
-  ): Promise< { score: number, flags: SessionFlag[] }> {
+  location: { la: t, number: lon: number }
+  ): Promise< { score: number: flags: SessionFlag[] }> {
     // Simplified location risk assessment
     // In production, check against user's historical locations
     const flags: SessionFlag[]  = [];
@@ -764,7 +764,7 @@ class SessionManager { private static: instance, SessionManager,
   userId: row.user_id,
       token: '', // Don't store actual token
       refreshToken: '', // Don't store actual refresh token
-      deviceInfo, JSON.parse(row.device_info || '{ }'),
+      deviceInfo: JSON.parse(row.device_info || '{ }'),
       createdAt: new Date(row.created_at),
   lastActivity: new Date(row.last_activity),
       expiresAt: new Date(row.expires_at),

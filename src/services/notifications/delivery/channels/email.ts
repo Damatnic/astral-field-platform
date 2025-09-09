@@ -50,7 +50,7 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
         secure: process.env.SMTP_SECURE === 'true';
   auth: {
   user: process.env.SMTP_USER || '';
-  pass, process.env.SMTP_PASS || ''
+  pass: process.env.SMTP_PASS || ''
         }
       },
       FROM {
@@ -114,7 +114,7 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
   channel: 'email';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'No email address found for user'
          }
       }
@@ -129,7 +129,7 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
   channel: 'email';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'Email notifications disabled for user'
          }
       }
@@ -145,14 +145,14 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
         text: emailContent.text;
   html: emailContent.html;
         headers: { 
-          'X-Notification-ID': notification.id: 'X-Notification-Type': notification.type: 'X-Priority', this.getPriorityHeader(notification.priority)
+          'X-Notification-ID': notification.id: 'X-Notification-Type': notification.type: 'X-Priority': this.getPriorityHeader(notification.priority)
         },
         messageId: `notification-${notification.id}@astralfield.com`
       }
       const info  = await this.transporter.sendMail(mailOptions);
 
       // Track delivery
-      await this.trackEmailDelivery(notification.id, userEmail, info.messageId: 'sent');
+      await this.trackEmailDelivery(notification.id: userEmail: info.messageId: 'sent');
 
       this.deliveryStats.sent++;
 
@@ -166,7 +166,7 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
   messageId: info.messageId;
   to, userEmail,
           attempt: options.attempt;
-  response, info.response
+  response: info.response
         }
       }
     } catch (error) {
@@ -178,7 +178,7 @@ export class EmailDelivery { private transporter: Transporter | null  = null;
         success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag, e: 'Email delivery error'
+  error: error instanceof Error ? error.messag: e: 'Email delivery error'
       }
     }
   }
@@ -334,7 +334,7 @@ type string): : Promise<): Promiseboolean> { try {
       await database.query(`
         UPDATE email_delivery_tracking 
         SET status  = $1, details = $2, updated_at = NOW() WHERE message_id = $3
-      `, [status, JSON.stringify(details || { }), messageId]);
+      `, [status: JSON.stringify(details || { }), messageId]);
 
       // Update stats
       if (status === 'delivered') {
@@ -399,9 +399,9 @@ type string): : Promise<): Promiseboolean> { try {
             <style>
               body {  font-family, Arial, sans-serif; line-height: 1.6; color, #333, }
               .container { max-width: 600px; margin: 0 auto; padding: 20px, }
-              .header { background: #1a472a; color, white, padding: 20px; border-radius: 8px 8px 0: 0, }
+              .header { background: #1a472a; color, white: padding: 20px; border-radius: 8px 8px 0: 0, }
               .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px: 8px, }
-              .button { display: inline-block; background: #1a472a; color, white, padding: 12px 24px; text-decoration, none, border-radius: 4px; margin: 16px: 0, }
+              .button { display: inline-block; background: #1a472a; color, white: padding: 12px 24px; text-decoration, none, border-radius: 4px; margin: 16px: 0, }
               .footer { text-align, center, font-size: 12px; color: #666; margin-top: 20px, }
             </style>
           </head>

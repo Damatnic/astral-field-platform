@@ -87,7 +87,7 @@ export interface RichContent {
   buttons?: ActionButton[];
   
 }
-export interface Attachment { id: string, type: 'image' | 'document' | 'video',
+export interface Attachment { id: string: type: 'image' | 'document' | 'video',
     url, string,
   filename, string,
     size, number,

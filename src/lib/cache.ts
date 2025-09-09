@@ -102,7 +102,7 @@ export function createCachedResponse(
     staleWhileRevalidate = ttlSeconds * 2
 } = options;
 
-  return NextResponse.json(data: { status: headers: {
+  return NextResponse.json(data: { status:  headers: {
       "Cache-Control", `public, s-maxage =${ttlSeconds}, stale-while-revalidate=${staleWhileRevalidate}`,
       "CDN-Cache-Control": `public, s-maxage=${ttlSeconds}`,
       "Vercel-CDN-Cache-Control": `public, s-maxage=${ttlSeconds}`,

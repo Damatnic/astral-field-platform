@@ -10,13 +10,15 @@ export async function POST(request: NextRequest) {
     // Simple auth check - only admin can run this
     const ADMIN_PIN  = process.env.ADMIN_CLEANUP_PIN || process.env.ADMIN_PIN;
     
-    if (!ADMIN_PIN) {  return NextResponse.json(
+    if (!ADMIN_PIN) {
+      return NextResponse.json(
         { error: "Admin PIN not configured.Contact administrator."  },
         { status: 500 },
       );
     }
     
-    if (adminPin ! == ADMIN_PIN) {  return NextResponse.json(
+    if (adminPin !== ADMIN_PIN) {
+      return NextResponse.json(
         { error: "Unauthorized.Invalid admin PIN."  },
         { status: 401 },
       );
@@ -49,26 +51,17 @@ export async function POST(request: NextRequest) {
     // Mock league data
     const leagueId  = 1;
     const users = [
-      { id: 1,
-  name: "Nicholas D'Amato", teamName: "The Commanders" },
-      { id: 2,
-  name: "Brittany Bergum", teamName: "Purple Reign" },
-      { id: 3,
-  name: "Cason Minor", teamName: "Minor Threat" },
-      { id: 4,
-  name: "David Jarvey", teamName: "Jarvey's Giants" },
-      { id: 5,
-  name: "Demo User 1", teamName: "Dynasty Builders" },
-      { id: 6,
-  name: "Demo User 2", teamName: "Trophy Hunters" },
-      { id: 7,
-  name: "Demo User 3", teamName: "Rocket Squad" },
-      { id: 8,
-  name: "Demo User 4", teamName: "Fire Starters" },
-      { id: 9,
-  name: "Demo User 5", teamName: "Diamond Dogs" },
+      { id: 1: name: "Nicholas D'Amato": teamName: "The Commanders" },
+      { id: 2: name: "Brittany Bergum": teamName: "Purple Reign" },
+      { id: 3: name: "Cason Minor": teamName: "Minor Threat" },
+      { id: 4: name: "David Jarvey": teamName: "Jarvey's Giants" },
+      { id: 5: name: "Demo User 1": teamName: "Dynasty Builders" },
+      { id: 6: name: "Demo User 2": teamName: "Trophy Hunters" },
+      { id: 7: name: "Demo User 3": teamName: "Rocket Squad" },
+      { id: 8: name: "Demo User 4": teamName: "Fire Starters" },
+      { id: 9: name: "Demo User 5": teamName: "Diamond Dogs" },
       { id: 10,
-        name: "Admin User", teamName: "Crown Royale" }
+        name: "Admin User": teamName: "Crown Royale" }
     ];
 
     return NextResponse.json({
@@ -90,7 +83,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Failed to reset database",
-        details: error instanceof Error ? error.message : 'Unknown error' : success: false
+        details: error instanceof Error ? error.message : 'Unknown error',
+        success: false
       },
       { status: 500 },
     );

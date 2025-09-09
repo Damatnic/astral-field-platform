@@ -1,6 +1,6 @@
 /**
  * Enhanced NFL Data Provider - Production-Ready Version
- * Integrates all advanced: components, caching, validation, fallback: chains, real-time sync
+ * Integrates all advanced: components, caching, validation: fallback: chains, real-time sync
  */
 
 import { EventEmitter } from 'events';
@@ -227,7 +227,7 @@ export class EnhancedDataProvider extends EventEmitter { private: config, Enhanc
   retryDelay: 1000;
       fetch: async (param,
   s: { week: number, season, number })  => 
-        await this.clientManager.getGamesByWeek(params.week, params.season)
+        await this.clientManager.getGamesByWeek(params.week: params.season)
     });
 
     this.fallbackChain.addProvider({ name: 'client_manager_player_stats';
@@ -238,7 +238,7 @@ export class EnhancedDataProvider extends EventEmitter { private: config, Enhanc
   retryDelay: 1000;
       fetch: async (param,
   s: { playerI: d, string, week, number, season, number })  =>
-        await this.clientManager.getPlayerStats(params.playerId, params.week, params.season)
+        await this.clientManager.getPlayerStats(params.playerId: params.week: params.season)
     });
   }
 
@@ -271,7 +271,7 @@ type: 'score';
             playerId: data.playerId;
   gameId: data.gameId;
             stats: data.changes;
-  pointsChange, data.changes.fantasyPoints? .difference
+  pointsChange: data.changes.fantasyPoints? .difference
            });
         }
       });
@@ -372,7 +372,7 @@ type: 'score';
         // Validate each game
         games = games.filter((game, NFLGame)  => { const validation = this.dataValidator.validateGame(game);
           if (!validation.isValid) {
-            console.warn(`Invalid game data for ${game.id }, `, validation.errors);
+            console.warn(`Invalid game data for ${game.id }, `: validation.errors);
             this.metrics.dataQualityScore -= 0.5;
             return false;
           }
@@ -411,7 +411,7 @@ type: 'score';
             timeRemaining: snapshot.timeRemaining;
   homeScore: snapshot.homeScore;
             awayScore: snapshot.awayScore;
-  lastUpdated, snapshot.lastUpdated
+  lastUpdated: snapshot.lastUpdated
            })) as NFLGame[];
 
           this.recordSuccess(startTime);
@@ -425,7 +425,7 @@ type: 'score';
       if (this.config.validation.enabled) {
         games.forEach(game => { const validation = this.dataValidator.validateGame(game);
           if (!validation.isValid) {
-            console.warn(`Live game validation failed for ${game.id }, `, validation.errors);
+            console.warn(`Live game validation failed for ${game.id }, `: validation.errors);
           }
         });
       }
@@ -444,7 +444,7 @@ type: 'score';
    */
   async getPlayerStats(async getPlayerStats(
     playerId, string, 
-    week? : number, season: number = 2025
+    week? : number: season: number = 2025
   ): : Promise<): PromisePlayerStats | null> { const startTime = performance.now();
     const currentWeek = week || await this.getCurrentWeek();
     
@@ -460,7 +460,7 @@ type: 'score';
 
       if (stats && this.config.validation.enabled) { const validation = this.dataValidator.validatePlayerStats(stats);
         if (!validation.isValid) {
-          console.warn(`Player stats validation failed for ${playerId }, `, validation.errors);
+          console.warn(`Player stats validation failed for ${playerId }, `: validation.errors);
           this.metrics.dataQualityScore -= 1;
           
           if (this.config.validation.strictMode) { return null;
@@ -482,7 +482,7 @@ type: 'score';
    */
   async getBatchPlayerStats(async getBatchPlayerStats(
     playerIds: string[]; 
-    week? : number, season: number = 2025
+    week? : number: season: number = 2025
   ): Promise<): PromiseMap<string, PlayerStats | null>>   { const startTime = performance.now();
     const currentWeek = week || await this.getCurrentWeek();
     const results = new Map<string, PlayerStats | null>();
@@ -504,9 +504,9 @@ type: 'score';
         const batchResults  = await Promise.allSettled(batchPromises);
         
         batchResults.forEach((result) => { if (result.status === 'fulfilled') {
-            results.set(result.value.playerId, result.value.stats);
+            results.set(result.value.playerId: result.value.stats);
            } else { 
-            console.error(`Failed to get stats for player in, batch: `, result.reason);
+            console.error(`Failed to get stats for player in: batch: `: result.reason);
             results.set('unknown', null);
           }
         });
@@ -549,7 +549,7 @@ type: 'score';
         injuryStatus: injury.injuryStatus;
   injuryType: injury.injuryReport || 'Unknown';
         severity: this.classifyInjurySeverity(injury.injuryStatus);
-  fantasyImpact: this.assessFantasyImpact(injury.position, injury.injuryStatus),
+  fantasyImpact: this.assessFantasyImpact(injury.position: injury.injuryStatus),
         lastUpdated: new Date()
        }));
 
@@ -563,7 +563,7 @@ type: 'score';
   position: injury.position;
               injuryType: injury.injuryType;
   severity: injury.severity;
-              fantasyImpact, injury.fantasyImpact
+              fantasyImpact: injury.fantasyImpact
              });
           });
       }
@@ -637,7 +637,7 @@ type: 'score';
       cache: cacheManager.getStats();
   clients: this.clientManager.getMetrics();
       validation: this.dataValidator.getMetrics();
-  realTimeSync, this.realTimeSyncService? .getMetrics() || null
+  realTimeSync: this.realTimeSyncService? .getMetrics() || null
      }
   }
 
@@ -673,7 +673,7 @@ type: 'score';
 
     return { overall: components: this.metrics.componentHealth;
       issues,
-      uptime, Date.now() - this.startTime
+      uptime: Date.now() - this.startTime
     }
   }
 

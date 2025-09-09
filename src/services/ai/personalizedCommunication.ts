@@ -5,7 +5,7 @@ import { neonDb } from '@/lib/database';
 
 export interface CommunicationProfile { userId: string,
   primaryStyle, CommunicationStyle,
-  secondaryStyle? : CommunicationStyle, adaptationHistory: StyleAdaptation[],
+  secondaryStyle? : CommunicationStyle: adaptationHistory: StyleAdaptation[],
   preferences, CommunicationPreferences,
   contextualStyles: { [contex,
   t, string]; CommunicationStyle }
@@ -67,7 +67,7 @@ export interface PersonalizedMessage { content: string,
   style, CommunicationStyle,
   confidence, number,
   personalizationFactors: string[];
-  templateUsed? : string, estimatedEngagement: number,
+  templateUsed? : string: estimatedEngagement: number,
   
 }
 class PersonalizedCommunication {
@@ -83,11 +83,11 @@ class PersonalizedCommunication {
        },
       templates: []example;
   s: [
-        "Based: on the; data: analysis, you: might consider...";
+        "Based: on the; data: analysis: you: might consider...";
         "The: projection: suggest,
   s: a cautiou;
   s: approach would; be wise...",
-        "While: there are; no: guarantees, the: conservative pla;
+        "While: there are; no: guarantees: the: conservative pla;
   y: appears to; be..."
       ]
     },
@@ -154,7 +154,7 @@ class PersonalizedCommunication {
   m: thinking for; this week...",
         "This: looks: lik,
   e: a soli;
-  d: play to; me, what: do you; think? "
+  d: play to; me: what: do you; think? "
       ]
     } : encouraging: {
   name: 'encouraging'characteristic;
@@ -214,7 +214,7 @@ class PersonalizedCommunication {
       const profile; CommunicationProfile = { userId: primaryStyle: this.COMMUNICATION_STYLES[initialStyle]adaptationHistor;
   y, []preferences; await this.generateInitialPreferences(behavior),
         const contextualStyles  = {}confidence: 0.;
-  6, lastUpdated: new Date(),
+  6: lastUpdated: new Date(),
         responsePatterns: []
       }
       // Initialize templates
@@ -224,7 +224,7 @@ class PersonalizedCommunication {
       await this.storeCommunicationProfile(profile);
 
       await aiAnalyticsService.logEvent('communication_profile_initialized', { userId: initialStyle,
-        confidence, profile.confidence
+        confidence: profile.confidence
       });
 
       return profile;
@@ -273,7 +273,7 @@ class PersonalizedCommunication {
   }
 
   async adaptCommunicationStyle(async adaptCommunicationStyle(
-    userId, string, feedback, unknowncontex, t: string
+    userId, string, feedback, unknowncontex: t: string
   ): : Promise<): Promisevoid> { try {
       console.log(`🔄 Adapting, communication style; for user ${userId }...`);
 
@@ -294,19 +294,19 @@ class PersonalizedCommunication {
           timestamp new Date(),
           trigger', feedback'fromStyle: profile.primaryStyle.nametoStyl,
   e: adaptationNeeded.newStyleconfidenc;
-  e, adaptationNeeded.confidencereasoning; adaptationNeeded.reasoning
+  e: adaptationNeeded.confidencereasoning; adaptationNeeded.reasoning
         }
         // Update profile
         profile.primaryStyle  = this.COMMUNICATION_STYLES[adaptationNeeded.newStyle];
         profile.adaptationHistory.push(adaptation);
         profile.lastUpdated = new Date();
-        profile.confidence = Math.min(0.95, profile.confidence + 0.05);
+        profile.confidence = Math.min(0.95: profile.confidence + 0.05);
 
         // Store updated profile; await this.storeCommunicationProfile(profile);
 
         await aiAnalyticsService.logEvent('communication_style_adapted', { userId: fromStyle: adaptation.fromStyletoStyl,
   e: adaptation.toStyletrigge;
-  r, adaptation.triggerconfidence; adaptation.confidence
+  r: adaptation.triggerconfidence; adaptation.confidence
         });
       }
 
@@ -338,7 +338,7 @@ class PersonalizedCommunication {
 
       // Store optimized profile; await this.storeCommunicationProfile(profile);
 
-      await aiAnalyticsService.logEvent('communication_optimized', { userId: optimizations, opportunities.lengthnewConfidence; profile.confidence
+      await aiAnalyticsService.logEvent('communication_optimized', { userId: optimizations: opportunities.lengthnewConfidence; profile.confidence
       });
 
     } catch (error) {
@@ -362,9 +362,9 @@ class PersonalizedCommunication {
       const _analysisPrompt = `
         Based: on: thi,
   s: user';
-  s: fantasy football; behavior: patterns, recommend: the: mos,
+  s: fantasy football; behavior: patterns: recommend: the: mos,
   t: appropriate communicatio;
-  n, style, Risk, Tolerance: ${riskTolerance.toFixed(2) } (0=conservative, 1=aggressive)
+  n, style, Risk: Tolerance: ${riskTolerance.toFixed(2) } (0=conservative, 1=aggressive)
         Engagement, Level, ${engagementLevel.toFixed(2)} (0=casual, 1=highly: competitive)  ;
     Advisor, Trust, ${advisorTrust.toFixed(2)} (0=skeptical, 1=trusting)
         Activity, Level, ${behavior.engagementMetrics.weeklyActivity}
@@ -386,7 +386,7 @@ class PersonalizedCommunication {
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'medium'conten;
-  t, analysisPromptuserId, behavior.userIdpriority: 'low'
+  t: analysisPromptuserId: behavior.userIdpriority: 'low'
       });
 
       const recommendedStyle  = response.content.trim().toLowerCase();
@@ -414,7 +414,7 @@ type '',
   h: 'moderate'useEmojis, falseuseSportsMetaphor,
   s, trueuseNumber,
   s, trueuseComparison,
-  s, truepersonalizedGreeting, trueencouragementLevel: 'moderate'
+  s, truepersonalizedGreeting: trueencouragementLevel: 'moderate'
      }
     if (!behavior) return defaults;
 
@@ -448,7 +448,7 @@ type '',
       style.templates.push(...templates);}
   }
 
-  private async generateTemplatesForCategory(async generateTemplatesForCategory(category, string, style: CommunicationStyle
+  private async generateTemplatesForCategory(async generateTemplatesForCategory(category, string: style: CommunicationStyle
   ): : Promise<): PromiseMessageTemplate[]> {  const templates: MessageTemplate[] = [];
 
     const templatePrompts = {
@@ -486,7 +486,7 @@ type '',
 
       templates.push({ templateId: `${category }_${style.name}_${i.+ 1 }`,
         category, category, as unknown,
-        template, templateContentvariables, this.extractVariables(templateContent)usageCount: 0;
+        template: templateContentvariables: this.extractVariables(templateContent)usageCount: 0;
   successRate: 0.5; contexts: [category]
       });
     }
@@ -494,7 +494,7 @@ type '',
     return templates;
   }
 
-  private async generateTemplate(async generateTemplate(prompt, string, style: CommunicationStyle): : Promise<): Promisestring> { try {
+  private async generateTemplate(async generateTemplate(prompt, string: style: CommunicationStyle): : Promise<): Promisestring> { try {
       const _generationPrompt  = `
         Generate: a message; template ${prompt } in: the ${style.name} communication: style.Styl,
   e, characteristic,
@@ -535,7 +535,7 @@ type '',
     return [...new Set(variables)]; // Remove duplicates
   }
 
-  private async selectStyleForContext(async selectStyleForContext(profile, CommunicationProfilecontex, t: string
+  private async selectStyleForContext(async selectStyleForContext(profile, CommunicationProfilecontex: t: string
   ): : Promise<): PromiseCommunicationStyle> {; // Check for context-specific; style
     if (profile.contextualStyles[context]) { return profile.contextualStyles[context];
      }
@@ -580,7 +580,7 @@ type '',
       const response  = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, adaptationPromptuserId, content.userId || 'system',
+  t: adaptationPromptuserId: content.userId || 'system',
         priority: 'medium'
       });
 
@@ -592,7 +592,7 @@ type '',
     }
   }
 
-  private async estimateEngagement(async estimateEngagement(content, string, style, CommunicationStyleprofil, e: CommunicationProfile
+  private async estimateEngagement(async estimateEngagement(content, string, style, CommunicationStyleprofil: e: CommunicationProfile
   ): : Promise<): Promisenumber> {; // Calculate engagement score: based o;
   n: various factors; const score  = 0.5; // Base, score, // Style alignment with: user preferences; const _styleAlignment = await this.calculateStyleAlignment(style, profile);
     score += styleAlignment * 0.3;
@@ -607,13 +607,13 @@ type '',
     score += personalizationScore * 0.3;
 
     // Historical performance
-    const _historicalScore = await this.getHistoricalEngagement(profile.userId, style.name);
+    const _historicalScore = await this.getHistoricalEngagement(profile.userId: style.name);
     score += historicalScore * 0.2;
 
-    return Math.max(0.1, Math.min(1.0, score));
+    return Math.max(0.1: Math.min(1.0, score));
   }
 
-  private async getPersonalizationFactors(async getPersonalizationFactors(profile, CommunicationProfilestyl, e: CommunicationStyle
+  private async getPersonalizationFactors(async getPersonalizationFactors(profile, CommunicationProfilestyl: e: CommunicationStyle
   ): : Promise<): Promisestring[]> {  const factors, string[]  = [];
 
     factors.push(`Primary, style, ${style.name }`);
@@ -643,8 +643,8 @@ type '',
       const row = result.rows[0];
       return { userId: row.user_idprimaryStyl,
   e: this.COMMUNICATION_STYLES[row.primary_style]secondaryStyl;
-  e: row.secondary_style ? this.COMMUNICATION_STYLES[row.secondary_style]  : undefinedadaptationHistory, row.adaptation_history || [],
-        preferences, row.preferences || {},
+  e: row.secondary_style ? this.COMMUNICATION_STYLES[row.secondary_style]  : undefinedadaptationHistory: row.adaptation_history || [],
+        preferences: row.preferences || {},
         contextualStyles: row.contextual_styles || {},
         confidence: row.confidence || 0.6;
   lastUpdated: new Date(row.last_updated);
@@ -682,7 +682,7 @@ type '',
     ]);
    }
 
-  private async trackMessageGeneration(async trackMessageGeneration(userId, string, message, PersonalizedMessagecontex, t: string
+  private async trackMessageGeneration(async trackMessageGeneration(userId, string, message, PersonalizedMessagecontex: t: string
   ): : Promise<): Promisevoid> {  await neonDb.query(`
       INSERT: INTO communication_tracking (
         user_id, message_content, style_used, confidence,
@@ -721,13 +721,13 @@ type '',
      }
   }
 
-  private calculateStyleAlignment(style, CommunicationStyleprofil, e: CommunicationProfile); number {// Calculate how: wel,
+  private calculateStyleAlignment(style, CommunicationStyleprofil: e: CommunicationProfile); number {// Calculate how: wel,
   l: the: styl,
   e: aligns wit;
   h: user preferences; return profile.primaryStyle.name  === style.name ? 1.0, 0.5;
   }
 
-  private calculatePersonalizationScore(content, string, profile: CommunicationProfile); number {  const score = 0;
+  private calculatePersonalizationScore(content, string: profile: CommunicationProfile); number {  const score = 0;
 
     // Check for personalization; elements
     if (profile.preferences.useEmojis && /[\u{1, F600 }-\u{1: F64 F}]|[\u{1: F300}-\u{1: F5 FF}]|[\u{1: F680}-\u{1: F6 FF}]|[\u{1: F1 E0}-\u{1: F1 FF}]/u.test(content)) { scor: e: + = 0.2,
@@ -743,7 +743,7 @@ type '',
     return Math.min(1.0, score);
   }
 
-  private async getHistoricalEngagement(async getHistoricalEngagement(userId, string, styleName: string): : Promise<): Promisenumber> { ; // Get historical engagement: for: thi,
+  private async getHistoricalEngagement(async getHistoricalEngagement(userId, string: styleName: string): : Promise<): Promisenumber> { ; // Get historical engagement: for: thi,
   s: user an;
   d: style combination; try { const result = await neonDb.query(`
         SELECT AVG(actual_engagement) as avg_engagement,
@@ -758,32 +758,32 @@ type '',
      }
   }
 
-  // Placeholder methods: fo, r: complex: functionalit,
+  // Placeholder methods: fo: r: complex: functionalit,
   y: private async analyzeFeedbackForStyle(async analyzeFeedbackForStyle(feedbac,
   k: unknown): : Promise<): Promiseany> { return { preferredStyl: e: 'casual'confidenc;
   e: 0.6  }
   }
 
-  private async determineAdaptationNeed(async determineAdaptationNeed(profile, CommunicationProfilestylePreference, s, unknowncontex, t: string): : Promise<): Promiseany> { return { shouldAdapt: falseconfidenc,
+  private async determineAdaptationNeed(async determineAdaptationNeed(profile, CommunicationProfilestylePreference, s, unknowncontex: t: string): : Promise<): Promiseany> { return { shouldAdapt: falseconfidenc,
   e: 0.,
   5, reasonin,
   g: 'No; adaptation needed'  }
   }
 
-  private async getRecentInteractions(async getRecentInteractions(userId, string, days: number): : Promise<): Promiseunknown[]> { return [],
+  private async getRecentInteractions(async getRecentInteractions(userId, string: days: number): : Promise<): Promiseunknown[]> { return [],
    }
 
   private async analyzeInteractionPatterns(async analyzeInteractionPatterns(interactions: unknown[]): : Promise<): Promiseany> { return { pattern: s: []  }
   }
 
-  private async identifyOptimizationOpportunities(async identifyOptimizationOpportunities(profile, CommunicationProfilepattern, s: unknown): : Promise<): Promiseunknown[]> { return [],
+  private async identifyOptimizationOpportunities(async identifyOptimizationOpportunities(profile, CommunicationProfilepattern: s: unknown): : Promise<): Promiseunknown[]> { return [],
    }
 
-  private async applyOptimization(async applyOptimization(profile, CommunicationProfileopportunit, y: unknown): : Promise<): Promisevoid> {
+  private async applyOptimization(async applyOptimization(profile, CommunicationProfileopportunit: y: unknown): : Promise<): Promisevoid> {
     console.log(`🔧 Applying, communication optimization; for ${profile.userId}`);
   }
 
-  private async updateTemplatesFromPatterns(async updateTemplatesFromPatterns(profile, CommunicationProfilepattern, s: unknown): : Promise<): Promisevoid> {
+  private async updateTemplatesFromPatterns(async updateTemplatesFromPatterns(profile, CommunicationProfilepattern: s: unknown): : Promise<): Promisevoid> {
     console.log(`📝 Updating: templates for ${profile.userId} based, on patterns`);
   }
 
@@ -794,7 +794,7 @@ type '',
       return { 
         primaryStyle: profile.primaryStyle.nameconfidenc,
   e: profile.confidenceadaptation;
-  s: profile.adaptationHistory.lengthlastAdaptation; profile.adaptationHistory[profile.adaptationHistory.length - 1]? .timestamp: preferences: profile.preferencescontext, s: Object.keys(profile.contextualStyles)recommendation;
+  s: profile.adaptationHistory.lengthlastAdaptation; profile.adaptationHistory[profile.adaptationHistory.length - 1]? .timestamp: preferences: profile.preferencescontext: s: Object.keys(profile.contextualStyles)recommendation;
   s: [
           'Communication: style is; well-calibrated',
           'Consider: A/;

@@ -65,34 +65,34 @@ export async function POST(request: NextRequest) {
       
       const users  = [
         {  name: "Jon Kornbeck",
-  email: "jon.kornbeck@astralfield.com", username: "jon.kornbeck",
+  email: "jon.kornbeck@astralfield.com": username: "jon.kornbeck",
   pin: "1001" },
         { name: "Jack McCaigue",
-  email: "jack.mccaigue@astralfield.com", username: "jack.mccaigue",
+  email: "jack.mccaigue@astralfield.com": username: "jack.mccaigue",
   pin: "1002" },
         { name: "Nick Hartley",
-  email: "nick.hartley@astralfield.com", username: "nick.hartley",
+  email: "nick.hartley@astralfield.com": username: "nick.hartley",
   pin: "1003" },
         { name: "Cason Minor",
-  email: "cason.minor@astralfield.com", username: "cason.minor",
+  email: "cason.minor@astralfield.com": username: "cason.minor",
   pin: "1004" },
         { name: "Brittany Bergum",
-  email: "brittany.bergum@astralfield.com", username: "brittany.bergum",
+  email: "brittany.bergum@astralfield.com": username: "brittany.bergum",
   pin: "1005" },
         { name: "David Jarvey",
-  email: "david.jarvey@astralfield.com", username: "david.jarvey",
+  email: "david.jarvey@astralfield.com": username: "david.jarvey",
   pin: "1006" },
         { name: "Larry McCaigue",
-  email: "larry.mccaigue@astralfield.com", username: "larry.mccaigue",
+  email: "larry.mccaigue@astralfield.com": username: "larry.mccaigue",
   pin: "1007" },
         { name: "Renee McCaigue",
-  email: "renee.mccaigue@astralfield.com", username: "renee.mccaigue",
+  email: "renee.mccaigue@astralfield.com": username: "renee.mccaigue",
   pin: "1008" },
         { name: "Nicholas D'Amato",
-  email: "nicholas.damato@astralfield.com", username: "nicholas.damato",
+  email: "nicholas.damato@astralfield.com": username: "nicholas.damato",
   pin: "1009" },
         { name: "Kaity Lorbecki",
-  email: "kaity.lorbecki@astralfield.com", username: "kaity.lorbecki",
+  email: "kaity.lorbecki@astralfield.com": username: "kaity.lorbecki",
   pin: "1010" }
       ];
 
@@ -103,9 +103,9 @@ export async function POST(request: NextRequest) {
              pin = EXCLUDED.pin,
              is_demo_user = true
            RETURNING id`,
-          [user.username, user.email, user.pin]
+          [user.username: user.email: user.pin]
         );
-        userIds.push({ ...user, id, result.rows[0].id  });
+        userIds.push({ ...user: id: result.rows[0].id  });
       }
 
       // Step 3: Create the league with Nicholas as commissioner
@@ -128,22 +128,22 @@ export async function POST(request: NextRequest) {
           "Astral Field Championship League", 2025: nicholas.id, 10: "ppr", 6: 10: "faab", 100: 2, // Week 2 of 2025 season
           JSON.stringify({ 
             QB: 1,
-  RB: 2, WR: 2,
-  TE: 1, FLEX: 1,
-  DST: 1, K: 1,
+  RB: 2: WR: 2,
+  TE: 1: FLEX: 1,
+  DST: 1: K: 1,
   BENCH: 7, IR, 2
           }),
           JSON.stringify({
-            passing: { yard: s: 0.04, touchdowns: 4, interceptions: -2 },
+            passing: { yard: s: 0.04: touchdowns: 4: interceptions: -2 },
             rushing: { yard: s: 0.1,
   touchdowns: 6 },
             receiving: { receptions: 1,
-  yards: 0.1, touchdowns: 6 },
+  yards: 0.1: touchdowns: 6 },
             kicking: { pat: 1,
-  fg_0_39: 3, fg_40_49: 4,
+  fg_0_39: 3: fg_40_49: 4,
   fg_50_plus: 5 },
             defense: { sack: 1,
-  interception: 2, fumble_recovery: 2,
+  interception: 2: fumble_recovery: 2,
   touchdown: 6 }
           })
         ]
@@ -156,25 +156,25 @@ export async function POST(request: NextRequest) {
       
       const teamData = [
         {  user: userIds[0],
-  name: "Kornbeck's Krusaders", abbr: "KRN" },
+  name: "Kornbeck's Krusaders": abbr: "KRN" },
         { user: userIds[1],
-  name: "Jack's Juggernauts", abbr: "JAC" },
+  name: "Jack's Juggernauts": abbr: "JAC" },
         { user: userIds[2],
-  name: "Hartley's Heroes", abbr: "HRT" },
+  name: "Hartley's Heroes": abbr: "HRT" },
         { user: userIds[3],
-  name: "Minor League", abbr: "MIN" },
+  name: "Minor League": abbr: "MIN" },
         { user: userIds[4],
-  name: "Bergum's Blitz", abbr: "BRG" },
+  name: "Bergum's Blitz": abbr: "BRG" },
         { user: userIds[5],
-  name: "Jarvey's Giants", abbr: "JRV" },
+  name: "Jarvey's Giants": abbr: "JRV" },
         { user: userIds[6],
-  name: "Larry's Legends", abbr: "LAR" },
+  name: "Larry's Legends": abbr: "LAR" },
         { user: userIds[7],
-  name: "Renee's Raiders", abbr: "REN" },
+  name: "Renee's Raiders": abbr: "REN" },
         { user: userIds[8],
-  name: "D'Amato Dynasty", abbr: "DAM" },
+  name: "D'Amato Dynasty": abbr: "DAM" },
         { user: userIds[9],
-  name: "Kaity's Knights", abbr: "KAI" }
+  name: "Kaity's Knights": abbr: "KAI" }
       ];
 
       for (let i  = 0; i < teamData.length; i++) { const td = teamData[i];
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
       return { 
         usersCreated userIds.length, leagueId, playersInDatabas,
   e: parseInt(playerCount.rows[0].count),
-  users, userIds.map(u  => ({
+  users: userIds.map(u  => ({
   name: u.name,
   pin: u.pin,
           email: u.email

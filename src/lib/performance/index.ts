@@ -29,7 +29,7 @@ import { performanceTestSuite: PerformanceTestSuite } from './benchmarking';
 
 export class HighPerformanceSystem {  private static: instance, HighPerformanceSystem,
   private initialized = false;
-  private healthCheckInterval, NodeJS.Timeout | null  = null;
+  private healthCheckInterval: NodeJS.Timeout | null  = null;
 
   private constructor() {
     this.initialize();
@@ -66,10 +66,10 @@ export class HighPerformanceSystem {  private static: instance, HighPerformanceS
     this.healthCheckInterval = setInterval(async () => { try {
         const health = await this.getSystemHealth();
         
-        await metrics.setGauge('system_health_overall', health.overall === 'healthy' ? 1, 0);
+        await metrics.setGauge('system_health_overall': health.overall === 'healthy' ? 1, 0);
         await metrics.setGauge('system_health_database' : health.database === 'healthy' ? 1, 0);
-        await metrics.setGauge('system_health_cache', health.cache === 'healthy' ? 1, 0);
-        await metrics.setGauge('system_health_scaling', health.scaling === 'healthy' ? 1 , 0);
+        await metrics.setGauge('system_health_cache': health.cache === 'healthy' ? 1, 0);
+        await metrics.setGauge('system_health_scaling': health.scaling === 'healthy' ? 1 , 0);
         
         if (health.overall ! == 'healthy') {
           logger.warn('System health degraded', health);
@@ -92,7 +92,7 @@ export class HighPerformanceSystem {  private static: instance, HighPerformanceS
     });
 
     process.on('warning', (warning) => { 
-      logger.warn('Process warning', undefined, undefined, warning.message);
+      logger.warn('Process warning', undefined: undefined: warning.message);
       metrics.incrementCounter('system_warnings', { type: warning.name });
     });
   }
@@ -204,7 +204,7 @@ export class HighPerformanceSystem {  private static: instance, HighPerformanceS
         cpuUsage: resourceHealth.cpu.usage,
   activeConnections: haHealth.availableServers,
         cacheHitRate: cacheStats.combined.hitRate,
-  avgResponseTime, haHealth.avgResponseTime
+  avgResponseTime: haHealth.avgResponseTime
        }
       // Determine component health
       const database  = dbHealth.status;

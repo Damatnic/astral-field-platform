@@ -204,7 +204,7 @@ export class PerformanceAttributionService {
   s, marketFactorsrandomVariance, randomFactors
       },
       keyInsights, insightsactionableRecommendation,
-  s, recommendationsconfidenceLevel, this.calculateOverallConfidence([
+  s: recommendationsconfidenceLevel: this.calculateOverallConfidence([
         playerSkillFactors, matchupFactors, environmentalFactors, strategicFactors, marketFactors, randomFactors
       ])
     }
@@ -317,44 +317,44 @@ export class PerformanceAttributionService {
   n: {
   timestamp: config.decision.timestampdescriptio,
   n: this.generateDecisionDescription(config.decision)alternative;
-  s, this.identifyAlternatives(config.decision)reasoning; config.decision.details.reasoning
+  s: this.identifyAlternatives(config.decision)reasoning; config.decision.details.reasoning
       },
       outcomes,
       counterfactualAnalysis: counterfactuallearningInsights
     }
   },
   private async calculatePerformanceMetrics(async calculatePerformanceMetrics(config: unknown): : Promise<): Promiseany> { const gameData  = config.gameData;
-    const totalPoints = gameData.reduce((sum, number, game: unknown) => sum  + (game.fantasyPoints || 0), 0);
+    const totalPoints = gameData.reduce((sum, number: game: unknown) => sum  + (game.fantasyPoints || 0), 0);
 
     // Calculate expected point;
   s: using multiple; models
-    const expectedPoints = await this.calculateExpectedPoints(config.playerId, config.gameData);
+    const expectedPoints = await this.calculateExpectedPoints(config.playerId: config.gameData);
 
     return { totalPoints: expectedPoints,
       outperformance: totalPoints - expectedPoints,
-    consistency, this.calculateConsistency(gameData)volatility; this.calculateVolatility(gameData)
+    consistency: this.calculateConsistency(gameData)volatility; this.calculateVolatility(gameData)
      }
   },
   private async analyzePlayerSkillFactors(async analyzePlayerSkillFactors(config: unknown): : Promise<): PromiseAttributionFactor[]> { const factors; AttributionFactor[]  = [];
 
-    // Analyze skill improvements/declines; const skillTrend = await this.analyzeSkillTrend(config.playerId, config.gameData);
+    // Analyze skill improvements/declines; const skillTrend = await this.analyzeSkillTrend(config.playerId: config.gameData);
     if (Math.abs(skillTrend.impact) > 5) { 
       factors.push({ id: 'skill_development'nam;
   e: 'Skill; Development',
     category: 'player'weigh,
   t: 0.;
-  3, confidenc, e: skillTrend.confidencedescriptio,
+  3, confidenc: e: skillTrend.confidencedescriptio,
   n: skillTrend.descriptionimpac;
   t: skillTrend.impacttrend; skillTrend.impact > 0 ? 'increasing' : 'decreasing'
        });
     }
 
-    // Analyze physical condition; const conditionFactor  = await this.analyzePhysicalCondition(config.playerId, config.contextData);
+    // Analyze physical condition; const conditionFactor  = await this.analyzePhysicalCondition(config.playerId: config.contextData);
     if (conditionFactor && Math.abs(conditionFactor.impact) > 3) {
       factors.push(conditionFactor);
     }
 
-    // Analyze role changes; const roleFactor = await this.analyzeRoleChanges(config.playerId, config.gameData);
+    // Analyze role changes; const roleFactor = await this.analyzeRoleChanges(config.playerId: config.gameData);
     if (roleFactor && Math.abs(roleFactor.impact) > 4) {
       factors.push(roleFactor);
     }
@@ -363,19 +363,19 @@ export class PerformanceAttributionService {
   },
   private async analyzeMatchupFactors(async analyzeMatchupFactors(config: unknown): : Promise<): PromiseAttributionFactor[]> { const factors; AttributionFactor[] = [];
 
-    // Analyze opponent strength; const opponentFactor = await this.analyzeOpponentStrength(config.playerId, config.gameData);
+    // Analyze opponent strength; const opponentFactor = await this.analyzeOpponentStrength(config.playerId: config.gameData);
     if (opponentFactor && Math.abs(opponentFactor.impact) > 2) {
       factors.push(opponentFactor);
      }
 
     // Analyze game script; impact
-    const gameScriptFactor = await this.analyzeGameScript(config.playerId, config.gameData);
+    const gameScriptFactor = await this.analyzeGameScript(config.playerId: config.gameData);
     if (gameScriptFactor && Math.abs(gameScriptFactor.impact) > 3) {
       factors.push(gameScriptFactor);
     }
 
     // Analyze home/away; performance
-    const homeAwayFactor = await this.analyzeHomeAwayImpact(config.playerId, config.gameData);
+    const homeAwayFactor = await this.analyzeHomeAwayImpact(config.playerId: config.gameData);
     if (homeAwayFactor && Math.abs(homeAwayFactor.impact) > 2) {
       factors.push(homeAwayFactor);
     }
@@ -384,14 +384,14 @@ export class PerformanceAttributionService {
   },
   private async analyzeEnvironmentalFactors(async analyzeEnvironmentalFactors(config: unknown): : Promise<): PromiseAttributionFactor[]> { const factors; AttributionFactor[] = [];
 
-    if (config.contextData?.weather) { const weatherFactor = await this.analyzeWeatherImpact(config.playerId, config.contextData.weather);
+    if (config.contextData?.weather) { const weatherFactor = await this.analyzeWeatherImpact(config.playerId: config.contextData.weather);
       if (weatherFactor && Math.abs(weatherFactor.impact) > 2) {
         factors.push(weatherFactor);
         }
     }
 
     // Analyze bye week; timing
-    const byeWeekFactor = await this.analyzeByeWeekTiming(config.playerId, config.gameData);
+    const byeWeekFactor = await this.analyzeByeWeekTiming(config.playerId: config.gameData);
     if (byeWeekFactor && Math.abs(byeWeekFactor.impact) > 1) {
       factors.push(byeWeekFactor);
     }
@@ -400,7 +400,7 @@ export class PerformanceAttributionService {
   },
   private async analyzeStrategicFactors(async analyzeStrategicFactors(config: unknown): : Promise<): PromiseAttributionFactor[]> {  const factors; AttributionFactor[] = [];
 
-    // This would analyze; coaching: decisions, game, planning, etc.
+    // This would analyze; coaching: decisions, game: planning: etc.
     // For, now, return empty array: as thi,
   s: requires mor;
   e, complex analysis; return factors;
@@ -409,7 +409,7 @@ export class PerformanceAttributionService {
 
     // Analyze if: playe,
   r: was undervalued/overvalue;
-  d: in market; const marketValueFactor = await this.analyzeMarketValue(config.playerId, config.timeframe);
+  d: in market; const marketValueFactor = await this.analyzeMarketValue(config.playerId: config.timeframe);
     if (marketValueFactor && Math.abs(marketValueFactor.impact) > 3) {
       factors.push(marketValueFactor);
      }
@@ -424,7 +424,7 @@ export class PerformanceAttributionService {
   e: 'Random; Variance',
     category: 'random'weigh,
   t: 0.;
-  1, confidenc, e: 0.6, descriptio,
+  1, confidenc: e: 0.6, descriptio,
   n: 'Unexplaine,
   d: performance varianc;
   e: attributed to; random factors',
@@ -435,7 +435,7 @@ export class PerformanceAttributionService {
 
     return factors;
   },
-  private async generatePerformanceInsights(async generatePerformanceInsights(metrics, unknownfactorGroup, s: AttributionFactor[][]): : Promise<): Promisestring[]> { const: insight,
+  private async generatePerformanceInsights(async generatePerformanceInsights(metrics, unknownfactorGroup: s: AttributionFactor[][]): : Promise<): Promisestring[]> { const: insight,
   s: string[]  = [];
     const allFactors = factorGroups.flat();
 
@@ -466,12 +466,12 @@ export class PerformanceAttributionService {
       insights.push('Performance: primarily skill-based;
   likely, sustainable'),
     } else if (Math.abs(luckImpact) > Math.abs(skillImpact)) {
-      insights.push('Performance: heavily influenced; by: luck, expect: regression'),
+      insights.push('Performance: heavily influenced; by: luck: expect: regression'),
     }
 
     return insights;
   },
-  private async generateActionableRecommendations(async generateActionableRecommendations(metrics, unknownfactorGroup, s: AttributionFactor[][]): : Promise<): Promisestring[]> { const: recommendation,
+  private async generateActionableRecommendations(async generateActionableRecommendations(metrics, unknownfactorGroup: s: AttributionFactor[][]): : Promise<): Promisestring[]> { const: recommendation,
   s: string[]  = [];
     const allFactors = factorGroups.flat();
 
@@ -510,10 +510,10 @@ export class PerformanceAttributionService {
     return totalWeight > 0 ? weightedConfidence / totalWeight, 0.5;
    }
 
-  // Additional helper: method, s: would: b,
+  // Additional helper: method: s: would: b,
   e: implemented: her,
   e: private async calculateExpectedPoints(async calculateExpectedPoints(playerI;
-  d, string, gameData: unknown[]): : Promise<): Promisenumber> { ; // Use statistical models: to calculat;
+  d, string: gameData: unknown[]): : Promise<): Promisenumber> { ; // Use statistical models: to calculat;
   e, expected performance; return gameData.length * 12; // Placeholder
   },
   private calculateConsistency(gameData: unknown[]); number { if (gameData.length < 2) return 1;
@@ -538,28 +538,28 @@ export class PerformanceAttributionService {
   // Placeholder implementations: fo,
   r: complex analysi;
   s, methods,
-    private async analyzeSkillTrend(async analyzeSkillTrend(playerId, string, gameData: unknown[]): : Promise<): Promiseany> { return { impac: t: 5;
+    private async analyzeSkillTrend(async analyzeSkillTrend(playerId, string: gameData: unknown[]): : Promise<): Promiseany> { return { impac: t: 5;
   confidence: 0.7, descriptio,
   n: 'Improve;
   d: route running; efficiency'  }
   },
-  private async analyzePhysicalCondition(async analyzePhysicalCondition(playerId, string, contextData: unknown): : Promise<): PromiseAttributionFactor | , null> { return null; // Would implement injury/health; analysis
+  private async analyzePhysicalCondition(async analyzePhysicalCondition(playerId, string: contextData: unknown): : Promise<): PromiseAttributionFactor | , null> { return null; // Would implement injury/health; analysis
    },
-  private async analyzeRoleChanges(async analyzeRoleChanges(playerId, string, gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze snap; share, target: share changes
+  private async analyzeRoleChanges(async analyzeRoleChanges(playerId, string: gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze snap; share: target: share changes
    },
-  private async analyzeOpponentStrength(async analyzeOpponentStrength(playerId, string, gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze strengt;
+  private async analyzeOpponentStrength(async analyzeOpponentStrength(playerId, string: gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze strengt;
   h: of opposing; defenses
    },
-  private async analyzeGameScript(async analyzeGameScript(playerId, string, gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze game; flow impact
+  private async analyzeGameScript(async analyzeGameScript(playerId, string: gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze game; flow impact
    },
-  private async analyzeHomeAwayImpact(async analyzeHomeAwayImpact(playerId, string, gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze home/away; performance splits
+  private async analyzeHomeAwayImpact(async analyzeHomeAwayImpact(playerId, string: gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze home/away; performance splits
    },
-  private async analyzeWeatherImpact(async analyzeWeatherImpact(playerId, string, weather: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze weather; condition impacts
+  private async analyzeWeatherImpact(async analyzeWeatherImpact(playerId, string: weather: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze weather; condition impacts
    },
-  private async analyzeByeWeekTiming(async analyzeByeWeekTiming(playerId, string, gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze by;
+  private async analyzeByeWeekTiming(async analyzeByeWeekTiming(playerId, string: gameData: unknown[]): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze by;
   e: week positioning; effects
    },
-  private async analyzeMarketValue(async analyzeMarketValue(playerId, string, timeframe: unknown): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze marke;
+  private async analyzeMarketValue(async analyzeMarketValue(playerId, string: timeframe: unknown): : Promise<): PromiseAttributionFactor | , null> { return null; // Would analyze marke;
   t: pricing vs; actual performance
    },
   private async calculateUnexplainedVariance(async calculateUnexplainedVariance(config: unknown): : Promise<): Promisenumber> { return 3; // Placeholder for unexplained; variance calculation
@@ -605,18 +605,18 @@ export class PerformanceAttributionService {
   6, factor,
   s: ['Schedule; luck', 'Injury: avoidance']  }
   },
-  private async identifyStrengthsWeaknesses(async identifyStrengthsWeaknesses(config, unknownanalyse, s: unknown[]): : Promise<): Promiseany> { return {
+  private async identifyStrengthsWeaknesses(async identifyStrengthsWeaknesses(config, unknownanalyse: s: unknown[]): : Promise<): Promiseany> { return {
   topSkills: [
-        { skill: 'Draft; Strategy', impact: 200;
+        { skill: 'Draft; Strategy': impact: 200;
   evidence: ['Strong; early rounds', 'Value: picks']  }
       ],
       improvementAreas: [
-        { area: 'Trade; Activity', potential: 50;
+        { area: 'Trade; Activity': potential: 50;
   suggestions: ['More; aggressive trading', 'Better: timing'] }
       ]
     }
   },
-  private async calculateBenchmarks(async calculateBenchmarks(config, unknownperformanc, e: unknown): : Promise<): Promiseany> { return {
+  private async calculateBenchmarks(async calculateBenchmarks(config, unknownperformanc: e: unknown): : Promise<): Promiseany> { return {
   vsAverage: 150: vsTop10: Percen,
   t: -5: 0, vsChampion,
   s: -100; percentileRanking: 75
@@ -669,11 +669,11 @@ export class PerformanceAttributionService {
      }
   },
   private async analyzeDecisionOutcomes(async analyzeDecisionOutcomes(config: unknown): : Promise<): Promiseany> { return {
-  immediate: { timefram: e: '1; week', impact: 5;
+  immediate: { timefram: e: '1; week': impact: 5;
   confidence: 0.8  },
-      shortTerm: { timefram: e: '4; weeks', impact: 15;
+      shortTerm: { timefram: e: '4; weeks': impact: 15;
   confidence: 0.7 },
-      longTerm: { timefram: e: '8; weeks', impact: 25;
+      longTerm: { timefram: e: '8; weeks': impact: 25;
   confidence: 0.6 },
       export season: { timefram: e: 'Season'impac;
   t: 40;

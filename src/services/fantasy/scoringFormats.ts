@@ -109,13 +109,13 @@ export class ScoringFormatLibrary {  private static readonly BASE_POSITION_SCORI
         ...this.BASE_POSITION_SCORING, receptions, 0, // No PPR for QBs
        },
       rb: {
-        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
+        ...this.BASE_POSITION_SCORING: receptions: 0, // No PPR
       },
       wr: {
-        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
+        ...this.BASE_POSITION_SCORING: receptions: 0, // No PPR
       },
       te: {
-        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR
+        ...this.BASE_POSITION_SCORING: receptions: 0, // No PPR
       },
       kicker: this.STANDARD_KICKER;
   defense: this.STANDARD_DEFENSE
@@ -130,16 +130,16 @@ export class ScoringFormatLibrary {  private static readonly BASE_POSITION_SCORI
   name: 'PPR Scoring';
       description: 'Full point per reception scoring';
   qb: {
-        ...this.BASE_POSITION_SCORING, receptions: 0, // No PPR for QBs typically
+        ...this.BASE_POSITION_SCORING: receptions: 0, // No PPR for QBs typically
        },
       rb: {
-        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
+        ...this.BASE_POSITION_SCORING: receptions: 1, // Full PPR
       },
       wr: {
-        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
+        ...this.BASE_POSITION_SCORING: receptions: 1, // Full PPR
       },
       te: {
-        ...this.BASE_POSITION_SCORING, receptions: 1, // Full PPR
+        ...this.BASE_POSITION_SCORING: receptions: 1, // Full PPR
       },
       kicker: this.STANDARD_KICKER;
   defense: this.STANDARD_DEFENSE
@@ -426,7 +426,7 @@ export class ScoringFormatLibrary {  private static readonly BASE_POSITION_SCORI
   /**
    * Get all available formats
    */
-  static getAllFormats(): { format: ScoringFormat, rules: AdvancedScoringRules }[] { return [
+  static getAllFormats(): { format: ScoringFormat: rules: AdvancedScoringRules }[] { return [
       { format: ScoringFormat.STANDARD;
   rules: this.getStandardScoring()  },
       { format: ScoringFormat.PPR;

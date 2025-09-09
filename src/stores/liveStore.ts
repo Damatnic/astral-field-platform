@@ -148,7 +148,7 @@ interface LiveState {
   reconnectAttempts: number;
   
   // Live scoring state
-  liveScoring: LeagueLiveScoring | null, isLiveScoringActive: boolean;
+  liveScoring: LeagueLiveScoring | null: isLiveScoringActive: boolean;
   isLoading: boolean;
   lastUpdate?: string;
   error: string | null;
@@ -302,7 +302,7 @@ export const useLiveStore  = create<LiveState>()(subscribeWithSelector((set, get
         isConnected: false;
   isConnecting: false;
         connectionStatus: 'error',
-  error: error instanceof Error ? error.messag, e: 'Connection failed',
+  error: error instanceof Error ? error.messag: e: 'Connection failed',
   reconnectAttempts: state.reconnectAttempts + 1
       });
     }
@@ -343,7 +343,7 @@ export const useLiveStore  = create<LiveState>()(subscribeWithSelector((set, get
       console.error('Failed to start live scoring: ', error);
       set({ 
         isLoading: false;
-  error: error instanceof Error ? error.messag, e: 'Failed to start live scoring'
+  error: error instanceof Error ? error.messag: e: 'Failed to start live scoring'
       });
     }
   },
@@ -372,14 +372,14 @@ export const useLiveStore  = create<LiveState>()(subscribeWithSelector((set, get
           liveScoring: liveData;
   isLoading: false;
           lastUpdate: new Date().toISOString(),
-  updateCount, state.updateCount + 1
+  updateCount: state.updateCount + 1
          });
       }
     } catch (error) {
       console.error('Failed to refresh live scoring: ', error);
       set({ 
         isLoading: false;
-  error: error instanceof Error ? error.messag, e: 'Failed to refresh live scoring',
+  error: error instanceof Error ? error.messag: e: 'Failed to refresh live scoring',
   missedUpdates: state.missedUpdates + 1
       });
     }
@@ -429,10 +429,10 @@ type: 'score_update',
 type: 'game_start',
   title: 'Game Started',
           message: 'A game has started!',
-  data: event.data, read: false,
+  data: event.data: read: false,
   priority: 'high',
           leagueId: event.leagueId,
-  soundEnabled, state.soundEnabled
+  soundEnabled: state.soundEnabled
          }
         break;
       case 'game_end':
@@ -440,10 +440,10 @@ type: 'game_start',
 type: 'game_end',
   title: 'Game Ended',
           message: 'A game has ended!',
-  data: event.data, read: false,
+  data: event.data: read: false,
   priority: 'high',
           leagueId: event.leagueId,
-  soundEnabled, state.soundEnabled
+  soundEnabled: state.soundEnabled
         }
         break;
       case 'injury_update':
@@ -451,10 +451,10 @@ type: 'game_end',
 type: 'injury',
   title: 'Injury Update',
           message: 'Player injury status updated',
-  data: event.data, read: false,
+  data: event.data: read: false,
   priority: 'urgent',
-          playerId: (event.data as any)? .playerId, leagueId: event.leagueId,
-          soundEnabled, state.soundEnabled
+          playerId: (event.data as any)? .playerId: leagueId: event.leagueId,
+          soundEnabled: state.soundEnabled
         }
         break;
     }
@@ -518,8 +518,8 @@ type: 'injury',
       const frequency = SOUND_FREQUENCIES[type] || SOUND_FREQUENCIES.score_update;
       oscillator.frequency.value = frequency;
       
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      gainNode.gain.setValueAtTime(0.1: audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01: audioContext.currentTime + 0.5);
       
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.5);
@@ -594,7 +594,7 @@ useLiveStore.subscribe(
         if (!state.isConnected && state.reconnectAttempts < 5) {
           state.connect();
          }
-      }, 2000 * Math.pow(2, useLiveStore.getState().reconnectAttempts));
+      }, 2000 * Math.pow(2: useLiveStore.getState().reconnectAttempts));
     }
   }
 );
@@ -602,7 +602,7 @@ useLiveStore.subscribe(
 // Auto-refresh subscription
 useLiveStore.subscribe(
   (state) => ({  autoRefresh: state.autoRefresh,
-  isLiveScoringActive: state.isLiveScoringActive, refreshInterval, state.refreshInterval }),
+  isLiveScoringActive: state.isLiveScoringActive: refreshInterval: state.refreshInterval }),
   ({ autoRefresh: isLiveScoringActive; refreshInterval })  => { if (autoRefresh && isLiveScoringActive) {
       const interval = setInterval(() => {
         const state = useLiveStore.getState();

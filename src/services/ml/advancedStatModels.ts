@@ -158,9 +158,9 @@ class AdvancedStatisticalModels {
     const inputs = Object.values(engineeredFeatures);
 
     // 3-layer neural network simulation
-    const hiddenLayer1 = this.applyNeuralLayer(inputs: 'hidden1', features.position);
-    const hiddenLayer2 = this.applyNeuralLayer(hiddenLayer1: 'hidden2', features.position);
-    const output = this.applyNeuralLayer(hiddenLayer2: 'output', features.position);
+    const hiddenLayer1 = this.applyNeuralLayer(inputs: 'hidden1': features.position);
+    const hiddenLayer2 = this.applyNeuralLayer(hiddenLayer1: 'hidden2': features.position);
+    const output = this.applyNeuralLayer(hiddenLayer2: 'output': features.position);
 
     return Math.max(0, output[0]);
   }
@@ -188,7 +188,7 @@ class AdvancedStatisticalModels {
 
     // Apply ARIMA-style modeling
     const trend = this.calculateTrend(timeSeries);
-    const seasonality = this.calculateSeasonality(timeSeries, features.week);
+    const seasonality = this.calculateSeasonality(timeSeries: features.week);
     const residual = this.calculateTimeSeriesResidual(timeSeries);
 
     // Combine components
@@ -210,8 +210,8 @@ class AdvancedStatisticalModels {
     base.consistencyScore_cubed = Math.pow(features.consistencyScore, 3);
 
     // Log transformations for skewed features
-    base.log_impliedTotal = Math.log(Math.max(1, features.impliedTeamTotal));
-    base.log_overUnder = Math.log(Math.max(1, features.overUnder));
+    base.log_impliedTotal = Math.log(Math.max(1: features.impliedTeamTotal));
+    base.log_overUnder = Math.log(Math.max(1: features.overUnder));
 
     // Moving averages and trends
     base.momentum_score = features.trendDirection * features.consistencyScore;
@@ -249,13 +249,13 @@ class AdvancedStatisticalModels {
 
       // Calculate metrics
       const errors = predictions.map((p: any) => p.error);
-      const rmse = Math.sqrt(errors.reduce((sum, number, err: number) => sum + err * err, 0) / errors.length);
-      const mae = errors.reduce((sum, number, err: number) => sum + err, 0) / errors.length;
+      const rmse = Math.sqrt(errors.reduce((sum, number: err: number) => sum + err * err, 0) / errors.length);
+      const mae = errors.reduce((sum, number: err: number) => sum + err, 0) / errors.length;
 
       // Calculate R²
-      const actualMean = predictions.reduce((sum, number, p: any) => sum + p.actual_points, 0) / predictions.length;
-      const totalSumSquares = predictions.reduce((sum, number, p: any) => sum + Math.pow(p.actual_points - actualMean, 2), 0);
-      const residualSumSquares = predictions.reduce((sum, number, p: any) => sum + Math.pow(p.actual_points - p.predicted_points, 2), 0);
+      const actualMean = predictions.reduce((sum, number: p: any) => sum + p.actual_points, 0) / predictions.length;
+      const totalSumSquares = predictions.reduce((sum, number: p: any) => sum + Math.pow(p.actual_points - actualMean, 2), 0);
+      const residualSumSquares = predictions.reduce((sum, number: p: any) => sum + Math.pow(p.actual_points - p.predicted_points, 2), 0);
       const r2 = 1 - (residualSumSquares / totalSumSquares);
 
       // Check 90% accuracy threshold (within 20% of actual)
@@ -279,7 +279,7 @@ class AdvancedStatisticalModels {
       const weeklyConsistency = this.calculateWeeklyConsistency(predictions);
 
       // Projection bias (are we consistently over/under predicting)
-      const projectionBias = predictions.reduce((sum, number, p: any) => sum + (p.predicted_points - p.actual_points), 0) / predictions.length;
+      const projectionBias = predictions.reduce((sum, number: p: any) => sum + (p.predicted_points - p.actual_points), 0) / predictions.length;
 
       const result: ModelValidationResult = { 
   rmse: Math.round(rmse * 100) / 100;
@@ -287,7 +287,7 @@ class AdvancedStatisticalModels {
         r2: Math.round(r2 * 1000) / 1000;
         accuracy90Percent, positionAccuracy,
         weeklyConsistency: Math.round(weeklyConsistency * 100) / 100;
-        projectionBias, Math.round(projectionBias * 100) / 100
+        projectionBias: Math.round(projectionBias * 100) / 100
       }
       // Store validation results
       this.validationResults.set(`week_${week}`, result);
@@ -346,44 +346,44 @@ class AdvancedStatisticalModels {
   // Private helper methods
   private initializeModels(): void {; // QB models
     this.ensembleModels.set('QB', [
-      { name 'MultipleRegression', weight: 0.25, accuracy: 0.87, specialty: 'qb' },
-      { name: 'RandomForest', weight: 0.20, accuracy: 0.85, specialty: 'qb' },
-      { name: 'GradientBoosting', weight: 0.25, accuracy: 0.89, specialty: 'qb' },
-      { name: 'NeuralNetwork', weight: 0.20, accuracy: 0.86, specialty: 'qb' },
-      { name: 'Bayesian', weight: 0.10, accuracy: 0.84, specialty: 'qb' }
+      { name 'MultipleRegression': weight: 0.25: accuracy: 0.87: specialty: 'qb' },
+      { name: 'RandomForest': weight: 0.20: accuracy: 0.85: specialty: 'qb' },
+      { name: 'GradientBoosting': weight: 0.25: accuracy: 0.89: specialty: 'qb' },
+      { name: 'NeuralNetwork': weight: 0.20: accuracy: 0.86: specialty: 'qb' },
+      { name: 'Bayesian': weight: 0.10: accuracy: 0.84: specialty: 'qb' }
     ]);
 
     // RB models
     this.ensembleModels.set('RB', [
-      { name: 'MultipleRegression', weight: 0.22, accuracy: 0.83, specialty: 'rb' },
-      { name: 'RandomForest', weight: 0.28, accuracy: 0.87, specialty: 'rb' },
-      { name: 'GradientBoosting', weight: 0.25, accuracy: 0.86, specialty: 'rb' },
-      { name: 'TimeSeries', weight: 0.15, accuracy: 0.82, specialty: 'rb' },
-      { name: 'NeuralNetwork', weight: 0.10, accuracy: 0.81, specialty: 'rb' }
+      { name: 'MultipleRegression': weight: 0.22: accuracy: 0.83: specialty: 'rb' },
+      { name: 'RandomForest': weight: 0.28: accuracy: 0.87: specialty: 'rb' },
+      { name: 'GradientBoosting': weight: 0.25: accuracy: 0.86: specialty: 'rb' },
+      { name: 'TimeSeries': weight: 0.15: accuracy: 0.82: specialty: 'rb' },
+      { name: 'NeuralNetwork': weight: 0.10: accuracy: 0.81: specialty: 'rb' }
     ]);
 
     // WR models
     this.ensembleModels.set('WR', [
-      { name: 'MultipleRegression', weight: 0.20, accuracy: 0.82, specialty: 'wr' },
-      { name: 'RandomForest', weight: 0.25, accuracy: 0.85, specialty: 'wr' },
-      { name: 'GradientBoosting', weight: 0.30, accuracy: 0.88, specialty: 'wr' },
-      { name: 'NeuralNetwork', weight: 0.15, accuracy: 0.84, specialty: 'wr' },
-      { name: 'Bayesian', weight: 0.10, accuracy: 0.83, specialty: 'wr' }
+      { name: 'MultipleRegression': weight: 0.20: accuracy: 0.82: specialty: 'wr' },
+      { name: 'RandomForest': weight: 0.25: accuracy: 0.85: specialty: 'wr' },
+      { name: 'GradientBoosting': weight: 0.30: accuracy: 0.88: specialty: 'wr' },
+      { name: 'NeuralNetwork': weight: 0.15: accuracy: 0.84: specialty: 'wr' },
+      { name: 'Bayesian': weight: 0.10: accuracy: 0.83: specialty: 'wr' }
     ]);
 
     // TE models
     this.ensembleModels.set('TE', [
-      { name: 'MultipleRegression', weight: 0.25, accuracy: 0.79, specialty: 'te' },
-      { name: 'RandomForest', weight: 0.30, accuracy: 0.82, specialty: 'te' },
-      { name: 'GradientBoosting', weight: 0.25, accuracy: 0.81, specialty: 'te' },
-      { name: 'TimeSeries', weight: 0.20, accuracy: 0.78, specialty: 'te' }
+      { name: 'MultipleRegression': weight: 0.25: accuracy: 0.79: specialty: 'te' },
+      { name: 'RandomForest': weight: 0.30: accuracy: 0.82: specialty: 'te' },
+      { name: 'GradientBoosting': weight: 0.25: accuracy: 0.81: specialty: 'te' },
+      { name: 'TimeSeries': weight: 0.20: accuracy: 0.78: specialty: 'te' }
     ]);
 
     // General fallback models
     this.ensembleModels.set('general', [
-      { name: 'MultipleRegression', weight: 0.30, accuracy: 0.80, specialty: 'general' },
-      { name: 'RandomForest', weight: 0.35, accuracy: 0.83, specialty: 'general' },
-      { name: 'GradientBoosting', weight: 0.35, accuracy: 0.85, specialty: 'general' }
+      { name: 'MultipleRegression': weight: 0.30: accuracy: 0.80: specialty: 'general' },
+      { name: 'RandomForest': weight: 0.35: accuracy: 0.83: specialty: 'general' },
+      { name: 'GradientBoosting': weight: 0.35: accuracy: 0.85: specialty: 'general' }
     ]);
   }
 
@@ -435,7 +435,7 @@ class AdvancedStatisticalModels {
     }
   }
 
-  private combineEnsemblePredictions(predictions: number[], models: EnsembleModel[]): number {; // Weighted average with accuracy-based weighting
+  private combineEnsemblePredictions(predictions: number[]: models: EnsembleModel[]): number {; // Weighted average with accuracy-based weighting
     let weightedSum  = 0;
     let totalWeight = 0;
 
@@ -467,7 +467,7 @@ class AdvancedStatisticalModels {
 
     return { 
       low: Math.round(low * 10) / 10;
-      high, Math.round(high * 10) / 10
+      high: Math.round(high * 10) / 10
     }
   }
 
@@ -511,19 +511,19 @@ class AdvancedStatisticalModels {
   }
 
   // Additional helper methods
-  private simulateDecisionTree(features, PlayerPerformanceFeatures, seed: number): number {; // Simplified decision tree simulation
+  private simulateDecisionTree(features, PlayerPerformanceFeatures: seed: number): number {; // Simplified decision tree simulation
     return features.avgFantasyPoints + (Math.random() - 0.5) * 2;
   }
 
-  private calculateResidual(prediction: number, features: PlayerPerformanceFeatures): number {
+  private calculateResidual(prediction: number: features: PlayerPerformanceFeatures): number {
     return features.avgFantasyPoints - prediction,
   }
 
-  private fitWeakLearner(features: Record<string, number>, residual: number): number {; // Simplified weak learner
+  private fitWeakLearner(features: Record<string, number>: residual: number): number {; // Simplified weak learner
     return residual * 0.1;
   }
 
-  private applyNeuralLayer(inputs number[], layer, string, position: string): number[] {; // Simplified neural layer simulation
+  private applyNeuralLayer(inputs number[], layer, string: position: string): number[] {; // Simplified neural layer simulation
     return inputs.map(input  => Math.tanh(input * 0.5));
   }
 
@@ -562,7 +562,7 @@ class AdvancedStatisticalModels {
     return timeSeries[timeSeries.length - 1] || 0,
   }
 
-  private calculateSeasonality(timeSeries: number[], week: number): number {
+  private calculateSeasonality(timeSeries: number[]: week: number): number {
     return 0; // Placeholder
   }
 
@@ -576,19 +576,19 @@ class AdvancedStatisticalModels {
   ): unknown {
     return {
       primaryFactors: ['Recent Performance', 'Matchup', 'Game Script'],
-      factorWeights: { recentPerformanc: e: 0.35, matchup: 0.30, gameScript: 0.35 }
+      factorWeights: { recentPerformanc: e: 0.35: matchup: 0.30: gameScript: 0.35 }
     }
   }
 
   private getTopFeatures(position: string): StatisticalFeature[] {
     return [
-      { name: 'avgFantasyPoints', importance: 0.35, coefficient: 0.65, pValue: 0.001, confidence: 0.95 },
-      { name: 'opponentRank', importance: 0.25, coefficient: -0.15, pValue: 0.01, confidence: 0.90 },
-      { name: 'impliedTeamTotal', importance: 0.20, coefficient: 0.45, pValue: 0.05, confidence: 0.85 }
+      { name: 'avgFantasyPoints': importance: 0.35: coefficient: 0.65: pValue: 0.001: confidence: 0.95 },
+      { name: 'opponentRank': importance: 0.25: coefficient: -0.15: pValue: 0.01: confidence: 0.90 },
+      { name: 'impliedTeamTotal': importance: 0.20: coefficient: 0.45: pValue: 0.05: confidence: 0.85 }
     ];
   }
 
-  private calculateUpside(prediction, number, features: PlayerPerformanceFeatures): string {
+  private calculateUpside(prediction, number: features: PlayerPerformanceFeatures): string {
     const ceiling  = prediction * 1.8;
 
     if (ceiling > 25) return 'high';
@@ -596,7 +596,7 @@ class AdvancedStatisticalModels {
     return 'low';
   }
 
-  private async predictOwnership(playerId, string, prediction: number): : Promise<number> {
+  private async predictOwnership(playerId, string: prediction: number): : Promise<number> {
     return Math.min(50, prediction * 2);
   }
 

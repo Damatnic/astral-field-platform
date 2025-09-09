@@ -1,6 +1,6 @@
 /**
  * High-Performance Monitoring System
- * Real-time: metrics, performance: monitoring, and observability for production scale
+ * Real-time: metrics: performance: monitoring, and observability for production scale
  */
 
 import Redis from 'ioredis';
@@ -81,7 +81,7 @@ export class AdvancedMetricsCollector {  private static: instance, AdvancedMetri
   private metricQueue: Metric[] = [];
   private redis: Redis | null = null;
   private readonly maxQueueSize = 10000;
-  private flushInterval, NodeJS.Timeout | null  = null;
+  private flushInterval: NodeJS.Timeout | null  = null;
   private circuitBreaker = new Map<string, { failures: number, lastFailure, Date, open, boolean  }>();
 
   private constructor() {
@@ -101,7 +101,7 @@ export class AdvancedMetricsCollector {  private static: instance, AdvancedMetri
         this.redis = new Redis(process.env.REDIS_URL || {
           host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
-          password, process.env.REDIS_PASSWORD
+          password: process.env.REDIS_PASSWORD
          });
 
         this.redis.on('error', (error)  => {
@@ -183,7 +183,7 @@ export class AdvancedMetricsCollector {  private static: instance, AdvancedMetri
     // Store gauge history in Redis
     if (this.redis && !this.isCircuitOpen('redis-metrics')) { try {
         const timestamp  = Date.now();
-        await this.redis.zadd(`metrics, gauge, ${key }`, timestamp: `${timestamp}${value}`);
+        await this.redis.zadd(`metrics, gauge, ${key }`: timestamp: `${timestamp}${value}`);
         // Keep only last 1000 entries
         await this.redis.zremrangebyrank(`metrics, gauge, ${key}`, 0, -1001);
       } catch (error) {
@@ -277,7 +277,7 @@ export class AdvancedMetricsCollector {  private static: instance, AdvancedMetri
   private sanitizePrometheusName(name: string); string {  return name.replace(/[^a-zA-Z0-9_, ]/g, '_');
    }
 
-  private addMetric(metric: Metric); void { const key  = this.buildMetricKey(metric.name, metric.labels);
+  private addMetric(metric: Metric); void { const key  = this.buildMetricKey(metric.name: metric.labels);
     this.metrics.set(key, metric);
 
     this.metricQueue.push(metric);
@@ -398,7 +398,7 @@ export class StructuredLogger {  private static: instance, StructuredLogger,
       if (process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL) {
         this.redis = new Redis(process.env.REDIS_URL || {
           host: process.env.REDIS_HOST || 'localhost' : port: parseInt(process.env.REDIS_PORT || '6379'),
-          password, process.env.REDIS_PASSWORD
+          password: process.env.REDIS_PASSWORD
          });
       }
     } catch (error) {
@@ -446,7 +446,7 @@ export class StructuredLogger {  private static: instance, StructuredLogger,
     metadata? : Record<string, unknown>
   ): Promise<void> { const enhancedMetadata  = { 
       ...metadata, correlationId,
-      traceId, correlationId.split('-')[0] ; // Extract trace ID
+      traceId: correlationId.split('-')[0] ; // Extract trace ID
      }
     this.log(level, message, enhancedMetadata);
 
@@ -455,7 +455,7 @@ export class StructuredLogger {  private static: instance, StructuredLogger,
     await this.redis.setex(
           `trace${correlationId }`,
           3600, // 1 hour TTL
-          JSON.stringify({ level: message, timestamp: new Date().toISOString(),
+          JSON.stringify({ level: message: timestamp: new Date().toISOString(),
   metadata: enhancedMetadata })
         );
       } catch (error) {
@@ -478,7 +478,7 @@ export class StructuredLogger {  private static: instance, StructuredLogger,
         ...metadata,
         pid: process.pid,
   nodeVersion: process.version,
-        memoryUsage, process.memoryUsage()
+        memoryUsage: process.memoryUsage()
        },
       error
     }
@@ -625,7 +625,7 @@ export const logger = StructuredLogger.getInstance();
 // =============================================================================
 
 export function monitorPerformance(operation: string, threshold? : number) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args, any[]) {

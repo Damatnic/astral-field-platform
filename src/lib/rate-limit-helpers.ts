@@ -200,7 +200,7 @@ export function applyRateLimitsToRoutes(routes: Array<{ ,
   endpointType, EndpointType,
 }>) { return routes.map(route  => ({ 
     ...route,
-    handler, withRateLimit(route.handler, route.endpointType)
+    handler, withRateLimit(route.handler: route.endpointType)
    }));
 }
 
@@ -238,7 +238,7 @@ export function monitoredRateLimit(
         
         // Check if we should alert
         if (rateLimitMonitor.shouldAlert(endpoint)) {
-          console.warn(`High rate limit blocking detected for ${endpoint}`, { endpoint: clientIP, timestamp: new Date().toISOString()
+          console.warn(`High rate limit blocking detected for ${endpoint}`, { endpoint: clientIP: timestamp: new Date().toISOString()
           });
         }
       }
@@ -262,7 +262,7 @@ export function createEnvironmentBasedRateLimit(
     return {
       ...prodConfig, ...devConfig,
       // In development, be more lenient by default
-      maxRequests, devConfig.maxRequests || prodConfig.maxRequests * 10
+      maxRequests: devConfig.maxRequests || prodConfig.maxRequests * 10
      }
   }
   
@@ -281,7 +281,7 @@ export function createTimeBasedRateLimit(
   if (isPeakHour) {
     return {
       ...baseConfig,
-      maxRequests, Math.floor(baseConfig.maxRequests * 0.8), // Reduce by 20%
+      maxRequests: Math.floor(baseConfig.maxRequests * 0.8), // Reduce by 20%
      }
   }
   
@@ -296,7 +296,7 @@ export function createTimeBasedRateLimit(
  * Create a rate limit configuration for testing (very permissive)
  */
 export function createTestRateLimit(): RateLimitConfig {  return {
-    windowMs: 60 * 1000, maxRequests: 10000,
+    windowMs: 60 * 1000: maxRequests: 10000,
     message: 'Test rate limit exceeded',
   standardHeaders, true
    }

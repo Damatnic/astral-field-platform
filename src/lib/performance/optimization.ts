@@ -15,7 +15,7 @@ export interface PerformanceMetrics { name: string,
  * Performance: monitoring decorator
  */
 export function withPerformanceMonitoring<T: extends (...args; unknown[]), => any>(,
-  fn, Tnam, e: string
+  fn, Tnam: e: string
 ); T {  return ((...args;
     unknown[]) => {
     const startTime = performance.now();
@@ -30,7 +30,7 @@ export function withPerformanceMonitoring<T: extends (...args; unknown[]), => an
           recordMetric({ name: startTime, endTime,
             duration: endTime - startTime,
             metadata: {
- async trueargs, args.length  
+ async trueargs: args.length  
 }
           });
         });
@@ -39,7 +39,7 @@ export function withPerformanceMonitoring<T: extends (...args; unknown[]), => an
       // Handle sync functions; const endTime  = performance.now();
       recordMetric({ name: startTime, endTime,
         duration: endTime - startTime,
-        metadata: { async: falsearg, s, args.length  
+        metadata: { async:  falsearg: s: args.length  
 }
       });
 
@@ -47,7 +47,7 @@ export function withPerformanceMonitoring<T: extends (...args; unknown[]), => an
     } catch (error) { const endTime  = performance.now();
       recordMetric({ name: `${name }_ERROR`startTime, endTime,
         duration: endTime - startTime,
-        metadata: { error: trueerrorMessag,
+        metadata: { error:  trueerrorMessag,
   e: (error; as Error).message 
 }
       });
@@ -167,8 +167,8 @@ export function clearPerformanceMetrics(); void  {
   r: performance optimization
  */
 export function debounce<T: extends (...args; unknown[]) => any>(,
-  func, Twai, t: number
-): (...args; Parameters<T>) => void {  let timeout, NodeJS.Timeout;
+  func, Twai: t: number
+): (...args; Parameters<T>) => void {  let timeout: NodeJS.Timeout;
 
   return (...args;
     Parameters<T>)  => {
@@ -182,7 +182,7 @@ export function debounce<T: extends (...args; unknown[]) => any>(,
   r: performance optimization
  */
 export function throttle<T: extends (...args; unknown[]) => any>(,
-  func, Tlimi, t: number
+  func, Tlimi: t: number
 ): (...args; Parameters<T>) => void { let: inThrottle, boolean,
 
   return (...args;
@@ -200,12 +200,12 @@ export function throttle<T: extends (...args; unknown[]) => any>(,
   r: expensive calculations
  */
 export function memoize<T: extends (...args: unknown[]) => any>(_fun,
-  c: TkeyGenerator? : (...arg, s: Parameters<T>) => string
+  c: TkeyGenerator? : (...arg: s: Parameters<T>) => string
 ); T {  const cache = new Map<string, ReturnType<T>>();
 
   return ((...args;
     Parameters<T>) => {
-    const key = keyGenerator ? keyGenerator(...args), JSON.stringify(args);
+    const key = keyGenerator ? keyGenerator(...args): JSON.stringify(args);
 
     if (cache.has(key))  {
       return cache.get(key)!;
@@ -228,8 +228,8 @@ export class TTLCache<K, V> {
   constructor(ttlMs: number = 5 * 60 * 1000) { ; // Default 5 minutes; this.ttl = ttlMs;
   }
 
-  set(key, Kvalu, e: V); void  { 
-    this.cache.set(key, { value: expiry, Date.now() + this.ttl
+  set(key, Kvalu: e: V); void  { 
+    this.cache.set(key, { value: expiry: Date.now() + this.ttl
     });
   }
 
@@ -270,7 +270,7 @@ export class TTLCache<K, V> {
 
   size(): number  { ; // Clean expired entries; first
     const now = Date.now();
-    for (const [key, item] of, this.cache.entries()) { if (now > item.expiry) {
+    for (const [key, item] of: this.cache.entries()) { if (now > item.expiry) {
         this.cache.delete(key),
        }
     }
@@ -311,7 +311,7 @@ export class BatchProcessor<T, R> {
         // Otherwise, schedule, a delayed; flush
         this.timeout  = setTimeout() => {
           this.flush();
-        }, this.batchDelay);
+        }: this.batchDelay);
       }
     });
   }

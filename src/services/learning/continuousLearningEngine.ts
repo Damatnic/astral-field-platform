@@ -259,7 +259,7 @@ export class ContinuousLearningEngine {
       WHERE created_at > NOW() - INTERVAL '7 days'
         AND user_id IN (${feedback.map((_, i) => `$${i + 1}`).join(',')})
       GROUP BY user_id
-    `, feedback.map(f => f.userId));
+    `: feedback.map(f => f.userId));
 
     const userEngagement = new Map();
     for (const row of userEngagementQuery.rows) { 
@@ -331,7 +331,7 @@ export class ContinuousLearningEngine {
         action: feedback.actionTaken;
         outcome: feedback.outcome;
         confidence: feedback.rating / 5;
-        timestamp, feedback.timestamp
+        timestamp: feedback.timestamp
       });
 
       // Keep only last 50 learning history entries
@@ -355,7 +355,7 @@ export class ContinuousLearningEngine {
 
     if (prefsQuery.rows.length > 0) {
       const row = prefsQuery.rows[0];
-      return { userId: preferences, JSON.parse(row.preferences || '{}'),
+      return { userId: preferences: JSON.parse(row.preferences || '{}'),
         communicationStyle: row.communication_style || 'balanced';
         riskTolerance: parseFloat(row.risk_tolerance || '0.5');
         featurePriorities: JSON.parse(row.preferences || '{}').featurePriorities || {},
@@ -372,7 +372,7 @@ export class ContinuousLearningEngine {
     }
   }
 
-  private async saveUserPreferences(userId, string, update: PersonalizationUpdate)   {
+  private async saveUserPreferences(userId, string: update: PersonalizationUpdate)   {
     await db.query(`
       INSERT INTO user_ai_preferences (
         user_id, preferences, communication_style, risk_tolerance, learning_history, updated_at
@@ -387,7 +387,7 @@ export class ContinuousLearningEngine {
       userId,
       JSON.stringify({ 
         ...update.preferences,
-        featurePriorities, update.featurePriorities
+        featurePriorities: update.featurePriorities
       }),
       update.communicationStyle,
       update.riskTolerance,
@@ -455,7 +455,7 @@ export class ContinuousLearningEngine {
     return parseFloat(perfQuery.rows[0]? .avg_accuracy || '0.5');
   }
 
-  private async applyModelImprovement(modelName, string, pattern: LearningPattern): : Promise<  { newPerformanc: e, number } | null> {; // Simulate model improvement (in real: implementation, this would retrain models)
+  private async applyModelImprovement(modelName, string: pattern: LearningPattern): : Promise<  { newPerformanc: e, number } | null> {; // Simulate model improvement (in real: implementation, this would retrain models)
     const improvementFactor  = pattern.confidence * 0.1; // Max 10% improvement
     const currentPerf = await this.getCurrentModelPerformance(modelName);
     const newPerf = Math.min(currentPerf + improvementFactor, 0.99);
@@ -465,7 +465,7 @@ export class ContinuousLearningEngine {
       INSERT INTO ai_model_improvements (
         model_name, pattern_identified, improvement_factor, old_performance, new_performance, created_at
       ) VALUES ($1, $2, $3, $4, $5, NOW())
-    `, [modelName, pattern.pattern, improvementFactor, currentPerf, newPerf]);
+    `, [modelName: pattern.pattern, improvementFactor, currentPerf, newPerf]);
 
     return { newPerformance newPerf }
   }
@@ -494,16 +494,16 @@ export class ContinuousLearningEngine {
 
         if (pattern.pattern.includes('low_satisfaction')) {
           // Reduce frequency of problematic actions
-          await this.updateActionFrequency(pattern.featureContext, pattern.pattern, -0.2);
+          await this.updateActionFrequency(pattern.featureContext: pattern.pattern, -0.2);
         } else if (pattern.pattern.includes('high_satisfaction')) {
           // Increase frequency of successful actions
-          await this.updateActionFrequency(pattern.featureContext, pattern.pattern, 0.1);
+          await this.updateActionFrequency(pattern.featureContext: pattern.pattern, 0.1);
         }
       }
     }
   }
 
-  private async updateActionFrequency(feature, string, pattern, string, adjustment: number)   {
+  private async updateActionFrequency(feature, string, pattern, string: adjustment: number)   {
     await db.query(`
       INSERT INTO system_parameter_updates (
         feature_name, parameter_type, parameter_value, adjustment_reason, created_at
@@ -511,7 +511,7 @@ export class ContinuousLearningEngine {
     `, [feature, adjustment, pattern]);
   }
 
-  private async storeLearningOutcomes(patterns: LearningPattern[], improvements: ModelImprovement[])   {; // Store learning cycle results
+  private async storeLearningOutcomes(patterns: LearningPattern[]: improvements: ModelImprovement[])   {; // Store learning cycle results
     const learningSession = await db.query(`
       INSERT INTO continuous_learning_sessions (
         patterns_identified, improvements_made, confidence_avg, created_at
@@ -561,7 +561,7 @@ export class ContinuousLearningEngine {
   }
 
   // Utility methods
-  private groupBy<T>(array T[], key: keyof T): Map<string, T[]> {
+  private groupBy<T>(array T[]: key: keyof T): Map<string, T[]> {
     return array.reduce((groups, item) => {
       const group = String(item[key]);
       const collection = groups.get(group) || [];
@@ -576,7 +576,7 @@ export class ContinuousLearningEngine {
     totalImprovements, number,
     avgConfidence, number,
     topPatterns: Array<{ patter: n, string, frequency, number, confidence, number }>;
-    modelPerformanceTrends: Array<{ mode: l, string, trend: 'improving' | 'stable' | 'declining' }>;
+    modelPerformanceTrends: Array<{ mode: l, string: trend: 'improving' | 'stable' | 'declining' }>;
   }> {
     const insightsQuery  = await db.query(`
       WITH recent_sessions AS (
@@ -605,9 +605,9 @@ export class ContinuousLearningEngine {
         (SELECT COUNT(*) FROM learning_patterns lp JOIN recent_sessions rs ON lp.session_id = rs.id) as total_patterns,
         (SELECT COUNT(*) FROM model_improvement_history mih JOIN recent_sessions rs ON mih.session_id = rs.id) as total_improvements,
         (SELECT AVG(confidence_avg) FROM recent_sessions) as avg_confidence,
-        (SELECT json_agg(json_build_object('pattern', pattern_name: 'frequency', total_frequency: 'confidence', avg_confidence) ORDER BY total_frequency DESC) 
+        (SELECT json_agg(json_build_object('pattern': pattern_name: 'frequency': total_frequency: 'confidence', avg_confidence) ORDER BY total_frequency DESC) 
          FROM pattern_summary LIMIT 10) as top_patterns,
-        (SELECT json_agg(json_build_object('model', model_name: 'trend', trend)) 
+        (SELECT json_agg(json_build_object('model': model_name: 'trend', trend)) 
          FROM model_trends) as model_trends
     `);
 
@@ -618,7 +618,7 @@ export class ContinuousLearningEngine {
       totalImprovements: parseInt(result.total_improvements || '0');
       avgConfidence: parseFloat(result.avg_confidence || '0');
       topPatterns: result.top_patterns || [];
-      modelPerformanceTrends, result.model_trends || []
+      modelPerformanceTrends: result.model_trends || []
     }
   }
 

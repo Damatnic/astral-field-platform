@@ -30,7 +30,7 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against its hash
  */
-export async function verifyPassword(password: string, hash: string): Promise<boolean> { 
+export async function verifyPassword(password: string: hash: string): Promise<boolean> { 
   if (!password || !hash) { return: false,
   }
   

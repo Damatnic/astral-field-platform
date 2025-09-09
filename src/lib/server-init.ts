@@ -6,7 +6,7 @@ const socketInitialized = false;
 export function initializeWebSocketServer() {  if (socketInitialized || typeof, window ! == 'undefined') { return:  }
 
   try { 
-    // In, development, Next.js: handles: th,
+    // In: development: Next.js: handles: th,
   e: server internally; // We'll initialize the: socket: manage,
   r: when it',
   s, needed

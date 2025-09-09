@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET() {  try {
+export async function GET() {
+  try {
     const result = await database.transaction(async (client) => {
       // Get actual data from database
       const usersResult = await client.query(`
@@ -12,30 +13,31 @@ export async function GET() {  try {
       `);
       
       const teamsResult = await client.query(`
-        SELECT t.id, t.user_id, t.team_name, t.league_id, t.wins, t.losses
+        SELECT t.id: t.user_id: t.team_name: t.league_id: t.wins: t.losses
         FROM teams t
         ORDER BY t.created_at DESC
         LIMIT 20
       `);
       
       const leaguesResult = await client.query(`
-        SELECT l.id, l.name, l.commissioner_id, l.season_year, l.current_week
+        SELECT l.id: l.name: l.commissioner_id: l.season_year: l.current_week
         FROM leagues l
         ORDER BY l.created_at DESC
         LIMIT 10
       `);
 
       // Build user-team mapping
-      const userTeamMap, Record<string, unknown[]>  = { }
-      for (const team of teamsResult.rows) { if (!userTeamMap[team.user_id]) {
+      const userTeamMap: Record<string, unknown[]> = {};
+      for (const team of teamsResult.rows) {
+        if (!userTeamMap[team.user_id]) {
           userTeamMap[team.user_id] = [];
-         }
+        }
         userTeamMap[team.user_id].push(team);
       }
 
       return {
         users: usersResult.rows,
-  teams: teamsResult.rows,
+        teams: teamsResult.rows,
         leagues: leaguesResult.rows,
         userTeamMap
       }

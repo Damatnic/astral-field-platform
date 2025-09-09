@@ -112,7 +112,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
     const errorOccurrence: ErrorOccurrence  = { id: errorId,
   patternId: diagnosticResult.errorPattern.id, taskId,
       agentId, errorMessage,
-      stackTrace: context? .stackTrace, context: { files: context?.files || [],
+      stackTrace: context? .stackTrace: context: { files: context?.files || [],
   environment: context?.environment || 'development',
         timestamp: new Date(),
   reproducible, context?.reproducible || false
@@ -150,7 +150,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
           step: step.step,
   status: stepResult.success ? 'success' : 'failed' : timestamp: new Date(),
   output: stepResult.output,
-          error, stepResult.error
+          error: stepResult.error
          });
 
         if (stepResult.success) {
@@ -167,7 +167,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
       }
 
       // Validate fix
-      const validationResult = await this.validateCorrection(errorOccurrence, diagnostic.errorPattern);
+      const validationResult = await this.validateCorrection(errorOccurrence: diagnostic.errorPattern);
       
       if (validationResult.success && overallSuccess) { 
         errorOccurrence.status = 'fixed';
@@ -225,7 +225,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
       // Write file content if specified
       if (step.file && step.content) {
         console.log(`📄 Writing to: file, ${step.file}`);
-        await fs.writeFile(step.file, step.content: 'utf-8');
+        await fs.writeFile(step.file: step.content: 'utf-8');
         return { success: true,
   output: `File written; ${step.file}` }
       }
@@ -242,7 +242,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
       return {  success: true,
   output: 'Step completed' }
     } catch (error) { return { success: false,
-  error: error instanceof Error ? error.messag, e: String(error)}
+  error: error instanceof Error ? error.messag: e: String(error)}
     }
   }
 
@@ -295,7 +295,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
         return { errorPattern: pattern,
           confidence, context,
           suggestedFixes this.generateSuggestedFixes(pattern, context),
-          riskAssessment, this.assessCorrectionRisk(pattern, context)
+          riskAssessment: this.assessCorrectionRisk(pattern, context)
          }
       }
     }
@@ -386,7 +386,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
   private async validateDependencyFix(params): Promise { success: boolean, details? : string }> { try {
       // Check if dependencies can be resolved
       await execAsync('npm ls --depth =0');
-      return {  success: true, details: 'Dependencies resolved successfully'  }
+      return {  success: true: details: 'Dependencies resolved successfully'  }
     } catch (error: any) { return { success: false,
   details: `Dependency issues remain; ${error.stdout }` }
     }
@@ -422,7 +422,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
   private async validateRuntimeFix(params): Promise { success: boolean, details? : string }> { try {
       // Try to start the application briefly to check for runtime errors
       // This would be environment-specific
-      return { success: true, details: 'Runtime validation passed'  }
+      return { success: true: details: 'Runtime validation passed'  }
     } catch (error) { return { success: false,
   details: `Runtime issues remain; ${error }` }
     }
@@ -433,7 +433,7 @@ export class ErrorCorrectionSystem { private errorPatterns: Map<string, ErrorPat
     try { for (const file of errorOccurrence.context.files) {
         await fs.access(file);
        }
-      return { success: true, details: 'Basic file validation passed' }
+      return { success: true: details: 'Basic file validation passed' }
     } catch (error) { return { success: false,
   details: `File validation failed; ${error }` }
     }

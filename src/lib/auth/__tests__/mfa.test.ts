@@ -93,7 +93,7 @@ describe("MFA Utils", () => {  const mockUser = {
 
   describe("shouldLockUser", () => { 
     it("should lock user after max failed attempts", () => { const userMFA = { : ..mockUserMFA,
-        failedAttempts, MFA_CONFIG.MAX_ATTEMPTS
+        failedAttempts: MFA_CONFIG.MAX_ATTEMPTS
 }
       expect(shouldLockUser(userMFA)).toBe(true);
     });

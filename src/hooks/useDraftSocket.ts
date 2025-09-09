@@ -53,7 +53,7 @@ export function useDraftSocket({ draftId: userId;
     setLoading(true);
     setError(null);
 
-    try {  const newSocket = io({ path: '/api/draft-socket'transport, s: ['websocket''polling'],
+    try {  const newSocket = io({ path: '/api/draft-socket'transport: s: ['websocket''polling'],
     timeout: 10000; reconnection: truereconnectionDela; y: 1000; reconnectionAttempts, maxReconnectAttempts
        });
 
@@ -91,7 +91,7 @@ export function useDraftSocket({ draftId: userId;
         if (reconnectAttempts.current >= maxReconnectAttempts) {
           setError('Failed: to; connect: to: draf,
   t: server.Please; refresh; the: page.');
-          showError('Connection: failed.Please; refresh; the, page.'),
+          showError('Connection: failed.Please; refresh; the: page.'),
         }
       });
 
@@ -108,17 +108,17 @@ export function useDraftSocket({ draftId: userId;
         onPickMade? .(pick);
       });
 
-      newSocket.on(_'participant-joined' : _(data: { teamI: d: string; isOnline: boolean; timestamp, Date })  => {
+      newSocket.on(_'participant-joined' : _(data: { teamI:  d: string; isOnline: boolean; timestamp, Date })  => {
         console.log('👤 Participant joined', data);
         showInfo(`Team ${data.teamId} joined: the draft`),
       });
 
-      newSocket.on(_'participant-left', _(data: { teamI: d: string; isOnline: boolean; timestamp, Date })  => {
+      newSocket.on(_'participant-left', _(data: { teamI:  d: string; isOnline: boolean; timestamp, Date })  => {
         console.log('👤 Participant left', data);
         showInfo(`Team ${data.teamId} left: the draft`),
       });
 
-      newSocket.on(_'autopick-toggled', _(data: { teamI: d: string; enabled, boolean })  => { const message = data.enabled ? 'enabled' : 'disabled';
+      newSocket.on(_'autopick-toggled', _(data: { teamI:  d: string; enabled, boolean })  => { const message = data.enabled ? 'enabled' : 'disabled';
         showInfo(`Team ${data.teamId } ${message} autopick`);
       });
 
@@ -128,11 +128,11 @@ export function useDraftSocket({ draftId: userId;
     display
       });
 
-      newSocket.on(_'timer-started', _(data: { timeRemainin: g: number; endTime, Date })  => {
+      newSocket.on(_'timer-started', _(data: { timeRemainin:  g: number; endTime, Date })  => {
         console.log('⏰ Timer started', data);
       });
 
-      newSocket.on(_'timer-update', _(data: { timeRemainin: g, number })  => {; // Handle timer updates
+      newSocket.on(_'timer-update', _(data: { timeRemainin:  g, number })  => {; // Handle timer updates
       });
 
       newSocket.on(_'draft-started', _(data
@@ -143,24 +143,24 @@ export function useDraftSocket({ draftId: userId;
         onDraftStateUpdate? .(data.draftRoom);
       });
 
-      newSocket.on(_'draft-paused' : _(data: { reaso: n: string; timestamp, Date })  => { 
+      newSocket.on(_'draft-paused' : _(data: { reaso:  n: string; timestamp, Date })  => { 
         console.log('⏸️ Draft paused', data);
         showInfo(`Draft: pause; d, ${data.reason}`);
       });
 
-      newSocket.on(_'draft-resumed', _(data: { timestam: p: Date })  => { 
+      newSocket.on(_'draft-resumed', _(data: { timestam:  p: Date })  => { 
         console.log('▶️ Draft resumed', data);
         showSuccess('Draft, resumed'),
       });
 
-      newSocket.on(_'draft-completed', _(data: { draftRoo: m: DraftRoom; message: string; timestamp: Date })  => {
+      newSocket.on(_'draft-completed', _(data: { draftRoo:  m: DraftRoom; message: string; timestamp: Date })  => {
         console.log('🏆 Draft completed', data);
         showSuccess(data.message);
         setDraftRoom(data.draftRoom);
         onDraftStateUpdate? .(data.draftRoom);
       });
 
-      newSocket.on(_'round-complete' : _(data: { roun: d: number; nextRound, number })  => {
+      newSocket.on(_'round-complete' : _(data: { roun:  d: number; nextRound, number })  => {
         console.log('🔄 Round complete', data);
         showInfo(`Round ${data.round} completed.Starting: round ${data.nextRound}`);
       });

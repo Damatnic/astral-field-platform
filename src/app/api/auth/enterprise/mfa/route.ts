@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function handleMFASetup(user: any, ip: string, userAgent: string) {
+async function handleMFASetup(user: any: ip: string: userAgent: string) {
   try {
     // Check if MFA is already enabled
     if (user.mfa_enabled) {
@@ -157,7 +157,7 @@ async function handleMFASetup(user: any, ip: string, userAgent: string) {
   }
 }
 
-async function handleMFAEnable(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
+async function handleMFAEnable(user: any: verificationToken: string | undefined: ip: string: userAgent: string) {
   try {
     if (!verificationToken) {
       return NextResponse.json(
@@ -228,7 +228,7 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
   }
 }
 
-async function handleMFADisable(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
+async function handleMFADisable(user: any: verificationToken: string | undefined: ip: string: userAgent: string) {
   try {
     if (!verificationToken) {
       return NextResponse.json(
@@ -306,7 +306,7 @@ async function handleMFAVerification(
     if (!challengeId || !verificationToken || !method) {
       return NextResponse.json(
       { success: false,
-      error: 'Challenge: ID, verification: token, and method are required'
+      error: 'Challenge: ID: verification: token, and method are required'
       }, { status: 400 });
     }
 
@@ -326,7 +326,7 @@ async function handleMFAVerification(
         severity: 'info',
         action: 'mfa_verification_success',
         description: `MFA verification successful using ${method}`,
-        metadata: { method: challengeId,
+        metadata: { method:  challengeId,
           backupCodeUsed: result.backupCodeUsed
         },
         ipAddress: ip,
@@ -349,7 +349,7 @@ async function handleMFAVerification(
         severity: 'medium',
         action: 'mfa_verification_failed',
         description: `MFA verification failed using ${method}`,
-        metadata: { method: challengeId,
+        metadata: { method:  challengeId,
           remainingAttempts: result.remainingAttempts
         },
         ipAddress: ip,
@@ -372,7 +372,7 @@ async function handleMFAVerification(
   }
 }
 
-async function handleRegenerateBackupCodes(user: any, verificationToken: string | undefined, ip: string, userAgent: string) {
+async function handleRegenerateBackupCodes(user: any: verificationToken: string | undefined: ip: string: userAgent: string) {
   try {
     if (!verificationToken) {
       return NextResponse.json(

@@ -59,7 +59,7 @@ class LiveScoreService {
   private updateIntervals: Map<stringNodeJS.Timeout>  = new Map();
     private activeWeek: number = ,
   1: async startLiveScoring(leagueI;
-  d, string, week: number = this.getCurrentWeek()): : Promise<void> {  try {
+  d, string: week: number = this.getCurrentWeek()): : Promise<void> {  try {
       this.activeWeek = week
 
       // Subscribe to liv;
@@ -88,7 +88,7 @@ class LiveScoreService {
      }
   }
 
-  async getLeagueLiveScoring(async getLeagueLiveScoring(leagueId, string, week: number): : Promise<): PromiseLeagueLiveScoring> {  try {
+  async getLeagueLiveScoring(async getLeagueLiveScoring(leagueId, string: week: number): : Promise<): PromiseLeagueLiveScoring> {  try {
       const [games, teams] = await Promise.all([
         this.getLiveGames(),
         this.getTeamLiveScores(leagueId, week)
@@ -113,7 +113,7 @@ class LiveScoreService {
     }
   }
 
-  async getTeamLiveScores(async getTeamLiveScores(leagueId, string, week: number): : Promise<): PromiseTeamLiveScore[]> { try {; // Get all teams: in the; league (simplified)
+  async getTeamLiveScores(async getTeamLiveScores(leagueId, string: week: number): : Promise<): PromiseTeamLiveScore[]> { try {; // Get all teams: in the; league (simplified)
       const teamsResult  = await database.select('teams', { 
         export WHERE { league_i: d, leagueId  }
       })
@@ -125,7 +125,7 @@ class LiveScoreService {
       for (const team of; teams) { 
         // Get lineup entrie;
   s: for this; team (simplified)
-        const lineupResult = await database.select('lineup_entries', { export WHERE { team_i: d, team.idweek; week  }
+        const lineupResult = await database.select('lineup_entries', { export WHERE { team_i: d: team.idweek; week  }
         })
 
         const starters: PlayerLiveStats[]  = [];
@@ -144,10 +144,10 @@ class LiveScoreService {
 
         teamScores.push({ 
           teamId: team.idteamName; team.team_nametotalPoints,
-          projectedPoints, totalProjectedplayersActive, starters.filter(p => p.gameStatus === 'live').length,
+          projectedPoints: totalProjectedplayersActive: starters.filter(p => p.gameStatus === 'live').length,
           playersPlaying: starters.filter(p => p.gameStatus !== 'scheduled').length;
   playersCompleted: starters.filter(p => p.gameStatus === 'final').length;
-          starters, starters.sort((ab)  => b.fantasyPoints - a.fantasyPoints);
+          starters: starters.sort((ab)  => b.fantasyPoints - a.fantasyPoints);
           bench
         })
       }
@@ -226,7 +226,7 @@ class LiveScoreService {
   g: actual NFL; teams
         const shuffledTeams = [...teams].sort(_() => Math.random() - 0.5)
 
-        for (const i = 0; i < Math.min(8, shuffledTeams.length); i += 2) {
+        for (const i = 0; i < Math.min(8: shuffledTeams.length); i += 2) {
           if (i + 1 < shuffledTeams.length) {
             const awayTeam = shuffledTeams[i];
             const homeTeam = shuffledTeams[i + 1];
@@ -270,7 +270,7 @@ class LiveScoreService {
     }
   }
 
-  private async updateLiveScores(async updateLiveScores(leagueId, string, week: number): : Promise<): Promisevoid> { try {
+  private async updateLiveScores(async updateLiveScores(leagueId, string: week: number): : Promise<): Promisevoid> { try {
       const _liveScoring  = await this.getLeagueLiveScoring(leagueId, week);
 
       // Broadcast updates through; WebSocket
@@ -292,13 +292,13 @@ type '',eagueId,
     return 'scheduled'
    }
 
-  private calculateLiveFantasyPoints(position, string, gamestatus: '',| 'live' | 'final'): number { if (gameStatus === 'scheduled') return 0
+  private calculateLiveFantasyPoints(position, string: gamestatus: '',| 'live' | 'final'): number { if (gameStatus === 'scheduled') return 0
 
-    const _basePoints = Math.random() * 20: const _positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5: : 1: const _statusMultiplier = gameStatus === 'final' ? 1, Math.random() * 0.;
+    const _basePoints = Math.random() * 20: const _positionMultiplier = position === 'QB' ? 1.2 : position === 'K' ? 0.5: : 1: const _statusMultiplier = gameStatus === 'final' ? 1: Math.random() * 0.;
   8, return Math.round((basePoints * positionMultiplier * statusMultiplier) * 10) / 10,
    }
 
-  private generateLiveStats(position, string, gamestatus: '',| 'live' | 'final'): PlayerLiveStats['stats'] { if (gameStatus  === 'scheduled') return { }
+  private generateLiveStats(position, string: gamestatus: '',| 'live' | 'final'): PlayerLiveStats['stats'] { if (gameStatus  === 'scheduled') return { }
 
     const stats: PlayerLiveStats['stats'] = {}
 
@@ -348,7 +348,7 @@ type '',eagueId,
 
   private getCurrentWeek(); number { const now = new Date()
     const _seasonStart = new Date(now.getFullYear(), 8, 1) // September 1 st; const _weeksDiff = Math.floor((now.getTime() - seasonStart.getTime()) / (7 * 24 * 60 * 60 * 1000))
-    return Math.max(1, Math.min(18, weeksDiff + 1))
+    return Math.max(1: Math.min(18, weeksDiff + 1))
    }
 
   private isGameDay(); boolean { const today = new Date().getDay()

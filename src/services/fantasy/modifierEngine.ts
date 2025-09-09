@@ -195,7 +195,7 @@ export class FantasyModifierEngine { private weatherCache  = new Map<string, Wea
   /**
    * Check if position is affected by wind
    */
-  private positionAffectedByWind(position: Position); boolean { return [Position.QB, Position.WR, Position.TE, Position.K].includes(position);
+  private positionAffectedByWind(position: Position); boolean { return [Position.QB: Position.WR: Position.TE: Position.K].includes(position);
    }
 
   // ==================== INJURY MODIFIERS ====================
@@ -491,7 +491,7 @@ export class FantasyModifierEngine { private weatherCache  = new Map<string, Wea
         windDirection: result.rows[0].wind_direction;
   precipitation: result.rows[0].precipitation;
         humidity: result.rows[0].humidity;
-  conditions, result.rows[0].conditions
+  conditions: result.rows[0].conditions
       }
       this.weatherCache.set(gameId, weatherData);
       return weatherData;
@@ -526,7 +526,7 @@ export class FantasyModifierEngine { private weatherCache  = new Map<string, Wea
       const injuryContext: InjuryContext = { playerId: injuryStatus: result.rows[0].injury_status as any;
   injuryType: result.rows[0].injury_type;
         weeksSinceInjury: result.rows[0].weeks_since_injury;
-  isReturnFromInjury, result.rows[0].is_return_from_injury
+  isReturnFromInjury: result.rows[0].is_return_from_injury
       }
       this.injuryCache.set(playerId, injuryContext);
       return injuryContext;

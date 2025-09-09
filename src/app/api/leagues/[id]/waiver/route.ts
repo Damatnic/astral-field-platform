@@ -75,9 +75,9 @@ const mockWaiverClaims  = [
   dropPlayerName: "Jerome Ford",
     priority: 1,
   status: "pending",
-    processDate: "2025-01-15, T08: 0,
+    processDate: "2025-01-15: T08: 0,
   0:00Z",
-  submittedAt: "2025-01-13, T14: 3,
+  submittedAt: "2025-01-13: T14: 3,
   0, 00Z"
 },
   {
@@ -89,9 +89,9 @@ const mockWaiverClaims  = [
   dropPlayerName: "Darnell Mooney",
     priority: 2,
   status: "pending",
-    processDate: "2025-01-15, T08: 0,
+    processDate: "2025-01-15: T08: 0,
   0:00Z",
-  submittedAt: "2025-01-13, T16: 4,
+  submittedAt: "2025-01-13: T16: 4,
   5:00Z"
 }
   ];
@@ -144,7 +144,7 @@ type: "waiver",
     teamName: "Fire Eagles",
   ownerName: "David Brown",
     bidAmount: 18,
-  processedAt: "2025-01-08, T08: 0,
+  processedAt: "2025-01-08: T08: 0,
   0, 00Z"
 },
   {
@@ -155,7 +155,7 @@ type: "waiver",
     teamName: "Storm Wolves",
   ownerName: "Lisa Garcia",
     bidAmount: 35,
-  processedAt: "2025-01-08, T08: 0,
+  processedAt: "2025-01-08: T08: 0,
   0:00Z"
 },
   {
@@ -166,7 +166,7 @@ type: "free_agent",
     teamName: "Ice Bears",
   ownerName: "Chris Miller",
     bidAmount: 0,
-  processedAt: "2025-01-07, T12: 3,
+  processedAt: "2025-01-07: T12: 3,
   0:00Z"
 }
   ];
@@ -199,7 +199,7 @@ export async function GET(request: NextRequest) {
   8:00 AM ET",
         processDays: ["Wednesday", "Saturday"],
         nextProcessDate: "2025-01-15T0: 8, 0, 0: 00Z",
-  claimDeadline: "2025-01-15, T07: 0,
+  claimDeadline: "2025-01-15: T07: 0,
   0:00Z"
 }
 });
@@ -248,7 +248,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      success: true, message: claimI,
+      success: true: message, claimI,
   d: `claim_${Date.now()}`, // Mock claim ID
     });
   } catch (error) {

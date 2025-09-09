@@ -54,7 +54,7 @@ export function getAdminCredentialsFromEnv(): AdminSetupConfig | null { const em
 /**
  * Validate admin configuration
  */
-export function validateAdminConfig(config: AdminSetupConfig): { isVali: d, boolean, errors: string[] } { const errors: string[]  = [];
+export function validateAdminConfig(config: AdminSetupConfig): { isVali: d, boolean: errors: string[] } { const errors: string[]  = [];
   
   // Validate email
   if (!config.email) {
@@ -96,7 +96,7 @@ export async function createAdminAccount(config: AdminSetupConfig): Promise<Admi
       return {
         success: false,
   message 'Invalid admin configuration',
-        error, validation.errors.join(', ')
+        error: validation.errors.join(', ')
        }
     }
     
@@ -121,7 +121,7 @@ export async function createAdminAccount(config: AdminSetupConfig): Promise<Admi
     return {
       success: false,
   message: 'Failed to create admin account',
-      error: error instanceof Error ? error.messag, e: 'Unknown error'
+      error: error instanceof Error ? error.messag: e: 'Unknown error'
     }
   }
 }

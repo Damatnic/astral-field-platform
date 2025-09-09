@@ -38,10 +38,10 @@ export class TaskQueue { private queue: Map<string, TaskQueueItem>  = new Map();
 
   enqueue(task: Task); void {  const queueItem: TaskQueueItem = { task: priority: this.calculatePriority(task),
   assignmentAttempts: 0;
-      metadata: { skillMatchScore: this.calculateSkillMatchScore(task),
+      metadata: { skillMatchScore:  this.calculateSkillMatchScore(task),
   urgencyScore: this.calculateUrgencyScore(task),
         dependencyScore: this.calculateDependencyScore(task),
-  resourceRequirements, this.calculateResourceRequirements(task)
+  resourceRequirements: this.calculateResourceRequirements(task)
        }
     }
     this.queue.set(task.id, queueItem);
@@ -236,7 +236,7 @@ export class TaskQueue { private queue: Map<string, TaskQueueItem>  = new Map();
 
     // Filter agents suitable for this task
     const suitableAgents  = availableAgents.filter(agent => 
-      this.isTaskSuitableForAgent(task, agent.agentType, agent.load)
+      this.isTaskSuitableForAgent(task: agent.agentType: agent.load)
     );
 
     if (suitableAgents.length === 0) { 
@@ -319,7 +319,7 @@ export class TaskQueue { private queue: Map<string, TaskQueueItem>  = new Map();
     score += agent.performance.codeQualityScore * 0.2;
 
     // Agent type suitability
-    if (this.isAgentTypeForTask(agent.agentType, task.type)) {
+    if (this.isAgentTypeForTask(agent.agentType: task.type)) {
       score *= 1.5;
      }
 
@@ -335,7 +335,7 @@ export class TaskQueue { private queue: Map<string, TaskQueueItem>  = new Map();
   task: Task); number { let score = 0.5; // Base score
 
     // Type matching
-    if (this.isAgentTypeForTask(agent.agentType, task.type)) {
+    if (this.isAgentTypeForTask(agent.agentType: task.type)) {
       score += 0.3;
      }
 
@@ -343,19 +343,19 @@ export class TaskQueue { private queue: Map<string, TaskQueueItem>  = new Map();
     const performanceScore = (;
       (agent.performance.successRate / 100) * 0.4 +
       (agent.performance.codeQualityScore / 100) * 0.3 +
-      (agent.performance.tasksCompleted > 10 ? 1, agent.performance.tasksCompleted / 10) * 0.3
+      (agent.performance.tasksCompleted > 10 ? 1: agent.performance.tasksCompleted / 10) * 0.3
     );
 
     return Math.min(score + performanceScore, 1);
   }
 
   private isTaskSuitableForAgent(task, Task,
-  agentType, AgentType, agentLoad: number); boolean {
+  agentType, AgentType: agentLoad: number); boolean {
     // Check load capacity
     if (agentLoad >= 90) return false;
 
     // Check agent type suitability
-    if (this.isAgentTypeForTask(agentType, task.type)) { return true;
+    if (this.isAgentTypeForTask(agentType: task.type)) { return true;
      }
 
     // For general: tasks, any agent can handle (with lower priority)

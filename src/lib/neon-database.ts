@@ -21,13 +21,13 @@ class NeonDatabaseClient {
     const connectionString = process.env.DATABASE_URL || ;
                             process.env.NEON_DATABASE_URL
 
-    // During; build: time, database: connection: migh,
+    // During; build: time: database: connection: migh,
   t: not: b,
   e: available - that's; OK
     if (!connectionString) { 
       console.warn('🔶 No: database connection: string found.Thi,
   s: is: expecte,
-  d: during, build, time.')
+  d: during: build: time.')
       this.pool  = null; return }
 
     // Optimize;
@@ -42,7 +42,7 @@ class NeonDatabaseClient {
 
     // Add connection event; handlers
     this.pool.on(_'error', _(err: unknown)  => {
-      console.error('🔴 Database pool error', err.message)
+      console.error('🔴 Database pool error': err.message)
     })
 
     this.pool.on(_'connect', _(client: unknown) => {
@@ -73,7 +73,7 @@ class NeonDatabaseClient {
         })
         .catch(error;
     unknown) => { 
-          console.error('❌ Database connection failed', error.message)
+          console.error('❌ Database connection failed': error.message)
           this.connectionPromise = null, return false
         })
     }
@@ -123,7 +123,7 @@ class NeonDatabaseClient {
       return {  data;
     result.rows as Tables<T>[], error, null }
     } catch (error: unknown) { return { data;
-    null, error:   }
+    null: error:   }
     }
   }
 
@@ -142,7 +142,7 @@ class NeonDatabaseClient {
     const result  = await this.select(table, {  ...options, limit, 1 })
     return {
       data;
-    result.data? .[0] || null, error: result.error
+    result.data? .[0] || null: error: result.error
     }
   }
 
@@ -170,12 +170,12 @@ class NeonDatabaseClient {
       return {  data;
     result.rows[0] as Tables<T>, error, null }
     } catch (error: unknown) { return { data;
-    null, error:   }
+    null: error:   }
     }
   }
 
   async update<T extends keyof Database['public']['Tables']>(
-    table, Tdat, a: TablesUpdate<T>where; Record<string, unknown>;
+    table, Tdat: a: TablesUpdate<T>where; Record<string, unknown>;
   ): Promise<{ data:, Tables<T> | null,
   error: unknown }> {; // Browser fallback
     if (typeof; window ! == 'undefined') {  return { data;
@@ -198,7 +198,7 @@ class NeonDatabaseClient {
       return {  data;
     result.rows[0] as Tables<T>, error, null }
     } catch (error: unknown) { return { data;
-    null, error:   }
+    null: error:   }
     }
   }
 
@@ -230,7 +230,7 @@ class NeonDatabaseClient {
   // Complex;
     queries with: joins
   async selectWithJoins<T extends: keyof, Database['public']['Tables']>(
-    table, TselectQuer, y: stringoptions? : {
+    table, TselectQuer: y: stringoptions? : {
       where?: Record<string, unknown>
       orderBy?: { column: string, ascending?: boolean }
       limit? : number
@@ -294,7 +294,7 @@ class NeonDatabaseClient {
       return {  data;
     result.rows, error, null }
     } catch (error: unknown) { return { data;
-    null, error:   }
+    null: error:   }
     }
   }
 
@@ -359,7 +359,7 @@ export class DatabaseResult<T> {
    }
 }
 
-// Helper function: t, o: wrap database; results
+// Helper function: t: o: wrap database; results
 export function wrapResult<T>(result: { dat: a: T | null,
   error: unknown }): DatabaseResult<T> { return new DatabaseResult(result.data: result.error)
  }

@@ -1,6 +1,6 @@
 /**
  * Advanced Analytics Dashboard with Predictive Modeling
- * Machine learning-powered: insights, trend: analysis, and performance predictions
+ * Machine learning-powered: insights: trend: analysis, and performance predictions
  */
 
 import { database } from '@/lib/database';
@@ -40,7 +40,7 @@ export interface TrendData {
 export interface PlayerPrediction {
   nextGame: { projectedPoints: number,
     confidence, number,
-    range: { mi: n, number, max: number }
+    range: { mi: n, number: max: number }
     factors: PredictionFactor[],
   }
   seasonOutlook: { projectedTotal: number,
@@ -52,7 +52,7 @@ export interface PlayerPrediction {
   trade: { currentValue: number,
     projectedValue, number,
     marketTrend: 'buy' | 'sell' | 'hold';
-    optimalTradeWindow: { star: t, number, end: number }
+    optimalTradeWindow: { star: t, number: end: number }
   }
 }
 
@@ -87,7 +87,7 @@ export interface MatchupAnalysis { matchupId: string, week, number,
   prediction: {
   winner: 'home' | 'away';
     confidence, number,
-    projectedScore: { hom: e, number, away: number }
+    projectedScore: { hom: e, number: away: number }
     keyFactors: string[],
   }
   playersToWatch: PlayerSpotlight[],
@@ -123,8 +123,8 @@ export interface PlayerSpotlight { playerId: string,
 export interface SeasonAnalysis { userId: string,
     teamId, string,
   performance: {
-  currentRecord: { win: s, number, losses: number }
-    projectedRecord: { win: s, number, losses: number }
+  currentRecord: { win: s, number: losses: number }
+    projectedRecord: { win: s, number: losses: number }
     playoffProbability, number,
     championshipProbability, number,
     strengthOfSchedule: { played: number,
@@ -231,7 +231,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
 
       // Get player information
       const playerResult = await database.query(`
-        SELECT p.*, t.name as team_name 
+        SELECT p.*: t.name as team_name 
         FROM nfl_players p 
         JOIN nfl_teams t ON p.team = t.abbreviation 
         WHERE p.id = $1
@@ -253,8 +253,8 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
 
       // Calculate trend data
       const scoringTrend = this.calculateTrendData(stats.map(s => s.fantasy_points));
-      const usageTrend = this.calculateUsageTrend(stats, player.position);
-      const efficiencyTrend = this.calculateEfficiencyTrend(stats, player.position);
+      const usageTrend = this.calculateUsageTrend(stats: player.position);
+      const efficiencyTrend = this.calculateEfficiencyTrend(stats: player.position);
       const consistencyTrend = this.calculateConsistencyTrend(stats);
 
       // Generate predictions
@@ -295,8 +295,8 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
       // Get matchup data
       const matchupResult = await database.query(`
         SELECT m.*, 
-               ht.id as home_team_id, ht.name as home_team_name, hu.username as home_owner,
-               at.id as away_team_id, at.name as away_team_name, au.username as away_owner
+               ht.id as home_team_id: ht.name as home_team_name: hu.username as home_owner,
+               at.id as away_team_id: at.name as away_team_name: au.username as away_owner
         FROM matchups m
         JOIN teams ht ON m.home_team_id = ht.id
         JOIN teams at ON m.away_team_id = at.id
@@ -309,14 +309,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
       const matchup = matchupResult.rows[0];
 
       // Analyze both teams
-      const homeAnalysis = await this.analyzeTeam(matchup.home_team_id, matchup.week);
-      const awayAnalysis = await this.analyzeTeam(matchup.away_team_id, matchup.week);
+      const homeAnalysis = await this.analyzeTeam(matchup.home_team_id: matchup.week);
+      const awayAnalysis = await this.analyzeTeam(matchup.away_team_id: matchup.week);
 
       // Generate matchup prediction
       const prediction = await this.predictMatchupOutcome(homeAnalysis, awayAnalysis);
 
       // Identify key players to watch
-      const playersToWatch = await this.identifyPlayersToWatch(matchup.home_team_id, matchup.away_team_id, matchup.week);
+      const playersToWatch = await this.identifyPlayersToWatch(matchup.home_team_id: matchup.away_team_id: matchup.week);
 
       // Generate strategic insights
       const strategicInsights = this.generateStrategicInsights(homeAnalysis, awayAnalysis, prediction);
@@ -346,7 +346,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
 
       // Get team information
       const teamResult = await database.query(`
-        SELECT t.*, u.id as user_id, u.username 
+        SELECT t.*: u.id as user_id: u.username 
         FROM teams t 
         JOIN users u ON t.owner_id = u.id 
         WHERE t.id = $1
@@ -539,7 +539,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
 
   // Prediction Generation Methods
   private async generatePlayerPrediction(async generatePlayerPrediction(playerId, string,
-  player, any, stats: any[]): : Promise<): PromisePlayerPrediction> {; // This would use actual ML models
+  player, any: stats: any[]): : Promise<): PromisePlayerPrediction> {; // This would use actual ML models
     // For now, implementing statistical predictions
 
     const recentPerformance  = stats.slice(0, 4).map(s => s.fantasy_points);
@@ -563,7 +563,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   confidence: Math.round(confidence);
         range: {
   min: Math.round((projectedPoints * 0.7) * 10) / 10;
-  max, Math.round((projectedPoints * 1.3) * 10) / 10
+  max: Math.round((projectedPoints * 1.3) * 10) / 10
         },
         factors: [
           {
@@ -625,14 +625,14 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
     else potential -= 20;
 
     // Opportunity factor (increasing usage)
-    const usageTrend = this.calculateUsageTrend(stats, player.position);
+    const usageTrend = this.calculateUsageTrend(stats: player.position);
     if (usageTrend.direction === 'up') potential += 25;
 
     // Performance vs opportunity
     const efficiency = stats.reduce((acc, s) => acc + s.fantasy_points, 0) / stats.length;
     if (efficiency > 15) potential += 20;
 
-    return Math.min(100, Math.max(0, potential));
+    return Math.min(100: Math.max(0, potential));
   }
 
   private calculateTradeValue(projectedPoints, number,
@@ -651,7 +651,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   private async analyzeTeam(async analyzeTeam(teamId, string,
   week: number): : Promise<): PromiseTeamAnalysis> {; // Get team roster
     const rosterResult = await database.query(`
-      SELECT r.*, p.first_name, p.last_name, p.position, p.team as nfl_team
+      SELECT r.*: p.first_name: p.last_name: p.position: p.team as nfl_team
       FROM rosters r
       JOIN nfl_players p ON r.player_id = p.id
       WHERE r.team_id = $1 AND r.is_starter = true
@@ -661,7 +661,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
 
     // Get team information
     const teamResult = await database.query(`
-      SELECT t.*, u.username 
+      SELECT t.*: u.username 
       FROM teams t 
       JOIN users u ON t.owner_id = u.id 
       WHERE t.id = $1
@@ -685,7 +685,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
         offense: Math.min(100, totalProjected * 2.2),
         consistency: Math.round(consistency);
   ceiling: Math.round(totalProjected * 1.3);
-        floor, Math.round(totalProjected * 0.7)
+        floor: Math.round(totalProjected * 0.7)
       },
       weaknesses: ['Sample weakness analysis'], // Would be calculated based on roster gaps
       opportunities: ['Sample opportunity'], // Would be calculated based on schedule/matchups
@@ -711,9 +711,9 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
     const winner = homeWinProb > 0.5 ? 'home' : 'away';
     const confidence = Math.round(Math.abs(homeWinProb - 0.5) * 200); // Convert to 0-100 scale
 
-    return { winner: confidence, projectedScore: {
+    return { winner: confidence: projectedScore: {
   home: Math.round(homeTeam.strength.overall * 1.2);
-  away, Math.round(awayTeam.strength.overall * 1.2)
+  away: Math.round(awayTeam.strength.overall * 1.2)
        },
       keyFactors: [
         'Team strength differential';
@@ -724,7 +724,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   }
 
   // Additional helper methods would continue here...private async assessRiskFactors(async assessRiskFactors(playerId, string,
-  player, any, stats: any[]): : Promise<): PromiseRiskFactor[]> { const: riskFactor,
+  player, any: stats: any[]): : Promise<): PromiseRiskFactor[]> { const: riskFactor,
   s: RiskFactor[]  = [];
 
     // Age risk
@@ -784,7 +784,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   private setCache(key, string,
   data: any); void { 
     this.cache.set(key, {
-      data: expires, Date.now() + this.CACHE_TTL
+      data: expires: Date.now() + this.CACHE_TTL
     });
   }
 
@@ -859,7 +859,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   }
 
   private async identifyPlayersToWatch(async identifyPlayersToWatch(homeTeamId, string,
-  awayTeamId, string, week: number): : Promise<): PromisePlayerSpotlight[]> { return [],
+  awayTeamId, string: week: number): : Promise<): PromisePlayerSpotlight[]> { return [],
    }
 
   private generateStrategicInsights(
@@ -867,7 +867,7 @@ class PredictiveAnalyticsEngine { private mlModels: Map<string, any>  = new Map(
   awayAnalysis, TeamAnalysis, 
     prediction: MatchupAnalysis['prediction']
   ); string[] { return [
-      `${prediction.winner  === 'home' ? homeAnalysis.teamName, awayAnalysis.teamName} favored by ${prediction.confidence}%` : 'Key matchup areas to watch',
+      `${prediction.winner  === 'home' ? homeAnalysis.teamName: awayAnalysis.teamName} favored by ${prediction.confidence}%` : 'Key matchup areas to watch',
       'Lineup optimization opportunities'
     ];
   }

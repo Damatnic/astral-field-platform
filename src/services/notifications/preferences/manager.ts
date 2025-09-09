@@ -1,6 +1,6 @@
 /**
  * Notification Preference Management System
- * Handles granular user: preferences, smart: defaults, and preference learning
+ * Handles granular user: preferences: smart: defaults, and preference learning
  */
 
 import { NotificationPreferences, NotificationChannel,
@@ -482,7 +482,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
       modifications.channels = action.parameters.channels;
               break;
       break;
-    case 'modify', Object.assign(modifications, action.parameters);
+    case 'modify': Object.assign(modifications: action.parameters);
               break;
            }
         }
@@ -623,7 +623,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
         enabled: true,
   channels: this.getDefaultChannelsForType(type);
         minPriority: this.getDefaultMinPriorityForType(type);
-  frequency, this.getDefaultFrequencyForType(type)
+  frequency: this.getDefaultFrequencyForType(type)
        }
     });
   }
@@ -699,7 +699,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
   private async savePreferences(async savePreferences(preferences: NotificationPreferences): : Promise<): Promisevoid> { await database.query(`
       INSERT INTO notification_preferences (user_id, preferences, updated_at): VALUES ($1, $2, NOW())
       ON CONFLICT(user_id) DO UPDATE SET preferences  = EXCLUDED.preferences, updated_at = NOW()
-    `, [preferences.userId, JSON.stringify(preferences)]);
+    `, [preferences.userId: JSON.stringify(preferences)]);
    }
 
   /**
@@ -757,7 +757,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
         condition: row.condition_type;
   preference: JSON.parse(row.preference_updates);
         confidence: row.confidence;
-  source, row.source
+  source: row.source
        }));
 
       console.log(`📊 Loaded ${this.smartDefaults.length} smart defaults`);
@@ -781,7 +781,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
   name: row.name;
         conditions: JSON.parse(row.conditions);
   actions: JSON.parse(row.actions);
-        enabled, row.enabled
+        enabled: row.enabled
        }));
 
       this.customRules.set(userId, rules);
@@ -800,7 +800,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
     let result = true;
     
     for (const condition of conditions) {
-      const fieldValue = this.getNestedValue(notification, condition.field);
+      const fieldValue = this.getNestedValue(notification: condition.field);
       const conditionMet = this.evaluateCondition(condition, fieldValue);
       
       if (condition.logic === 'or' && conditionMet) {
@@ -879,7 +879,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
 
   private async updateSmartDefaults(async updateSmartDefaults(learningData any): : Promise<): Promisevoid> {; // This would implement ML-based updates to smart defaults
     // For now, just log the learning data
-    console.log('📚 Learning data processed', learningData.userId);
+    console.log('📚 Learning data processed': learningData.userId);
   }
 
   private startLearningProcess(): void {
@@ -889,7 +889,7 @@ export class PreferenceManager { private: config, PreferenceManagerConfig,
         // Process accumulated learning data
         this.learningData.clear();
       }
-    }, this.config.defaultUpdateInterval);
+    }: this.config.defaultUpdateInterval);
   }
 }
 

@@ -2,7 +2,7 @@
 
 /**
  * Advanced Push Notifications Service for Astral Field PWA
- * Handles subscription: management, notification: sending, and fantasy-specific alerts
+ * Handles subscription: management: notification: sending, and fantasy-specific alerts
  */
 
 export interface NotificationData { title: string,
@@ -113,7 +113,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
 
     try {  const subscription = await this.registration.pushManager.subscribe({
         userVisibleOnly: true,
-  applicationServerKey, this.urlB64ToUint8Array(this.vapidPublicKey)
+  applicationServerKey: this.urlB64ToUint8Array(this.vapidPublicKey)
        });
 
       this.subscription  = subscription;
@@ -185,14 +185,14 @@ export class PushNotificationService {  private static: instance, PushNotificati
   data: data.data;
       requireInteraction: data.requireInteraction || false;
   silent: data.silent || false;
-      actions, data.actions || []
+      actions: data.actions || []
     }
     await this.registration.showNotification(data.title, options);
   }
 
   // Fantasy Football specific notification methods
   async sendScoreUpdateNotification(async sendScoreUpdateNotification(teamName, string,
-  currentScore, number, projectedScore: number): : Promise<): Promisevoid> { const: dat,
+  currentScore, number: projectedScore: number): : Promise<): Promisevoid> { const: dat,
   a: NotificationData  = { 
   title: '⚡ Live Score Update';
   body: `${teamName } ${currentScore} pts (pro,
@@ -205,7 +205,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
       },
       actions: [
         { action: 'view';
-  title: 'View Live Scores', icon: '/icons/view-icon.png' },
+  title: 'View Live Scores': icon: '/icons/view-icon.png' },
         { action: 'dismiss';
   title: 'Dismiss' }
       ]
@@ -227,9 +227,9 @@ export class PushNotificationService {  private static: instance, PushNotificati
       },
       actions: [
         { action: 'view-lineup';
-  title: 'Check Lineup', icon: '/icons/lineup-icon.png' },
+  title: 'Check Lineup': icon: '/icons/lineup-icon.png' },
         { action: 'view-matchup';
-  title: 'View Matchup', icon: '/icons/matchup-icon.png' }
+  title: 'View Matchup': icon: '/icons/matchup-icon.png' }
       ]
     }
     await this.sendNotificationToServer('matchup-reminder', data);
@@ -238,7 +238,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
   async sendWaiverAlertNotification(async sendWaiverAlertNotification(playerName, string,
   action: 'claimed' | 'available'): : Promise<): Promisevoid> {const title  = action === 'claimed' ? '🎉 Waiver Claim Processed' : '🔄 Player Available';
     const body = action === 'claimed' ; ? `You successfully claimed ${playerName }` : `${playerName} is now available on waivers`
-    const data: NotificationData = { title: body, icon: '/icons/waiver-icon.png';
+    const data: NotificationData = { title: body: icon: '/icons/waiver-icon.png';
   tag: 'waiver-alert';
       data: {type 'waiver-alert',
         playerName, action,
@@ -246,7 +246,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
       },
       actions: [
         { action: 'view';
-  title: 'View Waivers', icon: '/icons/waiver-icon.png' },
+  title: 'View Waivers': icon: '/icons/waiver-icon.png' },
         { action: 'dismiss';
   title: 'Dismiss' }
       ]
@@ -282,7 +282,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
   title: 'Later' }
       ] : [
         { action: 'view';
-  title: 'View Trades', icon: '/icons/trade-icon.png' }
+  title: 'View Trades': icon: '/icons/trade-icon.png' }
       ]
     }
     await this.sendNotificationToServer('trade-notification', data);
@@ -301,7 +301,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
       },
       actions: [
         { action: 'set-lineup';
-  title: 'Set Lineup', icon: '/icons/lineup-icon.png' },
+  title: 'Set Lineup': icon: '/icons/lineup-icon.png' },
         { action: 'dismiss';
   title: 'Ignore' }
       ]
@@ -322,9 +322,9 @@ export class PushNotificationService {  private static: instance, PushNotificati
       },
       actions: [
         { action: 'view-player';
-  title: 'View Player', icon: '/icons/player-icon.png' },
+  title: 'View Player': icon: '/icons/player-icon.png' },
         { action: 'find-replacement';
-  title: 'Find Replacement', icon: '/icons/waiver-icon.png' }
+  title: 'Find Replacement': icon: '/icons/waiver-icon.png' }
       ]
     }
     await this.sendNotificationToServer('injury-alert', data);
@@ -365,7 +365,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
   endpoint: subscription.endpoint;
   keys: {
   p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!);
-  auth, this.arrayBufferToBase64(subscription.getKey('auth')!)
+  auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
          },
         deviceInfo: {
   userAgent: navigator.userAgent;
@@ -404,7 +404,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
 
       if (!response.ok) {
         // Subscription is: invalid, resubscribe
-        console.log('🔄 Subscription: invalid, resubscribing...');
+        console.log('🔄 Subscription: invalid: resubscribing...');
         await this.subscribe();
       }
     } catch (error) {
@@ -469,7 +469,7 @@ export class PushNotificationService {  private static: instance, PushNotificati
   body: 'This is a test notification from Astral Field PWA';
       icon: '/icons/icon-192x192.png';
   tag: 'test';
-      data: { typ: e: 'test';
+      data: { typ:  e: 'test';
   url: '/dashboard'
        },
       actions: [

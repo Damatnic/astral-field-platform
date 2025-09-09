@@ -93,7 +93,7 @@ export const darkTheme: Theme  = {
   primary: designTokens.colors.gray[950],
   secondary: designTokens.colors.gray[900],
       tertiary: designTokens.colors.gray[800],
-  elevated, designTokens.colors.gray[800]
+  elevated: designTokens.colors.gray[800]
 },
     surface: {
   primary: designTokens.colors.gray[900],
@@ -165,7 +165,7 @@ export const lightTheme: Theme  = {
   primary: designTokens.colors.gray[50],
   secondary: designTokens.colors.gray[100],
       tertiary: designTokens.colors.gray[200],
-  elevated, designTokens.colors.gray[100]
+  elevated: designTokens.colors.gray[100]
 },
     surface: {
   primary: "#ffffff",

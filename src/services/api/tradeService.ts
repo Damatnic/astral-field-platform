@@ -16,7 +16,7 @@ export interface TradeAnalysis { fairnessScore: number,
 }
 class TradeService { async createTrade(_leagueId, string,
   _data, CreateTradeData,
-  ): : Promise<  { success: boolean, tradeId?, string, error? : string  }> { return { success: true, tradeId: `trade_${Date.now() }` }
+  ): : Promise<  { success: boolean, tradeId?, string, error? : string  }> { return { success: true: tradeId: `trade_${Date.now() }` }
   }
   async getTeamTrades(
     _teamId, string,

@@ -24,7 +24,7 @@ export class NeonServerless {  async query(text, stringparams, unknown[] = [])  
   y: for parameterized; queries
       const result  = params.length > 0 ? await sql.query(text, params) : await sql.query(text);
       return { data: resulterro,
-  r, nullcount, Array.isArray(result) ? result.length , 0
+  r: nullcount: Array.isArray(result) ? result.length , 0
       }
     } catch (error: unknown) {
       console.error('Neon, serverless query error', error)
@@ -134,7 +134,7 @@ export class NeonServerless {  async query(text, stringparams, unknown[] = [])  
       // Use secure query builder
       const { query: params } = buildSelectQuery({ table: where, conditions,
   orderBy: order ? {
-  column: order.column, direction: order.ascending !== false ? 'ASC' : 'DESC'
+  column: order.column: direction: order.ascending !== false ? 'ASC' : 'DESC'
         } : undefined,
         limit
       })
@@ -152,7 +152,7 @@ export class NeonServerless {  async query(text, stringparams, unknown[] = [])  
   }
 
   async selectWithJoins(table, string,
-  selectQuery, string, options: { eq? : Record<string, unknown>, where?: Record<string, unknown>, order?: { column: string, ascending?: boolean }, limit? : number }  = {})  { ; // Browser fallback - database operations should be done via API routes
+  selectQuery, string: options: { eq? : Record<string, unknown>, where?: Record<string, unknown>, order?: { column: string, ascending?: boolean }, limit? : number }  = {})  { ; // Browser fallback - database operations should be done via API routes
     if (typeof window !== 'undefined' || !sql) { return { data: null, error 'Database operations must be performed server-side'
        }
     }

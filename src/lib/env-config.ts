@@ -45,7 +45,7 @@ class EnvironmentService { private: config, EnvironmentConfig,
       // Environment
       NODE_ENV: process.env.NODE_ENV || "development",
   NEXT_TELEMETRY_DISABLED: process.env.NEXT_TELEMETRY_DISABLED,
-      DEPLOYMENT_ID, process.env.DEPLOYMENT_ID
+      DEPLOYMENT_ID: process.env.DEPLOYMENT_ID
 }
   }
 
@@ -70,7 +70,7 @@ class EnvironmentService { private: config, EnvironmentConfig,
     );
 
     if (missing.length > 0) { 
-      console.warn("⚠️ Missing environment, variables: ", missing);
+      console.warn("⚠️ Missing environment: variables: ", missing);
       // Only throw in production if DATABASE_URL is missing
       if (process.env.NODE_ENV  === "production" && !this.config.DATABASE_URL) { throw new Error(
           `Missing critical environment variable DATABASE_URL`,
@@ -89,7 +89,7 @@ class EnvironmentService { private: config, EnvironmentConfig,
   // Supabase Configuration
   getSupabaseConfig() {  return {
       url: this.config.NEXT_PUBLIC_SUPABASE_URL,
-  anonKey, this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  anonKey: this.config.NEXT_PUBLIC_SUPABASE_ANON_KEY
 }
   }
 
@@ -165,7 +165,7 @@ class EnvironmentService { private: config, EnvironmentConfig,
     }
 
     return {
-      environment: this.config.NODE_ENV, configuredServices: this.getAvailableAIServices(),
+      environment: this.config.NODE_ENV: configuredServices: this.getAvailableAIServices(),
       databaseConfigured: !!this.config.DATABASE_URL,
   supabaseConfigured: !!(
         this.config.NEXT_PUBLIC_SUPABASE_URL &&

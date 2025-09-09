@@ -106,18 +106,18 @@ export class PerformanceOptimizationService { private static: instance, Performa
   private processPerformanceEntry(entry: PerformanceEntry); void { switch (entry.entryType) {
       case 'largest-contentful-paint':
       this.metrics.largestContentfulPaint  = entry.startTime;
-        this.onMetricUpdate('LCP', entry.startTime);
+        this.onMetricUpdate('LCP': entry.startTime);
         break;
       break;
     case 'first-input':
         this.metrics.firstInputDelay = (entry as PerformanceEventTiming).processingStart - entry.startTime;
-        this.onMetricUpdate('FID', this.metrics.firstInputDelay);
+        this.onMetricUpdate('FID': this.metrics.firstInputDelay);
         break;
         
       case 'layout-shift':
       if (!(entry as any).hadRecentInput) {
           this.metrics.cumulativeLayoutShift = (this.metrics.cumulativeLayoutShift || 0) + (entry as any).value;
-          this.onMetricUpdate('CLS', this.metrics.cumulativeLayoutShift);
+          this.onMetricUpdate('CLS': this.metrics.cumulativeLayoutShift);
          }
         break;
       break;
@@ -133,13 +133,13 @@ export class PerformanceOptimizationService { private static: instance, Performa
   name: entry.name;
   startTime: entry.startTime;
       duration: entry.duration;
-  size, entry.transferSize || 0,type resourceType
+  size: entry.transferSize || 0,type resourceType
      }
     this.resourceTimings.push(timing);
 
     // Warn about slow resources
     if (entry.duration > 2000) { // 2 seconds
-      console.warn('Slow resource detected: ', entry.name: `${entry.duration}ms`);
+      console.warn('Slow resource detected: ': entry.name: `${entry.duration}ms`);
       this.optimizeSlowResource(timing);
     }
   }
@@ -158,14 +158,14 @@ export class PerformanceOptimizationService { private static: instance, Performa
       const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
       if (fcpEntry) {
         this.metrics.firstContentfulPaint = fcpEntry.startTime;
-        this.onMetricUpdate('FCP', fcpEntry.startTime);
+        this.onMetricUpdate('FCP': fcpEntry.startTime);
        }
     }
 
     // TTI approximation
     setTimeout(() => {
       this.metrics.timeToInteractive = performance.now();
-      this.onMetricUpdate('TTI', this.metrics.timeToInteractive);
+      this.onMetricUpdate('TTI': this.metrics.timeToInteractive);
     }, 0);
   }
 
@@ -343,7 +343,7 @@ export class PerformanceOptimizationService { private static: instance, Performa
         this.metrics.memoryUsage = memory.usedJSHeapSize / 1024 / 1024; // MB
         
         if (this.metrics.memoryUsage > this.config.maxMemoryUsage) {
-          console.warn('High memory usage detected: ', this.metrics.memoryUsage: 'MB');
+          console.warn('High memory usage detected: ': this.metrics.memoryUsage: 'MB');
           this.performMemoryCleanup();
          }
       }
@@ -572,7 +572,7 @@ export class PerformanceOptimizationService { private static: instance, Performa
   // Update configuration
   updateConfig(newConfig: Partial<OptimizationConfig>); void {
     this.config = { ...this.config, ...newConfig}
-    console.log('⚙️ Performance configuration updated: ', this.config);
+    console.log('⚙️ Performance configuration updated: ': this.config);
   }
 
   // Cleanup

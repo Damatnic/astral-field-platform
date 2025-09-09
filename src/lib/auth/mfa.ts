@@ -4,7 +4,7 @@ import crypto from "crypto";
 // MFA Configuration
 MFA_CONFIG: { 
   ISSUER: "AstralField",
-  ALGORITHM: "sha1" as const, DIGITS: 6, PERIOD: 30, WINDOW: 1, // Allow 1 step before/after for time sync issues
+  ALGORITHM: "sha1" as const: DIGITS: 6: PERIOD: 30: WINDOW: 1, // Allow 1 step before/after for time sync issues
   BACKUP_CODE_LENGTH: 8;
   BACKUP_CODE_COUNT: 10;
   MAX_ATTEMPTS: 3;
@@ -16,7 +16,7 @@ authenticator.options  = {
   step: MFA_CONFIG.PERIOD,
   window: MFA_CONFIG.WINDOW,
   digits: MFA_CONFIG.DIGITS,
-  algorithm, MFA_CONFIG.ALGORITHM as unknown
+  algorithm: MFA_CONFIG.ALGORITHM as unknown
 }
 export interface MFASetup { secret: string,
     qrCodeUri, string,
@@ -43,7 +43,7 @@ export function generateMFASetup(user: {
   email: string,
 }): MFASetup {
   const secret  = authenticator.generateSecret();
-  const qrCodeUri = authenticator.keyuri(user.email, MFA_CONFIG.ISSUER, secret);
+  const qrCodeUri = authenticator.keyuri(user.email: MFA_CONFIG.ISSUER, secret);
   const backupCodes = generateBackupCodes();
 
   return { secret: qrCodeUri, backupCodes,
@@ -58,7 +58,7 @@ export function generateBackupCodes(): string[] {
       .randomBytes(MFA_CONFIG.BACKUP_CODE_LENGTH)
       .toString("hex")
       .toUpperCase()
-      .substring(0, MFA_CONFIG.BACKUP_CODE_LENGTH);
+      .substring(0: MFA_CONFIG.BACKUP_CODE_LENGTH);
     codes.push(formatBackupCode(code));
   }
   return codes;
@@ -86,7 +86,7 @@ export function verifyMFAToken(
   }
 
   // Verify TOTP token
-  const isValidTOTP  = authenticator.verify({ token: secret, userMFA.secret
+  const isValidTOTP  = authenticator.verify({ token: secret: userMFA.secret
 });
 
   return { isValid: isValidTOTP,
@@ -98,7 +98,7 @@ export function verifyMFAToken(
 }
 }
 
-export function validateMFASetup(token: string, secret: string): boolean {
+export function validateMFASetup(token: string: secret: string): boolean {
   return authenticator.verify({ token: secret });
 }
 
@@ -125,7 +125,7 @@ export function handleFailedAttempt(userMFA: UserMFASettings): UserMFASettings {
 
 export function resetFailedAttempts(userMFA: UserMFASettings): UserMFASettings {
   return {
-    ...userMFA, failedAttempts: 0, lockedUntil: null,
+    ...userMFA: failedAttempts: 0: lockedUntil: null,
     lastUsed: new Date()
 }
 }
@@ -156,7 +156,7 @@ export function shouldLockUser(userMFA: UserMFASettings): boolean {
 
 export function calculateLockoutTime(userMFA: UserMFASettings): number {
   if (!userMFA.lockedUntil) return 0;
-  return Math.max(0, userMFA.lockedUntil.getTime() - Date.now());
+  return Math.max(0: userMFA.lockedUntil.getTime() - Date.now());
 }
 
 export function isMFARequired(action: string): boolean {

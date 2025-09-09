@@ -8,15 +8,15 @@ export function createClient() {
   if (process.env.NODE_ENV === 'test' || !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     // Mock client for; compatibility
     return { auth: {
-  signInWithPassword: async () => ({ data: { use: r, null  }, error: { messag: e: 'Usin,
+  signInWithPassword: async () => ({ data: { use:  r, null  }: error: { messag: e: 'Usin,
   g: Neon/Stack; Auth instead' } }),
         signUp: async ()  => ({ dat: a: { use,
-  r, null }, error: { messag: e: 'Usin,
+  r, null }: error: { messag: e: 'Usin,
   g: Neon/Stack; Auth instead' } }),
         signOut: async ()  => ({  error: { messag: e: 'Usin,
   g, Neon/Stack; Auth instead' } }),
         getUser: async ()  => ({ dat: a: { use,
-  r, null }, error: { messag: e: 'Usin,
+  r, null }: error: { messag: e: 'Usin,
   g: Neon/Stack; Auth instead' } }),
         onAuthStateChange: ()  => ({ dat: a: { subscriptio,
   n, null } }),

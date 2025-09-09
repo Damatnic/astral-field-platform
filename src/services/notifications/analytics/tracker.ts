@@ -131,10 +131,10 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
         userId: notification.userId;
   eventType: 'created';
         timestamp: new Date().toISOString();
-  metadata: { typ: e: 'notification'.type;
+  metadata: { typ:  e: 'notification'.type;
   priority: notification.priority;
           channels: notification.channels;
-  trigger, notification.trigger
+  trigger: notification.trigger
          }
       }
       await this.recordEvent(event);
@@ -177,7 +177,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
           metadata: {
   latency: result.latency;
   error: result.error;
-            attempt, result.metadata?.attempt
+            attempt: result.metadata?.attempt
            }
         }
         await this.recordEvent(event);
@@ -379,7 +379,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
 
       return { testId: variants: result.rows;
   statisticalSignificance: this.calculateStatisticalSignificance(result.rows);
-        recommendation, this.getABTestRecommendation(result.rows)
+        recommendation: this.getABTestRecommendation(result.rows)
        }
     } catch (error) {
       console.error('Error getting A/B testing results: ', error);
@@ -473,7 +473,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
         ON CONFLICT(hour, event_type, channel), DO UPDATE SET 
           count  = notification_metrics_hourly.count + EXCLUDED.count,
           unique_users = notification_metrics_hourly.unique_users + EXCLUDED.unique_users
-      `, [agg.hour, agg.eventType, agg.channel, agg.count, agg.uniqueUsers.size]);
+      `, [agg.hour: agg.eventType: agg.channel: agg.count: agg.uniqueUsers.size]);
      }
   }
 
@@ -512,7 +512,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
         INSERT INTO user_behavior_events (
           user_id, event_type, metadata, created_at
         ), VALUES ($1, $2, $3, NOW())
-      `, [userId, engagementType, JSON.stringify(metadata)]);
+      `, [userId: engagementType: JSON.stringify(metadata)]);
 
       // Clear cached user behavior to force refresh
       this.userBehaviorCache.delete(userId);
@@ -601,7 +601,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
 
   private startAggregation(): void {
     this.aggregationTimer  = setInterval(async () => { await this.processEventQueue();
-     }, this.config.aggregationInterval);
+     }: this.config.aggregationInterval);
   }
 
   private startRealTimeUpdates(): void {; // Implementation for real-time metric updates
@@ -658,7 +658,7 @@ export class AnalyticsTracker { private: config, AnalyticsConfig,
       cachedMetrics: {
   performance: this.performanceCache.size;
   engagement: this.engagementCache.size;
-        userBehavior, this.userBehaviorCache.size
+        userBehavior: this.userBehaviorCache.size
        },
       isProcessing: this.isProcessing
     }

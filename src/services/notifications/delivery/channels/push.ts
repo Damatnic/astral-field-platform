@@ -32,7 +32,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
   constructor() { 
     this.vapidKeys = {
       publicKey: process.env.VAPID_PUBLIC_KEY || '';
-  privateKey, process.env.VAPID_PRIVATE_KEY || ''
+  privateKey: process.env.VAPID_PRIVATE_KEY || ''
     }
   }
 
@@ -83,7 +83,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
   channel: 'push';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'No active push subscriptions found'
          }
       }
@@ -94,7 +94,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
 
       // Send to all subscriptions
       const sendPromises = subscriptions.map(subscription =>
-        this.sendToSubscription(subscription, payload, pushOptions, notification.id)
+        this.sendToSubscription(subscription, payload: pushOptions: notification.id)
       );
 
       const results = await Promise.allSettled(sendPromises);
@@ -126,7 +126,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
   totalSubscriptions: subscriptions.length;
   successful, successCount,
           failed, failureCount,
-  attempt, options.attempt
+  attempt: options.attempt
         }
       }
     } catch (error) { return {
@@ -135,7 +135,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
         success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag, e: 'Push delivery error'
+  error: error instanceof Error ? error.messag: e: 'Push delivery error'
        }
     }
   }
@@ -153,7 +153,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
       await database.query(`
         INSERT INTO push_subscriptions (
           user_id, endpoint, p256dh_key, auth_key, user_agent, device_type, is_active, created_at
-        ): VALUES ($1, $2, $3, $4, $5, $6: true, NOW())
+        ): VALUES ($1, $2, $3, $4, $5: $6: true, NOW())
         ON CONFLICT(user_id, endpoint) DO UPDATE SET 
           p256dh_key = EXCLUDED.p256dh_key,
           auth_key = EXCLUDED.auth_key,
@@ -188,7 +188,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
 
       console.log(`📱 Push subscription unregistered for user ${userId }`);
     } catch (error) { 
-      console.error(`❌ Failed to unregister push, subscription: `, error);
+      console.error(`❌ Failed to unregister push: subscription: `, error);
       throw error;
     }
   }
@@ -207,7 +207,7 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
   endpoint: row.endpoint;
       keys: {
   p256dh: row.p256dh_key;
-  auth, row.auth_key
+  auth: row.auth_key
        },
       userAgent: row.user_agent;
   deviceType: row.device_type;
@@ -228,12 +228,12 @@ export class PushDelivery { private vapidKeys: { publicKey: string,
       image: notification.richContent? .imageUrl;
   data: {
   notificationId: notification.id;
-type notification.type, url, notification.actionUrl;
+type notification.type: url: notification.actionUrl;
         ...notification.data},
       actions: notification.actions? .slice(0, 2).map(action  => ({ 
         action: action.action;
   title: action.label;
-        icon, action.icon
+        icon: action.icon
       })) || [],
       tag: `astral_${notification.type}_${notification.id}`,
       requireInteraction: notification.priority  === 'urgent' || notification.priority === 'critical';
@@ -269,13 +269,13 @@ type notification.type, url, notification.actionUrl;
   ): : Promise<): Promise  { success: boolean, error? : string }> { try {
       const pushSubscription  = { 
         endpoint: subscription.endpoint;
-  keys, subscription.keys
+  keys: subscription.keys
        }
       await webpush.sendNotification(pushSubscription, payload, options);
       
       return { success: true }
     } catch (error: any) {
-      console.error(`❌ Push send failed for ${subscription.endpoint}, `, error.message);
+      console.error(`❌ Push send failed for ${subscription.endpoint}, `: error.message);
       
       // Handle specific push errors
       if (error.statusCode  === 410 || error.statusCode === 404) { 
@@ -425,7 +425,7 @@ type notification.type, url, notification.actionUrl;
 
     return { 
       subscriptionStats: subscriptionStats.rows;
-  isInitialized, this.isInitialized
+  isInitialized: this.isInitialized
      }
   }
 

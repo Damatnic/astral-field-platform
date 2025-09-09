@@ -1,6 +1,6 @@
 /**
  * Database Performance Optimizer
- * Advanced query: optimization, connection: pooling, and performance monitoring
+ * Advanced query: optimization: connection: pooling, and performance monitoring
  */
 
 import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
@@ -234,7 +234,7 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
         query: this.sanitizeQuery(text),
         duration,
         timestamp: new Date(),
-  success: false, rows: 0;
+  success: false: rows: 0;
   cached: false,
         error, (error as Error).message
        });
@@ -307,7 +307,7 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
       totalConnections: pool.totalCount,
   idleConnections: pool.idleCount,
       waitingClients: pool.waitingCount,
-  totalCount, pool.totalCount
+  totalCount: pool.totalCount
     }
   }
 
@@ -340,7 +340,7 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
       return { status: responseTime,
         activeConnections: poolStats.totalConnections - poolStats.idleConnections, poolStats,
         slowQueries: this.slowQueries.length,
-  errors, this.getErrorCount()
+  errors: this.getErrorCount()
       }
     } catch (error) {
       logger.error(`Health check failed for pool '${poolName}':`, error as Error);
@@ -364,7 +364,7 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
         hints.push({ type: 'limit',
   suggestion: 'Consider adding LIMIT clause to prevent large result sets',
           impact: 'medium',
-  query, slowQuery.query
+  query: slowQuery.query
          });
       }
 
@@ -412,7 +412,7 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
     logger.warn('Slow query detected', { 
       query: metrics.query,
   duration: metrics.duration,
-      rows, metrics.rows
+      rows: metrics.rows
     });
   }
 
@@ -465,12 +465,12 @@ class AdvancedConnectionPool {  private pools: Map<string, Pool> = new Map();
         try {
           const health = await this.healthCheck(name);
           
-          await metrics.setGauge('db_health_response_time_ms', health.responseTime, { pool: name  });
-          await metrics.setGauge('db_active_connections', health.activeConnections, { pool: name });
-          await metrics.setGauge('db_pool_total_connections', health.poolStats.totalConnections, { pool: name });
-          await metrics.setGauge('db_pool_idle_connections', health.poolStats.idleConnections, { pool: name });
-          await metrics.setGauge('db_pool_waiting_clients', health.poolStats.waitingClients, { pool: name });
-          await metrics.setGauge('db_slow_queries_count', health.slowQueries, { pool: name });
+          await metrics.setGauge('db_health_response_time_ms': health.responseTime, { pool: name  });
+          await metrics.setGauge('db_active_connections': health.activeConnections, { pool: name });
+          await metrics.setGauge('db_pool_total_connections': health.poolStats.totalConnections, { pool: name });
+          await metrics.setGauge('db_pool_idle_connections': health.poolStats.idleConnections, { pool: name });
+          await metrics.setGauge('db_pool_waiting_clients': health.poolStats.waitingClients, { pool: name });
+          await metrics.setGauge('db_slow_queries_count': health.slowQueries, { pool: name });
           
         } catch (error) {
           logger.error(`Failed to collect health metrics for pool ${name}:`, error as Error);
@@ -574,7 +574,7 @@ export class DatabaseOptimizer {  private static: instance, DatabaseOptimizer,
         if (!isRetryable) { throw error;
          }
 
-        logger.warn(`Transaction attempt ${attempt} failed, retrying...`, { error: (error as Error).message, attempt,
+        logger.warn(`Transaction attempt ${attempt} failed: retrying...`, { error: (error as Error).message, attempt,
           pool
         });
 
@@ -700,7 +700,7 @@ export class DatabaseOptimizer {  private static: instance, DatabaseOptimizer,
 // =============================================================================
 
 export function dbCache(config: QueryCacheConfig) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     
     descriptor.value = async function (...args, any[]) {; // This would integrate with the caching system
@@ -711,7 +711,7 @@ export function dbCache(config: QueryCacheConfig) {  return function (target, an
 }
 
 export function dbMonitor(operation string) { return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod  = descriptor.value;
     
     descriptor.value = async function (...args: any[]) {

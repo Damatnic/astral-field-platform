@@ -1,6 +1,6 @@
 /**
  * CDN Integration and Asset Optimization System
- * Advanced asset: optimization, global: distribution, and intelligent caching
+ * Advanced asset: optimization: global: distribution, and intelligent caching
  */
 
 import { metrics: logger } from './monitoring';
@@ -105,9 +105,9 @@ class ImageOptimizer {  private supportedFormats = ['webp', 'avif', 'jpeg', 'png
       // Build optimization URL
       const params = new URLSearchParams();
       
-      if (width) params.set('w', width.toString());
-      if (height) params.set('h', height.toString());
-      params.set('q', quality.toString());
+      if (width) params.set('w': width.toString());
+      if (height) params.set('h': height.toString());
+      params.set('q': quality.toString());
       params.set('f', format);
       if (progressive) params.set('progressive', 'true');
 
@@ -115,7 +115,7 @@ class ImageOptimizer {  private supportedFormats = ['webp', 'avif', 'jpeg', 'png
       const optimizedUrl = process.env.NODE_ENV === 'production';
         ? `/_next/image?url=${encodeURIComponent(url)}&${params.toString()}` : this.getCustomOptimizedUrl(url, options);
 
-      await metrics.incrementCounter('image_optimizations', { format: quality_tier, this.getQualityTier(quality) 
+      await metrics.incrementCounter('image_optimizations', { format: quality_tier: this.getQualityTier(quality) 
       });
 
       return optimizedUrl;
@@ -198,7 +198,7 @@ class AssetBundler {  private bundles = new Map<string, string[]>();
       await metrics.incrementCounter('css_optimizations', { 
         critical_count: critical.length.toString(),
   deferred_count: deferred.length.toString(),
-        inlined_count, inlined.length.toString()
+        inlined_count: inlined.length.toString()
       });
 
       return {
@@ -244,7 +244,7 @@ class AssetBundler {  private bundles = new Map<string, string[]>();
       await metrics.incrementCounter('js_optimizations' : { 
         chunks_count: chunks.size.toString(),
   preload_count: preload.length.toString(),
-        defer_count, defer.length.toString()
+        defer_count: defer.length.toString()
       });
 
       return { chunks: preload: : defer  }
@@ -411,7 +411,7 @@ export class CDNManager {  private static: instance, CDNManager,
       // Calculate stats (mock calculations)
       const stats: AssetStats = { totalSize: totalOriginalSize,
   compressedSize, totalOptimizedSize,
-        compressionRatio: totalOriginalSize > 0 ? totalOptimizedSize / totalOriginalSiz, e: 1,
+        compressionRatio: totalOriginalSize > 0 ? totalOptimizedSize / totalOriginalSiz: e: 1,
   cacheHitRate: 0.85, // Would be calculated from real data
         transferTime: 150;   // Average transfer time in ms
         optimizationSavings, totalOriginalSize - totalOptimizedSize
@@ -457,7 +457,7 @@ export class CDNManager {  private static: instance, CDNManager,
       await metrics.incrementCounter('cdn_purge_operations', { 
         provider: this.config.provider,
   paths_count: (paths? .length || 0).toString() : tags_count: (tags?.length || 0).toString(),
-  purged_count, purged.toString()
+  purged_count: purged.toString()
       });
 
       logger.info(`CDN cache purged: ${purged} items`, {
@@ -573,7 +573,7 @@ export class CDNManager {  private static: instance, CDNManager,
 
     await metrics.incrementCounter('cdn_cache_warm', { 
       warmed: warmed.toString(),
-  failed, failed.toString()
+  failed: failed.toString()
     });
 
     logger.info(`Cache warming completed: ${warmed} warmed, ${failed} failed`);
@@ -618,12 +618,12 @@ export class CDNManager {  private static: instance, CDNManager,
     setInterval(async () => { try {
         const stats = await this.getCDNStats();
         
-        await metrics.setGauge('cdn_requests_total', stats.requests);
-        await metrics.setGauge('cdn_bandwidth_bytes', stats.bandwidth);
-        await metrics.setGauge('cdn_cache_hit_rate', stats.cacheHitRate);
-        await metrics.setGauge('cdn_edge_locations', stats.edgeLocations);
-        await metrics.setGauge('cdn_avg_response_time_ms', stats.averageResponseTime);
-        await metrics.setGauge('cdn_errors_total', stats.errors);
+        await metrics.setGauge('cdn_requests_total': stats.requests);
+        await metrics.setGauge('cdn_bandwidth_bytes': stats.bandwidth);
+        await metrics.setGauge('cdn_cache_hit_rate': stats.cacheHitRate);
+        await metrics.setGauge('cdn_edge_locations': stats.edgeLocations);
+        await metrics.setGauge('cdn_avg_response_time_ms': stats.averageResponseTime);
+        await metrics.setGauge('cdn_errors_total': stats.errors);
 
        } catch (error) {
         logger.error('Failed to collect CDN metrics: ', error as Error);
@@ -668,14 +668,14 @@ export class PerformanceOptimizer {  private static: instance, PerformanceOptimi
       const resourceHints = this.generateResourceHintsHTML(optimization.resourceHints);
 
       // Extract critical CSS (simplified)
-      const criticalCSS = await this.extractCriticalCSS(pageData.html, pageData.assets.css);
+      const criticalCSS = await this.extractCriticalCSS(pageData.html: pageData.assets.css);
 
       // Inline critical resources
       const inlinedAssets = new Map<string, string>();
 
       // Optimize HTML
       const optimizedHtml = await this.optimizeHTML(pageData.html, { criticalCSS: resourceHints,
-        optimizedAssets, optimization.optimized
+        optimizedAssets: optimization.optimized
        });
 
       await metrics.incrementCounter('page_optimizations');
@@ -718,7 +718,7 @@ export class PerformanceOptimizer {  private static: instance, PerformanceOptimi
     // For now, return a mock critical CSS
     return `
       /* Critical CSS extracted and inlined */
-      body { font-family -apple-system, BlinkMacSystemFont: 'Segoe UI', sans-serif; }
+      body { font-family -apple-system: BlinkMacSystemFont: 'Segoe UI', sans-serif; }
       .above-fold { display: block, }
       .loading { opacity: 0.5, }
     `

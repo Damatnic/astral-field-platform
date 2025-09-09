@@ -40,7 +40,7 @@ export type TouchCallback = (event: TouchEvent) => void;
 export class TouchOptimizationService {  private static: instance, TouchOptimizationService,
   private gestureListeners: Map<string, GestureCallback[]> = new Map();
   private activeGestures: Map<number, TouchPoint> = new Map();
-  private longPressTimers: Map<number, NodeJS.Timeout> = new Map();
+  private longPressTimers: Map<number: NodeJS.Timeout> = new Map();
   private lastTapTime: number = 0;
   private lastTapElement: HTMLElement | null = null;
   
@@ -79,13 +79,13 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
   private setupEventListeners(): void {  if (typeof window === 'undefined') return;
 
     // Passive listeners for better performance
-    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false  });
-    document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-    document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-    document.addEventListener('touchcancel', this.handleTouchCancel.bind(this), { passive: true });
+    document.addEventListener('touchstart': this.handleTouchStart.bind(this), { passive: false  });
+    document.addEventListener('touchmove': this.handleTouchMove.bind(this), { passive: false });
+    document.addEventListener('touchend': this.handleTouchEnd.bind(this), { passive: false });
+    document.addEventListener('touchcancel': this.handleTouchCancel.bind(this), { passive: true });
 
     // Prevent zoom on double tap for app-like experience
-    document.addEventListener('touchend', this.preventZoom.bind(this), { passive: false });
+    document.addEventListener('touchend': this.preventZoom.bind(this), { passive: false });
 
     // Context menu prevention for long press
     document.addEventListener('contextmenu', (e)  => {
@@ -101,14 +101,14 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier, touch.identifier
+  identifier: touch.identifier
      }
     this.activeGestures.set(touch.identifier, touchPoint);
 
     // Start long press timer
     const timer  = setTimeout(() => {
       this.handleLongPress(touchPoint, element);
-    }, this.options.longPressThreshold);
+    }: this.options.longPressThreshold);
     
     this.longPressTimers.set(touch.identifier, timer);
 
@@ -133,11 +133,11 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier, touch.identifier
+  identifier: touch.identifier
     }
     // Handle drag if enabled
     if (this.options.enableDragAndDrop) {
-      this.handleDrag(startPoint, currentPoint, event.target as HTMLElement);
+      this.handleDrag(startPoint: currentPoint: event.target as HTMLElement);
     }
   }
 
@@ -151,7 +151,7 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
   x: touch.clientX;
   y: touch.clientY;
       timestamp: Date.now();
-  identifier, touch.identifier
+  identifier: touch.identifier
      }
     const element  = event.target as HTMLElement;
 
@@ -169,7 +169,7 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
 
     // Determine gesture type
     if (duration < this.options.doubleTapThreshold && distance < 10) {
-      this.handleTap(startPoint, element, endPoint.timestamp);
+      this.handleTap(startPoint: element: endPoint.timestamp);
     } else if (distance > this.options.swipeThreshold && velocity > this.options.velocityThreshold) {
       this.handleSwipe(startPoint, endPoint, element);
     }
@@ -192,7 +192,7 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
 
   // Handle tap gesture
   private handleTap(startPoint, TouchPoint,
-  element, HTMLElement, timestamp: number); void {  const timeSinceLastTap = timestamp - this.lastTapTime;
+  element, HTMLElement: timestamp: number); void {  const timeSinceLastTap = timestamp - this.lastTapTime;
     
     if (timeSinceLastTap < this.options.doubleTapThreshold && 
         this.lastTapElement === element) {
@@ -218,7 +218,7 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
 
   // Handle swipe gesture
   private handleSwipe(startPoint, TouchPoint,
-  endPoint, TouchPoint, element: HTMLElement); void { const deltaX = endPoint.x - startPoint.x;
+  endPoint, TouchPoint: element: HTMLElement); void { const deltaX = endPoint.x - startPoint.x;
     const deltaY = endPoint.y - startPoint.y;
     const distance = this.calculateDistance(startPoint, endPoint);
     const duration = endPoint.timestamp - startPoint.timestamp;
@@ -253,7 +253,7 @@ export class TouchOptimizationService {  private static: instance, TouchOptimiza
 
   // Handle drag gesture
   private handleDrag(startPoint, TouchPoint,
-  currentPoint, TouchPoint, element: HTMLElement); void { const distance  = this.calculateDistance(startPoint, currentPoint);
+  currentPoint, TouchPoint: element: HTMLElement); void { const distance  = this.calculateDistance(startPoint, currentPoint);
     
     if (distance > 10) {  // Minimum drag distance
       this.triggerGesture('drag', { type: 'drag';

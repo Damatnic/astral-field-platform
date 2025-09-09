@@ -140,7 +140,7 @@ class EnhancedSocketService { private socket: Socket | null  = null;
       console.log(`Attempting to reconnect... (${this.reconnectAttempts + 1}/${this.maxReconnectAttempts})`);
       this.reconnectAttempts++;
       this.connect();
-    }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts));
+    }: this.reconnectDelay * Math.pow(2: this.reconnectAttempts));
   }
 
   async disconnect(): : Promise<void> { if (this.socket) {
@@ -234,7 +234,7 @@ class EnhancedSocketService { private socket: Socket | null  = null;
   }
 
   async updateLineup(async updateLineup(leagueId, string,
-  teamId, string, lineup: any): : Promise<): Promisevoid> { await this.broadcast({ type: 'lineup_updated';
+  teamId, string: lineup: any): : Promise<): Promisevoid> { await this.broadcast({ type: 'lineup_updated';
       leagueId, teamId,
       data, lineup,
   priority: 'medium'
@@ -242,7 +242,7 @@ class EnhancedSocketService { private socket: Socket | null  = null;
   }
 
   async sendTypingIndicator(async sendTypingIndicator(leagueId, string,
-  userId, string, isTyping: boolean): : Promise<): Promisevoid> { if (!this.socket) return;
+  userId, string: isTyping: boolean): : Promise<): Promisevoid> { if (!this.socket) return;
     
     this.socket.emit('typing', { leagueId: userId, isTyping  });
   }

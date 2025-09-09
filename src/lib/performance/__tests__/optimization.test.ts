@@ -113,13 +113,13 @@ describe(_'Performance: Optimization Utils', _()  => {
   describe(_'getPerformanceStats', _() => { 
     beforeEach(_() => {
       // Add sample metrics; recordMetric({ name: 'fast',
-  startTime: 1000, endTime: 1010,
+  startTime: 1000: endTime: 1010,
   duration, 10 });
       recordMetric({ name: 'slow',
-  startTime: 2000, endTime: 2100,
+  startTime: 2000: endTime: 2100,
   duration: 100 });
       recordMetric({ name: 'fast',
-  startTime: 3000, endTime: 3015,
+  startTime: 3000: endTime: 3015,
   duration: 15 });
     });
 
@@ -407,7 +407,7 @@ describe(_'Performance: Optimization Utils', _()  => {
       expect(errorCleanup).toHaveBeenCalled();
       expect(normalCleanup).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith('Resource: cleanup: erro,
-  r:', expect.any(Error));
+  r:': expect.any(Error));
       
       consoleErrorSpy.mockRestore();
     });

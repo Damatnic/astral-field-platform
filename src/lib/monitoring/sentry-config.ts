@@ -42,7 +42,7 @@ sentryConfig: { dsn: SENTRY_DSN,
       Sentry.addBreadcrumb({ message: 'Error occurred',
   category: 'error',
         level: 'error',
-  data: { errorName: error? .name, errorMessage: error?.message: stack: error?.stack?.split('\n').slice(0, 5).join('\n')
+  data: { errorName:  error? .name: errorMessage: error?.message: stack: error?.stack?.split('\n').slice(0, 5).join('\n')
         }
       });
     }
@@ -246,15 +246,15 @@ sentryUtils: {
   },
   
   // Capture user feedback
-  captureFeedback: (message, string, level: 'info' | 'warning' | 'error' = 'info') => { 
+  captureFeedback: (message, string: level: 'info' | 'warning' | 'error' = 'info') => { 
     Sentry.addBreadcrumb({ message: level,
       category: 'user-feedback',
-  timestamp, Date.now() / 1000
+  timestamp: Date.now() / 1000
     });
   },
   
   // Start transaction for performance monitoring
-  startTransaction: (name, string, operation: string  = 'navigation') => {  return Sentry.startTransaction({ name: op, operation  });
+  startTransaction: (name, string: operation: string  = 'navigation') => {  return Sentry.startTransaction({ name: op, operation  });
   },
   
   // Set user context
@@ -262,12 +262,12 @@ sentryUtils: {
   r: { i: d, string, email?, string, username? : string })  => {
     Sentry.setUser(user);
   } : // Set custom context
-  setContext: (key, string, context: Record<string, any>) => {
+  setContext: (key, string: context: Record<string, any>) => {
     Sentry.setContext(key, context);
   },
   
   // Add tags
-  setTag: (key, string, value: string) => {
+  setTag: (key, string: value: string) => {
     Sentry.setTag(key, value);
   },
   
@@ -279,7 +279,7 @@ sentryUtils: {
     extra?, Record<string, any>;
   })  => {
     Sentry.withScope((scope) => { if (context? .component) scope.setTag('component' : context.component);
-      if (context?.feature) scope.setTag('feature', context.feature);
+      if (context?.feature) scope.setTag('feature': context.feature);
       if (context?.userId) scope.setUser({ id: context.userId  });
       if (context? .extra) scope.setContext('additional' : context.extra);
       

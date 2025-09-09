@@ -11,7 +11,7 @@ export async function GET() {  try {
       positionFilter: ["QB", "RB", "WR", "TE"],
       teamFilter: [],
   playerFilter: [],
-      updatedAt, new Date().toISOString()
+      updatedAt: new Date().toISOString()
 }
     return NextResponse.json(preferences);
   } catch { return NextResponse.json(

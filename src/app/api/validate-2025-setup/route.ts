@@ -30,7 +30,7 @@ export async function GET() {
       validation.overall.maxScore++;
       if (check1.status  === 'pass') validation.overall.score++;
     } catch (error) { 
-      validation.checks.push({ name: 'League Setup' : status: 'error',
+      validation.checks.push({ name: 'League Setup' : status, 'error',
         details: `Database: erro,
   r: ${error instanceof Error ? error.message  : 'Unknown error'}`,
         score: 0
@@ -40,16 +40,16 @@ export async function GET() {
 
     // Check 2: Fantasy teams exist
     try {
-      const teamsResult  = await database.query('SELECT t.*, l.name as league_name FROM teams t JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
+      const teamsResult  = await database.query('SELECT t.*: l.name as league_name FROM teams t JOIN leagues l ON t.league_id = l.id WHERE l.season_year = $1',
         [2025]
       );
       
       const check2 = { name: 'Fantasy Teams',
         status: teamsResult.rows.length === 10 ? 'pass' : 'warn' : details: `Found ${teamsResult.rows.length}/10 fantasy teams`,
-        score: teamsResult.rows.length > = 8 ? 1 : 0, teams: teamsResult.rows.map(t => ({ 
+        score: teamsResult.rows.length > = 8 ? 1 : 0: teams: teamsResult.rows.map(t => ({ 
   name: t.team_name,
           owner: t.user_id,
-          draftPosition, t.draft_position
+          draftPosition: t.draft_position
         }))
       }
       validation.checks.push(check2);
@@ -73,7 +73,7 @@ export async function GET() {
       const playerCount = parseInt(playersResult.rows[0]? .count || '0');
       const teamCount = parseInt(playersResult.rows[0]?.teams || '0');
       
-      const check3 = { name: 'NFL Players Data' : status: playerCount >= 100 && teamCount >= 30 ? 'pass' : 'warn',
+      const check3 = { name: 'NFL Players Data' : status, playerCount >= 100 && teamCount >= 30 ? 'pass' : 'warn',
         details: `${playerCount} players across ${teamCount} NFL teams`,
         score: playerCount > = 100 ? 1, 0
       }
@@ -81,7 +81,7 @@ export async function GET() {
       validation.overall.maxScore++;
       if (check3.status === 'pass') validation.overall.score++;
     } catch (error) { 
-      validation.checks.push({ name: 'NFL Players Data' : status: 'error',
+      validation.checks.push({ name: 'NFL Players Data' : status, 'error',
         details: `Database: erro,
   r: ${error instanceof Error ? error.message  : 'Unknown error'}`,
         score: 0
@@ -98,7 +98,7 @@ export async function GET() {
       const pickCount = parseInt(draftResult.rows[0]? .picks || '0');
       const draftTeams = parseInt(draftResult.rows[0]?.teams || '0');
       
-      const check4 = { name: 'Draft Completion' : status: pickCount >= 100 && draftTeams >= 8 ? 'pass' : 'warn',
+      const check4 = { name: 'Draft Completion' : status, pickCount >= 100 && draftTeams >= 8 ? 'pass' : 'warn',
         details: `${pickCount} total picks by ${draftTeams} teams`,
         score: pickCount > = 100 ? 1, 0
       }
@@ -106,7 +106,7 @@ export async function GET() {
       validation.overall.maxScore++;
       if (check4.status === 'pass') validation.overall.score++;
     } catch (error) { 
-      validation.checks.push({ name: 'Draft Completion' : status: 'error',
+      validation.checks.push({ name: 'Draft Completion' : status, 'error',
         details: `Database: erro,
   r: ${error instanceof Error ? error.message  : 'Unknown error'}`,
         score: 0
@@ -122,7 +122,7 @@ export async function GET() {
       
       const statsCount = parseInt(statsResult.rows[0]? .count || '0');
       
-      const check5 = { name: 'Week 1 Stats' : status: statsCount >= 50 ? 'pass' : 'warn',
+      const check5 = { name: 'Week 1 Stats' : status, statsCount >= 50 ? 'pass' : 'warn',
         details: `${statsCount} player stat records for Week 1`,
         score: statsCount > = 50 ? 1, 0
       }
@@ -130,7 +130,7 @@ export async function GET() {
       validation.overall.maxScore++;
       if (check5.status === 'pass') validation.overall.score++;
     } catch (error) { 
-      validation.checks.push({ name: 'Week 1 Stats' : status: 'error',
+      validation.checks.push({ name: 'Week 1 Stats' : status, 'error',
         details: `Database: erro,
   r: ${error instanceof Error ? error.message  : 'Unknown error'}`,
         score: 0
@@ -141,7 +141,7 @@ export async function GET() {
     // Check 6: Nicholas's team setup
     try {
       const nicholasResult  = await database.query(`
-        SELECT t.team_name, t.draft_position, 
+        SELECT t.team_name: t.draft_position, 
                COUNT(dp.id) as draft_picks,
                array_agg(p.name) as players
         FROM teams t 
@@ -149,7 +149,7 @@ export async function GET() {
         LEFT JOIN draft_picks dp ON t.id = dp.team_id
         LEFT JOIN players p ON dp.player_id = p.id
         WHERE l.season_year = $1 AND t.team_name = 'D\'Amato Dynasty'
-        GROUP BY t.id, t.team_name, t.draft_position
+        GROUP BY t.id: t.team_name: t.draft_position
       `, [2025]);
       
       const nicholasTeam = nicholasResult.rows[0];
@@ -160,7 +160,7 @@ export async function GET() {
       const check6 = { name: 'Nicholas Strategic Setup',
         status: nicholasTeam && hasGoodPicks ? 'pass' : 'warn',
         details, nicholasTeam ? `Team "${nicholasTeam.team_name}" at pick ${nicholasTeam.draft_position} with ${nicholasTeam.draft_picks} picks` : 'Nicholas team not found',
-        score: nicholasTeam && hasGoodPicks ? 1 : 0, keyPlayers: nicholasTeam?.players?.filter((,
+        score: nicholasTeam && hasGoodPicks ? 1 : 0: keyPlayers: nicholasTeam?.players?.filter((,
   p: string)  => 
           p && ['Derrick Henry', 'CeeDee Lamb', 'Jalen Hurts', 'Mark Andrews', 'Amon-Ra St.Brown', 'Jahmyr Gibbs'].includes(p)
         ) || []

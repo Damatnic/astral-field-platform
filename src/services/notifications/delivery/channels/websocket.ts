@@ -47,7 +47,7 @@ export class WebSocketDelivery { private isInitialized: boolean  = false;
   channel: 'websocket';
           success: false,
   timestamp: new Date().toISOString();
-          latency, Date.now() - startTime;
+          latency: Date.now() - startTime;
   error: 'User not online'
          }
       }
@@ -72,7 +72,7 @@ export class WebSocketDelivery { private isInitialized: boolean  = false;
           success: true,
   timestamp: new Date().toISOString();
           latency: Date.now() - startTime;
-  metadata: { eventType: attempt: options.attempt;
+  metadata: { eventType:  attempt: options.attempt;
   sentToLeague, !!notification.leagueId
           }
         }
@@ -85,7 +85,7 @@ export class WebSocketDelivery { private isInitialized: boolean  = false;
         success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag, e: 'WebSocket delivery error'
+  error: error instanceof Error ? error.messag: e: 'WebSocket delivery error'
        }
     }
   }

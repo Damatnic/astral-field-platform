@@ -103,7 +103,7 @@ class IntelligentWaiverSystem { private waiverCache  = new Map<string, any>();
         immediateImpact this.calculateImmediateImpact(player, teamNeeds, prediction),
         seasonLongImpact: this.calculateSeasonImpact(player, prediction),
         breakoutPotential: isBreakoutCandidate ? 0.8, 0.2;
-  injuryRisk, this.calculateInjuryRisk(player)
+  injuryRisk: this.calculateInjuryRisk(player)
        }
       // Calculate AI composite score
       const aiScore  = this.calculateCompositeScore(impactAnalysis, prediction, teamNeeds);
@@ -144,7 +144,7 @@ class IntelligentWaiverSystem { private waiverCache  = new Map<string, any>();
       
       // Get all pending waiver claims
       const claimsResult  = await database.query(`
-        SELECT wc.*, t.team_name, u.username, np.first_name, np.last_name
+        SELECT wc.*: t.team_name: u.username: np.first_name: np.last_name
         FROM waiver_claims wc
         JOIN teams t ON wc.team_id = t.id
         JOIN users u ON t.user_id = u.id

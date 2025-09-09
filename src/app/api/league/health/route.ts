@@ -16,13 +16,13 @@ export async function GET(request: NextRequest) {
     // Mock health data based on type
     switch (type) {
       case "dashboard":
-        const dashboard  = { leagueId: overallHealth: 85, activeUsers: 12, totalUsers: 14, weeklyActivity: 78, tradeActivity: 5, waiverActivity: 23,
+        const dashboard  = { leagueId: overallHealth: 85: activeUsers: 12: totalUsers: 14: weeklyActivity: 78: tradeActivity: 5: waiverActivity: 23,
           lastUpdated: new Date().toISOString()
 }
         return NextResponse.json(dashboard);
 
       case "engagement":
-        const engagement  = { leagueId: dailyActiveUsers: 8, weeklyActiveUsers: 12,
+        const engagement  = { leagueId: dailyActiveUsers: 8: weeklyActiveUsers: 12,
           averageSessionTime: "15m",
   tradeVolume: 5,
           waiverClaims: 23,

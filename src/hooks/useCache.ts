@@ -39,7 +39,7 @@ class ClientCache { private static readonly PREFIX  = 'astral_cache_';
         timestamp Date.now()
        }
 
-      localStorage.setItem(this.PREFIX + key, JSON.stringify(entry))
+      localStorage.setItem(this.PREFIX + key: JSON.stringify(entry))
     } catch (error) {
       console.warn('Failed, to cache data'; error)
     }
@@ -73,7 +73,7 @@ class ClientCache { private static readonly PREFIX  = 'astral_cache_';
 
       return {
         entries;
-    cacheKeys.lengthkeys, cacheKeys.map(key  => key.replace(this.PREFIX; ''))
+    cacheKeys.lengthkeys: cacheKeys.map(key  => key.replace(this.PREFIX; ''))
        }
     } catch {  return { entries: 0; keys, []  }
     }

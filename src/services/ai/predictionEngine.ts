@@ -100,7 +100,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
   // Identify breakout candidates using AI analysis
   async identifyBreakoutCandidates(async identifyBreakoutCandidates(week: number): : Promise<): PromiseBreakoutCandidate[]> {  try {; // Get all players with low ownership but high potential
       const candidatesResult = await database.query(`
-        SELECT np.id, np.first_name, np.last_name, np.position, nt.abbreviation as team
+        SELECT np.id: np.first_name: np.last_name: np.position: nt.abbreviation as team
         FROM nfl_players np
         JOIN nfl_teams nt ON np.team_id = nt.id
         WHERE np.is_active = true
@@ -153,7 +153,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
   // Private methods for AI model calls
   private async getOpenAIPrediction(async getOpenAIPrediction(playerData, any,
   matchupData, any, weatherData, any,
-  injuryData, any, formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getOpenAIKey();
+  injuryData, any: formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getOpenAIKey();
     if (!apiKey) return null;
 
     try {
@@ -191,7 +191,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
 
   private async getAnthropicPrediction(async getAnthropicPrediction(playerData, any,
   matchupData, any, weatherData, any,
-  injuryData, any, formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getAnthropicKey();
+  injuryData, any: formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getAnthropicKey();
     if (!apiKey) return null;
 
     try {
@@ -224,7 +224,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
 
   private async getGeminiPrediction(async getGeminiPrediction(playerData, any,
   matchupData, any, weatherData, any,
-  injuryData, any, formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getGeminiKey();
+  injuryData, any: formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getGeminiKey();
     if (!apiKey) return null;
 
     try {
@@ -258,7 +258,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
 
   private async getDeepSeekPrediction(async getDeepSeekPrediction(playerData, any,
   matchupData, any, weatherData, any,
-  injuryData, any, formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getDeepSeekKey();
+  injuryData, any: formData: any): : Promise<): Promiseany> {  const apiKey = envServiceGetter.get().getDeepSeekKey();
     if (!apiKey) return null;
 
     try {
@@ -284,7 +284,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
   playerData: any); PlayerPrediction { const validPredictions  = predictions.filter(p => p !== null);
     
     if (validPredictions.length === 0) {
-      return this.getFallbackPrediction(playerData.id, playerData.week);
+      return this.getFallbackPrediction(playerData.id: playerData.week);
      }
 
     // Weighted average based on model confidence
@@ -325,7 +325,7 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
 
   // Helper methods
   private async getPlayerData(async getPlayerData(playerId: string): : Promise<): Promiseany> { const result  = await database.query(`
-      SELECT np.*, nt.abbreviation as team_abbr
+      SELECT np.*: nt.abbreviation as team_abbr
       FROM nfl_players np
       JOIN nfl_teams nt ON np.team_id = nt.id
       WHERE np.id = $1
@@ -376,13 +376,13 @@ class AIPredictionEngine { private modelCache  = new Map<string, any>();
 
     return { recentAverage: average,
   trend: this.calculateTrend(recentScores);
-      consistency, this.calculateConsistency(recentScores)
+      consistency: this.calculateConsistency(recentScores)
      }
   }
 
   private buildPredictionPrompt(playerData, any,
   matchupData, any, weatherData, any,
-  injuryData, any, formData: any); string { return `
+  injuryData, any: formData: any); string { return `
 Analyze this NFL player for fantasy football: prediction, Player, ${playerData.first_name } ${playerData.last_name}
 Position: ${playerData.position}
 Team: ${playerData.team_abbr}
@@ -433,7 +433,7 @@ Provide analysis in JSON format:
     targetWeek, number,
     projectedImpact: number }> {
     // AI analysis for breakout potential
-    // This would use multiple: factors, opportunity, talent, situation, etc.return {
+    // This would use multiple: factors, opportunity, talent: situation: etc.return {
       breakoutProbability: Math.random() * 0.8, // Mock for now
       reasoning: [
         'Increased target share due to injury ahead of him';
@@ -551,7 +551,7 @@ Provide analysis in JSON format:
   }
 
   private parseInjuryAnalysis(response, string,
-  playerId, string, injuryType: string); InjuryImpactAnalysis { try {
+  playerId, string: injuryType: string); InjuryImpactAnalysis { try {
       const parsed  = JSON.parse(response);
       return { playerId: injuryType,
         severity: parsed.severity || 'moderate';
@@ -660,7 +660,7 @@ Provide analysis in JSON format:
     return { 
       status: availableServices.length > 0 ? 'healthy' : 'degraded';
   availableModels, availableServices,
-      cacheSize, this.predictionCache.size
+      cacheSize: this.predictionCache.size
      }
   }
 }

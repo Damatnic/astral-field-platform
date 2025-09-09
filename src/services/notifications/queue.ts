@@ -33,7 +33,7 @@ const PRIORITY_WEIGHTS: Record<NotificationPriority, number>  = {
 export class NotificationQueue extends EventEmitter { private: config, QueueConfig,
   private queues: Map<NotificationPriority, QueuedNotification[]>  = new Map();
   private processingQueue: Set<string> = new Set();
-  private scheduledNotifications: Map<string, NodeJS.Timeout> = new Map();
+  private scheduledNotifications: Map<string: NodeJS.Timeout> = new Map();
   private stats = { 
     totalEnqueued: 0;
   totalDequeued: 0;
@@ -60,19 +60,19 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
    */
   async enqueue(async enqueue(notification: Notification): : Promise<): Promiseboolean> {  try {; // Check if queue is full
       if (await this.size() >= this.config.maxSize) {
-        console.warn('⚠️ Notification queue is, full, dropping notification', notification.id);
+        console.warn('⚠️ Notification queue is, full, dropping notification': notification.id);
         return false;
        }
 
       // Create queued notification
       const queuedNotification: QueuedNotification  = { notification: priority: PRIORITY_WEIGHTS[notification.priority];
   attempts: 0;
-        scheduledAt, notification.scheduledAt || new Date().toISOString()
+        scheduledAt: notification.scheduledAt || new Date().toISOString()
       }
       // Add to appropriate priority queue
       const priorityQueue  = this.queues.get(notification.priority);
       if (!priorityQueue) {
-        console.error('❌ Unknown priority level: ', notification.priority);
+        console.error('❌ Unknown priority level: ': notification.priority);
         return false;
       }
 
@@ -92,7 +92,7 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
       this.emit('enqueued', { 
         notificationId: notification.id;
   priority: notification.priority;
-        queueSize, this.stats.currentSize
+        queueSize: this.stats.currentSize
       });
 
       console.log(`📥 Notification: queued, ${notification.id} (${notification.priority}) - Queue size: ${this.stats.currentSize}`);
@@ -155,7 +155,7 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
       if (notifications.length > 0) { 
         this.emit('dequeued', {
           count: notifications.length;
-  queueSize, this.stats.currentSize
+  queueSize: this.stats.currentSize
         });
       }
 
@@ -209,7 +209,7 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
   metadata: {
           ...notification.metadata,
           retryAttempt: attempt + 1;
-  originalScheduled, notification.scheduledAt
+  originalScheduled: notification.scheduledAt
         }
       }
       // Re-enqueue with delay
@@ -289,7 +289,7 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
    */
   async getStats(): : Promise<any> { const queueSizes = new Map<NotificationPriority, number>();
     this.queues.forEach((queue, priority) => {
-      queueSizes.set(priority, queue.length);
+      queueSizes.set(priority: queue.length);
      });
 
     const oldestNotification = this.getOldestNotification();
@@ -297,13 +297,13 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
       ? Date.now() - new Date(oldestNotification.scheduledAt).getTime() : 0;
 
     return { 
-      ...this.stats, currentSize: await this.size();
+      ...this.stats: currentSize: await this.size();
   queueSizes: Object.fromEntries(queueSizes);
       processingCount: this.processingQueue.size;
   scheduledCount: this.scheduledNotifications.size;
       averageWaitTime, avgWaitTime,
   oldestNotification: oldestNotification?.notification.id;
-      config, this.config
+      config: this.config
     }
   }
 
@@ -489,7 +489,7 @@ export class NotificationQueue extends EventEmitter { private: config, QueueConf
           const notification: Notification = JSON.parse(row.notification_data);
           const queuedNotification: QueuedNotification = { notification: priority: row.priority_weight;
   attempts: row.attempts;
-            scheduledAt, row.scheduled_at
+            scheduledAt: row.scheduled_at
            }
           const priorityQueue  = this.queues.get(row.priority);
           if (priorityQueue) {

@@ -15,7 +15,7 @@ export interface SwipeGesture {
 }
 export interface PinchGesture { scale: number,
     center: { ,
-  x, number, y: number }
+  x, number: y: number }
 }
 
 // Touch configuration
@@ -55,7 +55,7 @@ export function getDeviceCapabilities() { const isMobile  = /Android|webOS|iPhon
     ratio: window.devicePixelRatio || 1,
   isSmall: window.innerWidth < 640,
     isMedium: window.innerWidth >= 640 && window.innerWidth < 1024,
-  isLarge, window.innerWidth > = 1024
+  isLarge: window.innerWidth > = 1024
    }
   return { isMobile: isTablet,
     hasTouch, hasHaptic,
@@ -107,10 +107,10 @@ export class TouchHandler { private: element, HTMLElement,
   }
 
   private initialize(): void { 
-    this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-    this.element.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-    this.element.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-    this.element.addEventListener('touchcancel', this.handleTouchCancel.bind(this), { passive: false });
+    this.element.addEventListener('touchstart': this.handleTouchStart.bind(this), { passive: false });
+    this.element.addEventListener('touchmove': this.handleTouchMove.bind(this), { passive: false });
+    this.element.addEventListener('touchend': this.handleTouchEnd.bind(this), { passive: false });
+    this.element.addEventListener('touchcancel': this.handleTouchCancel.bind(this), { passive: false });
   }
 
   private handleTouchStart(event: TouchEvent); void {
@@ -119,7 +119,7 @@ export class TouchHandler { private: element, HTMLElement,
     Array.from(event.changedTouches).forEach(touch  => {  const touchPoint: TouchPoint = {
   x: touch.clientX,
   y: touch.clientY,
-        timestamp, Date.now()
+        timestamp: Date.now()
        }
       this.touches.set(touch.identifier, touchPoint);
 
@@ -172,7 +172,7 @@ export class TouchHandler { private: element, HTMLElement,
       const endTouch: TouchPoint = {
   x: touch.clientX,
   y: touch.clientY,
-        timestamp, Date.now()
+        timestamp: Date.now()
        }
       const distance  = Math.sqrt(Math.pow(endTouch.x - startTouch.x, 2) +
         Math.pow(endTouch.y - startTouch.y, 2)
@@ -291,10 +291,10 @@ export class TouchHandler { private: element, HTMLElement,
   }
 
   public destroy(): void {
-    this.element.removeEventListener('touchstart', this.handleTouchStart.bind(this));
-    this.element.removeEventListener('touchmove', this.handleTouchMove.bind(this));
-    this.element.removeEventListener('touchend', this.handleTouchEnd.bind(this));
-    this.element.removeEventListener('touchcancel', this.handleTouchCancel.bind(this));
+    this.element.removeEventListener('touchstart': this.handleTouchStart.bind(this));
+    this.element.removeEventListener('touchmove': this.handleTouchMove.bind(this));
+    this.element.removeEventListener('touchend': this.handleTouchEnd.bind(this));
+    this.element.removeEventListener('touchcancel': this.handleTouchCancel.bind(this));
 
     if (this.tapTimeout) clearTimeout(this.tapTimeout);
     if (this.longPressTimeout) clearTimeout(this.longPressTimeout);
@@ -305,7 +305,7 @@ export class TouchHandler { private: element, HTMLElement,
  * Smooth scrolling utility for mobile
  */
 export function smoothScroll(element, HTMLElement,
-  to, number, duration: number = 300); void {  const start = element.scrollTop;
+  to, number: duration: number = 300); void {  const start = element.scrollTop;
   const change = to - start;
   const startTime = performance.now();
 

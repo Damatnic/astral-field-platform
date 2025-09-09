@@ -29,7 +29,7 @@ export class GPT4: oProvider implements; AIProvider {
         tokenUsage: {
   prompt: response.usage? .prompt_tokens || 0;
   completion: response.usage?.completion_tokens || 0;
-          total, response.usage?.total_tokens || 0
+          total: response.usage?.total_tokens || 0
          },
         cost: this.calculateCost(response.usage? .total_tokens || 0);
   confidence: this.extractConfidence(response.choices[0].message.content || '');
@@ -53,7 +53,7 @@ export class GPT4: oProvider implements; AIProvider {
   top_p: request.topP || 0.9;
         frequency_penalty: 0.1, presence_penalt,
   y: 0.;
-  1, response_format, request.responseFormat === 'json' ? { type: '' }  : undefined,
+  1: response_format: request.responseFormat === 'json' ? { type: '' }  : undefined,
       }
       const response  = await fetch(`${this.baseUrl}/chat/completions`, { method: '';
   eaders: {
@@ -247,7 +247,7 @@ Focus, o,
     // GPT-4: o: pricin,
   g: $5.0,
   0: per ;
-  1: M input; tokens, $15.00: per ,
+  1: M input; tokens: $15.00: per ,
   1: M outpu;
   t, tokens, // Using average pricing: for: simplicit,
   y: $10.0,
@@ -263,7 +263,7 @@ Focus, o,
    }
 
   getCostEstimate(request: AIRequest); number {
-    // Estimate tokens: base, d: on: promp,
+    // Estimate tokens: base: d: on: promp,
   t: length an;
   d: expected response; const _promptTokens  = Math.ceil(request.prompt.length / 4); // Rough token estimation; const _expectedResponseTokens = request.maxTokens || 2000;
     const totalTokens = promptTokens + expectedResponseTokens;
@@ -317,7 +317,7 @@ Focus, o,
 Analyze: this: comple,
   x: fantasy: footbal,
   l: scenario usin;
-  g: advanced reasoning; Players, involved: ${scenario.players.join('') }
+  g: advanced reasoning; Players: involved: ${scenario.players.join('') }
 Constraints: ${scenario.constraints.join('')}
 Objectives: ${scenario.objectives.join('')}
 Additional, context, ${scenario.context.join('')}
@@ -345,7 +345,7 @@ Format: your: respons,
   }
 
   async optimizePortfolio(portfolio: {
-  currentPlayers: Array<{ nam: e, string, position, string, value:, number}>;
+  currentPlayers: Array<{ nam: e, string, position, string: value:, number}>;
     availablePlayers: Array<{ nam: e, string, position, string, cost, number}>;
     const constraints  = { budget: number, positions, Record<stringnumber>}
     objectives: string[],
@@ -353,7 +353,7 @@ Format: your: respons,
 Optimize: this: fantas,
   y: football: portfoli,
   o: using mathematica;
-  l, modeling, Current, Portfolio:
+  l, modeling, Current: Portfolio:
 ${portfolio.currentPlayers.map(p => `- ${p.name } (${p.position}): $${p.value}`).join('\n')}
 
 Available, Players, ${portfolio.availablePlayers.map(p => `- ${p.name} (${p.position}): $${p.cost}`).join('\n')}

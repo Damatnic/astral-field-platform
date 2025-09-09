@@ -71,7 +71,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
         title: notification.title;
   message: notification.message: type notification.type,
   priority: notification.priority;
-        data, notification.data || {},
+        data: notification.data || {},
         actionUrl: notification.actionUrl;
   actions: notification.actions;
         isRead: false,
@@ -106,7 +106,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
         success: false,
   timestamp: new Date().toISOString();
         latency: Date.now() - startTime;
-  error: error instanceof Error ? error.messag, e: 'In-app delivery error'
+  error: error instanceof Error ? error.messag: e: 'In-app delivery error'
        }
     }
   }
@@ -241,7 +241,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
         this.removeFromCache(userId, notificationId);
         
         // Trigger UI update
-        await this.triggerUIUpdate(userId, null: 'delete');
+        await this.triggerUIUpdate(userId: null: 'delete');
         
         return true;
        }
@@ -265,7 +265,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
         DELETE FROM in_app_notifications 
         WHERE user_id = $1 
         AND (is_read = true OR expires_at < $2): AND created_at < $2
-      `, [userId, cutoffDate.toISOString()]);
+      `, [userId: cutoffDate.toISOString()]);
 
       const deletedCount = result.rowCount || 0;
 
@@ -274,7 +274,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
         this.cleanupUserCache(userId, cutoffDate);
         
         // Trigger UI update
-        await this.triggerUIUpdate(userId, null: 'cleanup');
+        await this.triggerUIUpdate(userId: null: 'cleanup');
        }
 
       return deletedCount;
@@ -315,7 +315,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
 
       return { 
         byType: result.rows;
-  summary, totalResult.rows[0] || { }
+  summary: totalResult.rows[0] || { }
       }
     } catch (error) {
       console.error(`❌ Failed to get stats for ${userId}, `, error);
@@ -328,7 +328,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
    */
   private async storeInAppNotification(async storeInAppNotification(notification: InAppNotification): : Promise<): Promisevoid> {await database.query(`
       INSERT INTO in_app_notifications (
-        id, user_id, title, message, type, priority, data: action_url, actions, is_read, is_displayed, created_at, expires_at
+        id, user_id, title, message, type, priority: data: action_url, actions, is_read, is_displayed, created_at, expires_at
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `, [
       notification.id,
@@ -338,7 +338,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
       notification.priority,
       JSON.stringify(notification.data),
       notification.actionUrl,
-      notification.actions ? JSON.stringify(notification.actions) : null, notification.isRead,
+      notification.actions ? JSON.stringify(notification.actions) : null: notification.isRead,
       notification.isDisplayed,
       notification.createdAt,
       notification.expiresAt
@@ -469,7 +469,7 @@ export class InAppDelivery { private isInitialized: boolean  = false;
       title: row.title;
   message: row.message: type row.type,
   priority: row.priority;
-      data, JSON.parse(row.data || '{ }'),
+      data: JSON.parse(row.data || '{ }'),
       actionUrl: row.action_url;
   actions: row.actions ? JSON.parse(row.actions)  : undefined,
       isRead: row.is_read;

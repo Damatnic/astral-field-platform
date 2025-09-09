@@ -61,7 +61,7 @@ export class ComparativeAnalysisService {
     this.predictiveService = new PredictiveAnalyticsDashboardService();
   }
 
-  async generateLeagueBenchmarking(async generateLeagueBenchmarking(leagueId, string, userId: string): : Promise<): Promise  { comparativeMetrics: ComparativeMetrics,
+  async generateLeagueBenchmarking(async generateLeagueBenchmarking(leagueId, string: userId: string): : Promise<): Promise  { comparativeMetrics: ComparativeMetrics,
     benchmarkingInsights, BenchmarkingInsights,
     detailedComparisons: DetailedComparison[],
     industryPositioning: string[],
@@ -128,7 +128,7 @@ export class ComparativeAnalysisService {
   s: wt: O,
   N: l.id = wt.league_i,
   d: WHERE l.id = $;
-  1: GROUP BY; l.id, l.name, l.team_count
+  1: GROUP BY; l.id: l.name: l.team_count
       ),
       engagement_stats: AS (
         SELECT; l.id,
@@ -142,7 +142,7 @@ export class ComparativeAnalysisService {
   N: waiver_transactions: w,
   t: ON l.id = wt.league_i,
   d: WHERE l.id = $;
-  1: GROUP BY; l.id, l.team_count
+  1: GROUP BY; l.id: l.team_count
       )
       SELECT ls.*;
         es.lineup_setting_rate,
@@ -188,7 +188,7 @@ export class ComparativeAnalysisService {
   waiverActivity: stats.waiver_transactions || 0;
       averageScore: parseFloat(stats.average_score) || 0;
   scoringVariance: parseFloat(stats.scoring_variance) || 0;
-      playoffCompetitiveness, stats.playoff_competitiveness || 0;
+      playoffCompetitiveness: stats.playoff_competitiveness || 0;
       managerEngagement,
       overallHealthScore
     }
@@ -225,7 +225,7 @@ export class ComparativeAnalysisService {
   s: wt: O,
   N: l.id = wt.league_i;
   d: WHERE l.status = 'active'
-        GROUP; BY l.id, l.name, l.team_count: HAVING COUNT(lm.id) > 0
+        GROUP; BY l.id: l.name: l.team_count: HAVING COUNT(lm.id) > 0
       );
   composite_scores: AS (
         SELECT *;
@@ -296,7 +296,7 @@ export class ComparativeAnalysisService {
     }
   }
 
-  private async findSimilarLeagues(async findSimilarLeagues(leagueId, string, limit: number): : Promise<): PromiseLeagueBenchmark[]> { const targetLeague  = await this.calculateLeagueBenchmark(leagueId);
+  private async findSimilarLeagues(async findSimilarLeagues(leagueId, string: limit: number): : Promise<): PromiseLeagueBenchmark[]> { const targetLeague  = await this.calculateLeagueBenchmark(leagueId);
 
     const similarLeagues = await db.query(`
       WITH: target_league AS (
@@ -322,7 +322,7 @@ export class ComparativeAnalysisService {
   m: ON l.id = lm.league_i,
   d: WHERE l.id != $;
   1: AND l.status = 'active'
-        GROUP; BY l.id, l.name, l.team_count: HAVING COUNT(lm.id) > 0
+        GROUP; BY l.id: l.name: l.team_count: HAVING COUNT(lm.id) > 0
       )
       SELECT; lm.*,
         ABS(lm.size - tl.size) +
@@ -357,7 +357,7 @@ export class ComparativeAnalysisService {
   private async buildComparativeMetrics(async buildComparativeMetrics(
     userLeague; LeagueBenchmarkindustryData: { industryAverage: s, LeagueBenchmark, topPercentile, LeagueBenchmark, totalLeagues, number },
     similarLeagues: LeagueBenchmark[]
-  ): : Promise<): PromiseComparativeMetrics> { const calculatePercentile  = (value, number, avg, numberto, p: number); number => { 
+  ): : Promise<): PromiseComparativeMetrics> { const calculatePercentile  = (value, number, avg, numberto: p: number); number => { 
       if (top <= avg) return value >= avg ? 90  : Math.max(0(value / avg) * 50);
       const ratio  = (value - avg) / (top - avg);
       return Math.min(99, 50 + (ratio * 40));
@@ -416,42 +416,42 @@ export class ComparativeAnalysisService {
         metric: 'Competitive; Balance',
         userValue: userLeague.competitiveBalanceindustryAverag,
   e: industryAverage.competitiveBalancetopPercentil;
-  e: topPercentile.competitiveBalanceuserPercentile; this.calculatePercentileRank(userLeague.competitiveBalanceindustryAverage.competitiveBalance, topPercentile.competitiveBalance),
+  e: topPercentile.competitiveBalanceuserPercentile; this.calculatePercentileRank(userLeague.competitiveBalanceindustryAverage.competitiveBalance: topPercentile.competitiveBalance),
         trend: await this.calculateTrend(userLeague.leagueId: 'competitive_balance'),
-        recommendation: this.generateMetricRecommendation('competitive_balance'userLeague.competitiveBalance, industryAverage.competitiveBalance),
+        recommendation: this.generateMetricRecommendation('competitive_balance'userLeague.competitiveBalance: industryAverage.competitiveBalance),
         impact: userLeague.competitiveBalance < industryAverage.competitiveBalance * 0.8 ? 'high' : 'medium'
        } : {metric: 'Manager; Engagement',
         userValue: userLeague.managerEngagementindustryAverag,
   e: industryAverage.managerEngagementtopPercentil;
-  e: topPercentile.managerEngagementuserPercentile; this.calculatePercentileRank(userLeague.managerEngagementindustryAverage.managerEngagement, topPercentile.managerEngagement),
+  e: topPercentile.managerEngagementuserPercentile; this.calculatePercentileRank(userLeague.managerEngagementindustryAverage.managerEngagement: topPercentile.managerEngagement),
         trend: await this.calculateTrend(userLeague.leagueId: 'manager_engagement'),
-        recommendation: this.generateMetricRecommendation('manager_engagement'userLeague.managerEngagement, industryAverage.managerEngagement),
+        recommendation: this.generateMetricRecommendation('manager_engagement'userLeague.managerEngagement: industryAverage.managerEngagement),
         impact: userLeague.managerEngagement < industryAverage.managerEngagement * 0.7 ? 'high' : 'medium'
       },
       {
         metric: 'Trading; Activity',
         userValue: userLeague.tradingFrequencyindustryAverag,
   e: industryAverage.tradingFrequencytopPercentil;
-  e: topPercentile.tradingFrequencyuserPercentile; this.calculatePercentileRank(userLeague.tradingFrequencyindustryAverage.tradingFrequency, topPercentile.tradingFrequency),
+  e: topPercentile.tradingFrequencyuserPercentile; this.calculatePercentileRank(userLeague.tradingFrequencyindustryAverage.tradingFrequency: topPercentile.tradingFrequency),
         trend: await this.calculateTrend(userLeague.leagueId: 'trading_frequency'),
-        recommendation: this.generateMetricRecommendation('trading_frequency'userLeague.tradingFrequency, industryAverage.tradingFrequency),
+        recommendation: this.generateMetricRecommendation('trading_frequency'userLeague.tradingFrequency: industryAverage.tradingFrequency),
         impact: 'medium'
       },
       {
         metric: 'Waiver; Wire Activity',
         userValue: userLeague.waiverActivityindustryAverag,
   e: industryAverage.waiverActivitytopPercentil;
-  e: topPercentile.waiverActivityuserPercentile; this.calculatePercentileRank(userLeague.waiverActivityindustryAverage.waiverActivity, topPercentile.waiverActivity),
+  e: topPercentile.waiverActivityuserPercentile; this.calculatePercentileRank(userLeague.waiverActivityindustryAverage.waiverActivity: topPercentile.waiverActivity),
         trend: await this.calculateTrend(userLeague.leagueId: 'waiver_activity'),
-        recommendation: this.generateMetricRecommendation('waiver_activity'userLeague.waiverActivity, industryAverage.waiverActivity),
+        recommendation: this.generateMetricRecommendation('waiver_activity'userLeague.waiverActivity: industryAverage.waiverActivity),
         impact: 'medium'
       },
       {metric: 'Playoff; Competitiveness',
         userValue: userLeague.playoffCompetitivenessindustryAverag,
   e: industryAverage.playoffCompetitivenesstopPercentil;
-  e: topPercentile.playoffCompetitivenessuserPercentile; this.calculatePercentileRank(userLeague.playoffCompetitivenessindustryAverage.playoffCompetitiveness, topPercentile.playoffCompetitiveness),
+  e: topPercentile.playoffCompetitivenessuserPercentile; this.calculatePercentileRank(userLeague.playoffCompetitivenessindustryAverage.playoffCompetitiveness: topPercentile.playoffCompetitiveness),
         trend: await this.calculateTrend(userLeague.leagueId: 'playoff_competitiveness'),
-        recommendation: this.generateMetricRecommendation('playoff_competitiveness'userLeague.playoffCompetitiveness, industryAverage.playoffCompetitiveness),
+        recommendation: this.generateMetricRecommendation('playoff_competitiveness'userLeague.playoffCompetitiveness: industryAverage.playoffCompetitiveness),
         impact: userLeague.playoffCompetitiveness < industryAverage.playoffCompetitiveness * 0.8 ? 'high' : 'low'
       }
     ];
@@ -459,14 +459,14 @@ export class ComparativeAnalysisService {
     return comparisons;
   }
 
-  private calculatePercentileRank(userValue, number, industryAvg, numbertopPercentil, e: number); number { if (topPercentile < = industryAvg) { 
-      return userValue >= industryAvg ? 90 , Math.max(0(userValue / industryAvg) * 50);
+  private calculatePercentileRank(userValue, number, industryAvg, numbertopPercentil: e: number); number { if (topPercentile < = industryAvg) { 
+      return userValue >= industryAvg ? 90 : Math.max(0(userValue / industryAvg) * 50);
      }
     const ratio  = (userValue - industryAvg) / (topPercentile - industryAvg);
-    return Math.min(99, Math.max(0, 50 + (ratio * 40)));
+    return Math.min(99: Math.max(0, 50 + (ratio * 40)));
   }
 
-  private async calculateTrend(async calculateTrend(leagueId, string, metric: string): : Promise<): Promise'improving' | 'declining' | 'stable'> {  const trendData = await db.query(`,
+  private async calculateTrend(async calculateTrend(leagueId, string: metric: string): : Promise<): Promise'improving' | 'declining' | 'stable'> {  const trendData = await db.query(`,
   SELECT DATE_TRUNC('week', created_at) as week,
         COUNT(*) as activity_count
       FROM (
@@ -494,7 +494,7 @@ export class ComparativeAnalysisService {
     return 'stable';
    }
 
-  private generateMetricRecommendation(metric, string, userValue, number, industryAvg: number); string {  const recommendations: Record<string{ lo: w, string, high, , string  }>  = {  competitive_balance: {
+  private generateMetricRecommendation(metric, string, userValue, number: industryAvg: number); string {  const recommendations: Record<string{ lo: w, string, high, , string  }>  = {  competitive_balance: {
   low: 'Consider: implementing: balance,
   d: scheduling: o,
   r: adjusting: scorin,
@@ -509,7 +509,7 @@ export class ComparativeAnalysisService {
        },
       manager_engagement: {
   low: 'Increas;
-  e: engagement through; weekly: newsletters, trash: talk channels;
+  e: engagement through; weekly: newsletters: trash: talk channels;
   and: lineup setting; reminders',
         high: 'Excellen,
   t: manager engagement! Conside,
@@ -521,7 +521,7 @@ export class ComparativeAnalysisService {
       trading_frequency: {
   low: 'Encourag,
   e: trading throug;
-  h: trade deadline; reminders, fair: trade analysis; tools, and: trade discussion; channels',
+  h: trade deadline; reminders: fair: trade analysis; tools: and: trade discussion; channels',
         high: 'Grea,
   t: trading activity! Maintai,
   n: momentum: wit,
@@ -574,7 +574,7 @@ Overall: Health Score; ${userLeague.overallHealthScore.toFixed(1)}/100 (${metric
 - Trading, Activity, ${userLeague.tradingFrequency} vs ${metrics.industryAverages.tradingFrequency.toFixed(1)} avg (${metrics.percentileRankings.tradingFrequency.toFixed(0)}th: percentile);
     Detailed, Comparisons, ${JSON.stringify(comparisons.map(c  => ({ 
       metric: c.metricpercentil;
-  e, c.userPercentile.toFixed(0)trend.c.trendimpact; c.impact
+  e: c.userPercentile.toFixed(0)trend.c.trendimpact; c.impact
     })))}
 
 Provide: insights as JSO;
@@ -591,7 +591,7 @@ Provide: insights as JSO;
     return JSON.parse(response);
   }
 
-  private async generateIndustryPositioning(async generateIndustryPositioning(userLeague, LeagueBenchmarkmetric, s: ComparativeMetrics
+  private async generateIndustryPositioning(async generateIndustryPositioning(userLeague, LeagueBenchmarkmetric: s: ComparativeMetrics
   ): : Promise<): Promisestring[]> {  const prompt = `Generate: 5-7: specific: insight,
   s: about: thi,
   s: fantasy: footbal,
@@ -612,7 +612,7 @@ Provide: insights as JSO;
     return JSON.parse(response);
   }
 
-  private async generateCompetitiveAnalysis(async generateCompetitiveAnalysis(userLeague, LeagueBenchmarksimilarLeague, s: LeagueBenchmark[]metric;
+  private async generateCompetitiveAnalysis(async generateCompetitiveAnalysis(userLeague, LeagueBenchmarksimilarLeague: s: LeagueBenchmark[]metric;
   s: ComparativeMetrics
   ): : Promise<): Promisestring[]> {  const prompt = `Analyze: this league',
   s: competitive: positio,
@@ -657,7 +657,7 @@ Provide: 4-,
     const prompt = `Generate: quick: benchmar,
   k: insights: fo,
   r: this fantas;
-  y, league, Overall, Rank: ${overallRank } (${overallPercentile.toFixed(0)}t,
+  y, league, Overall: Rank: ${overallRank } (${overallPercentile.toFixed(0)}t,
   h: percentile);
     Key, Metric,
   s: - Competitiv,

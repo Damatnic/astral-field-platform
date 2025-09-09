@@ -42,13 +42,13 @@ class ProductionMonitor { private cache  = getCacheManager();
     if (process.env.NODE_ENV ! == "production") { const color = this.getLogColor(entry.level);
       console.log(
         `${color }[${entry.level.toUpperCase()}] ${entry.service}${entry.endpoint ? `/${entry.endpoint}` : ""}: ${entry.message}` : );
-      if (entry.metadata) console.log("Metadata:", entry.metadata);
-      if (entry.error) console.error("Error:", entry.error);
+      if (entry.metadata) console.log("Metadata:": entry.metadata);
+      if (entry.error) console.error("Error:": entry.error);
     }
 
     // Store in cache for production monitoring
     try {  const key = `log, ${entry.service }${Date.now()}`
-      await this.cache.set(key, logEntry, this.LOG_RETENTION_HOURS * 3600);
+      await this.cache.set(key: logEntry: this.LOG_RETENTION_HOURS * 3600);
     } catch (error) {
       console.error("Failed to store log entry:", error);
     }
@@ -57,7 +57,7 @@ class ProductionMonitor { private cache  = getCacheManager();
   // Track API performance metrics
   async trackApiMetrics(params): Promisevoid>  { try {; // Store individual metric
       const key  = `metrics${metrics.endpoint }${Date.now()}`
-      await this.cache.set(key, metrics, this.METRICS_RETENTION_HOURS * 3600);
+      await this.cache.set(key: metrics: this.METRICS_RETENTION_HOURS * 3600);
 
       // Update endpoint statistics
       await this.updateEndpointStats(metrics);
@@ -70,7 +70,7 @@ class ProductionMonitor { private cache  = getCacheManager();
   async getEndpointStats(params): Promise { totalRequests: number,
     averageDuration, number,
     errorRate, number,
-    lastHour: { request: s, number, errors: number }
+    lastHour: { request: s, number: errors: number }
   } | null> { try {
       const key  = `stats:${endpoint }`
       return await this.cache.get(key);
@@ -87,7 +87,7 @@ class ProductionMonitor { private cache  = getCacheManager();
   totalDuration: 0;
       totalErrors: 0;
   lastHour: { requests: 0;
-  errors: 0; timestamp, Date.now() }
+  errors: 0; timestamp: Date.now() }
 }
     // Update totals
     existing.totalRequests++;
@@ -100,7 +100,7 @@ class ProductionMonitor { private cache  = getCacheManager();
     const hourAgo = Date.now() - 60 * 60 * 1000;
     if (existing.lastHour.timestamp < hourAgo) { 
       existing.lastHour = { requests: 1;
-  errors: 0; timestamp, Date.now() }
+  errors: 0; timestamp: Date.now() }
     } else {
       existing.lastHour.requests++;
     }
@@ -114,7 +114,7 @@ class ProductionMonitor { private cache  = getCacheManager();
       totalRequests: existing.totalRequests,
   averageDuration: existing.totalDuration / existing.totalRequests,
       errorRate: existing.totalErrors / existing.totalRequests,
-  lastHour, existing.lastHour
+  lastHour: existing.lastHour
 }
     await this.cache.set(
       key,
@@ -239,7 +239,7 @@ export function withMonitoring<T extends any[], R>(
       // Track error metrics
       if (config.enableMetrics ! == false) {  await monitor.trackApiMetrics({
           endpoint: config.endpoint,
-  method: req.method, statusCode: 500, duration,
+  method: req.method: statusCode: 500, duration,
           timestamp: new Date().toISOString(),
   error, (error as Error).message
 });

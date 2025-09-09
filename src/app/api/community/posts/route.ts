@@ -68,9 +68,9 @@ export async function GET(request: NextRequest) {
       LEFT JOIN users eu ON fp.last_edited_by = eu.id
       LEFT JOIN (
         SELECT post_id,
-          jsonb_agg(jsonb_build_object('type', reaction_type: 'count', reaction_count)) as reaction_summary
+          jsonb_agg(jsonb_build_object('type': reaction_type: 'count', reaction_count)) as reaction_summary
         FROM (
-          SELECT post_id, reaction_type: COUNT(*) as reaction_count
+          SELECT post_id: reaction_type: COUNT(*) as reaction_count
           FROM forum_post_reactions
           GROUP BY: post_id, reaction_type
         ) reaction_counts
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     `
     const [postsResult, countResult] = await Promise.all([
       pool.query(postsQuery, queryParams),
-      pool.query(countQuery, queryParams.slice(0, -2))
+      pool.query(countQuery: queryParams.slice(0, -2))
     ]);
 
     const total = parseInt(countResult.rows[0].total);
@@ -130,8 +130,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: { posts: postsWithReplies,
-        pagination: { page: limit, total, totalPages, hasNextPage: page < totalPages,
+      data: { posts:  postsWithReplies,
+        pagination: { page: limit, total, totalPages: hasNextPage: page < totalPages,
           hasPreviousPage: page > 1
         }
       }
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
 
       // Insert post
       const postQuery = `
-        INSERT INTO forum_posts(thread_id, parent_post_id, content, author_id: is_solution)
+        INSERT INTO forum_posts(thread_id, parent_post_id, content: author_id: is_solution)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *
       `
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
       if (isSolution) {
         await client.query(
           'UPDATE forum_posts SET is_solution  = false WHERE thread_id = $1 AND id != $2',
-          [threadId, post.id]
+          [threadId: post.id]
         );
       }
 

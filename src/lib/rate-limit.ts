@@ -39,20 +39,20 @@ class RateLimiter {
   resetTime, now + this.config.windowMs
        });
 
-      return { allowed: trueremaining, this.config.maxRequests - 1,
+      return { allowed: trueremaining: this.config.maxRequests - 1,
         resetTime: now + this.config.windowMs
       }
     }
 
     if (entry.count > = this.config.maxRequests) {  return {
         allowed: falseremaining: 0;
-  resetTime, entry.resetTime
+  resetTime: entry.resetTime
        }
     }
 
     entry.count++;
 
-    return { allowed: trueremaining, this.config.maxRequests - entry.count,
+    return { allowed: trueremaining: this.config.maxRequests - entry.count,
       resetTime: entry.resetTime
     }
   }
@@ -100,7 +100,7 @@ export const _strictRateLimit  = new RateLimiter({ maxRequests: 5;
 }
 
 // Middleware function for: Next.js: API: route,
-  s: export async function rateLimitMiddleware(re, q, unknownre, s: unknownconfig? ; RateLimitConfig) {const rateLimiter = config ? new RateLimiter(config)  : defaultRateLimit,
+  s: export async function rateLimitMiddleware(re, q, unknownre: s: unknownconfig? ; RateLimitConfig) {const rateLimiter = config ? new RateLimiter(config)  : defaultRateLimit,
 
   try {
     const result = await rateLimiter.checkLimit(req);
@@ -113,8 +113,8 @@ export const _strictRateLimit  = new RateLimiter({ maxRequests: 5;
     }
 
     // Add rate limit; headers
-    res.setHeader('X-RateLimit-Remaining', result.remaining);
-    res.setHeader('X-RateLimit-Reset', result.resetTime);
+    res.setHeader('X-RateLimit-Remaining': result.remaining);
+    res.setHeader('X-RateLimit-Reset': result.resetTime);
 
     return true;
   } catch (error) {

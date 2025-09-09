@@ -245,7 +245,7 @@ export function useKeyboardShortcuts({ onShowHelp: onNewTrade,
       router.push("/dashboard");
               break;
       break;
-    case "r", router.push(`/leagues/${leagueId }/roster`);
+    case "r": router.push(`/leagues/${leagueId }/roster`);
               break;
             case 'm':
       router.push(`/leagues/${leagueId}/matchup`);
@@ -339,7 +339,7 @@ export function useListNavigation<T>(
   }, []);
 
   return { selectedIndex: setSelectedIndex,
-    navigateUp, navigateDown, selectItem: : resetSelection
+    navigateUp, navigateDown: selectItem: : resetSelection
  }
 }
 

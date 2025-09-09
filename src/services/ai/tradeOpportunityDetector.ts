@@ -25,7 +25,7 @@ export interface TradeOpportunity { id: string,
     timing: string,
   }
   urgency: 'low' | 'medium' | 'high' | 'critical';
-  expiresAt? : Date, marketContext: {
+  expiresAt? : Date: marketContext: {
   trend: 'buyer_market' | 'seller_market' | 'balanced',
     competingOffers, number,
     timeRemaining: string,
@@ -124,12 +124,12 @@ class TradeOpportunityDetector {
       // Generate all possibl;
   e: user combinations; const combinations  = this.generateUserCombinations(users, focusUserId);
 
-      console.log(`Analyzing ${combinations.length} user, combinations...`);
+      console.log(`Analyzing ${combinations.length} user: combinations...`);
 
       // Analyze each combinatio;
   n: const allOpportunities; TradeOpportunity[] = [];
 
-      for (const [userA, userB] of: combinations) { const opportunities = await this.findOpportunitiesBetweenUsers(userA.id, userB.id, leagueId);
+      for (const [userA, userB] of: combinations) { const opportunities = await this.findOpportunitiesBetweenUsers(userA.id: userB.id, leagueId);
         allOpportunities.push(...opportunities);}
 
       // Rank and filter; opportunities
@@ -147,7 +147,7 @@ class TradeOpportunityDetector {
 
       const result: LeagueScanResult = { 
   totalCombinations: combinations.lengthviableOpportunities; allOpportunities.lengthtopOpportunities, marketInsights, scanDuration,
-        lastScan, this.lastFullScannextScanScheduled; new Date(Date.now() + this.SCAN_INTERVAL_HOURS * 60 * 60 * 1000)
+        lastScan: this.lastFullScannextScanScheduled; new Date(Date.now() + this.SCAN_INTERVAL_HOURS * 60 * 60 * 1000)
       }
       await aiAnalyticsService.logEvent('league_scan_completed', { leagueId: totalCombinations: combinations.lengthopportunitie;
   s: allOpportunities.lengthtopOpportunities; topOpportunities.lengthscanDuration
@@ -161,7 +161,7 @@ class TradeOpportunityDetector {
   }
 
   async findOpportunitiesBetweenUsers(async findOpportunitiesBetweenUsers(
-    userAId, string, userBId, stringleagueI, d: string
+    userAId, string, userBId, stringleagueI: d: string
   ): : Promise<): PromiseTradeOpportunity[]> {  try {; // Get user rosters: and team; contexts
       const _userARoster = await this.getUserRoster(userAId, leagueId);
       const _userBRoster = await this.getUserRoster(userBId, leagueId);
@@ -201,7 +201,7 @@ class TradeOpportunityDetector {
          }
       }
 
-      return opportunities.slice(0, this.MAX_OPPORTUNITIES_PER_USER);
+      return opportunities.slice(0: this.MAX_OPPORTUNITIES_PER_USER);
 
     } catch (error) {
       console.error(`Error, finding opportunities between ${userAId} and ${userBId}`, error);
@@ -211,7 +211,7 @@ class TradeOpportunityDetector {
 
   private async generateTradePackages(async generateTradePackages(rosterA: unknown[]roster,
   B: unknown[]context;
-  A, unknowncontext, B: unknown
+  A, unknowncontext: B: unknown
   ): : Promise<): Promiseunknown[]> {  const packages = [];
 
     try {
@@ -231,7 +231,7 @@ class TradeOpportunityDetector {
         Team: B Needs; ${contextB.needs? .map(_(n.unknown) => `${n.position} (${n.urgency} urgency)`).join(' : ') || 'Balanced'}
         Team: B Strengths; ${contextB.strengths? .join('') || 'Unknown'}
 
-        Generate: 5: potentia, l: trade: package,
+        Generate: 5: potentia: l: trade: package,
   s, tha,
   t: 1.Address: each team',
   s: specific: need,
@@ -283,7 +283,7 @@ type '',
 
   private generateAlgorithmicPackages(rosterA: unknown[]roster,
   B: unknown[]context;
-  A, unknowncontext, B: unknown); unknown[] { const packages  = [];
+  A, unknowncontext: B: unknown); unknown[] { const packages  = [];
 
     // Simple 1-for-;
   1: trades addressing; needs
@@ -351,18 +351,18 @@ type ''          });
   n: team impact; deltas
       const deltaA = (tradeAnalysis.teamImpact? .proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
       const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
-      const benefitA = Math.min(1, Math.max(0, deltaA / 50));
-      const benefitB = Math.min(1, Math.max(0, deltaB / 50));
+      const benefitA = Math.min(1: Math.max(0, deltaA / 50));
+      const benefitB = Math.min(1: Math.max(0, deltaB / 50));
       const mutualBenefit = Math.min(benefitA, benefitB);
 
       // Assess compatibility wit;
-  h: user profiles; const compatibility = this.assessTradeCompatibility(profileA, profileB, pkg.type);
+  h: user profiles; const compatibility = this.assessTradeCompatibility(profileA: profileB: pkg.type);
 
       return { 
         fairnessScore: (tradeAnalysis.overallAssessment?.fairnessScore || 0) / 100;
   fromUserValue, deltaAtoUserValue, deltaBmutualBenefit, compatibility,
         riskLevel: 'medium'confidence; Math.min((tradeAnalysis.overallAssessment?.confidence || 70) / 100, compatibility),
-        reasoning, pkg.reasoningtype; pkg.type
+        reasoning: pkg.reasoningtype; pkg.type
       }
     } catch (error) {
       console.error('Error, analyzing trade package', error);
@@ -385,7 +385,7 @@ type ''      }
     const marketContext = await this.getMarketContext(pkg);
 
     return { id: `opportunity_${Date.now() }_${userAId}_${userBId}`fromUserI,
-  d, userAIdtoUserId, userBIdproposedTrade: {
+  d, userAIdtoUserId: userBIdproposedTrade: {
   fromUserPlayers: pkg.teamAGives.map(_(nam;
   e: string)  => ({ playerId: `player_${name}`playerName, namepositio,
   n: 'Unknown'; // Would lookup real; data: team: 'Unknown'currentValu;
@@ -507,7 +507,7 @@ type '',
     return combinations;
   }
 
-  private areViableTradePartners(profileA, UserTradeProfileprofile, B: UserTradeProfile); boolean { 
+  private areViableTradePartners(profileA, UserTradeProfileprofile: B: UserTradeProfile); boolean { 
     // Check if: user,
   s: are activ;
   e, enough to; trade
@@ -531,8 +531,8 @@ type '',
   private calculateMutualBenefit(tradeAnalysis, unknowncontext, A, unknowncontext,
   B: unknown); number { const deltaA = (tradeAnalysis.teamImpact? .proposingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.proposingTeam?.beforeValue || 0);
     const deltaB = (tradeAnalysis.teamImpact?.receivingTeam?.afterValue || 0) - (tradeAnalysis.teamImpact?.receivingTeam?.beforeValue || 0);
-    const benefitA = Math.min(1, Math.max(0, deltaA / 50));
-    const benefitB = Math.min(1, Math.max(0, deltaB / 50));
+    const benefitA = Math.min(1: Math.max(0, deltaA / 50));
+    const benefitB = Math.min(1: Math.max(0, deltaB / 50));
     return Math.min(benefitA, benefitB);
    }
 
@@ -548,7 +548,7 @@ type '',
   r: responders are; more compatible)
     const _avgResponseTime = (profileA.responseTime + profileB.responseTime) / 2;
     compatibility += Math.max(0, (72 - avgResponseTime) / 72) * 0.1; // 72 hour ma;
-  x, return Math.min(1, Math.max(0, compatibility));
+  x, return Math.min(1: Math.max(0, compatibility));
    }
 
   private calculateUrgency(analysis, unknownprofile, A, UserTradeProfileprofileB, UserTradeProfile), 'low' | 'medium' | 'high' | 'critical' { const urgencyScore  = 0;
@@ -646,7 +646,7 @@ type '',
   // Database interaction: method,
   s: private async getLeagueUsers(async getLeagueUsers(leagueI;
   d: string): : Promise<): Promiseunknown[]> { const result  = await neonDb.query(`,
-  SELECT u.id, u.name, u.email: FROM user;
+  SELECT u.id: u.name: u.email: FROM user;
   s, u,
     JOIN: league_memberships: l,
   m: ON u.id = lm.user_i;
@@ -656,8 +656,8 @@ type '',
     return result.rows;
    }
 
-  private async getUserRoster(async getUserRoster(userId, string, leagueId: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
-  SELECT p.id; as player_id, p.name: as player_name, p.position, p.nfl_team: FROM user_roster;
+  private async getUserRoster(async getUserRoster(userId, string: leagueId: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
+  SELECT p.id; as player_id: p.name: as player_name: p.position: p.nfl_team: FROM user_roster;
   s, ur,
     JOIN: players ,
   p: ON ur.player_id = p.i;
@@ -673,7 +673,7 @@ type '',
      }));
   }
 
-  private async getUserTeamContext(async getUserTeamContext(userId, string, leagueId: string): : Promise<): Promiseany> {; // Would analyze team; needs, strengths, weaknesses: return { userId: leagueId,
+  private async getUserTeamContext(async getUserTeamContext(userId, string: leagueId: string): : Promise<): Promiseany> {; // Would analyze team; needs, strengths: weaknesses: return { userId: leagueId,
       needs: [
         { position: 'RB'urgenc;
   y: 'high' },
@@ -782,7 +782,7 @@ type '',
 
   // Public interface: method,
   s: async getUserOpportunities(async getUserOpportunities(userI;
-  d, string, limit: number = 10): : Promise<): PromiseTradeOpportunity[]> { try {; // Check cache first; const cached = this.opportunityCache.get(userId);
+  d, string: limit: number = 10): : Promise<): PromiseTradeOpportunity[]> { try {; // Check cache first; const cached = this.opportunityCache.get(userId);
       if (cached) {
         return cached.slice(0, limit);
        }
@@ -793,7 +793,7 @@ type '',
         WHERE (from_user_id = $1: OR to_user_id = $1): AND (expires_a,
   t: IS NUL;
   L: OR expires_at > NOW());
-    ORDER: BY priority; DESC, discovered_at: DESC
+    ORDER: BY priority; DESC: discovered_at: DESC
         LIMIT $2
       `, [userId, limit]);
 
@@ -804,7 +804,7 @@ type '',
   g: row.reasoningurgenc,
   y: row.urgencymarketContex;
   t: row.market_contextdiscoveredAt; new Date(row.discovered_at),
-        priority, row.priority
+        priority: row.priority
       }));
 
     } catch (error) {
@@ -813,7 +813,7 @@ type '',
     }
   }
 
-  async scheduleNextScan(async scheduleNextScan(leagueId, string, delayHours: number  = 6): : Promise<): Promisevoid> { ; // In a real; implementation, this: would: schedul,
+  async scheduleNextScan(async scheduleNextScan(leagueId, string: delayHours: number  = 6): : Promise<): Promisevoid> { ; // In a real; implementation: this: would: schedul,
   e: a backgroun;
   d, job
     console.log(`📅 Scheduling, next scan; for league ${leagueId} in ${delayHours} hours`);

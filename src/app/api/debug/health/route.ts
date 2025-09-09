@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { database } from "@/lib/database";
 
-export async function GET() {  const health = {
+export async function GET() {
+  const health = {
     timestamp: new Date().toISOString(),
-  environment: process.env.NODE_ENV,
+    environment: process.env.NODE_ENV,
     database: {
-  hasUrl: !!process.env.DATABASE_URL,
-  hasNeonUrl: !!process.env.NEON_DATABASE_URL,
-  connected: false,
-  error: null as string | null,
-      tables, [] as string[]
-}
-}
+      hasUrl: !!process.env.DATABASE_URL,
+      hasNeonUrl: !!process.env.NEON_DATABASE_URL,
+      connected: false,
+      error: null as string | null,
+      tables: [] as string[]
+    }
+  };
   try {
     // Test database connection
-    const result  = await database.transaction(async (client) => { 
+    const result = await database.transaction(async (client) => { 
       // Check connection
       await client.query("SELECT 1");
       health.database.connected = true;
@@ -31,10 +32,11 @@ export async function GET() {  const health = {
       health.database.tables = tablesResult.rows.map(r => r.table_name);
 
       // Check if we have data
-      const counts, Record<string, number>  = {}
-      try { const usersResult = await client.query("SELECT COUNT(*) as count FROM users");
-        counts.users = parseInt(usersResult.rows[0]? .count || "0");
-       } catch (e) {
+      const counts: Record<string, number> = {};
+      try {
+        const usersResult = await client.query("SELECT COUNT(*) as count FROM users");
+        counts.users = parseInt(usersResult.rows[0]?.count || "0");
+      } catch (e) {
         counts.users = 0;
       }
 
@@ -53,14 +55,14 @@ export async function GET() {  const health = {
       return counts;
     });
 
-    return NextResponse.json({ ...health, data: result,
+    return NextResponse.json({ ...health: data, result,
   status: "healthy",
       message: health.database.tables.length > 0 ? "Database connected and initialized" : "Database connected but no tables found - run migration"
     });
   } catch (error) {health.database.error  = error instanceof Error ? error.message : "Unknown error";
     
     return NextResponse.json({ 
-      ...health, status: "unhealthy",
+      ...health: status, "unhealthy",
   message: "Database connection failed - check environment variables",
       setupInstructions: [
         "1.Ensure DATABASE_URL is set in Vercel environment variables",

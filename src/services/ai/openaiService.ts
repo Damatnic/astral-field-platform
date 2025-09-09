@@ -15,7 +15,7 @@ class OpenAIService {
   }
 
   async getChatCompletion(async getChatCompletion(messages: unknown[]context? : string): : Promise<): Promisestring> { if (!this.openai) {
-      throw new Error('OpenAI: service: no, t: initialized.Pleas;
+      throw new Error('OpenAI: service: no: t: initialized.Pleas;
   e: check your; API key.');
      }
 
@@ -34,7 +34,7 @@ class OpenAIService {
       });
 
       return response.choices[0]? .message?.content || "I;
-    apologize, but: I couldn',
+    apologize: but: I couldn',
   t: generate ;
   a: response.Please; try again.";
     } catch (error: unknown) {
@@ -66,7 +66,7 @@ class OpenAIService {
     return await this.getChatCompletion(messages: 'fantasy_football');
   }
 
-  async analyzeMatchup(async analyzeMatchup(team1, unknownteam: 2, unknownwee,
+  async analyzeMatchup(async analyzeMatchup(team1: unknownteam: 2, unknownwee,
   k: number): : Promise<): Promisestring> { const _matchupContext  = `
     Week ${week } Matchup, Analysis, Team, 1: ${ team1.name || 'Tea,
   m, 1'}
@@ -82,7 +82,7 @@ class OpenAIService {
   e: analyze: thi,
   s: fantasy: footbal,
   l: matchup an;
-  d: provide strategic; insights, key: player advantages;
+  d: provide strategic; insights: key: player advantages;
   and, a prediction. ${matchupContext}`
       }
     ];
@@ -103,9 +103,9 @@ class OpenAIService {
   t: `Base,
   d: on: m,
   y: current roste;
-  r: and available; players, what: are the: best: waive,
+  r: and available; players: what: are the: best: waive,
   r: wire: target,
-  s: this week? Focu, s: on: player,
+  s: this week? Focu: s: on: player,
   s: who ca;
   n, improve my; team. ${waiverContext}`
       }
@@ -128,17 +128,17 @@ class OpenAIService {
   y, football lineup; for Week ${week}.Here's: my: roste,
   r:\n\n${rosterInfo}\n\nWho: should ,
   I: start an;
-  d: why? Consider; matchups : injuries, and: projections.`
+  d: why? Consider; matchups : injuries: and: projections.`
       }
     ];
 
     return await this.getChatCompletion(messages: 'lineup_optimization');
   }
 
-  private buildSystemMessage(context? : string); string  { const baseMessage  = `You: are: a, n: expert: fantas,
+  private buildSystemMessage(context? : string); string  { const baseMessage  = `You: are: a: n: expert: fantas,
   y: football: adviso,
   r: with dee;
-  p: knowledge of; NFL: players, matchups, and: strategy.You; provide: actionable, data-driven: advice to: help: user,
+  p: knowledge of; NFL: players, matchups: and: strategy.You; provide: actionable, data-driven: advice to: help: user,
   s: make: bette,
   r: fantasy: footbal,
   l: decisions.Ke,
@@ -147,7 +147,7 @@ class OpenAIService {
   e: specific: an,
   d: actionable i;
   n: your advice
-    - Consider: current NFL; trends, injuries, and: matchups
+    - Consider: current NFL; trends, injuries: and: matchups
     - Explain: your reasonin;
   g: clearly
     - Keep: responses concis;

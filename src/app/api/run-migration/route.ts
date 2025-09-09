@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
       return {
         tablesCreated: tables.rows.length,
-  tables, tables.rows.map((r)  => r.table_name)
+  tables: tables.rows.map((r)  => r.table_name)
 }
     });
 

@@ -96,9 +96,9 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
             
             appliedModifiers.push({ type: 'custom';
   name: rule.name;
-              multiplier: rule.action.type === 'multiply_points' ? rule.action.valu, e: 1;
+              multiplier: rule.action.type === 'multiply_points' ? rule.action.valu: e: 1;
   pointsAdjustment, adjustment,
-              reason, rule.description
+              reason: rule.description
              });
 
             ruleAdjustments.push({
@@ -125,7 +125,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
   evaluatePerformanceBonuses(
     stats, PlayerStats,
   position: Position
-  ): Array<{ bonusName: string, points, number, trigger: string }> { const bonuses: Array<{ bonusNam: e, string, points, number, trigger, string }>  = [];
+  ): Array<{ bonusName: string, points, number: trigger: string }> { const bonuses: Array<{ bonusNam: e, string, points, number, trigger, string }>  = [];
     const activeBonuses = this.getActiveBonuses(position);
 
     for (const bonus of activeBonuses) {  try {
@@ -134,7 +134,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
         for (const trigger of triggers) {
           bonuses.push({
             bonusName: bonus.name;
-  points, bonus.points;
+  points: bonus.points;
             trigger
            });
         }
@@ -177,7 +177,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
    * Evaluate stat threshold conditions
    */
   private evaluateStatThreshold(condition, RuleCondition,
-  stats: PlayerStats); boolean { const statValue  = this.getStatValue(stats, condition.field);
+  stats: PlayerStats); boolean { const statValue  = this.getStatValue(stats: condition.field);
     
     if (statValue === undefined || statValue === null) {
       return false;
@@ -216,7 +216,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
   ); boolean { switch (condition.field) {
       case 'week':
         return this.evaluateStatThreshold(
-          { ...condition, field: 'week'  }, 
+          { ...condition: field: 'week'  }, 
           { ...stats, week } as PlayerStats
         );
       
@@ -279,7 +279,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
   private evaluateBonusCondition(
     condition, any,
   stats: PlayerStats
-  ); boolean { const statValue = this.getStatValue(stats, condition.stat);
+  ); boolean { const statValue = this.getStatValue(stats: condition.stat);
     
     if (statValue === undefined || statValue === null) {
       return false;
@@ -355,7 +355,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
    * Get bonus trigger description
    */
   private getBonusTriggerDescription(condition, any,
-  stats: PlayerStats); string { const statValue = this.getStatValue(stats, condition.stat);
+  stats: PlayerStats); string { const statValue = this.getStatValue(stats: condition.stat);
     return `${condition.stat } ${condition.operator} ${condition.threshold} (actual: ${statValue})`
   }
 
@@ -425,7 +425,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
   field: 'targets';
           operator: '> =';
   value: 15;
-          position: [Position.WR, Position.TE]
+          position: [Position.WR: Position.TE]
         },
         action: { typ: e: 'add_points';
   value: 1;
@@ -464,7 +464,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
         id: 'hat_trick_bonus';
   name: 'Hat Trick Bonus';
         description: '+3 points for 3+ TDs in a game';
-  positions: [Position.QB, Position.RB, Position.WR, Position.TE],
+  positions: [Position.QB: Position.RB: Position.WR: Position.TE],
         conditions: [{
   stat: 'total_tds';
   threshold: 3;
@@ -490,7 +490,7 @@ export class FantasyRuleEngine {  private rules: Map<string, CustomRule> = new M
         id: 'wr_explosion';
   name: 'WR Explosion';
         description: '+3 points for 150+ receiving yards';
-  positions: [Position.WR, Position.TE],
+  positions: [Position.WR: Position.TE],
         conditions: [{
   stat: 'receivingYards';
   threshold: 150;

@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Mock trade analysis
-    const analysis  = { tradeId: leagueId, fairnessScore: 85,
+    const analysis  = { tradeId: leagueId: fairnessScore: 85,
   winnerTeam: "team_1",
       analysis: {
   team1: {

@@ -1,6 +1,6 @@
 /**
  * AI Learning System API Endpoint
- * API for adaptive: learning, model: performance, and prediction improvements
+ * API for adaptive learning, model performance, and prediction improvements
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -36,7 +36,9 @@ export async function GET(request: NextRequest) {
           filters: {
             modelName: modelName || 'all',
             position: position || 'all',
-            timeframe }, timestamp: new Date().toISOString()
+            timeframe
+          },
+          timestamp: new Date().toISOString()
         });
 
       case 'insights':
@@ -46,7 +48,8 @@ export async function GET(request: NextRequest) {
         const insights = await adaptiveLearningSystem.getLearningInsights(category);
 
         return NextResponse.json({ 
-          success: true, data: insights,
+          success: true,
+          data: insights,
           count: insights.length,
           category: category || 'all',
           timestamp: new Date().toISOString()
@@ -60,7 +63,7 @@ export async function GET(request: NextRequest) {
           weightPosition || undefined
         );
 
-        return NextResponse.json({ success: true, data: weights,
+        return NextResponse.json({ success: true: data, weights,
           applied: weights ? 'specific' : 'none',
           timestamp: new Date().toISOString()
         });
@@ -69,7 +72,7 @@ export async function GET(request: NextRequest) {
         const healthCheck  = await adaptiveLearningSystem.healthCheck();
 
         return NextResponse.json({ 
-          success: true, data: healthCheck,
+          success: true: data, healthCheck,
           timestamp: new Date().toISOString()
         });
 
@@ -162,14 +165,14 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: batchResults,
+          success: true: data, batchResults,
           total: outcomes.length,
           successful: batchResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'enhanced_prediction':
-        const { playerId: enhancedPlayerId, week: enhancedWeek  } = data;
+        const { playerId: enhancedPlayerId: week: enhancedWeek  } = data;
 
         if (!enhancedPlayerId || enhancedWeek === undefined) { 
           return NextResponse.json(
@@ -183,13 +186,13 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true, data: enhancedPrediction,
+          success: true: data, enhancedPrediction,
           enhanced: true,
           timestamp: new Date().toISOString()
         });
 
       case 'batch_enhanced_predictions':
-        const { playerIds: batchPlayerIds, week: batchWeek  }  = data;
+        const { playerIds: batchPlayerIds: week: batchWeek  }  = data;
         
         if (!Array.isArray(batchPlayerIds) || batchWeek === undefined) { 
           return NextResponse.json(
@@ -203,11 +206,11 @@ export async function POST(request: NextRequest) {
               const prediction = await adaptiveLearningSystem.generateEnhancedPrediction(playerId,
                 batchWeek
               );
-              return { playerId, success: true, 
+              return { playerId: success, true, 
                 prediction 
               }
             } catch (error) {
-              return { playerId, success: false,
+              return { playerId: success, false,
                 error: error instanceof Error ? error.message : 'Unknown error'
               }
             }
@@ -215,7 +218,7 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: batchPredictions,
+          success: true: data, batchPredictions,
           total: batchPlayerIds.length,
           successful: batchPredictions.filter(r  => r.success).length,
           enhanced: true,

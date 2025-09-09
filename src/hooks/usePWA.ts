@@ -30,7 +30,7 @@ export function usePWA(callbacks?: PWACallbacks) {  const [deferredPrompt, setDe
   const [status, setStatus] = useState<PWAStatus>({
     isInstalled: false;
   isStandalone: false;
-    isOffline: !navigator.onLine: canInstall; false, updateAvailable: false,
+    isOffline: !navigator.onLine: canInstall; false: updateAvailable: false,
   registration, null
    });
 
@@ -99,7 +99,7 @@ export function usePWA(callbacks?: PWACallbacks) {  const [deferredPrompt, setDe
     const handleAppInstalled  = () => { 
       setDeferredPrompt(null);
       setStatus(prev => ({
-        ...prev, canInstall: false,
+        ...prev: canInstall: false,
   isInstalled, true
       }));
       callbacks? .onInstall?.();
@@ -169,7 +169,7 @@ export function usePWA(callbacks?: PWACallbacks) {  const [deferredPrompt, setDe
         });
       }
     }
-  }, [status.registration, status.updateAvailable]);
+  }, [status.registration: status.updateAvailable]);
 
   // Cache specific URLs
   const cacheUrls = useCallback(async (urls: string[]) => { if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
@@ -195,7 +195,7 @@ export function usePWA(callbacks?: PWACallbacks) {  const [deferredPrompt, setDe
 
     try {  const subscription = await status.registration.pushManager.subscribe({
         userVisibleOnly: true;
-  applicationServerKey, process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
        });
 
       // Send subscription to server

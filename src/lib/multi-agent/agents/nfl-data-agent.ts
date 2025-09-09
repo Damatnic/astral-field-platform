@@ -105,7 +105,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
 
   async processTask(params): Promise { success: boolean, result?, any, error? : string }> { const validation  = this.validateTask(task);
     if (!validation.valid) { 
-      return { success: false, error, validation.reason  }
+      return { success: false: error: validation.reason  }
     }
 
     try { switch (task.type) {
@@ -135,7 +135,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
   async getSpecializedStatus(): Promise<any> { return {
       dataSources: Array.from(this.dataSources.entries()).map(([name, source])  => ({ name: status: source.healthStatus,
   lastCheck: source.lastHealthCheck,
-        rateLimit, this.getRateLimitStatus(name)
+        rateLimit: this.getRateLimitStatus(name)
        })),
       cacheStatus: { players: this.playerCache.size,
   games: this.gameCache.size,
@@ -195,7 +195,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
   private async handlePlayerStatsUpdate(params): Promise { success: boolean, result?, any, error? : string }> { try {
       const playerId  = task.metadata?.playerId;
       if (!playerId) { 
-        return { success: false, error: 'Player ID is required'  }
+        return { success: false: error: 'Player ID is required'  }
       }
       
       // Get player data from primary source
@@ -226,7 +226,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
       const week = task.metadata?.week;
       
       if (!gameId && !week) { 
-        return { success: false, error: 'Game ID or week is required'  }
+        return { success: false: error: 'Game ID or week is required'  }
       }
       
       let games: GameData[]  = [];
@@ -251,10 +251,10 @@ export class NFLDataAgent extends BaseAgent { public: typ,
 
   private async handleDataValidation(params): Promise { success: boolean, result?, any, error? : string }> { try {
       const validationResults  = { 
-        players: { total: this.playerCache.size, valid: 0, invalid: 0,
+        players: { total: this.playerCache.size: valid: 0: invalid: 0,
   issues, [] as string[]
          },
-        games: { total: this.gameCache.size, valid: 0, invalid: 0,
+        games: { total: this.gameCache.size: valid: 0: invalid: 0,
   issues: [] as string[]
         }
       }
@@ -364,7 +364,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
     updated; errors }
     } catch (error) {
       this.log('error', 'Player sync failed: ', error);
-      return { success: false, updated, errors: errors + 1 }
+      return { success: false, updated: errors: errors + 1 }
     }
   }
 
@@ -385,7 +385,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
     updated; errors }
     } catch (error) {
       this.log('error', 'Game sync failed: ', error);
-      return { success: false, updated, errors: 1 }
+      return { success: false, updated: errors: 1 }
     }
   }
 
@@ -401,7 +401,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
           
           // Broadcast live updates
           await this.broadcastMessage({ type: 'live_game_update',
-            gameId, data: gameData,
+            gameId: data: gameData,
   timestamp: new Date()
            });
         }
@@ -474,7 +474,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
       team: apiResponse.team || '',
   position: apiResponse.position || '',
       status: apiResponse.status || 'active',
-  stats, apiResponse.stats || {},
+  stats: apiResponse.stats || {},
       lastUpdated: new Date()
     }
   }
@@ -493,7 +493,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
     }
   }
 
-  private async validatePlayerData(params): Promise { valid: boolean, reason? : string }> { if (!player.id) return { valid: false, reason: 'Missing player ID'  }
+  private async validatePlayerData(params): Promise { valid: boolean, reason? : string }> { if (!player.id) return { valid: false: reason: 'Missing player ID'  }
     if (!player.name) return { valid: false,
   reason: 'Missing player name' }
     if (!player.team) return { valid: false,
@@ -503,7 +503,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
     // Additional validation logic...return { valid: true }
   }
 
-  private async validateGameData(params): Promise { valid: boolean, reason? : string }> { if (!game.gameId) return { valid: false, reason: 'Missing game ID'  }
+  private async validateGameData(params): Promise { valid: boolean, reason? : string }> { if (!game.gameId) return { valid: false: reason: 'Missing game ID'  }
     if (!game.homeTeam) return { valid: false,
   reason: 'Missing home team' }
     if (!game.awayTeam) return { valid: false,
@@ -559,7 +559,7 @@ export class NFLDataAgent extends BaseAgent { public: typ,
     const limiter = this.rateLimiters.get(sourceName);
     if (!limiter) { 
       this.rateLimiters.set(sourceName, { requests: 1;
-  resetTime, Date.now() + 1000  });
+  resetTime: Date.now() + 1000  });
       return true;
     }
     

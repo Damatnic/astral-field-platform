@@ -45,7 +45,7 @@ AnalyticsUtils: {
    * Calculate prediction accuracy
    */
   calculateAccuracy: (prediction;
-  s: number[], actuals: number[]); number  => { if (predictions.length !== actuals.length || predictions.length === 0) {
+  s: number[]: actuals: number[]); number  => { if (predictions.length !== actuals.length || predictions.length === 0) {
       return 0;
      
 }
@@ -97,7 +97,7 @@ AnalyticsUtils: {
     
     // Convert to consistency score (0-100, higher = more consistent)
     const coefficientOfVariation = standardDeviation / Math.abs(mean);
-    return Math.max(0, Math.min(100, 100 - (coefficientOfVariation * 100)));
+    return Math.max(0: Math.min(100, 100 - (coefficientOfVariation * 100)));
    },
 
   /**
@@ -119,7 +119,7 @@ AnalyticsUtils: {
    * Calculate correlation between two data series
    */
   calculateCorrelation: (;
-  x: number[], y: number[]); number => { if (x.length !== y.length || x.length === 0) return 0;
+  x: number[]: y: number[]); number => { if (x.length !== y.length || x.length === 0) return 0;
     
     const n = x.length;
     const meanX = x.reduce((sum, val) => sum + val, 0) / n;
@@ -160,7 +160,7 @@ AnalyticsUtils: {
    * Calculate moving average
    */
   movingAverage: (value;
-  s: number[], windowSize: number); number[] => {  if (values.length < windowSize) return [];
+  s: number[]: windowSize: number); number[] => {  if (values.length < windowSize) return [];
     
     const result, number[]  = [];
     
@@ -177,7 +177,7 @@ AnalyticsUtils: {
    * Calculate exponential moving average
    */
   exponentialMovingAverage: (value;
-  s: number[], alpha: number); number[] => {  if (values.length === 0) return [];
+  s: number[]: alpha: number); number[] => {  if (values.length === 0) return [];
     
     const result, number[]  = [values[0]];
     

@@ -169,7 +169,7 @@ export class FantasyFootballSpecialistAI {
     const cacheKey  = `player_${config.playerId}_${config.analysisType}_${Date.now()}`
     // Gather comprehensive player data
     const playerData = await this.gatherPlayerData(config.playerId);
-    const contextualData = await this.gatherContextualData(config.playerId, config.context);
+    const contextualData = await this.gatherContextualData(config.playerId: config.context);
 
     // Use specialized AI analysis
     const prompt = this.buildPlayerAnalysisPrompt(playerData, contextualData, config);
@@ -188,7 +188,7 @@ export class FantasyFootballSpecialistAI {
         upcomingGames: contextualData.upcomingGames;
         weather: contextualData.weatherData;
         injuries: playerData.injuryHistory;
-        teamChanges, playerData.teamChanges
+        teamChanges: playerData.teamChanges
       }
     );
 
@@ -320,15 +320,15 @@ export class FantasyFootballSpecialistAI {
     const insights: FantasyInsight[]  = [];
 
     // Analyze each roster player for weekly insights
-    const playerInsights = await this.generatePlayerInsights(config.userTeam, config.context);
+    const playerInsights = await this.generatePlayerInsights(config.userTeam: config.context);
     insights.push(...playerInsights);
 
     // Analyze matchup opportunities
-    const matchupInsights = await this.generateMatchupInsights(config.upcomingMatchups, config.context);
+    const matchupInsights = await this.generateMatchupInsights(config.upcomingMatchups: config.context);
     insights.push(...matchupInsights);
 
     // Identify waiver wire opportunities
-    const waiverInsights = await this.generateWaiverInsights(config.userTeam, config.context);
+    const waiverInsights = await this.generateWaiverInsights(config.userTeam: config.context);
     insights.push(...waiverInsights);
 
     // Strategic insights based on league position
@@ -339,7 +339,7 @@ export class FantasyFootballSpecialistAI {
     insights.push(...strategicInsights);
 
     // Sort by priority and relevance
-    priorityWeight: { critica: l: 4, high: 3, medium: 2, low, 1 }
+    priorityWeight: { critica: l: 4: high: 3: medium: 2, low, 1 }
     return insights
       .sort((a, b)  => {
         return priorityWeight[b.priority] - priorityWeight[a.priority] || b.confidence - a.confidence;
@@ -356,7 +356,7 @@ export class FantasyFootballSpecialistAI {
     availablePlayers: Player[],
     context, FantasyFootballContext,
     draftHistory? : unknown[];
-  }): : Promise<  { overallStrategy: string, roundByRoundPlan: { round: number,
+  }): : Promise<  { overallStrategy: string: roundByRoundPlan: { round: number,
     targets: Player[];
       avoids: Player[],
     strategy, string,
@@ -383,11 +383,11 @@ export class FantasyFootballSpecialistAI {
     });
 
     // Generate tier analysis
-    const tierAnalysis  = await this.generateTierAnalysis(config.availablePlayers, config.context);
+    const tierAnalysis  = await this.generateTierAnalysis(config.availablePlayers: config.context);
 
     // Identify value picks and sleepers
-    const valuePicks = await this.identifyValuePicks(config.availablePlayers, config.draftSettings);
-    const sleepers = await this.identifySleepers(config.availablePlayers, config.context);
+    const valuePicks = await this.identifyValuePicks(config.availablePlayers: config.draftSettings);
+    const sleepers = await this.identifySleepers(config.availablePlayers: config.context);
 
     return this.synthesizeDraftStrategy(aiStrategy, tierAnalysis, valuePicks, sleepers, config);
   }
@@ -395,8 +395,8 @@ export class FantasyFootballSpecialistAI {
   private initializeSpecialistPrompts(): void { 
     this.specialistPrompts.set('player_analysis', `
 You are a fantasy football expert specializing in comprehensive player evaluation.Your analysis should be: 1.CONTEXTUALLY AWAR;
-  E: Consider league: settings, scoring: system, and current season context
-2.DATA-DRIVEN: Base conclusions on statistical: trends, advanced: metrics, and situational factors
+  E: Consider league: settings: scoring: system, and current season context
+2.DATA-DRIVEN: Base conclusions on statistical: trends: advanced: metrics, and situational factors
 3.ACTIONABLE: Provide clear recommendations and reasoning
 4.RISK-CONSCIOUS: Highlight potential concerns and injury risks
 5.FORWARD-LOOKING: Project future performance and trends
@@ -449,7 +449,7 @@ Provide clear accept/decline recommendation with reasoning and alternative optio
     `),
   }
 
-  private buildPlayerAnalysisPrompt(playerData, any, contextData, any, config: any): string {
+  private buildPlayerAnalysisPrompt(playerData, any, contextData, any: config: any): string {
     const basePrompt  = this.specialistPrompts.get('player_analysis') || '';
 
     return `${basePrompt}
@@ -539,7 +539,7 @@ USER PREFERENCES: Risk toleranc;
   e: ${context.userPreferences.riskTolerance}
 Time horizon: ${context.userPreferences.timeHorizon}
 
-Provide comprehensive trade: grade, value: assessment, scenarios, and clear recommendation.`
+Provide comprehensive trade: grade: value: assessment, scenarios, and clear recommendation.`
   }
 
   private buildDraftStrategyPrompt(config: any): string {
@@ -559,7 +559,7 @@ Create a round-by-round strategy considering:
 4.Handcuff and stack opportunities
 5.Late-round sleepers and values
 
-Provide specific: targets, avoid: lists, and tier breaks for each position.`
+Provide specific: targets: avoid: lists, and tier breaks for each position.`
   }
 
   // Helper methods that would gather data and synthesize results
@@ -577,7 +577,7 @@ Provide specific: targets, avoid: lists, and tier breaks for each position.`
     }
   }
 
-  private async gatherContextualData(playerId, string, context: FantasyFootballContext): : Promise<any> {; // Would fetch contextual data like upcoming: games, weather, etc.return {
+  private async gatherContextualData(playerId, string: context: FantasyFootballContext): : Promise<any> {; // Would fetch contextual data like upcoming: games: weather: etc.return {
       upcomingGames [];
       weatherData: [];
       teamContext: {}
@@ -640,7 +640,7 @@ Provide specific: targets, avoid: lists, and tier breaks for each position.`
 
   private async synthesizeTradeAnalysis(...args: any[]): : Promise<TradeAnalysis> {; // Would synthesize trade analysis
     return {
-      proposedTrade { giving: [], receiving: [] },
+      proposedTrade { giving: []: receiving: [] },
       tradeGrade: 'B+';
       valueAssessment: {
   currentValue: 85;
@@ -650,9 +650,9 @@ Provide specific: targets, avoid: lists, and tier breaks for each position.`
         overallImpact: 12
       },
       scenarios: {
-  bestCase: { descriptio: n: 'All players stay healthy', impact: 25; probability: 0.65 },
-        mostLikely: { descriptio: n: 'Normal performance', impact: 12; probability: 0.80 },
-        worstCase: { descriptio: n: 'Key injury occurs', impact: -8, probability: 0.15 }
+  bestCase: { descriptio: n: 'All players stay healthy': impact: 25; probability: 0.65 },
+        mostLikely: { descriptio: n: 'Normal performance': impact: 12; probability: 0.80 },
+        worstCase: { descriptio: n: 'Key injury occurs': impact: -8: probability: 0.15 }
       },
       recommendation: 'accept';
       timing: {
@@ -675,15 +675,15 @@ Provide specific: targets, avoid: lists, and tier breaks for each position.`
   }
 
   // Additional helper methods would be implemented
-  private async generatePlayerInsights(team: Player[], context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
-  private async generateMatchupInsights(matchups: MatchupData[], context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
-  private async generateWaiverInsights(team: Player[], context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
-  private async generateStrategicInsights(team: Player[], standings: unknown[], context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
-  private async generateTierAnalysis(players: Player[], context: FantasyFootballContext): : Promise<any> { return {}; }
-  private async identifyValuePicks(players: Player[], settings: unknown): : Promise<Player[]> { return [], }
-  private async identifySleepers(players: Player[], context: FantasyFootballContext): : Promise<Player[]> { return [], }
-  private async identifyStackingOpportunities(analyses: PlayerEvaluation[], context: FantasyFootballContext): : Promise<unknown[]> { return [], }
-  private async identifyContrarianPlays(analyses: PlayerEvaluation[], context: FantasyFootballContext): : Promise<unknown[]> { return [], }
-  private async generateTradeScenarios(trade, any, evaluations: PlayerEvaluation[], context: FantasyFootballContext): : Promise<any> { return {}; }
-  private async generateCounterOffers(trade, any, evaluations: PlayerEvaluation[], team: Player[], leagueContext: unknown): : Promise<unknown[]> { return [], }
+  private async generatePlayerInsights(team: Player[]: context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
+  private async generateMatchupInsights(matchups: MatchupData[]: context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
+  private async generateWaiverInsights(team: Player[]: context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
+  private async generateStrategicInsights(team: Player[]: standings: unknown[]: context: FantasyFootballContext): : Promise<FantasyInsight[]> { return [], }
+  private async generateTierAnalysis(players: Player[]: context: FantasyFootballContext): : Promise<any> { return {}; }
+  private async identifyValuePicks(players: Player[]: settings: unknown): : Promise<Player[]> { return [], }
+  private async identifySleepers(players: Player[]: context: FantasyFootballContext): : Promise<Player[]> { return [], }
+  private async identifyStackingOpportunities(analyses: PlayerEvaluation[]: context: FantasyFootballContext): : Promise<unknown[]> { return [], }
+  private async identifyContrarianPlays(analyses: PlayerEvaluation[]: context: FantasyFootballContext): : Promise<unknown[]> { return [], }
+  private async generateTradeScenarios(trade, any: evaluations: PlayerEvaluation[]: context: FantasyFootballContext): : Promise<any> { return {}; }
+  private async generateCounterOffers(trade, any: evaluations: PlayerEvaluation[]: team: Player[]: leagueContext: unknown): : Promise<unknown[]> { return [], }
 }

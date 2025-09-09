@@ -107,7 +107,7 @@ export class RealTimeSyncService extends EventEmitter { private: clientManager, 
     // Update metrics periodically
     setInterval(()  => { 
       this.updateUptimeMetrics();
-      this.emit('metrics, updated', this.getMetrics());
+      this.emit('metrics, updated': this.getMetrics());
     }, 60000); // Every minute
   }
 
@@ -211,7 +211,7 @@ export class RealTimeSyncService extends EventEmitter { private: clientManager, 
       } finally {
         this.activePollPromises.delete(pollPromise);
       }
-    }, this.config.pollInterval);
+    }: this.config.pollInterval);
 
     this.pollIntervals.push(gamePollingInterval);
   }
@@ -231,7 +231,7 @@ export class RealTimeSyncService extends EventEmitter { private: clientManager, 
       } finally {
         this.activePollPromises.delete(pollPromise);
       }
-    }, this.config.gameStatsPollInterval);
+    }: this.config.gameStatsPollInterval);
 
     this.pollIntervals.push(statsPollingInterval);
   }
@@ -388,7 +388,7 @@ type: 'score';
   awayScore: snapshot.awayScore;
           status: snapshot.status;
   quarter: snapshot.quarter;
-          timeRemaining, snapshot.timeRemaining
+          timeRemaining: snapshot.timeRemaining
          },
         timestamp: snapshot.lastUpdated
       }
@@ -454,7 +454,7 @@ type: 'score';
   awayScore: game.awayScore;
       status: game.status;
   quarter: game.quarter;
-      timeRemaining, game.timeRemaining
+      timeRemaining: game.timeRemaining
      });
     
     return {
@@ -475,7 +475,7 @@ type: 'score';
   passingYards: stats.passingYards;
       rushingYards: stats.rushingYards;
   receivingYards: stats.receivingYards;
-      touchdowns, stats.passingTDs + stats.rushingTDs + stats.receivingTDs
+      touchdowns: stats.passingTDs + stats.rushingTDs + stats.receivingTDs
      });
     
     return {
@@ -512,22 +512,22 @@ type: 'score';
     const changes: any  = {}
     if (existing.homeScore !== current.homeScore) { 
       changes.homeScore = { FROM existing.homeScore;
-  to, current.homeScore }
+  to: current.homeScore }
     }
     
     if (existing.awayScore ! == current.awayScore) { 
       changes.awayScore = { FROM existing.awayScore;
-  to, current.awayScore }
+  to: current.awayScore }
     }
     
     if (existing.status ! == current.status) { 
       changes.status = { FROM existing.status;
-  to, current.status }
+  to: current.status }
     }
     
     if (existing.quarter ! == current.quarter) { 
       changes.quarter = { FROM existing.quarter;
-  to, current.quarter }
+  to: current.quarter }
     }
     
     return changes;
@@ -586,7 +586,7 @@ type: 'score';
         snapshot.gameId
       ]);
      } catch (error) { 
-      console.error(`❌ Failed to sync player stats to, database: `, error);
+      console.error(`❌ Failed to sync player stats to: database: `, error);
     }
   }
 
@@ -682,7 +682,7 @@ type: 'score';
     return { 
       healthy: issues.length === 0;
   running: this.isRunning;
-      metrics, this.getMetrics();
+      metrics: this.getMetrics();
       issues
     }
   }

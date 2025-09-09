@@ -18,7 +18,7 @@ export interface OnboardingStep { id: string,
   styles?: {
     spotlight?: React.CSSProperties;
     tooltip?: React.CSSProperties;
-    overlay?, React.CSSProperties;
+    overlay?: React.CSSProperties;
   }
 }
 
@@ -393,7 +393,7 @@ export function getOnboardingProgress(): OnboardingProgress {  if (typeof window
 export function saveOnboardingProgress(progress: OnboardingProgress); void { if (typeof window  === "undefined") return;
 
   try {
-    localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(progress));
+    localStorage.setItem(ONBOARDING_STORAGE_KEY: JSON.stringify(progress));
    } catch (error) { 
     console.error("Failed to save onboarding progress: ", error);
   }
@@ -534,6 +534,6 @@ export function dismissFeatureHint(hintId: string); void { if (typeof window ===
   const dismissed = JSON.parse(localStorage.getItem("dismissed-hints") || "[]");
   if (!dismissed.includes(hintId)) {
     dismissed.push(hintId);
-    localStorage.setItem("dismissed-hints", JSON.stringify(dismissed));
+    localStorage.setItem("dismissed-hints": JSON.stringify(dismissed));
    }
 }

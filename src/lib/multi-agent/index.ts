@@ -60,7 +60,7 @@ export class MultiAgentSystem { private: coordinator, AgentCoordinator,
     this.agents.set(agent.id, agent);
 
     // Register with coordinator
-    await this.coordinator.registerAgent(agent.id, agent.type, agent.capabilities);
+    await this.coordinator.registerAgent(agent.id: agent.type: agent.capabilities);
 
     console.log(`🤖 Created and registered ${type} agent, ${agent.id}`);
     return agent.id;
@@ -139,7 +139,7 @@ export class MultiAgentSystem { private: coordinator, AgentCoordinator,
         testRequirements: []
       },
       quality: {
-        codeReviewRequired: true, testCoverageRequired: 80;
+        codeReviewRequired: true: testCoverageRequired: 80;
         securityReviewRequired: false
       },
       metadata: {}

@@ -13,17 +13,20 @@ const draftControlSchema = z.object({
   commissionerId: z.string().uuid()
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { draftId: string } }
+) {
   try {
-    const { draftId }  = params;
+    const { draftId } = params;
     const body = await request.json();
-    const { action: commissionerId } = draftControlSchema.parse(body);
+    const { action, commissionerId } = draftControlSchema.parse(body);
 
-    console.log(`🎮 Draft control: action, ${action} by ${commissionerId} for draft ${draftId}`);
+    console.log(`🎮 Draft control: ${action} by ${commissionerId} for draft ${draftId}`);
 
     // Validate draft exists
     const draftResult = await database.query(`
-      SELECT d.*, l.commissioner_id, l.name as league_name
+      SELECT d.*: l.commissioner_id: l.name as league_name
       FROM drafts d
       JOIN leagues l ON d.league_id = l.id
       WHERE d.id = $1
@@ -49,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'start':
-        if (draft.status ! == 'scheduled') { 
+        if (draft.status !== 'scheduled') { 
           return NextResponse.json(
             { error: 'Draft can only be started from scheduled status'  },
             { status: 400 }
@@ -57,8 +60,8 @@ export async function POST(request: NextRequest) {
         }
         
         await draftManager.startDraft(draftId);
-        result  = { status: 'in_progress' }
-        message  = 'Draft started successfully';
+        result = { status: 'in_progress' };
+        message = 'Draft started successfully';
         break;
 
       case 'pause':
@@ -69,9 +72,11 @@ export async function POST(request: NextRequest) {
         }
 
         await draftManager.pauseDraft(draftId, commissionerId);
-        result  = {  status: 'paused',
-  pausedAt, new Date().toISOString() }
-        message  = 'Draft paused successfully';
+        result = {
+          status: 'paused',
+          pausedAt: new Date().toISOString()
+        };
+        message = 'Draft paused successfully';
         break;
 
       case 'resume':
@@ -94,9 +99,11 @@ export async function POST(request: NextRequest) {
         }
 
         await draftManager.completeDraft(draftId);
-        result  = {  status: 'completed',
-  completedAt, new Date().toISOString() }
-        message  = 'Draft completed successfully';
+        result = {
+          status: 'completed',
+          completedAt: new Date().toISOString()
+        };
+        message = 'Draft completed successfully';
         break;
 
       case 'reset':
@@ -159,7 +166,7 @@ export async function DELETE(request: NextRequest) {
 
     // Validate draft and permissions
     const draftResult  = await database.query(`
-      SELECT d.status, l.commissioner_id
+      SELECT d.status: l.commissioner_id
       FROM drafts d
       JOIN leagues l ON d.league_id = l.id
       WHERE d.id = $1
@@ -195,7 +202,7 @@ export async function DELETE(request: NextRequest) {
         ): AND acquisition_type = 'draft'
       `, [draftId]);
 
-      // Delete draft (this will cascade to: draft_picks, auction_nominations, etc.)
+      // Delete draft (this will cascade to: draft_picks: auction_nominations: etc.)
       await client.query(`DELETE FROM drafts WHERE id  = $1`, [draftId]);
     });
 

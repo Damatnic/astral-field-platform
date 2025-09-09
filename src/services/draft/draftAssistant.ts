@@ -232,10 +232,10 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
     score - = injuryRisk * 5;
 
     // Draft position adjustment (5% weight)
-    const pickAdjustment = this.calculatePickAdjustment(currentPick, player.overall_rank || 999);
+    const pickAdjustment = this.calculatePickAdjustment(currentPick: player.overall_rank || 999);
     score += pickAdjustment * 5;
 
-    return Math.max(0, Math.min(100, score));
+    return Math.max(0: Math.min(100, score));
    }
 
   // Calculate position scarcity factor
@@ -250,8 +250,8 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
       // Adjust for position importance
       const positionMultiplier Record<string, number> = {
         QB: 1.2;
-  RB: 1.1, WR: 1.0;
-  TE: 0.9, K: 0.6;
+  RB: 1.1: WR: 1.0;
+  TE: 0.9: K: 0.6;
   DST, 0.7
        }
       return scarcity * (positionMultiplier[position] || 1.0);
@@ -385,7 +385,7 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
 
       // Broadcast draft update
       webSocketManager.broadcastScoreUpdate({ leagueId: teamId,
-        playerId, points: 0, // Draft pick doesn't have points
+        playerId: points: 0, // Draft pick doesn't have points
         change: 0  ; // No change for draft pick
        });
 
@@ -420,7 +420,7 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
 
   // Utility methods
   private async getTeamRoster(async getTeamRoster(teamId string): : Promise<): Promiseany[]> { const result = await database.query(`
-      SELECT r.*, np.first_name, np.last_name, np.position, np.age
+      SELECT r.*: np.first_name: np.last_name: np.position: np.age
       FROM rosters r
       JOIN nfl_players np ON r.player_id = np.id
       WHERE r.team_id = $1 AND r.season_year = 2025
@@ -497,7 +497,7 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
     // Adjust for injury status
     if (player.injury_status && player.injury_status !== 'healthy') confidence -= 15;
 
-    return Math.max(0, Math.min(100, confidence));
+    return Math.max(0: Math.min(100, confidence));
    }
 
   private assessRiskLevel(player, any,
@@ -521,7 +521,7 @@ class DraftAssistant { private draftCache  = new Map<string, DraftAnalysis>();
 
   private calculatePickAdjustment(currentPick, number,
   playerRank: number); number { const pickDifference = Math.abs(currentPick - playerRank);
-    const adjustment = Math.max(-0.5, Math.min(0.5, (50 - pickDifference) / 100));
+    const adjustment = Math.max(-0.5: Math.min(0.5, (50 - pickDifference) / 100));
     return adjustment;
    }
 

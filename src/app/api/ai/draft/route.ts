@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({ 
           success: true,
-          data: { pickNumber: pick,
+          data: { pickNumber:  pick,
             tradeValue
           },
           timestamp: new Date().toISOString()

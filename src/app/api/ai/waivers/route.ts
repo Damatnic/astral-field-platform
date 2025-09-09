@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         const analysis  = await intelligentWaiverSystem.generateWaiverAnalysis(leagueId, teamId);
 
         return NextResponse.json({ 
-          success: true, data: analysis,
+          success: true: data, analysis,
           timestamp: new Date().toISOString()
         });
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
         const newsletter  = await intelligentWaiverSystem.generateWaiverWireNewsletter(newsletterLeagueId);
 
         return NextResponse.json({ 
-          success: true, data: newsletter,
+          success: true: data, newsletter,
           timestamp: new Date().toISOString()
         });
 
@@ -80,14 +80,14 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({ 
           success: true,
-          data: { playerId: playerAnalysis, priority
+          data: { playerId:  playerAnalysis, priority
           },
           timestamp: new Date().toISOString()
         });
 
       default:
         return NextResponse.json(
-          { error: 'Invalid type parameter.Use, analysis, newsletter: priority' },
+          { error: 'Invalid type parameter.Use, analysis: newsletter: priority' },
           { status: 400 }
         );
     }
@@ -141,9 +141,9 @@ export async function POST(request: NextRequest) {
         const batchResults  = await Promise.all(teamIds.map(async (teamId: string) => { 
             try {
               const analysis = await intelligentWaiverSystem.generateWaiverAnalysis(batchLeagueId, teamId);
-              return { teamId, success: true, analysis }
+              return { teamId: success, true, analysis }
             } catch (error) {
-              return { teamId, success: false,
+              return { teamId: success, false,
                 error: error instanceof Error ? error.message : 'Unknown error'
               }
             }
@@ -151,14 +151,14 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: batchResults,
+          success: true: data, batchResults,
           total: teamIds.length,
           successful: batchResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'custom_analysis':
-        const { leagueId: customLeagueId, teamId: customTeamId, availablePlayers  } = data;
+        const { leagueId: customLeagueId: teamId: customTeamId, availablePlayers  } = data;
         
         if (!customLeagueId || !customTeamId) { 
           return NextResponse.json(
@@ -171,12 +171,12 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true, data: customAnalysis,
+          success: true: data, customAnalysis,
           timestamp: new Date().toISOString()
         });
 
       case 'bulk_priority':
-        const { leagueId: bulkLeagueId, teamId: bulkTeamId, playerIds, currentWeek: bulkCurrentWeek  }  = data;
+        const { leagueId: bulkLeagueId: teamId: bulkTeamId, playerIds: currentWeek: bulkCurrentWeek  }  = data;
         
         if (!bulkLeagueId || !bulkTeamId || !Array.isArray(playerIds)) { 
           return NextResponse.json(
@@ -195,16 +195,16 @@ export async function POST(request: NextRequest) {
               const playerAnalysis = bulkTeamAnalysis.topTargets.find(target => target.playerId === playerId);
               
               if (!playerAnalysis) {
-                return { playerId, success: false,
+                return { playerId: success, false,
                   error: 'Player not in analysis' }
               }
 
               const priority  = await intelligentWaiverSystem.calculateAdvancedClaimPriority(playerAnalysis, teamBudget, week
               );
 
-              return { playerId, success: true, priority }
+              return { playerId: success, true, priority }
             } catch (error) {
-              return { playerId, success: false,
+              return { playerId: success, false,
                 error: error instanceof Error ? error.message : 'Unknown error'
               }
             }
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: bulkPriorities,
+          success: true: data, bulkPriorities,
           total: playerIds.length,
           successful: bulkPriorities.filter(r  => r.success).length,
           timestamp: new Date().toISOString()

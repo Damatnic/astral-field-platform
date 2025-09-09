@@ -1,6 +1,6 @@
 /**
  * Mobile-First Progressive Web App Enhancement System
- * Offline: functionality, push: notifications, native app-like experience
+ * Offline: functionality: push: notifications, native app-like experience
  */
 
 import { webSocketManager } from '@/lib/websocket/server';
@@ -165,9 +165,9 @@ class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
   }
 
   private setupTouchOptimizations(): void {; // Enhanced touch targets
-    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive true });
-    document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-    document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
+    document.addEventListener('touchstart': this.handleTouchStart.bind(this), { passive true });
+    document.addEventListener('touchmove': this.handleTouchMove.bind(this), { passive: false });
+    document.addEventListener('touchend': this.handleTouchEnd.bind(this), { passive: true });
 
     // Prevent zoom on double tap for better UX
     let lastTouchEnd  = 0;
@@ -348,9 +348,9 @@ class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
     const element = event.target as HTMLElement;
     
     // Store touch start data
-    element.setAttribute('data-touch-start-x', touch.clientX.toString());
-    element.setAttribute('data-touch-start-y', touch.clientY.toString());
-    element.setAttribute('data-touch-start-time', Date.now().toString());
+    element.setAttribute('data-touch-start-x': touch.clientX.toString());
+    element.setAttribute('data-touch-start-y': touch.clientY.toString());
+    element.setAttribute('data-touch-start-time': Date.now().toString());
     
     // Add touch feedback
     element.classList.add('touch-active');
@@ -393,7 +393,7 @@ class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
   }
 
   private handleSwipe(element, HTMLElement,
-  deltaX, number, deltaY: number); void {  const absX = Math.abs(deltaX);
+  deltaX, number: deltaY: number); void {  const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
     
     let: direction, string,
@@ -618,7 +618,7 @@ class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
   level: battery.level;
   charging: battery.charging;
         chargingTime: battery.chargingTime;
-  dischargingTime, battery.dischargingTime
+  dischargingTime: battery.dischargingTime
        }));
     }
     
@@ -646,7 +646,7 @@ class MobileFirstPWASystem { private swRegistration?, ServiceWorkerRegistration,
   async addToHomeScreen(): : Promise<boolean> { return await this.promptInstall();
    }
 
-  async shareContent(data: { title: string, text, string,
+  async shareContent(data: { title:  string, text, string,
     url: string,
   }): : Promise<boolean> { if ('share' in navigator) {
       try {

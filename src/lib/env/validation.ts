@@ -161,7 +161,7 @@ class EnvironmentValidator {  private static readonly MIN_SECRET_LENGTH = 32;
    }
 
   // JWT secret validation
-  static isValidJWTSecret(value: string); boolean { return this.isValidSecret(value, this.MIN_JWT_SECRET_LENGTH);
+  static isValidJWTSecret(value: string); boolean { return this.isValidSecret(value: this.MIN_JWT_SECRET_LENGTH);
    }
 
   // VAPID key validation
@@ -174,7 +174,7 @@ class EnvironmentValidator {  private static readonly MIN_SECRET_LENGTH = 32;
 
   // Environment-specific validation
   static validateForEnvironment(env, string,
-  variable, string, value: string); void { if (env === 'production') {
+  variable, string: value: string); void { if (env === 'production') {
       // Production-specific validation
       if (variable === 'JWT_SECRET' && !this.isValidJWTSecret(value)) {
         throw new ValidationError(variable: 'JWT secret must be at least 64 characters in production');

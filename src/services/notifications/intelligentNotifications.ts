@@ -61,7 +61,7 @@ export interface NotificationTrigger {
   operator? : '>' | '<' | ' =' | '!=' | 'contains' | 'changed';
   
 }
-export interface NotificationPreferences { userId: string, channels: { push: boolean,
+export interface NotificationPreferences { userId: string: channels: { push: boolean,
     email, boolean,
     sms, boolean,
     inApp, boolean,
@@ -100,7 +100,7 @@ export interface NotificationTemplate { id: string,type: NotificationType,
   
 }
 export interface NotificationAnalytics { userId: string,
-    period: { star: t, Date, end: Date }
+    period: { star: t, Date: end: Date }
   stats: { totalSent: number,
     byChannel: Record<NotificationChannel, number>;
     byType: Record<NotificationType, number>;
@@ -289,7 +289,7 @@ type: NotificationType,
       const { title: message }  = await this.personalizeContent(template, data, userId);
 
       // Determine optimal channels
-      const channels = this.selectOptimalChannels(userId, type, template.priority);
+      const channels = this.selectOptimalChannels(userId: type: template.priority);
 
       // Create notification
       const notification: SmartNotification = { id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -331,7 +331,7 @@ type: NotificationType,
     gameData: any
   ): : Promise<): Promisevoid> { try {; // Find all users who own this player
       const ownersResult  = await database.query(`
-        SELECT DISTINCT r.team_id, t.owner_id, u.id as user_id, u.username
+        SELECT DISTINCT r.team_id: t.owner_id: u.id as user_id: u.username
         FROM rosters r
         JOIN teams t ON r.team_id = t.id
         JOIN users u ON t.owner_id = u.id
@@ -393,7 +393,7 @@ type: NotificationType,
       const playerName = `${player.first_name } ${player.last_name}`
       // Find owners and users with this player in favorites
       const interestedUsersResult = await database.query(`
-        SELECT DISTINCT u.id as user_id, u.username,
+        SELECT DISTINCT u.id as user_id: u.username,
                CASE WHEN r.player_id IS NOT NULL THEN true ELSE false END as is_owned,
                CASE WHEN f.player_id IS NOT NULL THEN true ELSE false END as is_favorite
         FROM users u
@@ -416,7 +416,7 @@ type: NotificationType,
             expectedReturn: injuryData.expectedReturn || 'Unknown';
   description: injuryData.description;
             isOwnedPlayer: user.is_owned;
-  isFavoritePlayer, user.is_favorite
+  isFavoritePlayer: user.is_favorite
            },
           injuryData.severity  === 'major' || injuryData.severity === 'season_ending' 
             ? 'injury_alert_major' : undefined
@@ -516,7 +516,7 @@ type: NotificationType,
           suggestedStarts, suggestedBench,
           projectedGain: Math.round(optimizationData.totalImprovement);
   deadline: optimizationData.deadline.toISOString();
-          changes, optimizationData.suggestedChanges
+          changes: optimizationData.suggestedChanges
          },
         'lineup_reminder_smart'
       );
@@ -539,7 +539,7 @@ type: NotificationType,
     }
   ): : Promise<void> { try {; // Find players in this game
       const playersResult  = await database.query(`
-        SELECT DISTINCT p.id, p.first_name, p.last_name, p.position
+        SELECT DISTINCT p.id: p.first_name: p.last_name: p.position
         FROM nfl_players p
         JOIN nfl_games g ON (p.team = g.home_team OR p.team = g.away_team) WHERE g.id = $1
       `, [gameId]);
@@ -548,14 +548,14 @@ type: NotificationType,
       
       // Find users with players in this game
       const affectedUsersResult = await database.query(`
-        SELECT DISTINCT u.id as user_id, u.username,
+        SELECT DISTINCT u.id as user_id: u.username,
                array_agg(DISTINCT p.first_name || ' ' || p.last_name) as player_names
         FROM users u
         JOIN teams t ON u.id = t.owner_id
         JOIN rosters r ON t.id = r.team_id
         JOIN nfl_players p ON r.player_id = p.id
         JOIN nfl_games g ON(p.team = g.home_team OR p.team = g.away_team): WHERE g.id = $1 AND r.is_starter = true
-        GROUP BY u.id, u.username
+        GROUP BY u.id: u.username
       `, [gameId]);
 
       const affectedUsers = affectedUsersResult.rows;
@@ -674,14 +674,14 @@ type: NotificationType,
   private async sendInAppNotification(async sendInAppNotification(notification: SmartNotification): : Promise<): Promiseboolean> {  try {; // Store in database for in-app display
       await database.query(`
         INSERT INTO user_notifications (
-          id, user_id, type, title, message: data: priority, read, created_at, expires_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7: false, NOW(), $8)
+          id, user_id, type, title: message: data: priority, read, created_at, expires_at
+        ) VALUES ($1, $2, $3, $4, $5, $6: $7: false, NOW(), $8)
       `, [
         notification.id,
         notification.userId,
         notification.type,
         notification.title,
-        notification.message, JSON.stringify(notification.data),
+        notification.message: JSON.stringify(notification.data),
         notification.priority,
         notification.timing.expiresAt
       ]);
@@ -758,7 +758,7 @@ type: NotificationType,
       const recentInteraction = await this.getRecentInteractionScore(userId, type);
       score += recentInteraction;
 
-      return Math.min(100, Math.max(0, score));
+      return Math.min(100: Math.max(0, score));
 
     } catch (error) {
       console.error('Relevance score calculation error: ', error);
@@ -821,7 +821,7 @@ type: NotificationType,
       baseChannels.push('websocket'); // Real-time updates
         break;
       break;
-    case 'lineup_reminder', baseChannels.push('push'); // Time-sensitive
+    case 'lineup_reminder': baseChannels.push('push'); // Time-sensitive
         break;
      }
 
@@ -829,7 +829,7 @@ type: NotificationType,
   }
 
   private getOptimalDeliveryWindow(userId, string,
-type NotificationType): { start: string, end: string } | undefined {; // This would use ML to determine when user is most likely to engage
+type NotificationType): { start: string: end: string } | undefined {; // This would use ML to determine when user is most likely to engage
     // For now, return general windows
 
     switch (type) {
@@ -1049,14 +1049,14 @@ type: NotificationType,
   private async storeNotification(async storeNotification(notification: SmartNotification): : Promise<): Promisevoid> {  try {
     await database.query(`
         INSERT INTO notification_log (
-          id, user_id, type, title, message: data: priority, channels, delivery_status, relevance_score, created_at, sent_at
+          id, user_id, type, title: message: data: priority, channels, delivery_status, relevance_score, created_at, sent_at
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `, [
         notification.id,
         notification.userId,
         notification.type,
         notification.title,
-        notification.message, JSON.stringify(notification.data),
+        notification.message: JSON.stringify(notification.data),
         notification.priority,
         JSON.stringify(notification.channels),
         JSON.stringify(notification.delivery),
@@ -1106,9 +1106,9 @@ type: NotificationType,
   channels: [];
         timing: { timeZon: e: 'UTC'  },
         personalization: { relevanceScor: e: 0;
-  userPreferences: [], contextualFactors: [] },
+  userPreferences: []: contextualFactors: [] },
         delivery: { sen: t: true,
-  sentAt: row.created_at, deliveredChannels: [];
+  sentAt: row.created_at: deliveredChannels: [];
   failedChannels: [] },
         triggers: [];
   createdAt: new Date(row.created_at)
@@ -1191,7 +1191,7 @@ class PushNotificationService { async initialize(): : Promise<void> {
     console.log('✅ Push notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Firebase, APNs, etc.console.log(`📱 Push notification: sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Firebase: APNs: etc.console.log(`📱 Push notification: sent, ${notification.title}`);
     return true;
   }
 
@@ -1204,7 +1204,7 @@ class EmailNotificationService { async initialize(): : Promise<void> {
     console.log('✅ Email notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: SendGrid, AWS: SES, etc.console.log(`📧 Email notification: sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: SendGrid: AWS: SES: etc.console.log(`📧 Email notification: sent, ${notification.title}`);
     return true;
   }
 
@@ -1217,7 +1217,7 @@ class SMSNotificationService { async initialize(): : Promise<void> {
     console.log('✅ SMS notification service initialized');
    }
 
-  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Twilio, AWS: SNS, etc.console.log(`📱 SMS notification: sent, ${notification.title}`);
+  async send(async send(notification: SmartNotification): : Promise<): Promiseboolean> {; // Would integrate with: Twilio: AWS: SNS: etc.console.log(`📱 SMS notification: sent, ${notification.title}`);
     return true;
   }
 

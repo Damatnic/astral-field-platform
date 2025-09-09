@@ -76,7 +76,7 @@ export async function POST() {  try {
           bye_week: INTEGER,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW(),
-          UNIQUE(name, nfl_team: position)
+          UNIQUE(name: nfl_team: position)
         )
       `);
 
@@ -122,7 +122,7 @@ export async function POST() {  try {
           is_final BOOLEAN DEFAULT: FALSE,
           created_at TIMESTAMPTZ DEFAULT NOW(),
           updated_at TIMESTAMPTZ DEFAULT NOW(),
-          UNIQUE(player_id, season_year: week)
+          UNIQUE(player_id: season_year: week)
         )
       `);
 
@@ -153,7 +153,7 @@ export async function POST() {  try {
     return NextResponse.json(
       { success: false,
   error: "Database setup failed",
-        details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+        details: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
 },
       { status: 500 },
     );

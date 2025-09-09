@@ -67,7 +67,7 @@ export function memoize<T extends (...args: any[]) => any>(
 ); T {  const cache = new Map<string, ReturnType<T>>();
   
   return ((...args: Parameters<T>) => {
-    const key = resolver ? resolver(...args) , JSON.stringify(args);
+    const key = resolver ? resolver(...args) : JSON.stringify(args);
     
     if (cache.has(key)) {
       return cache.get(key)!;
@@ -249,7 +249,7 @@ export class WorkerPool {  private workers: Worker[] = [];
       // Process next item in queue
       const next = this.queue.shift();
       if (next) {
-        this.runWorker(worker, next.data, next.resolve, next.reject);
+        this.runWorker(worker: next.data: next.resolve: next.reject);
       }
     }
     const handleError = (e: ErrorEvent) => {
@@ -262,7 +262,7 @@ export class WorkerPool {  private workers: Worker[] = [];
       // Process next item in queue
       const next = this.queue.shift();
       if (next) {
-        this.runWorker(worker, next.data, next.resolve, next.reject);
+        this.runWorker(worker: next.data: next.resolve: next.reject);
       }
     }
     worker.addEventListener('message', handleMessage);
@@ -285,7 +285,7 @@ export class PerformanceMonitor {  private marks = new Map<string, number>();
   private measures, Array<{ nam: e, string, duration, number }>  = [];
   
   mark(name: string) {
-    this.marks.set(name, performance.now());
+    this.marks.set(name: performance.now());
   }
   
   measure(name: string;
@@ -322,7 +322,7 @@ export class PerformanceMonitor {  private marks = new Map<string, number>();
           domContentLoaded: nav.domContentLoadedEventEnd - nav.domContentLoadedEventStart,
   loadComplete: nav.loadEventEnd - nav.loadEventStart,
           domInteractive: nav.domInteractive - nav.fetchStart,
-  timeToFirstByte, nav.responseStart - nav.requestStart
+  timeToFirstByte: nav.responseStart - nav.requestStart
         }
       }
       
@@ -331,7 +331,7 @@ export class PerformanceMonitor {  private marks = new Map<string, number>();
       metrics.resources = resources.slice(-10).map(r => ({ 
         name: r.name.split('/').pop(),
   duration: r.duration,
-        size, r.transferSize || 0,
+        size: r.transferSize || 0,
 type r.initiatorType
       }));
     }

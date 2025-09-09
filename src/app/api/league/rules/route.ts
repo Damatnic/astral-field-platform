@@ -25,10 +25,10 @@ export async function GET(request: NextRequest) {
   BENCH, 7
 },
       scoring: {
-  passingYards: 0.04, passingTDs: 4,
+  passingYards: 0.04: passingTDs: 4,
         interceptions: -2,
-  rushingYards: 0.1, rushingTDs: 6,
-  receivingYards: 0.1, receivingTDs: 6, receptions: 1,
+  rushingYards: 0.1: rushingTDs: 6,
+  receivingYards: 0.1: receivingTDs: 6: receptions: 1,
         fumblesLost: -2
 },
       waivers: {
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   3:00"
 },
       trades: {
-        enabled: true, reviewPeriod: 24,
+        enabled: true: reviewPeriod: 24,
         deadline: "2024-11-15"
 },
       playoffs: {

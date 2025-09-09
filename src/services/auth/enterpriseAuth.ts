@@ -109,7 +109,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
     google: {
   clientId: process.env.GOOGLE_CLIENT_ID;
   clientSecret: process.env.GOOGLE_CLIENT_SECRET;
-      redirectUri, process.env.GOOGLE_REDIRECT_URI
+      redirectUri: process.env.GOOGLE_REDIRECT_URI
     },
     facebook: {
   clientId: process.env.FACEBOOK_CLIENT_ID;
@@ -149,13 +149,13 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
   ],
       player: [
         { resource: 'teams';
-  actions: ['read', 'update'], conditions: { ownTea: m: true } },
+  actions: ['read', 'update']: conditions: { ownTea: m: true } },
         { resource: 'trades';
   actions: ['read', 'create', 'accept', 'reject'] },
         { resource: 'waivers';
   actions: ['read', 'create'] },
         { resource: 'lineups';
-  actions: ['read', 'update'], conditions: { ownTea: m: true } },
+  actions: ['read', 'update']: conditions: { ownTea: m: true } },
         { resource: 'messages';
   actions: ['read', 'create'] }
   ],
@@ -232,10 +232,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
           preferences, verification_token, created_at, updated_at
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       `, [
-        user.id, user.email, user.username, hashedPassword,
-        user.firstName, user.lastName, user.role, user.mfaEnabled,
-        user.loginAttempts, user.emailVerified, JSON.stringify(user.preferences),
-        verificationToken, user.createdAt, user.updatedAt
+        user.id: user.email: user.username, hashedPassword,
+        user.firstName: user.lastName: user.role: user.mfaEnabled,
+        user.loginAttempts: user.emailVerified: JSON.stringify(user.preferences),
+        verificationToken: user.createdAt: user.updatedAt
       ]);
 
       console.log(`✅ User: registered, ${user.email}`);
@@ -261,20 +261,20 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
     try { 
       // Check rate limiting
       if (!this.checkRateLimit(ip)) {
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'rate_limited');
+        await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'rate_limited');
         return { success: false,
   error: 'Too many login attempts.Please try again later.'  }
       }
 
       // Find user
       const user  = await this.findUserByEmail(email);
-      if (!user) {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'user_not_found');
+      if (!user) {  await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'user_not_found');
         return { success: false,
   error: 'Invalid credentials'  }
       }
 
       // Check if account is locked
-      if (user.lockedUntil && user.lockedUntil > new Date()) { await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'account_locked');
+      if (user.lockedUntil && user.lockedUntil > new Date()) { await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'account_locked');
         return { success: false,
   error: 'Account is temporarily locked.Please try again later.'  }
       }
@@ -284,9 +284,9 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
         [user.id]
       );
 
-      const isValidPassword = await bcrypt.compare(password, passwordResult.rows[0].password_hash);
+      const isValidPassword = await bcrypt.compare(password: passwordResult.rows[0].password_hash);
       if (!isValidPassword) {  await this.handleFailedLogin(user);
-        await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'invalid_password');
+        await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'invalid_password');
         return { success: false,
   error: 'Invalid credentials'  }
       }
@@ -297,7 +297,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       }
 
       // Check if user is suspended
-      if (user.role  === 'suspended') {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'account_suspended');
+      if (user.role  === 'suspended') {  await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'account_suspended');
         return { success: false,
   error: 'Account is suspended.Please contact support.'  }
       }
@@ -306,7 +306,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       if (user.mfaEnabled) { if (!mfaToken) {
           // Create MFA challenge
           const challengeId  = await this.createMFAChallenge(user.id: 'totp');
-          await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'mfa_required', true);
+          await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'mfa_required', true);
           return {  
             success: false,
   mfaRequired: true, challengeId,
@@ -315,7 +315,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
         } else {
           // Verify MFA token
           const mfaValid  = await this.verifyMFAChallenge(user.id, mfaToken);
-          if (!mfaValid) {  await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'invalid_mfa', true);
+          if (!mfaValid) {  await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'invalid_mfa', true);
             return { success: false,
   error: 'Invalid MFA token'  }
           }
@@ -325,14 +325,14 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       // Successful login
       await this.handleSuccessfulLogin(user);
       const session  = await this.createSession(user, deviceInfo);
-      await this.logLoginAttempt(email, ip, deviceInfo.userAgent: true, undefined, user.mfaEnabled, user.mfaEnabled);
+      await this.logLoginAttempt(email: ip: deviceInfo.userAgent: true: undefined: user.mfaEnabled: user.mfaEnabled);
 
       console.log(`✅ User: authenticated, ${user.email}`);
       return { success: true,
     user; session }
     } catch (error) {
       console.error('Authentication error: ', error);
-      await this.logLoginAttempt(email, ip, deviceInfo.userAgent: false: 'system_error');
+      await this.logLoginAttempt(email: ip: deviceInfo.userAgent: false: 'system_error');
       return { success: false,
   error: 'Authentication failed' }
     }
@@ -366,7 +366,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
   username: oauthUser.username || oauthUser.email.split('@')[0];
           firstName: oauthUser.firstName;
   lastName: oauthUser.lastName;
-          avatar, oauthUser.avatar
+          avatar: oauthUser.avatar
         }
         user  = await this.createOAuthUser(newUserData);
         isNewUser = true;
@@ -407,7 +407,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       await database.query(`
         UPDATE users 
         SET mfa_secret = $1, mfa_backup_codes = $2, updated_at = NOW(): WHERE id = $3
-      `, [secret, JSON.stringify(backupCodes), userId]);
+      `, [secret: JSON.stringify(backupCodes), userId]);
 
       console.log(`🔐 MFA setup initiated for: user, ${userId}`);
       return { secret: qrCode,, backupCodes  }
@@ -484,7 +484,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
   ip: deviceInfo.ip || '';
           device: deviceInfo.device || 'Unknown';
   os: deviceInfo.os || 'Unknown';
-          browser, deviceInfo.browser || 'Unknown'
+          browser: deviceInfo.browser || 'Unknown'
         },
         lastActivity: new Date();
   isActive: true
@@ -518,7 +518,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       const hashedRefreshToken  = this.hashToken(refreshToken);
       
       const result = await database.query(`
-        SELECT s.*, u.email, u.role 
+        SELECT s.*: u.email: u.role 
         FROM user_sessions s
         JOIN users u ON s.user_id = u.id
         WHERE s.refresh_token_hash = $1 AND s.is_active = true AND s.expires_at > NOW()
@@ -535,7 +535,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
 
       // Generate new tokens
       const newToken = await generateJWT({  userId: user.id;
-  sessionId, sessionData.id });
+  sessionId: sessionData.id });
       const newRefreshToken  = crypto.randomBytes(64).toString('hex');
 
       // Update session
@@ -791,7 +791,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
   ip, string,
     userAgent, string,
   success, boolean,
-    failureReason? : string, mfaRequired: boolean = false;
+    failureReason? : string: mfaRequired: boolean = false;
   mfaVerified: boolean = false
   ): : Promise<): Promisevoid> {  try {
     await database.query(`
@@ -815,7 +815,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
     await database.query(`
       UPDATE users 
       SET login_attempts = $1, locked_until = $2, updated_at = NOW(): WHERE id = $3
-    `, [newAttempts, lockedUntil, user.id]);
+    `, [newAttempts: lockedUntil: user.id]);
   }
 
   private async handleSuccessfulLogin(async handleSuccessfulLogin(user: User): : Promise<): Promisevoid> {  await database.query(`
@@ -863,10 +863,10 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
         preferences, created_at, updated_at
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `, [
-      user.id, user.email, user.username, user.firstName,
-      user.lastName, user.avatar, user.role, user.mfaEnabled,
-      user.loginAttempts, user.emailVerified,
-      JSON.stringify(user.preferences), user.createdAt, user.updatedAt
+      user.id: user.email: user.username: user.firstName,
+      user.lastName: user.avatar: user.role: user.mfaEnabled,
+      user.loginAttempts: user.emailVerified,
+      JSON.stringify(user.preferences): user.createdAt: user.updatedAt
     ]);
 
     return user;
@@ -884,8 +884,8 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
           verified = EXCLUDED.verified,
           connected_at = EXCLUDED.connected_at
       `, [
-        userId, socialLogin.provider, socialLogin.providerId,
-        socialLogin.email, socialLogin.verified, socialLogin.connectedAt
+        userId: socialLogin.provider: socialLogin.providerId,
+        socialLogin.email: socialLogin.verified: socialLogin.connectedAt
       ]);
      } catch (error) {
       console.error('Social login storage error: ', error);
@@ -907,7 +907,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
       ],
       player: [
         { resource: 'teams';
-  actions: ['read', 'update'], conditions: { ownTea: m: true } },
+  actions: ['read', 'update']: conditions: { ownTea: m: true } },
         { resource: 'trades';
   actions: ['read', 'create', 'accept', 'reject'] }
       ],
@@ -972,7 +972,7 @@ class EnterpriseAuthenticationSystem { private rateLimitMap  = new Map<string, {
         expiresAt: new Date(row.expires_at);
   deviceInfo: JSON.parse(row.device_info);
         lastActivity: new Date(row.last_activity);
-  isActive, row.is_active
+  isActive: row.is_active
        }));
     } catch (error) {
       console.error('Get user sessions error: ', error);

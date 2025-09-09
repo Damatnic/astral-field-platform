@@ -30,9 +30,10 @@ export async function GET(request: NextRequest) {
       // Mock scoring update
       updates.push({
         leagueId: league.id,
-  scoringType: league.scoring_ppr ? "PPR" : "Standard" : playersUpdated: Math.floor(Math.random() * 50) + 10,
-  timestamp: nowIso
-});
+        scoringType: league.scoring_ppr ? "PPR" : "Standard",
+        playersUpdated: Math.floor(Math.random() * 50) + 10,
+        timestamp: nowIso
+      });
     }
 
     console.log(
@@ -41,10 +42,11 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-  message: `Live scoring updated for ${leagues.length} leagues`,
-      leagues, updates,
-  timestamp: nowIso
-});
+      message: `Live scoring updated for ${leagues.length} leagues`,
+      leagues,
+      updates,
+      timestamp: nowIso
+    });
   } catch (error: unknown) {
     console.error("❌ Live scoring cron error:", error);
     return NextResponse.json(

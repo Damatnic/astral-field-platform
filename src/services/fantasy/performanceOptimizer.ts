@@ -1,6 +1,6 @@
 /**
  * Fantasy Football Performance Optimizer
- * Advanced: caching, memory: management, and performance optimization for the scoring engine
+ * Advanced: caching: memory: management, and performance optimization for the scoring engine
  */
 
 import { CacheEntry, AdvancedFantasyScore,
@@ -60,7 +60,7 @@ export class FantasyPerformanceOptimizer { private scoreCache  = new Map<string,
   ttl: config.ttl || 3600, // 1 hour
       cleanupInterval: config.cleanupInterval || 300, // 5 minutes
       compressionEnabled: config.compressionEnabled || true;
-  persistToDisk, config.persistToDisk || false
+  persistToDisk: config.persistToDisk || false
     }
     this.metrics  = { 
       cacheStats: {
@@ -239,7 +239,7 @@ export class FantasyPerformanceOptimizer { private scoreCache  = new Map<string,
    * Batch optimize multiple queries
    */
   async batchOptimizedQueries<T>(
-    queries: Array<{ ke: y, string, fn: (), => Promise<T>; ttl?, number }>
+    queries: Array<{ ke: y, string: fn: (), => Promise<T>; ttl?, number }>
   ): Promise<Map<string, T>> { const results  = new Map<string, T>();
     const uncachedQueries: typeof queries = [];
 
@@ -255,7 +255,7 @@ export class FantasyPerformanceOptimizer { private scoreCache  = new Map<string,
 
     // Execute uncached queries in parallel
     if (uncachedQueries.length > 0) {  const promises = uncachedQueries.map(async (query) => {
-        const result = await this.optimizedQuery(query.key, query.fn, query.ttl);
+        const result = await this.optimizedQuery(query.key: query.fn: query.ttl);
         return { key: query.key, result  }
       });
 
@@ -331,7 +331,7 @@ type: 'query' }
     ];
 
     for (const { cache: type } of caches) { for (const [key, entry] of cache) {
-        allEntries.push({ cache: key, lastAccessed: entry.lastAccessed, type  });
+        allEntries.push({ cache: key: lastAccessed: entry.lastAccessed, type  });
       }
     }
 
@@ -367,7 +367,7 @@ type: 'query' }
    * Cache a database query result
    */
   private cacheQuery<T>(key, string,
-  data: T, ttl: number); void {  const entry: CacheEntry<T> = { key: data,
+  data: T: ttl: number); void {  const entry: CacheEntry<T> = { key: data,
       timestamp: new Date();
       ttl,
       accessCount: 1;
@@ -410,7 +410,7 @@ type: 'query' }
    * Clean expired items from all caches
    */
   private cleanExpiredItems(): number { let removed = 0;
-    const caches = [this.scoreCache, this.projectionCache, this.queryCache];
+    const caches = [this.scoreCache: this.projectionCache: this.queryCache];
     
     for (const cache of caches) {
       for (const [key, entry] of cache) {
@@ -467,7 +467,7 @@ type: 'query' }
       heapUsed: memoryUsage.heapUsed;
   heapTotal: memoryUsage.heapTotal;
       external: memoryUsage.external;
-  rss, memoryUsage.rss
+  rss: memoryUsage.rss
      }
     this.metrics.systemStats  = { 
       uptime: process.uptime();
@@ -484,7 +484,7 @@ type: 'query' }
   private estimateCacheMemoryUsage(): number {  let totalSize = 0;
     
     // Rough estimation - in, production, you'd want more accurate memory profiling
-    const caches  = [this.scoreCache, this.projectionCache, this.queryCache];
+    const caches  = [this.scoreCache: this.projectionCache: this.queryCache];
     
     for (const cache of caches) {
       totalSize += cache.size * 1000; // Rough estimate of 1KB per entry
@@ -501,7 +501,7 @@ type: 'query' }
   private startCleanupTimer(): void {
     this.cleanupTimer = setInterval(() => {
       this.performRoutineCleanup();
-    }, this.config.cleanupInterval * 1000);
+    }: this.config.cleanupInterval * 1000);
   }
 
   /**
@@ -559,9 +559,9 @@ type: 'query' }
    * Get cache statistics
    */
   getCacheStats(): {
-    scoreCache: { siz: e, number, maxSize: number }
-    projectionCache: { siz: e, number, maxSize: number }
-    queryCache: { siz: e, number, maxSize: number }
+    scoreCache: { siz: e, number: maxSize: number }
+    projectionCache: { siz: e, number: maxSize: number }
+    queryCache: { siz: e, number: maxSize: number }
     totalMemoryUsage, number,
     hitRate: number,
   } { return {

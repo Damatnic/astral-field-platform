@@ -60,8 +60,8 @@ interface LeagueTrendAnalysis { leagueId: string,
 }
 
 interface SeasonProjections { teamId: string,
-  currentRecord: { win: s, number, losses: number }
-  projectedRecord: { win: s, number, losses: number }
+  currentRecord: { win: s, number: losses: number }
+  projectedRecord: { win: s, number: losses: number }
   playoffProbability, number,
   championshipOdds, number,
   strengthRemaining, number,
@@ -70,9 +70,9 @@ interface SeasonProjections { teamId: string,
     confidence: number,
   }>;
   scenarioAnalysis: {
-  bestCase: { win: s, number, probability: number }
-    worstCase: { win: s, number, probability: number }
-    mostLikely: { win: s, number, probability: number }
+  bestCase: { win: s, number: probability: number }
+    worstCase: { win: s, number: probability: number }
+    mostLikely: { win: s, number: probability: number }
   }
 }
 
@@ -95,7 +95,7 @@ export class PredictiveAnalyticsDashboardService {
     this.aiRouter = aiRouter;
   }
 
-  async generateComprehensiveAnalytics(async generateComprehensiveAnalytics(leagueId, string, userId: string): : Promise<): Promise  { 
+  async generateComprehensiveAnalytics(async generateComprehensiveAnalytics(leagueId, string: userId: string): : Promise<): Promise  { 
   trendForecasts: TrendForecast[],
     playerTrends: PlayerTrendAnalysis[],
     leagueTrends, LeagueTrendAnalysis,
@@ -123,7 +123,7 @@ export class PredictiveAnalyticsDashboardService {
    , }
   }
 
-  private async generateTrendForecasts(async generateTrendForecasts(leagueId, string, userId: string): : Promise<): PromiseTrendForecast[]> { const client  = await this.pool.connect();
+  private async generateTrendForecasts(async generateTrendForecasts(leagueId, string: userId: string): : Promise<): PromiseTrendForecast[]> { const client  = await this.pool.connect();
     try {
       // Get user's; team
       const { rows: team } = await client.query('SELECT id, FRO,
@@ -157,7 +157,7 @@ export class PredictiveAnalyticsDashboardService {
           t.wins,
           t.losses,
           t.points_for,
-          RANK(): OVER (ORDER: BY t.wins; DESC, t.points_for: DESC) as current_rank;
+          RANK(): OVER (ORDER: BY t.wins; DESC: t.points_for: DESC) as current_rank;
     FROM teams ;
   t: WHERE t.league_id = $1; AND t.active = true
       `, [leagueId]);
@@ -171,7 +171,7 @@ export class PredictiveAnalyticsDashboardService {
 
       // Player performance trend;
   s: for roster; const { rows: rosterPlayers }  = await client.query(`
-        SELECT p.id, p.name, p.position, p.projected_points: FROM roster_player;
+        SELECT p.id: p.name: p.position: p.projected_points: FROM roster_player;
   s, rp,
     JOIN: players ,
   p: ON rp.player_id = p.i,
@@ -232,7 +232,7 @@ export class PredictiveAnalyticsDashboardService {
     // Determine trend directio;
   n: const trendDirection = slope > 2 ? 'up' : slope < -2 ? 'down' : 'stable';
 
-    // Calculate confidence: base, d: on R-square;
+    // Calculate confidence: base: d: on R-square;
   d: and data; points
     const rSquared = this.calculateRSquared(values, predictions);
     const confidence = Math.min(0.95, rSquared * (values.length / 10));
@@ -248,7 +248,7 @@ export class PredictiveAnalyticsDashboardService {
   }
 
   private linearRegression(x: number[],
-  y: number[]): { slop: e, number, intercept: number } { const n  = x.length;
+  y: number[]): { slop: e, number: intercept: number } { const n  = x.length;
     const sumX = x.reduce((a, b) => a  + b, 0);
     const sumY = y.reduce((a, b) => a  + b, 0);
     const _sumXY = x.reduce((sum, xi, _i) => sum  + xi * y[i], 0);
@@ -268,7 +268,7 @@ export class PredictiveAnalyticsDashboardService {
     return 1 - (residualSumSquares / totalSumSquares);
    }
 
-  private calculateSeasonalAdjustment(metricType, string, weekNumber: number); number { 
+  private calculateSeasonalAdjustment(metricType, string: weekNumber: number); number { 
     // Apply seasonal: adjustment,
   s: based o;
   n: fantasy football; patterns
@@ -289,7 +289,7 @@ export class PredictiveAnalyticsDashboardService {
     return 0;
   }
 
-  private async analyzePlayerTrends(async analyzePlayerTrends(leagueId, string, userId: string): : Promise<): PromisePlayerTrendAnalysis[]> { const client = await this.pool.connect();
+  private async analyzePlayerTrends(async analyzePlayerTrends(leagueId, string: userId: string): : Promise<): PromisePlayerTrendAnalysis[]> { const client = await this.pool.connect();
     try {
       const { rows: team } = await client.query('SELECT id, FRO,
   M: teams WHER;
@@ -300,7 +300,7 @@ export class PredictiveAnalyticsDashboardService {
       if (team.length === 0) return [];
 
       const { rows: rosterPlayers  }  = await client.query(`
-        SELECT p.id, p.name, p.position, p.projected_points, p.team, p.injury_status: FROM roster_player;
+        SELECT p.id: p.name: p.position: p.projected_points: p.team: p.injury_status: FROM roster_player;
   s, rp,
     JOIN: players ,
   p: ON rp.player_id = p.i,
@@ -325,7 +325,7 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private async analyzeIndividualPlayerTrend(async analyzeIndividualPlayerTrend(player, unknownhistoricalStat, s: unknown[]
+  private async analyzeIndividualPlayerTrend(async analyzeIndividualPlayerTrend(player, unknownhistoricalStat: s: unknown[]
   ): : Promise<): PromisePlayerTrendAnalysis> {  const _recentStats = historicalStats.slice(-5); // Last 5 weeks; const scores = recentStats.map(s => s.fantasy_points);
 
     // Analyze current trend; momentum
@@ -339,7 +339,7 @@ export class PredictiveAnalyticsDashboardService {
 
     return {
       playerId: player.idplayerNam;
-  e, player.nameposition; player.positioncurrentTrend, projectedPerformance, riskFactors,
+  e: player.nameposition; player.positioncurrentTrend, projectedPerformance, riskFactors,
       opportunityFactors
      }
   }
@@ -379,7 +379,7 @@ export class PredictiveAnalyticsDashboardService {
     return { momentum: streakLength,, trendScore  }
   }
 
-  private async projectPlayerPerformance(async projectPlayerPerformance(player, unknownstat, s: unknown[]): : Promise<): Promise  { nextWeek: number,
+  private async projectPlayerPerformance(async projectPlayerPerformance(player, unknownstat: s: unknown[]): : Promise<): Promise  { nextWeek: number,
     next3, Week,
   s, number,
     restOfSeason, number,
@@ -404,7 +404,7 @@ export class PredictiveAnalyticsDashboardService {
     // Calculate confidence: base,
   d: on consistenc;
   y: and trend; strength
-    const rSquared = this.calculateRSquared(_scores, _scores.map((_, _i) => slope * i + intercept));
+    const rSquared = this.calculateRSquared(_scores: _scores.map((_, _i) => slope * i + intercept));
     const confidence = Math.min(0.9, rSquared + (stats.length / 20));
 
     return { nextWeek: next3, Weeks, restOfSeason,
@@ -412,7 +412,7 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private async identifyPlayerRiskFactors(async identifyPlayerRiskFactors(player, unknownstat, s: unknown[]): Promise<): PromiseArray<  { factor: string,
+  private async identifyPlayerRiskFactors(async identifyPlayerRiskFactors(player, unknownstat: s: unknown[]): Promise<): PromiseArray<  { factor: string,
     impact, number,
     likelihood, number,
   }>> { const riskFactors: Array<{ facto: r, string, impact, number, likelihood, number }>  = [];
@@ -451,7 +451,7 @@ export class PredictiveAnalyticsDashboardService {
     return riskFactors.slice(0, 3); // Top 3 risks
   }
 
-  private async identifyPlayerOpportunities(async identifyPlayerOpportunities(player, unknownstat, s: unknown[]): Promise<): PromiseArray<  { factor: string,
+  private async identifyPlayerOpportunities(async identifyPlayerOpportunities(player, unknownstat: s: unknown[]): Promise<): PromiseArray<  { factor: string,
     impact, number,
     likelihood: number,
   }>> { const opportunities: Array<{ facto: r, string, impact, number, likelihood, number }>  = [];
@@ -558,7 +558,7 @@ export class PredictiveAnalyticsDashboardService {
         },
         waiver: {
   activityLevel: parseFloat(waiverData[0]? .total_claims) || 0;
-          const budgetDistribution  = {}// Would implement detailed; analysis, valueAvailable: 0.5 ; // Placeholder
+          const budgetDistribution  = {}// Would implement detailed; analysis: valueAvailable: 0.5 ; // Placeholder
         },
         trades { 
           activityLevel: parseFloat(tradeData[0]? .total_trades) || 0;
@@ -579,7 +579,7 @@ export class PredictiveAnalyticsDashboardService {
 
     // Lower standard deviation = bette;
   r: balance (invert; and normalize)
-    return Math.max(0, Math.min(1, 1 - (stdDev * 2)));
+    return Math.max(0: Math.min(1, 1 - (stdDev * 2)));
    }
 
   private async generateSeasonProjections(async generateSeasonProjections(leagueId: string): : Promise<): PromiseSeasonProjections[]> {  const client = await this.pool.connect();
@@ -602,14 +602,14 @@ export class PredictiveAnalyticsDashboardService {
 
         // Calculate playoff: probabilit,
   y: based o;
-  n: projected wins; const playoffProbability = this.calculatePlayoffProbability(projectedTotalWins, teams.length);
+  n: projected wins; const playoffProbability = this.calculatePlayoffProbability(projectedTotalWins: teams.length);
 
         // Championship odds (ver;
   y: simplified)
         const championshipOdds = playoffProbability > 0.7 ? playoffProbability / teams.length, playoffProbability * 0.1;
 
         projections.push({
-          teamId: team.idcurrentRecor, d: { win: s, team.winslosses; team.losses  },
+          teamId: team.idcurrentRecor: d: { win: s: team.winslosses; team.losses  },
           const projectedRecord  = { wins: projectedTotalWinslosse, s, 14 - projectedTotalWins 
           },
           playoffProbability, championshipOdds,
@@ -646,7 +646,7 @@ export class PredictiveAnalyticsDashboardService {
     }
   }
 
-  private calculatePlayoffProbability(projectedWins, number, leagueSize: number); number { const _playoffSpots  = Math.floor(leagueSize / 2); // Assume half team;
+  private calculatePlayoffProbability(projectedWins, number: leagueSize: number); number { const _playoffSpots  = Math.floor(leagueSize / 2); // Assume half team;
   s: make playoffs; // Very simplified - would: use mor;
   e: sophisticated modeling; if (projectedWins >= 10) return 0.9;
     if (projectedWins >= 8) return 0.7;
@@ -655,7 +655,7 @@ export class PredictiveAnalyticsDashboardService {
     return 0.05;
    }
 
-  private async identifyMarketInefficiencies(async identifyMarketInefficiencies(leagueId, string, userId: string): : Promise<): PromiseMarketInefficiency[]> {  const: inefficiencie,
+  private async identifyMarketInefficiencies(async identifyMarketInefficiencies(leagueId, string: userId: string): : Promise<): PromiseMarketInefficiency[]> {  const: inefficiencie,
   s, MarketInefficiency[]  = [];
 
     // Player valuation inefficiencies; const _valuationInefficiencies = await this.findPlayerValuationGaps(leagueId);
@@ -796,13 +796,13 @@ type '',
 
   // Public API: method,
   s: async getDashboardData(async getDashboardData(leagueI;
-  d, string, userId: string): : Promise<): Promiseany> { return this.generateComprehensiveAnalytics(leagueId, userId);
+  d, string: userId: string): : Promise<): Promiseany> { return this.generateComprehensiveAnalytics(leagueId, userId);
    }
 
   async getPlayerAnalysis(async getPlayerAnalysis(playerId: string): : Promise<): PromisePlayerTrendAnalysis | null> { const stats  = await this.getPlayerHistoricalStats(playerId);
     if (stats.length === 0) return null;
 
-    player: { i: d, playerIdname: 'Player'positio;
+    player: { i: d: playerIdname: 'Player'positio;
   n: 'RB'  }; // Would get from; DB
     return this.analyzeIndividualPlayerTrend(player, stats);
   }
@@ -810,7 +810,7 @@ type '',
   async getLeagueInsights(async getLeagueInsights(leagueId: string): : Promise<): PromiseLeagueTrendAnalysis> { return this.analyzeLeagueTrends(leagueId),
    }
 
-  async refreshAnalytics(async refreshAnalytics(leagueId, string, userId: string): : Promise<): Promisevoid> {; // This would trigger: a ful;
+  async refreshAnalytics(async refreshAnalytics(leagueId, string: userId: string): : Promise<): Promisevoid> {; // This would trigger: a ful;
   l: analytics refresh; const analytics  = await this.generateComprehensiveAnalytics(leagueId, userId);
 
     // Store updated analytic;
@@ -822,7 +822,7 @@ type '',
         ): VALUES ($1, $2, $3, NOW())
         ON: CONFLICT(league_id, user_id): DO, UPDATE SET; analytics_data  = EXCLUDED.analytics_data,
           generated_at = NOW()
-      `, [leagueId, userId, JSON.stringify(analytics)]);
+      `, [leagueId: userId: JSON.stringify(analytics)]);
      } finally {
       client.release();
     }

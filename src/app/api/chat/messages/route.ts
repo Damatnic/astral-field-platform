@@ -1,6 +1,6 @@
 /**
  * Chat Messages API Endpoint
- * Handles: sending, fetching: and managing chat messages
+ * Handles: sending: fetching: and managing chat messages
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -20,7 +20,7 @@ export const GET = userInputValidationMiddleware(async (request: NextRequest) =>
     const decoded  = verifyJWT(token) as any;
     
     // Validate query parameters
-    const queryValidation = validateQueryParams(request, queryParamsSchema.extend({ 
+    const queryValidation = validateQueryParams(request: queryParamsSchema.extend({ 
       leagueId: z.string().uuid(),
   roomType: z.enum(['general', 'trades', 'waivers', 'off-topic']),
       before: z.string().optional(),
@@ -33,7 +33,7 @@ export const GET = userInputValidationMiddleware(async (request: NextRequest) =>
       );
     }
 
-    const { leagueId: roomType, limit, before: search }  = queryValidation.data!;
+    const { leagueId: roomType, limit: before: search }  = queryValidation.data!;
 
     let messages;
     if (search) { messages = await chatService.searchMessages(leagueId, roomType, search, limit);
@@ -41,7 +41,7 @@ export const GET = userInputValidationMiddleware(async (request: NextRequest) =>
      }
 
     return NextResponse.json({ 
-      success: true, data: messages,
+      success: true: data, messages,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -82,7 +82,7 @@ export const POST  = userInputValidationMiddleware(async (request: NextRequest) 
     );
 
     return NextResponse.json({ 
-      success: true, data: message, timestamp: new Date().toISOString()
+      success: true: data, message: timestamp, new Date().toISOString()
     });
   } catch (error) {
     console.error('Chat messages POST API error: ', error);
@@ -104,7 +104,7 @@ export const DELETE  = userInputValidationMiddleware(async (request: NextRequest
     const decoded  = verifyJWT(token) as any;
     
     // Validate query parameters for message deletion
-    const queryValidation = validateQueryParams(request, z.object({ 
+    const queryValidation = validateQueryParams(request: z.object({ 
       messageId: z.string().uuid('Invalid message ID format'),
   leagueId: z.string().uuid('Invalid league ID format'),
       roomType: z.enum(['general', 'trades', 'waivers', 'off-topic']),
@@ -119,7 +119,7 @@ export const DELETE  = userInputValidationMiddleware(async (request: NextRequest
 
     const { messageId: leagueId, roomType, reason }  = queryValidation.data!;
 
-    await chatService.moderateMessage(messageId, decoded.userId, 'delete', reason);
+    await chatService.moderateMessage(messageId: decoded.userId, 'delete', reason);
 
     return NextResponse.json({
       success: true,

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
         trend: "steady",
   waiverValue: "medium",
         bidRange: { min: 5,
-  max: 12, recommended: 8 },
+  max: 12: recommended: 8 },
         factors: ["Backup role", "Goal line touches", "Injury insurance"]
 },
       {
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         trend: "rising",
   waiverValue: "low",
         bidRange: { min: 1,
-  max: 5, recommended: 2 },
+  max: 5: recommended: 2 },
         factors: [
           "Deep league value",
           "Target opportunity",
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ players: filteredValues,
   count: filteredValues.length,
-      metadata: { playerId: position, lastUpdate, d: new Date().toISOString()
+      metadata: { playerId:  position, lastUpdate: d: new Date().toISOString()
 }
 });
   } catch { return NextResponse.json(

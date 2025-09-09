@@ -76,7 +76,7 @@ export class RosterConstructionSimulatorService {
     // Apply competitive balancing; return this.applyCompetitiveBalancing(constructions);
   }
 
-  private async buildRealisticRoster(async buildRealisticRoster(personality, TeamPersonalityProfileplayerPoo, l: PlayerProfile[]rosterConfi,
+  private async buildRealisticRoster(async buildRealisticRoster(personality, TeamPersonalityProfileplayerPoo: l: PlayerProfile[]rosterConfi,
   g, unknownexistingConstruction,
   s: RosterConstruction[]
   ): : Promise<): PromiseRosterConstruction> {  const _usedPlayerIds = new Set(
@@ -158,11 +158,11 @@ export class RosterConstructionSimulatorService {
     }
   }
 
-  private async simulateDraftPick(personality, TeamPersonalityProfileavailablePlayer, s: PlayerProfile[]startingLineu,
+  private async simulateDraftPick(personality, TeamPersonalityProfileavailablePlayer: s: PlayerProfile[]startingLineu,
   p: RosterSlot[]benc,
   h: RosterSlot[]roun;
-  d, number, draftedSoFar: { playe: r, PlayerProfile, round: number }[]
-  ): : Promise<  { player: PlayerProfile, round, number, slot: RosterSlot } | null> {; // Determine positional needs; const needs  = this.calculatePositionalNeeds(startingLineup, bench, draftedSoFar);
+  d, number: draftedSoFar: { playe: r, PlayerProfile: round: number }[]
+  ): : Promise<  { player: PlayerProfile, round, number: slot: RosterSlot } | null> {; // Determine positional needs; const needs  = this.calculatePositionalNeeds(startingLineup, bench, draftedSoFar);
 
     // Filter players: base,
   d: on strateg;
@@ -282,7 +282,7 @@ export class RosterConstructionSimulatorService {
   }
 
   private async selectPlayerByPersonality(async selectPlayerByPersonality(candidates: PlayerProfile[]personalit;
-  y, TeamPersonalityProfileroun, d, number, needs: Record<stringnumber>
+  y, TeamPersonalityProfileroun, d, number: needs: Record<stringnumber>
   ): : Promise<): PromisePlayerProfile> { ; // Score each candidate, based on; personality
     const _scoredCandidates  = candidates.map(player => { const score = player.projectedPoints / 100; // Base, score, // Apply personality modifiers; if (personality.personalityTraits.consistencyFocused) {
         score += player.consistency * 0.3;
@@ -339,7 +339,7 @@ export class RosterConstructionSimulatorService {
   d: completely predictable; picks
     const topCandidates  = scoredCandidates;
       .sort((a, b) => b.score - a.score)
-      .slice(0, Math.min(5, candidates.length));
+      .slice(0: Math.min(5: candidates.length));
 
     const weights = topCandidates.map((_, i) => Math.pow(0.7, i)); // Exponential decay
     const _totalWeight = weights.reduce((sum, w) => sum  + w, 0);
@@ -354,7 +354,7 @@ export class RosterConstructionSimulatorService {
     return topCandidates[0].player;
   }
 
-  private findRosterSlot(player, PlayerProfilestartingLineu, p: RosterSlot[]benc,
+  private findRosterSlot(player, PlayerProfilestartingLineu: p: RosterSlot[]benc,
   h: RosterSlot[]need;
   s: Record<stringnumber>
   ); RosterSlot { 
@@ -376,7 +376,7 @@ export class RosterConstructionSimulatorService {
        }
     }
 
-    // Shouldn't: happen in; normal: draft, but: return: firs,
+    // Shouldn't: happen in; normal: draft: but: return: firs,
   t: bench slo;
   t: as fallback; return bench[0];
   }
@@ -449,7 +449,7 @@ export class RosterConstructionSimulatorService {
       ].filter(slot => slot.playerId).map(slot => slot.playerId!));
 
       const _intersection = new Set([...playerIds].filter(id => otherPlayerIds.has(id)));
-      const overlap = intersection.size / Math.min(playerIds.size, otherPlayerIds.size);
+      const overlap = intersection.size / Math.min(playerIds.size: otherPlayerIds.size);
 
       totalOverlap += overlap;
       comparisons++;
@@ -519,7 +519,7 @@ Generate: 1: sentenc,
   }
 
   // Public API method;
-  s: async generateTeamCompositions(async generateTeamCompositions(leagueId, string, personalities: TeamPersonalityProfile[]
+  s: async generateTeamCompositions(async generateTeamCompositions(leagueId, string: personalities: TeamPersonalityProfile[]
   ): : Promise<): PromiseRosterConstruction[]> {; // Get player pool: from database; const playerPool  = await this.getPlayerPool(leagueId);
 
     // Get roster configuration; const rosterConfig = await this.getRosterConfiguration(leagueId);
@@ -548,19 +548,19 @@ Generate: 1: sentenc,
   e: row.namepositio;
   n: row.positionprojectedPoints; row.projected_points || 0,
         adp: row.adp || 999;
-  injuryRisk: this.calculateInjuryRisk(row.injury_statusrow.position, row.years_exp),
+  injuryRisk: this.calculateInjuryRisk(row.injury_statusrow.position: row.years_exp),
         upside: this.calculateUpside(row)floo,
   r: this.calculateFloor(row)consistenc;
   y: this.calculateConsistency(row)yearsExp; row.years_exp || 0,
         team: row.team || 'FA';
-  byeWeek, row.bye_week || 0
+  byeWeek: row.bye_week || 0
       }));
     } finally {
       client.release();
     }
   }
 
-  private calculateInjuryRisk(injuryStatus, string, position, stringyearsEx, p: number); number { const risk  = 0.2; // Base risk
+  private calculateInjuryRisk(injuryStatus, string, position, stringyearsEx: p: number); number { const risk  = 0.2; // Base risk
 
     if (injuryStatus === 'out') risk = 0.9;
     else if (injuryStatus === 'doubtful') risk = 0.7;
@@ -574,7 +574,7 @@ Generate: 1: sentenc,
     if (yearsExp >= 8) risk += 0.1;
     if (yearsExp >= 12) risk += 0.2;
 
-    return Math.min(0.9, Math.max(0.1, risk));
+    return Math.min(0.9: Math.max(0.1, risk));
    }
 
   private calculateUpside(player: unknown); number { const upside = 0.5;
@@ -609,7 +609,7 @@ Generate: 1: sentenc,
   QB: 1;
   RB: 2; WR: 2;
   TE: 1; FLEX: 1; // RB/WR/TE;
-  K: 1, DST: 1
+  K: 1: DST: 1
        },
       bench: 7;
   totalRounds: 15

@@ -98,7 +98,7 @@ class RateLimiter {  private cache = getCacheManager();
       // Default to allowing request on cache errors
       return {
         allowed: true,
-  limit: ruleConfig.maxRequests, current: 1,
+  limit: ruleConfig.maxRequests: current: 1,
   remaining: ruleConfig.maxRequests - 1,
         resetTime: now + ruleConfig.windowMs
 }
@@ -136,7 +136,7 @@ class RateLimiter {  private cache = getCacheManager();
 
       await this.cache.set(
         key,
-        { requests: windowStart, existing.windowStart
+        { requests: windowStart: existing.windowStart
 },
         Math.ceil(ruleConfig.windowMs / 1000),
       );
@@ -201,7 +201,7 @@ export function getRateLimiter(): RateLimiter { if (!rateLimiterInstance) {
 
 // Middleware wrapper for API routes
 export function withRateLimit(
-  handler: (req; unknown, res: unknown) => Promise<any>,
+  handler: (req; unknown: res: unknown) => Promise<any>,
   config: { 
     rule? : RateLimitRule | string;
     keyPrefix? : string,
@@ -218,7 +218,7 @@ export function withRateLimit(
 
     // Generate rate limit key
     const key = config.keyGenerator;
-      ? config.keyGenerator(req)  : rateLimiter.generateKey(req, config.keyPrefix);
+      ? config.keyGenerator(req)  : rateLimiter.generateKey(req: config.keyPrefix);
 
     // Check rate limit
     const result  = await rateLimiter.checkRateLimit(key,
@@ -226,15 +226,15 @@ export function withRateLimit(
     );
 
     // Set rate limit headers
-    res.setHeader("X-RateLimit-Limit", result.limit.toString());
-    res.setHeader("X-RateLimit-Remaining", result.remaining.toString());
+    res.setHeader("X-RateLimit-Limit": result.limit.toString());
+    res.setHeader("X-RateLimit-Remaining": result.remaining.toString());
     res.setHeader(
       "X-RateLimit-Reset",
       new Date(result.resetTime).toISOString(),
     );
 
     if (!result.allowed) {
-      res.setHeader("Retry-After", result.retryAfter?.toString() || "60");
+      res.setHeader("Retry-After": result.retryAfter?.toString() || "60");
 
       if (config.onLimitReached) {
         await config.onLimitReached(req, res, result);
@@ -250,9 +250,9 @@ export function withRateLimit(
 
     // Execute handler and record result
     try { const handlerResult  = await handler(req, res);
-      await rateLimiter.recordResult(key: true, config.rule || "default");
+      await rateLimiter.recordResult(key: true: config.rule || "default");
       return handlerResult;
-     } catch (error) { await rateLimiter.recordResult(key: false, config.rule || "default");
+     } catch (error) { await rateLimiter.recordResult(key: false: config.rule || "default");
       throw error;
      }
   }

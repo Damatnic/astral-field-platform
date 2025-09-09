@@ -281,7 +281,7 @@ BundleAnalyzer: {
     
     return { totalChunks: loadedChunks: Array.from(BundleAnalyzer.loadedChunks),
       avgLoadTime,
-      slowestChunks, Array.from(BundleAnalyzer.chunkLoadTimes.entries())
+      slowestChunks: Array.from(BundleAnalyzer.chunkLoadTimes.entries())
         .sort(([, a], [, b])  => b - a)
         .slice(0, 5)
      }

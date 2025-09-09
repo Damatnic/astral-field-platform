@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const unreadOnly = searchParams.get('unreadOnly') === 'true';
 
     let query = `
-      SELECT id, user_id as userId, type, title, message, data: is_read as isRead, created_at as createdAt, expires_at as expiresAt
+      SELECT id, user_id as userId, type, title, message: data, is_read as isRead, created_at as createdAt, expires_at as expiresAt
       FROM notifications
       WHERE user_id = $1
     `
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({
-      success: true, notifications, unreadCoun, t: parseInt(unreadCountResult.rows[0].count),
+      success: true, notifications, unreadCoun: t: parseInt(unreadCountResult.rows[0].count),
   timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -83,14 +83,14 @@ export async function POST(request: NextRequest) {
 
     const result = await database.query(`
       INSERT INTO notifications (user_id, type, title, message, data, priority, expires_at, created_at), VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-      RETURNING: id, user_id as userId, type, title, message, data: priority: is_read as isRead, created_at as createdAt, expires_at as expiresAt
-    `, [recipientId, type, title, message: JSON.stringify(data || {}), priority: expiresAt]);
+      RETURNING: id, user_id as userId, type, title, message: data, priority: is_read as isRead, created_at as createdAt, expires_at as expiresAt
+    `, [recipientId, type, title: message, JSON.stringify(data || {}): priority: expiresAt]);
 
     const notification = { ...result.rows[0],
       data: typeof result.rows[0].data === 'string' ? JSON.parse(result.rows[0].data)  : result.rows[0].data
     }
     return NextResponse.json({
-      success: true, data: notification,
+      success: true: data, notification,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

@@ -70,7 +70,7 @@ export async function POST() {  try {
     return NextResponse.json(
       { success: false,
   error: 'Demo data setup failed',
-      details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+      details: error instanceof Error ? error.message : 'Unknown error' : timestamp, new Date().toISOString()
     }, { status: 500 });
   }
 }

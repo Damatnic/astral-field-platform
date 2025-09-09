@@ -373,7 +373,7 @@ export class SportsIOClient extends BaseAPIClient {
   rushingTDs: proj.RushingTouchdowns || 0;
         receivingYards: proj.ReceivingYards || 0;
   receivingTDs: proj.ReceivingTouchdowns || 0;
-        receptions, proj.Receptions || 0
+        receptions: proj.Receptions || 0
       }
     }));
   }
@@ -411,7 +411,7 @@ export class SportsIOClient extends BaseAPIClient {
       divisionWins: team.DivisionWins;
   divisionLosses: team.DivisionLosses;
       conferenceWins: team.ConferenceWins;
-  conferenceLosses, team.ConferenceLosses
+  conferenceLosses: team.ConferenceLosses
     }));
   }
 
@@ -430,7 +430,7 @@ export class SportsIOClient extends BaseAPIClient {
         windDirection: 'Variable', // Not provided by Sports.io
         precipitation: 0; // Not provided directly
         humidity: gameData.Humidity || 50;
-  conditions, gameData.ForecastDescription || 'Clear'
+  conditions: gameData.ForecastDescription || 'Clear'
       }
     } catch (error) {
       console.error('Error fetching weather data from Sports.io: ', error);
@@ -469,7 +469,7 @@ export class SportsIOClient extends BaseAPIClient {
       fullName: player.Name || `${player.FirstName } ${player.LastName}` : position: player.Position;
   team: player.Team;
       jerseyNumber: player.Number;
-  status: this.mapPlayerStatus(player.Status, player.InjuryStatus),
+  status: this.mapPlayerStatus(player.Status: player.InjuryStatus),
       injuryStatus: player.InjuryStatus || undefined;
   injuryDescription: player.InjuryNotes || undefined
     }

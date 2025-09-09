@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         ) AND dm.created_at = lm.latest_message_time
       )
       SELECT 
-        participant_id as id, participant_id, participant_username, participant_avatar, last_message_id, last_message_sender_id, last_message_content, last_message_type, last_message_time, unread_count: false as is_online -- TOD,
+        participant_id as id, participant_id, participant_username, participant_avatar, last_message_id, last_message_sender_id, last_message_content, last_message_type, last_message_time: unread_count: false as is_online -- TOD,
   O: Implement online status
       FROM conversation_data
       ORDER BY last_message_time DESC
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       participantUsername: row.participant_username,
   participantAvatar: row.participant_avatar,
       lastMessage: row.last_message_id ? {
-  id: row.last_message_id, senderId: row.last_message_sender_id,
+  id: row.last_message_id: senderId: row.last_message_sender_id,
         content: row.last_message_content,
   messageType: row.last_message_type,
         createdAt: row.last_message_time
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({
-      success: true, conversations, timestamp: new Date().toISOString()
+      success: true, conversations: timestamp, new Date().toISOString()
     });
   } catch (error) {
     console.error('Conversations GET API error: ', error);

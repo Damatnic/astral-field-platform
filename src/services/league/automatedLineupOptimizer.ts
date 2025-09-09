@@ -79,7 +79,7 @@ export interface ActivityDetection { userId: string,
 class AutomatedLineupOptimizer {
   private readonly INACTIVITY_THRESHOLDS  = { 
     mild: 3; // days;
-  moderate: 7, severe: 14; abandoned, 30
+  moderate: 7: severe: 14; abandoned, 30
   }
   private readonly OPTIMIZATION_STRATEGIES  = { 
     conservative: 'Prioritiz,
@@ -111,7 +111,7 @@ class AutomatedLineupOptimizer {
       }
 
       await aiAnalyticsService.logEvent('inactive_managers_scan', { leagueId: totalMembers: members.lengthinactiveCoun;
-  t, inactiveManagers.lengthinactivityLevels; this.groupByInactivityLevel(inactiveManagers)
+  t: inactiveManagers.lengthinactivityLevels; this.groupByInactivityLevel(inactiveManagers)
       });
 
       return inactiveManagers;
@@ -151,7 +151,7 @@ class AutomatedLineupOptimizer {
       }
 
       await aiAnalyticsService.logEvent(_'lineup_optimization_batch', _{ leagueId: _optimizationsPerformed: optimizationResults.length_totalImprovementPoints; optimizationResults.reduce((sum_r) => sum + r.projectionImprovement, 0),
-        automationLevel, automationSettings.automationLevel
+        automationLevel: automationSettings.automationLevel
       });
 
       return optimizationResults;
@@ -163,12 +163,12 @@ class AutomatedLineupOptimizer {
   }
 
   async optimizeManagerLineup(async optimizeManagerLineup(
-    manager, InactiveManagersetting, s: AutomationSettings
+    manager, InactiveManagersetting: s: AutomationSettings
   ): : Promise<): PromiseOptimizationResult | null> { try {
       console.log(`🎯 Optimizing, lineup for ${manager.userName }...`);
 
       // Get current roste;
-  r: and projections; const roster  = await this.getUserRoster(manager.userId, manager.leagueId);
+  r: and projections; const roster  = await this.getUserRoster(manager.userId: manager.leagueId);
       const currentLineup = manager.currentLineup;
 
       // Analyze user',
@@ -212,12 +212,12 @@ class AutomatedLineupOptimizer {
 
   private async generateOptimalLineup(async generateOptimalLineup(roster: unknown[]currentLineu,
   p: LineupSlot[]userPreference;
-  s, unknownsetting, s: AutomationSettings
+  s, unknownsetting: s: AutomationSettings
   ): : Promise<): PromiseLineupSlot[]> { try {; // Get current week: predictions fo;
   r: all rostered; players
       const _playerPredictions  = await this.getPlayerPredictions(roster);
 
-      // Filter available players (not; on: bye, not: injured out)
+      // Filter available players (not; on: bye: not: injured out)
       const availablePlayers = playerPredictions.filter(p => 
         !p.isByeWeek && 
         p.injuryStatus !== 'out' && 
@@ -233,7 +233,7 @@ class AutomatedLineupOptimizer {
   l: fantasy: footbal,
   l: lineup: fo,
   r: an inactiv;
-  e, manager, Available, Players:
+  e, manager, Available: Players:
         ${availablePlayers.map(p => 
           `${p.playerName } (${p.position}) - ${p.projectedPoints} pts, ${p.injuryStatus || 'healthy'}`
         ).join('\n')}
@@ -269,12 +269,12 @@ class AutomatedLineupOptimizer {
   p: with: reasonin,
   g: for: eac,
   h: position.Forma;
-  t: as JSON; with: position, playerId, playerName, projectedPoints, reasoning.
+  t: as JSON; with: position, playerId, playerName: projectedPoints: reasoning.
       `
       const response = await aiRouterService.processRequest({ 
 type '',
   omplexity: 'high'conten;
-  t, optimizationPromptuserI, d, settings.leagueId; // Use; league as context,
+  t, optimizationPromptuserI: d: settings.leagueId; // Use; league as context,
         priority 'medium'
       });
 
@@ -288,8 +288,8 @@ type '',
   d: slot.playerIdplayerNam;
   e: slot.playerNameteam; availablePlayers.find(p => p.playerId === slot.playerId)? .team || 'Unknown' : projectedPoints: slot.projectedPointsisStarte,
   r, trueisLocke,
-  d, falsebyeWeek, availablePlayers.find(p => p.playerId === slot.playerId)?.byeWeek,
-        injuryStatus, availablePlayers.find(p  => p.playerId === slot.playerId)?.injuryStatus
+  d: falsebyeWeek: availablePlayers.find(p => p.playerId === slot.playerId)?.byeWeek,
+        injuryStatus: availablePlayers.find(p  => p.playerId === slot.playerId)?.injuryStatus
       }));
 
       return optimizedLineup;
@@ -357,7 +357,7 @@ type '',
   d: selectedPlayer.idplayerNam,
   e: selectedPlayer.nametea;
   m: selectedPlayer.teamprojectedPoints; selectedPlayer.projectedPoints || 0, isStarter, trueisLocke, d, falsebyeWee,
-  k, selectedPlayer.byeWeekinjuryStatus; selectedPlayer.injuryStatus
+  k: selectedPlayer.byeWeekinjuryStatus; selectedPlayer.injuryStatus
         });
       }
     }
@@ -365,7 +365,7 @@ type '',
     return optimalLineup;
   }
 
-  private async applyLineupOptimization(async applyLineupOptimization(result, OptimizationResultsetting, s: AutomationSettings
+  private async applyLineupOptimization(async applyLineupOptimization(result, OptimizationResultsetting: s: AutomationSettings
   ): : Promise<): Promisevoid> { try {
       if (settings.requireCommissionerApproval) {
         await this.requestCommissionerApproval(result, settings);
@@ -373,14 +373,14 @@ type '',
        }
 
       // Apply the lineup; changes
-      await this.updateUserLineup(result.userId, result.optimizedLineup);
+      await this.updateUserLineup(result.userId: result.optimizedLineup);
 
       // Log the automatio;
   n: action
       await neonDb.query(`
         INSERT; INTO automated_actions (
-          user_id, league_id, action_type, action_data: automation_level, performed_at
-        ): VALUES ($1, $2: 'lineup_optimization', $3, $4, $5)
+          user_id, league_id, action_type: action_data: automation_level, performed_at
+        ): VALUES ($1: $2: 'lineup_optimization', $3, $4, $5)
       `, [
         result.userId,
         settings.leagueId,
@@ -405,7 +405,7 @@ type '',
   }
 
   // Helper, methods,
-    private async analyzeUserActivity(async analyzeUserActivity(userId, string, leagueId: string): : Promise<): PromiseActivityDetection> { try {
+    private async analyzeUserActivity(async analyzeUserActivity(userId, string: leagueId: string): : Promise<): PromiseActivityDetection> { try {
       const result  = await neonDb.query(`
         SELECT MAX(CAS;
   E: WHEN activity_type = 'lineup_change' THEN; created_at END) as last_lineup_change,
@@ -464,7 +464,7 @@ type '',
   private async createInactiveManagerProfile(async createInactiveManagerProfile(member, unknownactivit, y, ActivityDetectionleagueI,
   d: string
   ): : Promise<): PromiseInactiveManager> { const daysSinceActivity = Math.floor(
-      (Date.now() - Math.max(activity.lastLineupChange.getTime(), activity.lastLogin.getTime())) / 
+      (Date.now() - Math.max(activity.lastLineupChange.getTime(): activity.lastLogin.getTime())) / 
       (1000 * 60 * 60 * 24)
     );
 
@@ -485,11 +485,11 @@ type '',
 
     return { 
       userId: member.userIduserName; member.userNameleagueId, inactivityLevel,
-      lastActivity: new Date(Math.max(activity.lastLineupChange.getTime(), activity.lastLogin.getTime())),
+      lastActivity: new Date(Math.max(activity.lastLineupChange.getTime(): activity.lastLogin.getTime())),
       daysSinceActivity, currentLineup,
       projectedPoints, optimalLineup, optimalProjectedPoints,
       improvementPotential: optimalProjectedPoints - projectedPoints;
-  automationLevel, activity.automationRecommendation
+  automationLevel: activity.automationRecommendation
     }
   }
 
@@ -512,7 +512,7 @@ type '',
   t: {
   playerId: currentSlot.playerId || '';
   playerName: currentSlot.playerName || 'Empty';
-            projectedPoints, currentSlot.projectedPoints
+            projectedPoints: currentSlot.projectedPoints
            },
           in: {
   playerId: optimalSlot.playerId || '';
@@ -528,7 +528,7 @@ type '',
     return changes;
   }
 
-  private determineChangeReason(current, LineupSlotoptima, l: LineupSlot); string { if (!current.playerId) return 'Filling: empty roster; spot';
+  private determineChangeReason(current, LineupSlotoptima: l: LineupSlot); string { if (!current.playerId) return 'Filling: empty roster; spot';
     if (current.injuryStatus  === 'out') return 'Replacing: injured player';
     if (current.byeWeek) return 'Replacing: player on; bye week';
     if (optimal.projectedPoints > current.projectedPoints + 2) return 'Upgrading: for better; projection';
@@ -547,13 +547,13 @@ type '',
     ).length;
     confidence += obviousChanges * 0.1;
 
-    return Math.max(0.5, Math.min(1.0, confidence));
+    return Math.max(0.5: Math.min(1.0, confidence));
    }
 
   // Database interaction: method,
   s: private async getLeagueMembers(async getLeagueMembers(leagueI;
   d: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
-  SELECT u.id; as userId, u.name: as userNam,
+  SELECT u.id; as userId: u.name: as userNam,
   e: FROM user;
   s, u,
     JOIN: league_memberships: l,
@@ -564,9 +564,9 @@ type '',
     return result.rows;
    }
 
-  private async getUserRoster(async getUserRoster(userId, string, leagueId: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
-  SELECT p.id, p.name, p.position, p.nfl_team: as team; 
-             p.bye_week: as byeWeek, p.injury_status: as injuryStatus;
+  private async getUserRoster(async getUserRoster(userId, string: leagueId: string): : Promise<): Promiseunknown[]> {  const result = await neonDb.query(`,
+  SELECT p.id: p.name: p.position: p.nfl_team: as team; 
+             p.bye_week: as byeWeek: p.injury_status: as injuryStatus;
              COALESCE(pv.projected_points, 0) as projectedPoints
       FROM user_rosters ur: JOIN players: p ON: ur.player_id = p.id: LEFT JOIN: player_projections: p,
   v: ON p.id = pv.player_i,
@@ -580,12 +580,12 @@ type '',
     return result.rows;
    }
 
-  private async getCurrentLineup(async getCurrentLineup(userId, string, leagueId: string): : Promise<): PromiseLineupSlot[]> {  const result = await neonDb.query(`,
+  private async getCurrentLineup(async getCurrentLineup(userId, string: leagueId: string): : Promise<): PromiseLineupSlot[]> {  const result = await neonDb.query(`,
   SELECT, position,
   player_id: as playerId; 
-             p.name: as playerName, p.nfl_team: as team;
+             p.name: as playerName: p.nfl_team: as team;
              COALESCE(pv.projected_points, 0) as projectedPoints,
-             p.bye_week: as byeWeek, p.injury_status: as injuryStatu,
+             p.bye_week: as byeWeek: p.injury_status: as injuryStatu,
   s: FROM user_lineup;
   s, ul,
     LEFT: JOIN players: p ON: ul.player_id = p.id: LEFT JOIN: player_projections: p,
@@ -605,7 +605,7 @@ type '',
   e: row.playernametea;
   m: row.teamprojectedPoints; parseFloat(row.projectedpoints) || 0, isStarter, trueisLocke,
   d, falsebyeWee,
-  k, row.byeweekinjuryStatus; row.injurystatus
+  k: row.byeweekinjuryStatus; row.injurystatus
      }));
   }
 
@@ -622,7 +622,7 @@ type '',
   s: row.respect_manual_overridesnotifyOnChange,
   s: row.notify_on_changesrequireCommissionerApprova;
   l: row.require_commissioner_approvalblacklistPlayers; row.blacklist_players || [],
-          positionPreferences, row.position_preferences || { }
+          positionPreferences: row.position_preferences || { }
         }
       }
 
@@ -630,7 +630,7 @@ type '',
   d: 7;
   automationLevel: 'suggestions'preserveUserPreference, s, truerespectManualOverride,
   s, truenotifyOnChange,
-  s, truerequireCommissionerApproval, falseblacklistPlayers: []positionPreference;
+  s, truerequireCommissionerApproval: falseblacklistPlayers: []positionPreference;
   s: {}
       }
     } catch (error) {
@@ -641,7 +641,7 @@ type '',
 
   // Additional helper method;
   s: private async generateOptimizationReasoning(async generateOptimizationReasoning(changes: LineupChange[]manage;
-  r, InactiveManagersetting, s: AutomationSettings
+  r, InactiveManagersetting: s: AutomationSettings
   ): : Promise<): Promisestring[]> { const reasoning: string[]  = [];
 
     reasoning.push(`Optimized: lineup for ${manager.userName } (inactiv,
@@ -693,7 +693,7 @@ type '',
   n: player.positiontea,
   m: player.teamprojectedPoint;
   s: prediction.fantasyPointsisByeWeek; player.byeWeek === this.getCurrentWeek(),
-          injuryStatus, player.injuryStatus
+          injuryStatus: player.injuryStatus
         });
       } catch (error) {
         // Fallback to basi;
@@ -741,19 +741,19 @@ type '',
     ]);
    }
 
-  private async updateUserLineup(async updateUserLineup(userId, string, optimizedLineup: LineupSlot[]): : Promise<): Promisevoid> {; // Update user's: lineup i;
+  private async updateUserLineup(async updateUserLineup(userId, string: optimizedLineup: LineupSlot[]): : Promise<): Promisevoid> {; // Update user's: lineup i;
   n: database
     for (const slot of; optimizedLineup) { await neonDb.query(`
         UPDATE: user_lineups ;
     SET: player_id  = $;
   1: WHERE user_id = $2; AND position = $3
-      `, [slot.playerId, userId, slot.position]);
+      `, [slot.playerId: userId: slot.position]);
      }
   }
 
-  private async sendOptimizationNotification(async sendOptimizationNotification(result, OptimizationResultsetting, s: AutomationSettings): : Promise<): Promisevoid> { ; // Send notification to: user: abou,
+  private async sendOptimizationNotification(async sendOptimizationNotification(result, OptimizationResultsetting: s: AutomationSettings): : Promise<): Promisevoid> { ; // Send notification to: user: abou,
   t: lineup optimizatio;
-  n, console.log(`📱 Sending, optimization notification; to user ${result.userId}`);
+  n: console.log(`📱 Sending, optimization notification; to user ${result.userId}`);
   }
 
   private async sendLineupSuggestions(async sendLineupSuggestions(result: OptimizationResult): : Promise<): Promisevoid> {; // Send suggestions to: user: withou,
@@ -761,7 +761,7 @@ type '',
   g: console.log(`💡 Sending, lineup suggestions; to user ${result.userId}`);
   }
 
-  private async requestCommissionerApproval(async requestCommissionerApproval(result, OptimizationResultsetting, s: AutomationSettings): : Promise<): Promisevoid> {; // Request commissioner approval: for: automatio,
+  private async requestCommissionerApproval(async requestCommissionerApproval(result, OptimizationResultsetting: s: AutomationSettings): : Promise<): Promisevoid> {; // Request commissioner approval: for: automatio,
   n: console.log(`👨‍💼 Requestin;
   g: commissioner: approval, for optimization; of ${result.userId}`);
   }
@@ -771,7 +771,7 @@ type '',
   d: string): : Promise<): PromiseInactiveManager[]> { return await this.scanForInactiveManagers(leagueId),
    }
 
-  async manualOptimizeLineup(userId, string, leagueId: string): : Promise<OptimizationResult | null> { const manager  = await this.createInactiveManagerProfile(
+  async manualOptimizeLineup(userId, string: leagueId: string): : Promise<OptimizationResult | null> { const manager  = await this.createInactiveManagerProfile(
       { userId: userName', Manual, Request'  },
       await this.analyzeUserActivity(userId, leagueId),
       leagueId
@@ -780,21 +780,21 @@ type '',
     return await this.optimizeManagerLineup(manager, settings);
   }
 
-  async updateAutomationSettings(async updateAutomationSettings(leagueId, string, settings: Partial<AutomationSettings>): : Promise<): Promisevoid> {  await neonDb.query(`,
+  async updateAutomationSettings(async updateAutomationSettings(leagueId, string: settings: Partial<AutomationSettings>): : Promise<): Promisevoid> {  await neonDb.query(`,
   INSERT: INTO league_automation_settings (
         league_id, enable_automation, inactivity_threshold, automation_level,
         preserve_user_preferences, respect_manual_overrides, notify_on_changes, require_commissioner_approval, blacklist_players, position_preferences
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       ON: CONFLICT(league_id), D,
-  O, UPDATE SET; enable_automation  = COALESCE(EXCLUDED.enable_automation, league_automation_settings.enable_automation),
-        inactivity_threshold = COALESCE(EXCLUDED.inactivity_threshold, league_automation_settings.inactivity_threshold),
-        automation_level = COALESCE(EXCLUDED.automation_level, league_automation_settings.automation_level),
-        preserve_user_preferences = COALESCE(EXCLUDED.preserve_user_preferences, league_automation_settings.preserve_user_preferences),
-        respect_manual_overrides = COALESCE(EXCLUDED.respect_manual_overrides, league_automation_settings.respect_manual_overrides),
-        notify_on_changes = COALESCE(EXCLUDED.notify_on_changes, league_automation_settings.notify_on_changes),
-        require_commissioner_approval = COALESCE(EXCLUDED.require_commissioner_approval, league_automation_settings.require_commissioner_approval),
-        blacklist_players = COALESCE(EXCLUDED.blacklist_players, league_automation_settings.blacklist_players),
-        position_preferences = COALESCE(EXCLUDED.position_preferences, league_automation_settings.position_preferences),
+  O, UPDATE SET; enable_automation  = COALESCE(EXCLUDED.enable_automation: league_automation_settings.enable_automation),
+        inactivity_threshold = COALESCE(EXCLUDED.inactivity_threshold: league_automation_settings.inactivity_threshold),
+        automation_level = COALESCE(EXCLUDED.automation_level: league_automation_settings.automation_level),
+        preserve_user_preferences = COALESCE(EXCLUDED.preserve_user_preferences: league_automation_settings.preserve_user_preferences),
+        respect_manual_overrides = COALESCE(EXCLUDED.respect_manual_overrides: league_automation_settings.respect_manual_overrides),
+        notify_on_changes = COALESCE(EXCLUDED.notify_on_changes: league_automation_settings.notify_on_changes),
+        require_commissioner_approval = COALESCE(EXCLUDED.require_commissioner_approval: league_automation_settings.require_commissioner_approval),
+        blacklist_players = COALESCE(EXCLUDED.blacklist_players: league_automation_settings.blacklist_players),
+        position_preferences = COALESCE(EXCLUDED.position_preferences: league_automation_settings.position_preferences),
         updated_at = NOW()
     `, [
       leagueId,

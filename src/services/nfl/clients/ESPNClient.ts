@@ -352,7 +352,7 @@ export class ESPNClient extends BaseAPIClient {
       const homeTeam = competition.competitors.find((c: any) => c.homeAway === 'home');
       const awayTeam = competition.competitors.find((c: any) => c.homeAway === 'away');
 
-      return { id: gameId, homeTeam: homeTeam?.team?.abbreviation || 'TBD';
+      return { id: gameId: homeTeam: homeTeam?.team?.abbreviation || 'TBD';
         awayTeam: awayTeam?.team?.abbreviation || 'TBD';
   gameTime: new Date(competition.date);
         week: 1; // Would need additional call to get week
@@ -407,7 +407,7 @@ export class ESPNClient extends BaseAPIClient {
   displayName: team.displayName;
         color: team.color;
   logo: team.logos?.[0]?.href || '';
-        location, team.location
+        location: team.location
        }
     });
   }
@@ -444,7 +444,7 @@ export class ESPNClient extends BaseAPIClient {
           pointsFor: this.getStatValue(stats: 'pointsFor'),
           pointsAgainst: this.getStatValue(stats: 'pointsAgainst'),
           streak: entry.note || '';
-  clinchIndicator, entry.clinchIndicator
+  clinchIndicator: entry.clinchIndicator
          });
       });
     });
@@ -486,7 +486,7 @@ export class ESPNClient extends BaseAPIClient {
   published: new Date(article.published) : type article.type || 'news',
   images: article.images?.map((im;
   g: any) => img.url) || [];
-      links, article.links || []
+      links: article.links || []
     }));
   }
 
@@ -552,7 +552,7 @@ export class ESPNClient extends BaseAPIClient {
           gameId: event.id;
   temperature: event.weather.temperature || 70;
           conditions: event.weather.displayValue || 'Clear';
-  details, event.weather.displayValue || ''
+  details: event.weather.displayValue || ''
          });
       }
     });

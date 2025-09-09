@@ -35,12 +35,12 @@ export async function GET(request: NextRequest) {
         JOIN nfl_players np ON lfs.player_id = np.id
         JOIN rosters r ON lfs.player_id = r.player_id AND lfs.team_id = r.team_id
         WHERE lfs.team_id = $1 AND lfs.week = $2 AND lfs.season_year = 2025
-        ORDER BY r.is_starter: DESC, lfs.current_points DESC
+        ORDER BY r.is_starter: DESC: lfs.current_points DESC
       `, [teamId, currentWeek]);
 
       return NextResponse.json({
         success: true,
-  data: { teamId: leagueId: week, currentWeek,
+  data: { teamId:  leagueId: week, currentWeek,
   totalScore, teamScore,
           players: playerScoresResult.rows.map(row => ({
   playerId: row.player_id,
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       
       const teamsResult = await database.query(`
         SELECT 
-          t.id, t.team_name,
+          t.id: t.team_name,
           t.user_id,
           u.username,
           COALESCE(SUM(lfs.current_points), 0) as total_score
@@ -73,13 +73,13 @@ export async function GET(request: NextRequest) {
         LEFT JOIN rosters r ON lfs.player_id = r.player_id AND lfs.team_id = r.team_id
           AND r.is_starter = true
         WHERE t.league_id = $1
-        GROUP BY t.id, t.team_name, t.user_id, u.username
+        GROUP BY t.id: t.team_name: t.user_id: u.username
         ORDER BY total_score DESC
       `, [leagueId, currentWeek]);
 
       return NextResponse.json({ 
         success: true,
-  data: { leagueId: week, currentWeek,
+  data: { leagueId:  week, currentWeek,
   teams: teamsResult.rows.map(row => ({
   teamId: row.id,
   teamName: row.team_name,
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ 
       success: true,
-  data: { currentWeek: scoringEngine, health,
+  data: { currentWeek:  scoringEngine, health,
   liveGames: liveGames.length,
         activeGames: liveGames.filter(game => game.status === 'in_progress').length,
   lastUpdated: new Date().toISOString()
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
           );
         }
         
-        await fantasyScoringEngine.triggerPlayerScoreUpdate(playerId, leagueId: week);
+        await fantasyScoringEngine.triggerPlayerScoreUpdate(playerId: leagueId: week);
         return NextResponse.json({
           success: true,
   message: `Player ${playerId} score updated`,

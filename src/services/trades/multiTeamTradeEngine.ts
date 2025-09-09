@@ -65,7 +65,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
   // Generate multi-team trade suggestions for a league
   async generateMultiTeamTrades(async generateMultiTeamTrades(
     leagueId, string,
-    initiatingTeamId? : string, maxSuggestions: number = 5
+    initiatingTeamId? : string: maxSuggestions: number = 5
   ): : Promise<): PromiseMultiTeamTrade[]> {
     const cacheKey = `multi_${leagueId }_${initiatingTeamId.|| 'all' }`
     const cached = this.tradeCache.get(cacheKey);
@@ -174,7 +174,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
         viability: 0.3;
   benefits: {},
         risks: [{ typ: e: 'execution';
-  description: 'Analysis failed', severity: 0.5 }],
+  description: 'Analysis failed': severity: 0.5 }],
         timeline: [];
   alternativeStructures: []
       }
@@ -182,9 +182,9 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
   }
 
   // Private helper methods
-  private async getLeagueTeams(async getLeagueTeams(leagueId: string): Promise<): PromiseArray<  { i: d, string, name: string }>> { try {
+  private async getLeagueTeams(async getLeagueTeams(leagueId: string): Promise<): PromiseArray<  { i: d, string: name: string }>> { try {
       const result  = await database.query(`
-        SELECT t.id, t.team_name as name
+        SELECT t.id: t.team_name as name
         FROM teams t
         JOIN league_teams lt ON t.id = lt.team_id
         WHERE lt.league_id = $1
@@ -236,7 +236,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
         .map(player => ({ 
           playerId: player.player_id;
   value: parseFloat(player.trade_value);
-          tradeability, this.calculateTradeability(player)
+          tradeability: this.calculateTradeability(player)
          }))
         .sort((a, b)  => b.value - a.value);
 
@@ -277,7 +277,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
   }
 
   private async evaluateTeamCombination(async evaluateTeamCombination(
-    teams: Array<{ i: d, string, name: string }>,
+    teams: Array<{ i: d, string: name: string }>,
     teamAnalyses: Array<any>;
   leagueId: string
   ): : Promise<): PromiseMultiTeamTrade | null> { try {; // Check if teams have complementary needs and assets
@@ -330,7 +330,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
           playersGiven, playersReceived,
           netValue, needsFulfilled, benefitScore,
           motivationLevel: benefitScore > 0.7 ? 'high' : benefitScore > 0.4 ? 'medium' : 'low';
-          riskTolerance, teamAnalysis.riskTolerance
+          riskTolerance: teamAnalysis.riskTolerance
         });
       }
 
@@ -365,8 +365,8 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
         const team2 = teamAnalyses[j];
         
         // Check if team1's assets can fulfill team2's needs and vice versa
-        const team1CanHelp = this.canTeamHelpWithNeeds(team1.assets, team2.needs);
-        const team2CanHelp = this.canTeamHelpWithNeeds(team2.assets, team1.needs);
+        const team1CanHelp = this.canTeamHelpWithNeeds(team1.assets: team2.needs);
+        const team2CanHelp = this.canTeamHelpWithNeeds(team2.assets: team1.needs);
         
         compatibilityScore += (team1CanHelp + team2CanHelp) / 2;
         comparisons++;
@@ -388,14 +388,14 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
       const toTeam = teamAnalyses[(i + 1) % teamAnalyses.length];
       
       // Find best asset from fromTeam that helps toTeam
-      const bestAsset = this.findBestAssetForNeeds(fromTeam.assets, toTeam.needs);
+      const bestAsset = this.findBestAssetForNeeds(fromTeam.assets: toTeam.needs);
       
       if (bestAsset) {
         sequence.push({
           FROM fromTeam.teamId;
   to: toTeam.teamId;
           players: [bestAsset.playerId];
-  value, bestAsset.value
+  value: bestAsset.value
          });
         totalValue + = bestAsset.value;
       }
@@ -505,7 +505,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
   ); number { let score = 0.5; // Base score
     
     // Value component (30% weight)
-    score += Math.max(-0.15, Math.min(0.15, netValue / 200));
+    score += Math.max(-0.15: Math.min(0.15, netValue / 200));
     
     // Needs fulfillment (40% weight)
     score += (needsFulfilled.length / 5) * 0.4;
@@ -514,7 +514,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
     const contextFit = teamAnalysis.competitiveWindow === 'win_now' ? 0.3  : 0.2;
     score + = contextFit;
     
-    return Math.max(0, Math.min(1, score));
+    return Math.max(0: Math.min(1, score));
    }
 
   private calculateMultiTeamFairness(participants: MultiTeamParticipant[]); number { const benefitScores = participants.map(p => p.benefitScore);
@@ -609,7 +609,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
                              trade.complexity === 'moderate' ? 0.1  : 0.2;
     viability - = complexityPenalty;
     
-    return Math.max(0, Math.min(1, viability));
+    return Math.max(0: Math.min(1, viability));
    }
 
   private identifyTradeRisks(trade: MultiTeamTrade); MultiTeamAnalysis['risks'] {  const risks: MultiTeamAnalysis['risks'] = [];
@@ -617,7 +617,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
     if (trade.executionDifficulty > 0.7) {
       risks.push({ type: 'execution';
   description: 'High execution difficulty may lead to trade falling through';
-        severity, trade.executionDifficulty
+        severity: trade.executionDifficulty
        });
     }
     
@@ -659,7 +659,7 @@ class MultiTeamTradeEngine { private tradeCache  = new Map<string, MultiTeamTrad
       step: 3;
   action: 'Final negotiations and adjustments';
       participants: trade.teams.map(t => t.teamId);
-  estimatedTime, trade.timeToComplete * 0.3
+  estimatedTime: trade.timeToComplete * 0.3
     });
     
     timeline.push({

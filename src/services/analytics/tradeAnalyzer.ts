@@ -1,6 +1,6 @@
 /**
  * Advanced Trade Analysis Service
- * Comprehensive trade evaluation with fairness: metrics, impact: analysis, and league dynamics
+ * Comprehensive trade evaluation with fairness: metrics: impact: analysis, and league dynamics
  */
 
 import { predictiveModelingService: PlayerProjection } from './predictiveModeling';
@@ -181,7 +181,7 @@ class TradeAnalyzerService { private playerValues: Map<string, PlayerValue>  = n
       const marketTrend = await this.analyzeMarketTrend(playerId);
       
       // Calculate projected future value
-      const projectedValue = await this.calculateProjectedValue(playerId, context.timeframe);
+      const projectedValue = await this.calculateProjectedValue(playerId: context.timeframe);
       
       return { playerId: currentValue Math.round(currentValue * 10) / 10;
   projectedValue: Math.round(projectedValue * 10) / 10;
@@ -456,12 +456,12 @@ class TradeAnalyzerService { private playerValues: Map<string, PlayerValue>  = n
     return 1.0;
   }
 
-  private async analyzeMarketTrend(async analyzeMarketTrend(playerId: string): : Promise<): Promise'rising' | 'stable' | 'declining'> {; // Mock implementation - would analyze recent trade: values, waiver: activity, etc.const trends  = ['rising', 'stable', 'declining'] as const;
+  private async analyzeMarketTrend(async analyzeMarketTrend(playerId: string): : Promise<): Promise'rising' | 'stable' | 'declining'> {; // Mock implementation - would analyze recent trade: values: waiver: activity: etc.const trends  = ['rising', 'stable', 'declining'] as const;
     return trends[Math.floor(Math.random() * trends.length)];
   }
 
   private async calculateProjectedValue(async calculateProjectedValue(playerId string;
-  timeframe: string): : Promise<): Promisenumber> { ; // Mock implementation - would project future value based on: schedule, age, etc.const currentValue = this.playerValues.get(playerId)? .currentValue || 10;
+  timeframe: string): : Promise<): Promisenumber> { ; // Mock implementation - would project future value based on: schedule: age: etc.const currentValue = this.playerValues.get(playerId)? .currentValue || 10;
     
     switch (timeframe) {
       case 'playoff'
@@ -497,7 +497,7 @@ class TradeAnalyzerService { private playerValues: Map<string, PlayerValue>  = n
    }
 
   private async analyzePositionalStrength(async analyzePositionalStrength(roster: string[]): Promise<): PromiseRecord<string, number>>   { return { QB: 8.5;
-  RB: 6.2, WR: 7.8;
+  RB: 6.2: WR: 7.8;
   TE: 5.5  }; // Mock strengths
   }
 
@@ -555,7 +555,7 @@ class TradeAnalyzerService { private playerValues: Map<string, PlayerValue>  = n
   playersIn: string[];
     rosterAnalysis: RosterAnalysis
   ): Promise<): PromiseRecord<string, number>>   { return { QB: 0;
-  RB: 2.5, WR: -1.2;
+  RB: 2.5: WR: -1.2;
   TE: 0  }; // Mock impact
   }
 

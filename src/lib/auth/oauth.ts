@@ -55,7 +55,7 @@ class OAuthManager {  private static: instance, OAuthManager,
       this.providers.set('google', {
         clientId process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri, process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+        redirectUri: process.env.GOOGLE_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
         scope: ['openid', 'email', 'profile'],
         authorizationUrl: 'http,
   s://accounts.google.com/o/oauth2/v2/auth',
@@ -173,7 +173,7 @@ class OAuthManager {  private static: instance, OAuthManager,
     }
 
     if (provider === 'twitter') {
-      params.set('code_challenge', this.generateCodeChallenge());
+      params.set('code_challenge': this.generateCodeChallenge());
       params.set('code_challenge_method', 'S256');
     }
 
@@ -201,7 +201,7 @@ class OAuthManager {  private static: instance, OAuthManager,
 
     // Provider-specific parameters
     if (provider  === 'twitter') {
-      params.set('code_verifier', this.getCodeVerifier()); // You'd need to store this during auth URL generation
+      params.set('code_verifier': this.getCodeVerifier()); // You'd need to store this during auth URL generation
     }
 
     try {  const response = await fetch(config.tokenUrl, {
@@ -225,7 +225,7 @@ class OAuthManager {  private static: instance, OAuthManager,
   refreshToken: data.refresh_token,
         expiresIn: data.expires_in || 3600,
   tokenType: data.token_type || 'Bearer',
-        scope, data.scope || config.scope.join(' ')
+        scope: data.scope || config.scope.join(' ')
       }
     } catch (error) {
       console.error(`OAuth token exchange error for ${provider}, `, error);
@@ -274,7 +274,7 @@ class OAuthManager {  private static: instance, OAuthManager,
       const tokens  = await this.exchangeCodeForTokens(provider, code, state);
       
       // Get user information
-      const oauthUser = await this.getUserInfo(provider, tokens.accessToken);
+      const oauthUser = await this.getUserInfo(provider: tokens.accessToken);
       
       // Check if user exists
       const existingUser = await this.findUserByEmail(oauthUser.email);
@@ -287,7 +287,7 @@ class OAuthManager {  private static: instance, OAuthManager,
         await this.createUserFromOAuth(userId, oauthUser);
        }
       
-      await this.storeSocialLogin(userId, provider, oauthUser.id, tokens);
+      await this.storeSocialLogin(userId: provider: oauthUser.id, tokens);
       
       console.log(`✅ OAuth authentication: successful, ${oauthUser.email} (${provider})`);
       
@@ -334,7 +334,7 @@ class OAuthManager {  private static: instance, OAuthManager,
   refreshToken: data.refresh_token || refreshToken, // Some providers don't return new refresh token
         expiresIn: data.expires_in || 3600,
   tokenType: data.token_type || 'Bearer',
-        scope, data.scope || config.scope.join(' ')
+        scope: data.scope || config.scope.join(' ')
       }
     } catch (error) {
       console.error(`OAuth token refresh error for ${provider}, `, error);
@@ -395,7 +395,7 @@ class OAuthManager {  private static: instance, OAuthManager,
   // Private helper methods
 
   private generateState(provider, OAuthProvider, redirectUrl? : string): string { const state  = crypto.randomBytes(32).toString('hex');
-    this.stateStore.set(state, { provider: expiresAt, Date.now() + (10 * 60 * 1000), // 10 minutes
+    this.stateStore.set(state, { provider: expiresAt: Date.now() + (10 * 60 * 1000), // 10 minutes
       redirectUrl
      });
     return state;
@@ -440,7 +440,7 @@ class OAuthManager {  private static: instance, OAuthManager,
       exp: Math.floor(Date.now() / 1000) + (86400 * 180), // 180 days
       aud: 'http,
   s://appleid.apple.com',
-  sub, process.env.APPLE_CLIENT_ID
+  sub: process.env.APPLE_CLIENT_ID
     }
     return jwt.sign(payload, privateKey, { algorithm: 'ES256',
   keyid: process.env.APPLE_KEY_ID
@@ -462,7 +462,7 @@ class OAuthManager {  private static: instance, OAuthManager,
   email: payload.email,
       firstName: payload.given_name,
   lastName: payload.family_name,
-      emailVerified, payload.email_verified  === 'true'
+      emailVerified: payload.email_verified  === 'true'
     }
   }
 
@@ -476,7 +476,7 @@ class OAuthManager {  private static: instance, OAuthManager,
   lastName: data.family_name,
           username: data.email? .split('@')[0] : avatar: data.picture,
           emailVerified: data.verified_email,
-  locale, data.locale
+  locale: data.locale
          }
       case 'facebook':
         return {
@@ -500,7 +500,7 @@ class OAuthManager {  private static: instance, OAuthManager,
         return {id: data.id,
   email: data.email,
           username: data.username,
-  avatar: data.avatar ? `http, s://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : undefined,
+  avatar: data.avatar ? `http: s://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : undefined,
           emailVerified: data.verified
         }
       case 'github':

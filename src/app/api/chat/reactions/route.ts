@@ -20,10 +20,10 @@ export async function POST(request: NextRequest) {
     if (!messageId || !emoji) {  return NextResponse.json({ error: 'Message ID and emoji required'  }, { status: 400 });
     }
 
-    const reaction  = await chatService.addReaction(messageId, decoded.userId, emoji);
+    const reaction  = await chatService.addReaction(messageId: decoded.userId, emoji);
 
     return NextResponse.json({ 
-      success: true, data: reaction,
+      success: true: data, reaction,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -52,7 +52,7 @@ export async function DELETE(request: NextRequest) {
     if (!messageId || !emoji) { return NextResponse.json({ error: 'Message ID and emoji required'  }, { status: 400 });
     }
 
-    await chatService.removeReaction(messageId, decoded.userId, emoji);
+    await chatService.removeReaction(messageId: decoded.userId, emoji);
 
     return NextResponse.json({
       success: true,

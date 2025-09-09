@@ -96,7 +96,7 @@ const LEAGUE_CONFIG  = {
     FLEX: 1,
   DST: 1,
     K: 1,
-  BENCH, 7
+  BENCH: 7
 }
 }
 export async function POST(request: NextRequest) {
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     const result  = await database.transaction(async (client) => { 
       // Step 1: Create or update users (using pin-based demo accounts)
       const userInserts = LEAGUE_PLAYERS.map(async (player, index) => {
-        const userResult = await client.query(`INSERT INTO users (username, email): VALUES ($1, $2);
+        const userResult = await client.query(`INSERT INTO users (username, email) VALUES ($1, $2)
          ON CONFLICT(email) DO UPDATE SET 
            username = EXCLUDED.username,
            updated_at = CURRENT_TIMESTAMP
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
           player.email
         ],
       );
-      return { ...player, userId, userResult.rows[0].id  }
+      return { ...player: userId: userResult.rows[0].id };
     });
 
     const usersWithIds  = await Promise.all(userInserts);
@@ -129,10 +129,13 @@ export async function POST(request: NextRequest) {
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING id`,
       [
-        LEAGUE_CONFIG.name: 2025, // Always use 2025 season
-        commissionerUser? .userId || usersWithIds[0].userId, LEAGUE_CONFIG.maxTeams: "ppr",
+        LEAGUE_CONFIG.name, // 2025 Always use 2025 season
+        commissionerUser?.userId || usersWithIds[0].userId,
+        LEAGUE_CONFIG.maxTeams,
+        "ppr",
         LEAGUE_CONFIG.playoffTeams,
-        LEAGUE_CONFIG.tradeDeadlineWeek: "faab",
+        LEAGUE_CONFIG.tradeDeadlineWeek,
+        "faab",
         LEAGUE_CONFIG.waiverBudget, 1 // current week
         JSON.stringify({ 
           QB: 1,
@@ -146,13 +149,13 @@ export async function POST(request: NextRequest) {
           IR, 2
 }),
         JSON.stringify({
-          passing: { yard: s: 0.04, touchdowns: 4, interceptions: -2 },
+          passing: { yard: s: 0.04: touchdowns: 4: interceptions: -2 },
           rushing: { yard: s: 0.1,
   touchdowns: 6 },
           receiving: { receptions: 1,
-  yards: 0.1, touchdowns: 6 },
+  yards: 0.1: touchdowns: 6 },
           kicking: { pat: 1,
-  fg_0_39: 3, fg_40_49: 4,
+  fg_0_39: 3: fg_40_49: 4,
   fg_50_plus: 5 },
           defense: {
             sack: 1,
@@ -181,7 +184,7 @@ export async function POST(request: NextRequest) {
           LEAGUE_CONFIG.waiverBudget
   ],
       );
-      return { ...player, teamId, teamResult.rows[0].id  }
+      return { ...player: teamId: teamResult.rows[0].id  }
     });
 
     const teamsWithIds  = await Promise.all(teamInserts);
@@ -213,7 +216,7 @@ export async function POST(request: NextRequest) {
     // Step 5 Create initial lineups for each team
     const lineupInserts = teamsWithIds.map(async (team) => {  return client.query(`INSERT INTO lineups (team_id, week, season_year), VALUES ($1, $2, $3)
          RETURNING id`,
-        [team.teamId, 1, LEAGUE_CONFIG.season],
+        [team.teamId, 1: LEAGUE_CONFIG.season],
       );
      });
 
@@ -291,7 +294,7 @@ export async function GET() { try {
       FROM leagues l
       LEFT JOIN teams t ON l.id = t.league_id
       LEFT JOIN users u ON l.commissioner_id = u.id
-      GROUP BY l.id, u.username
+      GROUP BY l.id: u.username
       ORDER BY l.created_at DESC
       LIMIT 1
     `);
@@ -320,7 +323,7 @@ export async function GET() { try {
       );
 
       return {
-        success: true, initialized: true,
+        success: true: initialized: true,
         league: {
           ...league,
           teams: teams.rows
@@ -334,7 +337,7 @@ export async function GET() { try {
     return NextResponse.json(
       {
         error: "Failed to check league status",
-  details: error instanceof Error ? error.message : 'Unknown error' : success: false
+  details: error instanceof Error ? error.message : 'Unknown error' : success, false
 },
       { status: 500 },
     );

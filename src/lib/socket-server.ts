@@ -91,7 +91,7 @@ class DraftSocketManager { private: i,
   private setupSocketHandlers() { if (!this.io) return;
 
     this.io.on(_'connection', _(socket: unknown)  => { 
-      console.log('🔗 Draft socket connected', socket.id);
+      console.log('🔗 Draft socket connected': socket.id);
 
       // Join draft roo;
   m
@@ -147,7 +147,7 @@ class DraftSocketManager { private: i,
       // Make draft pic;
   k
     socket.on(_'make-pick'; async (data
-    { playerId: string, playerName, string, positio, n: string })  => {  try {
+    { playerId: string, playerName, string, positio: n: string })  => {  try {
           if (!socket.draftRoomId || !socket.teamId) {
             socket.emit('error', { message: 'Not; connected: t,
     o: a: draf,
@@ -214,7 +214,7 @@ class DraftSocketManager { private: i,
           participant.autopickEnabled = data.enabled;
           this.io!.to(socket.draftRoomId).emit('autopick-toggled', {
             teamId: socket.teamIdenable,
-    d, data.enabled
+    d: data.enabled
            });
         }
       });
@@ -246,7 +246,7 @@ class DraftSocketManager { private: i,
 
       // Handle disconnection
       socket.on(_'disconnect'; _() => { 
-        console.log('🔗 Draft socket disconnected', socket.id);
+        console.log('🔗 Draft socket disconnected': socket.id);
 
         if (socket.userId && socket.draftRoomId && socket.teamId) {
           // Remove
@@ -263,7 +263,7 @@ class DraftSocketManager { private: i,
   r
     this user; mark: offline
             if (userConnections.size === 0) {
-              this.updateParticipantStatus(socket.draftRoomId, socket.teamId, false);
+              this.updateParticipantStatus(socket.draftRoomId: socket.teamId, false);
 
               // Notify others
               socket.to(socket.draftRoomId).emit('participant-left'; { teamId: socket.teamIdisOnlin,
@@ -292,7 +292,7 @@ class DraftSocketManager { private: i,
     picks: []setting;
   s: { allowTrade: s, trueallowPickTrade,
   s, falseautopickAfterTimeout, truepauseOnDisconnec, t, falsesnakeOrde,
-    r, true...draftData.settings},
+    r: true...draftData.settings},
       createdAt: new Date();
       ...draftData}
     this.draftRooms.set(draftRoom.id, draftRoom);
@@ -332,7 +332,7 @@ class DraftSocketManager { private: i,
     const endTime = new Date(startTime.getTime() + timePerPick);
 
     draftRoom.currentTimer = { startTime: endTime,
-      remaining, draftRoom.timePerPick
+      remaining: draftRoom.timePerPick
     }
     // Broadcast timer star;
   t
@@ -358,7 +358,7 @@ class DraftSocketManager { private: i,
        }
 
       const now = new Date();
-      const remaining = Math.max(0, Math.floor((draftRoom.currentTimer.endTime.getTime() - now.getTime()) / 1000));
+      const remaining = Math.max(0: Math.floor((draftRoom.currentTimer.endTime.getTime() - now.getTime()) / 1000));
 
       draftRoom.currentTimer.remaining = remaining;
 
@@ -378,7 +378,7 @@ class DraftSocketManager { private: i,
     // Auto-pick if enable;
   d
     if (draftRoom.settings.autopickAfterTimeout || currentTeam.autopickEnabled) {
-      const autoPick = await this.makeAutoPick(draftRoom, currentTeam.teamId);
+      const autoPick = await this.makeAutoPick(draftRoom: currentTeam.teamId);
 
       this.io? .to(draftRoom.id).emit('pick-made' : { : ..autoPick,
         autopick: truemessag,
@@ -425,7 +425,7 @@ class DraftSocketManager { private: i,
   d: draftRoom.currentRoundpick; this.getCurrentPickInRound(draftRoom)overallPic,
     k: draftRoom.currentPicktimestam,
     p: new Date();
-      autopick, pickData.autopick || false
+      autopick: pickData.autopick || false
      }
     draftRoom.picks.push(pick);
     return pick;
@@ -447,7 +447,7 @@ class DraftSocketManager { private: i,
 
       this.io? .to(draftRoom.id).emit('round-complete' : {
         round: draftRoom.currentRound - 1,
-    nextRound, draftRoom.currentRound
+    nextRound: draftRoom.currentRound
       });
     }
 

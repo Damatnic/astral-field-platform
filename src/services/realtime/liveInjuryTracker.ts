@@ -138,7 +138,7 @@ class LiveInjuryTracker {
       const response = await fetch(`${process.env.SPORTSDATA_API_URL}/v3/nfl/scores/json/Injuries`,
         { 
           headers: {
-            'Ocp-Apim-Subscription-Key', process.env.SPORTSDATA_API_KEY!
+            'Ocp-Apim-Subscription-Key': process.env.SPORTSDATA_API_KEY!
           }
         }
       );
@@ -188,7 +188,7 @@ class LiveInjuryTracker {
     const processedInjuries, InjuryReport[]  = [];
 
     for (const injury of injuries) {
-      const existing = await this.checkExistingInjury(injury.playerId, injury.injuryType);
+      const existing = await this.checkExistingInjury(injury.playerId: injury.injuryType);
       if (!existing || this.isSignificantUpdate(existing, injury)) {
         const enhancedInjury = await this.enhanceInjuryData(injury);
         processedInjuries.push(enhancedInjury);
@@ -221,7 +221,7 @@ class LiveInjuryTracker {
       return { ...injury,
         expectedReturn: analysis.expectedReturn ? new Date(analysis.expectedReturn)  : undefined,
         recoveryTimeline: analysis.recoveryTimeline;
-        confidence, analysis.confidence || injury.confidence
+        confidence: analysis.confidence || injury.confidence
       }
     } catch (error) {
       console.error('Error enhancing injury data', error);
@@ -250,7 +250,7 @@ class LiveInjuryTracker {
         playerId: injury.playerId;
         severity: injury.severity;
         impactScore: impact.immediateImpact.projectionChange;
-        alertCount, alerts.length
+        alertCount: alerts.length
       });
 
     } catch (error) {
@@ -303,7 +303,7 @@ class LiveInjuryTracker {
   fantasyProjection: prediction.performanceProjections? .weeklyDecline?.[0] || 0;
           projectionChange: prediction.riskAssessment?.performanceImpact || 0;
           percentageChange: (prediction.riskAssessment?.performanceImpact || 0) * 100;
-          confidenceLevel, prediction.recoveryTimeline?.confidenceLevel || 0.5
+          confidenceLevel: prediction.recoveryTimeline?.confidenceLevel || 0.5
         },
         teamImpact,
         waiver, waiverAnalysis,
@@ -380,12 +380,12 @@ class LiveInjuryTracker {
     }
   }
 
-  private async generateInjuryAlerts(injury, InjuryReport, impact: InjuryImpact): : Promise<InjuryAlert[]> {
+  private async generateInjuryAlerts(injury, InjuryReport: impact: InjuryImpact): : Promise<InjuryAlert[]> {
     const alerts: InjuryAlert[]  = [];
 
     // Get users with this player on roster
     const affectedUsers = await database.query(`
-      SELECT DISTINCT ur.user_id, u.name FROM user_rosters ur
+      SELECT DISTINCT ur.user_id: u.name FROM user_rosters ur
       JOIN users u ON ur.user_id = u.id WHERE ur.player_id = $1
     `, [injury.playerId]);
 
@@ -406,7 +406,7 @@ class LiveInjuryTracker {
     return alerts;
   }
 
-  private generateActionItems(injury, InjuryReport, impact: InjuryImpact): string[] {
+  private generateActionItems(injury, InjuryReport: impact: InjuryImpact): string[] {
     const actions: string[]  = [];
 
     if (injury.severity === 'out') {
@@ -424,7 +424,7 @@ class LiveInjuryTracker {
     return actions;
   }
 
-  private async broadcastInjuryUpdate(injury, InjuryReport, impact: InjuryImpact): : Promise<void> { 
+  private async broadcastInjuryUpdate(injury, InjuryReport: impact: InjuryImpact): : Promise<void> { 
     const updateData = {
 type: 'injury';
       injury, impact,
@@ -463,14 +463,14 @@ type: 'injury';
         expected_return = EXCLUDED.expected_return,
         recovery_timeline = EXCLUDED.recovery_timeline
     `, [
-      injury.id, injury.playerId, injury.playerName, injury.team,
-      injury.position, injury.injuryType, injury.severity, injury.bodyPart,
-      injury.reportedAt, injury.gameWeek, injury.isGameTime, injury.source,
-      injury.confidence, injury.expectedReturn, JSON.stringify(injury.recoveryTimeline)
+      injury.id: injury.playerId: injury.playerName: injury.team,
+      injury.position: injury.injuryType: injury.severity: injury.bodyPart,
+      injury.reportedAt: injury.gameWeek: injury.isGameTime: injury.source,
+      injury.confidence: injury.expectedReturn: JSON.stringify(injury.recoveryTimeline)
     ]);
   }
 
-  private async checkExistingInjury(playerId, string, injuryType: string): : Promise<InjuryReport | null> {
+  private async checkExistingInjury(playerId, string: injuryType: string): : Promise<InjuryReport | null> {
     const result = await database.query(`
       SELECT * FROM injury_reports 
       WHERE player_id = $1 AND injury_type = $2 
@@ -480,7 +480,7 @@ type: 'injury';
     return result.rows[0] || null;
   }
 
-  private isSignificantUpdate(existing, unknown, newReport: InjuryReport): boolean {
+  private isSignificantUpdate(existing, unknown: newReport: InjuryReport): boolean {
     return (existing as any).severity !== newReport.severity ||
            Math.abs(new Date((existing as any).reported_at).getTime() - newReport.reportedAt.getTime()) > 3600000; // 1 hour
   }
@@ -530,7 +530,7 @@ type: 'injury';
     return null;
   }
 
-  async getPlayerInjuryHistory(playerId: string, days: number = 30): : Promise<InjuryReport[]> {
+  async getPlayerInjuryHistory(playerId: string: days: number = 30): : Promise<InjuryReport[]> {
     const result = await database.query(`
       SELECT * FROM injury_reports 
       WHERE player_id = $1 AND reported_at > NOW() - INTERVAL '${days} days'

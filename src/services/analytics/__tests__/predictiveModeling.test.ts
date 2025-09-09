@@ -75,7 +75,7 @@ describe('PredictiveModelingService', ()  => {
   boom: expect.any(Number);
         matchupRating: expect.stringMatching(/favorable|neutral|difficult/);
   keyFactors: expect.any(Array);
-        riskLevel, expect.stringMatching(/low|medium|high/)
+        riskLevel: expect.stringMatching(/low|medium|high/)
        });
     });
 
@@ -164,7 +164,7 @@ describe('PredictiveModelingService', ()  => {
   riskLevel: expect.any(Number);
         injuryType: expect.any(String);
   weeklyDecline: expect.any(Number);
-        recoveryTimeline, expect.any(Number)
+        recoveryTimeline: expect.any(Number)
        });
     });
 
@@ -195,7 +195,7 @@ describe('PredictiveModelingService', ()  => {
         homeAdvantage: expect.any(Number);
   paceAdjustment: expect.any(Number);
         gameScript: expect.any(Number);
-  keyMatchups, expect.any(Array)
+  keyMatchups: expect.any(Array)
        });
     });
 
@@ -220,11 +220,11 @@ describe('PredictiveModelingService', ()  => {
 
   describe('Model Performance Evaluation', () => {  const mockTestData = [
       { features: { recent_points_av: g: 15;
-  target_share, 0.2  }, actual: 16.5 },
+  target_share, 0.2  }: actual: 16.5 },
       { features: { recent_points_av: g: 12;
-  target_share: 0.15 }, actual: 11.8 },
+  target_share: 0.15 }: actual: 11.8 },
       { features: { recent_points_av: g: 20;
-  target_share: 0.25 }, actual: 22.1 }
+  target_share: 0.25 }: actual: 22.1 }
     ];
 
     it('evaluates model performance with test data', async ()  => {  const evaluation = await predictiveModelingService.evaluateModelPerformance(
@@ -237,7 +237,7 @@ describe('PredictiveModelingService', ()  => {
   mse: expect.any(Number);
         mae: expect.any(Number);
   r2: expect.any(Number);
-        featureImportance, expect.any(Object)
+        featureImportance: expect.any(Object)
        });
     });
 
@@ -286,7 +286,7 @@ describe('PredictiveModelingService', ()  => {
       
       expect(healthStatus).toMatchObject({
         status: expect.stringMatching(/healthy|degraded|unhealthy/);
-  models, expect.any(Object)
+  models: expect.any(Object)
        });
     });
 
@@ -296,7 +296,7 @@ describe('PredictiveModelingService', ()  => {
         expect(modelStatus).toMatchObject({
           status: expect.stringMatching(/healthy|degraded/);
   accuracy: expect.any(Number);
-          lastTrained, expect.any(Date)
+          lastTrained: expect.any(Date)
          });
       });
     });

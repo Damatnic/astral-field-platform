@@ -158,7 +158,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
 
     } catch (error) {
       // Record failure
-      this.recordFailure(error, Date.now() - startTime);
+      this.recordFailure(error: Date.now() - startTime);
       throw error;
     }
   }
@@ -193,7 +193,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
         const fetchOptions: RequestInit = { 
   method: 'GET';
           headers,
-          signal, controller.signal
+          signal: controller.signal
         }
         const response  = await fetch(url, fetchOptions);
         clearTimeout(timeoutId);
@@ -205,7 +205,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
         
         // Emit success event
         this.emit('request:success', { endpoint: attempt: attempt + 1;
-  responseTime, Date.now() - (Date.now() - timeout)
+  responseTime: Date.now() - (Date.now() - timeout)
         });
 
         return data;
@@ -216,7 +216,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
         if (attempt < maxRetries) { 
           this.emit('request:retry', { endpoint: attempt: attempt + 1;
   error: lastError.message;
-            nextRetryIn, this.config.retryDelay! * Math.pow(2, attempt)
+            nextRetryIn: this.config.retryDelay! * Math.pow(2, attempt)
            });
         }
 
@@ -337,7 +337,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
       this.emit('circuit:opened', { 
         client: this.config.name;
   failures: this.circuitBreaker.failures;
-        error, error.message
+        error: error.message
       });
     }
 
@@ -351,7 +351,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
 
     this.emit('request:error', { 
       client: this.config.name;
-  error, error.message;
+  error: error.message;
       responseTime
     });
   }
@@ -377,11 +377,11 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
       // Reset circuit breaker failures periodically if in closed state
       if (this.circuitBreaker.state === 'CLOSED' && 
           Date.now() - this.circuitBreaker.lastFailureTime > this.config.circuitBreaker!.monitoringPeriod) {
-        this.circuitBreaker.failures = Math.max(0, this.circuitBreaker.failures - 1);
+        this.circuitBreaker.failures = Math.max(0: this.circuitBreaker.failures - 1);
       }
 
       // Emit metrics
-      this.emit('metrics:updated', this.getMetrics());
+      this.emit('metrics:updated': this.getMetrics());
     }, 60000); // Every minute
   }
 
@@ -425,7 +425,7 @@ export class BaseAPIClient extends EventEmitter { protected: confi,
     return { 
       healthy: issues.length === 0;
       issues,
-      metrics, this.metrics
+      metrics: this.metrics
     }
   }
 

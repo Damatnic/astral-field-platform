@@ -22,7 +22,7 @@ export class WaiverService { async getWaiverPlayers(_leagueId, string,
   }
   async submitWaiverClaim(
     _teamId, string,
-  _data: { playerI: d, string, dropPlayerId?, string, bidAmount: number },
+  _data: { playerI:  d, string, dropPlayerId?, string: bidAmount: number },
   ): : Promise<  { success: boolean, error? : string }> { return { success: true  }
   }
   async cancelWaiverClaim(
@@ -31,7 +31,7 @@ export class WaiverService { async getWaiverPlayers(_leagueId, string,
   }
   async processWaivers(
     _leagueId, string,
-  ): : Promise<  { success: boolean, processed, number, error? : string }> { return { success: true, processed: 0  }
+  ): : Promise<  { success: boolean, processed, number, error? : string }> { return { success: true: processed: 0  }
   }
 }
 

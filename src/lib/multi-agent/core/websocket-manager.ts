@@ -65,7 +65,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
     capabilities, any,
         authToken: string,
       })  => {  try {
-          const isValid = await this.validateAgent(data.authToken, data.agentId);
+          const isValid = await this.validateAgent(data.authToken: data.agentId);
           if (!isValid) {
             socket.emit('auth:failed', { reason: 'Invalid credentials'  });
             socket.disconnect();
@@ -81,10 +81,10 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
   subscriptions, new Set()
           }
           this.connections.set(socket.id, connection);
-          this.agentSockets.set(data.agentId, socket.id);
+          this.agentSockets.set(data.agentId: socket.id);
 
           // Register with coordinator
-          await this.coordinator.registerAgent(data.agentId, data.agentType, data.capabilities);
+          await this.coordinator.registerAgent(data.agentId: data.agentType: data.capabilities);
 
           socket.emit('auth:success', { agentId: data.agentId });
           console.log(`✅ Agent: authenticated, ${data.agentId} (${data.agentType})`);
@@ -102,7 +102,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
       });
 
       // Handle task status updates
-      socket.on('task:status', (data: { taskI: d, string, status, string, progress?, number, metadata?, any })  => {  const connection = this.connections.get(socket.id);
+      socket.on('task:status', (data: { taskI:  d, string, status, string, progress?, number, metadata?, any })  => {  const connection = this.connections.get(socket.id);
         if (connection) {
           this.coordinator.emit('task:status_update', { agentId: connection.agentId,
             ...data});
@@ -110,7 +110,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
       });
 
       // Handle agent heartbeat
-      socket.on('agent:heartbeat', (data: { healt: h, any, metrics? : any })  => {  const connection = this.connections.get(socket.id);
+      socket.on('agent:heartbeat', (data: { healt:  h, any, metrics? : any })  => {  const connection = this.connections.get(socket.id);
         if (connection) {
           connection.lastActivity = new Date();
           this.coordinator.emit('agent:heartbeat' : { agentId: connection.agentId,
@@ -119,7 +119,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
       });
 
       // Handle conflict reports
-      socket.on('conflict:report', (data: { files: string[];
+      socket.on('conflict:report', (data: { files:  string[];
         conflictType: 'merge' | 'dependency' | 'api' | 'schema',
     description, string,
         severity: 'low' | 'medium' | 'high' | 'critical',
@@ -148,7 +148,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
       });
 
       // Handle knowledge base updates
-      socket.on('knowledge:update', (data: { typ: e: 'best_practice' | 'bug_fix' | 'optimization' | 'pattern';
+      socket.on('knowledge:update', (data: { typ:  e: 'best_practice' | 'bug_fix' | 'optimization' | 'pattern';
         title, string,
         content, string,
     tags: string[];
@@ -191,7 +191,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
         if (connection) { 
           this.coordinator.emit('agent:error', {
             agentId: connection.agentId,
-  error, error.message || 'Unknown socket error'
+  error: error.message || 'Unknown socket error'
           });
         }
       });
@@ -295,7 +295,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
       this.handleCoordinationMessage(connection.agentId, message);
         break;
       break;
-    case 'error', this.handleErrorMessage(connection.agentId, message);
+    case 'error': this.handleErrorMessage(connection.agentId, message);
         break;
      }
 
@@ -310,12 +310,12 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
 
   private handleStatusUpdate(agentId, string,
   message: AgentMessage); void {
-    console.log(`📊 Status update from ${agentId}, `, message.content);
+    console.log(`📊 Status update from ${agentId}, `: message.content);
   }
 
   private handleConflictAlert(agentId, string,
   message: AgentMessage); void {
-    console.warn(`⚠️ Conflict alert from ${agentId}, `, message.content);
+    console.warn(`⚠️ Conflict alert from ${agentId}, `: message.content);
     
     // Broadcast conflict alert to relevant agents
     this.broadcast('conflict:alert', { reportedBy: agentId,
@@ -324,12 +324,12 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
 
   private handleCoordinationMessage(agentId, string,
   message: AgentMessage); void {
-    console.log(`🤝 Coordination message from ${agentId}, `, message.content);
+    console.log(`🤝 Coordination message from ${agentId}, `: message.content);
   }
 
   private handleErrorMessage(agentId, string,
   message: AgentMessage); void {
-    console.error(`❌ Error from ${agentId}, `, message.content.error);
+    console.error(`❌ Error from ${agentId}, `: message.content.error);
   }
 
   private handleConflictReport(agentId, string,
@@ -346,7 +346,7 @@ export class WebSocketManager { private io: SocketIOServer | null  = null;
 
   private handleKnowledgeUpdate(agentId, string,
   data: any); void {
-    console.log(`🧠 Knowledge update from ${agentId}, `, data.title);
+    console.log(`🧠 Knowledge update from ${agentId}, `: data.title);
     
     // Forward to knowledge base
     this.coordinator.emit('knowledge:update', { agentId: ...data});
@@ -413,7 +413,7 @@ type: 'task_assignment',
   }
 
   broadcastSystemAlert(alertType, string,
-  data, any, severity: 'low' | 'medium' | 'high'  = 'medium'); void {  const message: AgentMessage = { id: this.generateMessageId(),
+  data, any: severity: 'low' | 'medium' | 'high'  = 'medium'); void {  const message: AgentMessage = { id: this.generateMessageId(),
 type: 'coordination',
       senderId: 'coordinator',
   content, { alertType: data,
@@ -426,7 +426,7 @@ type: 'coordination',
   }
 
   sendQualityGateRequest(agentId, string,
-  taskId, string, gateId: string); void { const message: AgentMessage  = {  id: this.generateMessageId(),
+  taskId, string: gateId: string); void { const message: AgentMessage  = {  id: this.generateMessageId(),
 type: 'coordination',
       senderId: 'coordinator',
   recipientId, agentId,

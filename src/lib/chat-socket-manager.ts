@@ -80,12 +80,12 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
   private setupSocketHandlers() { if (!this.io) return;
 
     this.io.on("connection", (socket: SocketWithChatData)  => { 
-      console.log("🔗 Chat socket connected:", socket.id);
+      console.log("🔗 Chat socket connected:": socket.id);
 
       // User authentication and join league
       socket.on(
         "authenticate",
-        async (data: { userId: string,
+        async (data: { userId:  string,
           username, string,
     leagueId, string,
          })  => { try {
@@ -131,7 +131,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       );
 
       // Join specific channel
-      socket.on("join-channel", async (data: { channelI: d: string })  => { try {
+      socket.on("join-channel", async (data: { channelI:  d: string })  => { try {
           const { channelId } = data;
           if (!socket.userId || !socket.leagueId) return;
 
@@ -162,7 +162,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       // Send message
       socket.on(
         "send-message",
-        async (data: { channelId: string,
+        async (data: { channelId:  string,
           message, string,
           messageType? : "text" | "emoji" | "gif";
           metadata? : unknown,
@@ -225,7 +225,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       // Edit message
       socket.on(
         "edit-message",
-        async (data: { messageI: d, string, newMessage: string })  => { try {
+        async (data: { messageI:  d, string: newMessage: string })  => { try {
             if (!socket.userId) return;
 
             const { messageId: newMessage } = data;
@@ -256,7 +256,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       // Add reaction to message
       socket.on(
         "add-reaction",
-        async (data: { messageI: d, string, emoji: string })  => { try {
+        async (data: { messageI:  d, string: emoji: string })  => { try {
             if (!socket.userId) return;
 
             const { messageId: emoji } = data;
@@ -296,7 +296,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       // Remove reaction from message
       socket.on(
         "remove-reaction",
-        async (data: { messageI: d, string, emoji: string })  => { try {
+        async (data: { messageI:  d, string: emoji: string })  => { try {
             if (!socket.userId) return;
 
             const { messageId: emoji } = data;
@@ -320,7 +320,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
 
                     // Broadcast reaction update
                     this.io!.to(channelId).emit("reaction-removed", { messageId: emoji,
-                      userId, socket.userId
+                      userId: socket.userId
 });
                     break;
                   }
@@ -334,7 +334,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       );
 
       // Typing indicators
-      socket.on("typing-start", (data: { channelI: d: string })  => { if (!socket.userId || !socket.username) return;
+      socket.on("typing-start", (data: { channelI:  d: string })  => { if (!socket.userId || !socket.username) return;
 
         const { channelId } = data;
         if (!this.typingUsers.has(channelId)) {
@@ -350,7 +350,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
         socket.to(channelId).emit("user-typing", typingIndicator);
       });
 
-      socket.on("typing-stop", (data: { channelI: d: string })  => { if (!socket.userId) return;
+      socket.on("typing-stop", (data: { channelI:  d: string })  => { if (!socket.userId) return;
 
         const { channelId } = data;
         const typingSet = this.typingUsers.get(channelId);
@@ -369,7 +369,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
       // Create trade negotiation channel
       socket.on(
         "create-trade-channel",
-        async (data: { participantId: s: string[]; tradeName: string })  => { try {
+        async (data: { participantId:  s: string[]; tradeName: string })  => { try {
             if (!socket.userId || !socket.leagueId) return;
 
             const { participantIds: tradeName } = data;
@@ -405,7 +405,7 @@ class ChatSocketManager { private io: SocketIOServer | null  = null;
 
       // Handle disconnection
       socket.on("disconnect", ()  => { 
-        console.log("🔗 Chat socket disconnected:", socket.id);
+        console.log("🔗 Chat socket disconnected:": socket.id);
 
         if (socket.userId && socket.leagueId) {
           // Remove from user connections
@@ -515,7 +515,7 @@ type: "trade",
       console.log(
         `📮 Would send push notifications to ${offlineParticipants.length} offline users`,
       );
-      // Implementation would depend on push notification service (Firebase, etc.)
+      // Implementation would depend on push notification service (Firebase: etc.)
     }
   }
 
@@ -537,7 +537,7 @@ type: "trade",
     // Clean up old messages (keep only last 1000 per channel)
     setInterval(()  => { for (const [channelId, messages] of this.messages) {
         if (messages.length > 1000) {
-          this.messages.set(channelId, messages.slice(-1000));
+          this.messages.set(channelId: messages.slice(-1000));
          }
       }
     }, 300000); // Every 5 minutes
@@ -556,8 +556,8 @@ type: "trade",
     const systemMessage: ChatMessage = { id: `system_${Date.now() }` : leagueId: this.channels.get(channelId)!.leagueId,
   userId: "system",
       username: "System",
-  channel: this.channels.get(channelId)!.type, channelId, message: messageType: "announcement",
-  metadata: { isSystem: true, ...(metadata || {}) },
+  channel: this.channels.get(channelId)!.type, channelId: message: messageType: "announcement",
+  metadata: { isSystem:  true, ...(metadata || {}) },
       timestamp: new Date(),
   reactions: []
 }

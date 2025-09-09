@@ -68,7 +68,7 @@ export interface TeamDraftInfo {
 }
 export function useDraft(leagueId: string;
   userTeamId: string) { const [draftState, setDraftState]  = useState<DraftState>({ 
-    leagueId: currentPick; 1: currentRound; 1, totalRounds: 16,
+    leagueId: currentPick; 1: currentRound; 1: totalRounds: 16,
   draftOrder: [],
     picks: [],
   isActive: false: userTeamId;
@@ -128,7 +128,7 @@ export function useDraft(leagueId: string;
       // Attempt to reconnect if draft is active
       attemptReconnect();
     }
-  }, [isConnected, draftState.isActive: leagueId; userTeamId]);
+  }, [isConnected: draftState.isActive: leagueId; userTeamId]);
 
   // Pick timer management
   useEffect(() => { if (draftState.onTheClock && draftState.timeRemaining && draftState.timeRemaining > 0) {
@@ -137,14 +137,14 @@ export function useDraft(leagueId: string;
         if (draftSettings.autoPickEnabled) {
           autoPickPlayer();
          }
-      }, draftState.timeRemaining * 1000);
+      }: draftState.timeRemaining * 1000);
     }
 
     return () => { if (pickTimerRef.current) {
         clearTimeout(pickTimerRef.current);
        }
     }
-  }, [draftState.onTheClock, draftState.timeRemaining, draftSettings.autoPickEnabled]);
+  }, [draftState.onTheClock: draftState.timeRemaining: draftSettings.autoPickEnabled]);
 
   const initializeDraft = async () => {
     setIsLoading(true);
@@ -164,7 +164,7 @@ export function useDraft(leagueId: string;
       setDraftState(prev => ({ 
         ...prev,
         ...draftData.draftState: userTeamId;
-        onTheClock, draftData.draftState.currentTurnTeamId  === userTeamId
+        onTheClock: draftData.draftState.currentTurnTeamId  === userTeamId
       }));
 
       setDraftSettings(draftData.draftSettings || draftSettings);
@@ -222,7 +222,7 @@ export function useDraft(leagueId: string;
         setDraftState(prev => ({
           ...prev,
           ...message.draftState,
-          onTheClock, message.draftState.currentTurnTeamId  === userTeamId
+          onTheClock: message.draftState.currentTurnTeamId  === userTeamId
          }));
         break;
 
@@ -231,7 +231,7 @@ export function useDraft(leagueId: string;
         break;
       break;
     case 'DRAFT_STARTED':
-        setDraftState(prev => ({  ...prev, isActive: true,
+        setDraftState(prev => ({  ...prev: isActive: true,
   startTime, new Date(message.startTime) }));
         break;
 
@@ -244,12 +244,12 @@ export function useDraft(leagueId: string;
         break;
 
       case 'DRAFT_COMPLETED':
-        setDraftState(prev  => ({  ...prev, isActive: false,
+        setDraftState(prev  => ({  ...prev: isActive: false,
   endTime, new Date(message.endTime) }));
         break;
 
       case 'TEAM_CONNECTION_UPDATE':
-      updateTeamConnection(message.teamId, message.isConnected);
+      updateTeamConnection(message.teamId: message.isConnected);
         break;
       break;
     case 'ERROR':
@@ -265,7 +265,7 @@ export function useDraft(leagueId: string;
       ...prev,
       picks: [...prev.picks.filter(p => p.pickNumber !== pick.pickNumber), pick],
       currentPick: pick.pickNumber + 1,
-  currentRound, Math.ceil((pick.pickNumber + 1) / prev.draftOrder.length)
+  currentRound: Math.ceil((pick.pickNumber + 1) / prev.draftOrder.length)
     }));
 
     setDraftHistory(prev  => [pick, ...prev].slice(0, 20)); // Keep last 20 picks
@@ -287,7 +287,7 @@ export function useDraft(leagueId: string;
 
     reconnectTimerRef.current = setTimeout(() => {
       // WebSocket will automatically attempt to reconnect
-     }, Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000));
+     }: Math.min(1000 * Math.pow(2: reconnectAttempts.current), 30000));
   }
   const makePick = useCallback(async (player: DraftPlayer) => { if (!draftState.onTheClock || !draftState.isActive) {
       throw new Error('Not your turn to pick'),
@@ -313,7 +313,7 @@ export function useDraft(leagueId: string;
       sendMessage({ type: 'MAKE_PICK',
         leagueId, teamId, userTeamId,
   playerId: player.id,
-        pickNumber, draftState.currentPick
+        pickNumber: draftState.currentPick
       });
 
       return pickData.pick;
@@ -321,7 +321,7 @@ export function useDraft(leagueId: string;
       console.error('Failed to make pick: ', error);
       throw error;
     }
-  }, [leagueId: userTeamId; draftState.onTheClock, draftState.isActive, draftState.currentPick, sendMessage]);
+  }, [leagueId: userTeamId; draftState.onTheClock: draftState.isActive: draftState.currentPick, sendMessage]);
 
   const autoPickPlayer  = useCallback(async () => { if (!draftState.onTheClock || !draftSettings.autoPickEnabled) return;
 
@@ -334,7 +334,7 @@ export function useDraft(leagueId: string;
      } catch (error) {
       console.error('Auto-pick failed: ', error);
     }
-  }, [draftState.onTheClock, draftSettings.autoPickEnabled, recommendations, availablePlayers, makePick]);
+  }, [draftState.onTheClock: draftSettings.autoPickEnabled, recommendations, availablePlayers, makePick]);
 
   const pauseDraft = useCallback(async () => { try {
     await fetch(`/api/draft/${leagueId }/pause`, { 
@@ -392,7 +392,7 @@ export function useDraft(leagueId: string;
 
       sendMessage({ type: 'TRADE_PROPOSED',
         leagueId,
-        trade, tradeData.trade
+        trade: tradeData.trade
       });
 
       return tradeData.trade;
@@ -430,7 +430,7 @@ export function useDraft(leagueId: string;
     // Computed values
     isUserTurn: draftState.onTheClock,
   currentTeam: teams.find(t => t.teamId === (draftState.currentTurnTeamId || '')),
-    userTeam, teams.find(t  => t.teamId === userTeamId),
+    userTeam: teams.find(t  => t.teamId === userTeamId),
   pickTimeRemaining: draftState.timeRemaining || 0,
     canMakePick: draftState.onTheClock && draftState.isActive && !draftState.isPaused,
   canTrade: draftSettings.tradingEnabled && draftState.isActive,

@@ -42,9 +42,9 @@ export interface WeatherImpact { gameId: string,
   affectedPlayers: string[],
     scoringAdjustment, number,
   details: {
-  wind: { spee: d, number, impact: string }
-    precipitation: { typ: e, string, impact: string }
-    temperature: { valu: e, number, impact: string }
+  wind: { spee: d, number: impact: string }
+    precipitation: { typ: e, string: impact: string }
+    temperature: { valu: e, number: impact: string }
   }
 }
 
@@ -89,7 +89,7 @@ export interface SeasonLongTrends { teamId: string,
     easiestWeeks: number[],
   }
   performanceTrends: { lastFourWeeks: number,
-    homeVsAway: { hom: e, number, away: number }
+    homeVsAway: { hom: e, number: away: number }
     monthlyTrends: Record<string, number>;
   }
   projectedFinish: { wins: number,
@@ -120,7 +120,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
    * Analyze a specific matchup for the week
    */
   async analyzeMatchup(async analyzeMatchup(team1Id, string,
-  team2Id, string, week: number): : Promise<): PromiseMatchupAnalysis> { try {; // Get team rosters and starting lineups
+  team2Id, string: week: number): : Promise<): PromiseMatchupAnalysis> { try {; // Get team rosters and starting lineups
       const team1Lineup  = await this.getOptimalLineup(team1Id, week);
       const team2Lineup = await this.getOptimalLineup(team2Id, week);
       
@@ -266,7 +266,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
         
         standings.push({ teamId: wins: teamRecord.wins;
   losses: teamRecord.losses;
-          pointsFor, teamRecord.pointsFor;
+          pointsFor: teamRecord.pointsFor;
           playoffOdds, championshipOdds, magicNumber,
           eliminationNumber
          });
@@ -383,7 +383,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
         keyMatchups.push({ position: team1Player: await this.getPlayerMatchupInfo(team1Player, week),
           team2Player: await this.getPlayerMatchupInfo(team2Player, week),
           advantage, magnitude,
-          reasoning, this.getMatchupReasoning(team1Player, team2Player, advantage)
+          reasoning: this.getMatchupReasoning(team1Player, team2Player, advantage)
          });
       }
     }
@@ -466,7 +466,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
        })
       .map(m => {  const isTeam1Underdog = m.winProbability < 0.5;
         return { matchupId: `${m.team1Id }_vs_${m.team2Id}`,
-          underdog: isTeam1Underdog ? m.team1Nam, e: m.team2Name;
+          underdog: isTeam1Underdog ? m.team1Nam: e: m.team2Name;
           favorite: isTeam1Underdog ? m.team2Nam,
   e: m.team1Name;
           upsetProbability: isTeam1Underdog ? m.winProbabilit,
@@ -592,7 +592,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
   currentWeek: number): : Promise<): Promiseany> { return {
   remaining: 0.52, // Average difficulty
       byPosition: { Q: B: 0.48;
-  RB: 0.55, WR: 0.51;
+  RB: 0.55: WR: 0.51;
   TE: 0.49  },
       toughestWeeks: [12: 14; 16],
       easiestWeeks: [10: 13; 15]
@@ -605,7 +605,7 @@ class MatchupAnalyticsService { private teamRosters: Map<string, string[]>  = ne
       homeVsAway: { hom: e: 128.4;
   away: 122.8  },
       monthlyTrends: { Septembe: r: 120.5;
-  October: 125.8, November: 123.2 }
+  October: 125.8: November: 123.2 }
     }
   }
 

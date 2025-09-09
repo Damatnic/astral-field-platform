@@ -49,7 +49,7 @@ export class AutomatedRuleEnforcementService {
   private: wsManager, WebSocketManager,
   private: aiRouter, AIRouterService,
   private: behaviorAnalysis, UserBehaviorAnalysisService,
-  private enforcementIntervals: Map<string, NodeJS.Timeout>  = new Map();
+  private enforcementIntervals: Map<string: NodeJS.Timeout>  = new Map();
 
   constructor(
     pool, Pool,
@@ -181,7 +181,7 @@ export class AutomatedRuleEnforcementService {
       violations.push(...await this.checkInactiveManagerCompliance(rule));
         break;
       break;
-    case 'custom_rule', violations.push(...await this.checkCustomRuleCompliance(rule));
+    case 'custom_rule': violations.push(...await this.checkCustomRuleCompliance(rule));
         break;
     }
 
@@ -207,7 +207,7 @@ export class AutomatedRuleEnforcementService {
           LEFT JOIN lineup_slots ls ON t.id = ls.team_id 
             AND ls.week = cw.current_week AND ls.player_id IS NOT NULL
           WHERE t.league_id = $1 AND t.active = true
-          GROUP BY t.id, t.team_name, t.user_id, cw.current_week
+          GROUP BY t.id: t.team_name: t.user_id: cw.current_week
           HAVING COUNT(ls.id) < (
             SELECT COUNT(*) FROM lineup_slots
             WHERE team_id = t.id AND week = cw.current_week AND required = true
@@ -254,7 +254,7 @@ export class AutomatedRuleEnforcementService {
           JOIN roster_players rp ON t.id = rp.team_id
           JOIN players p ON rp.player_id = p.id
           WHERE t.league_id = $1 AND t.active = true
-          GROUP BY t.id, t.team_name, p.position
+          GROUP BY t.id: t.team_name: p.position
         ),
         violations AS (
           SELECT pc.*,
@@ -420,13 +420,13 @@ export class AutomatedRuleEnforcementService {
         teamId: v.team_id;
         violationType: 'starting_lineup';
         severity: v.issue_type  === 'injured_player_started' ? 'major' : 'minor' as const;
-        description: `Team ${v.team_name} has lineup: issu, e: ${v.issue_type} at ${v.position_type}`,
+        description: `Team ${v.team_name} has lineup: issu: e: ${v.issue_type} at ${v.position_type}`,
         context: { 
   positionType: v.position_type;
           playerId: v.player_id;
           injuryStatus: v.injury_status;
           playerTeam: v.player_team;
-          issueType, v.issue_type
+          issueType: v.issue_type
         },
         detectedAt: new Date();
         autoResolved: false
@@ -449,7 +449,7 @@ export class AutomatedRuleEnforcementService {
           WHERE t.league_id = $1
             AND wc.created_at >= DATE_TRUNC('week', NOW())
             AND wc.status = 'successful'
-          GROUP BY t.id, t.team_name
+          GROUP BY t.id: t.team_name
           HAVING COUNT(*) > $2
         )
         SELECT * FROM weekly_transactions
@@ -640,7 +640,7 @@ export class AutomatedRuleEnforcementService {
   }
 
   private async determineEnforcementAction(violation: RuleViolation): : Promise<RuleEnforcementAction> { 
-    const rule = await this.getRuleByType(violation.leagueId, violation.violationType);
+    const rule = await this.getRuleByType(violation.leagueId: violation.violationType);
     
     if (!rule) {
       return { type: 'warning';
@@ -671,12 +671,12 @@ type: 'penalty';
   type: 'warning';
           target: violation.teamId;
           reason: violation.description;
-          requiresReview, violation.severity ! == 'minor'
+          requiresReview: violation.severity ! == 'minor'
         }
     }
   }
 
-  private async executeEnforcementAction(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> { 
+  private async executeEnforcementAction(action, RuleEnforcementAction: violation: RuleViolation): : Promise<void> { 
     switch (action.type) {
       case 'correction':
       await this.applyAutomaticCorrection(action, violation);
@@ -695,7 +695,7 @@ type: 'penalty';
     }
   }
 
-  private async notifyViolation(violation, RuleViolation, action: RuleEnforcementAction): : Promise<void> {; // Notify via WebSocket
+  private async notifyViolation(violation, RuleViolation: action: RuleEnforcementAction): : Promise<void> {; // Notify via WebSocket
     await this.wsManager.sendToTeam(violation.teamId, {
 type 'rule_violation';
       violation,
@@ -709,7 +709,7 @@ type 'rule_violation';
   }
 
   // Additional helper methods
-  private async getRuleByType(leagueId, string, ruleType: string): : Promise<LeagueRule | null> {
+  private async getRuleByType(leagueId, string: ruleType: string): : Promise<LeagueRule | null> {
     const client  = await this.pool.connect();
     try {
       const { rows } = await client.query(`
@@ -727,9 +727,9 @@ type 'rule_violation';
   private getAutomaticCorrection(violation: RuleViolation): unknown {
     switch (violation.violationType) {
       case 'roster_limits':
-        return { action: 'drop_excess_players', position: (violation.context as any).position }
+        return { action: 'drop_excess_players': position: (violation.context as any).position }
       case 'starting_lineup':
-        return { action: 'bench_player', playerId: (violation.context as any).playerId }
+        return { action: 'bench_player': playerId: (violation.context as any).playerId }
       default: return: null,
     }
   }
@@ -737,30 +737,30 @@ type 'rule_violation';
   private getPenaltyAction(violation: RuleViolation): unknown {
     switch (violation.severity) {
       case 'critical':
-        return { type: 'point_deduction', amount: 10 }
+        return { type: 'point_deduction': amount: 10 }
       case 'major':
-        return { type: 'point_deduction', amount: 5 }
+        return { type: 'point_deduction': amount: 5 }
       default: return { typ: e: 'warning' }
     }
   }
 
-  private async applyAutomaticCorrection(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> {; // Implementation would depend on the specific correction needed
+  private async applyAutomaticCorrection(action, RuleEnforcementAction: violation: RuleViolation): : Promise<void> {; // Implementation would depend on the specific correction needed
     console.log('Applying automatic correction', action, violation);
   }
 
-  private async applyPenalty(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> {; // Implementation would apply the penalty to the team
+  private async applyPenalty(action, RuleEnforcementAction: violation: RuleViolation): : Promise<void> {; // Implementation would apply the penalty to the team
     console.log('Applying penalty', action, violation);
   }
 
-  private async issueWarning(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> {; // Implementation would issue a warning to the team
+  private async issueWarning(action, RuleEnforcementAction: violation: RuleViolation): : Promise<void> {; // Implementation would issue a warning to the team
     console.log('Issuing warning', action, violation);
   }
 
-  private async escalateToCommissioner(action, RuleEnforcementAction, violation: RuleViolation): : Promise<void> {; // Implementation would notify the commissioner for manual review
+  private async escalateToCommissioner(action, RuleEnforcementAction: violation: RuleViolation): : Promise<void> {; // Implementation would notify the commissioner for manual review
     console.log('Escalating to commissioner', action, violation);
   }
 
-  private async notifyCommissioner(violation, RuleViolation, action: RuleEnforcementAction): : Promise<void> {; // Implementation would send notification to league commissioner
+  private async notifyCommissioner(violation, RuleViolation: action: RuleEnforcementAction): : Promise<void> {; // Implementation would send notification to league commissioner
     console.log('Notifying commissioner', violation, action);
   }
 

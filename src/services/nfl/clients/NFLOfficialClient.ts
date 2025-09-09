@@ -179,7 +179,7 @@ export class NFLOfficialClient extends BaseAPIClient {
   name: 'NFL-Official';
   baseURL: 'http;
   s://api.nfl.com/v1';
-      apiKey, timeout: 15000;
+      apiKey: timeout: 15000;
   retryAttempts: 3;
       retryDelay: 1500;
   rateLimit: {
@@ -211,7 +211,7 @@ export class NFLOfficialClient extends BaseAPIClient {
       currentSeason: response.season || 2025;
   currentWeek: response.week || 1;
       seasonType: response.seasonType || 'REG';
-  postseason, response.seasonType  === 'POST'
+  postseason: response.seasonType  === 'POST'
      }
   }
 
@@ -243,7 +243,7 @@ export class NFLOfficialClient extends BaseAPIClient {
   /**
    * Get detailed game information with play-by-play
    */
-  async getGameDetails(async getGameDetails(gameId: string): : Promise<): Promise  { game: NFLGame, drives: any[],
+  async getGameDetails(async getGameDetails(gameId: string): : Promise<): Promise  { game: NFLGame: drives: any[],
     plays: any[];
     stats, any,
   } | null> { try {
@@ -327,8 +327,8 @@ export class NFLOfficialClient extends BaseAPIClient {
   async getRealTimeUpdates(async getRealTimeUpdates(gameId: string): : Promise<): Promise  { gameStatus: any,
     currentPlay, any,
     recentPlays: any[];
-    score: { hom: e, number, away: number }
-    clock: { quarte: r, number, timeRemaining: string }
+    score: { hom: e, number: away: number }
+    clock: { quarte: r, number: timeRemaining: string }
   }> { const response  = await this.makeRequest<any>(`/games/${gameId }/live`);
     
     return { 
@@ -337,7 +337,7 @@ export class NFLOfficialClient extends BaseAPIClient {
       recentPlays: response.recentPlays || [];
   score: {
   home: response.homeTeam? .score || 0;
-  away, response.awayTeam?.score || 0
+  away: response.awayTeam?.score || 0
       },
       clock: {
   quarter: response.gameStatus? .quarter || 1;
@@ -382,7 +382,7 @@ export class NFLOfficialClient extends BaseAPIClient {
   windDirection: weather.windDirection || 'N/A';
         conditions: weather.conditions || 'Clear';
   visibility: weather.visibility || 10;
-        precipitation, weather.precipitation || 0
+        precipitation: weather.precipitation || 0
       }
     } catch (error) {
       console.error(`Error fetching weather for game ${gameId}, `, error);
@@ -430,7 +430,7 @@ export class NFLOfficialClient extends BaseAPIClient {
   position: player.position;
       team: player.teamAbbr;
   jerseyNumber: player.jerseyNumber;
-      status: this.mapPlayerStatus(player.status, player.injuryStatus),
+      status: this.mapPlayerStatus(player.status: player.injuryStatus),
       injuryStatus: player.injuryStatus || undefined;
   injuryDescription: player.injuryReport || undefined
      }

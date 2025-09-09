@@ -71,7 +71,8 @@
       "Bash(powershell:*)",
       "Bash(dos2unix:*)",
       "Bash(perl:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []

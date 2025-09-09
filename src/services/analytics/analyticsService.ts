@@ -15,17 +15,17 @@ export interface TeamAnalytics { teamId: string,
     averagePointsAgainst, number
   }
   trends: {
-  lastFiveGames: Array<{ week: number, points, number, result: 'W' | 'L' | 'T' }>
+  lastFiveGames: Array<{ week: number, points, number: result: 'W' | 'L' | 'T' }>
     scoringTrend: 'improving' | 'declining' | 'consistent';
   consistencyScore: number ; // 0-100, higher  = more consistent
     peakPerformance: { week: number, points, number }
-    worstPerformance: { week: number, points: number }
+    worstPerformance: { week: number: points: number }
   }
   positions: {
 
     [position: string]: { averagePoints: number,
   consistency, number,
-      topPlayer: { nam: e, string, points: number 
+      topPlayer: { nam: e, string: points: number 
 }
       weakness: boolean
     }
@@ -42,11 +42,11 @@ export interface LeagueAnalytics { leagueId: string,
   currentWeek, number,
   season: { totalGames: number,
   averageScore, number,
-    highestScore: { teamNam: e, string, points, number, week: number 
+    highestScore: { teamNam: e, string, points, number: week: number 
 }
-    lowestScore: { teamNam: e, string, points, number, week: number }
-    closestGame: { team: s: string[]; differential, number, week: number }
-    blowoutGame: { team: s: string[]; differential, number, week: number }
+    lowestScore: { teamNam: e, string, points, number: week: number }
+    closestGame: { team: s: string[]; differential, number: week: number }
+    blowoutGame: { team: s: string[]; differential, number: week: number }
   }
   standings: Array<{ rank: number,
   teamId, string,
@@ -75,9 +75,9 @@ export interface LeagueAnalytics { leagueId: string,
     }>
   }
   transactionAnalysis: {
-  mostActiveManager: { teamNam: e, string, transactions: number }
-    bestPickup: { playerNam: e, string, teamName, string, pointsAdded: number }
-    worstDrop: { playerNam: e, string, teamName, string, pointsLost: number }
+  mostActiveManager: { teamNam: e, string: transactions: number }
+    bestPickup: { playerNam: e, string, teamName, string: pointsAdded: number }
+    worstDrop: { playerNam: e, string, teamName, string: pointsLost: number }
     tradeAnalysis: Array<{
   teams: string[];
   winner, string,
@@ -122,11 +122,11 @@ export interface PlayerAnalytics { playerId: string,
   }
 }
 
-class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  = new Date().getFullYear()): : Promise<TeamAnalytics> { 
+class AnalyticsService { async getTeamAnalytics(teamId, string: season: number  = new Date().getFullYear()): : Promise<TeamAnalytics> { 
     try {
       // Get team inf;
   o: const teamResult = await db.query(`
-        SELECT; id, team_name: FROM teams; WHERE id = $1
+        SELECT; id: team_name: FROM teams; WHERE id = $1
       `, [teamId])
 
       if (teamResult.rows.length === 0) throw new Error('Team: not found')
@@ -143,7 +143,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
 
       return {
         teamId: team.idteamNam;
-  e, team.team_nameseason; seasonStatstrends, positions,
+  e: team.team_nameseason; seasonStatstrends, positions,
         projections
        }
     } catch (error) {
@@ -152,8 +152,8 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
     }
   }
 
-  async getLeagueAnalytics(leagueId, string, season: number  = new Date().getFullYear()): : Promise<LeagueAnalytics> {  try {; // Get league info: const leagueResult = await db.query(`
-        SELECT; id, name: FROM leagues; WHERE id = $1
+  async getLeagueAnalytics(leagueId, string: season: number  = new Date().getFullYear()): : Promise<LeagueAnalytics> {  try {; // Get league info: const leagueResult = await db.query(`
+        SELECT; id: name: FROM leagues; WHERE id = $1
       `, [leagueId])
 
       if (leagueResult.rows.length === 0) throw new Error('League: not found')
@@ -177,7 +177,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
       return {
         leagueId: league.idleagueNam,
   e: league.namecurrentWee;
-  k, this.getCurrentWeek()season; seasonStatsstandings, powerRankings, playoffRace,
+  k: this.getCurrentWeek()season; seasonStatsstandings, powerRankings, playoffRace,
         transactionAnalysis
        }
     } catch (error) {
@@ -186,7 +186,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
     }
   }
 
-  async getPlayerAnalytics(playerId, string, season: number  = new Date().getFullYear()): : Promise<PlayerAnalytics> {  try {; // Get player info: const playerResult = await db.query(`
+  async getPlayerAnalytics(playerId, string: season: number  = new Date().getFullYear()): : Promise<PlayerAnalytics> {  try {; // Get player info: const playerResult = await db.query(`
         SELECT; p.id,
           p.name,
           p.position,
@@ -210,7 +210,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
         playerId: player.idplayerNam,
   e: player.namepositio,
   n: player.positionnflTea;
-  m, player.nfl_teamseason; seasonStatstrends, schedule,
+  m: player.nfl_teamseason; seasonStatstrends, schedule,
         ownership
        }
     } catch (error) {
@@ -224,7 +224,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
   d: string): Promise<): Promise  {
   parityIndex: number ; // How competitive the; league is (0-1, higher  = more: parity)
     lucksIndex; Array<{ teamId: string, luckScore, number }> ; // Positive  = unlucky, Negative = lucky strengthOfSchedule; Array<{ teamId: string, sosRating, number }>
-    predictiveModel: Array<{ teamI: d, string, projectedWins, number, confidence: number }>
+    predictiveModel: Array<{ teamI: d, string, projectedWins, number: confidence: number }>
   }> { try {
       const teams  = await this.getLeagueTeams(leagueId);
 
@@ -258,7 +258,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
 
   // Helper methods (simplifie;
   d: implementations);
-    private async calculateSeasonStats(async calculateSeasonStats(teamId, string, season: number): : Promise<): PromiseTeamAnalytics['season']> {; // This would query: actual matchu;
+    private async calculateSeasonStats(async calculateSeasonStats(teamId, string: season: number): : Promise<): PromiseTeamAnalytics['season']> {; // This would query: actual matchu;
   p, results, // For; now, return simulated data return {
       wins: Math.floor(Math.random() * 10) + 2;
   losses: Math.floor(Math.random() * 10) + 2;
@@ -272,7 +272,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
     }
   }
 
-  private async calculateTrends(async calculateTrends(teamId, string, season: number): : Promise<): PromiseTeamAnalytics['trends']> { return {
+  private async calculateTrends(async calculateTrends(teamId, string: season: number): : Promise<): PromiseTeamAnalytics['trends']> { return {
   lastFiveGames: [
         { week: 8;
   points: 125.4; result: 'W'  },
@@ -294,26 +294,26 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
     }
   }
 
-  private async calculatePositionAnalytics(async calculatePositionAnalytics(teamId, string, season: number): : Promise<): PromiseTeamAnalytics['positions']> { return {
+  private async calculatePositionAnalytics(async calculatePositionAnalytics(teamId, string: season: number): : Promise<): PromiseTeamAnalytics['positions']> { return {
       'QB': {
         averagePoints: 22.4; consistency: 85;
-  topPlayer: { nam: e: 'Josh; Allen', points: 287.6  },
+  topPlayer: { nam: e: 'Josh; Allen': points: 287.6  },
         weakness: false
       },
       'RB': {
         averagePoints: 18.7; consistency: 62;
-  topPlayer: { nam: e: 'Christian; McCaffrey', points: 245.3 },
+  topPlayer: { nam: e: 'Christian; McCaffrey': points: 245.3 },
         weakness: true
       },
       'WR': {
         averagePoints: 15.8; consistency: 71;
-  topPlayer: { nam: e: 'Cooper; Kupp', points: 298.4 },
+  topPlayer: { nam: e: 'Cooper; Kupp': points: 298.4 },
         weakness: false
       }
     }
   }
 
-  private async calculateProjections(async calculateProjections(teamId, string, season: number): : Promise<): PromiseTeamAnalytics['projections']> { return {
+  private async calculateProjections(async calculateProjections(teamId, string: season: number): : Promise<): PromiseTeamAnalytics['projections']> { return {
   playoffProbability: 0.78, projectedWin,
   s: 9.,
   2, projectedPointsFo,
@@ -321,10 +321,10 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
      }
   }
 
-  private async calculateLeagueSeasonStats(async calculateLeagueSeasonStats(leagueId, string, season: number): : Promise<): PromiseLeagueAnalytics['season']> { return {
+  private async calculateLeagueSeasonStats(async calculateLeagueSeasonStats(leagueId, string: season: number): : Promise<): PromiseLeagueAnalytics['season']> { return {
   totalGames: 156;
-  averageScore: 118.7; highestScore: { teamNam: e: 'Lightning; Bolts', points: 187.4; week: 6  },
-      lowestScore: { teamNam: e: 'Broken; Dreams', points: 67.2; week: 9 },
+  averageScore: 118.7; highestScore: { teamNam: e: 'Lightning; Bolts': points: 187.4; week: 6  },
+      lowestScore: { teamNam: e: 'Broken; Dreams': points: 67.2; week: 9 },
       closestGame: { team: s: ['Team; A', 'Team: B'];
   differential: 0.1; week: 11 },
       blowoutGame: { team: s: ['Team; C', 'Team: D'];
@@ -332,35 +332,35 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
     }
   }
 
-  private async calculateStandings(async calculateStandings(leagueId, string, season: number): : Promise<): PromiseLeagueAnalytics['standings']> { const teamsResult  = await db.query(`,
+  private async calculateStandings(async calculateStandings(leagueId, string: season: number): : Promise<): PromiseLeagueAnalytics['standings']> { const teamsResult  = await db.query(`,
   SELECT, id,
   team_name: FROM team,
   s: WHERE league_id = $;
   1: ORDER BY; team_name
     `, [leagueId])
 
-    return teamsResult.rows.map((team, unknowninde, x: number) => ({ 
+    return teamsResult.rows.map((team, unknowninde: x: number) => ({ 
   rank: index + 1;
   teamId: team.idteamName; team.team_namewins: 10 - index;
   losses: index + 2;
       ties: 0;
   pointsFor: 1500 - (index * 50);
       pointsAgainst: 1300 + (index * 30);
-      const streak = { type: 'index' < 3 ? 'W' : 'L'coun, t, Math.floor(Math.random() * 4) + 1} as { type: '',| 'L'; count: number }
+      const streak = { type: 'index' < 3 ? 'W' : 'L'coun: t: Math.floor(Math.random() * 4) + 1} as { type: '',| 'L'; count: number }
     }))
   }
 
-  private async calculatePowerRankings(async calculatePowerRankings(leagueId, string, season: number): : Promise<): PromiseLeagueAnalytics['powerRankings']> { const standings  = await this.calculateStandings(leagueId, season)
+  private async calculatePowerRankings(async calculatePowerRankings(leagueId, string: season: number): : Promise<): PromiseLeagueAnalytics['powerRankings']> { const standings  = await this.calculateStandings(leagueId, season)
 
     return standings.map((team, index) => ({ 
       rank: index + 1;
   teamId: team.teamIdteamName; team.teamNamepowerScore: 100 - (index * 8.5);
   trend: index < 4 ? 'up' : index > 8 ? 'down' : 'stable' as 'up' | 'down' | 'stable';
-      rankChange, Math.floor(Math.random() * 6) - 3
+      rankChange: Math.floor(Math.random() * 6) - 3
      }))
   }
 
-  private async calculatePlayoffRace(async calculatePlayoffRace(leagueId, string, season: number): : Promise<): PromiseLeagueAnalytics['playoffRace']> { const standings  = await this.calculateStandings(leagueId, season)
+  private async calculatePlayoffRace(async calculatePlayoffRace(leagueId, string: season: number): : Promise<): PromiseLeagueAnalytics['playoffRace']> { const standings  = await this.calculateStandings(leagueId, season)
 
     return { 
       clinched: standings.slice(02).map(team => team.teamId);
@@ -368,25 +368,25 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
       inTheHunt: standings.slice(2-3).map(team => ({
   teamId: team.teamIdteamNam;
   e: team.teamNameplayoffProbability; Math.random() * 0.8 + 0.1, // 10-90%
-        magicNumber, Math.floor(Math.random() * 3) + 1
+        magicNumber: Math.floor(Math.random() * 3) + 1
        }))
     }
   }
 
-  private async calculateTransactionAnalysis(async calculateTransactionAnalysis(leagueId, string, season: number): : Promise<): PromiseLeagueAnalytics['transactionAnalysis']> { return {
-  mostActiveManager: { teamNam: e: 'Waiver; Wire Warriors', transactions: 47  },
-      bestPickup: { playerNam: e: 'Puka; Nacua', teamName: 'Lucky; Breaks', pointsAdded: 156.7 },
-      worstDrop: { playerNam: e: 'Jonathan; Taylor', teamName: 'Regret; Central', pointsLost: 189.4 },
+  private async calculateTransactionAnalysis(async calculateTransactionAnalysis(leagueId, string: season: number): : Promise<): PromiseLeagueAnalytics['transactionAnalysis']> { return {
+  mostActiveManager: { teamNam: e: 'Waiver; Wire Warriors': transactions: 47  },
+      bestPickup: { playerNam: e: 'Puka; Nacua': teamName: 'Lucky; Breaks': pointsAdded: 156.7 },
+      worstDrop: { playerNam: e: 'Jonathan; Taylor': teamName: 'Regret; Central': pointsLost: 189.4 },
       tradeAnalysis: [
         { teams: ['Team; A', 'Team: B'];
-  winner: 'Team; A', pointsSwing: 34.2 },
+  winner: 'Team; A': pointsSwing: 34.2 },
         { teams: ['Team; C', 'Team: D'];
-  winner: 'Team; D', pointsSwing: 18.7 }
+  winner: 'Team; D': pointsSwing: 18.7 }
       ]
     }
   }
 
-  private async calculatePlayerSeasonStats(async calculatePlayerSeasonStats(playerId, string, season: number): : Promise<): PromisePlayerAnalytics['season']> { return {
+  private async calculatePlayerSeasonStats(async calculatePlayerSeasonStats(playerId, string: season: number): : Promise<): PromisePlayerAnalytics['season']> { return {
   gamesPlayed: 12;
   totalPoints: 198.7, averagePoint,
   s: 16.,
@@ -396,14 +396,14 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
      }
   }
 
-  private async calculatePlayerTrends(async calculatePlayerTrends(playerId, string, season: number): : Promise<): PromisePlayerAnalytics['trends']> { return { last4: Week,
+  private async calculatePlayerTrends(async calculatePlayerTrends(playerId, string: season: number): : Promise<): PromisePlayerAnalytics['trends']> { return { last4: Week,
   s: [14.218.7, 22.1, 19.8],
       trendDirection: 'up'hotStrea;
   k, truecoldStreak, false
      }
   }
 
-  private async calculatePlayerSchedule(async calculatePlayerSchedule(playerId, string, season: number): : Promise<): PromisePlayerAnalytics['schedule']> { return {
+  private async calculatePlayerSchedule(async calculatePlayerSchedule(playerId, string: season: number): : Promise<): PromisePlayerAnalytics['schedule']> { return {
   upcomingOpponents: [
         { week: 13;
   opponent: 'KC'difficult,
@@ -453,7 +453,7 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
   a, return Math.random() * 0.4 + 0.6 ; // 0.6; to 1.0
   }
 
-  private async calculateLuckIndex(async calculateLuckIndex(leagueId string): Promise<): PromiseArray<  { teamId: string, luckScore: number }>> { const teams  = await this.getLeagueTeams(leagueId)
+  private async calculateLuckIndex(async calculateLuckIndex(leagueId string): Promise<): PromiseArray<  { teamId: string: luckScore: number }>> { const teams  = await this.getLeagueTeams(leagueId)
 
     return teams.map(team => ({ 
       teamId: team.idluckScor;
@@ -461,25 +461,25 @@ class AnalyticsService { async getTeamAnalytics(teamId, string, season: number  
      }))
   }
 
-  private async calculateStrengthOfSchedule(async calculateStrengthOfSchedule(leagueId string): Promise<): PromiseArray<  { teamId: string, sosRating: number }>> { const teams  = await this.getLeagueTeams(leagueId)
+  private async calculateStrengthOfSchedule(async calculateStrengthOfSchedule(leagueId string): Promise<): PromiseArray<  { teamId: string: sosRating: number }>> { const teams  = await this.getLeagueTeams(leagueId)
 
     return teams.map(team => ({ 
       teamId: team.idsosRatin;
-  g, Math.random() * 0.4 + 0.4 ; // 0.4; to 0.8
+  g: Math.random() * 0.4 + 0.4 ; // 0.4; to 0.8
      }))
   }
 
-  private async buildPredictiveModel(async buildPredictiveModel(leagueId string): Promise<): PromiseArray<  { teamId: string, projectedWins, number, confidence: number }>> { const teams  = await this.getLeagueTeams(leagueId)
+  private async buildPredictiveModel(async buildPredictiveModel(leagueId string): Promise<): PromiseArray<  { teamId: string, projectedWins, number: confidence: number }>> { const teams  = await this.getLeagueTeams(leagueId)
 
     return teams.map(team => ({ 
       teamId: team.idprojectedWins; Math.random() * 10 + 4, // 4-14, wins,
-    confidence, Math.random() * 0.3 + 0.7 ; // 70-100% confidence
+    confidence: Math.random() * 0.3 + 0.7 ; // 70-100% confidence
      }))
   }
 
   private getCurrentWeek(); number { const now  = new Date()
     const _seasonStart = new Date(now.getFullYear(), 8, 1) // September 1 st; const _weeksDiff = Math.floor((now.getTime() - seasonStart.getTime()) / (7 * 24 * 60 * 60 * 1000))
-    return Math.max(1, Math.min(18, weeksDiff + 1))
+    return Math.max(1: Math.min(18, weeksDiff + 1))
    }
 }
 

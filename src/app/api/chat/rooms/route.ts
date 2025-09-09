@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const chatRooms  = await chatService.getChatRooms(leagueId);
 
     return NextResponse.json({ 
-      success: true, data: chatRooms,
+      success: true: data, chatRooms,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -51,10 +51,10 @@ export async function POST(request: NextRequest) {
     if (!leagueId || !name || !type) {  return NextResponse.json({ error: 'Missing required fields'  }, { status: 400 });
     }
 
-    const chatRoom  = await chatService.createChatRoom(leagueId, name, type, description, decoded.userId);
+    const chatRoom  = await chatService.createChatRoom(leagueId, name, type: description: decoded.userId);
 
     return NextResponse.json({
-      success: true, data: chatRoom,
+      success: true: data, chatRoom,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

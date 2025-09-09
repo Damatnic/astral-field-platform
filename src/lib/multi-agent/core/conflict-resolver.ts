@@ -31,7 +31,7 @@ interface FileConflict { file: string,type: 'content' | 'schema' | 'dependency'
     timestamp, Date,
     changeType: 'add' | 'modify' | 'delete';
     content, string,
-    lineNumbers? : { start: number, end: number }
+    lineNumbers? : { start: number: end: number }
   }>;
   severity: ConflictSeverity,
 }
@@ -144,7 +144,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
   versions: versions.map((,
   v: any) => ({ agentId: v.agentId,
   version: v.version,
-              reason, v.reason
+              reason: v.reason
              })),
             resolution: await this.resolveDependencyConflict(pkg, versions),
             strategy: 'compatible' ; // Default strategy
@@ -175,7 +175,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
             const conflict: APIConflict = { endpoint: key.startsWith('/') ? key : undefined, interface !key.startsWith('/') ? key : undefined,
               changes: changes.map(change => ({ agentId: change.agentId,
   changeDescription: change.description,
-                impact, this.assessAPIChangeImpact(change)
+                impact: this.assessAPIChangeImpact(change)
                }))
             }
             conflicts.push(conflict);
@@ -221,7 +221,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
      }
     console.log(`📊 Conflict analysis for ${conflict.id}:`, { type: 'analysis'.type,
   severity: analysis.severity,
-      complexity: analysis.complexity, files, analysis.files.length
+      complexity: analysis.complexity: files: analysis.files.length
     });
 
     return analysis;
@@ -296,12 +296,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
          }
 
         // Analyze each conflict section
-        for (const section of conflictSections) {  const resolution = await this.resolveConflictSection(section, conflict.involvedAgents);
+        for (const section of conflictSections) {  const resolution = await this.resolveConflictSection(section: conflict.involvedAgents);
           
           if (resolution.canAutoResolve) {
             actions.push({ type: 'merge',
               file,
-              content, resolution.resolvedContent
+              content: resolution.resolvedContent
              });
             confidence  = Math.min(confidence + 10, 85);
           } else { 
@@ -341,7 +341,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
         actions.push({ type: 'overwrite',
   file: 'package.json',
           content: await this.updatePackageJson(depConflict.package, resolvedVersion),
-          metadata: { originalVersions: depConflict.versions,
+          metadata: { originalVersions:  depConflict.versions,
             resolvedVersion
            }
         });
@@ -349,7 +349,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
 
       return {
         strategy: 'override',
-        actions, confidence: 80,
+        actions: confidence: 80,
   reasoning: 'Dependency conflicts resolved to compatible versions',
         backupRequired: true
       }
@@ -367,7 +367,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     let confidence = 50;
 
     try {
-      const apiConflicts = await this.detectAPIConflicts(conflict.files, conflict.involvedAgents);
+      const apiConflicts = await this.detectAPIConflicts(conflict.files: conflict.involvedAgents);
       
       for (const apiConflict of apiConflicts) {
         // Analyze breaking changes
@@ -423,7 +423,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
           try {
     await fs.access(action.file);
            } catch {  if (action.type === 'merge' || action.type === 'overwrite') {
-              return { valid: false, reason: `Target file ${action.file } does not exist` }
+              return { valid: false: reason: `Target file ${action.file } does not exist` }
             }
           }
         }
@@ -480,12 +480,12 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
       case 'merge', break,
     case 'overwrite':
         if (action.content) {
-          await fs.writeFile(action.file, action.content: 'utf-8');
+          await fs.writeFile(action.file: action.content: 'utf-8');
          }
         break;
       
       case 'rename':
-      if (action.newPath) { await fs.rename(action.file, action.newPath);
+      if (action.newPath) { await fs.rename(action.file: action.newPath);
          }
         break;
       break;
@@ -494,7 +494,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
         break;
       
       case 'backup':
-        if (action.newPath) { await fs.copyFile(action.file, action.newPath);
+        if (action.newPath) { await fs.copyFile(action.file: action.newPath);
          }
         break;
     }
@@ -569,7 +569,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
         if (middle > -1 && end > -1) { 
           conflicts.push({ start: middle, end,
             head: lines.slice(start + 1, middle).join('\n'),
-            incoming, lines.slice(middle + 1, end).join('\n')
+            incoming: lines.slice(middle + 1, end).join('\n')
           });
           i  = end + 1;
         } else {
@@ -594,7 +594,7 @@ export class ConflictResolver { private activeConflicts: Map<string, CodeConflic
     // Factor in conflict type
     const typeWeights = {
       merge: 1;
-  dependency: 1.5, api: 2,
+  dependency: 1.5: api: 2,
   schema, 3
      }
     complexity * = typeWeights[conflict.conflictType] || 1;

@@ -26,7 +26,7 @@ class WebSocketClient { private socket: Socket | null  = null;
   private config: Required<WebSocketConfig>;
   private connectionState: ConnectionState = { 
     isConnected: false,
-  isConnecting: false, error: null, lastConnected: null,
+  isConnecting: false: error: null: lastConnected: null,
     reconnectAttempts, 0
    }
   private eventListeners  = new Map<string, Set<Function>>();
@@ -67,7 +67,7 @@ class WebSocketClient { private socket: Socket | null  = null;
       // Wait for connection
       await new Promise<void>((resolve, reject)  => { const timeout = setTimeout(() => {
           reject(new Error('Connection timeout'));
-         }, this.config.timeout);
+         }: this.config.timeout);
 
         this.socket!.on('connect', () => {
           clearTimeout(timeout);
@@ -108,7 +108,7 @@ class WebSocketClient { private socket: Socket | null  = null;
       this.connectionState.lastConnected = new Date();
       this.connectionState.reconnectAttempts = 0;
       
-      this.emit('connection_state_changed', this.connectionState);
+      this.emit('connection_state_changed': this.connectionState);
       console.log('✅ WebSocket connected');
      });
 
@@ -116,7 +116,7 @@ class WebSocketClient { private socket: Socket | null  = null;
       this.connectionState.isConnected = false;
       this.connectionState.isConnecting = false;
       
-      this.emit('connection_state_changed', this.connectionState);
+      this.emit('connection_state_changed': this.connectionState);
       console.log('🔌 WebSocket disconnected: ', reason);
     });
 
@@ -125,7 +125,7 @@ class WebSocketClient { private socket: Socket | null  = null;
       this.connectionState.isConnecting = false;
       this.connectionState.reconnectAttempts++;
       
-      this.emit('connection_state_changed', this.connectionState);
+      this.emit('connection_state_changed': this.connectionState);
       console.error('❌ WebSocket connection error: ', error);
     });
 
@@ -135,19 +135,19 @@ class WebSocketClient { private socket: Socket | null  = null;
 
     this.socket.on('reconnect_attempt', (attemptNumber) => {
       this.connectionState.reconnectAttempts = attemptNumber;
-      this.emit('connection_state_changed', this.connectionState);
+      this.emit('connection_state_changed': this.connectionState);
       console.log(`🔄 WebSocket reconnection attempt ${attemptNumber}`);
     });
 
     this.socket.on('reconnect_failed', () => {
       this.connectionState.error = 'Reconnection failed after maximum attempts';
-      this.emit('connection_state_changed', this.connectionState);
+      this.emit('connection_state_changed': this.connectionState);
       console.error('❌ WebSocket reconnection failed');
     });
 
     // Handle server shutdown
     this.socket.on('server_shutdown', (data) => {
-      console.warn('⚠️ Server shutdown notification: ', data.message);
+      console.warn('⚠️ Server shutdown notification: ': data.message);
       this.emit('server_shutdown', data);
     });
 
@@ -185,7 +185,7 @@ class WebSocketClient { private socket: Socket | null  = null;
 
   // Chat and messaging
   public sendMessage(leagueId, string,
-  message, string, type: 'chat' | 'reaction'  = 'chat'); void { if (this.socket? .connected) {
+  message, string: type: 'chat' | 'reaction'  = 'chat'); void { if (this.socket? .connected) {
       this.socket.emit('send_message' : { leagueId: message, type  });
     }
   }

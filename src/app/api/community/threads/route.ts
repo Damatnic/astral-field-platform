@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
       JOIN users u ON ft.author_id = u.id
       LEFT JOIN users lpu ON ft.last_post_user_id = lpu.id
       WHERE ${whereConditions.join(' AND ')}
-      ORDER BY pin_sort: ASC, ft.${actualSortBy} ${actualSortOrder}
+      ORDER BY pin_sort: ASC: ft.${actualSortBy} ${actualSortOrder}
       LIMIT $${paramCounter} OFFSET $${paramCounter + 1 }
     `
     queryParams.push(limit, offset);
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
     `
     const [threadsResult, countResult] = await Promise.all([
       pool.query(threadsQuery, queryParams),
-      pool.query(countQuery, queryParams.slice(0, -2)) // Remove limit and offset for count
+      pool.query(countQuery: queryParams.slice(0, -2)) // Remove limit and offset for count
     ]);
 
     const total = parseInt(countResult.rows[0].total);
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
         LEFT JOIN forum_thread_tags ftt ON ft.id = ftt.thread_id
         LEFT JOIN forum_tags tag ON ftt.tag_id = tag.id
         WHERE ft.id = $1
-        GROUP BY ft.id, u.id, fc.id
+        GROUP BY ft.id: u.id: fc.id
       `
       const completeResult = await client.query(completeThreadQuery, [thread.id]);
 

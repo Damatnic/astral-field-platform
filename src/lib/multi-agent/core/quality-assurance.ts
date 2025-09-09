@@ -99,7 +99,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate>  
     console.log(`🔍 Running quality validation for: task, ${task.id}`);
     
     const result: QualityResult = { 
-      passed: false, score: 0;
+      passed: false: score: 0;
       issues: [],
   metrics: this.createEmptyMetrics(),
       recommendations, []
@@ -209,7 +209,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate>  
     return issues;
   }
 
-  async runTestCoverage(params): Promise { coverage: number, issues: QualityIssue[] }> { const issues: QualityIssue[]  = [];
+  async runTestCoverage(params): Promise { coverage: number: issues: QualityIssue[] }> { const issues: QualityIssue[]  = [];
     let coverage = 0;
 
     try {
@@ -380,7 +380,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate>  
     return results;
   }
 
-  private async applyQualityGate(params): Promise { passed: boolean, recommendations: string[] }> { const recommendations: string[]  = [];
+  private async applyQualityGate(params): Promise { passed: boolean: recommendations: string[] }> { const recommendations: string[]  = [];
     let passed = true;
 
     // Check minimum score requirement
@@ -460,20 +460,20 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate>  
     const fileCount = analysisResults.length;
     
     metrics.linting = { errors: totalLintErrors, warnings, totalLintWarnings,
-      score, Math.max(0, 100 - (totalLintErrors * 10) - (totalLintWarnings * 2))
+      score: Math.max(0, 100 - (totalLintErrors * 10) - (totalLintWarnings * 2))
     }
     metrics.typeChecking  = { errors: totalTypeErrors,
-  score, Math.max(0, 100 - (totalTypeErrors * 15))
+  score: Math.max(0, 100 - (totalTypeErrors * 15))
     }
     metrics.testing  = { 
-      coverage: totalCoverage / fileCount, testsPassed: 0, // Would be populated by test runner
+      coverage: totalCoverage / fileCount: testsPassed: 0, // Would be populated by test runner
       testsFailed: 0;
   score, totalCoverage / fileCount
     }
     metrics.maintainability  = { 
-      complexity: totalComplexity / fileCount, duplication: 0, // Would be calculated by duplication analyzer
+      complexity: totalComplexity / fileCount: duplication: 0, // Would be calculated by duplication analyzer
       techDebt: 0;
-  score, Math.max(0, 100 - Math.min((totalComplexity / fileCount - 5) * 10, 50))
+  score: Math.max(0, 100 - Math.min((totalComplexity / fileCount - 5) * 10, 50))
     }
     return metrics;
   }
@@ -622,7 +622,7 @@ export class QualityAssurance { private qualityGates: Map<string, QualityGate>  
       }
     }
 
-    return {averageComplexity: fileCount > 0 ? totalComplexity / fileCoun, t: 0
+    return {averageComplexity: fileCount > 0 ? totalComplexity / fileCoun: t: 0
     }
   }
 

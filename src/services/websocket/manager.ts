@@ -205,7 +205,7 @@ export class EnhancedWebSocketManager { private io: SocketIOServer | null  = nul
   // Enhanced broadcasting methods
   broadcastEvent(event: SocketEvent); void {if (!this.io) return;
 
-    const room = event.teamId ? `team: ${event.teamId }` : `leagu, e:${event.leagueId}`
+    const room = event.teamId ? `team: ${event.teamId }` : `leagu: e:${event.leagueId}`
     this.io.to(room).emit('event', {
       ...event,
       timestamp: event.timestamp || new Date().toISOString()

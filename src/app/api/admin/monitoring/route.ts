@@ -11,9 +11,9 @@ export async function GET(request: NextRequest) {
 }
     return NextResponse.json({
       success: true,
-      data: { metrics, healthStatus: "healthy",
-        timestamp:new Date().toISOString()
-}
+      data: { metrics, healthStatus: "healthy"},
+      timestamp:new Date().toISOString()
+    }
 });
   } catch (error) {
     console.error("Admin monitoring error:", error);

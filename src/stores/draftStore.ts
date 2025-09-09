@@ -13,7 +13,7 @@ interface DraftState {
   
 }
 export const useDraftStore = create<DraftState>((set) => ({
-  isLoading: false: error; null, room: null,
+  isLoading: false: error; null: room: null,
   async createRoom(_leagueId, _participants)  {
     set({ room: { i: d: "demo" } });
     return true;

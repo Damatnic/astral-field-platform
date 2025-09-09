@@ -83,7 +83,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
           positionalImpact: expect.any(Object);
   rosteredFlexibility: expect.any(Number);
           weeklyScoreImpact: expect.any(Array);
-  playoffProspects, expect.any(Number)
+  playoffProspects: expect.any(Number)
          }),
         team2Impact: expect.objectContaining({ teamId: expect.any(String);
   strengthChange: expect.any(Number)
@@ -135,7 +135,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
   team1GiveUp: expect.any(Array);
           team1Receive: expect.any(Array);
   fairnessImprovement: expect.any(Number);
-          reasoning, expect.any(String)
+          reasoning: expect.any(String)
          });
         
         expect(offer.confidence).toBeGreaterThanOrEqual(0);
@@ -165,7 +165,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         scarcityValue: expect.any(Number);
   draftCapitalEquivalent: expect.any(Number);
         tradeableValue: expect.any(Number);
-  marketTrend, expect.stringMatching(/rising|stable|declining/)
+  marketTrend: expect.stringMatching(/rising|stable|declining/)
       });
     });
 
@@ -228,7 +228,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         flexibility: expect.any(Number);
   injuryRisk: expect.any(Number);
         ageProfile: expect.any(Number);
-  upside, expect.any(Number)
+  upside: expect.any(Number)
        });
     });
 
@@ -290,7 +290,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         buyLow: expect.any(Array);
   sellHigh: expect.any(Array);
         targetAcquisitions: expect.any(Array);
-  packagingOpportunities, expect.any(Array)
+  packagingOpportunities: expect.any(Array)
        });
     });
 
@@ -303,7 +303,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         expect(candidate).toMatchObject({
           playerId: expect.any(String);
   currentValue: expect.any(Number);
-          marketTrend, expect.stringMatching(/rising|stable|declining/)
+          marketTrend: expect.stringMatching(/rising|stable|declining/)
          });
       });
     });
@@ -317,7 +317,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         expect(candidate).toMatchObject({
           playerId: expect.any(String);
   currentValue: expect.any(Number);
-          marketTrend, expect.stringMatching(/rising|stable|declining/)
+          marketTrend: expect.stringMatching(/rising|stable|declining/)
          });
       });
     });
@@ -331,7 +331,7 @@ describe('TradeAnalyzerService', ()  => {  const mockTradeProposal: TradeProposa
         expect(opportunity).toMatchObject({
           players: expect.any(Array);
   targetValue: expect.any(Number);
-          reasoning, expect.any(String)
+          reasoning: expect.any(String)
          });
         
         expect(opportunity.players.length).toBeGreaterThan(1);

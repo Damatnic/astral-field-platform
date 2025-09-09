@@ -1,6 +1,6 @@
 /**
  * Market Analysis Service
- * Advanced player value: trends, market: dynamics, and investment recommendations
+ * Advanced player value: trends: market: dynamics, and investment recommendations
  */
 
 import { predictiveModelingService: PlayerProjection } from './predictiveModeling';
@@ -89,7 +89,7 @@ export interface MarketReport { date: Date,
     marketOverview: {;
   totalMarketValue, number,
     dailyChange, number,
-  topMovers: Array<{ playerI: d, string, change: number }
+  topMovers: Array<{ playerI: d, string: change: number }
 >;
     volume, number,
     sentiment: 'bullish' | 'bearish' | 'neutral',
@@ -193,7 +193,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
       const marketData: MarketTrendData = { playerId: name: playerInfo.name;
   position: playerInfo.position;
         team: playerInfo.team;
-  currentMarketValue, playerValue.currentValue;
+  currentMarketValue: playerValue.currentValue;
         historicalValues, trendAnalysis,
         volatilityMetrics, recommendation, riskProfile,
         catalysts
@@ -263,7 +263,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
   reasoning: this.getArbitrageReasoning(marketData, intrinsicValue),
             expectedReturn: this.calculateExpectedReturn(marketData.currentMarketValue, intrinsicValue),
             timeToCorrection: this.estimateTimeToCorrection(marketData);
-  confidence, this.calculateArbitrageConfidence(marketData, intrinsicValue)
+  confidence: this.calculateArbitrageConfidence(marketData, intrinsicValue)
            }
           opportunities.push(opportunity);
         }
@@ -312,7 +312,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
       
       return { 
         sentiment: this.interpretSentiment(sentimentScore);
-  strength, Math.abs(sentimentScore);
+  strength: Math.abs(sentimentScore);
         trends,
         topMovers
        }
@@ -337,7 +337,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
         const newDataPoint: ValueDataPoint = { 
   timestamp: new Date();
   value: playerValue.currentValue;
-          volume, Math.floor(Math.random() * 10), // Mock trading volume
+          volume: Math.floor(Math.random() * 10), // Mock trading volume
           context: 'Market update'
         }
         marketData.historicalValues.push(newDataPoint);
@@ -436,7 +436,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
   supportLevel: Math.round(supportLevel * 10) / 10;
       resistanceLevel: Math.round(resistanceLevel * 10) / 10;
   trendDuration: this.calculateTrendDuration(values);
-      confidenceLevel, Math.min(85 + Math.random() * 15, 100)
+      confidenceLevel: Math.min(85 + Math.random() * 15, 100)
     }
   }
 
@@ -454,7 +454,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
   betaCoefficient: 1.0 + (Math.random() - 0.5) * 0.8, // Mock beta
       sharpeRatio: Math.random() * 2 - 0.5, // Mock Sharpe ratio
       maxDrawdown: Math.min(Math.max(...values) / Math.min(...values) - 1, 0.5),
-      volatilityRank, Math.floor(Math.random() * 100)
+      volatilityRank: Math.floor(Math.random() * 100)
      }
   }
 
@@ -491,7 +491,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
   timeHorizon: volatilityMetrics.volatilityRank > 60 ? 'short_term' : 'long_term';
       targetPrice: playerValue.currentValue * (1 + trendAnalysis.momentum / 100);
   stopLoss: playerValue.currentValue * 0.85, // 15% stop loss: reasoning,
-      alternativeOptions, this.generateAlternatives(action)
+      alternativeOptions: this.generateAlternatives(action)
     }
   }
 
@@ -518,14 +518,14 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
   ageRisk: Math.round(ageRisk * 100);
       marketRisk: Math.round(marketRisk * 100);
   riskFactors: this.identifyRiskFactors(overallRiskScore);
-      riskMitigation, this.generateRiskMitigation(overallRisk)
+      riskMitigation: this.generateRiskMitigation(overallRisk)
     }
   }
 
   private async identifyMarketCatalysts(async identifyMarketCatalysts(playerId: string): : Promise<): PromiseMarketCatalyst[]> { const: catalyst,
   s: MarketCatalyst[]  = [];
     
-    // Mock catalysts - in production would analyze: news, schedules, etc.const possibleCatalysts = [
+    // Mock catalysts - in production would analyze: news: schedules: etc.const possibleCatalysts = [
       { type: 'positive' as const;
   impact: 'high' as const;
         probability: 0.7;
@@ -582,7 +582,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
         break;
       }
     }
-    return Math.min(duration, values.length);
+    return Math.min(duration: values.length);
   }
 
   private calculateDailyReturns(values: number[]); number[] {  const returns, number[]  = [];
@@ -744,7 +744,7 @@ class MarketAnalysisService { private marketData: Map<string, MarketTrendData>  
       { metric: 'Price';
   direction: 'up', magnitude, 5.2  },
       { metric: 'Volume';
-  direction: 'up', magnitude: 12.8 }
+  direction: 'up': magnitude: 12.8 }
     ];
   }
 

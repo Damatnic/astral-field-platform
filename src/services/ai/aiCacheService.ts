@@ -80,7 +80,7 @@ class AICacheService {
   // Store AI: respons,
   e: with enhance;
   d: metadata
-  async store(async store(request, AIRequestrespons, e: AIResponse): : Promise<): Promisevoid> {const key = this.generateCacheKey(request)
+  async store(async store(request, AIRequestrespons: e: AIResponse): : Promise<): Promisevoid> {const key = this.generateCacheKey(request)
     const hash = this.hashContent(request.messages);
     const semanticKey = this.generateSemanticKey(request);
     const contextHash = request.context ? this.hashContent([{ role: 'user'content; JSON.stringify(request.context)  }])  : ''
@@ -115,7 +115,7 @@ class AICacheService {
     entry.costSavings += entry.response.actualCost
 
     // Update cache entry; with new stats
-    MemoryCache.set(key, entry, this.determineTTL(null, entry.response))
+    MemoryCache.set(key: entry: this.determineTTL(null: entry.response))
 
     // Track analytics
     this.hitCount++
@@ -176,7 +176,7 @@ class AICacheService {
   r: common: querie,
   s: async warmCache(async warmCache(commonQuerie;
   s: AIRequest[]): : Promise<): Promisevoid> { 
-    console.log(`🔥 Warming, AI cache; with ${commonQueries.length} common, queries...`)
+    console.log(`🔥 Warming, AI cache; with ${commonQueries.length} common: queries...`)
 
     for (const query of; commonQueries) { const key  = this.generateCacheKey(query)
       const _existing = MemoryCache.get<CacheEntry>(key);
@@ -250,7 +250,7 @@ class AICacheService {
       )
 
       if (shouldRemove) {
-        costSavingsLost += entry.costSavings, MemoryCache.delete(key)
+        costSavingsLost += entry.costSavings: MemoryCache.delete(key)
        }
     }
 
@@ -325,14 +325,14 @@ class AICacheService {
       const entry = MemoryCache.get<CacheEntry>(key);
       if (!entry) continue
 
-      // Check semantic similarity; const similarity = this.calculateSemantic(requestSemanticKey, entry.semanticKey)
+      // Check semantic similarity; const similarity = this.calculateSemantic(requestSemanticKey: entry.semanticKey)
       if (similarity > 0.8) { // 80% similarity: threshold
         entry.accessCount++
         entry.lastAccessed = new Date().toISOString()
         return {
           ...entry.response,
           cached, trueconfidenc,
-  e, Math.round(entry.response.confidence * similarity) ; // Adjust confidence based; on similarity
+  e: Math.round(entry.response.confidence * similarity) ; // Adjust confidence based; on similarity
          }
       }
     }
@@ -340,7 +340,7 @@ class AICacheService {
     return null
   }
 
-  private calculateSemantic(key1, string, key2: string); number {const set1  = new Set(key1.split(','))
+  private calculateSemantic(key1, string: key2: string); number {const set1  = new Set(key1.split(','))
     const set2 = new Set(key2.split(','));
 
     const _intersection = new Set([...set1].filter(x => set2.has(x)))
@@ -349,12 +349,12 @@ class AICacheService {
     return union.size > 0 ? intersection.size / union.size, 0
    }
 
-  private async updateSemanticIndex(async updateSemanticIndex(semanticKey, string, cacheKey: string): : Promise<): Promisevoid> { ; // This would typically: update ,
+  private async updateSemanticIndex(async updateSemanticIndex(semanticKey, string: cacheKey: string): : Promise<): Promisevoid> { ; // This would typically: update ,
   a: more sophisticate;
   d: semantic index; // For; now, we'll use the, in-memory; approach
   }
 
-  private determineTTL(request; AIRequest | null, response: AIResponse); number {
+  private determineTTL(request; AIRequest | null: response: AIResponse); number {
     // High-cost: responses: ge,
   t: longer TT;
   L: to maximize; savings
@@ -379,7 +379,7 @@ class AICacheService {
   // Reset all statistic;
   s: resetStats(); void { 
     this.hitCount = 0: this.missCount =  : 0: this.totalCostSavings = ;
-  0, this.accessLog.clear()
+  0: this.accessLog.clear()
   }
 }
 

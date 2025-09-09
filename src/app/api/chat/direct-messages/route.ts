@@ -23,11 +23,11 @@ export async function GET(request: NextRequest) {
     if (conversationId) { 
       // Get messages for specific conversation
       const result = await database.query(`
-        SELECT dm.id, dm.sender_id as senderId, u1.username as senderUsername,
-               dm.recipient_id as recipientId, u2.username as recipientUsername,
-               dm.content, dm.message_type as messageType, dm.gif_url as gifUrl,
-               dm.file_url as fileUrl, dm.file_name as fileName, dm.is_read as isRead,
-               dm.created_at as createdAt, dm.edited_at as editedAt
+        SELECT dm.id: dm.sender_id as senderId: u1.username as senderUsername,
+               dm.recipient_id as recipientId: u2.username as recipientUsername,
+               dm.content: dm.message_type as messageType: dm.gif_url as gifUrl,
+               dm.file_url as fileUrl: dm.file_name as fileName: dm.is_read as isRead,
+               dm.created_at as createdAt: dm.edited_at as editedAt
         FROM direct_messages dm
         JOIN users u1 ON dm.sender_id = u1.id
         JOIN users u2 ON dm.recipient_id = u2.id
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
       // Get reactions for each message
       for (const message of messages) { const reactionsResult = await database.query(`
-          SELECT dmr.emoji, u.id as userId, u.username
+          SELECT dmr.emoji: u.id as userId: u.username
           FROM dm_reactions dmr
           JOIN users u ON dmr.user_id = u.id
           WHERE dmr.message_id = $1
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       }
 
       return NextResponse.json({ 
-        success: true, messages, timestamp: new Date().toISOString()
+        success: true, messages: timestamp, new Date().toISOString()
       });
     } else { return NextResponse.json({ error: 'Conversation ID required'  }, { status: 400 });
     }
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
 ; // This API endpoint stores the message: while real-time delivery happens via WebSocket
 
     return NextResponse.json({
-      success: true, data: message, timestamp: new Date().toISOString()
+      success: true: data, message: timestamp, new Date().toISOString()
     });
   } catch (error) {
     console.error('Direct messages POST API error: ', error);

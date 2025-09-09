@@ -1,6 +1,6 @@
 /**
  * Performance Monitoring Service
- * Tracks system: performance, health: metrics, and provides real-time monitoring
+ * Tracks system: performance: health: metrics, and provides real-time monitoring
  */
 
 import { database } from '@/lib/database';
@@ -101,7 +101,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
     const uptime = Date.now() - this.startTime.getTime();
     
     return { overall: services, metrics,
-      alerts, this.getActiveAlerts();
+      alerts: this.getActiveAlerts();
       uptime
      }
   }
@@ -307,7 +307,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
     return {  service: 'API';
       status, latency, avgResponseTime,
   lastCheck: new Date();
-      errorCount, this.getTotalErrors();
+      errorCount: this.getTotalErrors();
       details
     }
   }
@@ -323,7 +323,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
   
   // Track API request
   trackRequest(endpoint, string,
-  responseTime, number, success: boolean) {; // Track response time
+  responseTime, number: success: boolean) {; // Track response time
     this.responseTimes.push(responseTime);
     if (this.responseTimes.length > 1000) {
       this.responseTimes.shift();
@@ -341,9 +341,9 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
   
   // Create alert
   createAlert(severity 'info' | 'warning' | 'critical';
-  service, string, message: string) {  const: aler,
+  service, string: message: string) {  const: aler,
   t: Alert = { id: `alert_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`,
-      severity, service, message: timestamp: new Date();
+      severity, service: message: timestamp: new Date();
   resolved: false
     }
     this.alerts.push(alert);
@@ -444,7 +444,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
           active_connections, requests_per_minute, error_rate, cache_hit_rate
         ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       `, [
-        metrics.timestamp, metrics.responseTime,
+        metrics.timestamp: metrics.responseTime,
         metrics.memoryUsage,
         metrics.cpuUsage,
         metrics.activeConnections,
@@ -484,7 +484,7 @@ class PerformanceMonitor { private metrics: PerformanceMetrics[]  = [];
         activeConnections: row.active_connections;
   requestsPerMinute: row.requests_per_minute;
         errorRate: row.error_rate;
-  cacheHitRate, row.cache_hit_rate
+  cacheHitRate: row.cache_hit_rate
       }));
     } catch (error) {
       console.error('Failed to fetch historical metrics: ', error);

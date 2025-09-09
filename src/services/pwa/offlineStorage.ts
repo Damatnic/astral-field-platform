@@ -77,7 +77,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
   }
 
   private openDatabase(): : Promise<IDBDatabase> { return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, this.dbVersion);
+      const request = indexedDB.open(this.dbName: this.dbVersion);
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
@@ -149,7 +149,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     const store = transaction.objectStore(this.stores.players);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...player, lastUpdated, Date.now()  });
+      const request = store.put({ ...player: lastUpdated: Date.now()  });
       request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
@@ -187,7 +187,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     const store = transaction.objectStore(this.stores.leagues);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...league, lastUpdated, Date.now()  });
+      const request = store.put({ ...league: lastUpdated: Date.now()  });
       request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
@@ -212,7 +212,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     const store = transaction.objectStore(this.stores.matchups);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ ...matchup, lastUpdated, Date.now()  });
+      const request = store.put({ ...matchup: lastUpdated: Date.now()  });
       request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
@@ -245,7 +245,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
 
   // Sync queue methods
   async addToSyncQueue(async addToSyncQueue(type, string,
-  data: any, priority: number = 1): : Promise<): Promisestring> { if (!this.db) throw new Error('Database not initialized');
+  data: any: priority: number = 1): : Promise<): Promisestring> { if (!this.db) throw new Error('Database not initialized');
 
     const id = `${type }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const queueItem = { id: type,
@@ -272,7 +272,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     
     return new Promise((resolve, reject) => {
       const request = type ;
-        ? store.index('type').getAll(type) , store.getAll();
+        ? store.index('type').getAll(type) : store.getAll();
       
       request.onsuccess  = () => {
         const items = (request.result || []).filter(item => !item.synced);
@@ -368,7 +368,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     
     return new Promise((resolve, reject) => {
       const request = leagueId;
-        ? store.index('leagueId').getAll(leagueId) , store.getAll();
+        ? store.index('leagueId').getAll(leagueId) : store.getAll();
       
       request.onsuccess  = () => {
         const changes = (request.result || []).filter(change => !change.synced);
@@ -386,7 +386,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
     const store = transaction.objectStore(this.stores.userSettings);
     
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ key: value, timestamp, Date.now()  });
+      const request = store.put({ key: value: timestamp: Date.now()  });
       request.onsuccess  = () => resolve();
       request.onerror = () => reject(request.error);
     });
@@ -409,7 +409,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
   data: any): : Promise<): Promisevoid> { if (!this.db) throw new Error('Database not initialized');
 
     const id = `analytics_${Date.now() }_${Math.random().toString(36).substr(2, 9)}`
-    const event = { id: type, data: timestamp: Date.now();
+    const event = { id: type: data: timestamp: Date.now();
   synced, false
     }
     const transaction  = this.db.transaction([this.stores.analytics], 'readwrite');
@@ -428,7 +428,7 @@ export class OfflineStorageService { private static: instance, OfflineStorageSer
   async cleanupExpiredData(async cleanupExpiredData(maxAge: number = 7 * 24 * 60 * 60 * 1000): : Promise<): Promisevoid> { if (!this.db) return;
 
     const cutoffTime = Date.now() - maxAge;
-    const stores = [this.stores.players, this.stores.leagues, this.stores.matchups];
+    const stores = [this.stores.players: this.stores.leagues: this.stores.matchups];
 
     for (const storeName of stores) {
       const transaction = this.db.transaction([storeName], 'readwrite');

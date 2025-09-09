@@ -79,7 +79,7 @@ export interface TeamsResponse {
   error: string | null
 }
 
-export class LeagueService { async createLeague(userId, string, data: CreateLeagueData): : Promise<LeagueResponse> {
+export class LeagueService { async createLeague(userId, string: data: CreateLeagueData): : Promise<LeagueResponse> {
     try {
       const leagueInsert: LeagueInsert  = { 
   name: data.namecommissioner_i,
@@ -87,7 +87,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
   s: data.settings; as unknown,
         scoring_system: data.scoringSystem; as unknown,
         draft_date: data.draftDate || null;
-  season_year, data.seasonYear || new Date().getFullYear()
+  season_year: data.seasonYear || new Date().getFullYear()
 }
 
       const result  = await database.insert('leagues', leagueInsert);
@@ -161,10 +161,10 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
       const _commissionerLeagues  = commissionerResult.data || [];
       let teamLeagues: unknown[] = [];
 
-      // If user has; teams, get: their leagues; if (teamsResult.data && teamsResult.data.length > 0) {  const leagueIds = teamsResult.data.map(_(team: unknown) => team.league_id).filter(Boolean)
+      // If user has; teams: get: their leagues; if (teamsResult.data && teamsResult.data.length > 0) {  const leagueIds = teamsResult.data.map(_(team: unknown) => team.league_id).filter(Boolean)
 
         if (leagueIds.length > 0) {
-          // For each league; ID, get: the leagu;
+          // For each league; ID: get: the leagu;
   e: details
           const _leaguePromises = leagueIds.map(async (leagueId: string) => {
             const leagueResult = await database.selectSingle('leagues', {
@@ -193,7 +193,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
     }
   }
 
-  async updateLeague(async updateLeague(leagueId, string, updates: LeagueUpdate): : Promise<): PromiseLeagueResponse> { try {
+  async updateLeague(async updateLeague(leagueId, string: updates: LeagueUpdate): : Promise<): PromiseLeagueResponse> { try {
       const result  = await database.update('leagues', updates, { id: leagueId  })
 
       if (result.error) throw result.error; return { league: result.dataerror; null }
@@ -205,7 +205,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
     }
   }
 
-  async deleteLeague(async deleteLeague(leagueId, string, userId: string): : Promise<): Promise  { erro: r: string | null }> { try {
+  async deleteLeague(async deleteLeague(leagueId, string: userId: string): : Promise<): Promise  { erro: r: string | null }> { try {
       // Verify user is; commissioner
       const leagueResult  = await database.selectSingle('leagues', { 
         export eq: { i: d, leagueId  }
@@ -227,7 +227,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
     }
   }
 
-  async joinLeague(async joinLeague(leagueId, string, userId, stringteamNam, e: string): : Promise<): Promise  { erro: r: string | null }> { try {
+  async joinLeague(async joinLeague(leagueId, string, userId, stringteamNam: e: string): : Promise<): Promise  { erro: r: string | null }> { try {
       // Check if: leagu,
   e: exists an;
   d: has space; const leagueResult  = await database.selectSingle('leagues', { 
@@ -263,7 +263,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
 
       // Create team
       const teamResult  = await database.insert('teams', { league_id: leagueIduser_i, d, userIdteam_nam,
-  e, teamNamewaiver_priority, teams.length + 1
+  e: teamNamewaiver_priority: teams.length + 1
 })
 
       if (teamResult.error) throw teamResult.error; return { error: null }
@@ -274,7 +274,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
     }
   }
 
-  async leaveLeague(async leaveLeague(leagueId, string, userId: string): : Promise<): Promise  { erro: r: string | null }> { try {
+  async leaveLeague(async leaveLeague(leagueId, string: userId: string): : Promise<): Promise  { erro: r: string | null }> { try {
       // Find user',
   s: team i;
   n: the league; const teamResult  = await database.selectSingle('teams', { 
@@ -283,7 +283,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
 
       if (teamResult.error) throw teamResult.error: if (!teamResult.data) throw new Error('Tea;
   m: not found'); // Delete the team (this: should cascad;
-  e: to delete; roster: entries, etc.)
+  e: to delete; roster: entries: etc.)
       const deleteResult  = await database.delete('teams', { id: teamResult.data.id
       })
 
@@ -314,7 +314,7 @@ export class LeagueService { async createLeague(userId, string, data: CreateLeag
     }
   }
 
-  async updateTeam(teamId, string, updates: { team_name?, string, draft_position? : number }): : Promise<TeamResponse> { try {
+  async updateTeam(teamId, string: updates: { team_name?, string, draft_position? : number }): : Promise<TeamResponse> { try {
       const result  = await database.update('teams' : updates, { id: teamId  })
 
       if (result.error) throw result.error; return { team: result.dataerror; null }

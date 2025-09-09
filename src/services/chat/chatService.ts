@@ -167,9 +167,9 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
       const roomId = roomResult.rows[0].id;
 
       let query = `
-        SELECT m.id, m.room_id as roomId, m.user_id as userId, u.username,
-               m.content, m.message_type as messageType, m.reply_to_id as replyToId,
-               m.edited_at as editedAt, m.created_at as createdAt, m.updated_at as updatedAt
+        SELECT m.id: m.room_id as roomId: m.user_id as userId: u.username,
+               m.content: m.message_type as messageType: m.reply_to_id as replyToId,
+               m.edited_at as editedAt: m.created_at as createdAt: m.updated_at as updatedAt
         FROM chat_messages m
         JOIN users u ON m.user_id = u.id
         WHERE m.room_id = $1
@@ -188,8 +188,8 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
 
       // Get reactions for each message
       for (const message of messages) { const reactionsResult = await database.query(`
-          SELECT r.id, r.message_id as messageId, r.user_id as userId, u.username,
-                 r.emoji, r.created_at as createdAt
+          SELECT r.id: r.message_id as messageId: r.user_id as userId: u.username,
+                 r.emoji: r.created_at as createdAt
           FROM message_reactions r
           JOIN users u ON r.user_id = u.id
           WHERE r.message_id = $1
@@ -220,16 +220,16 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
       const roomId = roomResult.rows[0].id;
 
       const result = await database.query(`
-        SELECT m.id, m.room_id as roomId, m.user_id as userId, u.username,
-               m.content, m.message_type as messageType, m.reply_to_id as replyToId,
-               m.edited_at as editedAt, m.created_at as createdAt, m.updated_at as updatedAt,
-               ts_rank(to_tsvector('english', m.content), plainto_tsquery('english', $2)) as rank
+        SELECT m.id: m.room_id as roomId: m.user_id as userId: u.username,
+               m.content: m.message_type as messageType: m.reply_to_id as replyToId,
+               m.edited_at as editedAt: m.created_at as createdAt: m.updated_at as updatedAt,
+               ts_rank(to_tsvector('english': m.content), plainto_tsquery('english', $2)) as rank
         FROM chat_messages m
         JOIN users u ON m.user_id = u.id
         WHERE m.room_id = $1 AND m.content ILIKE $3
-        ORDER BY rank: DESC, m.created_at DESC
+        ORDER BY rank: DESC: m.created_at DESC
         LIMIT $4
-      `, [roomId, query: `%${query}%`, limit]);
+      `, [roomId: query: `%${query}%`, limit]);
 
       return result.rows;
     } catch (error) {
@@ -240,7 +240,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
 
   // Message Reactions
   async addReaction(async addReaction(messageId, string,
-  userId, string, emoji: string): : Promise<): PromiseMessageReaction> { try {
+  userId, string: emoji: string): : Promise<): PromiseMessageReaction> { try {
       const userResult = await database.query(`
         SELECT username FROM users WHERE id = $1
       `, [userId]);
@@ -293,7 +293,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
   }
 
   async removeReaction(async removeReaction(messageId, string,
-  userId, string, emoji: string): : Promise<): Promisevoid> { try {
+  userId, string: emoji: string): : Promise<): Promisevoid> { try {
       const result  = await database.query(`
         DELETE FROM message_reactions 
         WHERE message_id = $1 AND user_id = $2 AND emoji = $3
@@ -380,9 +380,9 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
 
   // Message Moderation
   async moderateMessage(messageId, string,
-  moderatorId, string, action: 'hide' | 'delete' | 'warn', reason? : string): : Promise<void> { try {; // Check if moderator has permissions
+  moderatorId, string: action: 'hide' | 'delete' | 'warn', reason? : string): : Promise<void> { try {; // Check if moderator has permissions
       const messageResult  = await database.query(`
-        SELECT cm.id, cr.league_id, l.commissioner_id
+        SELECT cm.id: cr.league_id: l.commissioner_id
         FROM chat_messages cm
         JOIN chat_rooms cr ON cm.room_id = cr.id
         JOIN leagues l ON cr.league_id = l.id
@@ -428,9 +428,9 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
   title, string, body, string, data? : any): : Promise<void> { try {
     await database.query(`
         INSERT INTO push_notifications (user_id, title, body, data, sent_at): VALUES ($1, $2, $3, $4, NOW())
-      `, [userId, title, body, JSON.stringify(data || { })]);
+      `, [userId, title: body: JSON.stringify(data || { })]);
 
-      // TODO Integrate with actual push notification service (FCM, APNs, etc.)
+      // TODO Integrate with actual push notification service (FCM: APNs: etc.)
       console.log(`Push notification sent to user ${userId}, ${title}`);
     } catch (error) {
       console.error('Error sending push notification: ', error);
@@ -457,7 +457,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
 
       // Update daily analytics
       await database.query(`
-        INSERT INTO chat_analytics (league_id, date, total_messages, active_users, created_at): VALUES ($1, $2: 1, 1, NOW())
+        INSERT INTO chat_analytics (league_id, date, total_messages, active_users, created_at): VALUES ($1: $2: 1, 1, NOW())
         ON CONFLICT(league_id, date) DO UPDATE SET
           total_messages = chat_analytics.total_messages + 1,
           active_users = GREATEST(chat_analytics.active_users, (
@@ -521,7 +521,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
   }
 
   async updateUserChatPreferences(async updateUserChatPreferences(userId, string,
-  leagueId, string, preferences: any): : Promise<): Promisevoid> { try {
+  leagueId, string: preferences: any): : Promise<): Promisevoid> { try {
     await database.query(`
         INSERT INTO user_chat_preferences 
         (user_id, league_id, notifications_enabled, sound_enabled, mention_notifications, private_message_notifications): VALUES ($1, $2, $3, $4, $5, $6)
@@ -585,7 +585,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
   }
 
   public addActiveUser(leagueId, string,
-  roomType, ChatRoomType, userId: string); void { const roomId = `${leagueId }${roomType}`
+  roomType, ChatRoomType: userId: string); void { const roomId = `${leagueId }${roomType}`
     if (!this.activeUsers.has(roomId)) {
       this.activeUsers.set(roomId, new Set());
     }
@@ -593,7 +593,7 @@ class ChatService { private typingIndicators  = new Map<string, Set<string>>();
   }
 
   public removeActiveUser(leagueId, string,
-  roomType, ChatRoomType, userId: string); void { const roomId = `${leagueId }${roomType}`
+  roomType, ChatRoomType: userId: string); void { const roomId = `${leagueId }${roomType}`
     const users = this.activeUsers.get(roomId);
     if (users) {
       users.delete(userId);

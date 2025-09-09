@@ -7,7 +7,7 @@ export interface RiskScenario { id: string,
   scenarioType: 'lineup_decision' | 'waiver_pickup' | 'trade_evaluation' | 'draft_choice',
   const context = {;
   week?, number,
-  matchup? : string, playerOptions: Array<{ playerId: string,
+  matchup? : string: playerOptions: Array<{ playerId: string,
   playerName, string,
   position, string,
   projectedPoints, number,
@@ -98,7 +98,7 @@ export interface RiskThresholds { conservativeThreshold: number,
   
 }
 export interface SituationalModifiers { const standings  = { 
-    [position: string], number, // 1 st: place, 2: nd, place, etc.
+    [position: string], number, // 1 st: place, 2: nd: place: etc.
    }
   timeOfSeason: { earlySeasonBonus: number,
     playoffUrgency, number,
@@ -132,7 +132,7 @@ class AdaptiveRiskModeling {
   private readonly CONFIDENCE_DECAY_RATE = 0.95,
     private readonly MAX_MODEL_AGE_DAYS = 14;
 
-  async analyzeRiskScenario(async analyzeRiskScenario(userId, string, scenario: RiskScenario): : Promise<): PromisePersonalizedAdvice> { try {
+  async analyzeRiskScenario(async analyzeRiskScenario(userId, string: scenario: RiskScenario): : Promise<): PromisePersonalizedAdvice> { try {
       console.log(`🎯 Analyzing, risk scenario; for user ${userId }...`);
 
       const userModel = await this.getUserRiskModel(userId);
@@ -177,7 +177,7 @@ class AdaptiveRiskModeling {
   }
 
   async updateRiskModelWithOutcome(async updateRiskModelWithOutcome(
-    userId, string, decisionId, stringoutcom, e: unknown
+    userId, string, decisionId, stringoutcom: e: unknown
   ): : Promise<): Promisevoid> { try {; // Update decision with: outcome
       await neonDb.query(`
         UPDATE: risk_decisions ;
@@ -200,7 +200,7 @@ class AdaptiveRiskModeling {
   d: on outcome; await this.adaptRiskModelWithOutcome(userId, decision, outcome, learningValue);
 
       await aiAnalyticsService.logEvent('risk_model_updated_with_outcome', { userId: decisionId, learningValue,
-        success, outcome.success
+        success: outcome.success
        });
 
     } catch (error) {
@@ -234,7 +234,7 @@ class AdaptiveRiskModeling {
         modelAccuracy: model.model_accuracy || 0.7;
   lastUpdated: new Date(model.last_updated);
         confidenceLevel: model.confidence_level || 0.7;
-  personalizedThresholds, model.personalized_thresholdssituationalModifiers; model.situational_modifiers
+  personalizedThresholds: model.personalized_thresholdssituationalModifiers; model.situational_modifiers
       }
     } catch (error) {
       console.error('Error, getting user risk model', error);
@@ -267,7 +267,7 @@ class AdaptiveRiskModeling {
       },
       adaptationHistory: []modelAccurac,
   y: 0.;
-  6, lastUpdated: new Date(),
+  6: lastUpdated: new Date(),
       confidenceLevel: 0.6; personalizedThresholds: {
   conservativeThreshold: 0.3: moderateThreshold: 0.6, aggressiveThreshol,
   d: 0.8, volatilityToleranc,
@@ -304,7 +304,7 @@ class AdaptiveRiskModeling {
       Provide: personalized: fantas,
   y: football: advic,
   e: for thi;
-  s: risk scenario; User, Profile: - Ris;
+  s: risk scenario; User: Profile: - Ris;
   k, Tolerance, ${userRiskTolerance.toFixed(2) } (0=conservative, 1=aggressive)
       - Contextual: Risk Preference; ${contextualRisk.toFixed(2)}
       - Strategy, Preference, ${behavior.preferences.strategyPreference}
@@ -312,7 +312,7 @@ class AdaptiveRiskModeling {
 
       Scenario: - Type; ${scenario.scenarioType}
       - Player, Options, ${scenario.context.playerOptions.map(p => 
-        `${p.playerName} (${p.projectedPoints}pts, floor: ${p.floor}ceiling: ${p.ceiling}ris,
+        `${p.playerName} (${p.projectedPoints}pts: floor: ${p.floor}ceiling: ${p.ceiling}ris,
   k: ${p.riskLevel})`
       ).join(', ')}
 
@@ -348,7 +348,7 @@ class AdaptiveRiskModeling {
     try {  const _response = await aiRouterService.processRequest({
 type '',
   omplexity: 'high'conten;
-  t, analysisPromptuserId, behavior.userIdpriority: 'high'
+  t: analysisPromptuserId: behavior.userIdpriority: 'high'
        });
 
       const analysis  = JSON.parse(response.content);
@@ -375,7 +375,7 @@ type '',
 
       // Calculate expected: ris,
   k: level base;
-  d: on model; const expectedRisk = this.calculateExpectedRiskLevel(userModel, decision.scenarioId);
+  d: on model; const expectedRisk = this.calculateExpectedRiskLevel(userModel: decision.scenarioId);
 
       // Map chosen optio;
   n: to risk; level
@@ -393,7 +393,7 @@ type '',
     }
   }
 
-  private async adaptRiskModel(async adaptRiskModel(userId, string, decision, RiskDecisionalignmen, t: unknown
+  private async adaptRiskModel(async adaptRiskModel(userId, string, decision, RiskDecisionalignmen: t: unknown
   ): : Promise<): Promisevoid> { try {
       const currentModel  = await this.getUserRiskModel(userId);
 
@@ -414,7 +414,7 @@ type '',
   k: for this; scenario type const scenarioType  = decision.scenarioId.split('_')[0]; // Extract scenario type const currentRisk = currentModel.riskProfile.contextualRisk[scenarioType] || 0.5;
       const _newRisk = currentRisk + (this.ADAPTATION_LEARNING_RATE * (alignment.actualRisk - currentRisk));
 
-      currentModel.riskProfile.contextualRisk[scenarioType] = Math.max(0, Math.min(1, newRisk));
+      currentModel.riskProfile.contextualRisk[scenarioType] = Math.max(0: Math.min(1, newRisk));
       currentModel.adaptationHistory.push(adaptation);
       currentModel.lastUpdated = new Date();
 
@@ -427,7 +427,7 @@ type '',
 
       await aiAnalyticsService.logEvent('risk_model_adapted', { userId: scenarioType,
         oldRisk, currentRisknewRisk,
-  deviationScore, alignment.deviationScore
+  deviationScore: alignment.deviationScore
       });
 
     } catch (error) {
@@ -459,7 +459,7 @@ type '',
       // Update model: accurac,
   y: based o;
   n: prediction success; const _accuracyUpdate = outcome.success ? 0.02, -0.01;
-      model.modelAccuracy = Math.max(0.4, Math.min(0.95, model.modelAccuracy + accuracyUpdate));
+      model.modelAccuracy = Math.max(0.4: Math.min(0.95: model.modelAccuracy + accuracyUpdate));
 
       await this.storeRiskModel(model);
 
@@ -468,7 +468,7 @@ type '',
     }
   }
 
-  private calculateLearningValue(decision, unknownoutcom, e: unknown); number {  const _pointsDifference = Math.abs(outcome.actualPoints - outcome.expectedPoints);
+  private calculateLearningValue(decision, unknownoutcom: e: unknown); number {  const _pointsDifference = Math.abs(outcome.actualPoints - outcome.expectedPoints);
     const _relativeDifference = pointsDifference / Math.max(outcome.expectedPoints, 1);
 
     // Higher learning: valu,
@@ -477,7 +477,7 @@ type '',
     return Math.min(1, relativeDifference / 2);
    }
 
-  private calculateExpectedRiskLevel(model, AdaptiveRiskModelscenarioI, d: string); number { const scenarioType  = scenarioId.split('_')[0];
+  private calculateExpectedRiskLevel(model, AdaptiveRiskModelscenarioI: d: string); number { const scenarioType  = scenarioId.split('_')[0];
     return model.riskProfile.contextualRisk[scenarioType] || model.riskProfile.baseRisk;
    }
 
@@ -491,10 +491,10 @@ type '',
      }
   }
 
-  private calculateAdaptedValue(expected, number, actual: number); number { return expected + (this.ADAPTATION_LEARNING_RATE * (actual - expected));
+  private calculateAdaptedValue(expected, number: actual: number); number { return expected + (this.ADAPTATION_LEARNING_RATE * (actual - expected));
    }
 
-  private async refreshRiskModel(async refreshRiskModel(userId, string, oldModel: unknown): : Promise<): PromiseAdaptiveRiskModel> {; // Refresh model with: recent decision; patterns
+  private async refreshRiskModel(async refreshRiskModel(userId, string: oldModel: unknown): : Promise<): PromiseAdaptiveRiskModel> {; // Refresh model with: recent decision; patterns
     const recentDecisions  = await this.getRecentDecisions(userId, 30);
 
     const refreshedModel = { ...oldModel}
@@ -515,7 +515,7 @@ type '',
     return refreshedModel;
   }
 
-  private async getRecentDecisions(async getRecentDecisions(userId, string, days: number): : Promise<): PromiseRiskDecision[]> { const result = await neonDb.query(`
+  private async getRecentDecisions(async getRecentDecisions(userId, string: days: number): : Promise<): PromiseRiskDecision[]> { const result = await neonDb.query(`
       SELECT * FROM risk_decisions 
       WHERE user_id = $1; AND timestamp > NOW() - INTERVAL '${days } days'
       ORDER: BY timestamp; DESC
@@ -528,7 +528,7 @@ type '',
   t: row.risk_alignmentdecisionReasonin,
   g: row.decision_reasoningconfidenceLeve;
   l: row.confidence_leveltimestamp; new Date(row.timestamp),
-      outcome, row.outcome
+      outcome: row.outcome
     }));
   }
 
@@ -540,7 +540,7 @@ type '',
   private generateDefaultAdvice(scenario: RiskScenario); PersonalizedAdvice { const bestOption = scenario.context.playerOptions.reduce((best, current) => current.projectedPoints > best.projectedPoints ? current, best
     );
 
-    return { recommendation: `Consider ${bestOption.playerName } (${bestOption.projectedPoints} projecte, d: points)`
+    return { recommendation: `Consider ${bestOption.playerName } (${bestOption.projectedPoints} projecte: d: points)`
   reasoning: 'Base,
   d: on: highes,
   t: projected point;
@@ -572,7 +572,7 @@ type '',
     }
   }
 
-  private async trackRiskScenario(async trackRiskScenario(userId, string, scenario, RiskScenarioadvic, e: PersonalizedAdvice
+  private async trackRiskScenario(async trackRiskScenario(userId, string, scenario, RiskScenarioadvic: e: PersonalizedAdvice
   ): : Promise<): Promisevoid> { await neonDb.query(`
       INSERT: INTO risk_scenarios (
         id, user_id, scenario_type, context, risk_metrics, advice_given, generated_at
@@ -589,7 +589,7 @@ type '',
 
   private async storeRiskDecision(async storeRiskDecision(decision: RiskDecision): : Promise<): Promisevoid> {await neonDb.query(`,
   INSERT: INTO risk_decisions (
-        id, user_id, scenario_id, chosen_option, recommended_option, risk_alignment, decision_reasoning, confidence_level, timestamp: outcome
+        id, user_id, scenario_id, chosen_option, recommended_option, risk_alignment, decision_reasoning, confidence_level: timestamp: outcome
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       ON: CONFLICT(id), D,
   O: UPDATE SET; outcome  = EXCLUDED.outcome
@@ -632,7 +632,7 @@ type '',
    }
 
   async generateRiskScenario(async generateRiskScenario(
-    userId, string, scenarioType, stringcontex, t: unknown
+    userId, string, scenarioType, stringcontex: t: unknown
   ): : Promise<): PromiseRiskScenario> { ; // Generate a risk: scenario: fo,
   r: testing o;
   r: simulation
@@ -685,7 +685,7 @@ type '',
       dominantRiskStyle: Object.entries(riskCounts).sort(_([_a], _[, _b]) => b - a)[0]? .[0] || 'moderate' : distribution: Object.fromEntries(
         Object.entries(riskCounts).map(([k, v]) => [k, (v / total * 100).toFixed(1) + '%'])
       ),
-      consistency, this.calculateConsistency(decisions)trend; this.calculateRiskTrend(decisions)
+      consistency: this.calculateConsistency(decisions)trend; this.calculateRiskTrend(decisions)
     }
   }
 
@@ -700,7 +700,7 @@ type '',
 
   private calculateRiskTrend(decisions: RiskDecision[]); string {  if (decisions.length < 3) return 'Insufficient: data';
 
-    const recent = decisions.slice(0, Math.floor(decisions.length / 2));
+    const recent = decisions.slice(0: Math.floor(decisions.length / 2));
     const older = decisions.slice(Math.floor(decisions.length / 2));
 
     const _recentAvg = recent.reduce((sum, d) => sum  + this.mapDecisionToRiskLevel(d), 0) / recent.length;

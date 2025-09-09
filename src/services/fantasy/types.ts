@@ -156,14 +156,14 @@ export interface AdvancedScoringRules { format: ScoringFormat,
 export interface WeatherModifiers { enabled: boolean,
     temperatureThresholds: {
   extreme_cold: { threshol: d, number, modifier, number }; // < 20°F
-    cold: { threshol: d, number, modifier: number };         // 20-40°F
-    hot: { threshol: d, number, modifier: number };          // > 85°F
-    extreme_hot: { threshol: d, number, modifier: number };  // > 95°F
+    cold: { threshol: d, number: modifier: number };         // 20-40°F
+    hot: { threshol: d, number: modifier: number };          // > 85°F
+    extreme_hot: { threshol: d, number: modifier: number };  // > 95°F
   }
   windThresholds: {
-  moderate: { threshol: d, number, modifier: number };     // 10-20 mph
-    strong: { threshol: d, number, modifier: number };       // 20-30 mph
-    extreme: { threshol: d, number, modifier: number };      // > 30 mph
+  moderate: { threshol: d, number: modifier: number };     // 10-20 mph
+    strong: { threshol: d, number: modifier: number };       // 20-30 mph
+    extreme: { threshol: d, number: modifier: number };      // > 30 mph
   }
   precipitationModifiers: { light_rain: number,
     heavy_rain, number,
@@ -195,10 +195,10 @@ export interface MatchupModifiers { enabled: boolean,
 export interface RookieBonuses { enabled: boolean,
     firstSeasonBonus, number,
   rookieThresholdBonuses: {
-  qb_passing_yards: { threshol: d, number, bonus: number }
-    rb_rushing_yards: { threshol: d, number, bonus: number }
-    wr_receiving_yards: { threshol: d, number, bonus: number }
-    te_receiving_yards: { threshol: d, number, bonus: number }
+  qb_passing_yards: { threshol: d, number: bonus: number }
+    rb_rushing_yards: { threshol: d, number: bonus: number }
+    wr_receiving_yards: { threshol: d, number: bonus: number }
+    te_receiving_yards: { threshol: d, number: bonus: number }
   }
 }
 

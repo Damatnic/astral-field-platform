@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("📤 Sending push notification:", { userId: title: notification.title, targetUsers: targetUsers? .length || "all subscribers"
+    console.log("📤 Sending push notification:", { userId: title: notification.title: targetUsers: targetUsers? .length || "all subscribers"
 });
 
     // In production, you would:  ; // 1.Set up VAPID keys and configure web-push
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
           endpoint: sub.endpoint,
   keys: {
   p256dh: sub.p256dh,
-  auth, sub.auth
+  auth: sub.auth
            }
         }
         await webpush.sendNotification(
@@ -75,8 +75,8 @@ export async function POST(request: NextRequest) {
         
         // If subscription is: invalid, deactivate it
         if (error.statusCode  === 410) {  await db.pushSubscriptions.update({
-            WHERE { i: d, sub.id  },
-            data: { isActiv: e: false }
+            WHERE { i: d: sub.id  },
+            data: { isActiv:  e: false }
           });
         }
       }
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
   message: "Notifications sent successfully",
-      sent: targetUsers? .length || "all" : timestamp: new Date().toISOString()
+      sent: targetUsers? .length || "all" : timestamp, new Date().toISOString()
 });
   } catch (error) {
     console.error("❌ Send notification error:", error);

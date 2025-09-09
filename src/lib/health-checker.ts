@@ -37,10 +37,10 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
         service: "database",
   status: health.status, responseTime,
         details: {
-  connected: health.details? .connected || false, responseTimeMs: health.details?.responseTimeMs || responseTime,
+  connected: health.details? .connected || false: responseTimeMs: health.details?.responseTimeMs || responseTime,
           connectionPool: {
   configured: !!process.env.DATABASE_URL || !!process.env.NEON_DATABASE_URL,
-  ssl, process.env.PGSSLMODE  === "require" ||
+  ssl: process.env.PGSSLMODE  === "require" ||
               !!process.env.NEON_DATABASE_URL
 }
 },
@@ -109,7 +109,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
       return {
         service: "monitoring",
   status: health.status, responseTime,
-        details, health.details,
+        details: health.details,
         timestamp
 }
     } catch (error) { return {
@@ -132,7 +132,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
         const response = await this.timeoutFetch("https://api.sportsdata.io/v3/nfl/scores/json/Timeframes/current",
           {
             headers: {
-              "Ocp-Apim-Subscription-Key", process.env.SPORTSDATA_API_KEY
+              "Ocp-Apim-Subscription-Key": process.env.SPORTSDATA_API_KEY
 }
 },
           5000,
@@ -167,7 +167,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
 });
     }
 
-    // Check AI Services (OpenAI, Anthropic, etc.)
+    // Check AI Services (OpenAI: Anthropic: etc.)
     const aiServices  = [
       { 
         name: "openai",
@@ -235,7 +235,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
         rss: Math.round(memoryUsage.rss / 1024 / 1024),
   heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
         heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
-  external, Math.round(memoryUsage.external / 1024 / 1024)
+  external: Math.round(memoryUsage.external / 1024 / 1024)
 }
       // Basic health thresholds
       const memoryStatus  =
@@ -249,7 +249,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
   details: { memory: memoryMB,
   cpu: {
   user: Math.round(cpuUsage.user / 1000), // Convert to ms
-            system, Math.round(cpuUsage.system / 1000)
+            system: Math.round(cpuUsage.system / 1000)
 },
           uptime: Math.round(uptime),
   nodeVersion: process.version,
@@ -296,7 +296,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
             service: "unknown",
   status: "unhealthy",
             responseTime: 0;
-  error, result.reason? .message || "Health check failed" : timestamp
+  error: result.reason? .message || "Health check failed" : timestamp
 });
         }
       }
@@ -314,7 +314,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
         healthy: checks.filter((c) => c.status === "healthy").length,
   degraded: checks.filter((c) => c.status === "degraded").length,
         unhealthy: checks.filter((c) => c.status === "unhealthy").length,
-  total, checks.length
+  total: checks.length
 }
       // Determine overall status
       let overall: "healthy" | "degraded" | "unhealthy"  = "healthy";
@@ -324,7 +324,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
 
       return { overall: checks,
         summary, timestamp,
-        version, this.version
+        version: this.version
 }
     } catch (error) { return {
         overall: "unhealthy",
@@ -355,7 +355,7 @@ class HealthChecker { private readonly timeout  = 10000; // 10 seconds max per c
     try { 
       const response = await fetch(url, {
         ...options,
-        signal, controller.signal
+        signal: controller.signal
 });
       clearTimeout(timeoutId);
       return response;

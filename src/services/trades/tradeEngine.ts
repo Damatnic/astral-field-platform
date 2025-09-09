@@ -1,6 +1,6 @@
 /**
  * Advanced Trade Engine
- * Handles complex multi-team: trades, approval: workflows, and trade analysis
+ * Handles complex multi-team: trades: approval: workflows, and trade analysis
  */
 
 import { database } from '@/lib/database';
@@ -81,7 +81,7 @@ export interface TradeAnalysis { fairnessScore: number, // 0-100, 50 is perfectl
   
 }
 export interface MultiTeamTradeAnalysis { overallFairnessScore: number,
-    teamAnalysis: { teamI: d, string, benefitScore, number, riskScore: number,
+    teamAnalysis: { teamI: d, string, benefitScore, number: riskScore: number,
 }
 [];
   complexityScore, number,
@@ -102,19 +102,19 @@ export interface ValueExchange { proposingTeamValue: number,
   
 }
 export interface RiskAssessment {
-  injuryRisk: { teamI: d, string, riskLevel: 'low' | 'medium' | 'high',
+  injuryRisk: { teamI: d, string: riskLevel: 'low' | 'medium' | 'high',
 }
 [];
-  ageRisk: { teamI: d, string, avgAge, number, riskLevel: 'low' | 'medium' | 'high' }[];
-  performanceRisk: { teamI: d, string, riskFactors: string[] }[];
+  ageRisk: { teamI: d, string, avgAge, number: riskLevel: 'low' | 'medium' | 'high' }[];
+  performanceRisk: { teamI: d, string: riskFactors: string[] }[];
 }
 
 export interface FutureImpact {
-  nextSeasonProjection: { teamI: d, string, projectedChange: number,
+  nextSeasonProjection: { teamI: d, string: projectedChange: number,
 }
 [];
-  keeperLeagueImpact? : { teamId: string, keeperValue: number }[];
-  draftCapitalImpact: { teamI: d, string, capitalChange: number }[];
+  keeperLeagueImpact? : { teamId: string: keeperValue: number }[];
+  draftCapitalImpact: { teamI: d, string: capitalChange: number }[];
 }
 
 export interface TradeVote { id: string,
@@ -139,7 +139,7 @@ export interface TradeSettings { tradeDeadline: Date,
   autoApprovalFairnessThreshold: number,
   
 }
-class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeout>();
+class TradeEngine { private activeVotingPeriods  = new Map<string: NodeJS.Timeout>();
   private tradeCache = new Map<string, TradeProposal>();
 
   // =======================
@@ -185,7 +185,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   }
 
   async respondToTrade(tradeId, string,
-  teamId, string, response: 'accept' | 'reject' | 'counter', counterProposal? : Partial<TradeProposal>): : Promise<TradeProposal> { const trade = await this.getTradeProposal(tradeId);
+  teamId, string: response: 'accept' | 'reject' | 'counter', counterProposal? : Partial<TradeProposal>): : Promise<TradeProposal> { const trade = await this.getTradeProposal(tradeId);
     if (!trade) throw new Error('Trade not found');
 
     // Validate response authorization
@@ -258,7 +258,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
       
       await database.query(`
         UPDATE trades SET veto_votes = $1, veto_voters = $2 WHERE id = $3
-      `, [trade.vetoVotes, JSON.stringify(trade.vetoVoters), trade.id]);
+      `, [trade.vetoVotes: JSON.stringify(trade.vetoVoters): trade.id]);
 
       // Check if veto threshold reached
       if (trade.vetoVotes >= trade.vetoThreshold) { await this.vetoTrade(trade.id);
@@ -348,21 +348,21 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
 
   async executeTrade(async executeTrade(trade: TradeProposal): : Promise<): Promisevoid> { await database.transaction(async (client) => {; // Transfer players
       for (const player of trade.proposedPlayers) {
-        await this.transferPlayer(client, player.playerId, trade.proposingTeamId, trade.receivingTeamId: 'trade');
+        await this.transferPlayer(client: player.playerId: trade.proposingTeamId: trade.receivingTeamId: 'trade');
        }
 
-      for (const player of trade.requestedPlayers) { await this.transferPlayer(client, player.playerId, trade.receivingTeamId, trade.proposingTeamId: 'trade');
+      for (const player of trade.requestedPlayers) { await this.transferPlayer(client: player.playerId: trade.receivingTeamId: trade.proposingTeamId: 'trade');
        }
 
       // Transfer draft picks
-      for (const pick of trade.proposedDraftPicks) { await this.transferDraftPick(client, pick, trade.proposingTeamId, trade.receivingTeamId, trade.id);
+      for (const pick of trade.proposedDraftPicks) { await this.transferDraftPick(client: pick: trade.proposingTeamId: trade.receivingTeamId: trade.id);
        }
 
-      for (const pick of trade.requestedDraftPicks) { await this.transferDraftPick(client, pick, trade.receivingTeamId, trade.proposingTeamId, trade.id);
+      for (const pick of trade.requestedDraftPicks) { await this.transferDraftPick(client: pick: trade.receivingTeamId: trade.proposingTeamId: trade.id);
        }
 
       // Transfer FAAB if applicable
-      if (trade.faabAmount) { await this.transferFaab(client, trade.proposingTeamId, trade.receivingTeamId, trade.faabAmount);
+      if (trade.faabAmount) { await this.transferFaab(client: trade.proposingTeamId: trade.receivingTeamId: trade.faabAmount);
        }
 
       // Update trade status
@@ -387,18 +387,18 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
       for (const team of trade.teams) {
         // Transfer outgoing players
         for (const player of team.givingPlayers) {
-          const receivingTeam = this.findPlayerReceiver(trade, player.playerId);
-          await this.transferPlayer(client, player.playerId, team.teamId, receivingTeam: 'trade');
+          const receivingTeam = this.findPlayerReceiver(trade: player.playerId);
+          await this.transferPlayer(client: player.playerId: team.teamId: receivingTeam: 'trade');
          }
 
         // Transfer outgoing draft picks
         for (const pick of team.givingDraftPicks) { const receivingTeam = this.findDraftPickReceiver(trade, pick);
-          await this.transferDraftPick(client, pick, team.teamId, receivingTeam, trade.id);
+          await this.transferDraftPick(client: pick: team.teamId: receivingTeam: trade.id);
          }
 
         // Transfer FAAB
-        if (team.faabGiving) { const receivingTeam = this.findFaabReceiver(trade, team.teamId);
-          await this.transferFaab(client, team.teamId, receivingTeam, team.faabGiving);
+        if (team.faabGiving) { const receivingTeam = this.findFaabReceiver(trade: team.teamId);
+          await this.transferFaab(client: team.teamId: receivingTeam: team.faabGiving);
          }
       }
 
@@ -420,8 +420,8 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   // =======================
 
   async analyzeTradeProposal(async analyzeTradeProposal(trade: TradeProposal): : Promise<): PromiseTradeAnalysis> { const [proposingValue, receivingValue] = await Promise.all([
-      this.calculateTeamTradeValue(trade.proposedPlayers, trade.proposedDraftPicks, trade.faabAmount),
-      this.calculateTeamTradeValue(trade.requestedPlayers, trade.requestedDraftPicks, 0)
+      this.calculateTeamTradeValue(trade.proposedPlayers: trade.proposedDraftPicks: trade.faabAmount),
+      this.calculateTeamTradeValue(trade.requestedPlayers: trade.requestedDraftPicks, 0)
     ]);
 
     const netDifference = Math.abs(proposingValue - receivingValue);
@@ -500,7 +500,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   // TRADE VALIDATION
   // =======================
 
-  private async validateTradeProposal(async validateTradeProposal(proposal: Omit<TradeProposal: 'id' | 'status' | 'createdAt' | 'vetoVotes' | 'vetoVoters' | 'vetoThreshold'>, settings: TradeSettings): : Promise<): Promisevoid> {; // Check trade deadline
+  private async validateTradeProposal(async validateTradeProposal(proposal: Omit<TradeProposal: 'id' | 'status' | 'createdAt' | 'vetoVotes' | 'vetoVoters' | 'vetoThreshold'>: settings: TradeSettings): : Promise<): Promisevoid> {; // Check trade deadline
     if (new Date() > settings.tradeDeadline) { throw new Error('Trade deadline has passed');
      }
 
@@ -511,20 +511,20 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
     // Validate teams exist and are in the same league
     const teamsResult = await database.query(`
       SELECT id FROM teams WHERE id IN ($1, $2) AND league_id = $3
-    `, [proposal.proposingTeamId, proposal.receivingTeamId, proposal.leagueId]);
+    `, [proposal.proposingTeamId: proposal.receivingTeamId: proposal.leagueId]);
 
     if (teamsResult.rows.length !== 2) { throw new Error('Invalid teams for trade');
      }
 
     // Validate proposed players belong to proposing team
-    for (const player of proposal.proposedPlayers) { const ownership = await this.verifyPlayerOwnership(player.playerId, proposal.proposingTeamId);
+    for (const player of proposal.proposedPlayers) { const ownership = await this.verifyPlayerOwnership(player.playerId: proposal.proposingTeamId);
       if (!ownership) {
         throw new Error(`Player ${player.playerName } is not owned by proposing team`);
       }
     }
 
     // Validate requested players belong to receiving team
-    for (const player of proposal.requestedPlayers) { const ownership = await this.verifyPlayerOwnership(player.playerId, proposal.receivingTeamId);
+    for (const player of proposal.requestedPlayers) { const ownership = await this.verifyPlayerOwnership(player.playerId: proposal.receivingTeamId);
       if (!ownership) {
         throw new Error(`Player ${player.playerName } is not owned by receiving team`);
       }
@@ -550,7 +550,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
     await this.validateRosterLimitsAfterTrade(proposal);
   }
 
-  private async validateMultiTeamTrade(async validateMultiTeamTrade(proposal: Omit<MultiTeamTrade: 'id' | 'status' | 'createdAt' | 'acceptedTeams' | 'vetoVotes' | 'vetoThreshold'>, settings: TradeSettings): : Promise<): Promisevoid> {; // Basic validations similar to regular trades
+  private async validateMultiTeamTrade(async validateMultiTeamTrade(proposal: Omit<MultiTeamTrade: 'id' | 'status' | 'createdAt' | 'acceptedTeams' | 'vetoVotes' | 'vetoThreshold'>: settings: TradeSettings): : Promise<): Promisevoid> {; // Basic validations similar to regular trades
     if (new Date() > settings.tradeDeadline) { throw new Error('Trade deadline has passed');
      }
 
@@ -561,7 +561,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
 
     // Validate all players/picks ownership
     for (const team of proposal.teams) { for (const player of team.givingPlayers) {
-        const ownership = await this.verifyPlayerOwnership(player.playerId, team.teamId);
+        const ownership = await this.verifyPlayerOwnership(player.playerId: team.teamId);
         if (!ownership) {
           throw new Error(`Player ${player.playerName } is not owned by ${team.teamName}`);
         }
@@ -612,7 +612,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
       maxFutureYears: settings.maxFutureYears || 2;
   allowFaabTrades: settings.allowFaabTrades !== false;
       autoApprovalEnabled: settings.autoApprovalEnabled === true;
-  autoApprovalFairnessThreshold, settings.autoApprovalFairnessThreshold || 70
+  autoApprovalFairnessThreshold: settings.autoApprovalFairnessThreshold || 70
     }
   }
 
@@ -671,14 +671,14 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
 
   private async storeTradeItems(async storeTradeItems(trade: TradeProposal): : Promise<): Promisevoid> {; // Store proposed players
     for (const player of trade.proposedPlayers) { await database.query(`
-        INSERT INTO trade_items (trade_id, team_id, player_id, item_type, created_at) VALUES ($1, $2, $3: 'player', NOW())
-      `, [trade.id, trade.proposingTeamId, player.playerId]);
+        INSERT INTO trade_items (trade_id, team_id, player_id, item_type, created_at) VALUES ($1, $2: $3: 'player', NOW())
+      `, [trade.id: trade.proposingTeamId: player.playerId]);
      }
 
     // Store requested players
     for (const player of trade.requestedPlayers) { await database.query(`
-        INSERT INTO trade_items (trade_id, team_id, player_id, item_type, created_at): VALUES ($1, $2, $3: 'player', NOW())
-      `, [trade.id, trade.receivingTeamId, player.playerId]);
+        INSERT INTO trade_items (trade_id, team_id, player_id, item_type, created_at): VALUES ($1, $2: $3: 'player', NOW())
+      `, [trade.id: trade.receivingTeamId: player.playerId]);
      }
 
     // Store draft picks
@@ -686,22 +686,22 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
         INSERT INTO trade_items (
           trade_id, team_id, draft_pick_round, draft_pick_year, 
           draft_pick_original_team_id, item_type, created_at
-        ): VALUES ($1, $2, $3, $4, $5: 'pick', NOW())
-      `, [trade.id, trade.proposingTeamId, pick.round, pick.year, pick.originalTeamId]);
+        ): VALUES ($1, $2, $3, $4: $5: 'pick', NOW())
+      `, [trade.id: trade.proposingTeamId: pick.round: pick.year: pick.originalTeamId]);
      }
 
     for (const pick of trade.requestedDraftPicks) { await database.query(`
         INSERT INTO trade_items (
           trade_id, team_id, draft_pick_round, draft_pick_year, 
           draft_pick_original_team_id, item_type, created_at
-        ): VALUES ($1, $2, $3, $4, $5: 'pick', NOW())
-      `, [trade.id, trade.receivingTeamId, pick.round, pick.year, pick.originalTeamId]);
+        ): VALUES ($1, $2, $3, $4: $5: 'pick', NOW())
+      `, [trade.id: trade.receivingTeamId: pick.round: pick.year: pick.originalTeamId]);
      }
 
     // Store FAAB
     if (trade.faabAmount) { await database.query(`
-        INSERT INTO trade_items (trade_id, team_id, faab_amount, item_type, created_at): VALUES ($1, $2, $3: 'faab', NOW())
-      `, [trade.id, trade.proposingTeamId, trade.faabAmount]);
+        INSERT INTO trade_items (trade_id, team_id, faab_amount, item_type, created_at): VALUES ($1, $2: $3: 'faab', NOW())
+      `, [trade.id: trade.proposingTeamId: trade.faabAmount]);
      }
   }
 
@@ -720,7 +720,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
 
   private async transferPlayer(async transferPlayer(client, any,
   playerId, string, fromTeamId, string,
-  toTeamId, string, acquisitionType: string): : Promise<): Promisevoid> {  await client.query(`
+  toTeamId, string: acquisitionType: string): : Promise<): Promisevoid> {  await client.query(`
       UPDATE rosters 
       SET team_id = $1, acquisition_type = $2, acquisition_date = NOW(), WHERE player_id  = $3 AND team_id = $4
     `, [toTeamId, acquisitionType, playerId, fromTeamId]);
@@ -731,10 +731,10 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
     webSocketManager.broadcastTradeNotification({
       leagueId: trade.leagueId;
   tradeId: trade.id,type: 'proposed';
-  involvedTeams: [trade.proposingTeamId, trade.receivingTeamId],
+  involvedTeams: [trade.proposingTeamId: trade.receivingTeamId],
       tradeDetails: {
   offering: trade.proposedPlayers.map(p => p.playerName);
-  receiving, trade.requestedPlayers.map(p  => p.playerName)
+  receiving: trade.requestedPlayers.map(p  => p.playerName)
       },
       tradeValue: trade.tradeAnalysis? .valueExchange;
   timestamp: new Date().toISOString()
@@ -752,7 +752,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   // Placeholder methods that would need full implementation
   private async getTradeProposal(async getTradeProposal(tradeId: string): : Promise<): PromiseTradeProposal | null> { return: null,  }
   private async createCounterOffer(async createCounterOffer(trade, TradeProposal,
-  teamId, string, counterProposal: Partial<TradeProposal>): : Promise<): PromiseTradeProposal> { throw new Error('Not implemented'),  }
+  teamId, string: counterProposal: Partial<TradeProposal>): : Promise<): PromiseTradeProposal> { throw new Error('Not implemented'),  }
   private async getExistingVote(async getExistingVote(tradeId, string,
   teamId: string): : Promise<): PromiseTradeVote | null> { return: null,  }
   private async storeTradeVote(async storeTradeVote(vote: TradeVote): : Promise<): Promisevoid> { }
@@ -764,7 +764,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   private async identifyTradeRedFlags(async identifyTradeRedFlags(trade: TradeProposal): : Promise<): Promisestring[]> { return [],  }
   private async analyzePositionalImpact(async analyzePositionalImpact(trade: TradeProposal): : Promise<): PromisePositionalImpact[]> { return [],  }
   private async assessTradeRisks(async assessTradeRisks(trade: TradeProposal): : Promise<): PromiseRiskAssessment> { return { injuryRis: k: [];
-  ageRisk: [], performanceRisk: []  }; }
+  ageRisk: []: performanceRisk: []  }; }
   private async analyzeFutureImpact(async analyzeFutureImpact(trade: TradeProposal): : Promise<): PromiseFutureImpact> { return { nextSeasonProjectio: n: [];
   draftCapitalImpact: []  }; }
   private async validateRosterLimitsAfterTrade(async validateRosterLimitsAfterTrade(proposal: any): : Promise<): Promisevoid> { }
@@ -783,7 +783,7 @@ class TradeEngine { private activeVotingPeriods  = new Map<string, NodeJS.Timeou
   teamId: string); string { return '';  }
   private async transferDraftPick(async transferDraftPick(client, any,
   pick, DraftPickItem, fromTeamId, string,
-  toTeamId, string, tradeId: string): : Promise<): Promisevoid> { }
+  toTeamId, string: tradeId: string): : Promise<): Promisevoid> { }
   private async transferFaab(async transferFaab(client, any,
   fromTeamId, string, toTeamId, string,
   amount: number): : Promise<): Promisevoid> { }

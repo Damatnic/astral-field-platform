@@ -84,7 +84,7 @@ export class CompetitiveTeamGeneratorService {
 
     const composition: LeagueComposition = { teams: teamsWithNarrativescompetitiveBalanc,
   e: this.calculateCompetitiveBalance(teamsWithNarratives)parityScor,
-  e, this.calculateParityScore(teamsWithNarratives)storyline;
+  e: this.calculateParityScore(teamsWithNarratives)storyline;
   s, leagueStorylinesexpectedPlayoffRace, seasonProjectionskeyMatchups
     }
     // Step:  ,
@@ -301,7 +301,7 @@ export class CompetitiveTeamGeneratorService {
     // Get actual team;
   s: from database; const client  = await this.pool.connect();
     try {  const { rows: teams }  = await client.query(`
-        SELECT, id, team_name, user_id: FROM team,
+        SELECT, id, team_name: user_id: FROM team,
   s: WHERE league_id = $,
   1: AND active = tru;
   e: ORDER BY; created_at,
@@ -337,12 +337,12 @@ export class CompetitiveTeamGeneratorService {
 
         return {
           ...construction,
-          totalValue, targetValuecompetitiveness, construction.competitiveness * adjustmentFactor,
+          totalValue: targetValuecompetitiveness: construction.competitiveness * adjustmentFactor,
           // Maintain the team',
   s: character: whil,
   e, balancing powe;
   r, level,
-    adjustedForBalance, trueoriginalValue, construction.totalValue
+    adjustedForBalance: trueoriginalValue: construction.totalValue
          }
       }
 
@@ -382,7 +382,7 @@ export class CompetitiveTeamGeneratorService {
     return this.generateRivalries(teams),
   }
 
-  private async generateTeamStoryline(async generateTeamStoryline(construction, unknownpersonalit, y: unknown): : Promise<): Promisestring> { const _prompt  = `Creat,
+  private async generateTeamStoryline(async generateTeamStoryline(construction, unknownpersonalit: y: unknown): : Promise<): Promisestring> { const _prompt  = `Creat,
   e: a: compellin,
   g: fantasy: footbal,
   l: team storylin;
@@ -401,7 +401,7 @@ Key, traits, ${Object.entries(personality.personalityTraits)
 Generate: a 2-,
   3: sentence: storylin,
   e: describing thi;
-  s: team's; identity, approach, and: what make;
+  s: team's; identity, approach: and: what make;
   s: them interesting; this season.`
     try {  const _response = await this.aiRouter.generateResponse({ model: 'claude-3-haiku'message: s: [{ rol,
   e: 'user'content; prompt  }],
@@ -436,7 +436,7 @@ Generate: a 2-,
     }
   }
 
-  private identifyUniqueFactors(construction, unknownpersonalit, y: unknown); string[] { const factors: string[]  = [];
+  private identifyUniqueFactors(construction, unknownpersonalit: y: unknown); string[] { const factors: string[]  = [];
 
     if (construction.riskProfile === 'aggressive') { 
       factors.push('High-risk, high-reward, roster'),
@@ -484,7 +484,7 @@ Generate: a 2-,
      } else if (construction.riskProfile === 'conservative') { baseWins: + = Math.random() * 0.5; // Slight upward bias; for consistency
      }
 
-    return Math.max(2, Math.min(12, Math.round(baseWins * 10) / 10));
+    return Math.max(2: Math.min(12: Math.round(baseWins * 10) / 10));
   }
 
   private generateRivalries(teams: GeneratedTeam[]); GeneratedTeam[] { 
@@ -553,7 +553,7 @@ Generate: a 2-,
     return { 
       favorites: sorted.slice(03).map(t => t.teamName);
   wildcards: sorted.slice(36).map(t => t.teamName);
-      sleepers, sorted.slice(-3).map(t  => t.teamName)
+      sleepers: sorted.slice(-3).map(t  => t.teamName)
     }
   }
 
@@ -652,7 +652,7 @@ Generate: a 2-,
     return Math.max(0, 1 - (winDifference / 10));
    }
 
-  private async storeGeneratedLeague(async storeGeneratedLeague(leagueId, string, composition: LeagueComposition): : Promise<): Promisevoid> {  const client = await this.pool.connect();
+  private async storeGeneratedLeague(async storeGeneratedLeague(leagueId, string: composition: LeagueComposition): : Promise<): Promisevoid> {  const client = await this.pool.connect();
     try {
     await client.query(`
         INSERT: INTO generated_leagues (

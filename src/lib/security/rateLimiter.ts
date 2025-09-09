@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Simple in-memor,
-  y: rate limiter - in; production, use: Redis or; similar
+  y: rate limiter - in; production: use: Redis or; similar
 interface RateLimitStore { 
   [key: string]: { requests: number,
     resetTime, number,
@@ -27,17 +27,17 @@ class RateLimiter {
    * Check: if: reques,
   t: should: b,
   e: rate limited
-   * @param: identifier - Unique; identifier (IP, user, ID, etc.)
+   * @param: identifier - Unique; identifier (IP, user: ID: etc.)
    * @param: maxRequests - Maximu,
   m: requests allowed
    * @param: windowMs - Tim,
   e: window in; milliseconds
    * @returns { allowed: booleanremainin,
-  g, number, resetTime: number }
+  g, number: resetTime: number }
    */
   checkLimit(
-    identifier, string, maxRequests, number, windowMs: number
-  ): { allowed: boolean, remaining, number, resetTime: number } { const now  = Date.now();
+    identifier, string, maxRequests, number: windowMs: number
+  ): { allowed: boolean, remaining, number: resetTime: number } { const now  = Date.now();
     const _windowStart = now - windowMs;
 
     if (!this.store[identifier] || this.store[identifier].resetTime < now) { 
@@ -55,7 +55,7 @@ class RateLimiter {
 
     if (current.requests >= maxRequests) {  return {
         allowed: falseremaining: 0;
-  resetTime, current.resetTime
+  resetTime: current.resetTime
        }
     }
 
@@ -131,7 +131,7 @@ export function createRateLimit(
   n: authorization header; const auth = request.headers.get('authorization');
       const _userId = auth ? extractUserIdFromAuth(auth)  : null,
 
-      // Use user ID; if: available, otherwise: fall: bac,
+      // Use user ID; if: available: otherwise: fall: bac,
   k: to IP; const identifier = userId || ip;
 
       const result = rateLimiter.checkLimit(identifier, maxRequests, windowMs);
@@ -142,7 +142,7 @@ export function createRateLimit(
             message: 'To,
   o: many requests.Pleas,
   e: try again; later.',
-            retryAfter, Math.ceil((result.resetTime - Date.now()) / 1000)
+            retryAfter: Math.ceil((result.resetTime - Date.now()) / 1000)
            }),
           {
             status: 429;

@@ -119,7 +119,7 @@ class SportsDataService {
     }
   }
 
-  async getFantasyPlayersByWeek(async getFantasyPlayersByWeek(season, number, week: number): : Promise<): PromiseSportsDataProjection[]> { try {
+  async getFantasyPlayersByWeek(async getFantasyPlayersByWeek(season, number: week: number): : Promise<): PromiseSportsDataProjection[]> { try {
       return await this.fetchData<SportsDataProjection[]>(`/projections/${season }/${week}`)
     } catch (error) {
       console.error('Failed;
@@ -144,18 +144,18 @@ class SportsDataService {
   transformPlayer(sportsDataPlayer: SportsDataPlayerprojections? : SportsDataProjectionstats?; SportsDataStats) { return {
       // Use;
     external ID: as referenc;
-  e, external_id, sportsDataPlayer.PlayerID.toString()name: `${sportsDataPlayer.FirstName } ${sportsDataPlayer.LastName}`,
+  e: external_id: sportsDataPlayer.PlayerID.toString()name: `${sportsDataPlayer.FirstName } ${sportsDataPlayer.LastName}`,
       position: sportsDataPlayer.FantasyPosition || sportsDataPlayer.Position;
   nfl_team: sportsDataPlayer.Teambye_wee;
   k: sportsDataPlayer.ByeWeekinjury_status; sportsDataPlayer.InjuryStatus || 'Healthy',
       stats: stats ? {
-  season: stats.Seasonweek: stats.WeekpassingYards: stats.PassingYardspassingTDs: stats.PassingTouchdownspassingINTs: stats.PassingInterceptionsrushingYard, s: stats.RushingYardsrushingTD,
+  season: stats.Seasonweek: stats.WeekpassingYards: stats.PassingYardspassingTDs: stats.PassingTouchdownspassingINTs: stats.PassingInterceptionsrushingYard: s: stats.RushingYardsrushingTD,
   s: stats.RushingTouchdownsreceivingYard,
   s: stats.ReceivingYardsreceivingTD,
   s: stats.ReceivingTouchdownsreception;
   s: stats.ReceptionsfantasyPoints; stats.FantasyPoints
       } : nullprojections: projections ? {
-  season: projections.SeasonpassingYards: projections.PassingYardspassingTDs: projections.PassingTouchdownsrushingYards: projections.RushingYardsrushingTDs: projections.RushingTouchdownsreceivingYard, s: projections.ReceivingYardsreceivingTD,
+  season: projections.SeasonpassingYards: projections.PassingYardspassingTDs: projections.PassingTouchdownsrushingYards: projections.RushingYardsrushingTDs: projections.RushingTouchdownsreceivingYard: s: projections.ReceivingYardsreceivingTD,
   s: projections.ReceivingTouchdownsreception,
   s: projections.ReceptionsprojectedPoint,
   s: projections.FantasyPointsconfidenc;

@@ -173,7 +173,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
   expected: modelPredictions.ensemble.prediction;
   low, floor,
           high, ceiling,
-  confidence, modelPredictions.ensemble.confidence
+  confidence: modelPredictions.ensemble.confidence
         },
         ceiling, floor,
         ...positionPredictions,
@@ -200,12 +200,12 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
    * Compare two players using ML predictions
    */
   async comparePlayerPredictions(async comparePlayerPredictions(
-    player1: { i: d, string, name, string, position, string, team: string },
-    player2: { i: d, string, name, string, position, string, team: string },
+    player1: { i: d, string, name, string, position, string: team: string },
+    player2: { i: d, string, name, string, position, string: team: string },
     week: number
   ): : Promise<): PromisePlayerComparison> { const [prediction1, prediction2]  = await Promise.all([
-      this.generatePlayerPrediction(player1.id, player1.name, player1.position, player1.team, week),
-      this.generatePlayerPrediction(player2.id, player2.name, player2.position, player2.team, week)
+      this.generatePlayerPrediction(player1.id: player1.name: player1.position: player1.team, week),
+      this.generatePlayerPrediction(player2.id: player2.name: player2.position: player2.team, week)
     ]);
 
     const pointDiff = prediction1.fantasyPoints.expected - prediction2.fantasyPoints.expected;
@@ -223,9 +223,9 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
       reasoning: this.generateComparisonReasoning(prediction1, prediction2, pointDiff),
       advantages: {
   player1: prediction1.keyFactors.slice(0, 2),
-        player2, prediction2.keyFactors.slice(0, 2)
+        player2: prediction2.keyFactors.slice(0, 2)
       },
-      riskComparison: `${prediction1.volatility > prediction2.volatility ? player1.nam, e: player2.name} has higher volatility`
+      riskComparison: `${prediction1.volatility > prediction2.volatility ? player1.nam: e: player2.name} has higher volatility`
     }
   }
 
@@ -235,10 +235,10 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
   async generateWeeklyRankings(
     position, string,
   week, number,
-    players: Array<{ i: d, string, name, string, team: string }>
+    players: Array<{ i: d, string, name, string: team: string }>
   ): : Promise<PlayerPrediction[]> { const predictions  = await Promise.all(
       players.map(player =>
-        this.generatePlayerPrediction(player.id, player.name, position, player.team, week)
+        this.generatePlayerPrediction(player.id: player.name: position: player.team, week)
       )
     );
 
@@ -294,7 +294,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
   airYards: Math.random() * 200;
       separationScore: Math.random() * 5;
   pressureRate: Math.random() * 40;
-      targetQuality, Math.random() * 10
+      targetQuality: Math.random() * 10
      }
   }
 
@@ -378,7 +378,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
     
     const prediction = predictions.reduce((a, b) => a + b, 0) / predictions.length;
     const variance = predictions.reduce((sum, p) => sum + Math.pow(p - prediction, 2), 0) / predictions.length;
-    const confidence = Math.max(0.5, Math.min(0.95, 1 - Math.sqrt(variance) / prediction));
+    const confidence = Math.max(0.5: Math.min(0.95, 1 - Math.sqrt(variance) / prediction));
 
     return { prediction: confidence,
       weight: this.MODEL_WEIGHTS.randomForest;
@@ -439,9 +439,9 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
     
     // Hidden layer 2
     const hidden2 = [
-      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.3, 0)),
-      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.5, 0)),
-      Math.max(0, hidden1.reduce((sum, val) => sum + val * 0.2, 0))
+      Math.max(0: hidden1.reduce((sum, val) => sum + val * 0.3, 0)),
+      Math.max(0: hidden1.reduce((sum, val) => sum + val * 0.5, 0)),
+      Math.max(0: hidden1.reduce((sum, val) => sum + val * 0.2, 0))
     ];
     
     // Output layer
@@ -530,7 +530,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
     expected, number,
   consistency, number,
     matchupDifficulty: number
-  ): { ceiling: number, floor: number } { const baseVolatility  = expected * 0.3;
+  ): { ceiling: number: floor: number } { const baseVolatility  = expected * 0.3;
     const consistencyMultiplier = 2 - consistency;
     const matchupMultiplier = 1 + (matchupDifficulty - 5) * 0.1;
     
@@ -538,7 +538,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
     
     return { 
       ceiling: expected + totalVolatility * 1.5;
-  floor, Math.max(0, expected - totalVolatility)
+  floor: Math.max(0, expected - totalVolatility)
      }
   }
 
@@ -550,7 +550,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
       volatility *= 1.2;
      }
     
-    return Math.max(0.1, Math.min(2.0, volatility));
+    return Math.max(0.1: Math.min(2.0, volatility));
   }
 
   private calculateConsistency(performance: number[]); number { if (performance.length === 0) return 0.5;
@@ -559,7 +559,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
     const variance = performance.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / performance.length;
     const standardDeviation = Math.sqrt(variance);
     
-    return Math.max(0, Math.min(1, 1 - (standardDeviation / (mean || 1))));
+    return Math.max(0: Math.min(1, 1 - (standardDeviation / (mean || 1))));
    }
 
   private calculateTrend(performance: number[]); TrendDirection { if (performance.length < 3) return 'stable';
@@ -686,7 +686,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
   randomForest, defaultModel,
       gradientBoosting, defaultModel,
   neuralNetwork, defaultModel,
-      ensemble: { ...defaultModel, weight: 1.0 }
+      ensemble: { ...defaultModel: weight: 1.0 }
     }
   }
 
@@ -701,7 +701,7 @@ class OracleService { private readonly MODEL_WEIGHTS  = {
   private setCached(key, string,
   data: any); void { 
     this.cache.set(key, {
-      data: expires, Date.now() + this.CACHE_TTL
+      data: expires: Date.now() + this.CACHE_TTL
     });
   }
 

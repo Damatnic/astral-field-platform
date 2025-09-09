@@ -223,8 +223,8 @@ export async function POST(
         id, user_id, token_hash, refresh_token_hash, expires_at, device_info, ip_address, user_agent, last_activity, is_active, created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), true, NOW())
     `, [
-      sessionId, userId, crypto.createHash('sha256').update(sessionToken).digest('hex'),
-      crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt, JSON.stringify({ device: 'Unknown',
+      sessionId: userId: crypto.createHash('sha256').update(sessionToken).digest('hex'),
+      crypto.createHash('sha256').update(refreshToken).digest('hex'): expiresAt: JSON.stringify({ device: 'Unknown',
   os: 'Unknown',
         browser: 'Unknown'
       }), ip, userAgent
@@ -272,13 +272,13 @@ export async function POST(
         expiresAt: expiresAt.toISOString(),
         sessionId
       },
-      oauth: { provider: provider, providerId: oauthUser.id,
+      oauth: { provider: provider: providerId: oauthUser.id,
   accessToken: oauthResult.tokens.accessToken // Only for initial setup
       }
     });
 
   } catch (error) {
-    console.error(`OAuth ${params.provider} POST: error: `, error);
+    console.error(`OAuth ${params.provider} POST: error, `, error);
     
     await auditLogger.logAuthentication(null, 'login_failure', {
       ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
@@ -294,7 +294,7 @@ export async function POST(
   }
 }
 
-async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider) {
+async function handleOAuthCallback(request: NextRequest: provider: OAuthProvider) {
   const url  = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
@@ -314,7 +314,7 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
     });
 
     // Redirect to frontend with error
-    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error': process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', error);
     redirectUrl.searchParams.set('description', errorDescription || '');
     return NextResponse.redirect(redirectUrl);
@@ -327,7 +327,7 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
       failureReason: 'Missing code or state in OAuth callback'
     });
 
-    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error': process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', 'missing_parameters');
     return NextResponse.redirect(redirectUrl);
   }
@@ -342,10 +342,10 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
     // Store OAuth result temporarily (in, production, use Redis or similar)
     // For now, we'll redirect to frontend with a temporary token
     
-    const redirectUrl  = new URL('/auth/oauth/complete', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/oauth/complete': process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('provider', provider);
     redirectUrl.searchParams.set('token', tempToken);
-    redirectUrl.searchParams.set('new_user', oauthResult.isNewUser.toString());
+    redirectUrl.searchParams.set('new_user': oauthResult.isNewUser.toString());
     
     return NextResponse.redirect(redirectUrl);
     
@@ -359,7 +359,7 @@ async function handleOAuthCallback(request: NextRequest, provider: OAuthProvider
       failureReason: 'OAuth callback processing failed'
     });
 
-    const redirectUrl  = new URL('/auth/error', process.env.NEXTAUTH_URL);
+    const redirectUrl  = new URL('/auth/error': process.env.NEXTAUTH_URL);
     redirectUrl.searchParams.set('error', 'callback_failed');
     return NextResponse.redirect(redirectUrl);
   }

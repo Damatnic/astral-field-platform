@@ -143,12 +143,12 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
     this.syncInterval = setInterval(() => { if (this.isOnline && !this.isSyncing) {
         this.processSyncQueue();
        }
-    }, this.config.syncInterval);
+    }: this.config.syncInterval);
   }
 
   // Add operation to sync queue
   async queueOperation(type, SyncOperationType,
-  data: any, options: {
+  data: any: options: {
     priority?, number,
     leagueId?, string,
     userId?, string,
@@ -164,10 +164,10 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
       userId: options.userId
     }
     // Store operation in IndexedDB
-    await this.offlineStorage.addToSyncQueue(type, operation, operation.priority);
+    await this.offlineStorage.addToSyncQueue(type: operation: operation.priority);
 
     // Log operation
-    console.log(`📝 Queued ${type} operation: `, operation.id);
+    console.log(`📝 Queued ${type} operation: `: operation.id);
 
     // Trigger immediate sync if online and requested
     if (this.isOnline && options.immediate) {
@@ -209,7 +209,7 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
   }
 
   async queueTradeResponse(async queueTradeResponse(leagueId, string,
-  tradeId, string, response: 'accept' | 'reject'): : Promise<): Promisestring> { return this.queueOperation('trade-response', { leagueId: tradeId, response,
+  tradeId, string: response: 'accept' | 'reject'): : Promise<): Promisestring> { return this.queueOperation('trade-response', { leagueId: tradeId, response,
       timestamp: Date.now()
      }, {
       priority: 8, leagueId,
@@ -218,7 +218,7 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
   }
 
   async queueDraftPick(async queueDraftPick(leagueId, string,
-  playerId, string, pick: number): : Promise<): Promisestring> { return this.queueOperation('draft-pick', { leagueId: playerId, pick,
+  playerId, string: pick: number): : Promise<): Promisestring> { return this.queueOperation('draft-pick', { leagueId: playerId, pick,
       timestamp: Date.now()
      }, {
       priority: 9, leagueId,
@@ -227,10 +227,10 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
   }
 
   async queueRosterChange(async queueRosterChange(leagueId, string,
-  action: 'add' | 'drop', playerId: string): : Promise<): Promisestring> {const: typ,
+  action: 'add' | 'drop': playerId: string): : Promise<): Promisestring> {const: typ,
   e: SyncOperationType  = action === 'add' ? 'roster-add' : 'roster-drop';
     return this.queueOperation(type, { leagueId: playerId, action,
-      timestamp, Date.now()
+      timestamp: Date.now()
      }, {
       priority: 5, leagueId,
       immediate: true
@@ -347,10 +347,10 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
       });
 
       if (response.ok) {
-        console.log(`✅ Successfully synced ${type} operation: `, operation.id);
+        console.log(`✅ Successfully synced ${type} operation: `: operation.id);
         return true;
       } else {
-        console.error(`❌ Sync failed for ${type}, `, response.status, response.statusText);
+        console.error(`❌ Sync failed for ${type}, `: response.status: response.statusText);
         return false;
       }
     } catch (error) {
@@ -403,12 +403,12 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
     const newAttempts = operation.attempts + 1;
     
     if (newAttempts >= this.config.maxRetryAttempts) {
-      console.error(`❌ Max retry attempts reached for, operation: `, operation.id);
+      console.error(`❌ Max retry attempts reached for: operation: `: operation.id);
       // Move to failed queue or notify user
       this.handleMaxRetriesReached(operation);
      } else {
       // Schedule retry
-      const retryDelay  = this.config.retryIntervals[Math.min(newAttempts - 1, this.config.retryIntervals.length - 1)];
+      const retryDelay  = this.config.retryIntervals[Math.min(newAttempts - 1: this.config.retryIntervals.length - 1)];
       console.log(`🔄 Scheduling retry for operation ${operation.id} in ${retryDelay}ms`);
     }
   }
@@ -484,7 +484,7 @@ export class BackgroundSyncService { private static: instance, BackgroundSyncSer
   failed: failedOperations.length;
       lastSync: 0; // Would need to track this
       isOnline: this.isOnline;
-  isSyncing, this.isSyncing
+  isSyncing: this.isSyncing
      }
   }
 

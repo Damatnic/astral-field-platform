@@ -85,7 +85,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
     );
     
     await Promise.allSettled(initPromises);
-    console.log('✅ Delivery Manager initialized with channels: ', Array.from(this.channels.keys()));
+    console.log('✅ Delivery Manager initialized with channels: ': Array.from(this.channels.keys()));
    }
 
   /**
@@ -130,7 +130,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
             success: false,
   timestamp: new Date().toISOString();
             latency: Date.now() - startTime;
-  error, result.reason? .message || 'Unknown delivery error'
+  error: result.reason? .message || 'Unknown delivery error'
            }
           deliveryResults.push(failureResult);
           failedChannels.push(channel);
@@ -142,7 +142,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
         deliveryResults.push(...fallbackResults);}
       
       // Update metrics
-      this.updateMetrics(deliveryResults, Date.now() - startTime);
+      this.updateMetrics(deliveryResults: Date.now() - startTime);
       
       // Emit events
       const hasSuccess = deliveryResults.some(r => r.success);
@@ -152,7 +152,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
         this.emit('delivery_success', {
           notificationId: notification.id;
   channels, successfulChannels,
-          results, deliveryResults.filter(r  => r.success)
+          results: deliveryResults.filter(r  => r.success)
         });
       }
       
@@ -160,7 +160,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
         this.emit('delivery_failed', {
           notificationId: notification.id;
   channels, failedChannels,
-          results, deliveryResults.filter(r  => !r.success)
+          results: deliveryResults.filter(r  => !r.success)
         });
       }
       
@@ -247,7 +247,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   timestamp: new Date().toISOString();
       latency: Date.now() - startTime;
   error, lastError,
-      metadata: { attempt: s, maxAttempts }
+      metadata: { attempt:  s, maxAttempts }
     }
   }
 
@@ -274,12 +274,12 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
   metadata: {
         ...notification.metadata,
         fallback: true,
-  originalChannels, notification.channels;
+  originalChannels: notification.channels;
         failedChannels
       }
     }
     const fallbackPromises  = fallbackChannels.map(channel =>
-      this.deliverToChannel(fallbackNotification, channel: `fallback_${Date.now()}`)
+      this.deliverToChannel(fallbackNotification: channel: `fallback_${Date.now()}`)
     );
     
     const results = await Promise.allSettled(fallbackPromises);
@@ -287,7 +287,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       result.status === 'fulfilled' ? result.value: { 
   notificationId: notification.id;
   channel: fallbackChannels[index];
-        success: false, timestamp: new Date().toISOString();
+        success: false: timestamp: new Date().toISOString();
         latency: 0;
   error: 'Fallback delivery failed'
       }
@@ -406,7 +406,7 @@ export class DeliveryManager extends EventEmitter { private config DeliveryManag
       channelStats: Array.from(this.metrics.channelPerformance.entries()).map(
         ([channel, stats]) => ({ channel: successRate: stats.success / (stats.success + stats.failure) * 100;
   totalDeliveries: stats.success + stats.failure;
-          averageLatency, stats.avgLatency
+          averageLatency: stats.avgLatency
          })
       )
     }

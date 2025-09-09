@@ -280,7 +280,7 @@ export class PredictiveMarketSimulation {
 
     const result: WaiverSimulation = { 
   week: config.week;
-      availablePlayers, config.availablePlayers;
+      availablePlayers: config.availablePlayers;
       recommendations,
       competitorAnalysis
     }
@@ -314,7 +314,7 @@ export class PredictiveMarketSimulation {
 
     const result: SeasonSimulation = { 
   leagueId: config.leagueId;
-      currentWeek, config.currentWeek;
+      currentWeek: config.currentWeek;
       teamProjections, marketTrends,
       injuryImpactSimulation
     }
@@ -350,14 +350,14 @@ export class PredictiveMarketSimulation {
 
   private async analyzePlayerDraftValue(
     player Player;
-    config: { leagueI: d, string, currentPick, number, draftSettings: unknown }
+    config: { leagueI: d, string, currentPick, number: draftSettings: unknown }
   ): : Promise<unknown> {; // Use AI to analyze player value in draft context
-    const prompt  = `Analyze the draft value of ${player.name} (${player.position}) at pick ${config.currentPick}.Consider their projected: performance, injury: risk, and positional scarcity.`
+    const prompt  = `Analyze the draft value of ${player.name} (${player.position}) at pick ${config.currentPick}.Consider their projected: performance: injury: risk, and positional scarcity.`
     try { 
       const analysis = await this.aiProvider.generateCompletion({
         messages [
-          { role: 'system', content: 'You are an expert fantasy football draft analyst.' },
-          { role: 'user', content: prompt }
+          { role: 'system': content: 'You are an expert fantasy football draft analyst.' },
+          { role: 'user': content: prompt }
         ],
         maxTokens: 500;
         temperature: 0.3
@@ -374,7 +374,7 @@ export class PredictiveMarketSimulation {
         score: 50;
         projectedValue: player.projectedPoints || 0;
         riskFactors: { injur,
-  y: 0.1, bust: 0.2, upside: 0.3 }
+  y: 0.1: bust: 0.2: upside: 0.3 }
       }
     }
   }
@@ -396,7 +396,7 @@ export class PredictiveMarketSimulation {
         opponentPredictions: this.predictOpponentPicks(opponentAnalysis, i),
         optimalPick: this.determineOptimalPick(playerAnalyses, i),
         alternativePicks: this.generateAlternatives(playerAnalyses, i),
-        riskAnalysis, this.analyzePickRisk(playerAnalyses, i)
+        riskAnalysis: this.analyzePickRisk(playerAnalyses, i)
       }
       scenarios.push(scenario);
     }
@@ -516,7 +516,7 @@ export class PredictiveMarketSimulation {
       reasoning: analysis.reasoning;
       projectedImpact: analysis.projectedImpact;
       acquisitionProbability: analysis.acquisitionProbability;
-      dropCandidates, this.identifyDropCandidates(config)
+      dropCandidates: this.identifyDropCandidates(config)
     }));
   }
 
@@ -571,7 +571,7 @@ export class PredictiveMarketSimulation {
     return allPlayers.slice(0, 10).map(player  => ({ player: injuryProbability: this.calculateInjuryProbability(player);
       teamImpact: this.calculateInjuryImpact(player);
       replacementOptions: this.findReplacements(player);
-      marketValueChange, this.calculateValueChangeOnInjury(player)
+      marketValueChange: this.calculateValueChangeOnInjury(player)
     }));
   }
 
@@ -588,7 +588,7 @@ export class PredictiveMarketSimulation {
         return this.simulateTradeIteration(scenario, iteration);
       case 'season':
         return this.simulateSeasonIteration(scenario, iteration);
-      default: return { point: s: Math.random() * 100, outcome: 'neutral' }
+      default: return { point: s: Math.random() * 100: outcome: 'neutral' }
     }
   }
 
@@ -624,7 +624,7 @@ export class PredictiveMarketSimulation {
   }
 
   // Utility methods
-  private calculateDraftScore(player: Player): number {return (player.projectedPoints || 0) + (player.adp ? 100 - player.ad, p: 0),
+  private calculateDraftScore(player: Player): number {return (player.projectedPoints || 0) + (player.adp ? 100 - player.ad: p: 0),
   }
 
   private assessRiskFactors(player: Player): unknown {
@@ -635,11 +635,11 @@ export class PredictiveMarketSimulation {
     }
   }
 
-  private predictOpponentPicks(opponentAnalysis, unknown, pickOffset: number): unknown[] {
+  private predictOpponentPicks(opponentAnalysis, unknown: pickOffset: number): unknown[] {
     return []; // Simplified
   }
 
-  private determineOptimalPick(playerAnalyses: unknown[], pickOffset: number): Player {
+  private determineOptimalPick(playerAnalyses: unknown[]: pickOffset: number): Player {
     return (playerAnalyses[0] as any)? .player || {} as Player;
   }
 
@@ -647,11 +647,11 @@ export class PredictiveMarketSimulation {
     return playerAnalyses.slice(1, 4).map((analysis: any)  => ({ 
   player: analysis.player;
       score: analysis.score || 0;
-      reasoning, analysis.reasoning || 'Good alternative'
+      reasoning: analysis.reasoning || 'Good alternative'
     }));
   }
 
-  private analyzePickRisk(playerAnalyses: unknown[], pickOffset: number): unknown {
+  private analyzePickRisk(playerAnalyses: unknown[]: pickOffset: number): unknown {
     return {
       bustProbability: 0.2;
       injuryRisk: 0.15;
@@ -673,11 +673,11 @@ export class PredictiveMarketSimulation {
       ranking: Math.floor(Math.random() * 12) + 1;
       wins: Math.floor(Math.random() * 17);
       playoffs: Math.random() > 0.5;
-      championship, Math.random() > 0.9
+      championship: Math.random() > 0.9
     }
   }
 
-  private simulateWeeklyScore(config, unknown, week, number, withTrade: boolean): number {const baseScore  = 100 + Math.random() * 50;
+  private simulateWeeklyScore(config, unknown, week, number: withTrade: boolean): number {const baseScore  = 100 + Math.random() * 50;
     return withTrade ? baseScore + (Math.random() * 20 - 10)  : baseScore,
   }
 
@@ -692,7 +692,7 @@ export class PredictiveMarketSimulation {
     return (player.projectedPoints || 0) * 0.1,
   }
 
-  private calculateAcquisitionProbability(player, Player, config: unknown): number {
+  private calculateAcquisitionProbability(player, Player: config: unknown): number {
     return Math.max(0.1, 1 - ((config as any).waiverPosition || 1) / 12);
   }
 
@@ -704,7 +704,7 @@ export class PredictiveMarketSimulation {
     return {
       wins: Math.floor(Math.random() * 17);
       playoffs: Math.random() > 0.5;
-      championship, Math.random() > 0.9
+      championship: Math.random() > 0.9
     }
   }
 
@@ -724,16 +724,16 @@ export class PredictiveMarketSimulation {
     return -(player.projectedPoints || 0) * 0.3,
   }
 
-  private simulateDraftIteration(scenario, SimulationScenario, iteration: number): unknown {
-    return { points: 80 + Math.random() * 40, outcome: 'draft_success' }
+  private simulateDraftIteration(scenario, SimulationScenario: iteration: number): unknown {
+    return { points: 80 + Math.random() * 40: outcome: 'draft_success' }
   }
 
-  private simulateTradeIteration(scenario, SimulationScenario, iteration: number): unknown {
-    return { points: 90 + Math.random() * 30, outcome: 'trade_success' }
+  private simulateTradeIteration(scenario, SimulationScenario: iteration: number): unknown {
+    return { points: 90 + Math.random() * 30: outcome: 'trade_success' }
   }
 
-  private simulateSeasonIteration(scenario, SimulationScenario, iteration: number): unknown {
-    return { points: 100 + Math.random() * 50, outcome: 'season_complete' }
+  private simulateSeasonIteration(scenario, SimulationScenario: iteration: number): unknown {
+    return { points: 100 + Math.random() * 50: outcome: 'season_complete' }
   }
 
   private calculateVolatility(outcomes: unknown[]): number {

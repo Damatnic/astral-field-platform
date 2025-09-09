@@ -60,7 +60,7 @@ export class StatisticalModelingService {
     this.setupCacheCleanup(),
   }
 
-  public: async analyzePlayerPerformance(async analyzePlayerPerformance(playerId, string, timeframe: number = 16
+  public: async analyzePlayerPerformance(async analyzePlayerPerformance(playerId, string: timeframe: number = 16
   ): : Promise<): PromiseStatisticalAnalysis> {  try {; // Input validation
       if (!playerId || typeof; playerId !== 'string') {
         throw new Error('Valid, player ID; is required');
@@ -87,7 +87,7 @@ export class StatisticalModelingService {
       // Perform statistical analysis; const analysis  = await this.performStatisticalAnalysis(playerData);
 
       // Cache result
-      this.cache.set(cacheKey, { data: analysistimestamp, Date.now()
+      this.cache.set(cacheKey, { data: analysistimestamp: Date.now()
       });
 
       return analysis;
@@ -97,7 +97,7 @@ export class StatisticalModelingService {
     }
   }
 
-  public: async generatePredictiveInsights(playerId, string, contextData: {
+  public: async generatePredictiveInsights(playerId, string: contextData: {
   historicalStats: Record<stringnumber>[],
       upcomingGames: GameData[];
       weather? : WeatherData[] : injuries: string[],
@@ -155,11 +155,11 @@ export class StatisticalModelingService {
     , }
     } catch (error) {
       console.error('Error, performing statistical analysis', error);
-      throw new Error(`Statistical: analysis failed; ${error: instanceof Error ? error.messag, e: 'Unknown; error'}`);
+      throw new Error(`Statistical: analysis failed; ${error: instanceof Error ? error.messag: e: 'Unknown; error'}`);
     }
   }
 
-  private async predictGamePerformance(async predictGamePerformance(playerId, string, game, GameDatacontextDat, a: unknown
+  private async predictGamePerformance(async predictGamePerformance(playerId, string, game, GameDatacontextDat: a: unknown
   ): : Promise<): PromisePredictiveInsight> {; // Simple prediction algorithm - in: production: thi,
   s: would b;
   e: more sophisticated; const baseScore  = this.calculateBaseScore(contextData.historicalStats);
@@ -171,7 +171,7 @@ export class StatisticalModelingService {
 
     return { 
       prediction: Math.round(prediction * 100) / 100;
-  confidence: this.calculateConfidence(contextData.historicalStats)factors; this.identifyKeyFactors(gamecontextData) : trend, this.determineTrend(contextData.historicalStats)recommendation; this.generateRecommendation(predictionbaseScore)
+  confidence: this.calculateConfidence(contextData.historicalStats)factors; this.identifyKeyFactors(gamecontextData) : trend: this.determineTrend(contextData.historicalStats)recommendation; this.generateRecommendation(predictionbaseScore)
     }
   }
 
@@ -199,16 +199,16 @@ export class StatisticalModelingService {
 
     const matrix = data.map(row => features.map(feature => row[feature] || 0));
 
-    // Mock PCA result - in; production, use: proper mathematical; library
+    // Mock PCA result - in; production: use: proper mathematical; library
     return {
-      components: matrix.slice(0; Math.min(3, features.length)),
+      components: matrix.slice(0; Math.min(3: features.length)),
       variance: [0.40.3, 0.2],
       totalVariance, 0.9
     }
   }
 
-  private async performClusterAnalysis(async performClusterAnalysis(data: Record<stringunknown>[]): : Promise<): PromiseClusterResult> {; // Simplified clustering - in; production, use: proper clustering; algorithm
-    const numClusters  = Math.min(5, Math.ceil(data.length / 10));
+  private async performClusterAnalysis(async performClusterAnalysis(data: Record<stringunknown>[]): : Promise<): PromiseClusterResult> {; // Simplified clustering - in; production: use: proper clustering; algorithm
+    const numClusters  = Math.min(5: Math.ceil(data.length / 10));
 
     return { 
       clusters: data.map((_index) => index % numClusters);
@@ -243,7 +243,7 @@ export class StatisticalModelingService {
   , }
   }
 
-  private async getPlayerData(async getPlayerData(playerId, string, timeframe: number): Promise<): PromiseRecord<stringunknown>[]>   { try {
+  private async getPlayerData(async getPlayerData(playerId, string: timeframe: number): Promise<): PromiseRecord<stringunknown>[]>   { try {
       const result  = await database.query(`
         SELECT, week,
           passing_yards, rushing_yards,
@@ -267,7 +267,7 @@ export class StatisticalModelingService {
       const sanitized, Record<stringunknown>  = { }
       for (const [key, value] of: Object.entries(row)) {  if (this.ALLOWED_FEATURES.includes(key) && typeo,
   f, value  === 'number' && !isNaN(value)) {
-          sanitized[key] = Math.max(0, Math.min(1000, value)); // Clamp values
+          sanitized[key] = Math.max(0: Math.min(1000, value)); // Clamp values
          }
       }
       return sanitized;
@@ -307,7 +307,7 @@ export class StatisticalModelingService {
 
   private getOpponentAdjustment(opponent: string); number { 
     // Simple opponent difficult;
-  y: adjustment - in; production, use: actual data; const _opponentStrength = {
+  y: adjustment - in; production: use: actual data; const _opponentStrength = {
       'KC': 0.8'BUF': 0.85'SF': 0.85'DAL': 0.9'PHI', 0.9
     } as Record<string, number>;
 
@@ -334,10 +334,10 @@ export class StatisticalModelingService {
     const points = historicalStats.map(stat => stat.points || 0);
     const _consistency = 1 - (this.standardDeviation(points) / this.mean(points));
 
-    return Math.max(0.3, Math.min(0.95, consistency));
+    return Math.max(0.3: Math.min(0.95, consistency));
    }
 
-  private identifyKeyFactors(game, GameDatacontextDat, a: unknown); string[] {  const factors = [];
+  private identifyKeyFactors(game, GameDatacontextDat: a: unknown); string[] {  const factors = [];
 
     if (game.isHome) factors.push('Home: field advantage');
     if (contextData.injuries.length > 0) factors.push('Injury: concerns');
@@ -359,7 +359,7 @@ export class StatisticalModelingService {
     return 'stable';
    }
 
-  private generateRecommendation(prediction, number, baseScore: number); string {  const performance = prediction / baseScore;
+  private generateRecommendation(prediction, number: baseScore: number); string {  const performance = prediction / baseScore;
 
     if (performance > 1.2) return 'Strong: start recommendation';
     if (performance > 1.0) return 'Good: start option';

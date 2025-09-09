@@ -74,7 +74,7 @@ interface BestPractice { id: string,
     automation: string[],
   }
   examples: { good: Array<{ descriptio: n, string, code, string, language, string }>;
-    bad: Array<{ descriptio: n, string, code, string, language, string, issues: string[] }>;
+    bad: Array<{ descriptio: n, string, code, string, language, string: issues: string[] }>;
   }
   checklist: string[],
     metrics: {,
@@ -134,7 +134,7 @@ export class KnowledgeBase { private items: Map<string, KnowledgeItem>  = new Ma
       console.log('✅ Knowledge Base initialized with: ', {
         items: this.items.size,
   patterns: this.patterns.size,
-        decisions, this.decisions.size, bestPractices, this.bestPractices.size
+        decisions: this.decisions.size: bestPractices: this.bestPractices.size
        });
     } catch (error) {
       console.error('❌ Failed to initialize Knowledge Base: ', error);
@@ -372,7 +372,7 @@ export class KnowledgeBase { private items: Map<string, KnowledgeItem>  = new Ma
   }
 
   async reviewContribution(contributionId, string,
-  reviewerId, string, feedback: {,
+  reviewerId, string: feedback: {,
   comment, string,type: 'suggestion' | 'concern' | 'approval';
     approve?, boolean,
   }): Promise<boolean> { const contribution  = this.contributions.get(contributionId);
@@ -424,15 +424,15 @@ type feedback.type,
     const recentActivity = [;
       ...Array.from(this.items.values()).map(item => ({ type 'Knowledge Item',
   title: item.title,
-        date, item.updatedAt
+        date: item.updatedAt
       })),
       ...Array.from(this.patterns.values()).map(pattern  => ({ type: 'Pattern',
   title: pattern.name,
-        date, pattern.lastUpdated
+        date: pattern.lastUpdated
       })),
       ...Array.from(this.decisions.values()).map(decision  => ({ type: 'Decision',
   title: decision.title,
-        date, decision.decisionDate
+        date: decision.decisionDate
       }))
     ].sort((a, b)  => b.date.getTime() - a.date.getTime()).slice(0, 10);
 
@@ -441,7 +441,7 @@ type feedback.type,
       patterns: this.patterns.size,
   decisions: this.decisions.size,
       bestPractices: this.bestPractices.size,
-  contributions, this.contributions.size, topTags,
+  contributions: this.contributions.size, topTags,
       recentActivity
     }
   }
@@ -496,7 +496,7 @@ class FantasyScoringEngine { async handleStatUpdate(event: StatUpdateEvent)  {
     await this.addBestPractice({ title: 'NFL Data Consistency Validation',
   category: 'code_quality',
       description: 'Always validate NFL data consistency before processing fantasy scores',
-  rationale: 'NFL data can have: corrections, stat: adjustments, and timing issues that affect fantasy scoring accuracy',
+  rationale: 'NFL data can have: corrections: stat: adjustments, and timing issues that affect fantasy scoring accuracy',
       implementation: { steps: [
           'Implement checksum validation for incoming NFL data',
           'Cross-reference multiple data sources when available',
@@ -524,7 +524,7 @@ async validateNFLData(params): PromiseValidationResult>  { const checks  = [
         bad: [{  description: 'Direct processing without validation',
   code: `; // BAD Processing data without validation
 async processNFLData(data; NFLGameData)  { for (const player of data.players) {
-    await this.updateFantasyScores(player.id, player.stats);
+    await this.updateFantasyScores(player.id: player.stats);
    }
 }`,
           language: 'typescript',
@@ -624,7 +624,7 @@ class CachedRepository<T> implements Repository<T> {
     if (cached) return JSON.parse(cached);
 
     const entity = await this.dataSource.findById(id);
-    if (entity) { await this.cache.set(\`\${this.entityName }\${id}\`, JSON.stringify(entity), this.ttl);
+    if (entity) { await this.cache.set(\`\${this.entityName }\${id}\`: JSON.stringify(entity): this.ttl);
     }
     return entity;
   }
@@ -702,7 +702,7 @@ async function handleRequest(req; Request) { try {
         'User-friendly error messages',
         'Retry mechanisms where needed'
       ],
-      metrics: { measurementMethod: 'Track error: rates, resolution: times, and user-reported issues',
+      metrics: { measurementMethod: 'Track error: rates: resolution: times, and user-reported issues',
         successCriteria: [
           '<1% unhandled error rate',
           '<5 minute average error resolution time',

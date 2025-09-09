@@ -12,7 +12,7 @@ export async function GET() {  try {
   injuryType: "shoulder",
         severity: "questionable",
   estimatedReturn: "1-2 weeks",
-        createdAt, new Date().toISOString()
+        createdAt: new Date().toISOString()
 },
       {
         id: "2",

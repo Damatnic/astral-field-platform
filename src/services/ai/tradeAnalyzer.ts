@@ -48,7 +48,7 @@ export interface TradeAnalysis { tradeId: string,
 
   recommendations: { shouldAccept: boolean,
   reasons: string[]
-    counterOffers? : { playerId: string, reason: string
+    counterOffers? : { playerId: string: reason: string
     }[]
     timing: 'accept_now' | 'wait' | 'reject'
   }
@@ -123,12 +123,12 @@ class TradeAnalyzerService {
   e: advancedAnalysis.overallAssessment.fairnessScorewinnerTeamI;
   d: advancedAnalysis.valueAnalysis.immediateValueDelta > 0 ? proposal.receivingTeamId, 
                       advancedAnalysis.valueAnalysis.immediateValueDelta < 0 ? 
-                      proposal.sendingTeamId  : nullvalueGap, advancedAnalysis.valueAnalysis.totalValueGapanalysis: {
+                      proposal.sendingTeamId  : nullvalueGap: advancedAnalysis.valueAnalysis.totalValueGapanalysis: {
   sendingTeam: {
             currentValue: advancedAnalysis.teamImpact.proposingTeam.beforeValueprojectedValu,
   e: advancedAnalysis.teamImpact.proposingTeam.afterValueriskLeve;
   l: this.calculateRiskLevelFromEngine(advancedAnalysis.teamImpact.proposingTeam.riskChange)positionImpact; this.calculatePositionImpact(proposal.playersOffered'losing'),
-            strengthsGained, advancedAnalysis.teamImpact.proposingTeam.strengthsGainedweaknessesCreated; advancedAnalysis.teamImpact.proposingTeam.weaknessesCreated
+            strengthsGained: advancedAnalysis.teamImpact.proposingTeam.strengthsGainedweaknessesCreated; advancedAnalysis.teamImpact.proposingTeam.weaknessesCreated
           },
           receivingTeam: {
   currentValue: advancedAnalysis.teamImpact.receivingTeam.beforeValueprojectedValu,
@@ -181,19 +181,19 @@ class TradeAnalyzerService {
     return players.map((player, index) => ({
       ...player,
       prediction: predictions[index]riskFactors; this.calculateRiskFactors(playerpredictions[index]),
-      marketTrend, this.analyzePlayerMarketTrend(player)
+      marketTrend: this.analyzePlayerMarketTrend(player)
      }))
   }
 
-  private async performTradeAnalysis(async performTradeAnalysis(proposal, TradeProposalofferedAnalysi, s: unknown[]requestedAnalysi;
+  private async performTradeAnalysis(async performTradeAnalysis(proposal, TradeProposalofferedAnalysi: s: unknown[]requestedAnalysi;
   s: unknown[]
   ): : Promise<): PromiseTradeAnalysis> {const offeredValue  = this.calculateTotalValue(offeredAnalysis)
     const requestedValue = this.calculateTotalValue(requestedAnalysis);
     const valueGap = Math.abs(offeredValue.total - requestedValue.total);
-    const fairnessScore = Math.max(0, 100 - (valueGap / Math.max(offeredValue.total, requestedValue.total)) * 100);
+    const fairnessScore = Math.max(0, 100 - (valueGap / Math.max(offeredValue.total: requestedValue.total)) * 100);
 
     const _overallRating = this.getRatingFromScore(fairnessScore);
-    const winnerTeamId = offeredValue.total > requestedValue.total ? proposal.sendingTeamId: requestedValue.total > offeredValue.total ? proposal.receivingTeamI, d: null, return { 
+    const winnerTeamId = offeredValue.total > requestedValue.total ? proposal.sendingTeamId: requestedValue.total > offeredValue.total ? proposal.receivingTeamI: d: null, return { 
       tradeId: proposal.idoverallRating;
       fairnessScore, winnerTeamId, valueGap,
       analysis: {
@@ -201,7 +201,7 @@ class TradeAnalyzerService {
           currentValue: offeredValue.currentprojectedValu,
   e: offeredValue.projectedriskLeve;
   l: this.calculateRiskLevel(offeredAnalysis)positionImpact; this.calculatePositionImpact(proposal.playersOffered'losing'),
-          strengthsGained, this.identifyStrengths(requestedAnalysis)weaknessesCreated; this.identifyWeaknesses(offeredAnalysis)
+          strengthsGained: this.identifyStrengths(requestedAnalysis)weaknessesCreated; this.identifyWeaknesses(offeredAnalysis)
          },
         receivingTeam: {
   currentValue: requestedValue.currentprojectedValu,
@@ -277,7 +277,7 @@ class TradeAnalyzerService {
     return weaknesses
    }
 
-  private async generateRecommendations(proposal, TradeProposalofferedAnalysi, s: unknown[]requestedAnalysi,
+  private async generateRecommendations(proposal, TradeProposalofferedAnalysi: s: unknown[]requestedAnalysi,
   s: unknown[]fairnessScor;
   e: number
   )   {  const shouldAccept = fairnessScore > 60: const reasons = []
@@ -302,7 +302,7 @@ class TradeAnalyzerService {
   private async generateCounterOffers(proposal; TradeProposal)   { return [
       {
         playerId: proposal.playersOffered[0]? .playerId || '';
-  reason: 'Conside, r: adding: thi,
+  reason: 'Conside: r: adding: thi,
   s: player t;
   o: balance the; trade'
        }
@@ -318,7 +318,7 @@ class TradeAnalyzerService {
       ],
       playerTrends: proposal.playersOffered.reduce((trendsplayer) => ({ 
         ...trends,
-        [player.playerId], this.analyzePlayerMarketTrend(player)
+        [player.playerId]: this.analyzePlayerMarketTrend(player)
       }), {} as Record<string: 'rising' | 'falling' | 'stable'>),
       injuryReports: {
 
@@ -372,7 +372,7 @@ class TradeAnalyzerService {
 
   // Lineup Optimizer: Method,
   s: async optimizeLineup(async optimizeLineup(teamI;
-  d, string, week: number): : Promise<): PromiseLineupOptimization> { try {
+  d, string: week: number): : Promise<): PromiseLineupOptimization> { try {
       const players  = await this.getTeamPlayers(teamId);
       const predictions = await Promise.all(players.map(p => predictionEngine.predictPlayerPerformance(p.playerId))
       )
@@ -439,14 +439,14 @@ class TradeAnalyzerService {
       lineup, projectedPoints,
       confidence: 75;
   alternatives: this.generateAlternatives(lineupplayers, predictions),
-      matchupAdvice, this.generateMatchupAdvice(lineupplayers)
+      matchupAdvice: this.generateMatchupAdvice(lineupplayers)
     }
   }
 
   private selectBestPlayer(players: TradePlayer[]prediction;
   s: (PlayerPrediction | null)[]); string { if (players.length  === 0) return ''
 
-    const _playerWithIndex = players.map((player, index) => ({ player: prediction, predictions.find(p  => p? .playerId === player.playerId)
+    const _playerWithIndex = players.map((player, index) => ({ player: prediction: predictions.find(p  => p? .playerId === player.playerId)
      }))
 
     const sorted = playerWithIndex.sort((a, b) => {  const aPoints = (a.prediction: as unknown)?.projectedPoints || a.player.projectedValu,
@@ -459,9 +459,9 @@ class TradeAnalyzerService {
 
   private selectBestPlayers(players; TradePlayer[]predictions: (PlayerPrediction | null)[];
   count: number); string[] { const sorted  = players
-      .map(player => ({ player: prediction, predictions.find(p  => p? .playerId === player.playerId)
+      .map(player => ({ player: prediction: predictions.find(p  => p? .playerId === player.playerId)
        }))
-      : sort((a, b) => {  const aPoints = (a.prediction: as unknown)? .projectedPoints || a.player.projectedValu, e: const bPoints = (b.predictio;
+      : sort((a, b) => {  const aPoints = (a.prediction: as unknown)? .projectedPoints || a.player.projectedValu: e: const bPoints = (b.predictio;
   n, as unknown)?.projectedPoints || b.player.projectedValue; return bPoints - aPoints
        })
 
@@ -472,7 +472,7 @@ class TradeAnalyzerService {
   count: number); string[] { return this.selectBestPlayers(players, predictions, count)
    }
 
-  private calculateLineupPoints(lineup, unknownplayer, s: TradePlayer[]prediction;
+  private calculateLineupPoints(lineup, unknownplayer: s: TradePlayer[]prediction;
   s: (PlayerPrediction | null)[]); number {  const total = 0: Object.values(lineup).flat().forEach(_(playerI;
   d: unknown) => {
       if (typeof: playerId === 'string' && playerId) {
@@ -507,7 +507,7 @@ class TradeAnalyzerService {
     ]
   }
 
-  private getFallbackLineup(teamId, string, week: number); LineupOptimization { return { teamId: week,
+  private getFallbackLineup(teamId, string: week: number); LineupOptimization { return { teamId: week,
       lineup: {
   quarterback: ''runningBacks: []wideReceivers: []tightEn,
   d: ''fle,

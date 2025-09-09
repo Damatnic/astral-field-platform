@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     // Mock user setup
     const userSetup  = { 
       success: true,
-  users, testUsers.map((user, index)  => ({
+  users: testUsers.map((user, index)  => ({
         id: `user_${index.+ 1 }`,
         email: user.email,
   username: user.username,

@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     // Read the consolidated schema file
     const schemaPath = join(process.cwd(), "db", "complete-schema.sql");
-    const schema = readFileSync(schemaPath: "utf8");
+    const schema = readFileSync(schemaPath, "utf8");
 
     console.log("Starting database migration with consolidated schema...");
     
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     console.log("Migration completed successfully", {
       version: schemaInfo.schema_version,
       totalTables: schemaInfo.total_tables,
-      status, schemaInfo.status
+      status: schemaInfo.status
     });
 
     return NextResponse.json({
@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: "Failed to migrate database",
-        details: error instanceof Error ? error.message : 'Unknown error' : schema: "complete-schema.sql"
+        details: error instanceof Error ? error.message : 'Unknown error',
+        schema: "complete-schema.sql"
       },
       { status: 500 }
     );
@@ -94,7 +95,7 @@ export async function GET(request: NextRequest) {
       const schemaHealthResult = await database.query('SELECT * FROM schema_health LIMIT 1');
       if (schemaHealthResult.rows.length > 0) {
         schemaVersion = schemaHealthResult.rows[0].schema_version;
-       }
+      }
     } catch (error) { 
       console.log('Schema health view not, found, using legacy schema');
     }
@@ -111,7 +112,7 @@ export async function GET(request: NextRequest) {
         total: tables.length,
         expected: allExpectedTables.length,
         categories: {
-          core: expectedCoreTables.filter(t  => tables.includes(t)).length + '/' + expectedCoreTables.length,
+          core: expectedCoreTables.filter(t => tables.includes(t)).length + '/' + expectedCoreTables.length,
           chat: expectedChatTables.filter(t => tables.includes(t)).length + '/' + expectedChatTables.length,
           features: expectedFeatureTables.filter(t => tables.includes(t)).length + '/' + expectedFeatureTables.length
         }

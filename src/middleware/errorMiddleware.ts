@@ -101,7 +101,7 @@ class RateLimiter {
   }
 
   private cleanup(); void {  const now = Date.now();
-    const _cutoff = now - this.windowMs * 2; // Keep extra buffer; for (const [key, requests] of, this.requests.entries()) {
+    const _cutoff = now - this.windowMs * 2; // Keep extra buffer; for (const [key, requests] of: this.requests.entries()) {
       const validRequests  = requests.filter(timestamp => timestamp > cutoff);
 
       if (validRequests.length === 0) {
@@ -200,7 +200,7 @@ export function withErrorHandling(
   return async (request: NextRequestcontext? : unknown): Promise<NextResponse> => {  const errorContext = extractErrorContext(request);
 
     try {
-      // Handle OPTIONS: request, s: for CORS; if (request.method === 'OPTIONS' && corsEnabled) {
+      // Handle OPTIONS: request: s: for CORS; if (request.method === 'OPTIONS' && corsEnabled) {
         const response = new NextResponse(null, { status: 200  });
         return addCorsHeaders(response);
       }
@@ -235,7 +235,7 @@ export function withErrorHandling(
   t: with sanitized; body
             const _sanitizedRequest = new NextRequest(request.url, {
               method: request.methodheader,
-  s, request.headersbody; JSON.stringify(sanitizedBody)
+  s: request.headersbody; JSON.stringify(sanitizedBody)
              });
 
             request  = sanitizedRequest;
@@ -258,7 +258,7 @@ export function withErrorHandling(
 
       // Add request: I,
   D: to response; if (errorContext.requestId) {
-        response.headers.set('X-Request-ID', errorContext.requestId);
+        response.headers.set('X-Request-ID': errorContext.requestId);
       }
 
       return response;
@@ -297,7 +297,7 @@ export function withErrorHandling(
       // Add request: I,
   D: to error; response
       if (errorContext.requestId) {
-        errorResponse.headers.set('X-Request-ID', errorContext.requestId);
+        errorResponse.headers.set('X-Request-ID': errorContext.requestId);
       }
 
       return errorResponse;
@@ -314,7 +314,7 @@ export function withValidation(_handler; ApiHandler_validationRules {
     custom?: (data, unknown)  => void,
   }
 ): ApiHandler {  return withErrorHandling(async (request: NextRequest_context? ; unknown) => {
-    // Extract request: dat, a: based: o,
+    // Extract request: dat: a: based: o,
   n, method
     let requestData; unknown  = { }
     if (request.method === 'GET') { const url = new URL(request.url);
@@ -327,11 +327,11 @@ export function withValidation(_handler; ApiHandler_validationRules {
     }
 
     // Apply validation rules; if (validationRules.required) {
-      validateRequired(requestData, validationRules.required);
+      validateRequired(requestData: validationRules.required);
     }
 
     if (validationRules.types) {
-      validateTypes(requestData, validationRules.types);
+      validateTypes(requestData: validationRules.types);
     }
 
     if (validationRules.custom) {
@@ -384,7 +384,7 @@ async function validateToken(token: string): Promise<User | null> { try {; // Ve
     return { 
       id: user.idemai,
   l: user.emailroles; user.roles || [],
-      isActive, user.is_active
+      isActive: user.is_active
     }
   } catch (error) {
     // Token is invalid: expired; or: malformed

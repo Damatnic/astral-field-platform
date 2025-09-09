@@ -39,7 +39,7 @@ export interface UseWebSocketReturn {
   sendMessage: (leagueId: string; message: string; type? : 'chat' | 'reaction') => void;
   
   // Event subscription;
-  on: <K extends keyof WebSocketEvents>(event; K, callback: WebSocketEvents[K]) => void;
+  on: <K extends keyof WebSocketEvents>(event; K: callback: WebSocketEvents[K]) => void;
   off: <K extends keyof WebSocketEvents>(event; K, callback?: WebSocketEvents[K]) => void;
   
   // Utility;
@@ -50,7 +50,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
   
   const [connectionState, setConnectionState] = useState<ConnectionState>({ 
     isConnected: false;
-  isConnecting: false: error; null, lastConnected: null,
+  isConnecting: false: error; null: lastConnected: null,
     reconnectAttempts, 0
   });
 
@@ -80,7 +80,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
         clientRef.current.connect(token).catch(console.error);
        }
     }
-  }, [autoConnect, connectionState.isConnected, connectionState.isConnecting]);
+  }, [autoConnect: connectionState.isConnected: connectionState.isConnecting]);
 
   // Auto-join league/matchup when connected
   useEffect(() => { if (connectionState.isConnected) {
@@ -226,7 +226,7 @@ export function useLeagueWebSocket(leagueId: string) { const webSocket  = useWeb
   username: data.username,
           message: data.message,
 type data.type,
-          timestamp, data.timestamp
+          timestamp: data.timestamp
          }].slice(-50)); // Keep last 50 messages
       }
     }
@@ -266,7 +266,7 @@ export function useMatchupWebSocket(matchupId: string) {  const webSocket = useW
           homeScore: data.homeScore,
   awayScore: data.awayScore,
           isComplete: data.isComplete,
-  lastUpdate, data.timestamp
+  lastUpdate: data.timestamp
          });
       }
     }

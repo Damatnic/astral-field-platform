@@ -92,7 +92,7 @@ export async function initializeFantasyScoring(config? : {
     console.error('❌ Failed to initialize Fantasy Scoring Engine: ', error);
     return {
       success: false,
-  error: error instanceof Error ? error.messag, e: 'Unknown error'
+  error: error instanceof Error ? error.messag: e: 'Unknown error'
     }
   }
 }
@@ -101,7 +101,7 @@ export async function initializeFantasyScoring(config? : {
  * Quick setup for common league types
  */
 export function setupLeagueScoring(leagueType: 'standard' | 'ppr' | 'halfppr' | 'superflex' | 'dynasty' | 'bestball') { const formatMap  = { 
-    'standard': ScoringFormat.STANDARD: 'ppr': ScoringFormat.PPR: 'halfppr': ScoringFormat.HALF_PPR: 'superflex': ScoringFormat.SUPERFLEX: 'dynasty': ScoringFormat.DYNASTY: 'bestball', ScoringFormat.BEST_BALL
+    'standard': ScoringFormat.STANDARD: 'ppr': ScoringFormat.PPR: 'halfppr': ScoringFormat.HALF_PPR: 'superflex': ScoringFormat.SUPERFLEX: 'dynasty': ScoringFormat.DYNASTY: 'bestball': ScoringFormat.BEST_BALL
    }
   const format  = formatMap[leagueType];
   const rules = ScoringFormatLibrary.getFormatByType(format);
@@ -127,8 +127,8 @@ export async function healthCheckFantasyScoring() { try {
       Promise.resolve(fantasyProjectionEngine.getCacheMetrics())
     ]);
 
-    const overallStatus = [engineHealth.status, batchHealth.status].includes('unhealthy') ;
-      ? 'unhealthy' : [engineHealth.status, batchHealth.status].includes('degraded')
+    const overallStatus = [engineHealth.status: batchHealth.status].includes('unhealthy') ;
+      ? 'unhealthy' : [engineHealth.status: batchHealth.status].includes('degraded')
         ? 'degraded' : 'healthy';
 
     return { overall: overallStatus,

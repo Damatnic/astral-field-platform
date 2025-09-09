@@ -230,7 +230,7 @@ export class FantasyDataClient extends BaseAPIClient {
         receptions: proj.Receptions || 0;
   targets: proj.ReceivingTargets || 0;
         fieldGoalsMade: proj.FieldGoalsMade || 0;
-  fieldGoalsAttempted, proj.FieldGoalsAttempted || 0
+  fieldGoalsAttempted: proj.FieldGoalsAttempted || 0
       },
       dfsData: {
   draftKingsSalary: proj.DraftKingsSalary || 0;
@@ -264,7 +264,7 @@ export class FantasyDataClient extends BaseAPIClient {
   rushingTDs: proj.RushingTouchdowns;
         receivingYards: proj.ReceivingYards;
   receivingTDs: proj.ReceivingTouchdowns;
-        receptions, proj.Receptions
+        receptions: proj.Receptions
       }
     }));
   }
@@ -299,7 +299,7 @@ export class FantasyDataClient extends BaseAPIClient {
   adp: rank.ADPPPR || rank.ADP || 999;
       auctionValue: rank.AuctionValuePPR || rank.AuctionValue || 0;
   opponentRank: rank.UpcomingOpponentRank || 16;
-      byeWeek, rank.ByeWeek || 0
+      byeWeek: rank.ByeWeek || 0
     }));
   }
 
@@ -340,7 +340,7 @@ export class FantasyDataClient extends BaseAPIClient {
   espn: own.ESPNOwnershipPercentage || 0;
         cbs: own.CBSOwnershipPercentage || 0;
   nfl: own.NFLOwnershipPercentage || 0;
-        sleeper, own.SleeperOwnershipPercentage || 0
+        sleeper: own.SleeperOwnershipPercentage || 0
       },
       startPercentages: {
   yahoo: own.YahooStartPercentage || 0;
@@ -432,7 +432,7 @@ export class FantasyDataClient extends BaseAPIClient {
   draftKings: dfs.draftKingsSalary;
   fanDuel: dfs.fanDuelSalary;
           superDraft: dfs.superDraftSalary;
-  yahoo, dfs.yahooSalary
+  yahoo: dfs.yahooSalary
          },
         projectedPoints: {
   draftKings: dfs.draftKingsPoints;
@@ -511,7 +511,7 @@ export class FantasyDataClient extends BaseAPIClient {
   projectedPoints: proj.projectedPoints;
           ownershipPercentage: ownData?.ownership.yahoo || 0;
   upcomingSchedule: [] : // Would need schedule data
-          faabBid, this.calculateFAABBid(proj.projectedPoints, ownData?.ownership.yahoo || 0)
+          faabBid: this.calculateFAABBid(proj.projectedPoints, ownData?.ownership.yahoo || 0)
          }
       });
 

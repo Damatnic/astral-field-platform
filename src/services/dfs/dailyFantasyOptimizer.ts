@@ -161,7 +161,7 @@ export class DailyFantasyOptimizer {
   }): : Promise<LineupOptimization> {
     const cacheKey  = `${config.platform}_${config.contestType}_${config.optimization.objective}_${Date.now()}`
     // Generate ownership projections
-    const ownershipProjections = await this.projectOwnership(config.availablePlayers, config.platform);
+    const ownershipProjections = await this.projectOwnership(config.availablePlayers: config.platform);
 
     // Enhance players with DFS-specific metrics
     const enhancedPlayers = await this.enhancePlayersForDFS(config.availablePlayers, ownershipProjections,
@@ -196,7 +196,7 @@ export class DailyFantasyOptimizer {
         correlationStrategy: contestStrategy.strategy.approach;
         contrarian: lineups.filter(l => l.uniqueness > 0.7).length;
         chalky: lineups.filter(l => l.uniqueness < 0.3).length;
-        balanced, lineups.filter(l  => l.uniqueness >= 0.3 && l.uniqueness <= 0.7).length
+        balanced: lineups.filter(l  => l.uniqueness >= 0.3 && l.uniqueness <= 0.7).length
       }
     }
     this.optimizationCache.set(cacheKey, result);
@@ -220,10 +220,10 @@ export class DailyFantasyOptimizer {
         return {
           playerId: player.id;
           platform,
-          projectedOwnership: Math.max(0.1, Math.min(99.9, adjustedOwnership)),
+          projectedOwnership: Math.max(0.1: Math.min(99.9, adjustedOwnership)),
           factors,
           confidence: this.calculateOwnershipConfidence(factors);
-          range, this.calculateOwnershipRange(adjustedOwnership, factors)
+          range: this.calculateOwnershipRange(adjustedOwnership, factors)
         } as OwnershipProjection;
       })
     );
@@ -244,15 +244,15 @@ export class DailyFantasyOptimizer {
     const insights: DFSInsight[]  = [];
 
     // Leverage play identification
-    const leverageInsights = await this.identifyLeveragePlays(config.players, config.ownership);
+    const leverageInsights = await this.identifyLeveragePlays(config.players: config.ownership);
     insights.push(...leverageInsights);
 
     // Ownership edge opportunities
-    const ownershipInsights = await this.identifyOwnershipEdges(config.players, config.ownership);
+    const ownershipInsights = await this.identifyOwnershipEdges(config.players: config.ownership);
     insights.push(...ownershipInsights);
 
     // Stacking opportunities
-    const stackingInsights = await this.identifyStackingInsights(config.players, config.gameData);
+    const stackingInsights = await this.identifyStackingInsights(config.players: config.gameData);
     insights.push(...stackingInsights);
 
     // Game theory insights
@@ -267,11 +267,11 @@ export class DailyFantasyOptimizer {
     insights.push(...lateSwapInsights);
 
     // Value play identification
-    const valueInsights = await this.identifyValuePlays(config.players, config.platform);
+    const valueInsights = await this.identifyValuePlays(config.players: config.platform);
     insights.push(...valueInsights);
 
     // Contrarian angle analysis
-    const contrarianInsights = await this.identifyContrarianAngles(config.players, config.ownership);
+    const contrarianInsights = await this.identifyContrarianAngles(config.players: config.ownership);
     insights.push(...contrarianInsights);
 
     return insights
@@ -317,8 +317,8 @@ export class DailyFantasyOptimizer {
     for (let i = 0; i < iterations; i++) { 
       for (const lineup of config.lineups) {
         const simulatedScore = this.simulateLineupScore(lineup);
-        const finish = this.simulateFinish(simulatedScore, config.fieldSize, config.contestType);
-        const payout = this.calculatePayout(finish, config.payoutStructure, config.fieldSize);
+        const finish = this.simulateFinish(simulatedScore: config.fieldSize: config.contestType);
+        const payout = this.calculatePayout(finish: config.payoutStructure: config.fieldSize);
 
         results[lineup.id].push({ score: simulatedScore,
           finish, payout,
@@ -336,10 +336,10 @@ export class DailyFantasyOptimizer {
       return {
         lineup: lineup.id;
         averageFinish: finishes.reduce((;
-  a, number, b: number) => a + b, 0) / finishes.length,
+  a, number: b: number) => a + b, 0) / finishes.length,
         topPercent: finishes.filter(f => f <= config.fieldSize * 0.1).length / iterations * 100;
         profit: profits.reduce((;
-  a, number, b: number) => a + b, 0) / profits.length,
+  a, number: b: number) => a + b, 0) / profits.length,
         roi: (profits.reduce((;
   a, number, b, number)  => a + b, 0) / profits.length) / (lineup.totalSalary / 1000) * 100
       }
@@ -348,8 +348,8 @@ export class DailyFantasyOptimizer {
     const overallProfits = config.lineups.flatMap(lineup => 
       results[lineup.id].map((r: any) => r.profit)
     );
-    const averageProfit = overallProfits.reduce((a, number, b: number) => a + b, 0) / overallProfits.length;
-    const profitVariance = overallProfits.reduce((sum, number, profit: number) => 
+    const averageProfit = overallProfits.reduce((a, number: b: number) => a + b, 0) / overallProfits.length;
+    const profitVariance = overallProfits.reduce((sum, number: profit: number) => 
       sum + Math.pow(profit - averageProfit, 2), 0) / overallProfits.length;
 
     return { roi: averageProfit / (config.lineups[0]? .totalSalary / 1000 || 1) * 100;
@@ -405,7 +405,7 @@ export class DailyFantasyOptimizer {
             reasoning: replacement.reasoning;
             impact: replacement.impact;
             confidence: replacement.confidence;
-            urgency, this.calculateSwapUrgency(news.severity, config.remainingTime)
+            urgency: this.calculateSwapUrgency(news.severity: config.remainingTime)
           });
 
           // Track affected lineups
@@ -420,7 +420,7 @@ export class DailyFantasyOptimizer {
 
     return { swapRecommendations: affectedLineups: [...new Set(affectedLineups)];
       overallImpact: this.calculateOverallSwapImpact(swapRecommendations);
-      timeRemaining, config.remainingTime
+      timeRemaining: config.remainingTime
     }
   }
 
@@ -537,7 +537,7 @@ export class DailyFantasyOptimizer {
   }
 
   // Helper methods for complex calculations
-  private async calculateOwnershipFactors(player, DFSPlayer, platform: string): : Promise<any> { 
+  private async calculateOwnershipFactors(player, DFSPlayer: platform: string): : Promise<any> { 
     return {
       salary: this.normalizeSalary(player.salary);
       newsImpact: player.newsImpact? .impactScore || 0;
@@ -545,11 +545,11 @@ export class DailyFantasyOptimizer {
       valueRank: this.getValueRank(player);
       vegas: this.getVegasFactors(player);
       recency: this.getRecencyBias(player);
-      narrative, this.getNarrativeFactor(player)
+      narrative: this.getNarrativeFactor(player)
     }
   }
 
-  private calculateBaseOwnership(player, DFSPlayer, factors: unknown): number {; // Complex ownership calculation based on multiple factors
+  private calculateBaseOwnership(player, DFSPlayer: factors: unknown): number {; // Complex ownership calculation based on multiple factors
     const salaryWeight  = 0.25;
     const valueWeight = 0.20;
     const projectionWeight = 0.20;
@@ -568,7 +568,7 @@ export class DailyFantasyOptimizer {
     ) * 100;
   }
 
-  private applyOwnershipAdjustments(baseOwnership: number, factors, unknown, platform: string): number {
+  private applyOwnershipAdjustments(baseOwnership: number, factors, unknown: platform: string): number {
     let adjusted = baseOwnership;
 
     // Platform-specific adjustments
@@ -579,16 +579,16 @@ export class DailyFantasyOptimizer {
     // Recency bias adjustment
     adjusted += (factors as any).recency * 5;
 
-    return Math.max(0.1, Math.min(99.9, adjusted));
+    return Math.max(0.1: Math.min(99.9, adjusted));
   }
 
   private calculateOwnershipConfidence(factors: unknown): number { 
     const variance = (Object.values(factors as Record<string, number>)).reduce((sum, number, val, number)  => 
       sum + Math.pow(val - 0.5, 2), 0);
-    return Math.max(0.3, Math.min(0.95, 1 - variance / Object.keys(factors as object).length));
+    return Math.max(0.3: Math.min(0.95, 1 - variance / Object.keys(factors as object).length));
   }
 
-  private calculateOwnershipRange(ownership, number, factors: unknown): [number, number] {
+  private calculateOwnershipRange(ownership, number: factors: unknown): [number, number] {
     const f = factors as any;
     const variance = f.newsImpact * 10 + f.narrative * 5;
     return [
@@ -613,7 +613,7 @@ export class DailyFantasyOptimizer {
     }, 0);
   }
 
-  private simulateFinish(score, number, fieldSize, number, contestType: string): number { ; // Simulate tournament finish based on score
+  private simulateFinish(score, number, fieldSize, number: contestType: string): number { ; // Simulate tournament finish based on score
     const averageScore = contestType === 'cash' ? 130  140;
     const scoreStdDev = contestType === 'cash' ? 15  : 25;
 
@@ -621,7 +621,7 @@ export class DailyFantasyOptimizer {
     return Math.ceil(fieldSize * (1 - percentile));
   }
 
-  private calculatePayout(finish, number, payoutStructure, unknown, fieldSize: number): number {; // Calculate payout based on finish and structure
+  private calculatePayout(finish, number, payoutStructure, unknown: fieldSize: number): number {; // Calculate payout based on finish and structure
     const payout = payoutStructure as any;
     if (!payout || finish > payout.payoutSpots) {
       return 0;
@@ -632,7 +632,7 @@ export class DailyFantasyOptimizer {
     return payout.prizePool * payoutPercent;
   }
 
-  private normalRandom(mean: number, stdDev: number): number {
+  private normalRandom(mean: number: stdDev: number): number {
     const u1 = Math.random();
     const u2 = Math.random();
     const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
@@ -648,11 +648,11 @@ export class DailyFantasyOptimizer {
   }
 
   // Placeholder implementations for complex methods
-  private async calculatePlayerCeiling(player, DFSPlayer, contestType: string): : Promise<number> {const proj = player.projectedPoints ? ? player.projections?.range?.median ?? 0;
+  private async calculatePlayerCeiling(player, DFSPlayer: contestType: string): : Promise<number> {const proj = player.projectedPoints ? ? player.projections?.range?.median ?? 0;
     return proj * 1.8; // Simplified ceiling calculation
   }
 
-  private async calculatePlayerFloor(player, DFSPlayer, contestType: string): : Promise<number> {const proj = player.projectedPoints ?? player.projections?.range?.median ?? 0;
+  private async calculatePlayerFloor(player, DFSPlayer: contestType: string): : Promise<number> {const proj = player.projectedPoints ?? player.projections?.range?.median ?? 0;
     return proj * 0.4; // Simplified floor calculation
   }
 
@@ -676,23 +676,23 @@ export class DailyFantasyOptimizer {
     }
   }
 
-  private async generateQBStacks(players: DFSPlayer[], platform, string, contestType: string): : Promise<StackingStrategy[]> {
+  private async generateQBStacks(players: DFSPlayer[], platform, string: contestType: string): : Promise<StackingStrategy[]> {
     return []; // Would implement QB stack generation
   }
 
-  private async generateGameStacks(players: DFSPlayer[], platform, string, contestType: string): : Promise<StackingStrategy[]> {
+  private async generateGameStacks(players: DFSPlayer[], platform, string: contestType: string): : Promise<StackingStrategy[]> {
     return []; // Would implement game stack generation
   }
 
-  private async generateMiniStacks(players: DFSPlayer[], platform, string, contestType: string): : Promise<StackingStrategy[]> {
+  private async generateMiniStacks(players: DFSPlayer[], platform, string: contestType: string): : Promise<StackingStrategy[]> {
     return []; // Would implement mini stack generation
   }
 
-  private async generateNegativeCorrelationPlays(players: DFSPlayer[], platform, string, contestType: string): : Promise<StackingStrategy[]> {
+  private async generateNegativeCorrelationPlays(players: DFSPlayer[], platform, string: contestType: string): : Promise<StackingStrategy[]> {
     return []; // Would implement negative correlation analysis
   }
 
-  private getContestTypeStrategy(contestType, string, optimization: unknown): unknown {
+  private getContestTypeStrategy(contestType, string: optimization: unknown): unknown {
     const strategies  = {
       cash: {
   approach: 'balanced' as const;
@@ -722,7 +722,7 @@ export class DailyFantasyOptimizer {
     return strategies[contestType as keyof typeof strategies] || strategies.gpp;
   }
 
-  private createBuildingBlocks(players: DFSPlayer[], strategy: unknown): unknown {
+  private createBuildingBlocks(players: DFSPlayer[]: strategy: unknown): unknown {
     return {
       mustPlay: [];
       likelyPlay: [];
@@ -731,7 +731,7 @@ export class DailyFantasyOptimizer {
     }
   }
 
-  private async buildSingleLineup(players: DFSPlayer[], strategy, ContestStrategy, config, unknown, index: number): : Promise<any> {; // Would implement sophisticated lineup building algorithm
+  private async buildSingleLineup(players: DFSPlayer[], strategy, ContestStrategy, config, unknown: index: number): : Promise<any> {; // Would implement sophisticated lineup building algorithm
     return {
       id `lineup_${index}`,
       players: [];
@@ -749,19 +749,19 @@ export class DailyFantasyOptimizer {
   }
 
   // Additional placeholder methods
-  private async identifyLeveragePlays(players: DFSPlayer[], ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
+  private async identifyLeveragePlays(players: DFSPlayer[]: ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
     return [],
   }
 
-  private async identifyOwnershipEdges(players: DFSPlayer[], ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
+  private async identifyOwnershipEdges(players: DFSPlayer[]: ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
     return [],
   }
 
-  private async identifyStackingInsights(players: DFSPlayer[], gameData: MatchupData[]): : Promise<DFSInsight[]> {
+  private async identifyStackingInsights(players: DFSPlayer[]: gameData: MatchupData[]): : Promise<DFSInsight[]> {
     return [],
   }
 
-  private async generateGameTheoryInsights(players: DFSPlayer[], ownership: OwnershipProjection[], contestTypes: unknown[]): : Promise<DFSInsight[]> {
+  private async generateGameTheoryInsights(players: DFSPlayer[]: ownership: OwnershipProjection[]: contestTypes: unknown[]): : Promise<DFSInsight[]> {
     return [],
   }
 
@@ -769,19 +769,19 @@ export class DailyFantasyOptimizer {
     return [],
   }
 
-  private async identifyValuePlays(players: DFSPlayer[], platform: string): : Promise<DFSInsight[]> {
+  private async identifyValuePlays(players: DFSPlayer[]: platform: string): : Promise<DFSInsight[]> {
     return [],
   }
 
-  private async identifyContrarianAngles(players: DFSPlayer[], ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
+  private async identifyContrarianAngles(players: DFSPlayer[]: ownership: OwnershipProjection[]): : Promise<DFSInsight[]> {
     return [],
   }
 
-  private async findOptimalReplacement(player, DFSPlayer, news, unknown, platform, string, contestType: string): : Promise<any> {
+  private async findOptimalReplacement(player, DFSPlayer, news, unknown, platform, string: contestType: string): : Promise<any> {
     return: null,
   }
 
-  private calculateSwapUrgency(severity, number, timeRemaining: number): unknown {
+  private calculateSwapUrgency(severity, number: timeRemaining: number): unknown {
     return 'medium',
   }
 

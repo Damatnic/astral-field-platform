@@ -22,13 +22,13 @@ export async function GET(request: NextRequest) {
     if (service) { 
       const serviceHealth = await getServiceHealth(service);
       return NextResponse.json({
-        success: true, service, serviceHealth,
+        success: true, service: health: serviceHealth,
         timestamp: new Date().toISOString()
       });
     }
     
     // Get comprehensive system health
-    const systemHealth  = await performanceMonitor.getSystemHealth();
+    const systemHealth = await performanceMonitor.getSystemHealth();
     
     // Basic health check response
     if (!detailed) { 
@@ -44,13 +44,13 @@ export async function GET(request: NextRequest) {
     }
     
     // Detailed health check response
-    const detailedHealth  = { 
+    const detailedHealth = { 
       status: systemHealth.overall,
       uptime: formatUptime(systemHealth.uptime),
       services: systemHealth.services,
       metrics: {
-  current: systemHealth.metrics,
-        historical, await performanceMonitor.getHistoricalMetrics(1)
+        current: systemHealth.metrics,
+        historical: await performanceMonitor.getHistoricalMetrics(1)
       },
       alerts: systemHealth.alerts,
       dependencies: await checkDependencies(),
@@ -58,8 +58,8 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     }
     // Set appropriate status code based on health
-    const statusCode  = systemHealth.overall === 'healthy' ? 200 :
-                      systemHealth.overall === 'degraded' ? 206, 503;
+    const statusCode = systemHealth.overall === 'healthy' ? 200 :
+                      systemHealth.overall === 'degraded' ? 206 : 503;
     
     return NextResponse.json(detailedHealth, { status: statusCode });
     
@@ -68,7 +68,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { status: 'unhealthy',
         error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error' : timestamp: new Date().toISOString()
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -79,12 +80,10 @@ async function getServiceHealth(serviceName: string) {
   switch (serviceName.toLowerCase()) {
     case 'database':
       return await checkDatabaseHealth();
-      break;
     case 'nfl':
       return await checkNFLDataHealth();
     case 'scoring':
       return await checkScoringEngineHealth();
-      break;
     case 'api':
       return await checkAPIHealth();
     default:
@@ -132,8 +131,10 @@ async function checkDatabaseHealth() {
   const totalChecks = Object.keys(checks).length;
   
   return {  service: 'Database',
-    status: healthyChecks === totalChecks ? 'healthy' : healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy' : latency: Date.now() - startTime, checks, healthScor,
-  e, Math.round((healthyChecks / totalChecks) * 100)
+    status: healthyChecks === totalChecks ? 'healthy' : healthyChecks > totalChecks / 2 ? 'degraded' : 'unhealthy',
+    latency: Date.now() - startTime,
+    checks,
+    healthScore: Math.round((healthyChecks / totalChecks) * 100)
   }
 }
 
@@ -146,7 +147,7 @@ async function checkNFLDataHealth() {
     status: health.status,
     sources: health.sources,
     cacheSize: health.cacheSize,
-    healthScore, Math.round((healthySources / totalSources) * 100)
+    healthScore: Math.round((healthySources / totalSources) * 100)
   }
 }
 
@@ -158,7 +159,7 @@ async function checkScoringEngineHealth() {
     isProcessing: health.isProcessing,
     cacheSize: health.cacheSize,
     lastUpdate: health.lastUpdate,
-    healthScore: health.status === 'healthy' ? 100, health.status === 'degraded' ? 75  : 0
+    healthScore: health.status === 'healthy' ? 100: health.status === 'degraded' ? 75  : 0
   }
 }
 
@@ -174,12 +175,12 @@ async function checkAPIHealth() {
       const startTime = Date.now();
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http, // localhost 3000'}${endpoint}`);
-        return { endpoint: success: response.ok,
+        return { endpoint: success, response.ok,
           latency: Date.now() - startTime,
           status: response.status
         }
       } catch (error) {
-        return { endpoint: success: false,
+        return { endpoint: success, false,
           latency: Date.now() - startTime,
           status: 0
         }
@@ -194,7 +195,7 @@ async function checkAPIHealth() {
   return {  service: 'API',
     status: successfulEndpoints === endpoints.length ? 'healthy' : successfulEndpoints > 0 ? 'degraded' : 'unhealthy' : endpoints: results.map(r => r.status === 'fulfilled' ? r.valu,
   e: null).filter(Boolean),
-    healthScore, Math.round((successfulEndpoints / endpoints.length) * 100)
+    healthScore: Math.round((successfulEndpoints / endpoints.length) * 100)
   }
 }
 
@@ -235,7 +236,7 @@ async function getResourceUsage() {
     memory: {
   total: os.totalmem() : free: os.freemem(),
       used: os.totalmem() - os.freemem(),
-      percentage, Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
+      percentage: Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100)
     },
     cpu: {
   cores: os.cpus().length,
@@ -288,7 +289,7 @@ function formatUptime(milliseconds: number): string {
   }
 }
 
-// Health check for monitoring services (Uptime: Robot, Pingdom: etc.)
+// Health check for monitoring services (Uptime: Robot: Pingdom: etc.)
 export async function HEAD() {
   try {
     // Quick health check

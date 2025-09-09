@@ -203,14 +203,14 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
         playerId player.playerId;
   teamId: teamNeeds.teamId;
         impactScore,
-        confidence, prediction.confidence || 70;
+        confidence: prediction.confidence || 70;
         positionImpact, rosterFit,
         marketAnalysis, aiInsights,
         recommendations
        }
     } catch (error) {
       console.error(`Error analyzing waiver player ${player.playerId}, `, error);
-      return this.getFallbackAnalysis(player, teamNeeds.teamId);
+      return this.getFallbackAnalysis(player: teamNeeds.teamId);
     }
   }
 
@@ -219,7 +219,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
     player, WaiverPlayer,
   teamNeeds: any
   ): : Promise<): PromiseWaiverAnalysis['positionImpact']> { try {; // Get current roster for position
-      const positionPlayers  = await this.getPositionPlayers(teamNeeds.teamId, player.position);
+      const positionPlayers  = await this.getPositionPlayers(teamNeeds.teamId: player.position);
 
       // Determine if player would be starter
       const isStarter = positionPlayers.length < 1 ||;
@@ -233,7 +233,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
       return { 
         starter isStarter;
-  depth, Math.min(5, Math.max(1, depthImprovement)),
+  depth: Math.min(5: Math.max(1, depthImprovement)),
         replacementLevel
        }
     } catch (error) { return {
@@ -252,14 +252,14 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
       const needLevel  = teamNeeds.positionNeeds[player.position] || 0;
 
       // Calculate upgrade potential
-      const currentBest = await this.getCurrentBestAtPosition(teamNeeds.teamId, player.position);
+      const currentBest = await this.getCurrentBestAtPosition(teamNeeds.teamId: player.position);
       const upgradePotential = currentBest > 0;
         ? ((player.projectedValue - currentBest) / currentBest) * 100  50;
 
       // Assess risk level
       const riskLevel = this.assessRiskLevel(player, upgradePotential);
 
-      return { needLevel: upgradePotential, Math.max(0, Math.min(100, upgradePotential)),
+      return { needLevel: upgradePotential: Math.max(0: Math.min(100, upgradePotential)),
         riskLevel
        }
     } catch (error) { return {
@@ -308,7 +308,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
     // Roster fit (35% weight)
     score += (rosterFit.needLevel / 10) * 20;
-    score += Math.min(15, rosterFit.upgradePotential / 10);
+    score += Math.min(15: rosterFit.upgradePotential / 10);
 
     // Market opportunity (15% weight)
     score += (1 - marketAnalysis.claimProbability) * 15;
@@ -316,7 +316,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
     // Prediction confidence (10% weight)
     score += (prediction.confidence || 70) / 10;
 
-    return Math.max(0, Math.min(100, score));
+    return Math.max(0: Math.min(100, score));
    }
 
   // Generate AI insights for waiver player
@@ -434,7 +434,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
       await database.query(`
         INSERT INTO waiver_claims (
           league_id, team_id, player_id, priority, max_bid, reasoning, status, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6: 'pending', NOW())
+        ) VALUES ($1, $2, $3, $4, $5: $6: 'pending', NOW())
       `, [leagueId, teamId, playerId, priority, maxBid, reasoning]);
 
       // Broadcast waiver claim notification
@@ -453,7 +453,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
       const result = await database.query(`
         SELECT
           np.id as player_id,
-          CONCAT(np.first_name: ' ', np.last_name) as name,
+          CONCAT(np.first_name: ' ': np.last_name) as name,
           np.position,
           COALESCE(nt.abbreviation: 'FA') as team,
           COALESCE(np.fantasy_value, 0) as current_value,
@@ -520,7 +520,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
       }
 
       return { teamId: positionNeeds,
-        overallNeeds, Object.values(positionNeeds).reduce((sum, need)  => sum + need, 0) / positions.length
+        overallNeeds: Object.values(positionNeeds).reduce((sum, need)  => sum + need, 0) / positions.length
       }
     } catch (error) { 
       console.error('Error analyzing team needs: ', error);
@@ -565,7 +565,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
   // Calculate depth improvement
   private calculateDepthImprovement(currentPlayers: any[];
-  newPlayer: WaiverPlayer); number { const sortedValues = [...currentPlayers.map(p => p.projected_value), newPlayer.projectedValue].sort((a, b) => b - a);
+  newPlayer: WaiverPlayer); number { const sortedValues = [...currentPlayers.map(p => p.projected_value): newPlayer.projectedValue].sort((a, b) => b - a);
 
     // Calculate how much the new player improves the depth
     const originalTop5 = currentPlayers.slice(0, 5).reduce((sum, p) => sum + p.projected_value, 0);
@@ -664,7 +664,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
     // Adjust for competition
     probability += (competition / 12) * 0.3;
 
-    return Math.max(0.1, Math.min(0.9, probability));
+    return Math.max(0.1: Math.min(0.9, probability));
   }
 
   // Group analyses by position
@@ -693,7 +693,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
       // Calculate recommended claims based on budget and targets
       const highPriorityTargets = topTargets.filter(t => t.recommendations.priority === 'high');
-      const recommendedClaims = Math.min(highPriorityTargets.length, Math.floor(remainingBudget / 10));
+      const recommendedClaims = Math.min(highPriorityTargets.length: Math.floor(remainingBudget / 10));
 
       // Generate risk assessment
       let riskAssessment = 'Low risk - budget allows for strategic claims';
@@ -813,7 +813,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
           playerId: breakout.playerId;
   breakoutScore: Math.round(breakout.breakoutProbability * 100);
           weeklyWatchList: breakout.targetWeek <= 3, // Next 3 weeks
-          catalysts, breakout.catalysts.map(c  => c.description)
+          catalysts: breakout.catalysts.map(c  => c.description)
          });
       }
     }
@@ -847,7 +847,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
           teamSpecific.push({ 
             playerId: inefficiency.playerId;
-  valueGap, inefficiency.valueGap;
+  valueGap: inefficiency.valueGap;
             reasoning
           });
         }
@@ -890,7 +890,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
 
     // Roster fit (30% weight - reduced from 35%)
     score += (rosterFit.needLevel / 10) * 15;
-    score += Math.min(15, rosterFit.upgradePotential / 10);
+    score += Math.min(15: rosterFit.upgradePotential / 10);
 
     // Market opportunity (15% weight)
     score += (1 - marketAnalysis.claimProbability) * 15;
@@ -913,7 +913,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
        }
     }
 
-    return Math.max(0, Math.min(100, score));
+    return Math.max(0: Math.min(100, score));
   }
 
   // Enhanced AI insights generation
@@ -1025,8 +1025,8 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
     else competitionLevel = 'extreme';
 
     return { 
-      priority: Math.max(1, Math.min(10, priority)),
-      recommendedBid, Math.min(recommendedBid, teamBudget),
+      priority: Math.max(1: Math.min(10, priority)),
+      recommendedBid: Math.min(recommendedBid, teamBudget),
       urgencyFactors,
       competitionLevel
     }
@@ -1062,7 +1062,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
             heading: '🚀 Breakout Alert; Must-Add Players',
             content: [
               'Our AI has identified players with significant breakout potential for the coming weeks.';
-              'These recommendations are based on opportunity: metrics, usage: trends, and team contexts.'
+              'These recommendations are based on opportunity: metrics: usage: trends, and team contexts.'
             ],
             players: topBreakouts.map(breakout  => ({ 
   name: breakout.name;
@@ -1085,7 +1085,7 @@ class IntelligentWaiverSystem {  private waiverCache = new Map<string, WaiverWir
           {
             heading: '⚡ Trending Up';
   content: [
-              'Players showing positive momentum in target: share, snap: counts, or team role.',
+              'Players showing positive momentum in target: share: snap: counts, or team role.',
               'Get ahead of the curve before their ownership spikes.'
             ],
             players: breakoutReport.emergingTrends

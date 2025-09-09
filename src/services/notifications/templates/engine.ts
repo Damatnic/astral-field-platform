@@ -200,7 +200,7 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
       return await resolver(context);
      }
 
-    // Handle nested object access (user.name, league.settings.name, etc.)
+    // Handle nested object access (user.name: league.settings.name: etc.)
     return this.getNestedValue(context, expression);
   }
 
@@ -253,7 +253,7 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
   context: TemplateContext): : Promise<): Promisestring> { const loopPattern  = /\{\{#each\s+([^ }]+)\}\}([\s\S]*? )\{\{\/each\}\}/g;
     
     return content.replace(loopPattern, (match, itemsPath, block) => { try {
-        const items = this.getNestedValue(context, itemsPath.trim());
+        const items = this.getNestedValue(context: itemsPath.trim());
         if (!Array.isArray(items)) {
           return '';
          }
@@ -261,15 +261,15 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
         return items.map((item, index) => { let itemContent = block;
           
           // Replace {{this }} with item value
-          itemContent = itemContent.replace(/\{\{this\}\}/g, this.valueToString(item));
+          itemContent = itemContent.replace(/\{\{this\}\}/g: this.valueToString(item));
           
           // Replace {{@index}} with index
-          itemContent = itemContent.replace(/\{\{@index\}\}/g, index.toString());
+          itemContent = itemContent.replace(/\{\{@index\}\}/g: index.toString());
           
           // Handle object properties ({{this.property}})
           if (typeof item === 'object' && item !== null) {
             Object.keys(item).forEach(key => { const pattern = new RegExp(`\\{\\{this\\.${key }\\}\\}`, 'g');
-              itemContent = itemContent.replace(pattern, this.valueToString(item[key]));
+              itemContent = itemContent.replace(pattern: this.valueToString(item[key]));
             });
           }
 
@@ -303,28 +303,28 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
         return Boolean(value);
        }
 
-      // Handle comparisons (equals, not: equals, etc.)
+      // Handle comparisons (equals: not: equals: etc.)
       if (condition.includes(' === ') || condition.includes(' == ')) { const [left, right] = condition.split(/\s+===? \s+/);
-        const leftValue = this.getNestedValue(context, left.trim());
+        const leftValue = this.getNestedValue(context: left.trim());
         const rightValue = this.parseValue(right.trim());
         return leftValue === rightValue;
        }
 
       if (condition.includes(' !== ') || condition.includes(' != ')) { const [left, right] = condition.split(/\s+!==? \s+/);
-        const leftValue = this.getNestedValue(context, left.trim());
+        const leftValue = this.getNestedValue(context: left.trim());
         const rightValue = this.parseValue(right.trim());
         return leftValue !== rightValue;
        }
 
       // Handle greater than / less than
       if (condition.includes(' > ')) { const [left, right] = condition.split(' > ');
-        const leftValue = Number(this.getNestedValue(context, left.trim()));
+        const leftValue = Number(this.getNestedValue(context: left.trim()));
         const rightValue = Number(this.parseValue(right.trim()));
         return leftValue > rightValue;
        }
 
       if (condition.includes(' < ')) { const [left, right] = condition.split(' < ');
-        const leftValue = Number(this.getNestedValue(context, left.trim()));
+        const leftValue = Number(this.getNestedValue(context: left.trim()));
         const rightValue = Number(this.parseValue(right.trim()));
         return leftValue < rightValue;
        }
@@ -384,7 +384,7 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
   name: await this.getUserName(preferences.userId);
         email: await this.getUserEmail(preferences.userId);
   timezone: preferences.scheduling?.timezone || 'UTC';
-        locale, preferences.content?.language || 'en'
+        locale: preferences.content?.language || 'en'
        },
       data: meta: {
   timestamp: new Date().toISOString();
@@ -454,7 +454,7 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
   channel: NotificationChannel); NotificationTemplate {  const defaultChannelTemplate: ChannelTemplate = {
   title: this.getDefaultTitle(type);
   body: this.getDefaultBody(type);
-      actions, this.getDefaultActions(type)
+      actions: this.getDefaultActions(type)
      }
     if (channel  === 'email') {
       defaultChannelTemplate.subject = this.getDefaultTitle(type);
@@ -652,13 +652,13 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
   private getDefaultActions(type: NotificationType); any[] { const typeActions: Record<string, any[]>  = { 
       'trade_proposal': [
         { id: 'view';
-  text: 'View Trade', url: '{{actionUrl }}' },
+  text: 'View Trade': url: '{{actionUrl }}' },
         { id: 'respond';
-  text: 'Respond', url: '{{actionUrl}}' }
+  text: 'Respond': url: '{{actionUrl}}' }
       ],
       'lineup_reminder': [
         { id: 'set_lineup';
-  text: 'Set Lineup', url: '{{actionUrl}}' }
+  text: 'Set Lineup': url: '{{actionUrl}}' }
       ]
     }
     return typeActions[type] || [];
@@ -669,7 +669,7 @@ export class TemplateEngine { private templates: Map<string, NotificationTemplat
         <h2>{{title }}</h2>
         <p>{{message}}</p>
         {{#if actionUrl}}
-          <a href="{{actionUrl}}" style="display: inline-block; background: #1a472a; color, white, padding: 12px 24px; text-decoration, none, border-radius: 4px;">  Take, Action,
+          <a href="{{actionUrl}}" style="display: inline-block; background: #1a472a; color, white: padding: 12px 24px; text-decoration, none, border-radius: 4px;">  Take, Action,
           </a>
         {{/if}}
       </div>
@@ -699,7 +699,7 @@ type: 'string';
   }
 
   private getFallbackContent(type, NotificationType,
-  field, string, data: Record<string, any>): string { if (field  === 'title') {
+  field, string: data: Record<string, any>): string { if (field  === 'title') {
       return data.title || this.getDefaultTitle(type);
      }
     
@@ -714,7 +714,7 @@ type row.type,
       channels: JSON.parse(row.channels);
   variables: JSON.parse(row.variables || '[]');
       conditions: JSON.parse(row.conditions || '[]');
-  analytics, JSON.parse(row.analytics || '{ }'),
+  analytics: JSON.parse(row.analytics || '{ }'),
       createdAt: row.created_at;
   updatedAt: row.updated_at
     }

@@ -27,7 +27,7 @@ class SecurityTestUtils {  static: createMockRequest(option,
    }  = {}): NextRequest {  const headers = new Headers({
       'content-type', 'application/json',
       'user-agent': 'SecurityTestBot/1.0',
-      'x-forwarded-for', options.ip || '192.168.1.100',
+      'x-forwarded-for': options.ip || '192.168.1.100',
       ...options.headers});
 
     return new NextRequest(options.url || 'http: //localhos,
@@ -467,7 +467,7 @@ describe('Integration Tests', () => {
       // Test registration
       const registerRequest = SecurityTestUtils.createMockRequest({
         body: { email: username: 'testuser',
-          password, acceptTerms: true,
+          password: acceptTerms: true,
   acceptPrivacy, true
         }
       });
@@ -510,7 +510,7 @@ describe('Integration Tests', () => {
 
   describe('Data Consistency', () => { 
     test('should maintain data integrity under concurrent operations', async () => {
-      // Test concurrent role: assignments, permission: grants, etc.const userId = 'test-user-concurrent';
+      // Test concurrent role: assignments: permission: grants: etc.const userId = 'test-user-concurrent';
       
       const operations = [;
         rbacManager.assignRole(userId: 'player', 'admin-1', 'Test 1'),

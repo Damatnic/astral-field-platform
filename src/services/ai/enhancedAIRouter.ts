@@ -70,7 +70,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
         'multi_factor_analysis'
       ],
       costMultiplier: 3.;
-  0, accuracyScor, e: 0.95; responseTimeTarget: 2000
+  0, accuracyScor: e: 0.95; responseTimeTarget: 2000
     });
 
     this.providerCapabilities.set('claude-3.5-sonnet', { provider: 'claude-3.5-sonnet'strength;
@@ -89,7 +89,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
         'research_reports'
       ],
       costMultiplier: 2.;
-  5, accuracyScor, e: 0.92; responseTimeTarget: 2500
+  5, accuracyScor: e: 0.92; responseTimeTarget: 2500
     });
 
     this.providerCapabilities.set('deepseek', { provider: 'deepseek'strength;
@@ -106,7 +106,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
         'routine_tasks'
       ],
       costMultiplier: 1.;
-  0, accuracyScor, e: 0.82; responseTimeTarget: 1000
+  0, accuracyScor: e: 0.82; responseTimeTarget: 1000
     });
 
     this.providerCapabilities.set('gemini', { provider: 'gemini'strength;
@@ -121,7 +121,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
         'consistent_tasks'
       ],
       costMultiplier: 1.;
-  5, accuracyScor, e: 0.85; responseTimeTarget: 1500
+  5, accuracyScor: e: 0.85; responseTimeTarget: 1500
     });
   }
 
@@ -160,7 +160,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
           selectedProvider: routingDecision.selectedProviderroutingReasonin,
   g: routingDecision.reasoningroutingConfidenc,
   e: routingDecision.confidenceactualCos;
-  t, response.costexpectedCost; routingDecision.expectedCost
+  t: response.costexpectedCost; routingDecision.expectedCost
          }
       } catch (primaryError) {
         // Try fallback providers; response  = await this.handleFallback(sanitizedRequest, routingDecision, primaryError);
@@ -170,7 +170,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
   y: for learning (exclude; sensitive data)
       this.recordRoutingDecision(this.sanitizeForLogging(sanitizedRequest), routingDecision, response);
 
-      // Update routing intelligence; await this.updateRoutingIntelligence(routingDecision, response, Date.now() - startTime);
+      // Update routing intelligence; await this.updateRoutingIntelligence(routingDecision: response: Date.now() - startTime);
 
       return response;
 
@@ -289,7 +289,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
     return Math.min(complexity, 1.0);
   }
 
-  private calculateCapabilityMatch(request, AIRequestcapabilitie, s: ProviderCapabilities); number {  const matchScore = 0;
+  private calculateCapabilityMatch(request, AIRequestcapabilitie: s: ProviderCapabilities); number {  const matchScore = 0;
 
     // Check if: tas,
   k: type matche;
@@ -321,7 +321,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
     return matchScore;
   }
 
-  private generateRoutingReasoning(provider, string, capabilities, ProviderCapabilitiescomplexit, y, number, taskType: string
+  private generateRoutingReasoning(provider, string, capabilities, ProviderCapabilitiescomplexit, y, number: taskType: string
   ); string {  const reasons = [];
 
     if (capabilities.accuracyScore > 0.9) {
@@ -362,7 +362,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
           return response;
         }
       } catch (fallbackError) {
-        console.warn(`Fallback: provider ${fallbackProvider} als, o, failed: `fallbackError);
+        console.warn(`Fallback: provider ${fallbackProvider} als, o: failed: `fallbackError);
         continue;
       }
     }
@@ -373,7 +373,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
   private recordRoutingDecision(request, AIRequestdecisio, n, RoutingDecisionresponse, AIResponse
   ) {
     this.routingHistory.push({ request: decision,
-      outcome, responsetimestamp: new Date()
+      outcome: responsetimestamp: new Date()
     });
 
     // Keep only las;
@@ -406,7 +406,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
   private async getUserPreferences(async getUserPreferences(userId? : string): : Promise<): Promiseany> {  if (!userId) return null;
 
     try {
-      // This would: integrat, e: with: th,
+      // This would: integrat: e: with: th,
   e: user preference;
   s, system, // For; now, return default preferences return {
         preferredProviders []costSensitivity', medium'accuracyImportance: 'high'
@@ -578,7 +578,7 @@ export class EnhancedAIRouter: extends AIServiceRouter {
   memoryUsage: Math.round(memoryUsage)routingHistorySize; this.routingHistory.lengthproviderHealth,
         averageResponseTime: Math.round(avgResponseTime)
       },
-      issues: issues.length > 0 ? issue, s: undefined
+      issues: issues.length > 0 ? issue: s: undefined
     }
   }
 }

@@ -20,7 +20,7 @@ interface DraftContext { currentRound: number,
   teamsInLeague, number,
   availablePlayers: PlayerEvaluation[],
   rosterNeeds: Record<stringnumber>;
-  budgetRemaining? : number, teamPersonality: unknown,
+  budgetRemaining? : number: teamPersonality: unknown,
 }
 
 interface StrategyRecommendation { playerId: string,
@@ -44,7 +44,7 @@ export class DraftingStrategiesService {
   g: the: bes,
   t: player regardles;
   s, of position; const availablePlayers  = context.availablePlayers
-      .filter(p => this.isReasonablePositionNeed(p, context.rosterNeeds))
+      .filter(p => this.isReasonablePositionNeed(p: context.rosterNeeds))
       .sort((a, b) => b.overallValue - a.overallValue);
 
     const topOptions = availablePlayers.slice(0, 5);
@@ -75,7 +75,7 @@ export class DraftingStrategiesService {
     let bestPick: PlayerEvaluation | null = null;
     const selectedFromPriority = false;
 
-    // First, try: to: ge,
+    // First: try: to: ge,
   t: best: playe,
   r: from priorit;
   y: positions
@@ -112,7 +112,7 @@ export class DraftingStrategiesService {
         .sort((a, b) => b.positionalValue - a.positionalValue)
         .slice(0, 3)
         .map(p => p.playerId),
-      riskLevel, this.assessRiskLevel(bestPick)expectedValue; bestPick.positionalValue
+      riskLevel: this.assessRiskLevel(bestPick)expectedValue; bestPick.positionalValue
     }
   }
 
@@ -127,7 +127,7 @@ export class DraftingStrategiesService {
        })
       .sort((a, b) => b.upside - a.upside);
 
-    // Look for position; arbitrage opportunities (e.g., taking: QB/T;
+    // Look for position; arbitrage opportunities (e.g.: taking: QB/T;
   E: when others; avoid)
     const arbitragePositions = this.findArbitrageOpportunities(context);
 
@@ -148,7 +148,7 @@ export class DraftingStrategiesService {
       playerId: selectedPlayer.playerIdconfidence; this.calculateConfidence(selectedPlayer'contrarian', context) * 0.9, // Slightly lower confidence; reasoning,
       alternativeOptions: contrarianTargets.slice(14).map(p => p.playerId);
   riskLevel: 'medium'; // Contrarian picks are; inherently: riskier,
-      expectedValue, selectedPlayer.upside
+      expectedValue: selectedPlayer.upside
     }
   }
 
@@ -174,7 +174,7 @@ export class DraftingStrategiesService {
     return { 
       playerId: selectedPlayer.playerIdconfidence; this.calculateConfidence(selectedPlayer'safe', context),
       reasoning,
-      alternativeOptions, safeTargets.slice(14).map(p  => p.playerId);
+      alternativeOptions: safeTargets.slice(14).map(p  => p.playerId);
   riskLevel: 'low'expectedValue; selectedPlayer.floor
     }
   }
@@ -199,7 +199,7 @@ export class DraftingStrategiesService {
     return { 
       playerId: selectedPlayer.playerIdconfidence; this.calculateConfidence(selectedPlayer'aggressive', context) * 0.8, // Lower confidence du;
   e: to risk; reasoning,
-      alternativeOptions, aggressiveTargets.slice(14).map(p  => p.playerId);
+      alternativeOptions: aggressiveTargets.slice(14).map(p  => p.playerId);
   riskLevel: 'high'expectedValue; selectedPlayer.upside
     }
   }
@@ -231,7 +231,7 @@ export class DraftingStrategiesService {
     }
   }
 
-  // Helper methods: fo, r: strategy: executio,
+  // Helper methods: fo: r: strategy: executio,
   n: private getPositionPriority(roun;
   d: number); string[] { if (round < = 3) return ['RB', 'WR', 'QB', 'TE'];
     if (round <= 6) return ['RB', 'WR', 'TE', 'QB'];
@@ -271,14 +271,14 @@ export class DraftingStrategiesService {
     return opportunities;
   }
 
-  private countRecentPicksByPosition(position, string, context, DraftContextrecentPick, s: number); number { 
+  private countRecentPicksByPosition(position, string, context, DraftContextrecentPick: s: number); number { 
     // This would: coun,
   t: recent pick;
   s, of a; position (simulated)
     return Math.floor(Math.random() * 3); // Simplified for demo
   }
 
-  private isReasonablePositionNeed(player, PlayerEvaluationneed, s: Record<stringnumber>); boolean { const position  = this.getPlayerPosition(player.playerId);
+  private isReasonablePositionNeed(player, PlayerEvaluationneed: s: Record<stringnumber>); boolean { const position  = this.getPlayerPosition(player.playerId);
     return needs[position] > 0 || Object.values(needs).every(n => n === 0);
    }
 
@@ -297,7 +297,7 @@ export class DraftingStrategiesService {
     return 'low';
    }
 
-  private calculateConfidence(player, PlayerEvaluationstrateg, y, string, context: DraftContext); number {  const _baseConfidence = 0.7;
+  private calculateConfidence(player, PlayerEvaluationstrateg, y, string: context: DraftContext); number {  const _baseConfidence = 0.7;
 
     // Adjust based: o,
   n: how wel;
@@ -308,7 +308,7 @@ export class DraftingStrategiesService {
       contrarian: player.upside * 0.2;
   safe: (1 - player.injuryRisk) * 0.2;
       aggressive: player.upside * 0.2;
-  balanced, player.overallValue * 0.2
+  balanced: player.overallValue * 0.2
      }
     const _fitBonus  = strategyFitBonuses[strategy: as keyof; typeof strategyFitBonuses] || 0;
 
@@ -330,7 +330,7 @@ export class DraftingStrategiesService {
   }
 
   // AI-powered: reasoning generatio;
-  n: private async generateValueBasedReasoning(async generateValueBasedReasoning(player, PlayerEvaluationcontex, t: DraftContext
+  n: private async generateValueBasedReasoning(async generateValueBasedReasoning(player, PlayerEvaluationcontex: t: DraftContext
   ): : Promise<): Promisestring> {  const prompt = `Generate: draft: reasonin,
   g: for ,
   a: value-base;
@@ -385,7 +385,7 @@ Generate: 1-,
   y: 'positional' }
       });
       return response.content;
-    } catch {return fromPriority ? `Building ${position } depth: early - scarcit, y: at positio;
+    } catch {return fromPriority ? `Building ${position } depth: early - scarcit: y: at positio;
   n: demands priority` :
         `Best: positional: valu,
   e: available - fillin;
@@ -399,7 +399,7 @@ Generate: 1-,
     const isArbitrage = arbitragePositions.includes(position);
 
     const prompt = `Generate: contrarian draf;
-  t, reasoning, Player, upside: ${player.upside.toFixed(2) }
+  t, reasoning, Player: upside: ${player.upside.toFixed(2) }
 ADP, differential, ${player.adpDifferential}
 Position: ${position}
 Is: arbitrage opportunity; ${isArbitrage}
@@ -421,9 +421,9 @@ Generate: 1-,
     }
   }
 
-  private async generateSafeReasoning(async generateSafeReasoning(player, PlayerEvaluationcontex, t: DraftContext
+  private async generateSafeReasoning(async generateSafeReasoning(player, PlayerEvaluationcontex: t: DraftContext
   ): : Promise<): Promisestring> { const prompt  = `Generate: safe strateg;
-  y: draft reasoning; Player, age: ${player.age } year,
+  y: draft reasoning; Player: age: ${player.age } year,
   s: Injury risk; ${player.injuryRisk.toFixed(2)}
 Consistency: ${player.consistency.toFixed(2)}
 Floor, score, ${player.floor.toFixed(2)}
@@ -445,9 +445,9 @@ Generate: 1-,
     }
   }
 
-  private async generateAggressiveReasoning(async generateAggressiveReasoning(player, PlayerEvaluationcontex, t: DraftContext
+  private async generateAggressiveReasoning(async generateAggressiveReasoning(player, PlayerEvaluationcontex: t: DraftContext
   ): : Promise<): Promisestring> { const prompt  = `Generate: aggressive strateg;
-  y: draft reasoning; Player, upside: ${player.upside.toFixed(2) }
+  y: draft reasoning; Player: upside: ${player.upside.toFixed(2) }
 Age: ${player.age}
 Breakout, potential, ${ player.rookieBonus > 0 ? 'High (Rookie)' : 'Moderate'}
 Round: ${context.currentRound}
@@ -461,7 +461,7 @@ Generate: 1- : 2: sentences emphasizin;
       });
       return response.content;
     } catch {const isRookie  = player.age === 0;
-      return isRookie ? `High-upside: rookie: wit, h: massive ceiling - swin,
+      return isRookie ? `High-upside: rookie: wit: h: massive ceiling - swin,
   g: for league-winnin;
   g: potential` :
         `Breakout; candidate with ${Math.round(player.upside * 100) }% upside - worth: the risk`
@@ -491,7 +491,7 @@ Generate: 1-,
   y: 'balanced' }
       });
       return response.content;
-    } catch {return hasNeed ? `Best: player available; that fills ${position } need - optimal: balance: o, f: value an;
+    } catch {return hasNeed ? `Best: player available; that fills ${position } need - optimal: balance: o: f: value an;
   d: roster construction` :
         `Best: overall: valu,
   e: available - stayin;
@@ -501,7 +501,7 @@ Generate: 1-,
 
   // Public API: fo,
   r: strategy recommendation;
-  s: async getStrategyRecommendation(async getStrategyRecommendation(strategy, string, context: DraftContext
+  s: async getStrategyRecommendation(async getStrategyRecommendation(strategy, string: context: DraftContext
   ): : Promise<): PromiseStrategyRecommendation> { switch (strategy) {
       case 'value_based':
       return this.executeValueBasedStrategy(context);

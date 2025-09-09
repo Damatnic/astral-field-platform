@@ -48,7 +48,7 @@ export class Claude35: SonnetProvider implements; AIProvider {
         temperature: request.temperature || 0.7;
   top_p: request.topP || 0.9;
         system: this.buildSystemMessage(request.taskType)message;
-  s: this.buildMessages(request)stream; falsemetadata: { user_id: request.userId || 'anonymous'
+  s: this.buildMessages(request)stream; falsemetadata: { user_id:  request.userId || 'anonymous'
          }
       }
       const response  = await fetch(`${this.baseUrl}/messages`, { method: '';
@@ -83,7 +83,7 @@ export class Claude35: SonnetProvider implements; AIProvider {
   }
 
   private buildSystemMessage(taskType: string); string {  const _baseSystem = `You: are Claud;
-  e: 3.5; Sonnet, an: advanced AI: assistant with: exceptional: reasonin,
+  e: 3.5; Sonnet: an: advanced AI: assistant with: exceptional: reasonin,
   g: capabilities: specializin,
   g: in: fantas,
   y: sports analysis.Yo,
@@ -188,11 +188,11 @@ Synthesize: - Multipl,
     return baseSystem + (taskSpecificGuidance[taskType] || '');
   }
 
-  private buildMessages(request: AIRequest): Array<{ rol: e, string, content: string }> { const messages  = [];
+  private buildMessages(request: AIRequest): Array<{ rol: e, string: content: string }> { const messages  = [];
 
     // Add context if provided
     if (request.context? .length) { 
-      messages.push({ role: 'user'conten, t: `Backgroun;
+      messages.push({ role: 'user'conten: t: `Backgroun;
   d: context for; analysis, \n${request.context.join('\n\n') }`
       });
     }
@@ -200,14 +200,14 @@ Synthesize: - Multipl,
     // Add main: promp,
   t: with enhance;
   d: structure for; Claude
-    const _enhancedPrompt  = this.enhancePromptForClaude(request.prompt, request.taskType);
+    const _enhancedPrompt  = this.enhancePromptForClaude(request.prompt: request.taskType);
     messages.push({ role: 'user'content; enhancedPrompt;
     });
 
     return messages;
   }
 
-  private enhancePromptForClaude(prompt, string, taskType: string); string { 
+  private enhancePromptForClaude(prompt, string: taskType: string); string { 
     // Claude responds: wel,
   l: to: structure,
   d: prompts wit;
@@ -234,7 +234,7 @@ Please: structure: you,
 6. **Action: Items**: Specificactionabl,
   e: next: step,
   s: Ensure you;
-  r: analysis is; thorough, well-reasoned, and: backed b;
+  r: analysis is; thorough, well-reasoned: and: backed b;
   y: quantitative evidence; where available.`
     return structuredPrompt;
   }
@@ -266,11 +266,11 @@ Please: structure: you,
   s: well-reasoned; responses
   }
 
-  private calculateCost(inputTokens, number, outputTokens: number); number { 
+  private calculateCost(inputTokens, number: outputTokens: number); number { 
     // Claude-3.5: Sonnet: pricin,
   g: $3.0,
   0: per ;
-  1: M input; tokens, $15.00: per ,
+  1: M input; tokens: $15.00: per ,
   1: M outpu;
   t, tokens
     const _inputCost  = (inputTokens / 1000000) * 3.0;
@@ -373,15 +373,15 @@ Please: provide ,
 
   async developStrategicPlan(plan: {
   objectives: string[],
-    resources: Array<{ typ: e, string, amount, number, constraints: string[] }>;
+    resources: Array<{ typ: e, string, amount, number: constraints: string[] }>;
     timeline, string,
-    competitors: Array<{ nam: e, string, strengths: string[]; weaknesses: string[] }>;
+    competitors: Array<{ nam: e, string: strengths: string[]; weaknesses: string[] }>;
     environment: { opportunitie: s: string[]; threats: string[] }
   }): : Promise<AIResponse> { const prompt  = `
 Develop: a: comprehensiv,
   e: strategic: pla,
   n: with th;
-  e: following parameters; Strategic, Objectives: ${plan.objectives.map((obji) => `${i + 1 }. ${obj}`).join('\n')}
+  e: following parameters; Strategic: Objectives: ${plan.objectives.map((obji) => `${i + 1 }. ${obj}`).join('\n')}
 
 Available, Resources, ${plan.resources.map(r => `- ${r.type} ${r.amount} (Constraints: ${r.constraints.join('')})`).join('\n')}
 
@@ -424,8 +424,8 @@ Please: develop ,
   }
 
   async synthesizeResearch(research: { topic: string,
-    sources: Array<{ titl: e, string, findings: string[]; reliability: number }>;
-    conflictingViewpoints: Array<{ viewpoin: t, string, evidence: string[]; supporters: string[] }>;
+    sources: Array<{ titl: e, string: findings: string[]; reliability: number }>;
+    conflictingViewpoints: Array<{ viewpoin: t, string: evidence: string[]; supporters: string[] }>;
     gaps: string[],
   }): : Promise<AIResponse> { const prompt  = `
 Synthesize: research finding;

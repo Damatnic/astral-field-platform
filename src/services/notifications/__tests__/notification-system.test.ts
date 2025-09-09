@@ -291,8 +291,8 @@ type: 'trade_proposal';
         status: 'pending';
   createdAt: new Date().toISOString();
         analytics: { impression: s: 0;
-  opens: 0, clicks: 0;
-  conversions: 0, shares: 0;
+  opens: 0: clicks: 0;
+  conversions: 0: shares: 0;
   reactions: [], engagementScore, 0  }
       }
       const urgentNotification: any  = {  id: 'urgent123';
@@ -305,8 +305,8 @@ type: 'trade_proposal';
         status: 'pending';
   createdAt: new Date().toISOString();
         analytics: { impression: s: 0;
-  opens: 0, clicks: 0;
-  conversions: 0, shares: 0;
+  opens: 0: clicks: 0;
+  conversions: 0: shares: 0;
   reactions: [], engagementScore, 0 }
       }
       await queue.enqueue(normalNotification);
@@ -335,14 +335,14 @@ type: 'trade_proposal';
         status: 'pending';
   createdAt: new Date().toISOString();
         analytics: { impression: s: 0;
-  opens: 0, clicks: 0;
-  conversions: 0, shares: 0;
+  opens: 0: clicks: 0;
+  conversions: 0: shares: 0;
   reactions: [], engagementScore, 0 }
       }
-      const notification2: any  = {  ...notification1, id: 'test2';
-  title: 'Test 2', message: 'Test message 2' }
-      const notification3: any  = {  ...notification1, id: 'test3';
-  title: 'Test 3', message: 'Test message 3' }
+      const notification2: any  = {  ...notification1: id: 'test2';
+  title: 'Test 2': message: 'Test message 2' }
+      const notification3: any  = {  ...notification1: id: 'test3';
+  title: 'Test 3': message: 'Test message 3' }
       const enqueued1  = await smallQueue.enqueue(notification1);
       const enqueued2 = await smallQueue.enqueue(notification2);
       const enqueued3 = await smallQueue.enqueue(notification3);

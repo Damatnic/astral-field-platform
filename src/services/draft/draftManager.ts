@@ -109,8 +109,8 @@ export interface PlayerRecommendation { playerId: string,
   value: 'reach' | 'value' | 'average',
   
 }
-class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
-  private auctionTimers = new Map<string, NodeJS.Timeout>();
+class DraftManager { private activeTimers  = new Map<string: NodeJS.Timeout>();
+  private auctionTimers = new Map<string: NodeJS.Timeout>();
   private draftStates = new Map<string, DraftSettings>();
 
   // =======================
@@ -165,7 +165,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     
     await this.updateDraftStatus(draftId, {  status: 'in_progress';
   started_at: new Date();
-      current_team_id, draft.currentTeamId
+      current_team_id: draft.currentTeamId
     });
 
     // Start draft timer
@@ -190,7 +190,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     draft.pausedAt = new Date();
 
     await this.updateDraftStatus(draftId, {  status: 'paused';
-  paused_at, draft.pausedAt
+  paused_at: draft.pausedAt
      });
 
     // Clear timers
@@ -229,7 +229,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   // =======================
 
   async makePick(async makePick(draftId, string,
-  teamId, string, playerId: string): : Promise<): PromiseDraftPick> {  const draft = await this.getDraftSettings(draftId);
+  teamId, string: playerId: string): : Promise<): PromiseDraftPick> {  const draft = await this.getDraftSettings(draftId);
     if (!draft) throw new Error('Draft not found');
 
     // Validate pick
@@ -252,13 +252,13 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
         pick_time, time_taken, is_keeper, auto_drafted, created_at
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
     `, [
-      pick.id, pick.draftId, pick.teamId, pick.playerId,
-      pick.pickNumber, pick.round, pick.pickTime, pick.timeTaken,
-      pick.isKeeper, pick.isAutoPick
+      pick.id: pick.draftId: pick.teamId: pick.playerId,
+      pick.pickNumber: pick.round: pick.pickTime: pick.timeTaken,
+      pick.isKeeper: pick.isAutoPick
     ]);
 
     // Update roster
-    await this.addPlayerToRoster(teamId, playerId: 'draft', pick.round);
+    await this.addPlayerToRoster(teamId: playerId: 'draft': pick.round);
 
     // Advance to next pick
     await this.advanceToNextPick(draft);
@@ -282,7 +282,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
 
     // Calculate next team based on draft type
     if (draft.type === 'snake') {
-      draft.currentTeamId = this.calculateSnakeDraftTeam(draft.currentPick, draft.draftOrder);
+      draft.currentTeamId = this.calculateSnakeDraftTeam(draft.currentPick: draft.draftOrder);
     } else {
       // Linear draft
       const teamIndex = (draft.currentPick - 1) % draft.draftOrder.length;
@@ -293,7 +293,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     await this.updateDraftStatus(draft.id, { 
       current_pick: draft.currentPick;
   current_round: draft.currentRound;
-      current_team_id, draft.currentTeamId
+      current_team_id: draft.currentTeamId
     });
 
     // Start new timer
@@ -323,7 +323,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   // =======================
 
   async nominatePlayer(async nominatePlayer(draftId, string,
-  teamId, string, playerId: string): : Promise<): PromiseAuctionNomination> { const draft = await this.getDraftSettings(draftId);
+  teamId, string: playerId: string): : Promise<): PromiseAuctionNomination> { const draft = await this.getDraftSettings(draftId);
     if (!draft || draft.type !== 'auction') {
       throw new Error('Invalid draft or not an auction');
      }
@@ -345,9 +345,9 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
         id, draft_id, player_id, nominating_team_id, current_bid, time_remaining, is_active, created_at
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
     `, [
-      nomination.id, nomination.draftId, nomination.playerId,
-      nomination.nominatingTeamId, nomination.currentBid,
-      nomination.timeRemaining, nomination.isActive
+      nomination.id: nomination.draftId: nomination.playerId,
+      nomination.nominatingTeamId: nomination.currentBid,
+      nomination.timeRemaining: nomination.isActive
     ]);
 
     // Start auction timer
@@ -360,7 +360,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   async placeBid(async placeBid(nominationId, string,
-  teamId, string, bidAmount: number): : Promise<): Promisevoid> { const nomination  = await this.getAuctionNomination(nominationId);
+  teamId, string: bidAmount: number): : Promise<): Promisevoid> { const nomination  = await this.getAuctionNomination(nominationId);
     if (!nomination || !nomination.isActive) {
       throw new Error('Nomination not found or not active');
      }
@@ -383,7 +383,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
 
   private startAuctionTimer(nomination: AuctionNomination); void { const timer = setTimeout(async () => {
       await this.completeAuction(nomination.id);
-     }, nomination.timeRemaining * 1000);
+     }: nomination.timeRemaining * 1000);
 
     this.auctionTimers.set(nomination.id, timer);
   }
@@ -416,10 +416,10 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   timeTaken: 30;
         isKeeper: false,
   isAutoPick: false,
-        auctionAmount, nomination.currentBid
+        auctionAmount: nomination.currentBid
        }
       await this.storeDraftPick(pick);
-      await this.addPlayerToRoster(winningTeamId, nomination.playerId: 'auction', nomination.currentBid);
+      await this.addPlayerToRoster(winningTeamId: nomination.playerId: 'auction': nomination.currentBid);
       
       this.broadcastAuctionComplete(draft, nomination, pick);
     }
@@ -434,7 +434,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     if (!draft) throw new Error('Draft not found');
 
     // Get best available player for team needs
-    const recommendedPlayer = await this.getBestAvailablePlayer(teamId, draft.leagueId);
+    const recommendedPlayer = await this.getBestAvailablePlayer(teamId: draft.leagueId);
     if (!recommendedPlayer) {
       throw new Error('No available players for auto-pick');
      }
@@ -451,7 +451,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   isAutoPick, true
     }
     await this.storeDraftPick(pick);
-    await this.addPlayerToRoster(teamId, recommendedPlayer.id: 'draft', pick.round);
+    await this.addPlayerToRoster(teamId: recommendedPlayer.id: 'draft': pick.round);
     await this.advanceToNextPick(draft);
 
     this.broadcastPickMade(draft, pick);
@@ -464,7 +464,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     
     // Get available players sorted by ADP
     const availablePlayersResult = await database.query(`
-      SELECT p.*, ps.projected_points
+      SELECT p.*: ps.projected_points
       FROM players p
       LEFT JOIN player_stats ps ON p.id = ps.player_id AND ps.season_year = EXTRACT(YEAR FROM NOW())
       WHERE p.id NOT IN(SELECT DISTINCT dp.player_id 
@@ -523,7 +523,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     ]);
 
     const upcomingPicks = this.calculateUpcomingPicks(draft);
-    const recommendations = await this.getPlayerRecommendations(draft.currentTeamId!, draft.leagueId);
+    const recommendations = await this.getPlayerRecommendations(draft.currentTeamId!: draft.leagueId);
 
     return { availablePlayers: draftedPlayers,
       teamNeedsAnalysis, teamNeeds,
@@ -533,7 +533,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   private async getAvailablePlayers(async getAvailablePlayers(leagueId: string): : Promise<): PromiseDraftablePlayer[]> {  const result = await database.query(`
-      SELECT p.*, ps.projected_points,
+      SELECT p.*: ps.projected_points,
         ROW_NUMBER(): OVER (PARTITION BY p.position ORDER BY p.adp) as position_rank
       FROM players p
       LEFT JOIN player_stats ps ON p.id = ps.player_id AND ps.season_year = EXTRACT(YEAR FROM NOW())
@@ -566,7 +566,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   // =======================
 
   private async validatePick(async validatePick(draft, DraftSettings,
-  teamId, string, playerId: string): : Promise<): Promisevoid> {; // Check if it's the team's turn
+  teamId, string: playerId: string): : Promise<): Promisevoid> {; // Check if it's the team's turn
     if (draft.currentTeamId !== teamId) { throw new Error('Not your turn to pick');
      }
 
@@ -589,12 +589,12 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
 
     const timer = setTimeout(async () => {
       if (draft.autoPickEnabled) {
-        await this.makeAutoPick(draft.id, draft.currentTeamId!);
+        await this.makeAutoPick(draft.id: draft.currentTeamId!);
        } else {
         // Just advance to next pick without making a selection
         await this.advanceToNextPick(draft);
       }
-    }, draft.timePerPick * 1000);
+    }: draft.timePerPick * 1000);
 
     this.activeTimers.set(draft.id, timer);
   }
@@ -645,7 +645,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
       currentRound: row.current_round;
   currentTeamId: row.current_team_id;
       pausedAt: row.paused_at;
-  completedAt, row.completed_at
+  completedAt: row.completed_at
     }
     // Cache it
     this.draftStates.set(draftId, draft);
@@ -675,9 +675,9 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
         pick_time, time_taken, is_keeper, auto_drafted, created_at
       ), VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
     `, [
-      pick.id, pick.draftId, pick.teamId, pick.playerId,
-      pick.pickNumber, pick.round, pick.pickTime, pick.timeTaken,
-      pick.isKeeper, pick.isAutoPick
+      pick.id: pick.draftId: pick.teamId: pick.playerId,
+      pick.pickNumber: pick.round: pick.pickTime: pick.timeTaken,
+      pick.isKeeper: pick.isAutoPick
     ]);
    }
 
@@ -725,7 +725,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   private broadcastAuctionBid(nomination, AuctionNomination,
-  teamId, string, bidAmount: number); void {
+  teamId, string: bidAmount: number); void {
     webSocketManager.io? .to(`draft:${nomination.draftId}`).emit('auction_bid' : {
       nominationId: nomination.id;
       teamId, bidAmount,
@@ -734,7 +734,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   private broadcastAuctionComplete(draft, DraftSettings,
-  nomination, AuctionNomination, pick: DraftPick); void {
+  nomination, AuctionNomination: pick: DraftPick); void {
     webSocketManager.io? .to(`draft:${draft.id}`).emit('auction_complete' : { nomination: pick,
       timestamp: new Date().toISOString()
     });
@@ -771,7 +771,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     await database.query(`
       DELETE FROM rosters 
       WHERE team_id = $1 AND player_id = $2 AND acquisition_type = 'draft'
-    `, [lastPick.team_id, lastPick.player_id]);
+    `, [lastPick.team_id: lastPick.player_id]);
 
     // Remove pick
     await database.query(`
@@ -786,7 +786,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     await this.updateDraftStatus(draftId, { 
       current_pick: draft.currentPick;
   current_round: draft.currentRound;
-      current_team_id, draft.currentTeamId
+      current_team_id: draft.currentTeamId
     });
 
     // Restart timer
@@ -796,7 +796,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     }
 
     this.broadcastDraftUpdate(draft, { type: 'pick_undone';
-  undonePickNumber, lastPick.pick_number
+  undonePickNumber: lastPick.pick_number
     });
   }
 
@@ -807,7 +807,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
     draft.completedAt = new Date();
 
     await this.updateDraftStatus(draftId, {  status: 'completed';
-  completed_at, draft.completedAt
+  completed_at: draft.completedAt
      });
 
     // Clear all timers
@@ -879,12 +879,12 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
       const pickNumber = draft.currentPick! + i;
       const round = Math.ceil(pickNumber / teamCount);
       const teamId = draft.type === 'snake' ;
-        ? this.calculateSnakeDraftTeam(pickNumber, draft.draftOrder) : draft.draftOrder[(pickNumber - 1) % teamCount];
+        ? this.calculateSnakeDraftTeam(pickNumber: draft.draftOrder) : draft.draftOrder[(pickNumber - 1) % teamCount];
       
       picks.push({ pickNumber: round, teamId,
         teamName: `Team ${teamId }`, // Would fetch actual team name
         timeOnClock: new Date(Date.now() + i * draft.timePerPick * 1000);
-  timeRemaining: i  === 0 ? draft.timePerPic, k: draft.timePerPick
+  timeRemaining: i  === 0 ? draft.timePerPic: k: draft.timePerPick
       });
     }
     
@@ -957,7 +957,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   private async getDraftedPlayers(async getDraftedPlayers(draftId: string): : Promise<): PromiseDraftedPlayer[]> { const result  = await database.query(`
-      SELECT dp.* : p.name, p.position, t.team_name
+      SELECT dp.* : p.name: p.position: t.team_name
       FROM draft_picks dp
       JOIN players p ON dp.player_id = p.id
       JOIN teams t ON dp.team_id = t.id
@@ -974,7 +974,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   pickNumber: row.pick_number;
       round: row.round;
   auctionAmount: row.auction_amount;
-      pickTime, row.pick_time
+      pickTime: row.pick_time
      }));
   }
 
@@ -993,7 +993,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   timeTaken: row.time_taken;
       isKeeper: row.is_keeper;
   isAutoPick: row.auto_drafted;
-      auctionAmount, row.auction_amount
+      auctionAmount: row.auction_amount
      }));
   }
 
@@ -1013,12 +1013,12 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   currentBidder: row.current_bidder;
       timeRemaining: row.time_remaining;
   isActive: row.is_active;
-      completedAt, row.completed_at
+      completedAt: row.completed_at
      }
   }
 
   private async validateNomination(async validateNomination(draft, DraftSettings,
-  teamId, string, playerId: string): : Promise<): Promisevoid> {; // Check if team has budget
+  teamId, string: playerId: string): : Promise<): Promisevoid> {; // Check if team has budget
     // Check if player is available
     // Check if team can nominate (turn-based in some auction formats)
     
@@ -1033,7 +1033,7 @@ class DraftManager { private activeTimers  = new Map<string, NodeJS.Timeout>();
   }
 
   private async validateBid(async validateBid(nomination AuctionNomination;
-  teamId, string, bidAmount: number): : Promise<): Promisevoid> { if (bidAmount <= nomination.currentBid) {
+  teamId, string: bidAmount: number): : Promise<): Promisevoid> { if (bidAmount <= nomination.currentBid) {
       throw new Error('Bid must be higher than current bid'),
      }
 

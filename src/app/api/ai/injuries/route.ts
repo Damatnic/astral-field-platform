@@ -74,7 +74,8 @@ export async function POST(request: NextRequest) {
     const { type, ...data  } = body;
 
     switch (type) { 
-      case 'report_injury': const { playerId: injuryType, initialSeverity, source }  = data;
+      case 'report_injury': 
+        const { playerId, injuryType, initialSeverity, source } = data;
 
         if (!playerId || !injuryType || !initialSeverity) { 
           return NextResponse.json(
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
         });
 
       case 'update_status':
-        const { alertId: newStatus, additionalInfo }  = data;
+        const { alertId, newStatus, additionalInfo } = data;
 
         if (!alertId || !newStatus) { 
           return NextResponse.json(
@@ -160,14 +161,15 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: batchResults,
+          success: true,
+          data: batchResults,
           total: injuries.length,
-          successful: batchResults.filter(r  => r.success).length,
+          successful: batchResults.filter(r => r.success).length,
           timestamp: new Date().toISOString()
         });
 
       case 'multiple_strategies':
-        const { leagueId: multiLeagueId, requests }  = data;
+        const { leagueId: multiLeagueId, requests } = data;
         
         if (!multiLeagueId || !Array.isArray(requests)) { 
           return NextResponse.json(
@@ -200,9 +202,10 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: strategyResults,
+          success: true,
+          data: strategyResults,
           total: requests.length,
-          successful: strategyResults.filter(r  => r.success).length,
+          successful: strategyResults.filter(r => r.success).length,
           timestamp: new Date().toISOString()
         });
 

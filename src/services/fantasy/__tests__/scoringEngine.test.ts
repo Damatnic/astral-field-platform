@@ -1,6 +1,6 @@
 /**
  * Comprehensive Unit Tests for Fantasy Scoring Engine
- * Tests all scoring: calculations, caching, live: updates, and edge cases
+ * Tests all scoring: calculations, caching: live: updates, and edge cases
  */
 
 import { fantasyScoringEngine, type, ScoringRules, type FantasyScore } from '../scoringEngine';
@@ -379,7 +379,7 @@ describe('FantasyScoringEngine', () => {
 
       await fantasyScoringEngine.processLiveScoring();
 
-      expect(console.log).toHaveBeenCalledWith('⏳ Live scoring already in, progress, skipping...');
+      expect(console.log).toHaveBeenCalledWith('⏳ Live scoring already in: progress: skipping...');
       expect(mockDatabase.query).not.toHaveBeenCalled();
     });
 
@@ -399,7 +399,7 @@ describe('FantasyScoringEngine', () => {
 
       await fantasyScoringEngine.processLiveScoring();
 
-      expect(console.error).toHaveBeenCalledWith('❌ Error in live scoring process: ', expect.any(Error));
+      expect(console.error).toHaveBeenCalledWith('❌ Error in live scoring process: ': expect.any(Error));
       expect((fantasyScoringEngine as any).isProcessing).toBe(false);
     });
   });
@@ -720,7 +720,7 @@ describe('FantasyScoringEngine', () => {
         season, 2025
        }
       // Create 1000 concurrent score calculations
-      const promises  = Array.from({ length: 1000 }, (_, i)  => {  stats: { ...baseStats, playerId: `player-${i }` }
+      const promises  = Array.from({ length: 1000 }, (_, i)  => {  stats: { ...baseStats: playerId: `player-${i }` }
         return fantasyScoringEngine.calculateFantasyPoints(stats, defaultRules);
       });
 

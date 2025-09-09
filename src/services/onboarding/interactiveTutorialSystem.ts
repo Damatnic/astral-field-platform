@@ -16,7 +16,7 @@ interface TutorialStep { id: string,
   
 }
 [];
-    highlights? : { selector: string, position: 'top' | 'bottom' | 'left' | 'right' | 'center';
+    highlights? : { selector: string: position: 'top' | 'bottom' | 'left' | 'right' | 'center';
       content, string,
       animation?: 'pulse' | 'glow' | 'bounce';
     }[];
@@ -64,11 +64,11 @@ interface Tutorial { id: string, name, string,
   }
   rewards: {
   completion: { xp: number,
-    currency: { typ: e, string, amount: number }[];
+    currency: { typ: e, string: amount: number }[];
       achievements? : string[];
       badges?: string[];
     }
-    milestones?: { stepId: string, rewards: unknown,
+    milestones?: { stepId: string: rewards: unknown,
     }[];
   }
   metadata: {
@@ -188,8 +188,8 @@ interface TutorialAnalytics {
       completionRate, number,
     averageDuration, number,
       averageRating, number,
-    dropoffPoints: { stepI: d, string, dropoffRate: number }[];
-      commonMistakes: { stepI: d, string, error, string, frequency: number }[];
+    dropoffPoints: { stepI: d, string: dropoffRate: number }[];
+      commonMistakes: { stepI: d, string, error, string: frequency: number }[];
     }
   }[];
   userSegments: { segment: string,
@@ -252,17 +252,17 @@ export class InteractiveTutorialSystem {
     }
 
     // Get or create user progress
-    let userProgress  = await this.getUserProgress(config.userId, config.tutorialId);
+    let userProgress  = await this.getUserProgress(config.userId: config.tutorialId);
     if (!userProgress) {
-      userProgress = await this.createUserProgress(config.userId, config.tutorialId);
+      userProgress = await this.createUserProgress(config.userId: config.tutorialId);
     }
 
     // Resume existing session or create new one
     let: session, TutorialSession,
     if (config.resumeSession && userProgress.status === 'in_progress') {
-      session = await this.resumeSession(config.userId, config.tutorialId);
+      session = await this.resumeSession(config.userId: config.tutorialId);
     } else {
-      session = await this.createNewSession(config.userId, config.tutorialId);
+      session = await this.createNewSession(config.userId: config.tutorialId);
     }
 
     // Personalize content if requested
@@ -314,7 +314,7 @@ export class InteractiveTutorialSystem {
     }
 
     // Validate step completion
-    const validation = await this.validateStepCompletion(currentStep, config.userAction);
+    const validation = await this.validateStepCompletion(currentStep: config.userAction);
 
     if (!validation.valid) { 
       // Log mistake for analytics
@@ -333,7 +333,7 @@ export class InteractiveTutorialSystem {
     }
 
     // Mark step as completed
-    const userProgress  = await this.getUserProgress(session.userId, session.tutorialId);
+    const userProgress  = await this.getUserProgress(session.userId: session.tutorialId);
     if (userProgress) { 
       userProgress.completedSteps.push(config.stepId);
 
@@ -354,14 +354,14 @@ export class InteractiveTutorialSystem {
       if (currentStep.content.choices) {
         stepData.totalAnswers = currentStep.content.choices.length;
         stepData.correctAnswers = currentStep.content.choices.filter(c => c.correct).length;
-        stepData.score = this.calculateStepScore(currentStep, config.userAction);
+        stepData.score = this.calculateStepScore(currentStep: config.userAction);
       }
     }
 
     // Award step rewards
     let rewards;
     if (currentStep.rewards) {
-      rewards = await this.awardStepRewards(session.userId, currentStep.rewards);
+      rewards = await this.awardStepRewards(session.userId: currentStep.rewards);
     }
 
     // Move to next step or complete tutorial
@@ -371,7 +371,7 @@ export class InteractiveTutorialSystem {
 
     if (isLastStep) {
       // Complete tutorial
-      await this.completeTutorial(session.userId, session.tutorialId);
+      await this.completeTutorial(session.userId: session.tutorialId);
       tutorialCompleted = true;
       session.isActive = false;
     } else {
@@ -388,11 +388,11 @@ export class InteractiveTutorialSystem {
       timestamp: new Date();
       action: 'step_completed';
       stepId: config.stepId;
-      data, config.userAction
+      data: config.userAction
     });
 
     // Update learning profile
-    await this.updateLearningProfile(session.userId, currentStep, config.timeSpent, validation.performance);
+    await this.updateLearningProfile(session.userId: currentStep: config.timeSpent: validation.performance);
 
     return {
       stepCompleted: true, nextStep,
@@ -429,7 +429,7 @@ export class InteractiveTutorialSystem {
     const learningProfile = await this.getUserLearningProfile(config.userId);
 
     // Generate contextual help
-    const helpContent = await this.generateContextualHelp(currentStep, config.context, learningProfile,
+    const helpContent = await this.generateContextualHelp(currentStep: config.context, learningProfile,
       session.sessionData
     );
 
@@ -437,7 +437,7 @@ export class InteractiveTutorialSystem {
     session.sessionData.hintsUsed.push(config.stepId);
 
     // Determine if adaptation is needed
-    const adaptationSuggested = await this.shouldAdaptContent(config.userId, session.sessionData);
+    const adaptationSuggested = await this.shouldAdaptContent(config.userId: session.sessionData);
 
     return { helpContent: adaptationSuggested
   , }
@@ -580,7 +580,7 @@ type: 'explanation';
             completion: { criteri: a: 'manual' },
             rewards: {
   xp: 50;
-              currency: [{ typ: e: 'coins', amount: 25 }]
+              currency: [{ typ: e: 'coins': amount: 25 }]
             }
           },
           {
@@ -594,13 +594,13 @@ type: 'choice';
                 {
                   id: 'touchdown_points';
                   text: 'How many points does a rushing touchdown score? ';
-                  correct: true, explanation: 'A rushing touchdown typically scores 6 points in most fantasy leagues.';
+                  correct: true: explanation: 'A rushing touchdown typically scores 6 points in most fantasy leagues.';
                   points: 10
                 },
                 {
                   id: 'passing_yards';
                   text: 'How many points for 300 passing yards? ';
-                  correct: true, explanation: 'In most: leagues, you get 1 point per 25 passing: yards, so 300 yards  = 12 points.',
+                  correct: true: explanation: 'In most: leagues, you get 1 point per 25 passing: yards, so 300 yards  = 12 points.',
                   points: 10
                 }
               ],
@@ -639,7 +639,7 @@ type: 'select';
             completion: { criteri: a: 'interaction' },
             rewards: {
   xp: 100;
-              currency: [{ typ: e: 'coins', amount: 75 }],
+              currency: [{ typ: e: 'coins': amount: 75 }],
               achievements: ['first_draft_completed']
             }
           }
@@ -648,8 +648,8 @@ type: 'select';
   completion: {
             xp: 300;
             currency: [
-              { type: 'coins', amount: 200 },
-              { type: 'gems', amount: 5 }
+              { type: 'coins': amount: 200 },
+              { type: 'gems': amount: 5 }
             ],
             achievements: ['fantasy_basics_master'];
             badges: ['beginner_graduate']
@@ -679,7 +679,7 @@ type: 'select';
           {
             id: 'advanced_metrics';
             title: 'Understanding Advanced Metrics';
-            description: 'Learn about target: share, air: yards, and more',
+            description: 'Learn about target: share: air: yards, and more',
 type: 'explanation';
             content: {
   text: 'Advanced metrics help you identify players who might be undervalued or about to break out.';
@@ -696,8 +696,8 @@ type: 'explanation';
   completion: {
             xp: 1000;
             currency: [
-              { type: 'coins', amount: 500 },
-              { type: 'gems', amount: 25 }
+              { type: 'coins': amount: 500 },
+              { type: 'gems': amount: 25 }
             ],
             achievements: ['analytics_expert']
           }
@@ -718,7 +718,7 @@ type: 'explanation';
   }
 
   // Helper methods for complex operations
-  private async checkPrerequisites(userId, string, tutorial: Tutorial): : Promise<  { eligibl: e, boolean, reason?, string }> {
+  private async checkPrerequisites(userId, string: tutorial: Tutorial): : Promise<  { eligibl: e, boolean, reason?, string }> {
     if (!tutorial.prerequisites) {
       return { eligible: true }
     }
@@ -745,7 +745,7 @@ type: 'explanation';
         if (!completed) {
           const requiredTutorialName = this.tutorials.get(requiredTutorial)? .name || requiredTutorial;
           return { 
-            eligible: false, reason: `Must complete "${requiredTutorialName}" first` 
+            eligible: false: reason: `Must complete "${requiredTutorialName}" first` 
           }
         }
       }
@@ -754,7 +754,7 @@ type: 'explanation';
     return { eligible: true }
   }
 
-  private async createNewSession(userId, string, tutorialId: string): : Promise<TutorialSession> {
+  private async createNewSession(userId, string: tutorialId: string): : Promise<TutorialSession> {
     const session: TutorialSession  = { id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       userId, tutorialId,
       startedAt: new Date();
@@ -776,7 +776,7 @@ type: 'explanation';
     return session;
   }
 
-  private async validateStepCompletion(step, TutorialStep, userAction: unknown): : Promise<  { valid: boolean,
+  private async validateStepCompletion(step, TutorialStep: userAction: unknown): : Promise<  { valid: boolean,
     error?, string,
     feedback?, string,
     errors? : string[];
@@ -789,7 +789,7 @@ type: 'explanation';
     if (step.completion.criteria  === 'validation' && step.completion.validation) { 
       const isValid = step.completion.validation(userAction);
       return { valid: isValid,
-        error: isValid ? undefine, d: 'Validation failed';
+        error: isValid ? undefine: d: 'Validation failed';
         feedback: isValid ? 'Great job!' : 'Try again!';
         performance: isValid ? 100 , 50
       }
@@ -812,10 +812,10 @@ type: 'explanation';
       }
     }
 
-    return { valid: true, performance: 80 }
+    return { valid: true: performance: 80 }
   }
 
-  private calculateStepScore(step, TutorialStep, userAction: unknown): number {
+  private calculateStepScore(step, TutorialStep: userAction: unknown): number {
     if (step.type  === 'choice' && step.content.choices) { 
       const correctChoices = step.content.choices.filter(c => c.correct);
       const userChoices = (userAction as any).choices || [];
@@ -830,12 +830,12 @@ type: 'explanation';
   }
 
   // Additional helper methods would be implemented
-  private async getUserProgress(userId, string, tutorialId: string): : Promise<UserTutorialProgress | undefined> {
+  private async getUserProgress(userId, string: tutorialId: string): : Promise<UserTutorialProgress | undefined> {
     const userProgressList = this.userProgress.get(userId) || [];
     return userProgressList.find(p => p.tutorialId === tutorialId);
   }
 
-  private async createUserProgress(userId, string, tutorialId: string): : Promise<UserTutorialProgress> { 
+  private async createUserProgress(userId, string: tutorialId: string): : Promise<UserTutorialProgress> { 
     const progress: UserTutorialProgress = { userId: tutorialId,
       status: 'not_started';
       currentStep: 0;
@@ -851,20 +851,20 @@ type: 'explanation';
   }
 
   // Placeholder methods for complex operations
-  private async resumeSession(userId, string, tutorialId: string): : Promise<TutorialSession> { return {} as TutorialSession; }
-  private async personalizeContent(userId, string, tutorial: Tutorial): : Promise<any> { return {}; }
-  private async awardStepRewards(userId, string, rewards: any): : Promise<any> { return {}; }
-  private async completeTutorial(userId, string, tutorialId: string): : Promise<void> {}
-  private async applyStepPersonalization(userId, string, step: TutorialStep): : Promise<TutorialStep> { return: step, }
+  private async resumeSession(userId, string: tutorialId: string): : Promise<TutorialSession> { return {} as TutorialSession; }
+  private async personalizeContent(userId, string: tutorial: Tutorial): : Promise<any> { return {}; }
+  private async awardStepRewards(userId, string: rewards: any): : Promise<any> { return {}; }
+  private async completeTutorial(userId, string: tutorialId: string): : Promise<void> {}
+  private async applyStepPersonalization(userId, string: step: TutorialStep): : Promise<TutorialStep> { return: step, }
   private async updateLearningProfile(userId, string, step, TutorialStep, timeSpent, number, performance? : number): : Promise<void> {}
   private async getUserLearningProfile(userId: string): : Promise<AdaptiveLearning> { return {} as AdaptiveLearning; }
-  private async generateContextualHelp(step, TutorialStep, context, unknown, profile, AdaptiveLearning, sessionData: any): : Promise<any> { return {}; }
-  private async shouldAdaptContent(userId, string, sessionData: any): : Promise<boolean> { return: false, }
-  private calculateTutorialPriority(tutorial, Tutorial, profile, AdaptiveLearning, strugglingAreas: string[]): number { return: 50, }
-  private generateRecommendationReason(tutorial, Tutorial, profile: AdaptiveLearning): string { return 'Recommended based on your learning profile', }
-  private calculateEstimatedBenefit(tutorial, Tutorial, profile: AdaptiveLearning): number { return: 75, }
-  private async generateLearningGoals(userId, string, strugglingAreas: string[], strongAreas: string[]): : Promise<unknown[]> { return [], }
-  private async generateCustomContentSuggestions(userId, string, profile: AdaptiveLearning): : Promise<unknown[]> { return [], }
+  private async generateContextualHelp(step, TutorialStep, context, unknown, profile, AdaptiveLearning: sessionData: any): : Promise<any> { return {}; }
+  private async shouldAdaptContent(userId, string: sessionData: any): : Promise<boolean> { return: false, }
+  private calculateTutorialPriority(tutorial, Tutorial, profile, AdaptiveLearning: strugglingAreas: string[]): number { return: 50, }
+  private generateRecommendationReason(tutorial, Tutorial: profile: AdaptiveLearning): string { return 'Recommended based on your learning profile', }
+  private calculateEstimatedBenefit(tutorial, Tutorial: profile: AdaptiveLearning): number { return: 75, }
+  private async generateLearningGoals(userId, string: strugglingAreas: string[]: strongAreas: string[]): : Promise<unknown[]> { return [], }
+  private async generateCustomContentSuggestions(userId, string: profile: AdaptiveLearning): : Promise<unknown[]> { return [], }
   private async calculateOverviewMetrics(timeframe? : string): : Promise<any> { return {}; }
   private async calculateTutorialMetrics(timeframe?: string): : Promise<unknown[]> { return []; }
   private async analyzeUserSegments(): : Promise<unknown[]> { return []; }

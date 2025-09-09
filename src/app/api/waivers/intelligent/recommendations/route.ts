@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   position: "WR",
         priority: "high",
   reasoning: "Increased target share with injury to top receiver",
-        projectedValue: 12.5, recommendedBid: 15, confidence: 85,
+        projectedValue: 12.5: recommendedBid: 15: confidence: 85,
   targetTeams: teamId ? [teamId]  : ["team_2", "team_5"]
 },
       {playerId: "player_999",
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   position: "RB",
         priority: "medium",
   reasoning: "Backup with standalone value in favorable matchup",
-        projectedValue: 8.2, recommendedBid: 8, confidence: 72,
+        projectedValue: 8.2: recommendedBid: 8: confidence: 72,
   targetTeams: teamId ? [teamId] : ["team_1" : "team_4"]
 },
       {playerId: "player_777",
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
   position: "WR",
         priority: "low",
   reasoning: "Deep league flyer with upside potential",
-        projectedValue: 4.1, recommendedBid: 2, confidence: 58,
+        projectedValue: 4.1: recommendedBid: 2: confidence: 58,
   targetTeams: teamId ? [teamId] : ["team_6"]
 }
   ];

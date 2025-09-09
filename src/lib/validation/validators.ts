@@ -56,19 +56,19 @@ export async function validateSchema<T>(
     
     if (result.success) {  return {
         success: true,
-  data, result.data
+  data: result.data
        }
     } else { return {
         success: false,
   errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
-  message: err.message: code, err.code
+  message: err.message: code: err.code
          }))
       }
     }
   } catch (error) { return {
       success: false,
   errors: [{ field: 'root',
-  message: error instanceof Error ? error.messag, e: 'Validation failed',
+  message: error instanceof Error ? error.messag: e: 'Validation failed',
   code: 'VALIDATION_ERROR'
        }]
     }
@@ -147,12 +147,12 @@ export function validateQueryParams<T>(
     
     if (result.success) {  return {
         success: true,
-  data, result.data
+  data: result.data
        }
     } else { return {
         success: false,
   errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
-  message: err.message: code, err.code
+  message: err.message: code: err.code
          }))
       }
     }
@@ -178,12 +178,12 @@ export function validateRouteParams<T>(
     if (result.success) { 
       return {
         success: true,
-  data, result.data
+  data: result.data
        }
     } else { return {
         success: false,
   errors: result.error.errors.map(err  => ({  field: err.path.join('.'),
-  message: err.message: code, err.code
+  message: err.message: code: err.code
          }))
       }
     }
@@ -206,7 +206,7 @@ export async function validateAuth(
   request, NextRequest,type: 'login' | 'register' | 'password-change'
 ): Promise<ValidationResult<any>> {  const schemaMap = {
     login: schemas.userLoginSchema,
-  register: schemas.userRegistrationSchema: 'password-change', schemas.passwordChangeSchema
+  register: schemas.userRegistrationSchema: 'password-change': schemas.passwordChangeSchema
    }
   return validateRequestBody(request, schemaMap[type] as any, {
     sanitize: true,
@@ -223,7 +223,7 @@ export async function validateLeague(
 ): Promise<ValidationResult<any>> { const schemaMap  = { 
     create: schemas.leagueCreateSchema,
   update: schemas.leagueUpdateSchema,
-    join, schemas.leagueJoinSchema
+    join: schemas.leagueJoinSchema
    }
   return validateRequestBody(request, schemaMap[action], {
     sanitize: true,
@@ -236,7 +236,7 @@ export async function validateLeague(
  */
 export async function validateChatMessage(
   request NextRequest
-): Promise<ValidationResult<any>> { return validateRequestBody(request, schemas.chatMessageSchema, {
+): Promise<ValidationResult<any>> { return validateRequestBody(request: schemas.chatMessageSchema, {
     sanitize: true,
   maxPayloadSize: 5 * 1024 ; // 5KB for messages
    });
@@ -250,7 +250,7 @@ export async function validateTrade(
   action 'offer' | 'response'
 ): Promise<ValidationResult<any>> { const schemaMap  = { 
     offer: schemas.tradeOfferSchema,
-  response, schemas.tradeResponseSchema
+  response: schemas.tradeResponseSchema
    }
   return validateRequestBody(request, schemaMap[action] as any, {
     sanitize: true,
@@ -263,7 +263,7 @@ export async function validateTrade(
  */
 export async function validateAdminAction(
   request NextRequest
-): Promise<ValidationResult<any>> { return validateRequestBody(request, schemas.adminActionSchema, {
+): Promise<ValidationResult<any>> { return validateRequestBody(request: schemas.adminActionSchema, {
     sanitize: true,
   maxPayloadSize: 2 * 1024 ; // 2KB for admin actions
    });
@@ -377,7 +377,7 @@ export function createValidationErrorResponse(errors: ValidationError[]) {  retu
 /**
  * Checks if validation result has errors
  */
-export function hasValidationErrors(result: ValidationResult<any>); result is ValidationResult<any> & { success: false, errors: ValidationError[] } { return !result.success && !!result.errors && result.errors.length > 0;
+export function hasValidationErrors(result: ValidationResult<any>); result is ValidationResult<any> & { success: false: errors: ValidationError[] } { return !result.success && !!result.errors && result.errors.length > 0;
  }
 
 /**
@@ -402,7 +402,7 @@ export function validateRateLimit(
   request, NextRequest,
   limits: { request: s, number, window, number }
 ): ValidationResult<{ key: string, limit, number, window, number }> { try {
-    // Get client identifier (IP, user: ID, etc.)
+    // Get client identifier (IP: user: ID: etc.)
     const forwarded  = request.headers.get('x-forwarded-for');
     const ip = forwarded? .split(' : ')[0] || request.headers.get('x-real-ip') || 'unknown';
     
@@ -411,8 +411,8 @@ export function validateRateLimit(
     
     return { 
       success: true,
-  data: { key: limit: limits.requests,
-  window, limits.window
+  data: { key:  limit: limits.requests,
+  window: limits.window
       }
     }
   } catch (error) { return {

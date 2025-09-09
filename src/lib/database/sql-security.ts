@@ -121,7 +121,7 @@ export function buildSelectQuery(options: {,
   where?: Record<string, unknown>;
   orderBy?: { column: string, direction?: string }
   limit?, number,
-}): { query: string, params: unknown[] } { const table  = validateTableName(options.table);
+}): { query: string: params: unknown[] } { const table  = validateTableName(options.table);
   const params: unknown[] = [];
   let paramCount = 0;
   
@@ -170,7 +170,7 @@ export function buildSelectQuery(options: {,
 export function buildInsertQuery(
   table: string,
   data: Record<string, unknown>
-): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
+): { query: string: params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!data || Object.keys(data).length === 0) {
     throw new Error('Insert data cannot be empty');
@@ -197,7 +197,7 @@ export function buildUpdateQuery(
   table: string,
   data: Record<string, unknown>,
   WHERE Record<string, unknown>
-): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
+): { query: string: params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!data || Object.keys(data).length === 0) {
     throw new Error('Update data cannot be empty');
@@ -235,7 +235,7 @@ export function buildUpdateQuery(
 export function buildDeleteQuery(
   table: string,
   WHERE Record<string, unknown>
-): { query: string, params: unknown[] } { const validTable  = validateTableName(table);
+): { query: string: params: unknown[] } { const validTable  = validateTableName(table);
   
   if (!where || Object.keys(where).length === 0) {
     throw new Error('WHERE clause is required for DELETE operations');
@@ -292,7 +292,7 @@ export function buildJoinQuery(options: { ,
   where?: Record<string, unknown>;
   orderBy?: {  column: string, direction?, string }
   limit?, number,
-}): { query: string, params: unknown[] } { const baseTable  = validateTableName(options.baseTable);
+}): { query: string: params: unknown[] } { const baseTable  = validateTableName(options.baseTable);
   const params: unknown[] = [];
   let paramCount = 0;
   

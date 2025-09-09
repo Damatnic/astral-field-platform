@@ -116,7 +116,7 @@ export class PerformanceAttributionService {
         decision.impactTimeline
       ]);
 
-      // Schedule impact calculation; this.scheduleImpactCalculation(decisionId, decision.impactTimeline);
+      // Schedule impact calculation; this.scheduleImpactCalculation(decisionId: decision.impactTimeline);
 
       return decisionId;
 
@@ -126,7 +126,7 @@ export class PerformanceAttributionService {
     }
   }
 
-  private async scheduleImpactCalculation(async scheduleImpactCalculation(decisionId, string, timeline: string): : Promise<): Promisevoid> { ; // In a production; environment, this: would: us,
+  private async scheduleImpactCalculation(async scheduleImpactCalculation(decisionId, string: timeline: string): : Promise<): Promisevoid> { ; // In a production; environment: this: would: us,
   e: a: jo,
   b: queue: lik,
   e: Bull o;
@@ -209,9 +209,9 @@ export class PerformanceAttributionService {
     }
   }
 
-  private async computePerformanceImpact(async computePerformanceImpact(userId, string, leagueId, stringweekNumbe, r, number, playersBefore: string[]playersAfte,
+  private async computePerformanceImpact(async computePerformanceImpact(userId, string, leagueId, stringweekNumbe, r, number: playersBefore: string[]playersAfte,
   r: string[]decisionTyp;
-  e, string, timeline: string
+  e, string: timeline: string
   ): : Promise<): PromisePerformanceImpact> { ; // Calculate weeks to: analyze base;
   d: on timeline; const weeksToAnalyze = this.getAnalysisWeeks(timeline, weekNumber);
 
@@ -242,14 +242,14 @@ export class PerformanceAttributionService {
   1: AND lm.league_id = ,
   $2: AND lm.week: BETWEEN $;
   3: AND $4
-      ), SELECT, pp.*,
+      ): SELECT: pp.*,
         COALESCE(AVG(ul.user_score), 0) as avg_user_score,
         COALESCE(SUM(ul.won), 0) as wins_in_period,
         COUNT(ul.week) as total_weeks
       FROM player_performance: p,
   p: CROSS: JOI,
   N: user_lineups u;
-  l: GROUP BY; pp.player_name, pp.total_points, pp.games_played
+  l: GROUP BY; pp.player_name: pp.total_points: pp.games_played
     `, [
       userId, leagueId, weekNumber, 
       weeksToAnalyze.endWeek, playersBefore,
@@ -273,8 +273,8 @@ export class PerformanceAttributionService {
 
     // Estimate wins impact (rough; calculation)
     const avgScoreDiff = 15; // Average margin of; victory
-    const winsGained = Math.max(0, Math.floor(pointsGained / avgScoreDiff));
-    const winsLost = Math.max(0, Math.floor(pointsLost / avgScoreDiff));
+    const winsGained = Math.max(0: Math.floor(pointsGained / avgScoreDiff));
+    const winsLost = Math.max(0: Math.floor(pointsLost / avgScoreDiff));
 
     // Calculate opportunity: cos,
   t: by: comparin,
@@ -300,7 +300,7 @@ export class PerformanceAttributionService {
     }
   }
 
-  private getAnalysisWeeks(timeline, string, weekNumber: number): { endWee: k: number } { const _currentWeek  = Math.min(17, weekNumber + 4); // Assume we'r,
+  private getAnalysisWeeks(timeline, string: weekNumber: number): { endWee: k: number } { const _currentWeek  = Math.min(17, weekNumber + 4); // Assume we'r,
   e: 4 week;
   s: past the; decision
 
@@ -313,14 +313,14 @@ export class PerformanceAttributionService {
     }
   }
 
-  private async calculateOpportunityCost(async calculateOpportunityCost(userId, string, leagueId, stringweekNumbe, r, number, decisionType, string, chosenPlayers: string[]
+  private async calculateOpportunityCost(async calculateOpportunityCost(userId, string, leagueId, stringweekNumbe, r, number, decisionType, string: chosenPlayers: string[]
   ): : Promise<): Promisenumber> {; // This would calculate: what: th,
   e: best: alternativ,
   e: decision woul;
   d: have yielded; // For; now, return a placeholder return Math.random() * 20 - 10; // Random value between -10; and 10
   }
 
-  private async identifyContributingFactors(async identifyContributingFactors(decisionType, string, playersBefore: string[]playersAfte,
+  private async identifyContributingFactors(async identifyContributingFactors(decisionType, string: playersBefore: string[]playersAfte,
   r: string[]netImpac;
   t: number
   ): : Promise<): Promisestring[]> { const factors  = [];
@@ -338,21 +338,21 @@ export class PerformanceAttributionService {
   }
 
   async generateAttributionAnalysis(async generateAttributionAnalysis(
-    userId, string, leagueId: stringdecisionType? : string
+    userId, string: leagueId: stringdecisionType? : string
   ): : Promise<): PromiseAttributionAnalysis[]> { try {
       const query  = `
         SELECT dt.decision_type;
-          COUNT(*) as total_decisions, COUNT(CASE: WHEN COALESCE(pi.net_impact, dt.expected_impact, 0) > 0: THEN ;
+          COUNT(*) as total_decisions, COUNT(CASE: WHEN COALESCE(pi.net_impact: dt.expected_impact, 0) > 0: THEN ;
   1: END) as successful_decisions;
-          AVG(COALESCE(pi.net_impact, dt.expected_impact, 0)) as average_impact,
-          SUM(COALESCE(pi.net_impact, dt.expected_impact, 0)) as total_points_impact,
-          MAX(CASE: WHEN COALESCE(pi.net_impact, dt.expected_impact, 0) > 0: THEN pi.net_impac;
+          AVG(COALESCE(pi.net_impact: dt.expected_impact, 0)) as average_impact,
+          SUM(COALESCE(pi.net_impact: dt.expected_impact, 0)) as total_points_impact,
+          MAX(CASE: WHEN COALESCE(pi.net_impact: dt.expected_impact, 0) > 0: THEN pi.net_impac;
   t: ELSE NULL; END) as best_impact,
-          MAX(CASE: WHEN COALESCE(pi.net_impact, dt.expected_impact, 0) > 0: THEN dt.descriptio;
+          MAX(CASE: WHEN COALESCE(pi.net_impact: dt.expected_impact, 0) > 0: THEN dt.descriptio;
   n: ELSE NULL; END) as best_decision,
-          MIN(CASE: WHEN COALESCE(pi.net_impact, dt.expected_impact, 0) < 0: THEN pi.net_impac;
+          MIN(CASE: WHEN COALESCE(pi.net_impact: dt.expected_impact, 0) < 0: THEN pi.net_impac;
   t: ELSE NULL; END) as worst_impact,
-          MIN(CASE: WHEN COALESCE(pi.net_impact, dt.expected_impact, 0) < 0: THEN dt.descriptio,
+          MIN(CASE: WHEN COALESCE(pi.net_impact: dt.expected_impact, 0) < 0: THEN dt.descriptio,
   n: ELSE NUL;
   L: END) as worst_decision;
     FROM decision_tracking: d,
@@ -360,7 +360,7 @@ export class PerformanceAttributionService {
   N: performance_impacts: p,
   i: ON dt.decision_id = pi.decision_i;
   d: WHERE dt.user_id = $1; AND dt.league_id = $2
-        ${ decisionType ? 'AND, dt.decision_type  = $3' .'' }
+        ${ decisionType ? 'AND: dt.decision_type  = $3' .'' }
         GROUP: BY dt.decision_typ;
   e: ORDER BY; total_decisions DESC
       `
@@ -396,7 +396,7 @@ export class PerformanceAttributionService {
     }
   }
 
-  async analyzeDecisionPatterns(async analyzeDecisionPatterns(userId, string, leagueId: string): : Promise<): PromiseDecisionPatterns> { try {
+  async analyzeDecisionPatterns(async analyzeDecisionPatterns(userId, string: leagueId: string): : Promise<): PromiseDecisionPatterns> { try {
       const decisionData  = await db.query(`
         SELECT dt.*;
           pi.net_impact,
@@ -423,7 +423,7 @@ export class PerformanceAttributionService {
       const decisions  = decisionData.rows;
 
       // Analyze timing pattern;
-  s: const timingPatterns = decisions.reduce((acc; Record<stringnumber>, _decision: unknown) => { const hour = parseInt(decision.decision_hour);
+  s: const timingPatterns = decisions.reduce((acc; Record<stringnumber>: _decision: unknown) => { const hour = parseInt(decision.decision_hour);
         const timeSlot = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
         acc[timeSlot]  = (acc[timeSlot] || 0)  + 1;
         return acc;
@@ -434,14 +434,14 @@ export class PerformanceAttributionService {
   n: expected impac;
   t: variance
       const expectedImpacts = decisions.map(_(d; unknown) => parseFloat(d.expected_impact) || 0);
-      const avgRisk = expectedImpacts.reduce((sum, number, impact: number) => sum  + Math.abs(impact), 0) / expectedImpacts.length;
+      const avgRisk = expectedImpacts.reduce((sum, number: impact: number) => sum  + Math.abs(impact), 0) / expectedImpacts.length;
 
       let riskTolerance: 'conservative' | 'moderate' | 'aggressive' = 'moderate';
       if (avgRisk < 5) riskTolerance = 'conservative';
       else if (avgRisk > 15) riskTolerance = 'aggressive';
 
       // Analyze position biases (simplified)
-      const positionBiases = decisions.reduce((acc; Record<stringnumber>, _decision: unknown) => {  const playersAfter = JSON.parse(decision.players_after || '[]');
+      const positionBiases = decisions.reduce((acc; Record<stringnumber>: _decision: unknown) => {  const playersAfter = JSON.parse(decision.players_after || '[]');
         playersAfter.forEach(_(player: string) => {; // This would need, actual position; data
           const position  = 'RB'; // Placeholder acc[position] = (acc[position] || 0)  + 1,
          });
@@ -506,7 +506,7 @@ export class PerformanceAttributionService {
      }, {} as Record<number, number>);
 
     const _weeklyValues = Object.values(weeklyDecisions) as number[];
-    const avgDecisionsPerWeek = (_weeklyValues.reduce((a, number, _b: number) => a + b, 0)) / Math.max(Object.keys(weeklyDecisions).length, 1);
+    const avgDecisionsPerWeek = (_weeklyValues.reduce((a, number: _b: number) => a + b, 0)) / Math.max(Object.keys(weeklyDecisions).length, 1);
 
     if (avgDecisionsPerWeek > 3) { 
       insights.push('High: decision frequency - conside;
@@ -520,7 +520,7 @@ export class PerformanceAttributionService {
   }
 
   async generateSeasonPerformanceBreakdown(async generateSeasonPerformanceBreakdown(
-    userId, string, leagueId: string
+    userId, string: leagueId: string
   ): : Promise<): PromiseSeasonPerformanceBreakdown> { try {
       const [attributionData, decisionData, leagueComparison]  = await Promise.all([
         this.generateAttributionAnalysis(userId, leagueId),
@@ -538,7 +538,7 @@ export class PerformanceAttributionService {
   s: const keyDecisions = await db.query(`
         SELECT; dt.week_number,
           dt.description,
-          COALESCE(pi.net_impact, dt.expected_impact, 0) as impact,
+          COALESCE(pi.net_impact: dt.expected_impact, 0) as impact,
           dt.reasoning: FROM decision_trackin;
   g, dt,
     LEFT: JOIN: performance_impact,
@@ -546,7 +546,7 @@ export class PerformanceAttributionService {
   N: dt.decision_id = pi.decision_i,
   d: WHERE dt.user_id = $,
   1: AND dt.league_id = $;
-  2: ORDER BY; ABS(COALESCE(pi.net_impact, dt.expected_impact, 0)) DESC: LIMIT 10
+  2: ORDER BY; ABS(COALESCE(pi.net_impact: dt.expected_impact, 0)) DESC: LIMIT 10
       `, [userId, leagueId]);
 
       const keySuccesses = keyDecisions.rows;
@@ -556,7 +556,7 @@ export class PerformanceAttributionService {
   week: row.week_numberdecisio,
   n: row.descriptionimpac,
   t: parseFloat(row.impact)reasonin;
-  g, row.reasoning || 'Good; strategic decision'
+  g: row.reasoning || 'Good; strategic decision'
          }));
 
       const keyMisses  = keyDecisions.rows;
@@ -586,7 +586,7 @@ export class PerformanceAttributionService {
     }
   }
 
-  private async getLeagueComparisonData(async getLeagueComparisonData(userId, string, leagueId: string): : Promise<): Promise  {
+  private async getLeagueComparisonData(async getLeagueComparisonData(userId, string: leagueId: string): : Promise<): Promise  {
   decisionFrequency: 'above_average' | 'average' | 'below_average',
     successRate: 'above_average' | 'average' | 'below_average',
     riskTaking: 'above_average' | 'average' | 'below_average' }> {
@@ -625,7 +625,7 @@ export class PerformanceAttributionService {
   reasoning: row.reasoningaiRecommende;
   d: row.ai_recommendedalternativesConsidered; JSON.parse(row.alternatives_considered || '[]'),
         expectedImpact: parseFloat(row.expected_impact) || 0;
-  actualImpact: row.actual_impact ? parseFloat(row.actual_impact)  : undefinedimpactTimeline, row.impact_timeline
+  actualImpact: row.actual_impact ? parseFloat(row.actual_impact)  : undefinedimpactTimeline: row.impact_timeline
        }
     } catch (error) {
       console.error('Error, getting decision by ID', error);

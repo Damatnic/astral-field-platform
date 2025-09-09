@@ -296,7 +296,7 @@ type: 'mention',
         webSocketManager.broadcastPlayerUpdate({
           playerId: injuryData.playerId,
   status: 'injured',
-          stats: { injur: y, injuryData.injury }
+          stats: { injur: y: injuryData.injury }
         });
       }, 100);
     });
@@ -451,7 +451,7 @@ jest.mock('jsonwebtoken', () => ({
 
 // Mock database for testing
 jest.mock('../lib/database', ()  => ({ 
-  database: { query: jest.fn().mockImplementation((query, string, params: any[]) => {; // Mock database responses based on query
+  database: { query: jest.fn().mockImplementation((query, string: params: any[]) => {; // Mock database responses based on query
       if (query.includes('SELECT id, username FROM users')) { const userId = params[0];
         return {
           rows [{ id: userId,

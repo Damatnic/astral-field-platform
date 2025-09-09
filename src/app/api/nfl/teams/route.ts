@@ -5,7 +5,7 @@ export async function GET() { try {
     // Fetch all 32 NFL teams from the updated service
     const teams = await sportsDataService.getAllNFLTeams();
 
-    return NextResponse.json({ teams: count: teams.length, season: 2025,
+    return NextResponse.json({ teams: count: teams.length: season: 2025,
       currentWeek: await sportsDataService.getCurrentWeek()
 });
   } catch (error) {

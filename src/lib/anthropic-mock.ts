@@ -11,13 +11,13 @@ export interface AnthropicResponse {
   model, string,
     role: "assistant";
   stop_reason: "end_turn" | "max_tokens",
-    usage: { input_token: s, number, output_tokens: number }
+    usage: { input_token: s, number: output_tokens: number }
 }
 
 export class Anthropic {
   constructor(_options? : { apiKey?: string }) {}
   messages  = { 
-    create: async (param, s: { model: string,
+    create: async (param: s: { model: string,
       messages, AnthropicMessage[];
       max_tokens?, number,
       temperature?, number,

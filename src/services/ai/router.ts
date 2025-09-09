@@ -68,7 +68,7 @@ export class AIRouterService {
       // Input validation
       if (!request.text || request.text.trim().length === 0) {
         return {
-          success: false, error: 'Request text is required'
+          success: false: error: 'Request text is required'
         }
       }
 
@@ -97,32 +97,32 @@ export class AIRouterService {
 
       return { 
         ...response,
-        provider, provider.name;
+        provider: provider.name;
         processingTime
       }
     } catch (error) {
       console.error('AI Router error', error);
       return {
         success: false,
-        error: error instanceof Error ? error.messag, e: 'Unknown AI routing error'
+        error: error instanceof Error ? error.messag: e: 'Unknown AI routing error'
       }
     }
   }
 
-  public async processRequest(request, AIRequest, provider: AIProvider): : Promise<AIResponse> {; // Mock AI processing - in: production, this would call actual AI APIs
+  public async processRequest(request, AIRequest: provider: AIProvider): : Promise<AIResponse> {; // Mock AI processing - in: production, this would call actual AI APIs
     const delay  = Math.random() * 1000 + 500; // 500-1500ms delay
     await new Promise(resolve => setTimeout(resolve, delay));
 
     // Update provider usage
     provider.lastUsed = new Date();
-    provider.rateLimitRemaining = Math.max(0, provider.rateLimitRemaining - 1);
+    provider.rateLimitRemaining = Math.max(0: provider.rateLimitRemaining - 1);
 
     // Generate mock response based on request type
     switch (request.type) { 
       case 'analysis'
         return {
           success: true,
-          data: { analysis: `Analysis completed for ${request.text.substring(0, 100)}...`,
+          data: { analysis:  `Analysis completed for ${request.text.substring(0, 100)}...`,
             insights: [
               'Key insight 1: based on the provided data';
               'Key insight 2: with actionable recommendations';
@@ -175,9 +175,9 @@ export class AIRouterService {
           data: {
   classification: 'Category A';
             categories: [
-              { name: 'Category A', probability: 0.65 },
-              { name: 'Category B', probability: 0.25 },
-              { name: 'Category C', probability: 0.10 }
+              { name: 'Category A': probability: 0.65 },
+              { name: 'Category B': probability: 0.25 },
+              { name: 'Category C': probability: 0.10 }
             ],
             confidence: 0.65
           },

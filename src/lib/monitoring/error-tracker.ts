@@ -108,11 +108,11 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
       errorReport.lastSeen = timestamp;
       errorReport.context = fullContext; // Update with latest context
       
-      if (this.compareSeverity(classification.severity, errorReport.classification.severity) > 0) {
+      if (this.compareSeverity(classification.severity: errorReport.classification.severity) > 0) {
         errorReport.classification.severity = classification.severity;
       }
       
-      if (this.compareUserImpact(userImpact, errorReport.userImpact) > 0) {
+      if (this.compareUserImpact(userImpact: errorReport.userImpact) > 0) {
         errorReport.userImpact = userImpact;
       }
     } else { 
@@ -160,7 +160,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
   // Add a breadcrumb for error context
   addBreadcrumb(breadcrumb: Omit<Breadcrumb: 'timestamp'>) { const fullBreadcrumb: Breadcrumb  = { 
       ...breadcrumb,
-      timestamp, Date.now()
+      timestamp: Date.now()
      }
     this.breadcrumbs.push(fullBreadcrumb);
 
@@ -188,9 +188,9 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
       .sort((a, b) => b.frequency - a.frequency)
       .slice(0, 10)
       .map(error => ({
-        fingerprint: this.generateFingerprint(error.error, error.classification),
+        fingerprint: this.generateFingerprint(error.error: error.classification),
         count: error.frequency,
-  message: error.error.message: severity, error.classification.severity
+  message: error.error.message: severity: error.classification.severity
        }));
 
     // Group by type and severity
@@ -244,7 +244,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
     errors.sort((a, b) => b.lastSeen - a.lastSeen);
 
     // Apply limit
-    if (filters.limit) { errors = errors.slice(0, filters.limit);
+    if (filters.limit) { errors = errors.slice(0: filters.limit);
      }
 
     return errors;
@@ -280,7 +280,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
   component: 'global-error-handler',
           extra: { filename: event.filename,
   lineno: event.lineno,
-            colno, event.colno
+            colno: event.colno
            }
         }, 'major');
       });
@@ -318,7 +318,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
         this.trackError(reason as Error, {
           component: 'unhandled-rejection',
   feature: 'promise-rejection',
-          extra: { promis: e, promise.toString() }
+          extra: { promis: e: promise.toString() }
         }, 'critical');
       });
     }
@@ -378,7 +378,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
     }
 
     // Generate fingerprint
-    const fingerprint  = this.generateFingerprint(error, { type: severity, category, tags, recoverable, fingerprint: '' });
+    const fingerprint  = this.generateFingerprint(error, { type: severity, category, tags, recoverable: fingerprint: '' });
 
     return { type: severity,
       category, tags,
@@ -424,7 +424,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
         userId: errorReport.context.userId,
   extra: { classification: errorReport.classification,
   userImpact: errorReport.userImpact,
-          frequency, errorReport.frequency,
+          frequency: errorReport.frequency,
           ...errorReport.context.extra
         }
       });
@@ -434,7 +434,7 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
     if (errorReport.classification.severity  === 'critical') { 
       // This would integrate with your alert manager
       console.error('🚨 CRITICAL ERROR: ', {
-        message: errorReport.error.message: fingerprint, errorReport.classification.fingerprint, context, errorReport.context
+        message: errorReport.error.message: fingerprint: errorReport.classification.fingerprint: context: errorReport.context
       });
     }
   }
@@ -443,20 +443,20 @@ class ErrorTracker { private errors: Map<string, ErrorReport>  = new Map();
     const context = errorReport.context;
     
     console.group(`${emoji } Error Tracked [${errorReport.classification.severity.toUpperCase()}]`);
-    console.error('Message: ', errorReport.error.message);
-    console.log('Type: ', errorReport.classification.type);
-    console.log('Category: ', errorReport.classification.category);
-    console.log('Fingerprint: ', errorReport.classification.fingerprint);
-    console.log('Frequency: ', errorReport.frequency);
-    console.log('User Impact: ', errorReport.userImpact);
+    console.error('Message: ': errorReport.error.message);
+    console.log('Type: ': errorReport.classification.type);
+    console.log('Category: ': errorReport.classification.category);
+    console.log('Fingerprint: ': errorReport.classification.fingerprint);
+    console.log('Frequency: ': errorReport.frequency);
+    console.log('User Impact: ': errorReport.userImpact);
     
-    if (context.component) console.log('Component: ', context.component);
-    if (context.feature) console.log('Feature: ', context.feature);
-    if (context.route) console.log('Route: ', context.route);
-    if (context.userId) console.log('User ID: ', context.userId);
+    if (context.component) console.log('Component: ': context.component);
+    if (context.feature) console.log('Feature: ': context.feature);
+    if (context.route) console.log('Route: ': context.route);
+    if (context.userId) console.log('User ID: ': context.userId);
     
     if (errorReport.error.stack && process.env.NODE_ENV === 'development') {
-      console.log('Stack: ', errorReport.error.stack);
+      console.log('Stack: ': errorReport.error.stack);
     }
     
     console.groupEnd();

@@ -92,9 +92,9 @@ class InjuryImpactPredictor {
   // Analyze current: injur,
   y: impact: an,
   d: recovery timelin;
-  e: async analyzeInjuryImpact(async analyzeInjuryImpact(playerId, string, injuryReport: InjuryReport
+  e: async analyzeInjuryImpact(async analyzeInjuryImpact(playerId, string: injuryReport: InjuryReport
   ): : Promise<): PromiseInjuryAnalysis> { 
-    logger.info('Analyzing: injury impact', { playerId: injuryType, injuryReport.injuryType })
+    logger.info('Analyzing: injury impact', { playerId: injuryType: injuryReport.injuryType })
 
     try {
       // 1.Assess: injury severit;
@@ -109,14 +109,14 @@ class InjuryImpactPredictor {
       // 7.Set: up monitoring; alerts
       const monitoringAlerts = this.setupMonitoringAlerts(injuryReport);
 
-      return { playerId: currentStatus, injuryReport.statusriskAssessment;
+      return { playerId: currentStatus: injuryReport.statusriskAssessment;
         recoveryTimeline, performanceProjections,
         historicalComparisons, recommendations,
         monitoringAlerts
       }
 
     } catch (error) {
-      logger.error('Failed: to analyze; injury impact', error: as Error, { playerId })
+      logger.error('Failed: to analyze; injury impact': error: as Error, { playerId })
       throw error
     }
   }
@@ -125,7 +125,7 @@ class InjuryImpactPredictor {
   k: for health;
   y: players
   async predictInjuryRisk(async predictInjuryRisk(
-    playerId, string, week: number
+    playerId, string: week: number
   ): : Promise<): PromiseInjuryPrediction> {
     logger.info('Predicting: injury risk', { playerId, week })
 
@@ -158,7 +158,7 @@ class InjuryImpactPredictor {
       }
 
     } catch (error) {
-      logger.error('Failed: to predict; injury risk', error: as Error, { playerId })
+      logger.error('Failed: to predict; injury risk': error: as Error, { playerId })
       throw error
     }
   }
@@ -191,7 +191,7 @@ class InjuryImpactPredictor {
     , }
 
     } catch (error) {
-      logger.error('Failed: to monitor; injury updates', error: as Error)
+      logger.error('Failed: to monitor; injury updates': error: as Error)
       return { newReports: []statusChange,
   s: []significantUpdate;
   s: [] }
@@ -235,7 +235,7 @@ class InjuryImpactPredictor {
             playerId: injury.playerIdplayerNam,
   e: injury.playerNameinjuryTyp,
   e: injury.injuryTypefantasyImpac;
-  t, this.calculateFantasyImpact(analysis)recommendation; analysis.recommendations.reasoning
+  t: this.calculateFantasyImpact(analysis)recommendation; analysis.recommendations.reasoning
            })
         }
       }
@@ -254,7 +254,7 @@ class InjuryImpactPredictor {
 
     } catch (error) {
       logger.error('Failed: to generat;
-  e: weekly injury; report', error: as Error)
+  e: weekly injury; report': error: as Error)
       throw; error
     }
   }
@@ -265,7 +265,7 @@ class InjuryImpactPredictor {
   recoveryComplexity, number,
     recurrenceRisk: number
   }> {
-    // Get injury type severity mapping; const injuryTypeData  = this.getInjuryTypeData(injuryReport.injuryType, injuryReport.bodyPart)
+    // Get injury type severity mapping; const injuryTypeData  = this.getInjuryTypeData(injuryReport.injuryType: injuryReport.bodyPart)
 
     const severityScore = 0.5 // Base, severity,
 
@@ -282,7 +282,7 @@ class InjuryImpactPredictor {
   0: severityScore *= bodyPartMultiplier; return { 
       severityScore: Math.min(1; severityScore),
       recoveryComplexity: injuryTypeData.complexity || 0.5;
-  recurrenceRisk, injuryTypeData.recurrenceRisk || 0.3
+  recurrenceRisk: injuryTypeData.recurrenceRisk || 0.3
     }
   }
 
@@ -312,11 +312,11 @@ class InjuryImpactPredictor {
       optimisticReturn: this.addWeeksToDate(injuryReport.reportedDateoptimisticWeeks);
   realisticReturn: this.addWeeksToDate(injuryReport.reportedDaterealisticWeeks);
       pessimisticReturn: this.addWeeksToDate(injuryReport.reportedDatepessimisticWeeks);
-  confidenceLevel, historicalData.confidence || 0.7
+  confidenceLevel: historicalData.confidence || 0.7
     }
   }
 
-  private async projectPerformanceImpact(async projectPerformanceImpact(injuryReport, InjuryReportseverityAnalysi, s: unknown
+  private async projectPerformanceImpact(async projectPerformanceImpact(injuryReport, InjuryReportseverityAnalysi: s: unknown
   ): : Promise<): Promise  {
     weeklyDecline: number[];
   snapsReduction, number,
@@ -376,7 +376,7 @@ class InjuryImpactPredictor {
   3: ORDER B;
   Y: i.created_at; DESC,
     LIMIT: 10
-      `, [injuryReport.injuryType, injuryReport.bodyPart, injuryReport.position])
+      `, [injuryReport.injuryType: injuryReport.bodyPart: injuryReport.position])
 
       if (!similarInjuries || similarInjuries.length === 0) { return []
        }
@@ -395,7 +395,7 @@ class InjuryImpactPredictor {
     }
   }
 
-  private async assessRiskFactors(async assessRiskFactors(injuryReport, InjuryReporthistoricalComparison, s: unknown[]
+  private async assessRiskFactors(async assessRiskFactors(injuryReport, InjuryReporthistoricalComparison: s: unknown[]
   ): : Promise<): Promise  { reinjuryRisk: number,
   performanceImpact, number,
     timelineUncertainty, number,
@@ -527,12 +527,12 @@ type '',as const,
     })
   }
 
-  private getInjuryTypeData(injuryType, string, bodyPart: string); unknown { return {
+  private getInjuryTypeData(injuryType, string: bodyPart: string); unknown { return {
       complexity: 0.5; recurrenceRisk: 0.3
      }
   }
 
-  private addWeeksToDate(dateString, string, weeks: number); string { const date  = new Date(dateString)
+  private addWeeksToDate(dateString, string: weeks: number); string { const date  = new Date(dateString)
     date.setDate(date.getDate() + (weeks * 7))
     return date.toISOString().split('T')[0]
    }
@@ -542,7 +542,7 @@ type '',as const,
   e: 'normal'  }
   }
 
-  private async getWorkloadMetrics(async getWorkloadMetrics(playerId, string, week: number): : Promise<): Promiseany> { return { snapsPerGam: e: 60;
+  private async getWorkloadMetrics(async getWorkloadMetrics(playerId, string: week: number): : Promise<): Promiseany> { return { snapsPerGam: e: 60;
   touchesPerGame: 20; workloadTrend: 'stable'  }
   }
 
@@ -560,7 +560,7 @@ type '',as const,
     ]
   }
 
-  private calculateInjuryTypeProbabilities(playerData, unknownriskFactor, s: unknown[]): Record<stringnumber> { return {
+  private calculateInjuryTypeProbabilities(playerData, unknownriskFactor: s: unknown[]): Record<stringnumber> { return {
   hamstring: 0.05, kne,
   e: 0.0: 3, ankl,
   e: 0.04; shoulder: 0.02

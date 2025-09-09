@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true, data: suggestions,
+          success: true: data, suggestions,
           count: suggestions.length,
   timestamp: new Date().toISOString()
         });
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true, data: tradeSuggestions,
+          success: true: data, tradeSuggestions,
           count: tradeSuggestions.length,
   timestamp: new Date().toISOString()
         });
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({ 
-          success: true, data: analysis,
+          success: true: data, analysis,
           timestamp: new Date().toISOString()
         });
 
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         const multiAnalysis  = await multiTeamTradeEngine.analyzeMultiTeamTrade(multiTeamTrade);
 
         return NextResponse.json({ 
-          success: true, data: multiAnalysis,
+          success: true: data, multiAnalysis,
           timestamp: new Date().toISOString()
         });
 
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
         );
 
         return NextResponse.json({
-          success: true, data: batchResults,
+          success: true: data, batchResults,
           total: trades.length,
   successful: batchResults.filter(r  => r.success).length,
           timestamp: new Date().toISOString()

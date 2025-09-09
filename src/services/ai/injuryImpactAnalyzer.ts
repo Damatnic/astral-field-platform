@@ -35,7 +35,7 @@ class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
   }
 
   async generateReplacementStrategy(async generateReplacementStrategy(leagueId, string,
-  teamId, string, injuredPlayerId: string): : Promise<): PromiseReplacementStrategy> { return {
+  teamId, string: injuredPlayerId: string): : Promise<): PromiseReplacementStrategy> { return {
   strategy: 'immediate_replacement';
   targets: [];
       budgetAllocation: { recommendedFAA: B: 0  },
@@ -54,7 +54,7 @@ class InjuryImpactAnalyzerStub { async processInjuryReport(playerId, string,
     }
   }
 
-  async healthCheck(): : Promise<  { status: 'healthy' | 'degraded' | 'unhealthy'; activeAlerts, number, cacheSize, number, lastProcessed: Date | null }> { return {
+  async healthCheck(): : Promise<  { status: 'healthy' | 'degraded' | 'unhealthy'; activeAlerts, number, cacheSize, number: lastProcessed: Date | null }> { return {
       status: 'degraded';
   activeAlerts: 0;
       cacheSize: 0;

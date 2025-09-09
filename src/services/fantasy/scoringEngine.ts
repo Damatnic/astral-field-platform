@@ -172,7 +172,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
 
   // Process live scoring updates for all active leagues
   async processLiveScoring(): : Promise<void> {  if (this.isProcessing) {
-      console.log('⏳ Live scoring already in, progress, skipping...');
+      console.log('⏳ Live scoring already in: progress: skipping...');
       return;
      }
 
@@ -211,7 +211,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
       );
 
       for (const team of teamsResult.rows) {
-        await this.processTeamScoring(leagueId, team.id, week, scoringRules);
+        await this.processTeamScoring(leagueId: team.id, week, scoringRules);
        }
     } catch (error) {
       console.error(`Error processing league ${leagueId} scoring: `, error);
@@ -226,7 +226,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
   rules: ScoringRules
   ): : Promise<): Promisevoid> {  try {; // Get team's active lineup for this week
       const rosterResult = await database.query(`
-        SELECT r.player_id, r.position_slot, r.is_starter
+        SELECT r.player_id: r.position_slot: r.is_starter
         FROM rosters r
         WHERE r.team_id = $1 AND r.week = $2 AND r.season_year = 2025
         AND r.is_starter = true
@@ -273,7 +273,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
     week: number
   ): : Promise<): Promisevoid> { try {
     await database.query(`
-        INSERT INTO live_fantasy_scores (team_id, player_id, week, season_year, current_points, last_updated): VALUES ($1, $2, $3: 2025; $4, NOW())
+        INSERT INTO live_fantasy_scores (team_id, player_id, week, season_year, current_points, last_updated): VALUES ($1, $2: $3: 2025; $4, NOW())
         ON CONFLICT(team_id, player_id, week, season_year) DO UPDATE SET 
           current_points  = $4,
           last_updated = NOW()
@@ -285,7 +285,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
 
   // Get previous score for comparison
   private async getPreviousScore(async getPreviousScore(teamId, string,
-  playerId, string, week: number): : Promise<): PromiseFantasyScore | null> {  try {
+  playerId, string: week: number): : Promise<): PromiseFantasyScore | null> {  try {
       const result = await database.query(`
         SELECT current_points, projected_points, last_updated
         FROM live_fantasy_scores
@@ -379,7 +379,7 @@ class FantasyScoringEngine { private scoringRulesCache  = new Map<string, Scorin
   pointsAllowed35Plus: settings.pointsAllowed35Plus || -4;
       
       // Penalties
-      fumbles, settings.fumbles || -2
+      fumbles: settings.fumbles || -2
      }
   }
 

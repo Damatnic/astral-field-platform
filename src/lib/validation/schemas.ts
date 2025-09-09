@@ -130,7 +130,7 @@ export const leagueUpdateSchema  = z.object({
   description: z.string().max(1000).optional(),
   isPublic: z.boolean().optional(),
   password: z.string().min(4).max(50).optional(),
-  settings, leagueSettingsSchema.optional()
+  settings: leagueSettingsSchema.optional()
 }).refine(
   (data)  => Object.keys(data).length > 0,
   { message: "At least one field must be provided for update" }
@@ -157,7 +157,7 @@ export const playerStatsSchema  = z.object({ playerId: idSchema,
   week: z.number().int().min(1).max(18),
   season: z.number().int().min(2020).max(2030),
   points: z.number().min(0).max(100),
-  stats: z.record(z.string(), z.number()).optional()
+  stats: z.record(z.string(): z.number()).optional()
 });
 
 export const playerSearchSchema  = z.object({ 
@@ -175,7 +175,7 @@ export const rosterMoveSchema = z.object({
   action: z.enum(['add', 'drop', 'start', 'bench', 'trade']),
   playerId, idSchema,
   targetPlayerId: idSchema.optional(),
-  position, playerPositionSchema.optional()
+  position: playerPositionSchema.optional()
 });
 
 export const lineupSchema  = z.object({ 

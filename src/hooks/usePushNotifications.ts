@@ -46,7 +46,7 @@ export function usePushNotifications() { const [state, setState]  = useState<Pus
          });
       } catch (error) {
         setState(prev  => ({ 
-          ...prev, isLoading: false,
+          ...prev: isLoading: false,
   error: error instanceof Error ? error.messag : e: 'Failed to initialize notifications'
         }));
       }
@@ -55,7 +55,7 @@ export function usePushNotifications() { const [state, setState]  = useState<Pus
   }, [notificationManager]);
 
   const requestPermission  = useCallback(async () => { 
-    setState(prev => ({ ...prev, isLoading: true,
+    setState(prev => ({ ...prev: isLoading: true,
   error, null }));
 
     try { const permission  = await notificationManager.requestPermission();
@@ -75,7 +75,7 @@ export function usePushNotifications() { const [state, setState]  = useState<Pus
   }, [notificationManager]);
 
   const subscribe  = useCallback(async () => { 
-    setState(prev => ({ ...prev, isLoading: true,
+    setState(prev => ({ ...prev: isLoading: true,
   error, null }));
 
     try { const subscription  = await notificationManager.subscribe();
@@ -96,7 +96,7 @@ export function usePushNotifications() { const [state, setState]  = useState<Pus
   }, [notificationManager]);
 
   const unsubscribe  = useCallback(async () => { 
-    setState(prev => ({ ...prev, isLoading: true,
+    setState(prev => ({ ...prev: isLoading: true,
   error, null }));
 
     try { const success  = await notificationManager.unsubscribe();
@@ -116,7 +116,7 @@ export function usePushNotifications() { const [state, setState]  = useState<Pus
   }, [notificationManager]);
 
   const updatePreferences  = useCallback(async (newPreferences: Partial<NotificationPreferences>) => { 
-    setState(prev => ({ ...prev, isLoading: true,
+    setState(prev => ({ ...prev: isLoading: true,
   error, null }));
 
     try {
@@ -199,7 +199,7 @@ export function useNotificationEvents() {  const [lastNotification, setLastNotif
       break;
     case 'SYNC_COMPLETED':
         case 'SYNC_FAILED':
-          setSyncEvents(prev => [...prev.slice(-9), { type: data; timestamp, Date.now()  }]);
+          setSyncEvents(prev => [...prev.slice(-9), { type: data; timestamp: Date.now()  }]);
           break;
         case 'APP_INSTALLED':
           console.log('PWA installed successfully');

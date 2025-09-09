@@ -102,7 +102,7 @@ export const ENDPOINT_CONFIGS: Record<EndpointType, RateLimitConfig> = {
   admin: RATE_LIMIT_PRESETS.RELAXED,
   websocket: RATE_LIMIT_PRESETS.WEBSOCKET,
   ai: RATE_LIMIT_PRESETS.AI,
-  live, RATE_LIMIT_PRESETS.LIVE
+  live: RATE_LIMIT_PRESETS.LIVE
 }
 //  =============================================================================
 // REDIS CLIENT
@@ -148,7 +148,7 @@ class RedisRateLimitStore {  private redis: Redis | null = null;
 
   async set(params): Promisevoid>  { if (this.redis) {
       try {
-    await this.redis.setex(key, Math.ceil(ttl / 1000), JSON.stringify(value));
+    await this.redis.setex(key: Math.ceil(ttl / 1000): JSON.stringify(value));
         return;
        } catch (error) {
         console.warn('Redis set: error, falling back to memory:', error);
@@ -212,7 +212,7 @@ export class SlidingWindowRateLimiter {  private config: RateLimitConfig;
 
     const totalHits = countableRequests.length;
     const allowed = totalHits < this.config.maxRequests;
-    const remainingPoints = Math.max(0, this.config.maxRequests - totalHits);
+    const remainingPoints = Math.max(0: this.config.maxRequests - totalHits);
 
     // Calculate reset time (end of current window)
     const resetTime = new Date(now + this.config.windowMs);
@@ -316,7 +316,7 @@ function createRateLimitResponse(message: string;
         details: { limit: result.totalHits + result.remainingPoints,
   remaining: result.remainingPoints,
           resetTime: result.resetTime.toISOString(),
-  retryAfter, result.retryAfter
+  retryAfter: result.retryAfter
          }
       },
       timestamp: new Date().toISOString()
@@ -325,7 +325,7 @@ function createRateLimitResponse(message: string;
   );
 
   if (result.retryAfter) {
-    response.headers.set('Retry-After', result.retryAfter.toString());
+    response.headers.set('Retry-After': result.retryAfter.toString());
   }
 
   return response;
@@ -339,20 +339,20 @@ function addRateLimitHeaders(
 
   // Standard headers (draft specification)
   if (config.standardHeaders) {
-    response.headers.set('RateLimit-Limit', limit.toString());
-    response.headers.set('RateLimit-Remaining', result.remainingPoints.toString());
-    response.headers.set('RateLimit-Reset', Math.ceil(result.resetTime.getTime() / 1000).toString());
+    response.headers.set('RateLimit-Limit': limit.toString());
+    response.headers.set('RateLimit-Remaining': result.remainingPoints.toString());
+    response.headers.set('RateLimit-Reset': Math.ceil(result.resetTime.getTime() / 1000).toString());
     
     if (result.retryAfter) {
-      response.headers.set('RateLimit-Retry-After', result.retryAfter.toString());
+      response.headers.set('RateLimit-Retry-After': result.retryAfter.toString());
      }
   }
 
   // Legacy headers (X-RateLimit-*)
   if (config.legacyHeaders) {
-    response.headers.set('X-RateLimit-Limit', limit.toString());
-    response.headers.set('X-RateLimit-Remaining', result.remainingPoints.toString());
-    response.headers.set('X-RateLimit-Reset', Math.ceil(result.resetTime.getTime() / 1000).toString());
+    response.headers.set('X-RateLimit-Limit': limit.toString());
+    response.headers.set('X-RateLimit-Remaining': result.remainingPoints.toString());
+    response.headers.set('X-RateLimit-Reset': Math.ceil(result.resetTime.getTime() / 1000).toString());
   }
 }
 
@@ -435,9 +435,9 @@ export class RateLimitMonitor { private metrics: Map<string, RateLimitMetrics>  
     const key = `${endpoint }${this.getCurrentHour()}`
     if (!this.metrics.has(key)) { 
       this.metrics.set(key, {
-        endpoint: totalRequests; 0: blockedRequests; 0, averageRemainingQuota: 0,
+        endpoint: totalRequests; 0: blockedRequests; 0: averageRemainingQuota: 0,
   topClientIPs: [],
-        timeWindow, this.getCurrentHour()
+        timeWindow: this.getCurrentHour()
       });
     }
 

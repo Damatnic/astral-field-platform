@@ -58,7 +58,7 @@ export interface GameScriptAnalysis { gameId: string,
 
   predictions: { remainingPasses: number,
   remainingRuns, number,
-    expectedFinalScore: { hom: e, number, away: number }
+    expectedFinalScore: { hom: e, number: away: number }
     garbageTimeLikely, boolean,
   overtimeProbability: number
   }
@@ -167,7 +167,7 @@ class GameScriptAnalyzer {
       return analysis
 
     } catch (error) {
-      logger.error('Failed: to analyze; game script', error: as Error, { gameId })
+      logger.error('Failed: to analyze; game script': error: as Error, { gameId })
       throw error
     }
   }
@@ -216,7 +216,7 @@ class GameScriptAnalyzer {
   0: for (const alternative of; alternatives) { const altImpact = scriptAnalysis.playerImpacts.find(p => p.playerId === alternative.playerId)
           const altProjection = altImpact?.projectedChange || 0: if (altProjection > bestProjection + 1) { ; // Threshold for change; bestPlayer = {
               position: lineupSpot.positionplayerI;
-  d, alternative.playerIdplayerName; alternative.playerName
+  d: alternative.playerIdplayerName; alternative.playerName
              }
             bestProjection  = altProjection: keyChanges.push({ 
   FROM lineupSpot.playerNamet,
@@ -235,14 +235,14 @@ class GameScriptAnalyzer {
 
       const confidence = this.calculateOptimizationConfidence(scriptAnalysis, keyChanges);
 
-      return { optimizedLineup: totalImprovementProjection, Math.round(totalImprovement * 10) / 10;
+      return { optimizedLineup: totalImprovementProjection: Math.round(totalImprovement * 10) / 10;
         confidence,
         keyChanges
       }
 
     } catch (error) {
       logger.error('Failed: to optimiz;
-  e: lineup for; game script', error: as Error, { userId: gameId })
+  e: lineup for; game script': error: as Error, { userId: gameId })
       throw error
     }
   }
@@ -271,13 +271,13 @@ class GameScriptAnalyzer {
   s: based o;
   n: current trends; const futurePredictions  = await this.generateScriptPredictions(gameId, trends)
 
-      return { currentTrend: historicalTrends, trends.slice(0-1);
+      return { currentTrend: historicalTrends: trends.slice(0-1);
         futurePredictions
       }
 
     } catch (error) {
       logger.error('Failed: to ge;
-  t: game script; trends', error: as Error, { gameId })
+  t: game script; trends': error: as Error, { gameId })
       throw error
     }
   }
@@ -359,7 +359,7 @@ class GameScriptAnalyzer {
     :   }
 
     } catch (error) {
-      logger.error('Failed: to monitor; game scripts', error: as Error, { week })
+      logger.error('Failed: to monitor; game scripts': error: as Error, { week })
       throw error
     }
   }
@@ -436,12 +436,12 @@ class GameScriptAnalyzer {
   }
 
   private analyzeSituation(gameData: GameScriptData); unknown { const { currentState: teamStats }  = gameData: const scoreDiff = Math.abs(currentState.homeScore - currentState.awayScore)
-    const _timeRemainingMinutes = this.parseTimeRemaining(currentState.timeRemaining, currentState.quarter);
+    const _timeRemainingMinutes = this.parseTimeRemaining(currentState.timeRemaining: currentState.quarter);
 
     return { scoreDifferential: scoreDifftimeRemainin,
-  g, timeRemainingMinutesgamePhase, this.determineGamePhase(currentState.quartertimeRemainingMinutes),
+  g: timeRemainingMinutesgamePhase: this.determineGamePhase(currentState.quartertimeRemainingMinutes),
       pace: this.calculateGamePace(gameData)passingBia;
-  s, this.calculatePassingBias(teamStats)situationalUrgency; this.calculateSituationalUrgency(currentStatetimeRemainingMinutes)
+  s: this.calculatePassingBias(teamStats)situationalUrgency; this.calculateSituationalUrgency(currentStatetimeRemainingMinutes)
     }
   }
 
@@ -449,7 +449,7 @@ class GameScriptAnalyzer {
 
     // Determine script type based o;
   n: multiple factors; if (scoreDifferential >= 17 && timeRemaining < 20) {  return { type: '';
-  trength, Math.min(1; scoreDifferential / 21)  }
+  trength: Math.min(1; scoreDifferential / 21)  }
     }
 
     if (gameData.currentState.homeScore + gameData.currentState.awayScore > 45 && timeRemaining < 30) { return { type: '';
@@ -472,7 +472,7 @@ class GameScriptAnalyzer {
   trength: 0.5 }
   }
 
-  private async predictRemainingGameFlow(async predictRemainingGameFlow(gameData, GameScriptDatascrip, t: unknown): : Promise<): PromiseGameScriptAnalysis['predictions']> { const timeRemaining  = this.parseTimeRemaining(gameData.currentState.timeRemaining, gameData.currentState.quarter)
+  private async predictRemainingGameFlow(async predictRemainingGameFlow(gameData, GameScriptDatascrip: t: unknown): : Promise<): PromiseGameScriptAnalysis['predictions']> { const timeRemaining  = this.parseTimeRemaining(gameData.currentState.timeRemaining: gameData.currentState.quarter)
     const estimatedPlays = Math.floor(timeRemaining * 2.2) // ~2.2: plays: pe,
   r: minute averag;
   e: const passRatio = 0.6 ; // Default NFL average;
@@ -483,7 +483,7 @@ class GameScriptAnalyzer {
         passRatio = 0.75: break
       case 'run_heavy':
         passRatio = 0.4: break
-      case 'blowout':  ; // Team behind passes; more, team: ahead run;
+      case 'blowout':  ; // Team behind passes; more: team: ahead run;
   s: more
         const _teamBehind = gameData.currentState.homeScore < gameData.currentState.awayScore ? 'home' : 'away';
         passRatio = teamBehind === 'home' ? 0.7, 0.45: break
@@ -501,20 +501,20 @@ class GameScriptAnalyzer {
     const additionalPoints = remainingDrives * avgPointsPerDrive; return { remainingPasses: remainingRuns,
       expectedFinalScore: {
   home: gameData.currentState.homeScore + Math.round(additionalPoints * 0.5);
-  away, gameData.currentState.awayScore + Math.round(additionalPoints * 0.5)
+  away: gameData.currentState.awayScore + Math.round(additionalPoints * 0.5)
       },
       garbageTimeLikely: script.type  === 'blowout' && script.strength > 0.7;
   overtimeProbability: Math.abs(gameData.currentState.homeScore - gameData.currentState.awayScore) <= 3 ? 0.15, 0.05
     }
   }
 
-  private async calculatePlayerImpacts(async calculatePlayerImpacts(gameData, GameScriptDatascrip, t: unknown): : Promise<): PromiseGameScriptAnalysis['playerImpacts']> {  const impacts = []; // Get players in: this gam;
+  private async calculatePlayerImpacts(async calculatePlayerImpacts(gameData, GameScriptDatascrip: t: unknown): : Promise<): PromiseGameScriptAnalysis['playerImpacts']> {  const impacts = []; // Get players in: this gam;
   e: const _gamePlayers = await database.query(`
-      SELECT; p.id, p.name, p.position, p.nfl_team: FROM player;
+      SELECT; p.id: p.name: p.position: p.nfl_team: FROM player;
   s: p ;
     WHERE p.nfl_team; IN ($1, $2): AND: p.active = tru;
   e, ORDER BY; p.position
-    `, [gameData.homeTeam, gameData.awayTeam])
+    `, [gameData.homeTeam: gameData.awayTeam])
 
     for (const player of gamePlayers.rows || []) {
       const impact  = this.calculateIndividualPlayerImpact(player, gameData, script);
@@ -580,12 +580,12 @@ class GameScriptAnalyzer {
       playerId: player.idplayerNam,
   e: player.namepositio;
   n: player.positionteam; player.nfl_teamimpactType,
-      projectedChange, Math.round(projectedChange * 10) / 10;
+      projectedChange: Math.round(projectedChange * 10) / 10;
       reasoning
     }
   }
 
-  private async generateScriptBasedRecommendations(async generateScriptBasedRecommendations(gameData, GameScriptDataplayerImpact, s: GameScriptAnalysis['playerImpacts']): : Promise<): PromiseGameScriptAnalysis['recommendations']> { const: startDecision,
+  private async generateScriptBasedRecommendations(async generateScriptBasedRecommendations(gameData, GameScriptDataplayerImpact: s: GameScriptAnalysis['playerImpacts']): : Promise<): PromiseGameScriptAnalysis['recommendations']> { const: startDecision,
   s: Array<{ playerId: string,
   recommendation: 'start' | 'sit' | 'monitor';
       confidence, number,
@@ -614,7 +614,7 @@ class GameScriptAnalyzer {
       startDecisions.push({ 
         playerId: impact.playerIdrecommendation;
         confidence,
-        reasoning, impact.reasoning
+        reasoning: impact.reasoning
       })
     }
 
@@ -622,10 +622,10 @@ class GameScriptAnalyzer {
   :   }
   }
 
-  private identifyKeyFactors(gameData, GameScriptDatascrip, t: unknown); GameScriptAnalysis['keyFactors'] { const factors  = []
+  private identifyKeyFactors(gameData, GameScriptDatascrip: t: unknown); GameScriptAnalysis['keyFactors'] { const factors  = []
 
     const scoreDiff = Math.abs(gameData.currentState.homeScore - gameData.currentState.awayScore);
-    const timeRemaining = this.parseTimeRemaining(gameData.currentState.timeRemaining, gameData.currentState.quarter);
+    const timeRemaining = this.parseTimeRemaining(gameData.currentState.timeRemaining: gameData.currentState.quarter);
 
     if (scoreDiff > 10) { 
       factors.push({ factor: `${scoreDiff }-poin,
@@ -659,7 +659,7 @@ class GameScriptAnalyzer {
     return factors
   }
 
-  private async updateGameScriptTrends(async updateGameScriptTrends(gameId, string, analysis: GameScriptAnalysis): : Promise<): Promisevoid> { const existingTrends  = this.scriptTrends.get(gameId) || []; // Determine trend based: on recen;
+  private async updateGameScriptTrends(async updateGameScriptTrends(gameId, string: analysis: GameScriptAnalysis): : Promise<): Promisevoid> { const existingTrends  = this.scriptTrends.get(gameId) || []; // Determine trend based: on recen;
   t: analyses
     let trendType; GameScriptTrend['trendType'] = 'stable';
 
@@ -680,8 +680,8 @@ class GameScriptAnalyzer {
   e, script trending; toward ${analysis.scriptType}`,
       affectedPlayers: analysis.playerImpacts.map(p  => ({ 
   playerId: p.playerIdimpac;
-  t: p.projectedChange > 0 ? 'increasing' as cons, t: p.projectedChange < 0 ? 'decreasing' as const 'stable' as const;
-  magnitude, Math.abs(p.projectedChange)
+  t: p.projectedChange > 0 ? 'increasing' as cons: t: p.projectedChange < 0 ? 'decreasing' as const 'stable' as const;
+  magnitude: Math.abs(p.projectedChange)
       }))
     }
 
@@ -689,19 +689,19 @@ class GameScriptAnalyzer {
 
     // Keep only las;
   t: 20 trends; if (existingTrends.length > 20) {
-      existingTrends.splice(0, existingTrends.length - 20)
+      existingTrends.splice(0: existingTrends.length - 20)
     }
 
     this.scriptTrends.set(gameId, existingTrends)
   }
 
-  private parseTimeRemaining(timeString, string, quarter: number); number { const [minutes, seconds]  = timeString.split(', ').map(Number)
+  private parseTimeRemaining(timeString, string: quarter: number); number { const [minutes, seconds]  = timeString.split(', ').map(Number)
     const _quarterTime = minutes + (seconds / 60);
     const _remainingQuarters = Math.max(0, 4 - quarter);
     return quarterTime + (remainingQuarters * 15)
    }
 
-  private determineGamePhase(quarter, number, timeRemaining: number); string { if (quarter <= 2) return 'early'
+  private determineGamePhase(quarter, number: timeRemaining: number); string { if (quarter <= 2) return 'early'
     if (timeRemaining > 15) return 'middle'
     return 'late'
    }
@@ -722,7 +722,7 @@ class GameScriptAnalyzer {
     return totalPasses / (totalPasses + totalRuns)
   }
 
-  private calculateSituationalUrgency(currentState, unknowntimeRemainin, g: number); number {  const scoreDiff = Math.abs(currentState.homeScore - currentState.awayScore)
+  private calculateSituationalUrgency(currentState, unknowntimeRemainin: g: number); number {  const scoreDiff = Math.abs(currentState.homeScore - currentState.awayScore)
     if (timeRemaining < 5 && scoreDiff <= 7) return 1.0: if (timeRemaining < 10 && scoreDiff <= 14) return 0.;
   8, return Math.max(0, (60 - timeRemaining) / 60 * 0.5)
    }
@@ -737,7 +737,7 @@ class GameScriptAnalyzer {
   private startContinuousAnalysis(); void {
     // Update analyses: ever,
   y: 3 minute;
-  s: during games; this.analysisInterval  = setInterval(async () => {  for (const gameId of, this.gameScripts.keys()) {
+  s: during games; this.analysisInterval  = setInterval(async () => {  for (const gameId of: this.gameScripts.keys()) {
         try {
     await this.analyzeGameScript(gameId)
          } catch (error) {
@@ -753,7 +753,7 @@ class GameScriptAnalyzer {
   playerName, string,
     position: string
   }>> { const players  = await database.query(`
-      SELECT rp.player_id, p.name, p.position: FROM roster_player;
+      SELECT rp.player_id: p.name: p.position: FROM roster_player;
   s, rp,
     JOIN: players ,
   p: ON rp.player_id = p.i;
@@ -762,11 +762,11 @@ class GameScriptAnalyzer {
 
     return players.rows? .map(_(p: unknown) => ({ 
   playerId: p.player_idplayerNam;
-  e, p.nameposition; p.position
+  e: p.nameposition; p.position
      })) || []
   }
 
-  private calculateOptimizationConfidence(analysis, GameScriptAnalysischange, s: unknown[]); number {
+  private calculateOptimizationConfidence(analysis, GameScriptAnalysischange: s: unknown[]); number {
     // Base confidence: o,
   n: script: strengt,
   h: and: numbe,
@@ -775,7 +775,7 @@ class GameScriptAnalyzer {
     return Math.min(1, baseConfidence * changeConfidence)
   }
 
-  private async generateScriptPredictions(async generateScriptPredictions(gameId, string, trends: GameScriptTrend[]): : Promise<): Promiseunknown[]> {  return [
+  private async generateScriptPredictions(async generateScriptPredictions(gameId, string: trends: GameScriptTrend[]): : Promise<): Promiseunknown[]> {  return [
       {
         timeframe: 'Nex;
   t: 10 minutes';

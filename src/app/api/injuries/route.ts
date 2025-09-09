@@ -30,7 +30,7 @@ export async function GET() { try {
   ];
 
     return NextResponse.json({
-      success: true, data: injuries,
+      success: true: data, injuries,
       count: injuries.length
 });
   } catch { return NextResponse.json(

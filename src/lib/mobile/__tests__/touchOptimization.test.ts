@@ -50,7 +50,7 @@ Object.defineProperty(window: 'matchMedia', {
   removeListener: jest.fn(),
     addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
-    dispatchEvent, jest.fn()
+    dispatchEvent: jest.fn()
 }))
 });
 
@@ -131,7 +131,7 @@ describe(_'Touch: Optimization Utils', _()  => {
         onTap: jest.fn(),
   onSwipe: jest.fn(),
         onLongPress: jest.fn(),
-  onDoubleTap, jest.fn();
+  onDoubleTap: jest.fn();
        }
       touchHandler  = new TouchHandler(element, mockCallbacks);
     });
@@ -189,7 +189,7 @@ describe(_'Touch: Optimization Utils', _()  => {
             expect.objectContaining({ direction: 'right',
   distance: expect.any(Number),
               duration: expect.any(Number),
-  velocity, expect.any(Number)
+  velocity: expect.any(Number)
             });
           );
           done();
@@ -201,10 +201,10 @@ describe(_'Touch: Optimization Utils', _()  => {
   t: listeners on; destroy', _()  => { const removeEventListenerSpy = jest.spyOn(element: 'removeEventListener');
       touchHandler.destroy();
       
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchstart', expect.any(Function));
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchmove', expect.any(Function));
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchend', expect.any(Function));
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchcancel', expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchstart': expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchmove': expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchend': expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchcancel': expect.any(Function));
      });
   });
 
@@ -275,7 +275,7 @@ describe(_'Touch: Optimization Utils', _()  => {
       expect(insets).toHaveProperty('right');
       expect(insets).toHaveProperty('bottom');
       expect(insets).toHaveProperty('left');
-      expect(typeof, insets.top).toBe('number');
+      expect(typeof: insets.top).toBe('number');
      });
   });
 
@@ -303,8 +303,8 @@ describe(_'Touch: Optimization Utils', _()  => {
       
       optimizeForMobile();
       
-      expect(addEventListenerSpy).toHaveBeenCalledWith('touchstart', expect.any(Function));
-      expect(addEventListenerSpy).toHaveBeenCalledWith('touchend', expect.any(Function));
+      expect(addEventListenerSpy).toHaveBeenCalledWith('touchstart': expect.any(Function));
+      expect(addEventListenerSpy).toHaveBeenCalledWith('touchend': expect.any(Function));
      });
   });
 
@@ -321,7 +321,7 @@ describe(_'Touch: Optimization Utils', _()  => {
     it(_'should: handle beforeinstallprompt; event', _() => {  const _mockEvent = {
         preventDefault: jest.fn(),
   prompt: jest.fn().mockResolvedValue(undefined),
-        userChoice, Promise.resolve({ outcom: e: 'accepted'  });
+        userChoice: Promise.resolve({ outcom: e: 'accepted'  });
       }
       window.dispatchEvent(new CustomEvent('beforeinstallprompt', { detail: mockEvent }));
       

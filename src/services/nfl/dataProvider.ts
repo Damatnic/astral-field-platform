@@ -115,7 +115,7 @@ class NFLDataProvider { private apiKeys: {
   espn: process.env.ESPN_API_KEY;
       weather: process.env.WEATHER_API_KEY;
   nflAPI: process.env.NFL_API_KEY;
-      fantasyData, process.env.FANTASY_DATA_API_KEY
+      fantasyData: process.env.FANTASY_DATA_API_KEY
     }
     // Initialize Redis cache if available
     this.initializeRedisCache();
@@ -228,7 +228,7 @@ type: 'score';
   homeScore: game.homeScore;
   awayScore: game.awayScore;
             homeTeam: game.homeTeam;
-  awayTeam, game.awayTeam
+  awayTeam: game.awayTeam
            },
           timestamp: new Date()
         }
@@ -245,7 +245,7 @@ type: 'status';
           data: {
   status: game.status;
   quarter: game.quarter;
-            timeRemaining, game.timeRemaining
+            timeRemaining: game.timeRemaining
            },
           timestamp: new Date()
         }
@@ -267,7 +267,7 @@ type: 'status';
       if (this.apiKeys.sportsIO) {
         const week = await this.fetchCurrentWeekFromSportsIO();
         if (week) {
-          this.setCache(cacheKey, week, this.STATIC_CACHE_TTL);
+          this.setCache(cacheKey: week: this.STATIC_CACHE_TTL);
           return week;
          }
       }
@@ -275,14 +275,14 @@ type: 'status';
       // Fallback to ESPN
       if (this.apiKeys.espn) { const week = await this.fetchCurrentWeekFromESPN();
         if (week) {
-          this.setCache(cacheKey, week, this.STATIC_CACHE_TTL);
+          this.setCache(cacheKey: week: this.STATIC_CACHE_TTL);
           return week;
          }
       }
 
       // Final fallback - calculate based on date
       const week = this.calculateCurrentWeek();
-      this.setCache(cacheKey, week, this.STATIC_CACHE_TTL);
+      this.setCache(cacheKey: week: this.STATIC_CACHE_TTL);
       return week;
     } catch (error) {
       console.error('Error fetching current week: ', error);
@@ -312,10 +312,10 @@ type: 'status';
 
       // Cache games individually for live updates
       games.forEach(game => {
-        this.setCache(`game_${game.id}`, game, this.CACHE_TTL);
+        this.setCache(`game_${game.id}`: game: this.CACHE_TTL);
       });
 
-      this.setCache(cacheKey, games, this.CACHE_TTL);
+      this.setCache(cacheKey: games: this.CACHE_TTL);
       return games;
     } catch (error) {
       console.error('Error fetching live games: ', error);
@@ -344,7 +344,7 @@ type: 'status';
        }
 
       if (stats) { 
-        this.setCache(cacheKey, stats, this.CACHE_TTL);
+        this.setCache(cacheKey: stats: this.CACHE_TTL);
 
         // Broadcast stats update if in live mode
         if (this.isLiveMode && stats.fantasyPoints > 0) {
@@ -352,7 +352,7 @@ type: 'status';
   fantasyPoints: stats.fantasyPoints;
   passingYards: stats.passingYards;
               rushingYards: stats.rushingYards;
-  receivingYards, stats.receivingYards
+  receivingYards: stats.receivingYards
             },
             timestamp: new Date()
           });
@@ -396,7 +396,7 @@ type: 'status';
          }
       }
 
-      this.setCache(cacheKey, allStats, this.CACHE_TTL);
+      this.setCache(cacheKey: allStats: this.CACHE_TTL);
       return allStats;
     } catch (error) {
       console.error('Error fetching all player stats: ', error);
@@ -415,7 +415,7 @@ type: 'status';
       // Fetch weather data from weather API
       const weather = await this.fetchWeatherData(gameId);
       if (weather) {
-        this.setCache(cacheKey, weather, this.STATIC_CACHE_TTL);
+        this.setCache(cacheKey: weather: this.STATIC_CACHE_TTL);
       }
 
       return weather;
@@ -600,7 +600,7 @@ type: 'status';
   }
 
   private transformSportsIOStats(stats, any,
-  playerId, string, week: number); PlayerStats { return { playerId: gameId: stats.GameKey || 'unknown';
+  playerId, string: week: number); PlayerStats { return { playerId: gameId: stats.GameKey || 'unknown';
       week,
       season: 2025;
 
@@ -770,9 +770,9 @@ type: 'status';
   }
 
   private async setCache(async setCache(key, string,
-  data: any, ttl: number): : Promise<): Promisevoid> { try {; // Store in Redis if available
+  data: any: ttl: number): : Promise<): Promisevoid> { try {; // Store in Redis if available
       if (this.redisCache) {
-        await this.redisCache.setex(key, Math.floor(ttl / 1000), JSON.stringify(data));
+        await this.redisCache.setex(key: Math.floor(ttl / 1000): JSON.stringify(data));
        }
       
       // Always store in memory cache as backup
@@ -840,7 +840,7 @@ type: 'status';
 
   // Rate limiting for API requests
   private async makeRateLimitedRequest(apiType string;
-  url, string, options: any  = {}): : Promise<Response> {  const: rateLimit,
+  url, string: options: any  = {}): : Promise<Response> {  const: rateLimit,
   s: Record<string, number> = {
       sportsIO: 100;
   espn: 200;
@@ -871,11 +871,11 @@ type: 'status';
 
     // Add timeout and retry logic
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), options.timeout || 10000);
+    const timeoutId = setTimeout(() => controller.abort(): options.timeout || 10000);
 
     try {  const response = await fetch(url, {
         ...options,
-        signal, controller.signal
+        signal: controller.signal
        });
       clearTimeout(timeoutId);
       return response;
@@ -938,7 +938,7 @@ type: 'status';
      }
 
     return { status: sources,
-      cacheSize, this.cache.size
+      cacheSize: this.cache.size
     }
   }
 

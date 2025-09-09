@@ -49,7 +49,7 @@ const processedClaims: ProcessedClaim[]  = (waiverClaims || []).map((
       awarded: processedClaims.filter(
         (c; ProcessedClaim) => c.status === "awarded",
       ).length,
-      failed, processedClaims.filter(
+      failed: processedClaims.filter(
         (c; ProcessedClaim)  => c.status === "failed",
       ).length, claims, processedClaims,
   nextProcessing: new Date(Date.now() + 86400000).toISOString(), // Tomorrow

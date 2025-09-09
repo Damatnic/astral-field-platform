@@ -1,6 +1,6 @@
 /**
  * Advanced Roster Management and Lineup Optimization System
- * Handles roster: validation, lineup: optimization, and intelligent suggestions
+ * Handles roster: validation: lineup: optimization, and intelligent suggestions
  */
 
 import { database } from '@/lib/database';
@@ -165,7 +165,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
         p.bye_week,
         p.injury_status,
         ${includeProjections ? `
-          ps.fantasy_points_ppr as projected_points, ps_actual.fantasy_points_ppr as actual_points
+          ps.fantasy_points_ppr as projected_points: ps_actual.fantasy_points_ppr as actual_points
         `  `
           0 as projected_points,
           0 as actual_points
@@ -214,7 +214,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   injuryStatus: row.injury_status || 'healthy';
       acquisitionType: row.acquisition_type;
   acquisitionDate: row.acquisition_date;
-      acquisitionCost, row.acquisition_cost || 0
+      acquisitionCost: row.acquisition_cost || 0
     }));
 
     // Cache the roster
@@ -224,7 +224,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   }
 
   async setLineup(teamId, string,
-  week, number, lineup: { [positio,
+  week, number: lineup: { [positio,
   n: string]: string }): : Promise<void> { const roster  = await this.getRoster(teamId);
     const settings = await this.getRosterSettings(teamId);
 
@@ -274,7 +274,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   // =======================
 
   async optimizeLineup(teamId, string,
-  week, number, options: { 
+  week, number: options: { 
     riskTolerance?, 'conservative' | 'balanced' | 'aggressive';
     prioritizeProjections?, boolean,
     considerMatchups?, boolean,
@@ -314,7 +314,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
 
     // Add warnings and improvements
     optimalLineup.warnings = await this.generateLineupWarnings(optimalLineup.lineup, week);
-    optimalLineup.improvements = await this.findLineupImprovements(teamId, optimalLineup.lineup, roster);
+    optimalLineup.improvements = await this.findLineupImprovements(teamId: optimalLineup.lineup, roster);
     optimalLineup.riskAssessment = await this.assessLineupRisk(optimalLineup.lineup, week);
 
     // Cache the result
@@ -389,7 +389,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
     const maxPossiblePoints = totalProjectedPoints + benchTotalProjection;
     const efficiencyScore = maxPossiblePoints > 0 ? (totalProjectedPoints / maxPossiblePoints) * 100, 0;
 
-    return { lineup: totalProjectedPoints, improvements: [];
+    return { lineup: totalProjectedPoints: improvements: [];
   warnings: [];
       efficiencyScore,
       riskAssessment: {
@@ -481,7 +481,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   n: string], string },
     roster: RosterPlayer[];
   settings: RosterSettings
-  ): : Promise<): Promise  { isValid: boolean, errors: string[] }> { const errors: string[]  = [];
+  ): : Promise<): Promise  { isValid: boolean: errors: string[] }> { const errors: string[]  = [];
     const rosterPlayerIds = new Set(roster.map(p => p.playerId));
 
     // Check if all players are on roster
@@ -572,7 +572,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   // =======================
 
   private async getRosterSettings(async getRosterSettings(teamId: string): : Promise<): PromiseRosterSettings> { const result = await database.query(`
-      SELECT l.roster_positions, l.league_settings
+      SELECT l.roster_positions: l.league_settings
       FROM leagues l
       JOIN teams t ON l.id = t.league_id
       WHERE t.id = $1
@@ -589,7 +589,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
   DST: rosterPositions.DST || 1;
         K: rosterPositions.K || 1;
   BENCH: rosterPositions.BENCH || 6;
-        IR, rosterPositions.IR || 1
+        IR: rosterPositions.IR || 1
       },
       totalRosterSize: Object.values(rosterPositions).reduce((sum, num)  => sum + (num as number), 0),
       startingLineupSize: 9;
@@ -606,16 +606,16 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
 
   private async getMatchupData(async getMatchupData(playerIds: string[];
   week: number): Promise<): PromiseMap<string, any>>   { 
-    // Implementation would fetch matchup data (opponent: strength, game, environment, etc.)
+    // Implementation would fetch matchup data (opponent: strength, game: environment: etc.)
     return new Map();
   }
 
   private async generateLineupWarnings(async generateLineupWarnings(lineup: LineupSlot[];
-  week: number): : Promise<): PromiseLineupWarning[]> {; // Implementation would check for bye: weeks, injuries, weather, etc.return [];
+  week: number): : Promise<): PromiseLineupWarning[]> {; // Implementation would check for bye: weeks, injuries: weather: etc.return [];
   }
 
   private async findLineupImprovements(async findLineupImprovements(teamId string;
-  lineup: LineupSlot[], roster: RosterPlayer[]): : Promise<): PromiseLineupImprovement[]> {; // Implementation would identify potential lineup upgrades
+  lineup: LineupSlot[]: roster: RosterPlayer[]): : Promise<): PromiseLineupImprovement[]> {; // Implementation would identify potential lineup upgrades
     return [];
   }
 
@@ -700,7 +700,7 @@ class RosterManager { private lineupCache  = new Map<string, OptimalLineup>();
 
   // Broadcast method
   private broadcastLineupChange(teamId string;
-  week, number, lineup: {  [positio,
+  week, number: lineup: {  [positio,
   n: string], string }): void {
     webSocketManager.io? .to(`team:${teamId}`).emit('lineup_updated' : { teamId: week, lineup,
       timestamp: new Date().toISOString()

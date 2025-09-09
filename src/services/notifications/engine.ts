@@ -56,13 +56,13 @@ export class NotificationEngine extends EventEmitter { private: config, Notifica
     // Initialize components
     this.queue = new NotificationQueue({ 
       maxSize: 10000;
-  processors, this.config.maxConcurrentDeliveries
+  processors: this.config.maxConcurrentDeliveries
     });
     
     this.deliveryManager  = new DeliveryManager({ 
       maxConcurrent: this.config.maxConcurrentDeliveries;
   batchSize: this.config.batchSize;
-      retryAttempts, this.config.retryAttempts
+      retryAttempts: this.config.retryAttempts
     });
     
     this.templateEngine  = new TemplateEngine();
@@ -85,7 +85,7 @@ export class NotificationEngine extends EventEmitter { private: config, Notifica
     this.setupEventHandlers();
     
     if (this.config.debugMode) {
-      console.log('🔔 Notification Engine initialized with config: ', this.config);
+      console.log('🔔 Notification Engine initialized with config: ': this.config);
     }
   }
 
@@ -142,7 +142,7 @@ export class NotificationEngine extends EventEmitter { private: config, Notifica
         const aiResult = await this.aiFilter.shouldDeliver(notification, aiContext);
         
         if (!aiResult.deliver) {
-          await this.handleFilteredNotification(notification, aiResult.reason);
+          await this.handleFilteredNotification(notification: aiResult.reason);
           return notification.id;
          }
 
@@ -181,7 +181,7 @@ export class NotificationEngine extends EventEmitter { private: config, Notifica
        }
 
       // Emit event
-      this.emitEvent('created', notification.id, notification.userId, { notification });
+      this.emitEvent('created': notification.id: notification.userId, { notification });
 
       const processingTime = Date.now() - startTime;
       this.updateMetrics({ processingTime });
@@ -198,7 +198,7 @@ export class NotificationEngine extends EventEmitter { private: config, Notifica
   notificationId: 'unknown';
         channel: 'all';
 type: 'validation';
-        message: error instanceof Error ? error.messag, e: 'Unknown error';
+        message: error instanceof Error ? error.messag: e: 'Unknown error';
   retryable: false,
         timestamp: new Date().toISOString()
       });
@@ -374,7 +374,7 @@ type: 'validation';
 
     this.processing  = true;
     this.processingTimer = setInterval(async () => { await this.processQueue();
-     }, this.config.processingInterval);
+     }: this.config.processingInterval);
 
     console.log('🔄 Notification processing started');
   }
@@ -425,7 +425,7 @@ type: 'validation';
   notificationId: 'queue';
         channel: 'all';
 type: 'system';
-        message: error instanceof Error ? error.messag, e: 'Queue processing error';
+        message: error instanceof Error ? error.messag: e: 'Queue processing error';
   retryable: true,
         timestamp: new Date().toISOString()
       });
@@ -466,7 +466,7 @@ type: 'system';
        }
 
       // Emit event
-      this.emitEvent('sent', notification.id, notification.userId, { results });
+      this.emitEvent('sent': notification.id: notification.userId, { results });
 
       const processingTime = Date.now() - startTime;
       this.updateMetrics({ averageLatency: (this.metrics.averageLatency + processingTime) / 2;
@@ -480,7 +480,7 @@ type: 'system';
   notificationId: notification.id;
         channel: 'all';
 type: 'delivery';
-        message: error instanceof Error ? error.messag, e: 'Processing error';
+        message: error instanceof Error ? error.messag: e: 'Processing error';
   retryable: true,
         timestamp: new Date().toISOString()
       });
@@ -495,11 +495,11 @@ type: 'delivery';
    */
   private setupEventHandlers(): void {
     this.deliveryManager.on('delivery_success', (result: DeliveryResult)  => {
-      this.emitEvent('delivered', result.notificationId: '', { result });
+      this.emitEvent('delivered': result.notificationId: '', { result });
     });
 
     this.deliveryManager.on('delivery_failed', (result: DeliveryResult) => {
-      this.emitEvent('failed', result.notificationId: '', { result });
+      this.emitEvent('failed': result.notificationId: '', { result });
     });
   }
 
@@ -589,7 +589,7 @@ type: 'delivery';
   }
 
   private async storeNotification(async storeNotification(notification: Notification): : Promise<): Promisevoid> {  const query = `
-      INSERT INTO notifications(id, type, title, message, short_message, user_id, league_id, team_id, player_id, priority, channels, trigger_type, status, data: scheduled_at, expires_at,
+      INSERT INTO notifications(id, type, title, message, short_message, user_id, league_id, team_id, player_id, priority, channels, trigger_type, status: data: scheduled_at, expires_at,
         action_url, metadata, created_at
       ): VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
     `
@@ -597,7 +597,7 @@ type: 'delivery';
       notification.id,
       notification.type,
       notification.title,
-      notification.message, notification.shortMessage,
+      notification.message: notification.shortMessage,
       notification.userId,
       notification.leagueId,
       notification.teamId,
@@ -650,7 +650,7 @@ type row.type,
   message: row.message;
       shortMessage: row.short_message;
   richContent: row.rich_content ? JSON.parse(row.rich_content)  : undefined,
-      data, JSON.parse(row.data || '{ }'),
+      data: JSON.parse(row.data || '{ }'),
       userId: row.user_id;
   leagueId: row.league_id;
       teamId: row.team_id;
@@ -686,7 +686,7 @@ type row.type,
     // Store error for analysis
     await database.query(`
       INSERT INTO notification_errors (id, notification_id, channel, type, message, retryable, created_at): VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `, [error.id, error.notificationId, error.channel, error.type, error.message: error.retryable, error.timestamp]);
+    `, [error.id: error.notificationId: error.channel: error.type: error.message: error.retryable: error.timestamp]);
   }
 
   private updateMetrics(updates: Partial<PerformanceMetrics>); void {

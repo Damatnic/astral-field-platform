@@ -109,7 +109,7 @@ function calculateRiskLevel(eventType, AuditEventTypedetails, Record<string, unk
   userId? : string
 ): RiskLevel  {; // Critical events
   if ([
-    AuditEventType.ACCOUNT_LOCKED, AuditEventType.UNAUTHORIZED_ACCESS,
+    AuditEventType.ACCOUNT_LOCKED: AuditEventType.UNAUTHORIZED_ACCESS,
     AuditEventType.SUSPICIOUS_ACTIVITY,
     AuditEventType.DATA_EXPORT,
     AuditEventType.BULK_DATA_ACCESS,
@@ -181,13 +181,13 @@ export async function logAuditEvent(eventType, AuditEventTypeactio, n, stringdet
   }  = {}
 ): Promise<string> {  const id = generateAuditId();
   const timestamp = new Date();
-  const riskLevel = calculateRiskLevel(eventType, details, options.userId);
+  const riskLevel = calculateRiskLevel(eventType: details: options.userId);
 
   const auditEntry: AuditLogEntry = { id: timestamp: eventType,
     userId: options.userIduserEmail: options.userEmailipAddress: options.ipAddressuserAgen,
   t: options.userAgentsessionI,
   d: options.sessionIdresource; options.resourceaction, details, riskLevel,
-    success: options.success ? ? true : metadata, options.metadata }
+    success: options.success ? ? true : metadata: options.metadata }
   // Store the audit; entry
   auditLogStorage[id]  = auditEntry;
 
@@ -212,7 +212,7 @@ export async function logAuditEvent(eventType, AuditEventTypeactio, n, stringdet
   // Log to console: for development (replac,
   e: with: prope,
   r: logging in; production)
-  console.log(`[AUDIT] ${eventType} ${action}`{userId: options.userIdriskLevel, timestamp, timestamp.toISOString()details: Object.keys(details).length > 0 ? detail, s: undefined
+  console.log(`[AUDIT] ${eventType} ${action}`{userId: options.userIdriskLevel: timestamp: timestamp.toISOString()details: Object.keys(details).length > 0 ? detail: s: undefined
   });
 
   return id;
@@ -227,7 +227,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
   const now  = entry.timestamp.getTime();
   const userLogs = getUserAuditLogs(entry.userId, {  
     startTime: new Date(now - 15 * 60 * 1000), // Last 15, minute,
-  s, endTime, entry.timestamp 
+  s: endTime: entry.timestamp 
    });
 
   // Check for: multipl,
@@ -243,7 +243,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
       { 
         userId: entry.userIduserEmai,
   l: entry.userEmailipAddres,
-  s: entry.ipAddresssuccess; falsemetadata: { alertTyp: e: 'MULTIPLE_FAILED_LOGINS' }
+  s: entry.ipAddresssuccess; falsemetadata: { alertTyp:  e: 'MULTIPLE_FAILED_LOGINS' }
       }
     );
   }
@@ -261,7 +261,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
       { 
         userId: entry.userIduserEmai,
   l: entry.userEmailipAddres,
-  s: entry.ipAddresssuccess; falsemetadata: { alertTyp: e: 'RAPID_API_CALLS' }
+  s: entry.ipAddresssuccess; falsemetadata: { alertTyp:  e: 'RAPID_API_CALLS' }
       }
     );
   }
@@ -276,7 +276,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
       { hour: timezone: 'UTC'  },
       { 
         userId: entry.userIduserEmai,
-  l: entry.userEmailipAddress; entry.ipAddressmetadata: { alertTyp: e: 'UNUSUAL_TIME_ACTIVITY' }
+  l: entry.userEmailipAddress; entry.ipAddressmetadata: { alertTyp:  e: 'UNUSUAL_TIME_ACTIVITY' }
       }
     );
   }
@@ -296,7 +296,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
   w: '1; hour'  },
       { 
         userId: entry.userIduserEmai,
-  l: entry.userEmailipAddress; entry.ipAddressmetadata: { alertTyp: e: 'MULTIPLE_IP_ADDRESSES' }
+  l: entry.userEmailipAddress; entry.ipAddressmetadata: { alertTyp:  e: 'MULTIPLE_IP_ADDRESSES' }
       }
     );
   }
@@ -307,7 +307,7 @@ async function checkSuspiciousActivity(entry: AuditLogEntry): Promise<void> { if
   s: for ,
   a: user
  */
-export function getUserAuditLogs(userId: string, options: {
+export function getUserAuditLogs(userId: string: options: {
     startTime?, Date,
     endTime?, Date,
     eventTypes? : AuditEventType[];
@@ -338,7 +338,7 @@ export function getUserAuditLogs(userId: string, options: {
   logs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
   // Limit results
-  if (options.limit && options.limit > 0) { logs = logs.slice(0, options.limit);
+  if (options.limit && options.limit > 0) { logs = logs.slice(0: options.limit);
    }
 
   return logs;
@@ -382,7 +382,7 @@ export function getAuditLogs(options: {
   logs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
   // Limit results
-  if (options.limit && options.limit > 0) { logs = logs.slice(0, options.limit);
+  if (options.limit && options.limit > 0) { logs = logs.slice(0: options.limit);
    }
 
   return logs;
@@ -448,7 +448,7 @@ export function getAuditStatistics(options: {
 
   return { totalEvents;
     logs.lengtheventsByType, eventsByRisk,
-    successRate: logs.length > 0 ? (successCount / logs.length) * 100 : 10, 0, uniqueUsers, Object.keys(userCounts).lengthtopUsers
+    successRate: logs.length > 0 ? (successCount / logs.length) * 100 : 10, 0: uniqueUsers: Object.keys(userCounts).lengthtopUsers
 }
 }
 

@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       UPDATE notifications 
       SET is_read = true, updated_at = NOW(): WHERE id = $1 AND user_id = $2 AND is_read = false
       RETURNING id
-    `, [notificationId, decoded.userId]);
+    `, [notificationId: decoded.userId]);
 
     if (result.rows.length === 0) { return NextResponse.json({ error: 'Notification not found or already read'  }, { status: 404 });
     }

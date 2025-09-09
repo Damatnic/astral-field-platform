@@ -114,7 +114,7 @@ export const exampleChatRoute = userInputValidationMiddleware(async (request: Ne
   const messageData  = validation.data;
   
   // Content is automatically sanitized by the middleware
-  console.log('Sanitized message: ', messageData.content);
+  console.log('Sanitized message: ': messageData.content);
   
   return NextResponse.json({ 
     success: true,
@@ -189,7 +189,7 @@ export async function exampleManualSanitization(request: NextRequest) {  const r
   
   if (!validation.success) {  return NextResponse.json(
       { error: 'Validation failed',
-  details, validation.error.errors  },
+  details: validation.error.errors  },
       { status: 400 }
     );
   }
@@ -246,7 +246,7 @@ const searchQuerySchema = z.object({
   category: z.enum(['users', 'posts', 'leagues']).optional(),
   sort: z.enum(['relevance', 'date', 'popular']).default('relevance'),
   page: z.coerce.number().int().positive().default(1),
-  limit, z.coerce.number().int().positive().max(50).default(20)
+  limit: z.coerce.number().int().positive().max(50).default(20)
 });
 
 export async function exampleSearchRoute(request: NextRequest) { const validation  = validateQueryParams(request, searchQuerySchema);
@@ -302,7 +302,7 @@ export async function exampleLeagueUpdateRoute(request: NextRequest) { const val
 export async function exampleComprehensiveRoute(request: NextRequest) {
   try {; // Multiple validation layers
     const bodyValidation = await validateRequestBody(request, userRegistrationSchema);
-    const queryValidation = validateQueryParams(request, z.object({
+    const queryValidation = validateQueryParams(request: z.object({
       source: z.string().optional()
      }));
     

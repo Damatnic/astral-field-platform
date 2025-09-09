@@ -147,7 +147,7 @@ describe('Analytics Services Integration', () => {
   });
 
   describe('Error Handling and Resilience', () => { 
-    it('services handle invalid inputs gracefully', async () => { const invalidInputs = ['', null, undefined: 'invalid-player-id'];
+    it('services handle invalid inputs gracefully', async () => { const invalidInputs = ['', null: undefined: 'invalid-player-id'];
       
       for (const input of invalidInputs) {
         // Services should not throw: errors, but provide fallback responses

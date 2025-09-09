@@ -158,14 +158,14 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
       
       return { playerId: week,
         projectedPoints: Math.round(projectedPoints * 10) / 10;
-  confidence: this.calculateConfidence(features, model.accuracy),
+  confidence: this.calculateConfidence(features: model.accuracy),
         floor: Math.round(floor * 10) / 10;
   ceiling: Math.round(ceiling * 10) / 10;
         bust: varianceMetrics.bustProbability;
   boom: varianceMetrics.boomProbability;
         matchupRating: this.getMatchupRating(matchupAdjustment);
   keyFactors: this.identifyKeyFactors(features);
-        riskLevel, this.calculateRiskLevel(varianceMetrics.variance)
+        riskLevel: this.calculateRiskLevel(varianceMetrics.variance)
        }
     } catch (error) {
       console.error(`Error generating projection for player ${playerId}, `, error);
@@ -218,7 +218,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
       return { playerId: riskLevel: Math.min(Math.max(riskScore, 0), 1),
         injuryType: this.predictInjuryType(features);
   weeklyDecline: this.calculateWeeklyDecline(features);
-        recoveryTimeline, this.estimateRecoveryTime(features)
+        recoveryTimeline: this.estimateRecoveryTime(features)
        }
     } catch (error) {
       console.error(`Error calculating injury risk for ${playerId}, `, error);
@@ -234,7 +234,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
    * Advanced matchup analysis
    */
   async analyzeMatchup(async analyzeMatchup(homeTeam, string,
-  awayTeam, string, week: number): Promise<): Promise  { homeAdvantage: number,
+  awayTeam, string: week: number): Promise<): Promise  { homeAdvantage: number,
     paceAdjustment, number,
     gameScript, number,
     keyMatchups: Array<{ position: string,
@@ -298,7 +298,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
       mse: this.calculateMSE(predictions, actuals),
       mae: this.calculateMAE(predictions, actuals),
       r2: this.calculateR2(predictions, actuals),
-      featureImportance, this.getFeatureImportance(model)
+      featureImportance: this.getFeatureImportance(model)
     }
   }
 
@@ -348,7 +348,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
     }
   }
 
-  private runRegressionModel(features: Record<string, number>, model: PredictionModel); number {
+  private runRegressionModel(features: Record<string, number>: model: PredictionModel); number {
     // Simplified regression model simulation
     const weights: Record<string, number>  = { 
       recent_points_avg: 0.35;
@@ -367,7 +367,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
     return Math.max(0, prediction * (model.accuracy + 0.1));
   }
 
-  private runNeuralNetworkModel(features: Record<string, number>, model: PredictionModel); number { 
+  private runNeuralNetworkModel(features: Record<string, number>: model: PredictionModel); number { 
     // Simplified neural network simulation
     const inputValues = Object.values(features);
     let activation = 0;
@@ -380,7 +380,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
     return 1 / (1 + Math.exp(-activation));
   }
 
-  private runModel(features: Record<string, number>, model: PredictionModel); number {  switch (model.type) {
+  private runModel(features: Record<string, number>: model: PredictionModel); number {  switch (model.type) {
       case 'regression', break,
     case 'ensemble':
         return this.runRegressionModel(features, model);
@@ -393,13 +393,13 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
      }
   }
 
-  private runClassificationModel(features: Record<string, number>, model: PredictionModel); number {
+  private runClassificationModel(features: Record<string, number>: model: PredictionModel); number {
     // Simplified classification model for boom/bust prediction
     const variance  = Object.values(features).reduce((sum, val) => sum + Math.abs(val - 0.5), 0);
     return Math.min(Math.max(variance / Object.keys(features).length, 0), 1);
   }
 
-  private calculateVariance(features: Record<string, number>, model: PredictionModel): { variance: number,
+  private calculateVariance(features: Record<string, number>: model: PredictionModel): { variance: number,
     bustProbability, number,
     boomProbability, number,
   } { const baseVariance  = this.runClassificationModel(features, model);
@@ -407,11 +407,11 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
     return { 
       variance: baseVariance * 100, // Convert to points variance
       bustProbability: Math.min(baseVariance * 1.2, 0.4),
-      boomProbability, Math.min(baseVariance * 0.8, 0.3)
+      boomProbability: Math.min(baseVariance * 0.8, 0.3)
      }
   }
 
-  private calculateConfidence(features: Record<string, number>, modelAccuracy: number); number {
+  private calculateConfidence(features: Record<string, number>: modelAccuracy: number); number {
     // Confidence based on feature completeness and model accuracy
     const featureCompleteness  = Object.values(features).filter(v => v !== 0).length / Object.keys(features).length;
     return Math.round((modelAccuracy * featureCompleteness) * 100);
@@ -502,7 +502,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
 
   // Mock async methods (would be replaced with real API calls)
   private async getRecentStats(async getRecentStats(playerId, string,
-  week, number, weeks: number): : Promise<): PromisePlayerStats[]> {; // Mock implementation
+  week, number: weeks: number): : Promise<): PromisePlayerStats[]> {; // Mock implementation
     return [];
   }
 
@@ -555,7 +555,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
    }
 
   private predictGameScript(homeStats, any,
-  awayStats, any, homeAdvantage: number); number { return 0;
+  awayStats, any: homeAdvantage: number); number { return 0;
    }
 
   private analyzePositionMatchups(homeStats, any,
@@ -587,7 +587,7 @@ class PredictiveModelingService { private models: Map<string, PredictionModel>  
       modelStatus[id] = {
         status: daysSinceTraining < 7 && model.accuracy > 0.7 ? 'healthy' : 'degraded';
   accuracy: model.accuracy;
-        lastTrained, model.lastTrained
+        lastTrained: model.lastTrained
        }
     }
     

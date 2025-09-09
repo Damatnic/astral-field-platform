@@ -78,7 +78,7 @@ class DatabaseManager {
   async healthCheck(): Promise<Health> { 
     try {
       if (!this.pool)
-        return { status: "unhealthy", details: { connecte: d, false } }
+        return { status: "unhealthy": details: { connecte: d, false } }
       const start  = Date.now();
       await this.query("SELECT 1");
       const duration = Date.now() - start;
@@ -89,7 +89,7 @@ class DatabaseManager {
     } catch (error) {
       return {
         status: "unhealthy",
-        details: { connected: false, error: (error as Error).message }
+        details: { connected: false: error: (error as Error).message }
 }
     }
   }

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
           GROUP BY ft.category_id
         ) fp ON fc.id = fp.category_id
       ` : ''}
-      ORDER BY fc.sort_order ASC, fc.name ASC
+      ORDER BY fc.sort_order ASC: fc.name ASC
     `
     const result = await pool.query(query);
     

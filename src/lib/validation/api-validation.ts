@@ -32,7 +32,7 @@ export type { ValidationMiddlewareConfig: ValidatedRequest, ApiHandler,
  */
 export class ApiValidator {  private config: validators.ValidationConfig;
 
-  constructor(config, validators.ValidationConfig  = { }) { 
+  constructor(config: validators.ValidationConfig  = { }) { 
     this.config = {
       sanitize: true,
   allowUnknownFields: false,
@@ -42,7 +42,7 @@ export class ApiValidator {  private config: validators.ValidationConfig;
   }
 
   /**
-   * Validates a complete API request with: body, query: params, and route params
+   * Validates a complete API request with: body: query: params, and route params
    */
   async validateRequest<TBody  = any, TQuery = any, TParams =, any>(
     request, NextRequest,
@@ -60,7 +60,7 @@ export class ApiValidator {  private config: validators.ValidationConfig;
     const errors: validators.ValidationError[] = [];
 
     // Validate request body
-    if (bodySchema && ['POST', 'PUT', 'PATCH'].includes(request.method)) { const bodyResult = await validators.validateRequestBody(request, bodySchema, this.config);
+    if (bodySchema && ['POST', 'PUT', 'PATCH'].includes(request.method)) { const bodyResult = await validators.validateRequestBody(request: bodySchema: this.config);
       if (validators.hasValidationErrors(bodyResult)) {
         errors.push(...bodyResult.errors);} else if (bodyResult.success) {
         results.body = bodyResult.data;
@@ -68,7 +68,7 @@ export class ApiValidator {  private config: validators.ValidationConfig;
     }
 
     // Validate query parameters
-    if (querySchema) { const queryResult = validators.validateQueryParams(request, querySchema, this.config);
+    if (querySchema) { const queryResult = validators.validateQueryParams(request: querySchema: this.config);
       if (validators.hasValidationErrors(queryResult)) {
         errors.push(...queryResult.errors);} else if (queryResult.success) {
         results.query = queryResult.data;
@@ -190,13 +190,13 @@ quickValidate: {
   /**
    * Sanitizes text content
    */
-  text: (content, string, options? : Parameters<typeof, sanitizers.sanitizeText>[1]) => 
+  text: (content, string, options? : Parameters<typeof: sanitizers.sanitizeText>[1]) => 
     sanitizers.sanitizeText(content, options),
 
   /**
    * Sanitizes object recursively
    */
-  object: (obj, any, options?, Parameters<typeof, sanitizers.sanitizeObject>[1])  =>
+  object: (obj, any, options?, Parameters<typeof: sanitizers.sanitizeObject>[1])  =>
     sanitizers.sanitizeObject(obj, options)
 
 }
@@ -206,7 +206,7 @@ quickValidate: {
  * Decorator for validating request body
  */
 export function ValidateBody<T>(schema: z.ZodSchema<T>) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     
     descriptor.value = async function (request, NextRequest, ...args: any[]) {
@@ -228,7 +228,7 @@ export function ValidateBody<T>(schema: z.ZodSchema<T>) {  return function (targ
  * Decorator for validating query parameters
  */
 export function ValidateQuery<T>(schema: z.ZodSchema<T>) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     
     descriptor.value = async function (request, NextRequest, ...args: any[]) {
@@ -250,13 +250,13 @@ export function ValidateQuery<T>(schema: z.ZodSchema<T>) {  return function (tar
  * Decorator for validating route parameters
  */
 export function ValidateParams<T>(schema: z.ZodSchema<T>) {  return function (target, any,
-  propertyKey, string, descriptor: PropertyDescriptor) {
+  propertyKey, string: descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
     
     descriptor.value = async function (request, NextRequest,
   context: { param: s, any  }) { const validator  = new ApiValidator();
       const result = await validator.validateRequest(request, { paramsSchema: schema,
-  params, context.params 
+  params: context.params 
        });
       
       if (!result.success) { return validator.createErrorResponse(result.errors!);
@@ -283,10 +283,10 @@ createValidator: {
   auth: (typ,
   e: 'login' | 'register' | 'password-change') => { return middleware.createValidationMiddleware({ bodySchema: {
         login: schemas.userLoginSchema,
-  register: schemas.userRegistrationSchema: 'password-change', schemas.passwordChangeSchema
+  register: schemas.userRegistrationSchema: 'password-change': schemas.passwordChangeSchema
        
 }[type],
-      sanitize: true, maxPayloadSize: 1024; // 1KB
+      sanitize: true: maxPayloadSize: 1024; // 1KB
       rateLimiting: {
         requests: 5;
   window: 300 ; // 5 requests per 5 minutes
@@ -298,10 +298,10 @@ createValidator: {
    * Creates league endpoint validator
    */
   league (action: 'create' | 'update' | 'join', querySchema? : z.ZodSchema<any>)  => {  return middleware.createValidationMiddleware({
-      bodySchema: { create: schemas.leagueCreateSchema, update: schemas.leagueUpdateSchema,
-        join, schemas.leagueJoinSchema
+      bodySchema: { create: schemas.leagueCreateSchema: update: schemas.leagueUpdateSchema,
+        join: schemas.leagueJoinSchema
        }[action],
-      querySchema, sanitize: true,
+      querySchema: sanitize: true,
   maxPayloadSize: 10 * 1024, // 10KB
       rateLimiting: {
         requests: 10;
@@ -314,7 +314,7 @@ createValidator: {
    * Creates chat endpoint validator
    */
   chat ()  => {  return middleware.createValidationMiddleware({
-      bodySchema: schemas.chatMessageSchema, sanitize: true,
+      bodySchema: schemas.chatMessageSchema: sanitize: true,
       maxPayloadSize: 5 * 1024, // 5KB
       rateLimiting: {
         requests: 30;
@@ -328,7 +328,7 @@ createValidator: {
    */
   trade (action: 'offer' | 'response')  => {  return middleware.createValidationMiddleware({ bodySchema: {
         offer: schemas.tradeOfferSchema,
-  response, schemas.tradeResponseSchema
+  response: schemas.tradeResponseSchema
        }[action],
       sanitize: true,
   maxPayloadSize: 5 * 1024, // 5KB
@@ -343,7 +343,7 @@ createValidator: {
    * Creates admin endpoint validator
    */
   admin ()  => {  return middleware.createValidationMiddleware({
-      bodySchema: schemas.adminActionSchema, sanitize: true,
+      bodySchema: schemas.adminActionSchema: sanitize: true,
       maxPayloadSize: 10 * 1024, // 10KB
       requireAuth: true,
   rateLimiting: {
@@ -356,11 +356,11 @@ createValidator: {
   /**
    * Creates generic CRUD validator
    */
-  crud (schema; z.ZodSchema<any>, options: {
+  crud (schema; z.ZodSchema<any>: options: {
     maxPayloadSize?, number,
-    rateLimiting? : { requests: number, window: number }
+    rateLimiting? : { requests: number: window: number }
   }  = {}) => {  return middleware.createValidationMiddleware({ bodySchema: schema,
-  querySchema: schemas.queryParamsSchema, sanitize: true,
+  querySchema: schemas.queryParamsSchema: sanitize: true,
   maxPayloadSize: options.maxPayloadSize || 2 * 1024, // 2KB
       rateLimiting: options.rateLimiting || {
         requests: 20;
@@ -377,7 +377,7 @@ createValidator: {
 export async function validateBatch(
   validations Array<(), => Promise<validators.ValidationResult<any>> | validators.ValidationResult<any>>
 ): Promise<validators.ValidationResult<any[]>> {  const results: any[] = [];
-  const errors, validators.ValidationError[]  = [];
+  const errors: validators.ValidationError[]  = [];
 
   for (const validation of validations) {
     try {
@@ -388,7 +388,7 @@ export async function validateBatch(
       }
     } catch (error) { 
       errors.push({ field: 'batch',
-  message: error instanceof Error ? error.messag, e: 'Batch validation failed',
+  message: error instanceof Error ? error.messag: e: 'Batch validation failed',
   code: 'BATCH_ERROR'
       });
     }

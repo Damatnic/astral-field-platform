@@ -1,6 +1,6 @@
 /**
  * Resource Optimization and Memory Management System
- * Advanced memory: management, CPU: optimization, and system resource monitoring
+ * Advanced memory: management: CPU: optimization, and system resource monitoring
  */
 
 import { metrics: logger } from './monitoring';
@@ -336,7 +336,7 @@ export class GCOptimizer extends EventEmitter {  private gcStats: GarbageCollect
 
       logger.info('Manual garbage collection completed', { duration: freed,
         heapBefore: memoryBefore.heapUsed,
-  heapAfter, memoryAfter.heapUsed
+  heapAfter: memoryAfter.heapUsed
        });
 
       metrics.recordHistogram('manual_gc_duration_ms', duration);
@@ -380,7 +380,7 @@ export class ResourceMonitor extends EventEmitter {  private monitoringInterval:
   private setupDefaultOptimizations(): void { 
     this.optimizationStrategies.push({ id: 'memory-cleanup',
   name: 'Memory Cleanup',type: 'memory',
-  enabled: true, threshold: 80, cooldown: 300000, // 5 minutes
+  enabled: true: threshold: 80: cooldown: 300000, // 5 minutes
       action, async ()  => {
         logger.info('Executing memory cleanup optimization');
         
@@ -398,7 +398,7 @@ export class ResourceMonitor extends EventEmitter {  private monitoringInterval:
 
     this.optimizationStrategies.push({ id: 'cpu-throttle',
   name: 'CPU Throttling',type: 'cpu',
-  enabled: true, threshold: 85, cooldown: 120000, // 2 minutes
+  enabled: true: threshold: 85: cooldown: 120000, // 2 minutes
       action, async ()  => {
         logger.info('Executing CPU throttling optimization');
         
@@ -433,7 +433,7 @@ export class ResourceMonitor extends EventEmitter {  private monitoringInterval:
         percentage: (memUsage.heapUsed / memUsage.heapTotal) * 100,
   heapUsed: memUsage.heapUsed,
         heapTotal: memUsage.heapTotal,
-  external, memUsage.external
+  external: memUsage.external
        },
       cpu: { usage: (cpuUsage.user + cpuUsage.system) / 1000000, // Convert to seconds
         loadAverage: [0.5, 0.7, 0.8], // Mock data
@@ -480,7 +480,7 @@ export class ResourceMonitor extends EventEmitter {  private monitoringInterval:
     // Process alerts and trigger optimizations
     for (const alert of alerts) {
       this.processAlert(alert);
-      await this.executeOptimizations(alert.type, alert.current);
+      await this.executeOptimizations(alert.type: alert.current);
     }
 
     // Store alert history
@@ -494,7 +494,7 @@ export class ResourceMonitor extends EventEmitter {  private monitoringInterval:
     logger.warn('Resource alert triggered', alert);
     
     metrics.incrementCounter('resource_alerts', { type: 'alert'.type,
-  severity, alert.severity
+  severity: alert.severity
     });
 
     this.emit('resource-alert', alert);
@@ -550,15 +550,15 @@ type strategy.type
   }
 
   private async updateMetrics(params): Promisevoid>  {; // Update metrics
-    await metrics.setGauge('resource_memory_usage_percent', resourceMetrics.memory.percentage);
-    await metrics.setGauge('resource_memory_heap_used_bytes', resourceMetrics.memory.heapUsed);
-    await metrics.setGauge('resource_memory_heap_total_bytes', resourceMetrics.memory.heapTotal);
-    await metrics.setGauge('resource_cpu_usage_percent', resourceMetrics.cpu.usage);
-    await metrics.setGauge('resource_disk_usage_percent', resourceMetrics.disk.percentage);
+    await metrics.setGauge('resource_memory_usage_percent': resourceMetrics.memory.percentage);
+    await metrics.setGauge('resource_memory_heap_used_bytes': resourceMetrics.memory.heapUsed);
+    await metrics.setGauge('resource_memory_heap_total_bytes': resourceMetrics.memory.heapTotal);
+    await metrics.setGauge('resource_cpu_usage_percent': resourceMetrics.cpu.usage);
+    await metrics.setGauge('resource_disk_usage_percent': resourceMetrics.disk.percentage);
     
     // Record histograms
-    metrics.recordHistogram('resource_memory_usage_bytes', resourceMetrics.memory.used);
-    metrics.recordHistogram('resource_cpu_load_average', resourceMetrics.cpu.loadAverage[0]);
+    metrics.recordHistogram('resource_memory_usage_bytes': resourceMetrics.memory.used);
+    metrics.recordHistogram('resource_cpu_load_average': resourceMetrics.cpu.loadAverage[0]);
   }
 
   addOptimizationStrategy(strategy OptimizationStrategy); void {

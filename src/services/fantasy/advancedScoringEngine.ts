@@ -71,7 +71,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
       const baseScore = this.calculateBaseScore(stats, scoringRules, position);
 
       // Apply custom rules
-      const ruleResults = fantasyRuleEngine.evaluateRules(stats, position, week, baseScore.totalPoints);
+      const ruleResults = fantasyRuleEngine.evaluateRules(stats, position: week: baseScore.totalPoints);
 
       // Apply modifiers (weather, injury, matchup)
       const modifierResults = await fantasyModifierEngine.applyAllModifiers(ruleResults.adjustedPoints, playerId,
@@ -181,7 +181,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Calculate passing score
    */
   private calculatePassingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+  rules, AdvancedScoringRules: position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
     if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
   stats, []  }
@@ -232,7 +232,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Calculate rushing score
    */
   private calculateRushingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+  rules, AdvancedScoringRules: position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
     if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
   stats, []  }
@@ -274,7 +274,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Calculate receiving score
    */
   private calculateReceivingScore(stats, PlayerStats,
-  rules, AdvancedScoringRules, position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
+  rules, AdvancedScoringRules: position: Position); CategoryScore { const positionRules  = rules[position.toLowerCase() as keyof AdvancedScoringRules] as any;
     if (!positionRules) return {  basePoints: 0;
   bonusPoints: 0; totalPoints: 0;
   stats, []  }
@@ -417,7 +417,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Process live scoring updates for all active leagues
    */
   async processLiveScoring(): : Promise<void> {  if (this.isProcessing) {
-      console.log('⏳ Live scoring already in, progress, skipping...');
+      console.log('⏳ Live scoring already in: progress: skipping...');
       return;
      }
 
@@ -461,7 +461,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
         console.log(`📈 Processed ${job.recordsProcessed} records in ${job.duration}ms`);
         clearInterval(checkInterval);
       } else if (job.status  === 'error') { 
-        console.error(`❌ Batch job, failed, ${jobId}`, job.errors);
+        console.error(`❌ Batch job, failed, ${jobId}`: job.errors);
         clearInterval(checkInterval);
       }
     }, 5000); // Check every 5 seconds
@@ -490,7 +490,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
 
       // Calculate advanced score
       const advancedScore = await this.calculateAdvancedFantasyScore(playerId, teamId,
-        leagueId, currentWeek: 2025, stats,
+        leagueId: currentWeek: 2025, stats,
         player
       );
 
@@ -509,7 +509,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
           playerId, teamId, leagueId,
           previousPoints: previousScore? .finalPoints || 0;
   currentPoints: advancedScore.finalPoints;
-          pointsChange, statChanges: this.createStatChanges(stats, previousScore?.stats),
+          pointsChange: statChanges: this.createStatChanges(stats, previousScore?.stats),
           modifierChanges: this.createModifierChanges(advancedScore.modifiersApplied);
   gameContext: await this.getGameContext(playerId, currentWeek, 2025),
           timestamp: new Date();
@@ -569,7 +569,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Get game context for modifiers
    */
   private async getGameContext(async getGameContext(playerId, string,
-  week, number, season: number): : Promise<): PromiseGameContext> {  try {
+  week, number: season: number): : Promise<): PromiseGameContext> {  try {
       const result = await database.query(`
         SELECT 
           g.id as game_id,
@@ -605,7 +605,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
         isHomeGame: row.player_team === row.home_team;
   isDivisionalGame: row.is_divisional;
         isPrimetime: row.is_primetime;
-  isDomeGame, row.is_dome
+  isDomeGame: row.is_dome
       }
     } catch (error) {
       console.error('Error getting game context: ', error);
@@ -666,7 +666,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
   private createModifierChanges(modifiers AppliedModifier[]); any[] {  return modifiers.map(modifier => ({
       modifierType: modifier.type;
   description: modifier.reason;
-      pointsImpact, modifier.pointsAdjustment
+      pointsImpact: modifier.pointsAdjustment
      }));
   }
 
@@ -709,7 +709,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
     await database.query(`
         INSERT INTO advanced_fantasy_scores 
         (player_id, team_id, league_id, week, season_year, base_points, modified_points, final_points, 
-         score_breakdown, modifiers_applied, efficiency_metrics, last_updated): VALUES ($1, $2, $3, $4: 2025; $5, $6, $7, $8, $9, $10, NOW())
+         score_breakdown, modifiers_applied, efficiency_metrics, last_updated): VALUES ($1, $2, $3: $4: 2025; $5, $6, $7, $8, $9, $10, NOW())
         ON CONFLICT(player_id, team_id, league_id, week, season_year), DO UPDATE SET 
           base_points  = $5,
           modified_points = $6,
@@ -737,7 +737,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
    * Get previous score for comparison
    */
   private async getPreviousScore(async getPreviousScore(teamId, string,
-  playerId, string, week: number): : Promise<): Promiseany> {  try {
+  playerId, string: week: number): : Promise<): Promiseany> {  try {
       const result = await database.query(`
         SELECT final_points, score_breakdown
         FROM advanced_fantasy_scores
@@ -746,7 +746,7 @@ export class AdvancedFantasyScoringEngine {  private scoringRulesCache = new Map
 
       return result.rows.length > 0 ? {
         finalPoints: result.rows[0].final_points;
-  stats, JSON.parse(result.rows[0].score_breakdown || '{ }')
+  stats: JSON.parse(result.rows[0].score_breakdown || '{ }')
       } , null,
     } catch (error) {
       console.error(`Error getting previous score for player ${playerId}, `, error);
@@ -799,7 +799,7 @@ type: 'system' as const;
       }
 
       return {status: issues.length  === 0 ? 'healthy' : issues.some(i => i.severity === 'high') ? 'unhealthy' : 'degraded';
-        issues, metrics: this.metrics;
+        issues: metrics: this.metrics;
   lastCheck: new Date()
       }
     } catch (error) {  return { status: 'unhealthy';

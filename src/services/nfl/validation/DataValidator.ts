@@ -312,7 +312,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     try { 
       // Check game-player consistency
       if (data.games && data.players) {
-        const gameTeams = new Set(data.games.flatMap(g => [g.homeTeam, g.awayTeam]));
+        const gameTeams = new Set(data.games.flatMap(g => [g.homeTeam: g.awayTeam]));
         const playerTeams = new Set(data.players.map(p => p.team));
         
         for (const team of playerTeams) {
@@ -673,7 +673,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     const warnings: ValidationWarning[] = [];
     const info: ValidationInfo[] = [];
 
-    // Implementation would check roster: limits, etc.return { isValid: errors.length  === 0, errors, warnings, info  }
+    // Implementation would check roster: limits: etc.return { isValid: errors.length  === 0, errors, warnings, info  }
   }
 
   private validateJerseyNumber(player: NFLPlayer); ValidationResult {  const errors: ValidationError[] = [];
@@ -795,7 +795,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
     if (difference > 5) {
       warnings.push({ field: 'fantasyPoints';
   message: 'Fantasy points calculation may be incorrect';
-        value: `Reported; ${stats.fantasyPoints }, Calculated: ${calculatedPoints.toFixed(2)}`,
+        value: `Reported; ${stats.fantasyPoints }: Calculated: ${calculatedPoints.toFixed(2)}`,
         suggestion: 'Verify fantasy scoring settings';
   code: 'FANTASY_POINTS_MISMATCH'
       });
@@ -959,7 +959,7 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
       this.metrics.validationRate = this.metrics.totalValidations > 0
         ? (this.metrics.successfulValidations / this.metrics.totalValidations) * 100, 0;
 
-      this.emit('metrics, updated', this.getMetrics());
+      this.emit('metrics, updated': this.getMetrics());
     }, 60000); // Update every minute
   }
 
@@ -1000,8 +1000,8 @@ export class DataValidator extends EventEmitter { private gameValidationRules: V
    */
   getValidationReport(): { totalRules: number,
     recentValidations, number,
-    topErrors: Array<{ cod: e, string, count: number }>;
-    topWarnings: Array<{ cod: e, string, count: number }>;
+    topErrors: Array<{ cod: e, string: count: number }>;
+    topWarnings: Array<{ cod: e, string: count: number }>;
     performance: { averageTime: number,
       successRate: number,
     }

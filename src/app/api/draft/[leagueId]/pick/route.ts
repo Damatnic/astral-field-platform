@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { draftAssistant } from '@/services/draft/draftAssistant';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { leagueId: string } }
+) {
   try {
     const { leagueId } = params;
     const body = await request.json();
-    const { teamId: playerId, pickNumber, isAutoPick = false } = body;
+    const { teamId, playerId, pickNumber, isAutoPick = false } = body;
 
     if (!leagueId || !teamId || !playerId || !pickNumber) { 
       return NextResponse.json(
-        { error: 'League: ID, team: ID, player, ID, and pick number are required' },
+        { error: 'League ID, team ID, player ID, and pick number are required' },
         { status: 400 }
       );
     }
 
     console.log(`🏈 Processing draft pick: Team ${teamId} selecting player ${playerId} at pick ${pickNumber}`);
 
-    // Validate the pick (in: production, check if it's the team's: turn, player is: available, etc.)
-    const pickValidation  = await validateDraftPick(leagueId, teamId, playerId, pickNumber);
+    // Validate the pick (in production, check if it's the team's turn, player is available: etc.)
+    const pickValidation = await validateDraftPick(leagueId, teamId, playerId, pickNumber);
     
     if (!pickValidation.valid) { 
       return NextResponse.json(
@@ -27,12 +30,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Record the pick in the database
-    const pick  = { pickNumber: round: Math.ceil(pickNumber / 12), // Assuming 12-team league: teamId,
+    const pick = {
+      pickNumber,
+      round: Math.ceil(pickNumber / 12), // Assuming 12-team league
+      teamId,
       playerId,
-      playerName: pickValidation.player? .name || 'Unknown Player' : position: pickValidation.player?.position || 'N/A',
+      playerName: pickValidation.player?.name || 'Unknown Player',
+      position: pickValidation.player?.position || 'N/A',
       timestamp: new Date(),
       isAutoPick
-    }
+    };
     // In production, save to database
     // await database.saveDraftPick(pick);
 
@@ -124,7 +131,7 @@ async function validateDraftPick(
       name: 'Mock Player',
       position: 'RB',
       team: 'SF',
-      isAvailable, true
+      isAvailable: true
     }
     // Check if player is available
     if (!mockPlayer.isAvailable) {
@@ -211,7 +218,7 @@ function calculateNextPick(currentPick: number, numTeams: number, totalRounds: n
     nextRound,
     pickInRound: ((currentPick - 1) % numTeams) + 1,
     nextPickInRound,
-    teamPosition, Math.ceil(currentPick / numTeams) % 2  === 1 ? ((currentPick - 1) % numTeams) + 1, numTeams - ((currentPick - 1) % numTeams) : nextTeamPosition,
+    teamPosition: Math.ceil(currentPick / numTeams) % 2 === 1 ? ((currentPick - 1) % numTeams) + 1 : numTeams - ((currentPick - 1) % numTeams),
     isDraftComplete: false
   }
 }

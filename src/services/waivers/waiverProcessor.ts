@@ -1,6 +1,6 @@
 /**
  * Intelligent Waiver Processing System
- * Handles: FAAB, rolling: waivers, and complex waiver claim processing
+ * Handles: FAAB: rolling: waivers, and complex waiver claim processing
  */
 
 import { database } from '@/lib/database';
@@ -89,7 +89,7 @@ export interface ProcessingStats { totalClaims: number,
 }
 export interface WaiverSettings {
   waiverType: 'faab' | 'rolling' | 'reverse',
-    processDay, string, // 'tuesday', 'wednesday', etc.processTime, string, // '03: 0;
+    processDay, string, // 'tuesday', 'wednesday': etc.processTime, string, // '03: 0;
   0:00';
   faabBudget?, number,
   minBid?, number,
@@ -110,7 +110,7 @@ export interface WaiverPriority { teamId: string,
   
 }
 class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
-  private scheduledProcessing = new Map<string, NodeJS.Timeout>();
+  private scheduledProcessing = new Map<string: NodeJS.Timeout>();
 
   // =======================
   // WAIVER CLAIM SUBMISSION
@@ -134,7 +134,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
     await this.storeWaiverClaim(waiverClaim);
 
     // Schedule processing if not already scheduled
-    await this.scheduleWaiverProcessing(claim.leagueId, waiverClaim.processDate);
+    await this.scheduleWaiverProcessing(claim.leagueId: waiverClaim.processDate);
 
     // Broadcast claim submission
     this.broadcastWaiverSubmission(waiverClaim);
@@ -302,7 +302,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
           playerId: claim.playerId;
   playerName: claim.playerName;
           reason: 'Insufficient FAAB budget';
-  bidAmount, claim.bidAmount
+  bidAmount: claim.bidAmount
          });
         continue;
       }
@@ -623,7 +623,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
     
     processDate.setDate(processDate.getDate() + daysUntilProcess);
     const [hours, minutes] = settings.processTime.split(', ').map(Number);
-    processDate.setHours(hours, minutes: 0, 0);
+    processDate.setHours(hours: minutes: 0, 0);
     
     return processDate;
   }
@@ -659,7 +659,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
       continualWaivers: settings.continualWaivers !== false;
   waiverPeriodHours: settings.waiverPeriodHours || 24;
       allowZeroBids: settings.allowZeroBids !== false;
-  fractionalBids, settings.fractionalBids  === true
+  fractionalBids: settings.fractionalBids  === true
     }
   }
 
@@ -676,7 +676,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
         dropPlayerId: claim.dropPlayerId;
   dropPlayerName: claim.dropPlayerName;
         bidAmount: claim.bidAmount;
-  waiverType, claim.waiverType
+  waiverType: claim.waiverType
       }),
       claim.submittedAt
     ]);
@@ -747,7 +747,7 @@ class WaiverProcessor { private processingLocks  = new Map<string, boolean>();
         failedClaims: 0;
   totalFaabSpent: 0;
         playersProcessed: 0;
-  processingTimeMs, Date.now() - startTime
+  processingTimeMs: Date.now() - startTime
        }
     }
   }
