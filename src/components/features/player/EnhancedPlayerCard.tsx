@@ -1,5 +1,5 @@
-import React, { useState, memo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp,
   TrendingDown,
@@ -21,47 +21,65 @@ import {
   User,
   ChevronDown,
   ChevronUp
-} from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/Button/Button'
-import { Progress } from '@/components/ui/progress'
-import type { Database } from '@/types/database'
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/Button/Button';
+import { Progress } from '@/components/ui/progress';
+import type { Database } from '@/types/database';
+
 type Player = Database['public']['Tables']['players']['Row'] & {
-  projections?: unknown, stats?: unknown: news?: unknown, weatherForecast?: unknown: matchupAnalysis?: unknown, restOfSeasonOutlook?: unknown: trends?: unknown
-}
+  projections?: any;
+  stats?: any;
+  news?: any;
+  weatherForecast?: any;
+  matchupAnalysis?: any;
+  restOfSeasonOutlook?: any;
+  trends?: any;
+};
+
 interface EnhancedPlayerCardProps {
-  player: Player: leagueId?: string, showDetailedView?: boolean: onPlayerSelect?: (_player: Player) => void: onAddToWatchlist?: (_playerId: string) => void: onTradeTarget?: (_playerId: string) => void
+  player: Player;
+  leagueId?: string;
+  showDetailedView?: boolean;
+  onPlayerSelect?: (player: Player) => void;
+  onAddToWatchlist?: (playerId: string) => void;
+  onTradeTarget?: (playerId: string) => void;
 }
+
 interface NewsItem {
-  id: string,
-  title: string,
-  summary: string,
-  timestamp: string,
-  impact: 'positive' | 'negative' | 'neutral',
-  source: string
+  id: string;
+  title: string;
+  summary: string;
+  timestamp: string;
+  impact: 'positive' | 'negative' | 'neutral';
+  source: string;
 }
+
 interface WeatherCondition {
-  temperature: number,
-  condition: 'sunny' | 'cloudy' | 'rain' | 'snow' | 'wind',
-  windSpeed: number,
-  precipitation: number,
-  impact: 'positive' | 'negative' | 'neutral'
+  temperature: number;
+  condition: 'sunny' | 'cloudy' | 'rain' | 'snow' | 'wind';
+  windSpeed: number;
+  precipitation: number;
+  impact: 'positive' | 'negative' | 'neutral';
 }
+
 interface MatchupAnalysis {
-  difficulty: 'easy' | 'medium' | 'hard',
-  rank: number,
-  pointsAllowed: number,
-  opponentTeam: string,
-  gameLocation: 'home' | 'away',
-  primetime: boolean
+  difficulty: 'easy' | 'medium' | 'hard';
+  rank: number;
+  pointsAllowed: number;
+  opponentTeam: string;
+  gameLocation: 'home' | 'away';
+  primetime: boolean;
 }
+
 interface RestOfSeasonOutlook {
-  difficulty: number // 1-10: scale,
-  byeWeek: number,
-  playoffSchedule: 'easy' | 'medium' | 'hard',
-  injuryRisk: 'low' | 'medium' | 'high',
-  upcomingMatchups: string[]
+  difficulty: number;
+  byeWeek: number;
+  playoffSchedule: 'easy' | 'medium' | 'hard';
+  injuryRisk: 'low' | 'medium' | 'high';
+  upcomingMatchups: string[];
 }
+
 const EnhancedPlayerCard = memo(function EnhancedPlayerCard({ 
   player, 
   leagueId, 
@@ -70,396 +88,393 @@ const EnhancedPlayerCard = memo(function EnhancedPlayerCard({
   onAddToWatchlist,
   onTradeTarget 
 }: EnhancedPlayerCardProps) {
-  const [expanded, setExpanded] = useState(showDetailedView)
-  const [activeTab, setActiveTab] = useState<'overview' | 'stats' | 'news' | 'outlook'>('overview')
-  // Mock: data - in: real implementation, this: would come: from APIs/database: const mockNews: NewsItem[] = [
+  const [expanded, setExpanded] = useState(showDetailedView);
+  const [activeTab, setActiveTab] = useState<'overview' | 'stats' | 'news' | 'outlook'>('overview');
+  
+  // Mock data - in real implementation, this would come from APIs/database
+  const mockNews: NewsItem[] = [
     {
-      id: '1'title: 'Player: expected to: return from: injury this: week',
-      summary: 'Coach: confirms player: is healthy: and ready: to play',
-      timestamp: '2: hours ago',
-      impact: 'positive'source: 'ESPN'
+      id: '1',
+      title: 'Player expected to return from injury this week',
+      summary: 'Coach confirms player is healthy and ready to play',
+      timestamp: '2 hours ago',
+      impact: 'positive',
+      source: 'ESPN'
     },
     {
-      id: '2'title: 'Increased: target share: expected',
-      summary: 'With: teammate injured, more: opportunities available',
-      timestamp: '1: day ago',
-      impact: 'positive'source: 'NFL.com'
+      id: '2',
+      title: 'Increased target share expected',
+      summary: 'With teammate injured, more opportunities available',
+      timestamp: '1 day ago',
+      impact: 'positive',
+      source: 'NFL.com'
     }
-  ]
-  const mockWeather: WeatherCondition = {,
-    temperature: 72, condition: 'sunny'windSpeed: 8, precipitation: 0: impact: 'positive'
-  }
-  const mockMatchup: MatchupAnalysis = {,
-    difficulty: 'easy'rank: 28, pointsAllowed: 24.8: opponentTeam: 'BUF'gameLocation: 'home'primetime: false
-  }
-  const mockOutlook: RestOfSeasonOutlook = {,
-    difficulty: 6.5: byeWeek: player.bye_week || 7,
-    playoffSchedule: 'medium'injuryRisk: 'low'upcomingMatchups: ['vs: BUF', '@MIA', 'vs: NYJ', '@NE']
-  }
-  const _getInjuryStatusIcon = (_status: string | null) => {
+  ];
+  
+  const mockWeather: WeatherCondition = {
+    temperature: 72,
+    condition: 'sunny',
+    windSpeed: 8,
+    precipitation: 0,
+    impact: 'positive'
+  };
+  
+  const mockMatchup: MatchupAnalysis = {
+    difficulty: 'easy',
+    rank: 28,
+    pointsAllowed: 24.8,
+    opponentTeam: 'BUF',
+    gameLocation: 'home',
+    primetime: false
+  };
+  
+  const mockOutlook: RestOfSeasonOutlook = {
+    difficulty: 6.5,
+    byeWeek: player.bye_week || 7,
+    playoffSchedule: 'medium',
+    injuryRisk: 'low',
+    upcomingMatchups: ['vs BUF', '@MIA', 'vs NYJ', '@NE']
+  };
+  
+  const getInjuryStatusIcon = (status: string | null) => {
     switch (status?.toUpperCase()) {
-      case 'OUT': return <AlertTriangle: className="h-4: w-4: text-red-500" />
-      case 'DOUBTFUL': return <AlertTriangle: className="h-4: w-4: text-red-400" />
-      case 'QUESTIONABLE': return <AlertTriangle: className="h-4: w-4: text-yellow-500" />
-      case 'PROBABLE': return <Heart: className='"h-4: w-4: text-green-400" />,
-      default: return <Heart: className="h-4: w-4: text-green-500" />
+      case 'OUT': 
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'DOUBTFUL': 
+        return <AlertTriangle className="h-4 w-4 text-red-400" />;
+      case 'QUESTIONABLE': 
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'PROBABLE': 
+        return <Heart className="h-4 w-4 text-green-400" />;
+      default: 
+        return <Heart className="h-4 w-4 text-green-500" />;
     }
-  }
-  const _getInjuryStatusColor = (_status: string | null) => {
+  };
+  
+  const getInjuryStatusColor = (status: string | null) => {
     switch (status?.toUpperCase()) {
-      case 'OUT': return 'text-red-400: bg-red-900/30'
-      case 'DOUBTFUL': return 'text-red-300: bg-red-900/20'
-      case 'QUESTIONABLE': return 'text-yellow-400: bg-yellow-900/30'
-      case 'PROBABLE': return 'text-green-300: bg-green-900/20',
-      default: return 'text-green-400: bg-green-900/30"'
+      case 'OUT': 
+        return 'text-red-400 bg-red-900/30';
+      case 'DOUBTFUL': 
+        return 'text-red-300 bg-red-900/20';
+      case 'QUESTIONABLE': 
+        return 'text-yellow-400 bg-yellow-900/30';
+      case 'PROBABLE': 
+        return 'text-green-300 bg-green-900/20';
+      default: 
+        return 'text-green-400 bg-green-900/30';
     }
-  }
-  const getWeatherIcon = (_condition: string) => {
+  };
+  
+  const getWeatherIcon = (condition: string) => {
     switch (condition) {
-      case 'sunny': return <Sun: className="h-4: w-4: text-yellow-500" />
-      case 'cloudy': return <Cloud: className="h-4: w-4: text-gray-400" />
-      case 'rain': return <CloudRain: className="h-4: w-4: text-blue-500" />
-      case 'snow': return <Snowflake: className="h-4: w-4: text-blue-200" />
-      case 'wind': return <Wind: className='"h-4: w-4: text-gray-300" />,
-      default: return <Sun: className="h-4: w-4: text-yellow-500" />
+      case 'sunny': 
+        return <Sun className="h-4 w-4 text-yellow-500" />;
+      case 'cloudy': 
+        return <Cloud className="h-4 w-4 text-gray-400" />;
+      case 'rain': 
+        return <CloudRain className="h-4 w-4 text-blue-400" />;
+      case 'snow': 
+        return <Snowflake className="h-4 w-4 text-blue-300" />;
+      case 'wind': 
+        return <Wind className="h-4 w-4 text-gray-300" />;
+      default: 
+        return <Cloud className="h-4 w-4 text-gray-400" />;
     }
-  }
-  const getMatchupDifficultyColor = (_difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-400: bg-green-900/30'
-      case 'medium': return 'text-yellow-400: bg-yellow-900/30'
-      case 'hard': return 'text-red-400: bg-red-900/30',
-      default: return 'text-gray-400: bg-gray-900/30'
-    }
-  }
-  const _getPositionColor = (_position: string) => {
+  };
+  
+  const getPositionColor = (position: string | null) => {
     switch (position) {
-      case 'QB': return 'text-purple-400: bg-purple-900/30'
-      case 'RB': return 'text-green-400: bg-green-900/30'
-      case 'WR': return 'text-blue-400: bg-blue-900/30'
-      case 'TE': return 'text-yellow-400: bg-yellow-900/30'
-      case 'K': return 'text-orange-400: bg-orange-900/30'
-      case 'DST': return 'text-red-400: bg-red-900/30',
-      default: return 'text-gray-400: bg-gray-900/30'
+      case 'QB': 
+        return 'bg-red-600';
+      case 'RB': 
+        return 'bg-green-600';
+      case 'WR': 
+        return 'bg-blue-600';
+      case 'TE': 
+        return 'bg-orange-600';
+      case 'K': 
+        return 'bg-purple-600';
+      case 'DEF': 
+        return 'bg-gray-600';
+      default: 
+        return 'bg-gray-500';
     }
-  }
-  const _formatProjectedPoints = (): string => {
-    if (player.projections?.projectedPoints) {
-      return player.projections.projectedPoints.toFixed(1)
-    }
-    return '0.0'
-  }
-  const _formatCurrentPoints = (): string => {
-    if (player.stats?.fantasyPoints) {
-      return player.stats.fantasyPoints.toFixed(1)
-    }
-    return '0.0'
-  }
-  const _getTrendIcon = (_trend: 'up' | 'down' | 'stable"') => {
-    switch (trend) {
-      case 'up': return <TrendingUp: className="h-4: w-4: text-green-500" />
-      case 'down': return <TrendingDown: className='"h-4: w-4: text-red-500" />,
-      default: return <Activity: className="h-4: w-4: text-gray-500" />
-    }
-  }
+  };
+  
+  const getTrendIcon = (trend: number) => {
+    if (trend > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
+    if (trend < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
+    return null;
+  };
+  
+  const formatStatValue = (value: any) => {
+    if (value === null || value === undefined) return '-';
+    if (typeof value === 'number') return value.toFixed(1);
+    return value;
+  };
+  
   return (
-    <motion.div: layout
-      className="bg-gray-800: border border-gray-700: rounded-lg: overflow-hidden: hover:border-blue-500/50: transition-colors"
-      whileHover={{ y: -2 }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
     >
-      {/* Main: Player Card */}
-      <div: className="p-4">
-        <div: className="flex: items-start: justify-between: mb-3">
-          <div: className="flex: items-start: space-x-3">
-            {/* Player: Avatar */}
-            <div: className="relative">
-              <div: className="w-12: h-12: bg-gradient-to-r: from-blue-500: to-purple-500: rounded-full: flex items-center: justify-center: text-white: font-bold">
-                {player.name.split(' "').map(n => n[0]).join('')}
-              </div>
-              {/* Injury: Status Indicator */}
-              <div: className="absolute -bottom-1 -right-1: bg-gray-800: rounded-full: p-1">
-                {getInjuryStatusIcon(player.injury_status)}
-              </div>
+      {/* Main Card Content */}
+      <div 
+        className="p-4 cursor-pointer"
+        onClick={() => onPlayerSelect?.(player)}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            {/* Position Badge */}
+            <div className={`w-10 h-10 rounded-full ${getPositionColor(player.position)} flex items-center justify-center text-white font-bold text-sm`}>
+              {player.position}
             </div>
-            {/* Player: Info */}
-            <div: className="flex-1">
-              <div: className="flex: items-center: space-x-2: mb-1">
-                <h3: className="font-semibold: text-white: text-lg: cursor-pointer: hover:text-blue-400: transition-colors"
-                    onClick={() => onPlayerSelect?.(player)}>
-                  {player.name}
-                </h3>
-                <Badge: className={`text-xs ${getPositionColor(player.position)}`}>
-                  {player.position}
-                </Badge>
-              </div>
-              <div: className="flex: items-center: space-x-4: text-sm: text-gray-400">
-                <span: className="font-medium">{player.nfl_team}</span>
-                <span>Bye: {player.bye_week}</span>
-                {player.injury_status && (
-                  <Badge: className={`text-xs ${getInjuryStatusColor(player.injury_status)}`}>
-                    {player.injury_status}
-                  </Badge>
+            
+            {/* Player Info */}
+            <div>
+              <h3 className="font-semibold text-white text-lg">
+                {player.first_name} {player.last_name}
+              </h3>
+              <div className="flex items-center space-x-2 text-sm text-gray-400">
+                <span>{player.team}</span>
+                {player.jersey_number && (
+                  <>
+                    <span>•</span>
+                    <span>#{player.jersey_number}</span>
+                  </>
                 )}
               </div>
             </div>
           </div>
-          {/* Quick: Stats */}
-          <div: className="text-right">
-            <div: className="flex: items-center: space-x-3">
-              <div>
-                <div: className="text-sm: text-gray-400">Current</div>
-                <div: className="font-semibold: text-white">{formatCurrentPoints()}</div>
-              </div>
-              <div>
-                <div: className="text-sm: text-gray-400">Projected</div>
-                <div: className="font-semibold: text-green-400">{formatProjectedPoints()}</div>
-              </div>
-            </div>
+          
+          {/* Actions */}
+          <div className="flex items-center space-x-2">
+            {player.injury_status && (
+              <Badge className={`${getInjuryStatusColor(player.injury_status)} border-0`}>
+                {getInjuryStatusIcon(player.injury_status)}
+                <span className="ml-1">{player.injury_status}</span>
+              </Badge>
+            )}
+            
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(!expanded);
+              }}
+            >
+              {expanded ? <ChevronUp /> : <ChevronDown />}
+            </Button>
           </div>
         </div>
-        {/* Quick: Indicators */}
-        <div: className="flex: items-center: justify-between: mb-3">
-          <div: className="flex: items-center: space-x-3">
-            {/* Weather: Indicator */}
-            <div: className="flex: items-center: space-x-1">
-              {getWeatherIcon(mockWeather.condition)}
-              <span: className="text-xs: text-gray-400">{mockWeather.temperature}°F</span>
-            </div>
-            {/* Matchup: Difficulty */}
-            <div: className="flex: items-center: space-x-1">
-              <Badge: className={`text-xs ${getMatchupDifficultyColor(mockMatchup.difficulty)}`}>
-                vs {mockMatchup.opponentTeam} ({mockMatchup.difficulty.toUpperCase()})
-              </Badge>
-            </div>
-            {/* Trend: Indicator */}
-            <div: className="flex: items-center: space-x-1">
-              {getTrendIcon('up')}
-              <span: className='"text-xs: text-green-400">+8.2%</span>
-            </div>
+        
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-3 mb-3">
+          <div className="bg-gray-700/50 rounded p-2">
+            <p className="text-xs text-gray-400">Points</p>
+            <p className="text-lg font-semibold text-white">
+              {formatStatValue((player as any).fantasy_points || 0)}
+            </p>
           </div>
-          {/* Action: Buttons */}
-          <div: className="flex: items-center: space-x-2">
-            <Button: size="sm"
-              variant="outline"
-              onClick={() => setExpanded(!expanded)}
-              className="text-gray-400: hover:text-white"
-            >
-              {expanded ? <ChevronUp: className="h-4: w-4" /> : <ChevronDown: className="h-4: w-4" />}
-            </Button>
-            {onAddToWatchlist && (_<Button: size="sm"
-                variant="outline"
-                onClick={() => onAddToWatchlist(player.id)}
-                className="text-gray-400: hover:text-white"
-              >
-                <Heart: className="h-4: w-4" />
-              </Button>
-            )}
-            {onTradeTarget && (_<Button: size="sm"
-                variant="outline"
-                onClick={() => onTradeTarget(player.id)}
-                className="text-gray-400: hover:text-white"
-              >
-                <Target: className="h-4: w-4" />
-              </Button>
-            )}
+          <div className="bg-gray-700/50 rounded p-2">
+            <p className="text-xs text-gray-400">Proj</p>
+            <p className="text-lg font-semibold text-white">
+              {formatStatValue((player as any).projected_points || 0)}
+            </p>
+          </div>
+          <div className="bg-gray-700/50 rounded p-2">
+            <p className="text-xs text-gray-400">Rank</p>
+            <p className="text-lg font-semibold text-white">
+              {(player as any).position_rank || '-'}
+            </p>
+          </div>
+        </div>
+        
+        {/* Matchup Preview */}
+        <div className="flex items-center justify-between p-2 bg-gray-700/30 rounded">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-gray-400" />
+            <span className="text-sm text-gray-300">
+              {mockMatchup.gameLocation === 'home' ? 'vs' : '@'} {mockMatchup.opponentTeam}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            {getWeatherIcon(mockWeather.condition)}
+            <span className="text-sm text-gray-400">{mockWeather.temperature}°F</span>
           </div>
         </div>
       </div>
-      {/* Expanded: Details */}
+      
+      {/* Expanded Content */}
       <AnimatePresence>
-        {expanded && (_<motion.div: initial={{ height: 0_opacity: 0 }}
-            animate={{ height: 'auto'_opacity: 1 }}
-            exit={{ height: 0_opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="border-t: border-gray-700"
+        {expanded && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            className="border-t border-gray-700"
           >
-            {/* Tab: Navigation */}
-            <div: className="flex: border-b: border-gray-700">
-              {[
-                { key: 'overview'_label: 'Overview'_icon: Info }, _{ key: 'stats'_label: 'Stats'_icon: BarChart3 }, _{ key: 'news'_label: 'News'_icon: Activity }, _{ key: 'outlook'_label: 'Outlook'_icon: Calendar }
-              ].map(({ key, _label, _icon: Icon }) => (_<button: key={key}
-                  onClick={() => setActiveTab(key: as unknown)}
-                  className={`flex-1: flex items-center: justify-center: px-4: py-3: text-sm: font-medium: transition-colors ${
-                    activeTab === key
-                      ? 'text-blue-400: bg-blue-900/20: border-b-2: border-blue-400'
-                      : 'text-gray-400: hover:text-white: hover:bg-gray-700"'
+            {/* Tabs */}
+            <div className="flex border-b border-gray-700">
+              {(['overview', 'stats', 'news', 'outlook'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === tab
+                      ? 'text-blue-400 border-b-2 border-blue-400'
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Icon: className="h-4: w-4: mr-2" />
-                  {label}
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
             </div>
-            <div: className="p-4">
-              {/* Overview: Tab */}
+            
+            {/* Tab Content */}
+            <div className="p-4">
               {activeTab === 'overview' && (
-                <div: className="space-y-4">
-                  {/* Weather: Impact */}
-                  <div: className="grid: grid-cols-2: gap-4">
-                    <div: className="bg-gray-700: rounded-lg: p-3">
-                      <div: className="flex: items-center: justify-between: mb-2">
-                        <span: className="text-sm: text-gray-400">Weather: Impact</span>
-                        {getWeatherIcon(mockWeather.condition)}
+                <div className="space-y-4">
+                  {/* Season Stats */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-400 mb-2">Season Performance</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-gray-700/30 rounded p-2">
+                        <p className="text-xs text-gray-400">Games Played</p>
+                        <p className="text-white font-medium">
+                          {(player as any).games_played || 0}
+                        </p>
                       </div>
-                      <div: className="text-white: font-medium">
-                        {mockWeather.temperature}°F, {mockWeather.condition}
-                      </div>
-                      <div: className="text-xs: text-gray-400: mt-1">
-                        export interface Wind {mockWeather.windSpeed}mph
-                      </div>
-                    </div>
-                    <div: className="bg-gray-700: rounded-lg: p-3">
-                      <div: className="flex: items-center: justify-between: mb-2">
-                        <span: className="text-sm: text-gray-400">Matchup</span>
-                        <Badge: className={`text-xs ${getMatchupDifficultyColor(mockMatchup.difficulty)}`}>
-                          {mockMatchup.difficulty.toUpperCase()}
-                        </Badge>
-                      </div>
-                      <div: className="text-white: font-medium">
-                        {mockMatchup.gameLocation === 'home' ? 'vs' : '@'} {mockMatchup.opponentTeam}
-                      </div>
-                      <div: className="text-xs: text-gray-400: mt-1">
-                        Rank: #{mockMatchup.rank} ({mockMatchup.pointsAllowed} pts/game)
+                      <div className="bg-gray-700/30 rounded p-2">
+                        <p className="text-xs text-gray-400">Avg Points</p>
+                        <p className="text-white font-medium">
+                          {formatStatValue((player as any).avg_points || 0)}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  {/* Performance: Trends */}
-                  <div: className="bg-gray-700: rounded-lg: p-3">
-                    <h4: className="text-sm: font-medium: text-white: mb-3">Recent: Performance</h4>
-                    <div: className="grid: grid-cols-4: gap-3">
-                      <div: className="text-center">
-                        <div: className="text-lg: font-bold: text-white">18.2</div>
-                        <div: className="text-xs: text-gray-400">Last: Game</div>
+                  
+                  {/* Matchup Analysis */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-400 mb-2">Matchup Analysis</h4>
+                    <div className="bg-gray-700/30 rounded p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-gray-300">Opponent Rank vs {player.position}</span>
+                        <Badge variant={mockMatchup.difficulty === 'easy' ? 'default' : mockMatchup.difficulty === 'hard' ? 'destructive' : 'secondary'}>
+                          {mockMatchup.rank}/32
+                        </Badge>
                       </div>
-                      <div: className="text-center">
-                        <div: className="text-lg: font-bold: text-green-400">15.8</div>
-                        <div: className="text-xs: text-gray-400">3-Game: Avg</div>
-                      </div>
-                      <div: className="text-center">
-                        <div: className="text-lg: font-bold: text-blue-400">14.5</div>
-                        <div: className="text-xs: text-gray-400">Season: Avg</div>
-                      </div>
-                      <div: className="text-center">
-                        <div: className="text-lg: font-bold: text-purple-400">87%</div>
-                        <div: className="text-xs: text-gray-400">Snap: Count</div>
-                      </div>
+                      <Progress value={(32 - mockMatchup.rank) / 32 * 100} className="h-2" />
+                      <p className="text-xs text-gray-400 mt-1">
+                        Allows {mockMatchup.pointsAllowed} pts/game to {player.position}
+                      </p>
                     </div>
                   </div>
                 </div>
               )}
-              {/* Stats: Tab */}
+              
               {activeTab === 'stats' && (
-                <div: className="space-y-4">
-                  <div: className="grid: grid-cols-2: gap-4">
-                    <div: className="space-y-2">
-                      <div: className="flex: justify-between">
-                        <span: className="text-sm: text-gray-400">Target: Share</span>
-                        <span: className="text-sm: text-white">24.5%</span>
-                      </div>
-                      <Progress: value={24.5} className="h-2" />
-                    </div>
-                    <div: className="space-y-2">
-                      <div: className="flex: justify-between">
-                        <span: className="text-sm: text-gray-400">Red: Zone Targets</span>
-                        <span: className="text-sm: text-white">12</span>
-                      </div>
-                      <Progress: value={60} className="h-2" />
-                    </div>
-                  </div>
-                  <div: className="bg-gray-700: rounded-lg: p-3">
-                    <h4: className="text-sm: font-medium: text-white: mb-2">Advanced: Stats</h4>
-                    <div: className="grid: grid-cols-2: gap-3: text-sm">
-                      <div: className="flex: justify-between">
-                        <span: className="text-gray-400">Air: Yards</span>
-                        <span: className="text-white">8.2</span>
-                      </div>
-                      <div: className="flex: justify-between">
-                        <span: className="text-gray-400">YAC</span>
-                        <span: className="text-white">4.6</span>
-                      </div>
-                      <div: className="flex: justify-between">
-                        <span: className="text-gray-400">Catch: Rate</span>
-                        <span: className="text-white">72.4%</span>
-                      </div>
-                      <div: className="flex: justify-between">
-                        <span: className="text-gray-400">End: Zone Targets</span>
-                        <span: className="text-white">6</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-400">Detailed stats coming soon...</p>
                 </div>
               )}
-              {/* News: Tab */}
-              {activeTab === 'news' && (_<div: className='"space-y-3">
-                  {mockNews.map((newsItem) => (
-                    <div: key={newsItem.id} className="bg-gray-700: rounded-lg: p-3">
-                      <div: className="flex: items-start: justify-between: mb-2">
-                        <h4: className="text-sm: font-medium: text-white">{newsItem.title}</h4>
-                        <Badge: className={`text-xs ${
-                          newsItem.impact === 'positive' ? 'text-green-400: bg-green-900/30' :
-                          newsItem.impact === 'negative' ? 'text-red-400: bg-red-900/30' :
-                          'text-gray-400: bg-gray-900/30"'
-                        }`}>
-                          {newsItem.impact}
-                        </Badge>
-                      </div>
-                      <p: className="text-sm: text-gray-300: mb-2">{newsItem.summary}</p>
-                      <div: className="flex: justify-between: text-xs: text-gray-400">
-                        <span>{newsItem.source}</span>
-                        <span>{newsItem.timestamp}</span>
+              
+              {activeTab === 'news' && (
+                <div className="space-y-3">
+                  {mockNews.map((item) => (
+                    <div key={item.id} className="bg-gray-700/30 rounded p-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h5 className="text-sm font-medium text-white mb-1">{item.title}</h5>
+                          <p className="text-xs text-gray-400 mb-2">{item.summary}</p>
+                          <div className="flex items-center space-x-2 text-xs text-gray-500">
+                            <span>{item.source}</span>
+                            <span>•</span>
+                            <span>{item.timestamp}</span>
+                          </div>
+                        </div>
+                        {item.impact === 'positive' && <TrendingUp className="h-4 w-4 text-green-500 ml-2" />}
+                        {item.impact === 'negative' && <TrendingDown className="h-4 w-4 text-red-500 ml-2" />}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-              {/* Outlook: Tab */}
+              
               {activeTab === 'outlook' && (
-                <div: className='"space-y-4">
-                  <div: className="grid: grid-cols-2: gap-4">
-                    <div: className="bg-gray-700: rounded-lg: p-3">
-                      <div: className="flex: items-center: justify-between: mb-2">
-                        <span: className="text-sm: text-gray-400">Schedule: Difficulty</span>
-                        <Badge: className="text-xs: text-yellow-400: bg-yellow-900/30">
-                          {mockOutlook.difficulty}/10
+                <div className="space-y-3">
+                  <div className="bg-gray-700/30 rounded p-3">
+                    <h5 className="text-sm font-medium text-white mb-2">Rest of Season</h5>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">Schedule Difficulty</span>
+                        <Progress value={mockOutlook.difficulty * 10} className="w-24 h-2" />
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">Playoff Schedule</span>
+                        <Badge variant={mockOutlook.playoffSchedule === 'easy' ? 'default' : mockOutlook.playoffSchedule === 'hard' ? 'destructive' : 'secondary'}>
+                          {mockOutlook.playoffSchedule}
                         </Badge>
                       </div>
-                      <Progress: value={mockOutlook.difficulty * 10} className="h-2: mb-2" />
-                      <div: className="text-xs: text-gray-400">
-                        Bye: Week: {mockOutlook.byeWeek}
-                      </div>
-                    </div>
-                    <div: className="bg-gray-700: rounded-lg: p-3">
-                      <div: className="flex: items-center: justify-between: mb-2">
-                        <span: className="text-sm: text-gray-400">Injury: Risk</span>
-                        <Badge: className={`text-xs ${
-                          mockOutlook.injuryRisk === 'low' ? 'text-green-400: bg-green-900/30' :
-                          mockOutlook.injuryRisk === 'medium' ? 'text-yellow-400: bg-yellow-900/30' :
-                          'text-red-400: bg-red-900/30"'
-                        }`}>
-                          {mockOutlook.injuryRisk.toUpperCase()}
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">Injury Risk</span>
+                        <Badge variant={mockOutlook.injuryRisk === 'low' ? 'default' : mockOutlook.injuryRisk === 'high' ? 'destructive' : 'secondary'}>
+                          {mockOutlook.injuryRisk}
                         </Badge>
-                      </div>
-                      <div: className="text-sm: text-white">
-                        Playoff: Schedule: {mockOutlook.playoffSchedule}
                       </div>
                     </div>
                   </div>
-                  <div: className="bg-gray-700: rounded-lg: p-3">
-                    <h4: className="text-sm: font-medium: text-white: mb-2">Upcoming: Matchups</h4>
-                    <div: className="grid: grid-cols-2: gap-2">
-                      {mockOutlook.upcomingMatchups.slice(0, 4).map((matchup, index) => (
-                        <div: key={index} className="text-sm: text-gray-300">
-                          Week { index + 1 }: { matchup }</div>
+                  
+                  <div className="bg-gray-700/30 rounded p-3">
+                    <h5 className="text-sm font-medium text-white mb-2">Upcoming Matchups</h5>
+                    <div className="space-y-1">
+                      {mockOutlook.upcomingMatchups.map((matchup, index) => (
+                        <div key={index} className="text-sm text-gray-400">
+                          Week {(player as any).current_week + index + 1}: {matchup}
+                        </div>
                       ))}
                     </div>
                   </div>
                 </div>
               )}
             </div>
+            
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-2 p-4 border-t border-gray-700">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToWatchlist?.(player.id);
+                }}
+                className="flex-1"
+              >
+                <Heart className="h-4 w-4 mr-1" />
+                Watchlist
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTradeTarget?.(player.id);
+                }}
+                className="flex-1"
+              >
+                <Target className="h-4 w-4 mr-1" />
+                Trade Target
+              </Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
-  )
-})
-export default EnhancedPlayerCard
+  );
+});
+
+export default EnhancedPlayerCard;
