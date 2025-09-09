@@ -196,7 +196,8 @@ async function handleMFAEnable(user: any, verificationToken: string | undefined,
         ipAddress: ip,
         userAgent,
         success: false,
-        errorMessage: 'Invalid verification token'
+        errorMessage: 'Invalid verification token',
+        complianceRelevant: true
       });
 
       return NextResponse.json({
@@ -261,7 +262,8 @@ async function handleMFADisable(user: any, verificationToken: string | undefined
         ipAddress: ip,
         userAgent,
         success: false,
-        errorMessage: 'Invalid verification token'
+        errorMessage: 'Invalid verification token',
+        complianceRelevant: true
       });
 
       return NextResponse.json({
@@ -362,7 +364,8 @@ async function handleMFAVerification(
         ipAddress: ip,
         userAgent,
         success: false,
-        errorMessage: result.error
+        errorMessage: result.error,
+        complianceRelevant: true
       });
 
       return NextResponse.json({
