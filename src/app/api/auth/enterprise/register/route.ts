@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       password,
       undefined,
       username,
-      { firstName, lastName, email }
+      { firstName: firstName || '', lastName: lastName || '', email }
     );
 
     if (!passwordValidation.isValid) {
